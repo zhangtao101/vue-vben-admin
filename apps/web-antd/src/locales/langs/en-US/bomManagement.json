@@ -1,0 +1,20 @@
+{
+  "categoryNumber": "Category Number",
+  "categoryName": "Category Name",
+  "materialCode": "Material Code",
+  "materialName": "Material Name",
+  "bomCategory": {
+  },
+  "materialsCategory": {
+  },
+  "maintainQualityMaterials": {
+  },
+  "materialsInform": {
+    "upSafe": "UpSafe",
+    "downSafe": "DownSafe",
+    "pasDescribe": "PasDescribe",
+    "files": "Files",
+    "productReference": "Product Reference",
+    "productDescription": "Product Description"
+  }
+}

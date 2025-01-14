@@ -1,0 +1,9 @@
+{
+  "ruleName": "规则名称",
+  "typeOfOwnership": "所属类型",
+  "displayMode": "展示方式",
+  "categorySelection": "类别选择",
+  "materialOrProductCode": "物料/产品编码",
+  "materialOrProductName": "物料/产品名称",
+  "remark": "备注"
+}

@@ -1,0 +1,15 @@
+{
+  "fullNameOfOrganization": "Full Name Of Organization",
+  "organizationAbbreviation": "Organization Abbreviation",
+  "tissueType": "Tissue Type",
+  "tissueCoding": "Tissue Coding",
+  "organizationalHierarchy": "Organizational Hierarchy",
+  "personInCharge": "Person In Charge",
+  "landlineNumber": "Landline Number",
+  "contactAddress": "Contact Address",
+  "fax": "Fax",
+  "email": "Email",
+  "status": "Status",
+  "description": "Description",
+  "superiorOrganization": "Superior Organization"
+}
