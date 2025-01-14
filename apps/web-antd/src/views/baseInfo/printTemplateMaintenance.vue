@@ -23,17 +23,17 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'name', title: 'Name', width: 150 },
-    { field: 'age', sortable: true, title: 'Age', width: 150 },
-    { field: 'nickname', title: 'Nickname', width: 150 },
-    { field: 'role', title: 'Role', width: 150 },
-    { field: 'address', showOverflow: true, title: 'Address', width: 150 },
+    { field: 'name', title: 'Name', minWidth: 150 },
+    { field: 'age', sortable: true, title: 'Age', minWidth: 150 },
+    { field: 'nickname', title: 'Nickname', minWidth: 150 },
+    { field: 'role', title: 'Role', minWidth: 150 },
+    { field: 'address', showOverflow: true, title: 'Address', minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      width: 220,
+      minWidth: 220,
     },
   ],
   height: 500,
@@ -92,21 +92,13 @@ function queryData({ page, pageSize }: any) {
       ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
-    })
-      .then(({ total, list }) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-        resolve({
-          total,
-          items: list,
-        });
-      })
-      .catch((_error: any) => {
-        // reject(_error);
-        resolve({
-          total: 1,
-          items: [{}],
-        });
+    }).then(({ total, list }) => {
+      // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+      resolve({
+        total,
+        items: list,
       });
+    });
   });
 }
 

@@ -32,8 +32,6 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const d = await loginApi(params);
-      console.log(d);
       const { Authorization } = await loginApi(params);
 
       // 如果成功获取到 accessToken

@@ -20,6 +20,22 @@ export async function queryPersonDetails(id: any) {
   );
 }
 /**
+ * 查询岗位类型
+ */
+export async function queryStationType() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/word/listWordListByParName/station_type`,
+  );
+}
+/**
+ * 查询岗位等级
+ */
+export async function queryStationStage() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/word/listWordListByParName/station_stage`,
+  );
+}
+/**
  * 删除岗位
  */
 export async function deleteStation(id: any) {

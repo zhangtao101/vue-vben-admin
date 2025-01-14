@@ -288,7 +288,7 @@ function submit() {
     okText: '确认',
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning('已取消变更!');
     },
     onOk() {
       if (selectedRow.value.length > 0) {

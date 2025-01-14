@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { computed, h, onMounted, ref, watch } from 'vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { h, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -13,89 +15,169 @@ import { $t } from '@vben/locales';
 import {
   Button,
   Card,
+  Drawer,
   Form,
   FormItem,
   Input,
+  message,
+  Modal,
+  Select,
+  Space,
   Switch,
-  Table,
+  Textarea,
   Tooltip,
 } from 'ant-design-vue';
 
-import { getMenusWeb, listStations } from '#/api';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  addStation,
+  deleteStation,
+  getMenusWeb,
+  listStations,
+  queryStationStage,
+  queryStationType,
+  updateStation,
+} from '#/api';
 
 // 路由信息
 const route = useRoute();
 
 // region 表格操作
+// 表格配置
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'staCode', title: '岗位编码', minWidth: 150 },
+    { field: 'staName', title: '岗位名称', minWidth: 150 },
+    { field: 'staType', title: '岗位类别', minWidth: 150 },
+    { field: 'staLevel', title: '岗位等级', minWidth: 150 },
+    {
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: '操作',
+      minWidth: 220,
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page?.currentPage,
+          pageSize: page?.pageSize,
+        });
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
+  },
+};
 
-// 表格列名
-const columns = ref([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    title: '#',
-    width: 60,
-  },
-  {
-    dataIndex: 'staCode',
-    ellipsis: true,
-    title: '岗位编码',
-    width: 120,
-  },
-  {
-    dataIndex: 'staName',
-    ellipsis: true,
-    title: '岗位名称',
-    width: 120,
-  },
-  {
-    dataIndex: 'staType',
-    ellipsis: true,
-    title: '岗位类别',
-    width: 120,
-  },
-  {
-    dataIndex: 'staLevel',
-    ellipsis: true,
-    title: '岗位等级',
-    width: 120,
-  },
-  {
-    dataIndex: 'operation',
-    ellipsis: true,
-    fixed: 'right',
-    title: '操作',
-    width: 100,
-  },
-] as any[]);
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 1500,
-  y: 350,
-});
+const gridEvents: VxeGridListeners<any> = {
+  /* cellClick: ({ row }) => {
+    message.info(`cell-click: ${row.name}`);
+  },*/
+};
 
-// 表格数据
-const data = ref();
-
-// 分页信息
-const paging = ref({
-  current: 1,
-  pageSize: 20,
-  total: 200,
-});
-// 表格分页信息
-const pagination = computed<any>(() => paging);
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
- * 分页信息改变事件
+ * 删除行
+ * @param row
  */
-function paginationChange(page: any) {
-  paging.value.current = page.current;
-  paging.value.pageSize = page.pageSize;
-  queryData();
+function delRow(row: any) {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      message.warning('已取消删除!');
+    },
+    onOk() {
+      deleteStation(row.id)
+        .then(() => {
+          // 显示操作成功的提示信息
+          message.success($t('common.successfulOperation'));
+          gridApi.query();
+        })
+        .catch((error) => {
+          // 显示操作失败的提示信息
+          message.error($t('common.operationFailure'));
+          message.error(error.msg); // 显示操作失败的提示信息
+        });
+    },
+    title: '是否确认删除该条数据?',
+  });
 }
 
+// endregion
+
+// region 新增/编辑
+const form = ref();
+// 新增/编辑弹窗是否显示
+const showEditDialog = ref(false);
+// 新增/编辑对象
+const editItem = ref<any>({});
+// 新增/编辑规则
+const editRules = ref<any>({
+  staCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  staName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+});
+/**
+ * 显示编辑抽屉
+ * @param isCreate 是否是新增
+ * @param row 当前行数据(isCreate为false时才会有)
+ */
+function showEdit(isCreate: boolean, row?: any) {
+  editItem.value = isCreate ? {} : row;
+  showEditDialog.value = true;
+}
+
+/**
+ * 关闭抽屉
+ */
+function close() {
+  showEditDialog.value = false;
+  editItem.value = {};
+}
+
+// 上传状态
+const submitLoading = ref(false);
+/**
+ * 提交
+ */
+function submit() {
+  /**
+   * 使用 form.value.validate() 方法验证表单。
+   * 这个方法返回一个 Promise 对象，我们使用 then 方法来处理验证通过的情况。
+   */
+  form.value.validate().then(() => {
+    submitLoading.value = true;
+    const ob = editItem.value.id
+      ? updateStation(editItem.value)
+      : addStation(editItem.value);
+    ob.then(() => {
+      // 显示操作成功的提示信息
+      message.success($t('common.successfulOperation'));
+      gridApi.query();
+      close();
+    }).finally(() => {
+      submitLoading.value = false;
+    });
+  });
+}
 // endregion
 
 // region 查询数据
@@ -107,29 +189,25 @@ const queryParams = ref({
   staName: '',
 });
 
-// 表格加载状态
-const tableLoading = ref(false);
-
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
-function queryData() {
-  tableLoading.value = true;
-  // 调用 listStations API函数，传递查询参数和分页信息
-  listStations({
-    ...queryParams.value, // 展开queryParams.value中的所有查询参数
-    pageNum: paging.value.current, // 当前页码。
-    pageSize: paging.value.pageSize, // 每页显示的数据条数。
-  })
-    .then(({ total, list }) => {
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve) => {
+    // 调用 listStations API函数，传递查询参数和分页信息
+    listStations({
+      ...queryParams.value, // 展开queryParams.value中的所有查询参数
+      pageNum: page, // 当前页码。
+      pageSize, // 每页显示的数据条数。
+    }).then(({ total, list }) => {
       // 成功获取数据后，更新数据列表和总条数
-      data.value = list; // 更新数据列表
-      paging.value.total = total; // 更新总条数
-    })
-    .finally(() => {
-      tableLoading.value = false;
+      resolve({
+        total,
+        items: list,
+      });
     });
+  });
 }
 
 // endregion
@@ -177,13 +255,49 @@ watch(author.value, () => {
 
 // endregion
 
+// region 等级及类别查询
+// 岗位类别
+const jobType = ref<any>([]);
+// 岗位等级
+const jobLevel = ref<any>([]);
+/**
+ * 查询部门类别
+ */
+function queryType() {
+  queryStationType().then((res) => {
+    jobType.value = [];
+    res.forEach((res: any) => {
+      jobType.value.push({
+        label: res.wordName,
+        value: res.wordName,
+      });
+    });
+  });
+}
+
+/**
+ * 查询部门级别
+ */
+function queryLevel() {
+  queryStationStage().then((res) => {
+    jobLevel.value = [];
+    res.forEach((res: any) => {
+      jobLevel.value.push({
+        label: res.wordName,
+        value: res.wordName,
+      });
+    });
+  });
+}
+// endregion
+
 // region 初始化
 
 onMounted(() => {
-  // 查询用户数据
-  queryData();
   // 查询权限
   queryAuth();
+  queryType();
+  queryLevel();
 });
 
 // endregion
@@ -214,10 +328,7 @@ onMounted(() => {
           <Button
             :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="
-              paging.current = 1;
-              queryData();
-            "
+            @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
           </Button>
@@ -227,63 +338,121 @@ onMounted(() => {
     <!-- endregion -->
     <!-- region 表格 -->
     <Card class="mb-8">
-      <Table
-        :columns="columns"
-        :data-source="data"
-        :loading="tableLoading"
-        :pagination="pagination"
-        :scroll="scroll"
-        bordered
-        @change="paginationChange"
-      >
-        <template #bodyCell="{ column, index, record }">
-          <template v-if="column.dataIndex === 'step'">
-            <span>{{ index + 1 }}</span>
-          </template>
-          <template v-if="column.dataIndex === 'state'">
-            <div v-if="record.state === 3">已弃用</div>
-            <div v-else>
-              <Switch
-                v-model:checked="record.state"
-                :checked-value="1"
-                :un-checked-value="2"
-                checked-children="启用"
-                un-checked-children="停用"
-              />
-            </div>
-          </template>
-
-          <template v-else-if="column.dataIndex === 'operation'">
-            <!-- 编辑按钮 -->
-            <Tooltip>
-              <template #title>{{ $t('common.edit') }}</template>
-              <Button
-                :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="editRow(record)"
-              />
-            </Tooltip>
-
-            <!-- 删除数据 -->
-            <Tooltip>
-              <template #title>{{ $t('common.delete') }}</template>
-              <Button
-                :icon="
-                  h(MaterialSymbolsDeleteOutline, {
-                    class: 'inline-block size-6',
-                  })
-                "
-                danger
-                type="link"
-                @click="delRow(record)"
-              />
-            </Tooltip>
-          </template>
+      <Grid>
+        <template #toolbar-tools>
+          <!-- 新增按钮 -->
+          <Button type="primary" @click="showEdit(true)">
+            {{ $t('common.add') }}
+          </Button>
         </template>
-      </Table>
+        <template #state="{ row }">
+          <div v-if="row.state === 3">已弃用</div>
+          <div v-else>
+            <Switch
+              v-model:checked="row.state"
+              :checked-value="1"
+              :un-checked-value="2"
+              checked-children="启用"
+              un-checked-children="停用"
+            />
+          </div>
+        </template>
+        <template #action="{ row }">
+          <!-- 编辑按钮 -->
+          <Tooltip>
+            <template #title>{{ $t('common.edit') }}</template>
+            <Button
+              :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="showEdit(false, row)"
+            />
+          </Tooltip>
+
+          <!-- 删除数据 -->
+          <Tooltip>
+            <template #title>{{ $t('common.delete') }}</template>
+            <Button
+              :icon="
+                h(MaterialSymbolsDeleteOutline, {
+                  class: 'inline-block size-6',
+                })
+              "
+              danger
+              type="link"
+              @click="delRow(row)"
+            />
+          </Tooltip>
+        </template>
+      </Grid>
     </Card>
     <!-- endregion -->
+    <Drawer
+      v-model:open="showEditDialog"
+      :footer-style="{ textAlign: 'right' }"
+      :width="500"
+      placement="right"
+      title="信息编辑"
+      @close="close"
+    >
+      <Form
+        :label-col="{ span: 8 }"
+        :model="editItem"
+        :rules="editRules"
+        :wrapper-col="{ span: 16 }"
+        autocomplete="off"
+        name="editMessageForm"
+        ref="form"
+      >
+        <!-- 岗位编码 -->
+        <FormItem :label="$t('basePosition.jobCode')" name="staCode">
+          <Input v-model:value="editItem.staCode" />
+        </FormItem>
+        <!-- 岗位名称 -->
+        <FormItem :label="$t('basePosition.jobName')" name="staName">
+          <Input v-model:value="editItem.staName" />
+        </FormItem>
+        <!-- 岗位类别 -->
+        <FormItem :label="$t('basePosition.jobType')" name="staType">
+          <Select
+            v-model:value="editItem.staType"
+            :options="jobType"
+            allow-clear
+            class="w-full"
+          />
+        </FormItem>
+        <!-- 岗位等级 -->
+        <FormItem :label="$t('basePosition.jobLevel')" name="staLevel">
+          <Select
+            v-model:value="editItem.staLevel"
+            :options="jobLevel"
+            allow-clear
+            class="w-full"
+          />
+        </FormItem>
+        <!-- 工作目标 -->
+        <FormItem :label="$t('basePosition.workObjective')" name="workGoal">
+          <Textarea v-model:value="editItem.workGoal" />
+        </FormItem>
+        <!-- 备注 -->
+        <FormItem :label="$t('basePosition.remark')" name="discription">
+          <Textarea v-model:value="editItem.discription" />
+        </FormItem>
+      </Form>
+
+      <template #footer>
+        <Space>
+          <!-- 取消 -->
+          <Button @click="close">
+            {{ $t('common.cancel') }}
+          </Button>
+          <!-- 确认 -->
+          <Button type="primary" @click="submit" :loading="submitLoading">
+            {{ $t('common.confirm') }}
+          </Button>
+        </Space>
+      </template>
+    </Drawer>
   </Page>
 </template>
 
