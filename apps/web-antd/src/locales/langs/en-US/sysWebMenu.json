@@ -1,0 +1,7 @@
+{
+  "menuName": "Menu Name",
+  "parentMenu": "Parent menu",
+  "url": "url",
+  "isEnable": "status",
+  "description": "Description"
+}

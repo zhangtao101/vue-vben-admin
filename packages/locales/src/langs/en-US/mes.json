@@ -1,0 +1,10 @@
+{
+  "barCodeRules": "Bar Code Management",
+  "basicTitle": "Basic Information Management",
+  "bomCategory": "Bom Category",
+  "bomManagement": "Bom Management",
+  "maintainQualityMaterials": "Maintain Quality Materials",
+  "materialsCategory": "Materials Category",
+  "materialsInform": "Materials Inform",
+  "outProcessBom": "Out Process Bom"
+}

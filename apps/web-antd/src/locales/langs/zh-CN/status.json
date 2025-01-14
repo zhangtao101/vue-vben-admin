@@ -1,0 +1,19 @@
+{
+  "enable": "启用",
+  "forbidden": "禁用",
+  "onTheJob": "在职",
+  "leavingJob": "离职",
+  "male": "男",
+  "female": "女",
+  "regularEmployee": "正式员工",
+  "outsourcedStaff": "外包员工",
+  "unmarried": "未婚",
+  "beMarried": "已婚",
+  "good": "良好",
+  "illness": "疾病",
+  "mob": "群众",
+  "member": "团员",
+  "partyMember": "党员",
+  "yes": "是",
+  "no": "否"
+}

@@ -1,0 +1,9 @@
+{
+  "roleCode": "角色编码",
+  "roleName": "角色名称",
+  "isEnable": "状态",
+  "description": "描述",
+  "webRolePermissions": "web角色权限",
+  "pdaRolePermissions": "pda角色权限",
+  "permissionConfiguration": "权限配置"
+}

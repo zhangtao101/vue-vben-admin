@@ -1,0 +1,10 @@
+{
+  "basicTitle": "基础信息管理",
+  "barCodeRules": "条形码规则",
+  "bomCategory": "BOM类别",
+  "bomManagement": "BOM管理",
+  "maintainQualityMaterials": "材料质量维护",
+  "materialsCategory": "材料类别",
+  "materialsInform": "材料通知",
+  "outProcessBom": "输出过程产品BOM"
+}

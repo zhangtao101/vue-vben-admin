@@ -1,0 +1,16 @@
+{
+  "workSheetCode": "Work Sheet Code",
+  "planDate": "Plan Date",
+  "productCode": "Product Code",
+  "productName": "Product Name",
+  "unit": "Unit",
+  "materialDosage": "Material Dosage",
+  "material": "Material",
+  "waterNumber": "Water Number",
+  "batchCode": "Batch Code",
+  "wrehouseAreaCode": "Sap Wrehouse Area Code",
+  "warehouseCode": "Sap Warehouse Code",
+  "actualStorageLocation": "Actual Storage Location",
+  "standardAmountOfWetMaterial": "Standard Amount Of Wet Material",
+  "standardAmountOfDryMaterial": "Standard Amount Of Dry Material"
+}

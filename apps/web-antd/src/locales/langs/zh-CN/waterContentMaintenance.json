@@ -1,0 +1,16 @@
+{
+  "workSheetCode": "工单号",
+  "planDate": "计划时间",
+  "productCode": "产品编号",
+  "productName": "产品名称",
+  "unit": "单位",
+  "materialDosage": "材料用量",
+  "material": "原料",
+  "waterNumber": "含水率",
+  "batchCode": "批次号",
+  "wrehouseAreaCode": "SAP储位号",
+  "warehouseCode": "SAP库位号",
+  "actualStorageLocation": "实际库位",
+  "standardAmountOfWetMaterial": "湿料标准量",
+  "standardAmountOfDryMaterial": "干料标准量"
+}

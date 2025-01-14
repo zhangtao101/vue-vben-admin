@@ -1,0 +1,9 @@
+{
+  "username": "Username",
+  "perName": "Associated personnel",
+  "workNumber": "Work number",
+  "isEnable": "Status",
+  "description": "Description",
+  "webRolePermissions": "Web Role Permissions",
+  "pdaRolePermissions": "Pda Role Permissions"
+}
