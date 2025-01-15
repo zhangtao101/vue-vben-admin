@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, h, onMounted, ref, watch } from 'vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { h, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -33,6 +35,7 @@ import {
   Upload,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addWorkstation,
   delWorkstation,
@@ -46,91 +49,69 @@ import {
 } from '#/api';
 import EquipSelect from '#/util/component/equipSelect.vue';
 import JobFlowConfiguration from '#/util/component/jobFlowConfiguration.vue';
+
 // 路由信息
 const route = useRoute();
 // region 表格
 
-const columns = ref([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    title: '#',
-    width: 60,
+// 表格配置
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'workstationCode', title: '工作站编号', minWidth: 150 },
+    { field: 'workstationName', title: '工作站名称', minWidth: 150 },
+    { field: 'stationTypeName', title: '工作站类型', minWidth: 150 },
+    { field: 'workstationIp', title: '工作站IP', minWidth: 150 },
+    { field: 'auditStateName', title: '审核状态', minWidth: 150 },
+    { field: 'auditTime', title: '审核时间', minWidth: 150 },
+    { field: 'auditUser', title: '审核人', minWidth: 150 },
+    {
+      field: 'state',
+      slots: { default: 'status' },
+      title: '工作站状态',
+      minWidth: 100,
+    },
+    {
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: '操作',
+      minWidth: 250,
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
   },
-  {
-    dataIndex: 'workstationCode',
-    ellipsis: true,
-    title: '工作站编号',
-    width: 120,
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page?.currentPage,
+          pageSize: page?.pageSize,
+        });
+      },
+    },
   },
-  {
-    dataIndex: 'workstationName',
-    ellipsis: true,
-    title: '工作站名称',
-    width: 120,
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
   },
-  {
-    dataIndex: 'stationTypeName',
-    ellipsis: true,
-    title: '工作站类型',
-    width: 120,
-  },
-  {
-    dataIndex: 'workstationIp',
-    ellipsis: true,
-    title: '工作站IP',
-    width: 120,
-  },
-  {
-    dataIndex: 'auditStateName',
-    ellipsis: true,
-    title: '审核状态',
-    width: 120,
-  },
-  {
-    dataIndex: 'auditTime',
-    ellipsis: true,
-    title: '审核时间',
-    width: 120,
-  },
-  {
-    dataIndex: 'auditUser',
-    ellipsis: true,
-    title: '审核人',
-    width: 120,
-  },
-  {
-    dataIndex: 'state',
-    ellipsis: true,
-    title: '工作站状态',
-    width: 120,
-  },
-  {
-    dataIndex: 'operation',
-    ellipsis: true,
-    fixed: 'right',
-    title: '操作',
-    width: 220,
-  },
-] as any[]);
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 1500,
-  y: 350,
-});
+};
 
-// 表格数据
-const data = ref();
+const gridEvents: VxeGridListeners<any> = {
+  /* cellClick: ({ row }) => {
+    message.info(`cell-click: ${row.name}`);
+  },*/
+};
 
-// 分页信息
-const paging = ref({
-  current: 1,
-  pageSize: 20,
-  total: 200,
-});
-// 表格分页信息
-const pagination = computed<any>(() => paging);
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // 查询参数
 const queryParams = ref<any>({
@@ -138,64 +119,31 @@ const queryParams = ref<any>({
   workstationName: '',
 });
 
-// 表格加载状态
-const tableLoading = ref(false);
-
 /**
  * 从服务器查询工作站数据的函数。
- * 这个函数用于发送查询请求，并在成功获取数据后更新组件的状态。
+ * @param {object} params - 查询参数，包含页码和每页大小。
+ * @returns {Promise} - 包含总条数和数据列表的 Promise 对象。
  */
-function queryData() {
-  tableLoading.value = true;
-  /**
-   * 调用 queryWorkstation 函数，传入查询参数和分页信息。
-   * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
-   */
-  queryWorkstation({
-    ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
-    pageNum: paging.value.current, // 当前页码。
-    pageSize: paging.value.pageSize, // 每页显示的数据条数。
-  })
-    .then(({ total, list }) => {
-      // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-      /**
-       * 更新组件的状态。
-       * 将查询到的数据列表赋值给 data.value，以便在组件中显示。
-       */
-      data.value = list;
-
-      /**
-       * 更新分页信息。
-       * 将查询到的总条数赋值给 paging.value.total，以便正确显示分页控件。
-       */
-      paging.value.total = total;
+function queryData({ page, pageSize }) {
+  return new Promise((resolve, reject) => {
+    // 调用 queryWorkstation API 函数，传递查询参数和分页信息
+    queryWorkstation({
+      ...queryParams.value, // 展开 queryParams.value 中的所有查询参数
+      pageNum: page, // 当前页码
+      pageSize, // 每页显示的数据条数
     })
-    .finally(() => {
-      tableLoading.value = false;
-    });
-}
-
-/**
- * 处理分页变化的函数。
- * 当分页控件的当前页或每页显示条数发生变化时，这个函数会被调用以更新分页状态。
- *
- * @param {object} page - 包含分页信息的对象。
- */
-function paginationChange(page: any) {
-  /**
-   * 更新当前页码。
-   * 将传入的 page 对象中的 current 属性值赋给 paging.value.current。
-   * 这表示用户选择了新的当前页码。
-   */
-  paging.value.current = page.current;
-
-  /**
-   * 更新每页显示条数。
-   * 将传入的 page 对象中的 pageSize 属性值赋给 paging.value.pageSize。
-   * 这表示用户选择了新的每页显示条数。
-   */
-  paging.value.pageSize = page.pageSize;
-  queryData();
+      .then(({ total, list }) => {
+        // 成功获取数据后，更新数据列表和总条数
+        resolve({
+          total, // 总条数
+          items: list, // 数据列表
+        });
+      })
+      .catch((error) => {
+        // 处理错误
+        reject(error);
+      });
+  });
 }
 
 // endregion
@@ -616,10 +564,8 @@ function delRow(row: any) {
            * 使用 $t 函数获取本地化的文本。
            */
           message.success($t('common.successfulOperation'));
-          /**
-           * 重新调用 queryData 函数查询数据，以更新界面上的数据列表。
-           */
-          queryData();
+
+          gridApi.query();
         })
         .catch((error) => {
           /**
@@ -690,7 +636,7 @@ function submit() {
     // 执行操作并处理结果
     operation(params).then(() => {
       // 提交成功，更新数据列表并关闭编辑抽屉
-      queryData();
+      gridApi.query();
       message.success($t('common.successfulOperation'));
       onClose();
     });
@@ -758,7 +704,7 @@ function handleChange(info: any) {
   // 检查文件是否上传成功
   if (info.file.status === 'done') {
     // 重新查询数据，更新列表
-    queryData();
+    gridApi.reload();
     // 显示成功消息
     message.success('文件上传成功!');
   } else if (info.file.status === 'error') {
@@ -835,7 +781,7 @@ function audioFun(id: number, status: number) {
     /**
      * 重新查询数据，以更新界面上的信息。
      */
-    queryData();
+    gridApi.query();
   });
 }
 
@@ -886,7 +832,7 @@ function changeState(row: any) {
         // 请求成功后，显示成功消息提示
         message.success($t('common.successfulOperation'));
         // 重新查询数据，以更新界面上的信息
-        queryData();
+        gridApi.query();
       });
     },
     // 使用前面定义的 title 作为对话框的标题
@@ -945,7 +891,7 @@ watch(author.value, () => {
 onMounted(async () => {
   try {
     // 并行执行查询函数
-    await Promise.all([queryData(), queryProcessByType(), queryAuth()]);
+    await Promise.all([queryProcessByType(), queryAuth()]);
   } catch {
     // 统一处理错误
     message.error('数据加载失败，请重试');
@@ -976,7 +922,7 @@ onMounted(async () => {
           <Button
             :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="queryData()"
+            @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
           </Button>
@@ -988,11 +934,15 @@ onMounted(async () => {
     <!-- region 表格主体 -->
     <Card>
       <div>
-        <Space>
+        <Space />
+      </div>
+
+      <Grid>
+        <template #toolbar-tools>
           <!-- 新增按钮 -->
           <Button
             v-if="addButton"
-            class="mb-4"
+            class="mr-4"
             type="primary"
             @click="editRow()"
           >
@@ -1007,105 +957,88 @@ onMounted(async () => {
             name="file"
             @change="handleChange"
           >
-            <Button class="mb-4" type="primary">
+            <Button type="primary">
               {{ $t('common.import') }}
             </Button>
           </Upload>
-        </Space>
-      </div>
-
-      <Table
-        :columns="columns"
-        :data-source="data"
-        :loading="tableLoading"
-        :pagination="pagination"
-        :scroll="scroll"
-        bordered
-        @change="paginationChange"
-      >
-        <template #bodyCell="{ column, index, record }">
-          <template v-if="column.dataIndex === 'step'">
-            <span>{{ index + 1 }}</span>
-          </template>
-          <template v-if="column.dataIndex === 'state'">
-            <div v-if="record.state === 3">已弃用</div>
-            <div v-else>
-              <Switch
-                v-model:checked="record.state"
-                :checked-value="1"
-                :disabled="record.auditState !== 2 && editButton"
-                :un-checked-value="2"
-                checked-children="启用"
-                un-checked-children="停用"
-                @change="changeState(record)"
-              />
-            </div>
-          </template>
-
-          <template v-else-if="column.dataIndex === 'operation'">
-            <!-- 查看按钮 -->
-            <Tooltip>
-              <template #title>{{ $t('common.view') }}</template>
-              <Button
-                :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="editRow(record, true)"
-              />
-            </Tooltip>
-            <!-- 编辑按钮 -->
-            <Tooltip v-if="record.auditState !== 2 && editButton">
-              <template #title>{{ $t('common.edit') }}</template>
-              <Button
-                :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="editRow(record)"
-              />
-            </Tooltip>
-            <!-- 审核通过 -->
-            <Tooltip v-if="record.auditState === 1 && examineButton">
-              <template #title>{{ $t('common.pass') }}</template>
-              <Button
-                :icon="h(MdiSuccess, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="handleAudit(record, true)"
-              />
-            </Tooltip>
-
-            <!-- 审核不通过 -->
-            <Tooltip v-if="record.auditState === 1 && examineButton">
-              <template #title>{{ $t('common.noPass') }}</template>
-              <Button
-                :icon="
-                  h(IconParkSolidError, {
-                    class: 'inline-block size-6 text-red-600',
-                  })
-                "
-                class="mr-4"
-                type="link"
-                @click="handleAudit(record, false)"
-              />
-            </Tooltip>
-
-            <!-- 删除数据 -->
-            <Tooltip v-if="record.auditState !== 2 && delButton">
-              <template #title>{{ $t('common.delete') }}</template>
-              <Button
-                :icon="
-                  h(MaterialSymbolsDeleteOutline, {
-                    class: 'inline-block size-6',
-                  })
-                "
-                danger
-                type="link"
-                @click="delRow(record)"
-              />
-            </Tooltip>
-          </template>
         </template>
-      </Table>
+        <template #status="{ row }">
+          <div v-if="row.state === 3">已弃用</div>
+          <div v-else>
+            <Switch
+              v-model:checked="row.state"
+              :checked-value="1"
+              :disabled="row.auditState !== 2 && editButton"
+              :un-checked-value="2"
+              checked-children="启用"
+              un-checked-children="停用"
+              @change="changeState(row)"
+            />
+          </div>
+        </template>
+        <template #action="{ row }">
+          <!-- 查看按钮 -->
+          <Tooltip>
+            <template #title>{{ $t('common.view') }}</template>
+            <Button
+              :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="editRow(row, true)"
+            />
+          </Tooltip>
+          <!-- 编辑按钮 -->
+          <Tooltip v-if="row.auditState !== 2 && editButton">
+            <template #title>{{ $t('common.edit') }}</template>
+            <Button
+              :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="editRow(row)"
+            />
+          </Tooltip>
+          <!-- 审核通过 -->
+          <Tooltip v-if="row.auditState === 1 && examineButton">
+            <template #title>{{ $t('common.pass') }}</template>
+            <Button
+              :icon="h(MdiSuccess, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="handleAudit(row, true)"
+            />
+          </Tooltip>
+
+          <!-- 审核不通过 -->
+          <Tooltip v-if="row.auditState === 1 && examineButton">
+            <template #title>{{ $t('common.noPass') }}</template>
+            <Button
+              :icon="
+                h(IconParkSolidError, {
+                  class: 'inline-block size-6 text-red-600',
+                })
+              "
+              class="mr-4"
+              type="link"
+              @click="handleAudit(row, false)"
+            />
+          </Tooltip>
+
+          <!-- 删除数据 -->
+          <Tooltip v-if="row.auditState !== 2 && delButton">
+            <template #title>{{ $t('common.delete') }}</template>
+            <Button
+              :icon="
+                h(MaterialSymbolsDeleteOutline, {
+                  class: 'inline-block size-6',
+                })
+              "
+              danger
+              type="link"
+              @click="delRow(row)"
+            />
+          </Tooltip>
+        </template>
+      </Grid>
     </Card>
     <!-- endregion -->
 
