@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, unref, watch } from 'vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { ref, watch } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, Drawer, Input, Space, Table } from 'ant-design-vue';
+import { Button, Drawer, Input, Space } from 'ant-design-vue';
 // eslint-disable-next-line n/no-extraneous-import
 import { debounce } from 'lodash-es';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { queryEquipList } from '#/api';
 
 // 使用 defineProps 方法定义组件的属性
@@ -57,117 +60,188 @@ const defaultProps = defineProps({
 
 const defaultEmits = defineEmits(['update:isOpen', 'changed']);
 
-// region 查询设备列表及初始化
+// region 初始化
 // 抽屉是否显示
 const drawerOpen = ref(false);
-// 加载状态
-const loading = ref(false);
-
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 600,
-  y: 550,
-});
-// 表格列名
-const columns = ref([
-  {
-    dataIndex: 'equipmentCode',
-    ellipsis: true,
-    title: '设备编号',
-    width: 120,
-  },
-  {
-    dataIndex: 'equipmentName',
-    ellipsis: true,
-    title: '设备名称',
-    width: 120,
-  },
-]);
-// 表格数据
-const tableData = ref<any[]>([]);
-// 表格数据备份
-const tableData_block = ref<any[]>([]);
 // 表格选中行
 const selectedRow = ref<any[]>([]);
 
-// 搜索的文本
-const searchValue = ref('');
-// 表格行选中配置
-const rowSelection: any = computed(() => {
-  return {
-    getCheckboxProps: (record: any) => ({
-      disabled: defaultProps.isShowStatus,
-      name: record.name,
-    }),
-    onChange: (selectedRowKeys: any[], _selectedRows: any[]) => {
-      if (searchValue.value) {
-        selectedRow.value.push(...selectedRowKeys);
-      } else {
-        selectedRow.value = selectedRowKeys;
-      }
-      /* sortTableData();*/
-    },
-    selectedRowKeys: unref(selectedRow),
-  };
-});
+// endregion
 
-/**
- * 排序表格数据的函数。
- */
-function sortTableData() {
-  setTimeout(() => {
-    tableData.value.sort((a: any) => {
-      return selectedRow.value.includes(a.key) ? -1 : 1;
-    });
-  }, 80);
-}
+// region 表格
+
+const gridRef = ref();
+// 表格配置
+const gridOptions: VxeGridProps<any> = {
+  align: 'left',
+  border: true,
+  checkboxConfig: {
+    checkField: 'isChecked',
+    trigger: 'row',
+    highlight: true,
+    range: true,
+  },
+  columns: [
+    {
+      type: 'checkbox',
+      width: 50,
+    },
+    {
+      title: '设备编号',
+      children: [
+        {
+          field: 'equipmentCode',
+          minWidth: 200,
+          filters: [{ data: '' }],
+          filterMethod({ option, row, column }) {
+            if (option.data) {
+              return `${row[column.field]}`.includes(option.data);
+            }
+            return true;
+          },
+          slots: {
+            header: 'codeHeader',
+          },
+        },
+      ],
+    },
+    {
+      title: '设备名称',
+      children: [
+        {
+          field: 'equipmentName',
+          minWidth: 200,
+          filters: [{ data: '' }],
+          filterMethod({ option, row, column }) {
+            if (option.data) {
+              return `${row[column.field]}`.includes(option.data);
+            }
+            return true;
+          },
+          slots: {
+            header: 'nameHeader',
+          },
+        },
+      ],
+    },
+  ],
+  filterConfig: {
+    showIcon: false,
+  },
+  height: '100%',
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  pagerConfig: {
+    enabled: false,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async () => {
+        return await queryData();
+      },
+    },
+  },
+  scrollY: {
+    enabled: true,
+    gt: 400,
+  },
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
+  },
+};
+
+const gridEvents: VxeGridListeners<any> = {
+  /* cellClick: ({ row }) => {
+    message.info(`cell-click: ${row.name}`);
+  },*/
+  checkboxChange: () => {
+    // eslint-disable-next-line no-use-before-define
+    checkedChange();
+  },
+  checkboxRangeEnd: () => {
+    // eslint-disable-next-line no-use-before-define
+    checkedChange();
+  },
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
 /**
  * 查询设备列表的函数。
- * 这个函数用于查询设备列表，并根据查询结果更新 equipList 数组。
+ * 该函数查询设备列表，并根据查询结果更新 equipList 数组。
+ * @returns {Promise} - 包含设备列表的 Promise 对象。
  */
-function queryEquip() {
-  loading.value = true;
-  queryEquipList({
-    pageNum: 1,
-    pageSize: 9999,
-  })
-    .then(({ list }) => {
-      for (const item of list) {
-        item.key = item.equipmentCode;
-      }
-      tableData_block.value = list;
-      tableData.value = list;
-      tableData.value = [...tableData.value].sort((a) => {
-        return selectedRow.value.includes(a.key) ? -1 : 1;
-      });
+function queryData() {
+  return new Promise((resolve, reject) => {
+    // 调用 queryEquipList API 函数，传递查询参数和分页信息
+    queryEquipList({
+      pageNum: 1,
+      pageSize: 9999,
     })
-    .finally(() => {
-      loading.value = false;
-    });
+      .then(({ list }) => {
+        const checkedList: any = []; // 存储已选中的设备
+        const newList = list.filter((item: any) => {
+          // 检查当前设备是否在默认选中的设备列表中
+          item.isChecked = defaultProps.equipCodeList.includes(
+            item.equipmentCode,
+          );
+          if (item.isChecked) {
+            // 如果已选中，添加到 checkedList
+            checkedList.push(item);
+          }
+          // 返回未选中的设备
+          return !item.isChecked;
+        });
+        // 成功获取数据后，更新数据列表
+        // 将已选中的设备放在前面，未选中的设备放在后面
+        resolve({
+          items: [...checkedList, ...newList],
+        });
+      })
+      .catch((error) => {
+        // 处理错误
+        reject(error);
+      });
+  });
 }
 
 /**
- * 搜索设备的函数。
- * 这个函数用于根据搜索的文本在设备列表中进行搜索，并更新表格数据。
+ * 选择的设备列表完成,返回选择后的设备列表
  */
-const searchEquip = debounce(() => {
-  if (searchValue.value) {
-    tableData.value = [];
-    tableData_block.value.forEach((item) => {
-      if (
-        item.equipmentCode.includes(searchValue.value) ||
-        item.equipmentName.includes(searchValue.value)
-      ) {
-        tableData.value.push(item);
-      }
-    });
-    sortTableData();
+const checkedChange = debounce(() => {
+  // 获取当前选中的行记录
+  const checkedRow = gridApi.grid.getCheckboxRecords();
+  // 初始化选中的设备列表
+  selectedRow.value = [];
+  // 遍历选中的行记录
+  checkedRow.forEach((item) => {
+    // 将每行的设备编码添加到选中的设备列表中
+    selectedRow.value.push(item.equipmentCode);
+  });
+}, 800);
+
+const confirmFilterEvent = debounce((option, clear = false) => {
+  // 如果 clear 为 true，则清除所有过滤条件
+  if (clear) {
+    gridApi.grid.clearFilter();
   } else {
-    tableData.value = tableData_block.value;
-    sortTableData();
+    // 否则，更新指定过滤选项的状态
+    // !!option.data 用于将 option.data 转换为布尔值，表示该过滤选项是否有效
+    gridApi.grid.updateFilterOptionStatus(option, !!option.data);
   }
-}, 500);
+  // 更新表格数据，以反映过滤条件的变化
+  gridApi.grid.updateData();
+});
+
+// endregion
+
+// region 操作
 
 /**
  * 关闭组件的函数。
@@ -182,8 +256,8 @@ function close() {
   drawerOpen.value = false;
   // 清空表格选中行
   selectedRow.value = [];
-  // 清空查询文本
-  searchValue.value = '';
+  // 清空表格
+  gridApi.grid.clearData();
 
   /**
    * 使用 defaultEmits 发射一个名为 'update:isOpen' 的事件。
@@ -195,13 +269,24 @@ function close() {
   defaultEmits('update:isOpen', false);
 }
 
+const submitLoading = ref(false);
 /**
  * 选择的设备列表完成,返回选择后的设备列表
  */
 function submit() {
+  submitLoading.value = true;
+  // 清空筛选条件
+  confirmFilterEvent({}, true);
+  checkedChange();
+  setTimeout(() => {
+    // console.log(selectedRow.value);
+    submitLoading.value = false;
+  }, 1200);
   defaultEmits('changed', selectedRow.value);
   close();
 }
+
+// endregion
 
 /**
  * 使用 Vue.js 的 watch 函数来观察 defaultProps.isOpen 的变化。
@@ -220,19 +305,13 @@ watch(
      */
     if (val) {
       drawerOpen.value = true; // 将 drawerOpen 的值设置为 true，打开抽屉组件。
-      queryEquip(); // 调用 queryProcessSetDetail 函数来查询流程设置详情。
-      selectedRow.value = [];
-      defaultProps.equipCodeList.forEach((item: any) => {
-        selectedRow.value.push(item);
-      });
-      sortTableData();
+      selectedRow.value = []; // 设置选中行为空
+      gridApi.query(); // 重新加载表格数据
     } else {
       close(); // 如果 val 为 false 或 defaultProps.parentId 不存在，调用 close 函数来关闭抽屉组件。
     }
   },
 );
-
-// endregion
 </script>
 
 <template>
@@ -244,21 +323,28 @@ watch(
     title="设备选择"
     @close="close"
   >
-    <Input
-      v-model:value="searchValue"
-      placeholder="输入关键字进行查询"
-      @change="searchEquip"
-    />
-    <Table
-      v-if="drawerOpen"
-      :columns="columns"
-      :data-source="tableData"
-      :loading="loading"
-      :pagination="false"
-      :row-selection="rowSelection"
-      :scroll="scroll"
-      bordered
-    />
+    <Grid ref="gridRef">
+      <template #codeHeader="{ column }">
+        <div v-for="(option, index) of column.filters" :key="index">
+          <Input
+            v-model:value="option.data"
+            clearable
+            @change="confirmFilterEvent(option)"
+            style="width: 100%"
+          />
+        </div>
+      </template>
+      <template #nameHeader="{ column }">
+        <div v-for="(option, index) of column.filters" :key="index">
+          <Input
+            v-model:value="option.data"
+            clearable
+            @change="confirmFilterEvent(option)"
+            style="width: 100%"
+          />
+        </div>
+      </template>
+    </Grid>
 
     <template #footer>
       <Space>
@@ -267,7 +353,7 @@ watch(
           {{ $t('common.cancel') }}
         </Button>
         <!-- 确认 -->
-        <Button type="primary" @click="submit">
+        <Button type="primary" @click="submit" :loading="submitLoading">
           {{ $t('common.confirm') }}
         </Button>
       </Space>
