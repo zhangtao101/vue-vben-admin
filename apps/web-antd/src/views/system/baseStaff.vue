@@ -41,7 +41,6 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addSysPerson,
   delSysPerson,
-  getMenusWeb,
   listSysPerson,
   listSysStation,
   queryOrganizationTree,
@@ -50,6 +49,7 @@ import {
   workNumberCheck,
 } from '#/api';
 import { $t } from '#/locales';
+import { queryAuth } from '#/util';
 
 // 路由信息
 const route = useRoute();
@@ -254,27 +254,6 @@ const addButton = ref(false);
 const editButton = ref(false);
 // 删除按钮是否显示
 const delButton = ref(false);
-
-/**
- * 查询权限
- * 这个函数用于查询当前页面的权限设置，并将权限名称存储在响应式引用author中。
- */
-function queryAuth() {
-  // 调用getMenusWeb API函数，传递menuCode和type参数
-  getMenusWeb({
-    menuCode: route.meta.code as string, // 从路由元信息中获取menuCode，并确保其为字符串类型
-    type: 'web', // 指定查询的类型为'web'
-  }).then((data) => {
-    // 检查返回的数据是否存在且不为空数组
-    if (!data || data.length === 0) return;
-
-    // 遍历返回的数据
-    for (const item of data) {
-      // 将每个权限项的buttonName添加到author数组中
-      author.value.push(item.buttonName);
-    }
-  });
-}
 
 // 监听权限变化, 变更按钮的显示情况
 watch(author.value, () => {
@@ -546,7 +525,9 @@ function filterOption(input: string, option: any) {
 // 当组件挂载到DOM上后，立即执行的函数
 onMounted(() => {
   // 调用queryAuth函数，用于获取用户权限信息
-  queryAuth();
+  queryAuth(route.meta.code as string).then((data) => {
+    author.value = data;
+  });
   // 调用queryAllOrganizations函数，用于获取组织数据
   queryAllOrganizations();
   // 调用queryStations函数, 用于获取岗位数据

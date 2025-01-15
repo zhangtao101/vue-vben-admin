@@ -23,7 +23,8 @@ import {
   Table,
 } from 'ant-design-vue';
 
-import { changeUse, getMenusWeb, queryChange, queryChangeDetail } from '#/api';
+import { changeUse, queryChange, queryChangeDetail } from '#/api';
+import { queryAuth } from '#/util';
 
 // 路由信息
 const route = useRoute();
@@ -323,27 +324,6 @@ const author = ref<string[]>([]);
 // 编辑按钮是否显示
 const editButton = ref(false);
 
-/**
- * 查询权限
- * 这个函数用于查询当前页面的权限设置，并将权限名称存储在响应式引用author中。
- */
-function queryAuth() {
-  // 调用getMenusWeb API函数，传递menuCode和type参数
-  getMenusWeb({
-    menuCode: route.meta.code as string, // 从路由元信息中获取menuCode，并确保其为字符串类型
-    type: 'web', // 指定查询的类型为'web'
-  }).then((data) => {
-    // 检查返回的数据是否存在且不为空数组
-    if (!data || data.length === 0) return;
-
-    // 遍历返回的数据
-    for (const item of data) {
-      // 将每个权限项的buttonName添加到author数组中
-      author.value.push(item.buttonName);
-    }
-  });
-}
-
 // 监听权限变化, 变更按钮的显示情况
 watch(author.value, () => {
   // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
@@ -353,7 +333,9 @@ watch(author.value, () => {
 // endregion
 
 onMounted(() => {
-  queryAuth();
+  queryAuth(route.meta.code as string).then((data) => {
+    author.value = data;
+  });
   queryData();
 });
 </script>
