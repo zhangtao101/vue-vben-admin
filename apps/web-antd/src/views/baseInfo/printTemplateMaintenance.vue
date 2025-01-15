@@ -83,7 +83,7 @@ const queryParams = ref<any>({
  * 这个函数用于发送查询请求，并在成功获取数据后更新组件的状态。
  */
 function queryData({ page, pageSize }: any) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     /**
      * 调用 queryWorkstation 函数，传入查询参数和分页信息。
      * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
@@ -92,13 +92,17 @@ function queryData({ page, pageSize }: any) {
       ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
-    }).then(({ total, list }) => {
-      // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-      resolve({
-        total,
-        items: list,
+    })
+      .then(({ total, list }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
       });
-    });
   });
 }
 
