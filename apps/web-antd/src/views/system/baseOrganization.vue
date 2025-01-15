@@ -360,7 +360,7 @@ const editRules = ref<any>({
         const regex = /^[\w.-]+@[\d.a-z-]+\.[a-z]{2,6}$/i;
         return regex.test(value)
           ? Promise.resolve()
-          : Promise.reject($t('fallback.emailError'));
+          : Promise.reject($t('ui.fallback.emailError'));
       },
     },
   ],
@@ -371,7 +371,7 @@ const editRules = ref<any>({
         const regex = /^0\d{2,3}-?\d{7,8}(?:-\d{1,4})?$/;
         return regex.test(value)
           ? Promise.resolve()
-          : Promise.reject($t('fallback.faxError'));
+          : Promise.reject($t('ui.fallback.faxError'));
       },
     },
   ],
@@ -388,7 +388,7 @@ const editRules = ref<any>({
         const regex = /^(?:0\d{2,3}-?)?\d{7,8}(?:-\d{1,4})?$/;
         return regex.test(value)
           ? Promise.resolve()
-          : Promise.reject($t('fallback.telError'));
+          : Promise.reject($t('ui.fallback.telError'));
       },
     },
   ],

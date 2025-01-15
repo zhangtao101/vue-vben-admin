@@ -194,19 +194,23 @@ const queryParams = ref({
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
 function queryData({ page, pageSize }: any) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // 调用 listStations API函数，传递查询参数和分页信息
     listStations({
       ...queryParams.value, // 展开queryParams.value中的所有查询参数
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
-    }).then(({ total, list }) => {
-      // 成功获取数据后，更新数据列表和总条数
-      resolve({
-        total,
-        items: list,
+    })
+      .then(({ total, list }) => {
+        // 成功获取数据后，更新数据列表和总条数
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
       });
-    });
   });
 }
 

@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import type { Rule } from 'ant-design-vue/es/form';
 
-import { computed, h, onMounted, reactive, ref, watch } from 'vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { h, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -30,12 +32,12 @@ import {
   Select,
   Space,
   Switch,
-  Table,
   Textarea,
   Tooltip,
   TreeSelect,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addSysPerson,
   delSysPerson,
@@ -54,77 +56,63 @@ const route = useRoute();
 
 // region 表格操作
 
-// 表格列名
-const columns = ref<any[]>([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    resizable: true,
-    rowDrag: true,
-    title: '#',
-    width: 40,
+// 表格配置
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'perName', title: '姓名', minWidth: 80 },
+    { field: 'workNumber', title: '工号', minWidth: 80 },
+    { field: 'rfid', title: 'rfid', minWidth: 100 },
+    { field: 'phoneNumber', title: '手机号码', minWidth: 120 },
+    { field: 'stationName', title: '岗位名称', minWidth: 120 },
+    { field: 'email', title: '邮箱', minWidth: 120 },
+    {
+      field: 'isOnDuty',
+      slots: { default: 'status' },
+      title: '是否在职',
+      minWidth: 100,
+    },
+    {
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: '操作',
+      minWidth: 120,
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
   },
-  {
-    dataIndex: 'perName',
-    ellipsis: true,
-    title: '姓名',
-    width: 70,
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page?.currentPage,
+          pageSize: page?.pageSize,
+        });
+      },
+    },
   },
-  {
-    dataIndex: 'workNumber',
-    ellipsis: true,
-    title: '工号',
-    width: 80,
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
   },
-  {
-    dataIndex: 'rfid',
-    ellipsis: true,
-    title: 'rfid号',
-    width: 60,
-  },
-  {
-    dataIndex: 'phoneNumber',
-    ellipsis: true,
-    title: '手机号码',
-    width: 80,
-  },
-  {
-    dataIndex: 'stationName',
-    ellipsis: true,
-    title: '岗位名称',
-    width: 90,
-  },
-  {
-    dataIndex: 'email',
-    ellipsis: true,
-    title: '邮箱',
-    width: 60,
-  },
-  {
-    dataIndex: 'isOnDuty',
-    ellipsis: true,
-    title: '是否在职',
-    width: 100,
-  },
-  {
-    dataIndex: 'operation',
-    ellipsis: true,
-    fixed: 'right',
-    title: '操作',
-    width: 80,
-  },
-]);
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 800,
-  y: 320,
-});
+};
 
-// 表格数据
-const tableData = ref<any[]>([]);
-// 表格加载状态
-const tableLoading = ref(false);
+const gridEvents: VxeGridListeners<any> = {
+  /* cellClick: ({ row }) => {
+    message.info(`cell-click: ${row.name}`);
+  },*/
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // 当前选中的节点
 const selectedKey = ref<any>(undefined);
@@ -159,14 +147,7 @@ function delTableRow(row: any) {
 
           // 调用queryAllOrganizations函数，用于获取组织数据
           queryAllOrganizations();
-          // 根据当前是否有选中的节点来判断具体的查询数据方法
-          if (selectedKey.value) {
-            // 调用queryDataByParCode函数, 用于获取组织数据
-            queryDataByParCode();
-          } else {
-            // 调用queryData函数, 用于获取组织数据
-            queryData();
-          }
+          gridApi.query();
         })
         .catch((error) => {
           // 如果删除操作失败，显示错误提示信息
@@ -196,73 +177,32 @@ const queryParams = ref({
   workNumber: '',
 });
 
-// 分页信息
-const paging = ref({
-  current: 1,
-  pageSize: 20,
-  total: 99,
-});
-// 表格分页信息
-const pagination = computed<any>(() => paging);
-
-/**
- * 分页信息改变事件
- */
-function paginationChange(page: any) {
-  paging.value.current = page.current;
-  paging.value.pageSize = page.pageSize;
-  // 根据当前是否有选中的节点来判断具体的查询数据方法
-  if (selectedKey.value) {
-    // 调用queryDataByParCode函数, 用于获取组织数据
-    queryDataByParCode();
-  } else {
-    // 调用queryData函数, 用于获取组织数据
-    queryData();
-  }
-}
-
 /**
  * 查询数据
  */
-function queryData() {
-  tableLoading.value = true;
-  listSysPerson({
-    ...queryParams.value,
-    pageNum: paging.value.current,
-    pageSize: paging.value.pageSize,
-  })
-    .then(({ total, list }: any) => {
-      // 如果查询成功，将返回的数据赋值给表格数据
-      tableData.value = list;
-      paging.value.total = total;
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve, reject) => {
+    const params: any = queryParams.value;
+    if (selectedKey.value && selectedKey.value.orgCode) {
+      params.orgCode = selectedKey.value.orgCode;
+    }
+    // 调用 listStations API函数，传递查询参数和分页信息
+    listSysPerson({
+      ...params, // 展开queryParams.value中的所有查询参数
+      pageNum: page, // 当前页码。
+      pageSize, // 每页显示的数据条数。
     })
-
-    .finally(() => {
-      tableLoading.value = false;
-    });
-}
-
-/**
- * 根据父级组织编号查询数据
- */
-function queryDataByParCode() {
-  // 根据选中的菜单代码查询组织数据
-  listSysPerson({
-    orgCode: selectedKey.value.orgCode, // 父级编码
-    pageNum: paging.value.current, // 当前页码
-    pageSize: paging.value.pageSize, // 每页显示的条数
-  })
-    .then(({ total, list }: any) => {
-      // 如果查询成功，将返回的数据赋值给表格数据
-      tableData.value = list;
-      // 更新分页总数
-      paging.value.total = total;
-    })
-
-    .finally(() => {
-      // 无论成功或失败，都停止显示加载状态
-      tableLoading.value = false;
-    });
+      .then(({ total, list }) => {
+        // 成功获取数据后，更新数据列表和总条数
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
 
 // endregion
@@ -299,21 +239,8 @@ function queryAllOrganizations() {
  * @param {boolean} info.selected - 节点的选中状态
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
-  // 如果节点被选中且该节点有子节点
-  if (selected && node.orgLevel < 3) {
-    // 更新选中的菜单代码
-    selectedKey.value = node;
-    // 显示表格加载状态
-    tableLoading.value = true;
-    // 重置分页到第一页
-    paging.value.current = 1;
-    // 根据选中的菜单代码查询组织数据
-    queryDataByParCode();
-  } else {
-    // 如果节点未被选中或没有子节点，则清空选中的菜单代码和表格数据
-    selectedKey.value = undefined;
-    tableData.value = [];
-  }
+  selectedKey.value = selected && node.orgLevel < 3 ? node : undefined;
+  gridApi.reload();
 }
 
 // endregion
@@ -357,10 +284,6 @@ watch(author.value, () => {
   editButton.value = author.value.includes('编辑');
   // 当 author.value 包含 '删除' 时，设置 delButton.value 为 true，表示允许删除
   delButton.value = author.value.includes('删除');
-  // 如果没有删除和编辑权限，则移除表格列名数组中的最后一个元素
-  if (!delButton.value && !editButton.value) {
-    columns.value.pop();
-  }
 });
 
 // endregion
@@ -372,6 +295,8 @@ const showDrawer = ref(false);
 const editMessage = ref<any>({
   highestEducation: '小学',
 });
+// 当前编辑对象的工号
+const editItemWorkNumber = ref('');
 // 抽屉冲的form表单对象
 const editForm = ref();
 // 教育等级列表
@@ -395,7 +320,7 @@ const editRules = ref<any>({
           const regex = /^[\w.-]+@[\d.a-z-]+\.[a-z]{2,6}$/i;
           return regex.test(value)
             ? Promise.resolve()
-            : Promise.reject($t('fallback.emailError'));
+            : Promise.reject($t('ui.fallback.emailError'));
         } else {
           return Promise.resolve();
         }
@@ -411,7 +336,7 @@ const editRules = ref<any>({
             /^[1-9]\d{5}(?:18|19|20)?\d{2}(?:0[1-9]|1[0-2])(?:[0-2][1-9]|10|20|30|31)\d{3}[\dx]$/i;
           return regex.test(value)
             ? Promise.resolve()
-            : Promise.reject($t('fallback.idCardError'));
+            : Promise.reject($t('ui.fallback.idCardError'));
         } else {
           return Promise.resolve();
         }
@@ -429,7 +354,7 @@ const editRules = ref<any>({
           const regex = /^1(?:[358]\d|4[579]|66|7[0135-8]|9[89])\d{8}$/;
           return regex.test(value)
             ? Promise.resolve()
-            : Promise.reject($t('fallback.phoneNumberError'));
+            : Promise.reject($t('ui.fallback.phoneNumberError'));
         } else {
           return Promise.resolve();
         }
@@ -444,7 +369,7 @@ const editRules = ref<any>({
           const regex = /^[6-9]\d{2,5}$/;
           return regex.test(value)
             ? Promise.resolve()
-            : Promise.reject($t('fallback.shortError'));
+            : Promise.reject($t('ui.fallback.shortError'));
         } else {
           return Promise.resolve();
         }
@@ -460,7 +385,7 @@ const editRules = ref<any>({
           const regex = /^(?:0\d{2,3}-)?\d{7,8}$/;
           return regex.test(value)
             ? Promise.resolve()
-            : Promise.reject($t('fallback.telError'));
+            : Promise.reject($t('ui.fallback.telError'));
         } else {
           return Promise.resolve();
         }
@@ -472,12 +397,16 @@ const editRules = ref<any>({
     {
       trigger: 'change',
       validator: (_rule: Rule, value: string) => {
+        // 如果用户输入的工作编号与当前编辑的记录的工作编号相同，则不进行验证
+        if (editItemWorkNumber.value === value) {
+          return Promise.resolve('');
+        }
         // 如果用户输入了工作编号（value不为空），则进行异步验证
         return value
           ? workNumberCheck(value).then((data) =>
               // 如果服务端返回的数据大于0，表示工作编号已存在，拒绝Promise并返回错误信息
               data > 0
-                ? Promise.reject($t('fallback.workNumberError'))
+                ? Promise.reject($t('ui.fallback.workNumberError'))
                 : // 否则，工作编号不存在或验证通过，解决Promise
                   Promise.resolve(''),
             )
@@ -498,6 +427,7 @@ function showEdit(row: any) {
     .then((data: any) => {
       // 如果获取详情成功，更新编辑信息并显示编辑抽屉
       editMessage.value = data; // 更新编辑信息
+      editItemWorkNumber.value = data.workNumber; // 更新工作编号
       showDrawer.value = true; // 显示编辑抽屉
     })
     .catch((error) => {
@@ -525,6 +455,8 @@ function showAdd() {
   showDrawer.value = true;
 }
 
+// 提交状态
+const submitLoading = ref(false);
 /**
  * 表单提交
  * 这个函数用于处理表单的提交逻辑。
@@ -543,19 +475,13 @@ function editSubmit() {
       const ob = editMessage.value.id
         ? updateSysPerson(params)
         : addSysPerson(params);
+      submitLoading.value = true;
       // 当操作成功时，关闭抽屉，查询所有菜单，并显示成功消息
       ob.then(() => {
         closeDrawer(); // 关闭抽屉
         // 调用queryAllOrganizations函数，用于获取组织数据
         queryAllOrganizations();
-        // 根据当前是否有选中的节点来判断具体的查询数据方法
-        if (selectedKey.value) {
-          // 调用queryDataByParCode函数, 用于获取组织数据
-          queryDataByParCode();
-        } else {
-          // 调用queryData函数, 用于获取组织数据
-          queryData();
-        }
+        gridApi.query();
         message.success($t('common.successfulOperation')); // 显示操作成功的提示信息
       }).catch((error) => {
         // 如果操作失败，则显示错误提示
@@ -564,8 +490,8 @@ function editSubmit() {
         message.error(error.msg);
       });
     })
-    .catch((error: any) => {
-      console.error('error', error);
+    .finally(() => {
+      submitLoading.value = false;
     });
 }
 
@@ -575,6 +501,7 @@ function editSubmit() {
 function closeDrawer() {
   showDrawer.value = false;
   editMessage.value = {};
+  editItemWorkNumber.value = '';
 }
 
 // endregion
@@ -622,8 +549,6 @@ onMounted(() => {
   queryAuth();
   // 调用queryAllOrganizations函数，用于获取组织数据
   queryAllOrganizations();
-  // 调用queryData函数, 用于获取用户数据
-  queryData();
   // 调用queryStations函数, 用于获取岗位数据
   queryStations();
 });
@@ -633,7 +558,7 @@ onMounted(() => {
 
 <template>
   <Page>
-    <Space direction="vertical">
+    <Space direction="vertical" style="width: 100%">
       <Card>
         <Form :model="queryParams" layout="inline">
           <!-- 姓名 -->
@@ -655,14 +580,11 @@ onMounted(() => {
             <Input v-model:value="queryParams.stationName" />
           </FormItem>
 
-          <FormItem style="margin-bottom: 1em">
+          <FormItem>
             <Button
               :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
               type="primary"
-              @click="
-                paging.current = 1;
-                queryData();
-              "
+              @click="() => gridApi.reload()"
             >
               {{ $t('common.search') }}
             </Button>
@@ -672,7 +594,7 @@ onMounted(() => {
       <!-- region 主要内容显示区域 -->
       <Row :gutter="16">
         <!-- region 树形菜单 -->
-        <Col :lg="6" :md="9" :sm="9" :xl="6" :xs="6">
+        <Col :lg="6" :md="8" :sm="8" :xl="8" :xs="8">
           <Card class="h-[60vh] overflow-y-auto">
             <DirectoryTree
               v-model:expanded-keys="expandedKeys"
@@ -691,80 +613,60 @@ onMounted(() => {
         <!-- endregion -->
 
         <!-- region 表格主体 -->
-        <Col :lg="16" :md="15" :sm="15" :xl="18" :xs="18">
+        <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
           <Card class="h-[60vh] overflow-y-auto">
-            <div>
-              <Button
-                v-if="addButton"
-                :disabled="!selectedKey"
-                class="mb-4"
-                type="primary"
-                @click="showAdd"
-              >
-                {{ $t('common.add') }}
-              </Button>
-            </div>
-
-            <Table
-              :columns="columns"
-              :data-source="tableData"
-              :loading="tableLoading"
-              :pagination="pagination"
-              :scroll="scroll"
-              bordered
-              row-key="id"
-              @change="paginationChange"
-            >
-              <template #bodyCell="{ column, index, record }">
-                <template v-if="column.dataIndex === 'step'">
-                  <span>{{ index + 1 }}</span>
-                </template>
-
-                <!-- 状态 -->
-                <template v-else-if="column.dataIndex === 'isOnDuty'">
-                  <Switch
-                    v-model:checked="record.isOnDuty"
-                    :checked-children="$t('status.onTheJob')"
-                    :checked-value="1"
-                    :un-checked-children="$t('status.leavingJob')"
-                    disabled
-                  />
-                </template>
-
-                <template v-else-if="column.dataIndex === 'operation'">
-                  <Space>
-                    <!-- 编辑按钮 -->
-                    <Tooltip>
-                      <template #title>{{ $t('common.edit') }}</template>
-                      <Button
-                        v-if="editButton"
-                        :icon="
-                          h(MingcuteEditLine, { class: 'inline-block size-6' })
-                        "
-                        type="link"
-                        @click="showEdit(record)"
-                      />
-                    </Tooltip>
-
-                    <!-- 删除按钮 -->
-                    <Tooltip>
-                      <template #title>{{ $t('common.delete') }}</template>
-                      <Button
-                        v-if="delButton"
-                        :icon="
-                          h(MaterialSymbolsDeleteOutline, {
-                            class: 'inline-block size-6',
-                          })
-                        "
-                        danger
-                        type="link"
-                        @click="delTableRow(record)"
-                      />
-                    </Tooltip>
-                  </Space>
-                </template>
+            <Grid>
+              <template #toolbar-tools>
+                <!-- 新增按钮 -->
+                <Button
+                  v-if="addButton"
+                  :disabled="!selectedKey"
+                  type="primary"
+                  @click="showAdd"
+                >
+                  {{ $t('common.add') }}
+                </Button>
               </template>
-            </Table>
+              <template #status="{ row }">
+                <Switch
+                  v-model:checked="row.isOnDuty"
+                  :checked-children="$t('status.onTheJob')"
+                  :checked-value="1"
+                  :un-checked-children="$t('status.leavingJob')"
+                  disabled
+                />
+              </template>
+              <template #action="{ row }">
+                <!-- 编辑按钮 -->
+                <Tooltip>
+                  <template #title>{{ $t('common.edit') }}</template>
+                  <Button
+                    v-if="editButton"
+                    :icon="
+                      h(MingcuteEditLine, { class: 'inline-block size-6' })
+                    "
+                    type="link"
+                    @click="showEdit(row)"
+                  />
+                </Tooltip>
+
+                <!-- 删除按钮 -->
+                <Tooltip>
+                  <template #title>{{ $t('common.delete') }}</template>
+                  <Button
+                    v-if="delButton"
+                    :icon="
+                      h(MaterialSymbolsDeleteOutline, {
+                        class: 'inline-block size-6',
+                      })
+                    "
+                    danger
+                    type="link"
+                    @click="delTableRow(row)"
+                  />
+                </Tooltip>
+              </template>
+            </Grid>
           </Card>
         </Col>
         <!-- endregion -->
@@ -944,7 +846,7 @@ onMounted(() => {
             {{ $t('common.cancel') }}
           </Button>
           <!-- 确认 -->
-          <Button type="primary" @click="editSubmit">
+          <Button type="primary" @click="editSubmit" :loading="submitLoading">
             {{ $t('common.confirm') }}
           </Button>
         </Space>
