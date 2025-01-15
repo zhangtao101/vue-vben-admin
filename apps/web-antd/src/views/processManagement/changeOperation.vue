@@ -325,10 +325,13 @@ const author = ref<string[]>([]);
 const editButton = ref(false);
 
 // 监听权限变化, 变更按钮的显示情况
-watch(author.value, () => {
-  // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
-  editButton.value = author.value.includes('变更');
-});
+watch(
+  () => author.value,
+  () => {
+    // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
+    editButton.value = author.value.includes('变更');
+  },
+);
 
 // endregion
 

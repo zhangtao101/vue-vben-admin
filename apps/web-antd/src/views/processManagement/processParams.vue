@@ -545,18 +545,21 @@ const examineButton = ref(false);
 const alterButton = ref(false);
 
 // 监听权限变化, 变更按钮的显示情况
-watch(author.value, () => {
-  // 当 author.value 包含 '新增' 时，设置 addButton.value 为 true，表示允许新增
-  addButton.value = author.value.includes('新增');
-  // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
-  editButton.value = author.value.includes('编辑');
-  // 当 author.value 包含 '删除' 时，设置 delButton.value 为 true，表示允许删除
-  delButton.value = author.value.includes('删除');
-  // 当 author.value 包含 '审核' 时，设置 delButton.value 为 true，表示允许审核
-  examineButton.value = author.value.includes('审核');
-  // 当 author.value 包含 '变更' 时，设置 delButton.value 为 true，表示允许变更
-  alterButton.value = author.value.includes('变更');
-});
+watch(
+  () => author.value,
+  () => {
+    // 当 author.value 包含 '新增' 时，设置 addButton.value 为 true，表示允许新增
+    addButton.value = author.value.includes('新增');
+    // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
+    editButton.value = author.value.includes('编辑');
+    // 当 author.value 包含 '删除' 时，设置 delButton.value 为 true，表示允许删除
+    delButton.value = author.value.includes('删除');
+    // 当 author.value 包含 '审核' 时，设置 delButton.value 为 true，表示允许审核
+    examineButton.value = author.value.includes('审核');
+    // 当 author.value 包含 '变更' 时，设置 delButton.value 为 true，表示允许变更
+    alterButton.value = author.value.includes('变更');
+  },
+);
 
 // endregion
 
