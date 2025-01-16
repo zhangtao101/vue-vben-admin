@@ -1,4 +1,5 @@
 export * from './author';
+export * from './baseInfo';
 export * from './core';
 export * from './equipManagement';
 export * from './processManagement';

@@ -43,7 +43,7 @@ import {
   delSysPerson,
   listSysPerson,
   listSysStation,
-  queryOrganizationTree,
+  queryCategoryTree,
   querySysPersonDetails,
   updateSysPerson,
   workNumberCheck,
@@ -221,8 +221,8 @@ const treeData = ref<any[]>([]);
  * 这个函数用于从服务器获取所有组织数据，并更新前端的树形数据结构。
  */
 function queryAllOrganizations() {
-  // 调用queryDictionaryTree API函数，获取菜单列表
-  queryOrganizationTree().then((data) => {
+  // 调用 queryCategoryTree API函数，获取菜单列表
+  queryCategoryTree().then((data) => {
     // 检查返回的数据是否存在且长度大于0
     if (data) {
       // 如果数据有效，更新treeData
