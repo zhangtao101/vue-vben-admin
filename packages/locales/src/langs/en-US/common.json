@@ -28,5 +28,11 @@
   "print": "Print",
   "successfulOperation": "Successful operation",
   "operationFailure": "Operation failure",
-  "cancelOperation": "Cancel Operation"
+  "cancelOperation": "Cancel Operation",
+  "lock": "Lock",
+  "signAndIssue": "Sign And Issue",
+  "unlock": "Unlock",
+  "cancelIssuance": "cancel Issuance",
+  "abort": "Abort",
+  "erpDocument": "ERP Document"
 }

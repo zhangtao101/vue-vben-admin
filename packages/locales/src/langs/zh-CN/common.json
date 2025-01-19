@@ -28,5 +28,11 @@
   "print": "打印",
   "successfulOperation": "操作成功",
   "operationFailure": "操作失败",
-  "cancelOperation": "取消操作"
+  "cancelOperation": "取消操作",
+  "lock": "锁定",
+  "signAndIssue": "签发",
+  "unlock": "取消锁定",
+  "cancelIssuance": "取消签发",
+  "abort": "中止",
+  "erpDocument": "ERP单据"
 }

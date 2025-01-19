@@ -35,6 +35,7 @@
   "codeSubtitle": "请输入您的手机号码以开始管理您的项目",
   "code": "验证码",
   "codeTip": "请输入验证码",
+  "verifyRequiredTip": "请先验证",
   "mobile": "手机号码",
   "mobileLogin": "手机号登录",
   "mobile-tip": "请输入手机号码",

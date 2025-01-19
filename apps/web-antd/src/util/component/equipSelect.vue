@@ -145,7 +145,7 @@ const gridOptions: VxeGridProps<any> = {
   },
   scrollY: {
     enabled: true,
-    gt: 400,
+    gt: 0,
   },
   toolbarConfig: {
     custom: true,

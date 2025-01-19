@@ -35,6 +35,7 @@
   "codeSubtitle": "Enter your phone number to start managing your project",
   "code": "Security code",
   "codeTip": "Security code is required",
+  "verifyRequiredTip": "Please verify first",
   "mobile": "Mobile",
   "mobileLogin": "Mobile Login",
   "mobile-tip": "Please enter phone number",

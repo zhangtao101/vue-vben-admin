@@ -918,10 +918,6 @@ onMounted(async () => {
 
     <!-- region 表格主体 -->
     <Card>
-      <div>
-        <Space />
-      </div>
-
       <Grid>
         <template #toolbar-tools>
           <!-- 新增按钮 -->

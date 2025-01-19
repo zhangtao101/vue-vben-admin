@@ -1,0 +1,9 @@
+{
+  "applicationNumber": "申请编号",
+  "applicationDate": "申请日期",
+  "materialName": "材料名称",
+  "materialNumber": "材料编号",
+  "categoryOfApplication": "申请类别",
+  "materialRequisitionProgress": "领料进度",
+  "materialRequisitionStatus": "领料状态"
+}
