@@ -150,7 +150,17 @@ const coreRoutes: RouteRecordRaw[] = [
         },
         name: 'printTemplate',
         path: 'printTemplate',
-      }
+      },
+      {
+        component: () => import('#/views/productionReport/productRed.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '工单冲红',
+          code: 'WM_284',
+        },
+        name: 'productRed',
+        path: 'productRed',
+      },
     ],
   },
 ];

@@ -19,6 +19,22 @@ export async function getByWorksheetCodeAndMaterialCode(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/water/getByWorksheetCodeAndMaterialCode?${qs.stringify(params)}`,
   );
 }
+/**
+ * 模板下载
+ */
+export async function downloadWaterTemplate() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/water/downloadTemplate`,
+  );
+}
+/**
+ * 文件导出
+ */
+export async function exportByWorksheet(worksheetCode: string) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/water/exportByWorksheet?worksheetCode=${worksheetCode}`,
+  );
+}
 
 /**
  * 根据工单号获取BOM列表

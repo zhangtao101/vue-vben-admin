@@ -16,6 +16,8 @@ export const MdiQqchat = createIconifyIcon('mdi:qqchat');
 export const MaterialSymbolsSearch = createIconifyIcon(
   'material-symbols:search',
 );
+// 更新
+export const GrommetIconsUpdate = createIconifyIcon('grommet-icons:update');
 // 编辑
 export const MingcuteEditLine = createIconifyIcon('mingcute:edit-line');
 // 编辑
@@ -61,3 +63,5 @@ export const QlementineAlternate = createIconifyIcon(
 export const IconParkSolidError = createIconifyIcon('icon-park-solid:error');
 // √
 export const MdiSuccess = createIconifyIcon('mdi:success');
+// 导出
+export const UilExport = createIconifyIcon('uil:export');

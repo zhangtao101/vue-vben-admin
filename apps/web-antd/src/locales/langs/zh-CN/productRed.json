@@ -1,0 +1,12 @@
+{
+  "timeFrame": "时间范围",
+  "theTicketNumber": "工单编号",
+  "reportingProcess": "报工工序",
+  "questLines": "任务线别",
+  "ticketStatus": "工单状态",
+  "partName": "部件名称",
+  "productName": "产品名称",
+  "partsProducts": "部件/产品",
+  "delayStatus": "延时状态",
+  "planNumber": "计划号"
+}

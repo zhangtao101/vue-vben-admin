@@ -1,0 +1,12 @@
+{
+  "timeFrame": "Time Frame",
+  "theTicketNumber": "Work Order Number",
+  "reportingProcess": "Reporting Process",
+  "questLines": "Quest Lines",
+  "ticketStatus": "Ticket Status",
+  "partName": "Part Name",
+  "productName": "Product Name",
+  "partsProducts": "Parts/Products",
+  "delayStatus": "Delay Status",
+  "planNumber": "Plan Number"
+}

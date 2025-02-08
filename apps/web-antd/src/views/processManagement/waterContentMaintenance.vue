@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { computed, h, onMounted, ref, watch } from 'vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsSearch, MingcuteEditLine } from '@vben/icons';
+import {
+  MaterialSymbolsSearch,
+  MingcuteEditLine,
+  UilExport,
+} from '@vben/icons';
 import { $t } from '@vben/locales';
+import { useAccessStore } from '@vben/stores';
 
 import {
   Button,
@@ -23,11 +30,14 @@ import {
   Row,
   Space,
   Spin,
-  Table,
   Tooltip,
+  Upload,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  downloadWaterTemplate,
+  exportByWorksheet,
   getByWorksheetCodeAndMaterialCode,
   listPlanMaterialByWorksheetCode,
   searchWorksheetNoWater,
@@ -42,230 +52,117 @@ const route = useRoute();
 
 // region 表格
 
-const columns = ref([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    title: '#',
-    width: 60,
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    {
+      field: 'workSheetCode',
+      title: '工单号',
+      minWidth: 220,
+    },
+    { field: 'planDateStart', title: '计划时间', minWidth: 150 },
+    { field: 'planCode', title: '计划号', minWidth: 220 },
+    { field: 'lineName', title: '任务线别', minWidth: 150 },
+    { field: 'subProductName', title: '部件名称', minWidth: 200 },
+    { field: 'sideNo', title: '面号', minWidth: 150 },
+    { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 150 },
+    { field: 'workSheetFinishNumber', title: '工单完成数', minWidth: 150 },
+    { field: 'productName', title: '产品名称', minWidth: 150 },
+    { field: 'subPlanNumber', title: '部件计划数量', minWidth: 150 },
+    { field: 'productCode', title: '产品编号', minWidth: 150 },
+    { field: 'worksheetCodea', title: 'A工单号', minWidth: 150 },
+    { field: 'subProductCode', title: '部件编号', minWidth: 150 },
+    { field: 'subPlanCode', title: '部件计划号', minWidth: 150 },
+    { field: 'produceUnarrangedNumber', title: '生产未排数', minWidth: 150 },
+    { field: 'produceNotFinishNumber', title: '生产未完数', minWidth: 150 },
+    { field: 'produceWorkshop', title: '生产车间', minWidth: 150 },
+    { field: 'remark', title: '备注', minWidth: 150 },
+    { field: 'updateUsername', title: '操作时间', minWidth: 150 },
+    { field: 'updateTime', title: '操作时间', minWidth: 150 },
+    {
+      field: 'operation',
+      fixed: 'right',
+      slots: { default: 'operation' },
+      title: '操作',
+      minWidth: 220,
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
   },
-  {
-    dataIndex: 'workSheetCode',
-    ellipsis: true,
-    title: '工单号',
-    width: 180,
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
   },
-  {
-    dataIndex: 'planDateStart',
-    ellipsis: true,
-    title: '计划时间',
-    width: 120,
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
   },
-  {
-    dataIndex: 'planCode',
-    ellipsis: true,
-    title: '计划号',
-    width: 180,
-  },
-  {
-    dataIndex: 'lineName',
-    ellipsis: true,
-    title: '任务线别',
-    width: 120,
-  },
-  {
-    dataIndex: 'subProductName',
-    ellipsis: true,
-    title: '部件名称',
-    width: 120,
-  },
-  {
-    dataIndex: 'sideNo',
-    ellipsis: true,
-    title: '面号',
-    width: 120,
-  },
-  {
-    dataIndex: 'workSheetPlanNumber',
-    ellipsis: true,
-    title: '工单计划数',
-    width: 120,
-  },
-  {
-    dataIndex: 'workSheetFinishNumber',
-    ellipsis: true,
-    title: '工单完成数',
-    width: 120,
-  },
-  {
-    dataIndex: 'productName',
-    ellipsis: true,
-    title: '产品名称',
-    width: 120,
-  },
-  {
-    dataIndex: 'subPlanNumber',
-    ellipsis: true,
-    title: '部件计划数量',
-    width: 120,
-  },
-  {
-    dataIndex: 'productCode',
-    ellipsis: true,
-    title: '产品编号',
-    width: 120,
-  },
-  {
-    dataIndex: 'worksheetCodea',
-    ellipsis: true,
-    title: 'A工单号',
-    width: 120,
-  },
-  {
-    dataIndex: 'subProductCode',
-    ellipsis: true,
-    title: '部件编号',
-    width: 120,
-  },
-  {
-    dataIndex: 'subPlanCode',
-    ellipsis: true,
-    title: '部件计划号',
-    width: 120,
-  },
-  {
-    dataIndex: 'produceUnarrangedNumber',
-    ellipsis: true,
-    title: '生产未排数',
-    width: 120,
-  },
-  {
-    dataIndex: 'produceNotFinishNumber',
-    ellipsis: true,
-    title: '生产未完数',
-    width: 120,
-  },
-  {
-    dataIndex: 'produceWorkshop',
-    ellipsis: true,
-    title: '生产车间',
-    width: 120,
-  },
-  {
-    dataIndex: 'remark',
-    ellipsis: true,
-    title: '备注',
-    width: 180,
-  },
-  {
-    dataIndex: 'updateUsername',
-    ellipsis: true,
-    title: '操作人',
-    width: 120,
-  },
-  {
-    dataIndex: 'updateTime',
-    ellipsis: true,
-    title: '操作时间',
-    width: 120,
-  },
-  {
-    dataIndex: 'operation',
-    ellipsis: true,
-    fixed: 'right',
-    title: '操作',
-    width: 120,
-  },
-] as any[]);
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 1500,
-  y: 350,
-});
+};
 
-// 表格数据
-const data = ref([{}]);
+const gridEvents: VxeGridListeners<any> = {
+  /* cellClick: ({ row }) => {
+    message.info(`cell-click: ${row.name}`);
+  },*/
+};
 
-// 分页信息
-const paging = ref({
-  current: 1,
-  pageSize: 20,
-  total: 200,
-});
-// 表格分页信息
-const pagination = computed<any>(() => paging);
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // 查询参数
 const queryParams = ref<any>({});
-
-// 表格加载状态
-const tableLoading = ref(false);
 
 /**
  * queryData - 负责根据当前的查询参数、分页信息和日期范围，从后端服务查询数据。
  * 该函数会更新表格的加载状态，并在查询完成后更新数据列表和总条数。
  */
-function queryData() {
-  // 将表格加载状态设置为 true，表示开始加载数据。
-  tableLoading.value = true;
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve, reject) => {
+    // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数。
+    const params = {
+      // 展开 queryParams.value 对象，包含所有查询参数。
+      ...queryParams.value,
+      // 设置当前页码。
+      pageNum: page,
+      // 设置每页显示的数据条数。
+      pageSize,
+    };
 
-  // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数。
-  const params = {
-    // 展开 queryParams.value 对象，包含所有查询参数。
-    ...queryParams.value,
-    // 设置当前页码。
-    pageNum: paging.value.current,
-    // 设置每页显示的数据条数。
-    pageSize: paging.value.pageSize,
-  };
+    // 如果存在计划日期范围，则格式化日期并从 params 中移除原始的 planDate。
+    if (params.planDate) {
+      // 格式化开始日期为 'YYYY-MM-DD' 格式。
+      params.planDateStart = params.planDate[0].format('YYYY-MM-DD');
+      // 格式化结束日期为 'YYYY-MM-DD' 格式。
+      params.planDateEnd = params.planDate[1].format('YYYY-MM-DD');
+      // 从 params 中移除原始的 planDate，避免发送不必要的数据。
+      delete params.planDate;
+    }
 
-  // 如果存在计划日期范围，则格式化日期并从 params 中移除原始的 planDate。
-  if (params.planDate) {
-    // 格式化开始日期为 'YYYY-MM-DD' 格式。
-    params.planDateStart = params.planDate[0].format('YYYY-MM-DD');
-    // 格式化结束日期为 'YYYY-MM-DD' 格式。
-    params.planDateEnd = params.planDate[1].format('YYYY-MM-DD');
-    // 从 params 中移除原始的 planDate，避免发送不必要的数据。
-    delete params.planDate;
-  }
-
-  // 调用 searchWorksheetNoWater 函数查询数据。
-  searchWorksheetNoWater(params)
-    .then(({ total, list }) => {
-      // 更新数据列表。
-      data.value = list;
-      // 更新总条数。
-      paging.value.total = total;
-    })
-    .finally(() => {
-      // 无论查询成功与否，都将表格加载状态设置为 false，表示数据加载完成。
-      tableLoading.value = false;
-    });
-}
-
-/**
- * 处理分页变化的函数。
- * 当分页控件的当前页或每页显示条数发生变化时，这个函数会被调用以更新分页状态。
- *
- * @param {object} page - 包含分页信息的对象。
- */
-function paginationChange(page: any) {
-  /**
-   * 更新当前页码。
-   * 将传入的 page 对象中的 current 属性值赋给 paging.value.current。
-   * 这表示用户选择了新的当前页码。
-   */
-  paging.value.current = page.current;
-
-  /**
-   * 更新每页显示条数。
-   * 将传入的 page 对象中的 pageSize 属性值赋给 paging.value.pageSize。
-   * 这表示用户选择了新的每页显示条数。
-   */
-  paging.value.pageSize = page.pageSize;
-
-  queryData();
+    // 调用 searchWorksheetNoWater 函数查询数据。
+    searchWorksheetNoWater(params)
+      .then(({ total, list }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
 
 // endregion
@@ -453,20 +350,59 @@ function submit(item: any, index: number) {
 
 // endregion
 
+// region 模板下载
+
+function downloadTemplate() {
+  downloadWaterTemplate().then((data) => {
+    window.open(data);
+  });
+}
+
+// endregion
+
+// region 文件上传
+const accessStore = useAccessStore();
+
+const headers = ref<any>({
+  Authorization: accessStore.accessToken,
+});
+// 文件上传路径
+const href = ref<string>(
+  `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/water/upload`,
+);
+// 文件列表
+const fileList = ref([]);
+
+function handleChange(info: any) {
+  if (info.file.status === 'done') {
+    if (info.file.response?.code === 200) {
+      gridApi.reload();
+      message.success(`文件上传成功!`);
+    } else {
+      message.error(`文件上传失败, ${info.file.response?.msg}`);
+    }
+  } else if (info.file.status === 'error') {
+    message.error(`文件上传失败`);
+  }
+}
+
+// endregion
+
+// region 文件导出
+/**
+ * 导出文件
+ * @param workSheet
+ */
+function exportFile(workSheet: string) {
+  exportByWorksheet(workSheet).then((data) => {
+    window.open(data);
+  });
+}
+// endregion
+
 // region 权限查询
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
-// 编辑按钮是否显示
-const editButton = ref(false);
-
-// 监听权限变化, 变更按钮的显示情况
-watch(
-  () => author.value,
-  () => {
-    // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
-    editButton.value = author.value.includes('编辑');
-  },
-);
 
 // endregion
 
@@ -474,7 +410,6 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
-  queryData();
 });
 </script>
 
@@ -516,10 +451,7 @@ onMounted(() => {
           <Button
             :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="
-              paging.current = 1;
-              queryData();
-            "
+            @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
           </Button>
@@ -530,34 +462,48 @@ onMounted(() => {
 
     <!-- region 表格主体 -->
     <Card>
-      <Table
-        :columns="columns"
-        :data-source="data"
-        :loading="tableLoading"
-        :pagination="pagination"
-        :scroll="scroll"
-        bordered
-        @change="paginationChange"
-      >
-        <template #bodyCell="{ column, index, record }">
-          <template v-if="column.dataIndex === 'step'">
-            <span>{{ index + 1 }}</span>
-          </template>
-
-          <template v-else-if="column.dataIndex === 'operation'">
-            <!-- 查看按钮 -->
-            <Tooltip v-if="editButton">
-              <template #title>{{ $t('common.edit') }}</template>
-              <Button
-                :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="showEdit(record)"
-              />
-            </Tooltip>
-          </template>
+      <Grid>
+        <template #toolbar-tools>
+          <Upload
+            v-model:file-list="fileList"
+            name="file"
+            :action="href"
+            :headers="headers"
+            :show-upload-list="false"
+            @change="handleChange"
+          >
+            <Button type="primary" class="mr-4">
+              {{ $t('common.import') }}
+            </Button>
+          </Upload>
+          <!-- 模板下载按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.templateDownload') }}
+          </Button>
         </template>
-      </Table>
+        <template #operation="{ row }">
+          <!-- 查看按钮 -->
+          <Tooltip v-if="author.includes('编辑')">
+            <template #title>{{ $t('common.edit') }}</template>
+            <Button
+              :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="showEdit(row)"
+            />
+          </Tooltip>
+          <!-- 查看按钮 v-if="author.includes('导出')" -->
+          <Tooltip>
+            <template #title>{{ $t('common.export') }}</template>
+            <Button
+              :icon="h(UilExport, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="exportFile(row.workSheetCode)"
+            />
+          </Tooltip>
+        </template>
+      </Grid>
     </Card>
     <!-- endregion -->
     <!-- region 编辑 -->
