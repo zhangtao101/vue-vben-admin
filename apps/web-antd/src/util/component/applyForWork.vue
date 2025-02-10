@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, watch } from 'vue';
+import { h, onMounted, ref, watch } from 'vue';
 
-import { GrommetIconsUpdate } from '@vben/icons';
+import {
+  GrommetIconsUpdate,
+  HugeiconsRenewableEnergy,
+  UilReporter,
+} from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -11,6 +15,7 @@ import {
   Card,
   Descriptions,
   DescriptionsItem,
+  Drawer,
   Empty,
   InputNumber,
   message,
@@ -46,36 +51,35 @@ const gridOptions: VxeGridProps<any> = {
   },
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { type: 'expand', width: 80, slots: { content: 'expand_content' } },
-    { field: 'reportCode', title: '报工单号', minWidth: 220 },
+    { field: 'reportCode', title: '报工单号', minWidth: 300 },
     { field: 'processCode', title: '工序编号', minWidth: 150 },
     { field: 'processName', title: '报工工序', minWidth: 150 },
     {
       field: 'dlValue',
       title: '能耗电量',
       editRender: {},
-      slots: { edit: 'edit_dlValue' },
+      // slots: { edit: 'edit_dlValue' },
       minWidth: 150,
     },
     {
       field: 'trqValue',
       title: '能耗天然气',
       editRender: {},
-      slots: { edit: 'edit_trqValue' },
+      // slots: { edit: 'edit_trqValue' },
       minWidth: 150,
     },
     {
       field: 'jlqValue',
       title: '能耗焦炉气',
       editRender: {},
-      slots: { edit: 'edit_jlqValue' },
+      // slots: { edit: 'edit_jlqValue' },
       minWidth: 150,
     },
     {
       field: 'smjValue',
       title: '能耗水煤浆',
       editRender: {},
-      slots: { edit: 'edit_smjValue' },
+      // slots: { edit: 'edit_smjValue' },
       minWidth: 150,
     },
     { field: 'reportTime', title: '报工时间', minWidth: 200 },
@@ -86,8 +90,18 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productCode', title: '产品编号', minWidth: 150 },
     { field: 'productName', title: '产品名称', minWidth: 150 },
     { field: 'reportNumber', title: '报工总数', minWidth: 150 },
-    { field: 'qualityNumber', title: '良品数', minWidth: 150 },
-    { field: 'unqualityNumber', title: '废品数', minWidth: 150 },
+    {
+      field: 'qualityNumber',
+      slots: { edit: 'edit_qualityNumber' },
+      title: '良品数',
+      minWidth: 150,
+    },
+    {
+      field: 'unqualityNumber',
+      slots: { edit: 'edit_unqualityNumber' },
+      title: '废品数',
+      minWidth: 150,
+    },
     { field: 'waiteNumber', title: '等待处理数量', minWidth: 150 },
     {
       field: 'personTime',
@@ -111,7 +125,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 220,
     },
   ],
-  height: 250,
+  height: 450,
   stripe: true,
   sortConfig: {
     multiple: true,
@@ -202,6 +216,74 @@ function flushRed(row: any) {
 
 // endregion
 
+// region 人员报工数据编辑
+// 是否显示人员报工抽屉
+const reportForWorkDrawer = ref(false);
+// 当前编辑的人员报工信息
+const editDetails = ref<any>([]);
+
+/**
+ * 显示人员报工数据抽屉
+ * @param row
+ */
+function showReportForWorkDrawer(row: any) {
+  reportForWorkDrawer.value = true;
+  editDetails.value = row.details;
+}
+
+/**
+ * 能源报工抽屉关闭时, 清空当前编辑信息
+ */
+function reportForWorkDrawerClose() {
+  reportForWorkDrawer.value = false;
+  editDetails.value = [];
+}
+// endregion
+
+// region 能源采集数据编辑
+// 是否显示能源采集抽屉
+const energyHarvestingDrawer = ref(false);
+// 当前编辑的能源采集信息
+const editEnergyHarvesting = ref<any>([]);
+
+/**
+ * 显示能源采集数据抽屉
+ * @param row
+ */
+function showEnergyHarvestingDrawer(row: any) {
+  energyHarvestingDrawer.value = true;
+  editEnergyHarvesting.value = row.energyCatchDetails;
+}
+
+/**
+ * 能源报工抽屉关闭时, 清空当前编辑信息
+ */
+function reportenergyHarvestingDrawerClose() {
+  reportForWorkDrawer.value = false;
+  editEnergyHarvesting.value = [];
+}
+
+function getTypeText(type: number) {
+  switch (type) {
+    case 1: {
+      return '电';
+    }
+    case 2: {
+      return '天然气';
+    }
+    case 3: {
+      return '水煤浆';
+    }
+    case 4: {
+      return '焦炉';
+    }
+    default: {
+      return '未定义的能源类型';
+    }
+  }
+}
+// endregion
+
 watch(
   () => prop.workSheetCode,
   () => {
@@ -215,50 +297,57 @@ onMounted(() => {});
   <!-- region 表格主体 -->
   <Card class="mt-4" v-if="workSheetCode">
     <Grid>
+      <!-- 能耗电量 -->
       <template #edit_dlValue="{ row }">
         <InputNumber v-model:value="row.dlValue" :min="0" />
       </template>
+      <!-- 能耗天然气 -->
       <template #edit_trqValue="{ row }">
         <InputNumber v-model:value="row.trqValue" :min="0" />
       </template>
+      <!-- 能耗焦炉气 -->
       <template #edit_jlqValue="{ row }">
         <InputNumber v-model:value="row.jlqValue" :min="0" />
       </template>
+      <!-- 能耗水煤浆 -->
       <template #edit_smjValue="{ row }">
         <InputNumber v-model:value="row.smjValue" :min="0" />
       </template>
+      <!-- 人时 -->
       <template #edit_personTime="{ row }">
         <InputNumber v-model:value="row.personTime" :min="0" />
       </template>
+      <!-- 机时 -->
       <template #edit_equipTime="{ row }">
         <InputNumber v-model:value="row.equipTime" :min="0" />
       </template>
-
-      <template #expand_content="{ row }">
-        <div v-if="row.details && row.details.length > 0">
-          <Descriptions bordered v-for="item of row.details" :key="item.id">
-            <DescriptionsItem label="报工总数">
-              {{ item.reportNumber }}
-            </DescriptionsItem>
-            <DescriptionsItem label="良品数">
-              {{ item.qualityNumber }}
-            </DescriptionsItem>
-            <DescriptionsItem label="废品数">
-              {{ item.unqualityNumber }}
-            </DescriptionsItem>
-            <DescriptionsItem label="人时">
-              <InputNumber v-model:value="item.personTime" :min="0" />
-            </DescriptionsItem>
-            <DescriptionsItem label="报工人">
-              {{ item.reportPerson }}
-            </DescriptionsItem>
-          </Descriptions>
-        </div>
-        <Empty v-else description="暂无具体人员的报工数据" />
+      <!-- 良品数 -->
+      <template #edit_qualityNumber="{ row }">
+        <InputNumber
+          v-model:value="row.qualityNumber"
+          :min="0"
+          @change="
+            () => {
+              row.reportNumber = row.qualityNumber + row.unqualityNumber;
+            }
+          "
+        />
+      </template>
+      <!-- 废品数 -->
+      <template #edit_unqualityNumber="{ row }">
+        <InputNumber
+          v-model:value="row.unqualityNumber"
+          :min="0"
+          @change="
+            () => {
+              row.reportNumber = row.qualityNumber + row.unqualityNumber;
+            }
+          "
+        />
       </template>
 
       <template #action="{ row }">
-        <!-- 编辑按钮 -->
+        <!-- 冲红 -->
         <Tooltip>
           <template #title>
             {{ $t('common.flushRed') }}
@@ -272,9 +361,136 @@ onMounted(() => {});
             v-if="operation"
           />
         </Tooltip>
+
+        <!-- 人员报工 -->
+        <Tooltip>
+          <template #title>
+            {{ $t('common.personnelReport') }}
+          </template>
+          <Button
+            :icon="h(UilReporter, { class: 'inline-block size-6' })"
+            :loading="row.loading"
+            class="mr-4"
+            type="link"
+            @click="showReportForWorkDrawer(row)"
+            v-if="operation"
+          />
+        </Tooltip>
+        <!-- 能源采集 -->
+        <Tooltip>
+          <template #title>
+            {{ $t('common.energyHarvesting') }}
+          </template>
+          <Button
+            :icon="
+              h(HugeiconsRenewableEnergy, { class: 'inline-block size-6' })
+            "
+            :loading="row.loading"
+            class="mr-4"
+            type="link"
+            @click="showEnergyHarvestingDrawer(row)"
+            v-if="operation"
+          />
+        </Tooltip>
       </template>
     </Grid>
   </Card>
+  <!-- endregion -->
+  <!-- region 人员报工信息编辑 -->
+  <Drawer
+    v-model:open="reportForWorkDrawer"
+    :footer-style="{ textAlign: 'right' }"
+    :width="700"
+    placement="right"
+    title="人员报工信息编辑"
+    @close="reportForWorkDrawerClose"
+  >
+    <div v-if="editDetails && editDetails.length > 0">
+      <Descriptions bordered v-for="item of editDetails" :key="item.id">
+        <DescriptionsItem label="报工总数">
+          {{ item.reportNumber }}
+        </DescriptionsItem>
+        <DescriptionsItem label="良品数">
+          <InputNumber
+            v-model:value="item.qualityNumber"
+            :min="0"
+            @change="
+              () => {
+                item.reportNumber = item.qualityNumber + item.unqualityNumber;
+              }
+            "
+          />
+        </DescriptionsItem>
+        <DescriptionsItem label="废品数">
+          <InputNumber
+            v-model:value="item.unqualityNumber"
+            :min="0"
+            @change="
+              () => {
+                item.reportNumber = item.qualityNumber + item.unqualityNumber;
+              }
+            "
+          />
+        </DescriptionsItem>
+        <DescriptionsItem label="人时">
+          <InputNumber v-model:value="item.personTime" :min="0" />
+        </DescriptionsItem>
+        <DescriptionsItem label="报工人">
+          {{ item.reportPerson }}
+        </DescriptionsItem>
+      </Descriptions>
+    </div>
+    <Empty v-else description="暂无具体人员的报工数据" />
+  </Drawer>
+  <!-- endregion -->
+  <!-- region 能源采集信息编辑 -->
+  <Drawer
+    v-model:open="energyHarvestingDrawer"
+    :footer-style="{ textAlign: 'right' }"
+    :width="720"
+    placement="right"
+    title="能源采集信息编辑"
+    @close="reportenergyHarvestingDrawerClose"
+  >
+    <div v-if="editEnergyHarvesting && editEnergyHarvesting.length > 0">
+      <Descriptions
+        bordered
+        v-for="item of editEnergyHarvesting"
+        :column="2"
+        :key="item.id"
+        class="mb-8"
+      >
+        <DescriptionsItem label="能源类型">
+          {{ getTypeText(item.energyType) }}
+        </DescriptionsItem>
+        <DescriptionsItem label="仪表编号">
+          {{ item.energyEquipCode }}
+        </DescriptionsItem>
+        <DescriptionsItem label="仪表读数">
+          <InputNumber v-model:value="item.energyValue" :min="0" />
+        </DescriptionsItem>
+        <DescriptionsItem label="异常说明">
+          {{ item.errorName }}
+        </DescriptionsItem>
+        <DescriptionsItem label="工单号">
+          {{ item.worksheetCode }}
+        </DescriptionsItem>
+        <DescriptionsItem label="采集任务号">
+          {{ item.catchCode }}
+        </DescriptionsItem>
+        <DescriptionsItem label="采集人">
+          {{ item.catchUser }}
+        </DescriptionsItem>
+        <DescriptionsItem label="采集时间">
+          {{ item.catchTime }}
+        </DescriptionsItem>
+        <DescriptionsItem label="备注">
+          {{ item.remark }}
+        </DescriptionsItem>
+      </Descriptions>
+    </div>
+    <Empty v-else description="暂无具体的能源采集数据" />
+  </Drawer>
   <!-- endregion -->
 </template>
 

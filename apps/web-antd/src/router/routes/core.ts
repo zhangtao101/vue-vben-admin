@@ -161,6 +161,17 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'productRed',
         path: 'productRed',
       },
+      {
+        component: () =>
+          import('#/views/planManagement/workOrderStatusQuery.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '工单状态查看',
+          code: 'WM_460',
+        },
+        name: 'workOrderStatusQuery',
+        path: 'workOrderStatusQuery',
+      },
     ],
   },
 ];

@@ -65,3 +65,9 @@ export const IconParkSolidError = createIconifyIcon('icon-park-solid:error');
 export const MdiSuccess = createIconifyIcon('mdi:success');
 // 导出
 export const UilExport = createIconifyIcon('uil:export');
+// 人员报工
+export const UilReporter = createIconifyIcon('oui:reporter');
+// 能源采集
+export const HugeiconsRenewableEnergy = createIconifyIcon(
+  'hugeicons:renewable-energy',
+);
