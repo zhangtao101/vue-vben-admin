@@ -39,6 +39,15 @@ export async function getWorkSheetFinishSituationDetailsByWorkCode(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/report/detail/getDetailsByWorkCode?${qs.stringify(params)}`,
   );
 }
+/**
+ * 获取人员报工详细数据
+ * @param params
+ */
+export async function getReportDetailById(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/op/getReportDetailById?${qs.stringify(params)}`,
+  );
+}
 
 /**
  * 导出工单完成情况

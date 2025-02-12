@@ -24,6 +24,7 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  getReportDetailById,
   getWorkSheetFinishSituationDetailsByWorkCode,
   worksheetReportUpdate,
 } from '#/api';
@@ -57,28 +58,28 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'dlValue',
       title: '能耗电量',
-      editRender: {},
+      // editRender: {},
       // slots: { edit: 'edit_dlValue' },
       minWidth: 150,
     },
     {
       field: 'trqValue',
       title: '能耗天然气',
-      editRender: {},
+      // editRender: {},
       // slots: { edit: 'edit_trqValue' },
       minWidth: 150,
     },
     {
       field: 'jlqValue',
       title: '能耗焦炉气',
-      editRender: {},
+      // editRender: {},
       // slots: { edit: 'edit_jlqValue' },
       minWidth: 150,
     },
     {
       field: 'smjValue',
       title: '能耗水煤浆',
-      editRender: {},
+      // editRender: {},
       // slots: { edit: 'edit_smjValue' },
       minWidth: 150,
     },
@@ -92,13 +93,11 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'reportNumber', title: '报工总数', minWidth: 150 },
     {
       field: 'qualityNumber',
-      slots: { edit: 'edit_qualityNumber' },
       title: '良品数',
       minWidth: 150,
     },
     {
       field: 'unqualityNumber',
-      slots: { edit: 'edit_unqualityNumber' },
       title: '废品数',
       minWidth: 150,
     },
@@ -106,15 +105,11 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'personTime',
       title: '人时',
-      editRender: {},
-      slots: { edit: 'edit_personTime' },
       minWidth: 150,
     },
     {
       field: 'equipTime',
       title: '机时',
-      editRender: {},
-      slots: { edit: 'edit_equipTime' },
       minWidth: 150,
     },
     {
@@ -198,14 +193,23 @@ function queryData({ page, pageSize }: any) {
 // endregion
 
 // region 冲红
+// 当前编辑的人员报工信息
+const editDetails = ref<any>([]);
+// 当前编辑的能源采集信息
+const editEnergyHarvesting = ref<any>([]);
 
 /**
  * 冲红
  * @param row
  */
 function flushRed(row: any) {
+  const params = {
+    id: row.id,
+    reportDetails: editDetails.value,
+    energyCatchDetails: editEnergyHarvesting.value,
+  };
   row.loading = true;
-  worksheetReportUpdate(row)
+  worksheetReportUpdate(params)
     .then(() => {
       message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
     })
@@ -219,16 +223,23 @@ function flushRed(row: any) {
 // region 人员报工数据编辑
 // 是否显示人员报工抽屉
 const reportForWorkDrawer = ref(false);
-// 当前编辑的人员报工信息
-const editDetails = ref<any>([]);
 
 /**
  * 显示人员报工数据抽屉
  * @param row
  */
 function showReportForWorkDrawer(row: any) {
-  reportForWorkDrawer.value = true;
-  editDetails.value = row.details;
+  row.loading = true;
+  getReportDetailById({
+    id: row.id,
+  })
+    .then((res) => {
+      reportForWorkDrawer.value = true;
+      editDetails.value = res;
+    })
+    .finally(() => {
+      row.loading = false;
+    });
 }
 
 /**
@@ -236,15 +247,12 @@ function showReportForWorkDrawer(row: any) {
  */
 function reportForWorkDrawerClose() {
   reportForWorkDrawer.value = false;
-  editDetails.value = [];
 }
 // endregion
 
 // region 能源采集数据编辑
 // 是否显示能源采集抽屉
 const energyHarvestingDrawer = ref(false);
-// 当前编辑的能源采集信息
-const editEnergyHarvesting = ref<any>([]);
 
 /**
  * 显示能源采集数据抽屉
@@ -260,7 +268,6 @@ function showEnergyHarvestingDrawer(row: any) {
  */
 function reportenergyHarvestingDrawerClose() {
   reportForWorkDrawer.value = false;
-  editEnergyHarvesting.value = [];
 }
 
 function getTypeText(type: number) {
@@ -406,39 +413,96 @@ onMounted(() => {});
     @close="reportForWorkDrawerClose"
   >
     <div v-if="editDetails && editDetails.length > 0">
-      <Descriptions bordered v-for="item of editDetails" :key="item.id">
-        <DescriptionsItem label="报工总数">
-          {{ item.reportNumber }}
-        </DescriptionsItem>
-        <DescriptionsItem label="良品数">
-          <InputNumber
-            v-model:value="item.qualityNumber"
-            :min="0"
-            @change="
-              () => {
-                item.reportNumber = item.qualityNumber + item.unqualityNumber;
-              }
-            "
-          />
-        </DescriptionsItem>
-        <DescriptionsItem label="废品数">
-          <InputNumber
-            v-model:value="item.unqualityNumber"
-            :min="0"
-            @change="
-              () => {
-                item.reportNumber = item.qualityNumber + item.unqualityNumber;
-              }
-            "
-          />
-        </DescriptionsItem>
-        <DescriptionsItem label="人时">
-          <InputNumber v-model:value="item.personTime" :min="0" />
-        </DescriptionsItem>
-        <DescriptionsItem label="报工人">
-          {{ item.reportPerson }}
-        </DescriptionsItem>
-      </Descriptions>
+      <div v-for="item of editDetails" :key="item.id" class="mb-8">
+        <Descriptions bordered :column="2" class="mb-4">
+          <DescriptionsItem label="报工总数">
+            {{ item.reportNumber }}
+          </DescriptionsItem>
+          <DescriptionsItem label="良品数">
+            <InputNumber
+              v-model:value="item.qualityNumber"
+              :min="0"
+              @change="
+                () => {
+                  item.reportNumber = item.qualityNumber + item.unqualityNumber;
+                }
+              "
+            />
+          </DescriptionsItem>
+          <DescriptionsItem label="废品数">
+            <InputNumber
+              v-model:value="item.unqualityNumber"
+              :min="0"
+              @change="
+                () => {
+                  item.reportNumber = item.qualityNumber + item.unqualityNumber;
+                }
+              "
+            />
+          </DescriptionsItem>
+          <DescriptionsItem label="人时">
+            <InputNumber v-model:value="item.personTime" :min="0" />
+          </DescriptionsItem>
+          <DescriptionsItem label="机时">
+            <InputNumber v-model:value="item.equipTime" :min="0" />
+          </DescriptionsItem>
+          <DescriptionsItem label="报工人">
+            {{ item.reportPerson }}
+          </DescriptionsItem>
+          <DescriptionsItem label="报工时间">
+            {{ item.reportTime }}
+          </DescriptionsItem>
+        </Descriptions>
+        <Button @click="item.editDetails = !item.editDetails">
+          {{ item.editDetails ? '隐藏' : '编辑' }}具体报工人员报工数据
+        </Button>
+        <div v-if="!item.editDetails">
+          <div v-if="editDetails && editDetails.length > 0">
+            <Descriptions
+              bordered
+              class="mb-4"
+              v-for="i of item.editDetails"
+              :column="2"
+              :key="i.id"
+            >
+              <DescriptionsItem label="人员工号">
+                {{ i.reportPerson }}
+              </DescriptionsItem>
+              <DescriptionsItem label="报工总数">
+                {{ i.reportNumber }}
+              </DescriptionsItem>
+              <DescriptionsItem label="良品数">
+                <InputNumber
+                  v-model:value="i.qualityNumber"
+                  :min="0"
+                  @change="
+                    () => {
+                      i.reportNumber = i.qualityNumber + i.unqualityNumber;
+                    }
+                  "
+                />
+              </DescriptionsItem>
+              <DescriptionsItem label="废品数">
+                <InputNumber
+                  v-model:value="i.unqualityNumber"
+                  :min="0"
+                  @change="
+                    () => {
+                      i.reportNumber = i.qualityNumber + i.unqualityNumber;
+                    }
+                  "
+                />
+              </DescriptionsItem>
+              <DescriptionsItem label="人时">
+                <InputNumber v-model:value="i.personTime" :min="0" />
+              </DescriptionsItem>
+            </Descriptions>
+          </div>
+        </div>
+        <div v-else>
+          <span>当前报工没有具体的人员报工数据</span>
+        </div>
+      </div>
     </div>
     <Empty v-else description="暂无具体人员的报工数据" />
   </Drawer>
