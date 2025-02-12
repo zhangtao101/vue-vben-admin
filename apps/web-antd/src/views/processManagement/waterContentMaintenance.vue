@@ -2,10 +2,12 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import {
+  MaterialSymbolsLightPrintOutline,
   MaterialSymbolsSearch,
   MingcuteEditLine,
   UilExport,
@@ -40,6 +42,8 @@ import {
   exportByWorksheet,
   getByWorksheetCodeAndMaterialCode,
   listPlanMaterialByWorksheetCode,
+  printByWorksheetCode,
+  queryPrintTemplateDetails,
   searchWorksheetNoWater,
   waterDelete,
   waterSave,
@@ -398,6 +402,28 @@ function exportFile(workSheet: string) {
     window.open(data);
   });
 }
+
+/**
+ * 打印
+ * @param workSheetCode
+ */
+function printFile(workSheetCode: string) {
+  Promise.all([
+    printByWorksheetCode({ worksheetCode: workSheetCode }),
+    queryPrintTemplateDetails('waterPrintTemplate'),
+  ]).then(([data, res]) => {
+    try {
+      const templateRef = JSON.parse(res.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({
+        template: templateRef,
+      });
+      hiprintTemplate.print({ table: data }, { leftOffset: -1, topOffset: -1 });
+    } catch {
+      console.error('模板解析失败');
+    }
+  });
+}
+
 // endregion
 
 // region 权限查询
@@ -500,6 +526,20 @@ onMounted(() => {
               class="mr-4"
               type="link"
               @click="exportFile(row.workSheetCode)"
+            />
+          </Tooltip>
+          <!-- 打印 v-if="author.includes('导出')" -->
+          <Tooltip>
+            <template #title>{{ $t('common.print') }}</template>
+            <Button
+              :icon="
+                h(MaterialSymbolsLightPrintOutline, {
+                  class: 'inline-block size-6',
+                })
+              "
+              class="mr-4"
+              type="link"
+              @click="printFile(row.workSheetCode)"
             />
           </Tooltip>
         </template>

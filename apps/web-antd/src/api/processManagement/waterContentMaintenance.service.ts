@@ -46,6 +46,15 @@ export async function listPlanMaterialByWorksheetCode(params: any) {
   );
 }
 /**
+ * 根据工单号获取BOM列表
+ */
+export async function printByWorksheetCode(params: any) {
+  // https://v507z46671.yicp.fun/mes-main/worksheet/water/printByWorksheetCode
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/water/printByWorksheetCode?${qs.stringify(params)}`,
+  );
+}
+/**
  * 删除
  */
 export async function waterDelete(params: any) {

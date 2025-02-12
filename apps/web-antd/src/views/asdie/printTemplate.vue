@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { hiprint } from 'vue-plugin-hiprint';
+import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
+import { queryPrintTemplateDetails, savePrintTemplate } from '#/api';
 // 组合式函数 hooks
 import { usePaper } from '#/assets/hooks/use-paper';
 import { useZoom } from '#/assets/hooks/use-zoom';
@@ -57,7 +59,7 @@ const templateRef = ref({});
 const buildDesigner = () => {
   $('#hiprint-printTemplate').empty(); // 先清空, 避免重复构建
   // 注意事项: 模板json(object)
-  templateRef.value = {};
+  // templateRef.value = {};
   // 如果使用 vue ref创建的模板json, 需要使用 .value 获取 (确保内部能够使用 object.key 拿到对应数据就行)
   hiprintTemplate = newHiprintPrintTemplate(TEMPLATE_KEY, {
     template: templateRef.value, // 模板json(object)
@@ -103,15 +105,38 @@ const rotatePaper = () => {
 const clearPaper = () => {
   hiprintTemplate.clear();
 };
+
+const route = useRoute();
+const details = ref<any>({});
+/**
+ * 查询打印模板详情
+ */
+function queryDetails() {
+  if (route.query?.printCode) {
+    queryPrintTemplateDetails(route.query?.printCode).then((res) => {
+      templateRef.value = JSON.parse(res.printData);
+      details.value = { ...res };
+      buildDesigner();
+    });
+  } else {
+    buildDesigner();
+  }
+}
+
 /**
  * 导出模板 json
  * 必须确保 hiprintTemplate 已成功创建
  */
 const exportJson = () => {
   const json = hiprintTemplate.getJson();
-  message.info(json);
-  // console.log(json);
-  message.success('导出成功! 请查看控制台输出');
+  // message.info(json);
+  details.value.printData = JSON.stringify(json);
+  savePrintTemplate(details.value).then(() => {
+    message.success('操作成功!');
+    setTimeout(() => {
+      window.close();
+    }, 1200);
+  });
 };
 
 /**
@@ -120,7 +145,7 @@ const exportJson = () => {
  */
 onMounted(() => {
   buildLeftElement();
-  buildDesigner();
+  queryDetails();
 });
 </script>
 

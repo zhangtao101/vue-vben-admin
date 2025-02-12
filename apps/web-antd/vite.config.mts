@@ -16,7 +16,7 @@ export default defineConfig(async () => {
           '/ht': {
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/ht/, ''),
-            // mock代理目标地址
+            // 代理目标地址
             target: 'https://v507z46671.yicp.fun',
             // target: 'http://192.168.7.131:8050',
             // target: 'http://192.168.199.205:8050',

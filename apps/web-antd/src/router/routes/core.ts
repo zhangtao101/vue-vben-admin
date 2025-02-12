@@ -152,6 +152,16 @@ const coreRoutes: RouteRecordRaw[] = [
         path: 'printTemplate',
       },
       {
+        component: () =>
+          import('#/views/baseInfo/printTemplateMaintenance.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '模板维护',
+        },
+        name: 'printTemplateMaintenance',
+        path: 'printTemplateMaintenance',
+      },
+      {
         component: () => import('#/views/productionReport/productRed.vue'),
         meta: {
           ignoreAccess: true,

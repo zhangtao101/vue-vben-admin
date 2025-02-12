@@ -102,44 +102,64 @@ export const provider = function () {
           options: {
             field: 'table',
             fields: [
-              { text: '新原料编号', field: 'NAME' },
-              { text: '原料批号', field: 'SL' },
-              { text: '原料代码', field: 'GG' },
-              { text: '湿料计划加入量(KG)', field: 'TM' },
-              { text: '原料含水率', field: 'DJ' },
-              { text: '作业序号', field: 'JE' },
-              { text: '原料库位', field: 'DETAIL' },
-              { text: '实际加料量', field: 'DETAIL' },
+              { text: '料号', field: 'materialCode' },
+              { text: '物料名称', field: 'materialName' },
+              { text: '批次号', field: 'batchCode' },
+              { text: '含水率', field: 'waterNumber' },
+              { text: '湿料投入量', field: 'standardNumber' },
+              { text: '库位', field: 'warehouseCode' },
+              { text: '储位', field: 'wrehouseAreaCode' },
+              { text: '实际库位', field: 'sjWarehouseCode' },
             ],
           },
           columns: [
             [
               {
-                title: '新原料编号',
+                title: '料号',
                 align: 'center',
-                field: 'NAME',
-                width: 100,
-              },
-              { title: '原料批号', align: 'center', field: 'SL', width: 100 },
-              { title: '原料代码', align: 'center', field: 'TM', width: 100 },
-              {
-                title: '湿料计划加入量(KG)',
-                align: 'center',
-                field: 'GG',
-                width: 100,
-              },
-              { title: '原料含水率', align: 'center', field: 'DJ', width: 100 },
-              { title: '作业序号', align: 'center', field: 'JE', width: 100 },
-              {
-                title: '原料库位',
-                align: 'center',
-                field: 'DETAIL',
+                field: 'materialCode',
                 width: 100,
               },
               {
-                title: '实际加料量(KG)',
+                title: '物料名称',
+                field: 'materialName',
                 align: 'center',
-                field: 'DETAIL',
+                width: 100,
+              },
+              {
+                title: '批次号',
+                field: 'batchCode',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '含水率',
+                field: 'waterNumber',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '湿料投入量',
+                field: 'standardNumber',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '库位',
+                field: 'warehouseCode',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '储位',
+                field: 'wrehouseAreaCode',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '实际库位',
+                field: 'sjWarehouseCode',
+                align: 'center',
                 width: 100,
               },
             ],
@@ -147,10 +167,11 @@ export const provider = function () {
           footerFormatter: (
             _options: any,
             _rows: any,
-            data: any,
+            _data: any,
             _currentPageGridRowsData: any,
           ) => {
-            let li = '';
+            // 不需要了, 以后可能会要
+            /* let li = '';
             if (data?.remark) {
               data.remark.forEach((item: any) => {
                 li += `<li>${item}</li>`;
@@ -227,7 +248,7 @@ export const provider = function () {
                      ${li}
                    </ol>
                 </td>
-            </tr>`;
+            </tr>`;*/
           },
         },
         {
