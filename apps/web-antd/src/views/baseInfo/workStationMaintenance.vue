@@ -124,7 +124,7 @@ const queryParams = ref<any>({
  * @param {object} params - 查询参数，包含页码和每页大小。
  * @returns {Promise} - 包含总条数和数据列表的 Promise 对象。
  */
-function queryData({ page, pageSize }) {
+function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     // 调用 queryWorkstation API 函数，传递查询参数和分页信息
     queryWorkstation({
@@ -474,7 +474,7 @@ const selectedRow = ref<any>({});
  */
 function showJobFlowConfiguration(row: any) {
   processDrawerDisplay.value = true;
-  parentId.value = row.id;
+  parentId.value = row.id * 1;
   selectedRow.value = row;
 }
 

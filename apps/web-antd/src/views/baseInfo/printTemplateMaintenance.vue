@@ -6,7 +6,6 @@ import { h, onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import {
   GisLayerAltEdit,
-  MaterialSymbolsDeleteOutline,
   MaterialSymbolsSearch,
   MingcuteEditLine,
 } from '@vben/icons';
@@ -298,7 +297,7 @@ onMounted(async () => {});
             disabled
           />
         </template>
-        <template #action="{ row, index }">
+        <template #action="{ row }">
           <!-- 编辑按钮 -->
           <Tooltip>
             <template #title>
@@ -325,7 +324,7 @@ onMounted(async () => {});
           </Tooltip>
 
           <!-- 删除数据 -->
-          <Tooltip>
+          <!--          <Tooltip>
             <template #title>{{ $t('common.delete') }}</template>
             <Button
               :icon="
@@ -337,7 +336,7 @@ onMounted(async () => {});
               type="link"
               @click="delWorkStationDetail(index)"
             />
-          </Tooltip>
+          </Tooltip>-->
         </template>
       </Grid>
     </Card>
@@ -368,7 +367,7 @@ onMounted(async () => {});
           :label="$t('printTemplate.printTemplateCode')"
           name="printCode"
         >
-          <Inpu
+          <Input
             v-model:value="editMessage.printCode"
             :disabled="editMessage.id"
           />

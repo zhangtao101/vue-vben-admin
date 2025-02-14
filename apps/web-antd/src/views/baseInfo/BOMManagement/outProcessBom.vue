@@ -464,7 +464,7 @@ function closePrint() {
               <Popconfirm
                 :cancel-text="$t('common.cancel')"
                 :ok-text="$t('common.confirm')"
-                :title="$t('widgets.deletionConfirmation')"
+                :title="$t('ui.widgets.deletionConfirmation')"
                 @confirm="delRow(record)"
               >
                 <Button

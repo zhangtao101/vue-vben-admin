@@ -252,6 +252,162 @@ export const provider = function () {
           },
         },
         {
+          tid: 'providerModule2.materialRequisition',
+          title: '领料单(还未完成)',
+          type: 'table',
+          options: {
+            field: 'materialRequisition',
+            fields: [
+              { text: '料号', field: 'materialCode' },
+              { text: '物料名称', field: 'materialName' },
+              { text: '批次号', field: 'batchCode' },
+              { text: '含水率', field: 'waterNumber' },
+              { text: '湿料投入量', field: 'standardNumber' },
+              { text: '库位', field: 'warehouseCode' },
+              { text: '储位', field: 'wrehouseAreaCode' },
+              { text: '实际库位', field: 'sjWarehouseCode' },
+            ],
+          },
+          columns: [
+            [
+              {
+                title: '料号',
+                align: 'center',
+                field: 'materialCode',
+                width: 100,
+              },
+              {
+                title: '物料名称',
+                field: 'materialName',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '批次号',
+                field: 'batchCode',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '含水率',
+                field: 'waterNumber',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '湿料投入量',
+                field: 'standardNumber',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '库位',
+                field: 'warehouseCode',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '储位',
+                field: 'wrehouseAreaCode',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '实际库位',
+                field: 'sjWarehouseCode',
+                align: 'center',
+                width: 100,
+              },
+            ],
+          ],
+          footerFormatter: (
+            _options: any,
+            _rows: any,
+            _data: any,
+            _currentPageGridRowsData: any,
+          ) => {
+            // 不需要了, 以后可能会要
+            /* let li = '';
+            if (data?.remark) {
+              data.remark.forEach((item: any) => {
+                li += `<li>${item}</li>`;
+              });
+            }
+
+            return `<tr><td colspan="8" style="height: 5px;"></td></tr><tr>
+                <td colspan="2">理论加水量</td>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>升</td>
+                <td colspan="2">中控接单者签名</td>
+                <td colspan="2" class="obliqueLine"></td>
+            </tr>
+            <tr>
+                <td colspan="2">计划湿料加料总吨位</td>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>吨</td>
+                <td colspan="2">实际加水量</td>
+                <td class="text-right">升</td>
+                <td class="text-center">球石高度</td>
+            </tr>
+            <tr>
+                <td colspan="2">计划添加剂总量</td>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>公斤</td>
+                <td colspan="2">实际添加剂总量</td>
+                <td class="text-right">公斤</td>
+                <td class="text-right">米</td>
+            </tr>
+            <tr>
+                <td colspan="2">球磨时间</td>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>小时</td>
+                <td colspan="2">复核人</td>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td colspan="2">计算者</td>
+                <td colspan="2"></td>
+                <td colspan="2">球磨起始时间</td>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td colspan="2">审核者</td>
+                <td colspan="2"></td>
+                <td colspan="3">关键原料加料品保确认人</td>
+                <td ></td>
+            </tr>
+            <tr><td colspan="8" style="height: 5px;"></td></tr>
+            <tr>
+                <td colspan="2" rowspan="2">泥浆工艺标准</td>
+                <td>配方</td>
+                <td>生产品种</td>
+                <td>流速</td>
+                <td>比重</td>
+                <td>筛余</td>
+                <td>备注</td>
+            </tr>
+            <tr>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>${data?.test1.value ?? ''}</td>
+                <td>${data?.test1.value ?? ''}</td>
+            </tr>
+            <tr>
+                <td colspan="8">备注: ${data?.test1.value ?? ''}</td>
+            </tr>
+            <tr>
+                <td colspan="1">备注</td>
+                <td colspan="7">
+                   <ol>
+                     ${li}
+                   </ol>
+                </td>
+            </tr>`;*/
+          },
+        },
+        {
           tid: 'providerModule1.barcode',
           title: '条形码',
           data: 'XS888888888',

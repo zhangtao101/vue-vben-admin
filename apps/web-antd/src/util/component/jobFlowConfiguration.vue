@@ -10,6 +10,7 @@ import {
   Drawer,
   Form,
   FormItem,
+  FormItemRest,
   Input,
   InputNumber,
   Popconfirm,
@@ -354,6 +355,8 @@ function queryProcessSetDetail() {
       });
     }
     operationDetails.value = [...defaultProps.details];
+  } else {
+    operationDetails.value = [];
   }
   /**
    * 调用 queryProcessSetDetailById 函数，传入 parentId 作为参数。
@@ -576,7 +579,6 @@ function submit() {
       <template v-for="(item, index) of operationDetails" :key="index">
         <div class="mb-4 rounded-xl border-2 p-4 shadow-lg shadow-blue-200">
           <FormItem
-            :name="[index, 'opType']"
             :rules="{
               required: true,
               message: '该项为必填项',
@@ -599,7 +601,6 @@ function submit() {
               v-for="(rule, i) of item.rulePending"
               :key="i"
               :label="rule.label"
-              :name="['rules', index, rule.label]"
             >
               <template v-if="rule.type === 1">
                 <Switch
@@ -621,9 +622,11 @@ function submit() {
                     checked-children="开"
                     un-checked-children="关"
                   />
-                  <InputNumber
-                    v-model:value="item.rules[i][`${rule.label}范围`]"
-                  />
+                  <FormItemRest>
+                    <InputNumber
+                      v-model:value="item.rules[i][`${rule.label}范围`]"
+                    />
+                  </FormItemRest>
                 </Space>
               </template>
               <template v-else-if="rule.type === 5">
@@ -646,7 +649,7 @@ function submit() {
             <Popconfirm
               :cancel-text="$t('common.cancel')"
               :ok-text="$t('common.confirm')"
-              :title="$t('widgets.deletionConfirmation')"
+              :title="$t('ui.widgets.deletionConfirmation')"
               @confirm="
                 () => {
                   operationDetails.splice(index, 1);
