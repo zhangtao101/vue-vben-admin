@@ -37,5 +37,7 @@
   "unlock": "取消锁定",
   "cancelIssuance": "取消签发",
   "abort": "中止",
+  "cancelAbort": "取消中止",
+  "blockDeletion": "整单删除",
   "erpDocument": "ERP单据"
 }

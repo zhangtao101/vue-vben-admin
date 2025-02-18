@@ -253,68 +253,47 @@ export const provider = function () {
         },
         {
           tid: 'providerModule2.materialRequisition',
-          title: '领料单(还未完成)',
+          title: '领料单',
           type: 'table',
           options: {
             field: 'materialRequisition',
             fields: [
-              { text: '料号', field: 'materialCode' },
-              { text: '物料名称', field: 'materialName' },
-              { text: '批次号', field: 'batchCode' },
-              { text: '含水率', field: 'waterNumber' },
-              { text: '湿料投入量', field: 'standardNumber' },
-              { text: '库位', field: 'warehouseCode' },
-              { text: '储位', field: 'wrehouseAreaCode' },
-              { text: '实际库位', field: 'sjWarehouseCode' },
+              { text: '材料编码', field: 'materialCode' },
+              { text: '材料名称', field: 'materialName' },
+              { text: '规格', field: '' },
+              { text: '单位', field: 'unit' },
+              { text: '领用量', field: 'applyNumber' },
             ],
           },
           columns: [
             [
               {
-                title: '料号',
+                title: '材料编码',
                 align: 'center',
                 field: 'materialCode',
                 width: 100,
               },
               {
-                title: '物料名称',
+                title: '材料名称',
                 field: 'materialName',
                 align: 'center',
                 width: 100,
               },
               {
-                title: '批次号',
-                field: 'batchCode',
+                title: '规格',
+                field: '',
                 align: 'center',
                 width: 100,
               },
               {
-                title: '含水率',
-                field: 'waterNumber',
+                title: '单位',
+                field: 'unit',
                 align: 'center',
                 width: 100,
               },
               {
-                title: '湿料投入量',
-                field: 'standardNumber',
-                align: 'center',
-                width: 100,
-              },
-              {
-                title: '库位',
-                field: 'warehouseCode',
-                align: 'center',
-                width: 100,
-              },
-              {
-                title: '储位',
-                field: 'wrehouseAreaCode',
-                align: 'center',
-                width: 100,
-              },
-              {
-                title: '实际库位',
-                field: 'sjWarehouseCode',
+                title: '领用量',
+                field: 'applyNumber',
                 align: 'center',
                 width: 100,
               },
@@ -405,6 +384,25 @@ export const provider = function () {
                    </ol>
                 </td>
             </tr>`;*/
+            return `<tr><td colspan="8" style="height: 5px;"></td></tr><tr>
+                <td colspan="99" style="padding: 1em;">
+                    <div style="margin-bottom: 1em;">备注:</div>
+                    <div style="padding-left: 1em;float: right;">
+                        <span>附加料原始记录表： </span>
+                        <span>NO:</span>
+                        <span style="border-bottom: 1px solid black;display: inline-block;width: 80px;"></span>
+                        <span>NO:</span>
+                        <span style="border-bottom: 1px solid black;display: inline-block;width: 80px;"></span>
+                        <span>NO:</span>
+                        <span style="border-bottom: 1px solid black;display: inline-block;width: 80px;"></span>
+                        <span>NO:</span>
+                        <span style="border-bottom: 1px solid black;display: inline-block;width: 80px;"></span>
+                        <span>共</span>
+                        <span style="border-bottom: 1px solid black;display: inline-block;width: 80px;"></span>
+                        <span>张</span>
+                    </div>
+                </td>
+            </tr>`;
           },
         },
         {

@@ -123,9 +123,11 @@ function queryData({ page, pageSize }: any) {
 
 // region 编辑
 const editItemWorkSheetCode = ref<string>('');
+const editItemProcessName = ref<string>('');
 
 function showEdit(row: any) {
   editItemWorkSheetCode.value = row.workSheetCode;
+  editItemProcessName.value = row.processName;
 }
 
 // endregion
@@ -194,6 +196,7 @@ onMounted(() => {
     <!-- endregion -->
     <ApplyForWork
       :work-sheet-code="editItemWorkSheetCode"
+      :process-name="editItemProcessName"
       :operation="author.includes('冲红')"
     />
   </Page>

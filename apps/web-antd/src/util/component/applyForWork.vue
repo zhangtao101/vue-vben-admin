@@ -35,6 +35,10 @@ const prop = defineProps({
     default: () => '',
     required: true,
   },
+  processName: {
+    type: String,
+    default: () => '',
+  },
   operation: {
     type: Boolean,
     default: () => false,
@@ -168,7 +172,8 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params = {
-      workSheetCode: prop.workSheetCode, // 展开 queryParams.value 对象，包含所有查询参数。
+      workSheetCode: prop.workSheetCode,
+      processName: prop.processName,
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     };

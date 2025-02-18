@@ -114,7 +114,9 @@ const details = ref<any>({});
 function queryDetails() {
   if (route.query?.printCode) {
     queryPrintTemplateDetails(route.query?.printCode).then((res) => {
-      templateRef.value = JSON.parse(res.printData);
+      if (res.printData) {
+        templateRef.value = JSON.parse(res.printData);
+      }
       details.value = { ...res };
       buildDesigner();
     });

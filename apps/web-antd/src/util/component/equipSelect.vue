@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref, watch } from 'vue';
 
@@ -156,21 +156,7 @@ const gridOptions: VxeGridProps<any> = {
   },
 };
 
-const gridEvents: VxeGridListeners<any> = {
-  /* cellClick: ({ row }) => {
-    message.info(`cell-click: ${row.name}`);
-  },*/
-  checkboxChange: () => {
-    // eslint-disable-next-line no-use-before-define
-    checkedChange();
-  },
-  checkboxRangeEnd: () => {
-    // eslint-disable-next-line no-use-before-define
-    checkedChange();
-  },
-};
-
-const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 /**
  * 查询设备列表的函数。
@@ -210,21 +196,6 @@ function queryData() {
       });
   });
 }
-
-/**
- * 选择的设备列表完成,返回选择后的设备列表
- */
-const checkedChange = debounce(() => {
-  // 获取当前选中的行记录
-  const checkedRow = gridApi.grid.getCheckboxRecords();
-  // 初始化选中的设备列表
-  selectedRow.value = [];
-  // 遍历选中的行记录
-  checkedRow.forEach((item) => {
-    // 将每行的设备编码添加到选中的设备列表中
-    selectedRow.value.push(item.equipmentCode);
-  });
-}, 800);
 
 const confirmFilterEvent = debounce((option, clear = false) => {
   // 如果 clear 为 true，则清除所有过滤条件
@@ -277,13 +248,21 @@ function submit() {
   submitLoading.value = true;
   // 清空筛选条件
   confirmFilterEvent({}, true);
-  checkedChange();
   setTimeout(() => {
     // console.log(selectedRow.value);
     submitLoading.value = false;
-  }, 1200);
-  defaultEmits('changed', selectedRow.value);
-  close();
+    // 获取当前选中的行记录
+    const checkedRow = gridApi.grid.getCheckboxRecords();
+    // 初始化选中的设备列表
+    selectedRow.value = [];
+    // 遍历选中的行记录
+    checkedRow.forEach((item) => {
+      // 将每行的设备编码添加到选中的设备列表中
+      selectedRow.value.push(item.equipmentCode);
+    });
+    defaultEmits('changed', selectedRow.value);
+    close();
+  }, 800);
 }
 
 // endregion

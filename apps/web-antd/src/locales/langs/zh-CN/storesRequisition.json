@@ -1,9 +1,13 @@
 {
   "applicationNumber": "申请编号",
   "applicationDate": "申请日期",
+  "demandDate": "需求日期",
   "materialName": "材料名称",
   "materialNumber": "材料编号",
   "categoryOfApplication": "申请类别",
   "materialRequisitionProgress": "领料进度",
-  "materialRequisitionStatus": "领料状态"
+  "materialRequisitionStatus": "领料状态",
+  "owningUser": "所属用户",
+  "applicationDepartment": "申请部门",
+  "responsibleDepartment": "责任部门"
 }
