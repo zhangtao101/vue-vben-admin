@@ -182,6 +182,19 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'workOrderStatusQuery',
         path: 'workOrderStatusQuery',
       },
+      {
+        component: () =>
+          import(
+            '#/views/storeManagement/materialManagement/storesRequisition.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '领料申请',
+          code: 'WM_322',
+        },
+        name: 'storesRequisition',
+        path: 'storesRequisition',
+      },
     ],
   },
 ];
