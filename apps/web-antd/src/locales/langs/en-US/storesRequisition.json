@@ -1,0 +1,13 @@
+{
+  "applicationNumber": "Application Number",
+  "applicationDate": "Application Date",
+  "demandDate": "Demand Date",
+  "materialName": "Material Name",
+  "materialNumber": "Material Number",
+  "categoryOfApplication": "Category of Application",
+  "materialRequisitionProgress": "Material Requisition Progress",
+  "materialRequisitionStatus": "Material Requisition Status",
+  "owningUser": "Owning User",
+  "applicationDepartment": "Application Department",
+  "responsibleDepartment": "Responsible Department"
+}

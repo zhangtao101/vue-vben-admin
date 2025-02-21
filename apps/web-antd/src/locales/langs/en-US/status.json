@@ -1,0 +1,19 @@
+{
+  "enable": "Enabled",
+  "forbidden": "Disabled",
+  "onTheJob": "On the Job",
+  "leavingJob": "Leaving Job",
+  "male": "Male",
+  "female": "Female",
+  "regularEmployee": "Regular Employee",
+  "outsourcedStaff": "Outsourced Staff",
+  "unmarried": "Unmarried",
+  "beMarried": "Married",
+  "good": "Good",
+  "illness": "Illness",
+  "mob": "Crowd",
+  "member": "Youth League Member",
+  "partyMember": "Party Member",
+  "yes": "Yes",
+  "no": "No"
+}

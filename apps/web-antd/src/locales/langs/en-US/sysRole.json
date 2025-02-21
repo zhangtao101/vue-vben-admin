@@ -1,0 +1,9 @@
+{
+  "roleCode": "Role Code",
+  "roleName": "Role Name",
+  "isEnable": "Status",
+  "description": "Description",
+  "webRolePermissions": "Web Role Permissions",
+  "pdaRolePermissions": "PDA Role Permissions",
+  "permissionConfiguration": "Permission Configuration"
+}
