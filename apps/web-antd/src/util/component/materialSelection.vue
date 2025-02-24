@@ -23,6 +23,12 @@ import {
   materialTypeGetTree,
 } from '#/api';
 
+const props = defineProps({
+  applyOrgCode: {
+    type: String,
+    required: true,
+  },
+});
 // 事件定义
 const defaultEmits = defineEmits(['changed']);
 
@@ -117,10 +123,11 @@ function RadioChange() {
 /**
  * 查询物料列表
  */
-function queryData({ page, pageSize }) {
+function queryData({ page, pageSize }: any) {
   return new Promise((resolve) => {
     materialTypeGetByMaterialCodeAndName({
       ...queryParams.value,
+      orgCode: props.applyOrgCode,
       pageNum: page,
       pageSize,
     }).then(({ total, results }) => {

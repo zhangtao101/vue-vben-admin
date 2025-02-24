@@ -582,33 +582,6 @@ onMounted(() => {
                     <div class="mb-4 border border-cyan-400 p-3">
                       <Row class="w-full">
                         <Col :span="8" class="mb-2">
-                          <!-- 含水率 -->
-                          <FormItem
-                            :label="$t('waterContentMaintenance.waterNumber')"
-                            :name="[i, index, 'waterNumber']"
-                            :rules="[
-                              { required: true, message: '该项为必填项!' },
-                            ]"
-                          >
-                            <InputNumber
-                              v-model:value="item.waterNumber"
-                              :max="99"
-                              :min="0"
-                              addon-after="%"
-                              @change="
-                                () => {
-                                  if (formState[i].length === 1) {
-                                    item.standardNumber = (
-                                      ((bom.materialDosage || 0) /
-                                        (1 - item.waterNumber / 100)) as number
-                                    ).toFixed(0);
-                                  }
-                                }
-                              "
-                            />
-                          </FormItem>
-                        </Col>
-                        <Col :span="8" class="mb-2">
                           <!-- 批次号 -->
                           <FormItem
                             :label="$t('waterContentMaintenance.batchCode')"
@@ -660,6 +633,33 @@ onMounted(() => {
                             ]"
                           >
                             <Input v-model:value="item.sjWarehouseCode" />
+                          </FormItem>
+                        </Col>
+                        <Col :span="8" class="mb-2">
+                          <!-- 含水率 -->
+                          <FormItem
+                            :label="$t('waterContentMaintenance.waterNumber')"
+                            :name="[i, index, 'waterNumber']"
+                            :rules="[
+                              { required: true, message: '该项为必填项!' },
+                            ]"
+                          >
+                            <InputNumber
+                              v-model:value="item.waterNumber"
+                              :max="99"
+                              :min="0"
+                              addon-after="%"
+                              @change="
+                                () => {
+                                  if (formState[i].length === 1) {
+                                    item.standardNumber = (
+                                      ((bom.materialDosage || 0) /
+                                        (1 - item.waterNumber / 100)) as number
+                                    ).toFixed(0);
+                                  }
+                                }
+                              "
+                            />
                           </FormItem>
                         </Col>
                         <Col :span="8" class="mb-2">

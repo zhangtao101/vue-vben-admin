@@ -272,6 +272,12 @@ const addOrUpdateGridOptions: VxeGridProps<any> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     {
+      field: 'applyTypeName',
+      slots: { default: 'applyTypeName' },
+      title: '申请类别',
+      minWidth: 200,
+    },
+    {
       field: 'materialCode',
       title: '材料编号',
       minWidth: 150,
@@ -290,15 +296,9 @@ const addOrUpdateGridOptions: VxeGridProps<any> = {
       minWidth: 150,
     },
     {
-      field: 'applyTypeName',
-      slots: { default: 'applyTypeName' },
-      title: '申请类别',
-      minWidth: 200,
-    },
-    {
       field: 'planCode',
       slots: { default: 'planCode' },
-      title: '计划号',
+      title: '工单号',
       minWidth: 200,
     },
     { field: 'storeNumber', title: '库存数量', minWidth: 250 },
@@ -500,6 +500,9 @@ function submit() {
   if (params.requireDate) {
     params.requireDate = params.requireDate.format('YYYY-MM-DD');
   }
+  if (!params.receiveNumberList) {
+    params.receiveNumberList = [];
+  }
 
   submitLoading.value = true;
   const ob: any = editMessage.value.id
@@ -565,6 +568,9 @@ function selectedMaterialFun() {
       selectMaterialMessage.value[key] = selectedMaterial.value[key];
     });
     selectMaterialMessage.value.storeNumber = data;
+    if (selectMaterialMessage.value.applyType === 18) {
+      selectMaterialMessage.value.unit = '片';
+    }
     selectMaterialClose();
   });
 }
@@ -659,6 +665,8 @@ function printFile() {
   let applyCode = '';
   // 当前选中的申请编号是否一致, 如果不一致就不进行打印并提示错误信息
   let accord = true;
+  // 是否是半成品申请
+  let semiFinishedProduct = false;
   selectedRows.forEach((row: any) => {
     if (applyCode) {
       if (row.applyCode !== applyCode) {
@@ -667,21 +675,38 @@ function printFile() {
       }
     } else {
       applyCode = row.applyCode;
+      semiFinishedProduct = row.applyType === 18;
     }
   });
   if (accord) {
     // 打印数据包装
-    const data = {
-      year: dayjs().year(),
-      month: dayjs().month(),
-      day: dayjs().day(),
-      applyOrgCode: selectedRows[0].applyOrgCode,
-      applyOrgName: selectedRows[0].applyOrgName,
-      materialRequisition: selectedRows,
-    };
+    let data: any;
+    let ob: any;
+    if (semiFinishedProduct) {
+      selectedRows.forEach((row: any) => {
+        row.lv = 'P';
+      });
+      data = {
+        year: dayjs().year(),
+        month: dayjs().month(),
+        day: dayjs().day(),
+        semiFinishedProduct: selectedRows,
+      };
+      ob = queryPrintTemplateDetails('semiFinishedProductPrinting');
+    } else {
+      data = {
+        year: dayjs().year(),
+        month: dayjs().month(),
+        day: dayjs().day(),
+        applyOrgCode: selectedRows[0].applyOrgCode,
+        applyOrgName: selectedRows[0].applyOrgName,
+        materialRequisition: selectedRows,
+      };
+      ob = queryPrintTemplateDetails('applyTemplate');
+    }
 
     // 打印模板获取
-    queryPrintTemplateDetails('applyTemplate').then((res) => {
+    ob.then((res: any) => {
       try {
         const templateRef = JSON.parse(res.printData);
         const hiprintTemplate = new hiprint.PrintTemplate({
@@ -891,7 +916,7 @@ onMounted(async () => {
       <Grid>
         <template #toolbar-tools>
           <Space>
-            <!-- 新增按钮 -->
+            <!-- 打印按钮 -->
             <Button type="primary" @click="printFile()">
               {{ $t('common.print') }}
             </Button>
@@ -1091,6 +1116,7 @@ onMounted(async () => {
                   (value: any, labels: any) => {
                     editMessage.applyOrgCode = value;
                     editMessage.applyOrgName = labels[0];
+                    addOrUpdateGridApi.grid.remove();
                   }
                 "
                 class="!w-48"
@@ -1134,7 +1160,7 @@ onMounted(async () => {
         <template #materialName="{ row }">
           <Input v-model:value="row.materialName" class="mr-1 w-48" readonly />
           <Button
-            :disabled="!editMessage.materialName"
+            :disabled="!editMessage.applyOrgCode || !row.applyType"
             type="primary"
             @click="showSelectMaterial(row)"
           >
@@ -1223,6 +1249,7 @@ onMounted(async () => {
       title="材料选择"
     >
       <MaterialSelection
+        :apply-org-code="editMessage.applyOrgCode"
         v-if="selectMaterialDrawer"
         @changed="materialChange"
       />

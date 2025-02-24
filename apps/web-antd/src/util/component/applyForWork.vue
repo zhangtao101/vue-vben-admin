@@ -278,10 +278,10 @@ function reportenergyHarvestingDrawerClose() {
 function getTypeText(type: number) {
   switch (type) {
     case 1: {
-      return '电';
+      return '天然气';
     }
     case 2: {
-      return '天然气';
+      return '电';
     }
     case 3: {
       return '水煤浆';

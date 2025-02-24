@@ -195,6 +195,17 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'storesRequisition',
         path: 'storesRequisition',
       },
+      {
+        component: () =>
+          import('#/views/productionReport/SMTfarm/productionDaily.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '生产日报',
+          code: 'WM_322',
+        },
+        name: 'productionDaily',
+        path: 'productionDaily',
+      },
     ],
   },
 ];
