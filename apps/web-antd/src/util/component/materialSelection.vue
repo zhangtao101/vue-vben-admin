@@ -34,7 +34,7 @@ const defaultEmits = defineEmits(['changed']);
 
 // region 树菜单数据查询
 // 树菜单数据
-const treeData = ref([]);
+const treeData = ref<any>([]);
 // 树菜单字段自定义
 const fieldNames = ref({
   children: 'children',
