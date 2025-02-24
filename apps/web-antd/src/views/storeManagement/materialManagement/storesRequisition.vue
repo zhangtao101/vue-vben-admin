@@ -172,8 +172,8 @@ const queryParams = ref<any>({
 
 /**
  * 从服务器查询工作站数据的函数。
- * @param {object} params.page - 查询参数，页码
- * @param {object} params.pageSize - 查询参数，每页大小
+ * @param {object} page - 查询参数，页码
+ * @param {object} pageSize - 查询参数，每页大小
  * @returns {Promise} - 包含总条数和数据列表的 Promise 对象。
  */
 function queryData({ page, pageSize }: any) {
@@ -593,8 +593,7 @@ function selectMaterialClose() {
 function getIds() {
   const selectedRows = gridApi.grid.getCheckboxRecords();
   if (selectedRows.length > 0) {
-    const ids = selectedRows.map((item: any) => item.id);
-    return ids;
+    return selectedRows.map((item: any) => item.id);
   } else {
     message.warning('请至少选中一条数据进行操作!');
     return [];
