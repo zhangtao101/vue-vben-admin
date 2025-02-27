@@ -5,6 +5,10 @@
       "path": "apps/web-antd",
     },
     {
+      "name": "@vben/web-ai",
+      "path": "apps/web-my-ai",
+    },
+    {
       "name": "@vben/commitlint-config",
       "path": "internal/lint-configs/commitlint-config",
     },
