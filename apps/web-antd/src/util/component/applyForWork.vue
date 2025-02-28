@@ -412,7 +412,7 @@ onMounted(() => {});
   <Drawer
     v-model:open="reportForWorkDrawer"
     :footer-style="{ textAlign: 'right' }"
-    :width="700"
+    :width="750"
     placement="right"
     title="人员报工信息编辑"
     @close="reportForWorkDrawerClose"
@@ -426,6 +426,7 @@ onMounted(() => {});
           <DescriptionsItem label="良品数">
             <InputNumber
               v-model:value="item.qualityNumber"
+              :addon-after="item.unit"
               :min="0"
               @change="
                 () => {
@@ -437,6 +438,7 @@ onMounted(() => {});
           <DescriptionsItem label="废品数">
             <InputNumber
               v-model:value="item.unqualityNumber"
+              :addon-after="item.unit"
               :min="0"
               @change="
                 () => {
@@ -446,10 +448,18 @@ onMounted(() => {});
             />
           </DescriptionsItem>
           <DescriptionsItem label="人时">
-            <InputNumber v-model:value="item.personTime" :min="0" />
+            <InputNumber
+              v-model:value="item.personTime"
+              addon-after="小时"
+              :min="0"
+            />
           </DescriptionsItem>
           <DescriptionsItem label="机时">
-            <InputNumber v-model:value="item.equipTime" :min="0" />
+            <InputNumber
+              v-model:value="item.equipTime"
+              addon-after="小时"
+              :min="0"
+            />
           </DescriptionsItem>
           <DescriptionsItem label="报工人">
             {{ item.reportPerson }}

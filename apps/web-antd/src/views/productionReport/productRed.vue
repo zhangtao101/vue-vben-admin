@@ -106,10 +106,10 @@ function queryData({ page, pageSize }: any) {
      * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
      */
     searchWorkSheetFinishSituation(params)
-      .then(({ total, list }) => {
+      .then(({ totalSize, list }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
-          total,
+          total: totalSize,
           items: list,
         });
       })
