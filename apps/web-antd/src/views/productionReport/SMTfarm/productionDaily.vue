@@ -31,20 +31,15 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 190 },
-    { field: 'batchCode', title: '入库批次号', minWidth: 150 },
+    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
+    { field: 'batchCode', title: '入库批次号', minWidth: 200 },
     { field: 'productCode', title: '产品编号', minWidth: 150 },
     { field: 'productName', title: '产品名称', minWidth: 150 },
     { field: 'worksheetPlanNumber', title: '工单计划数', minWidth: 150 },
     { field: 'workstationCode', title: '工作站编号', minWidth: 150 },
+    { field: 'workstationName', title: '工作站名称', minWidth: 150 },
     { field: 'processCode', title: '工序编号', minWidth: 150 },
     { field: 'processName', title: '工序名称', minWidth: 150 },
-    { field: 'inreportNumber', title: '投入量', minWidth: 150 },
-    { field: 'outreportNumber', title: '报工数量 （产出量）', minWidth: 150 },
-    { field: 'unqualityNnumber', title: '损耗量', minWidth: 150 },
-    { field: 'inwarehouseNumber', title: '入库数量', minWidth: 150 },
-    { field: 'personTime', title: '人时', minWidth: 150 },
-    { field: 'equipTime', title: '机时', minWidth: 150 },
     {
       field: 'materialType',
       slots: { default: 'materialType' },
@@ -52,9 +47,15 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 150,
     },
     { field: 'materialName', title: '物料名称', minWidth: 150 },
+    { field: 'cxEquipCode', title: '压机设备号', minWidth: 150 },
+    { field: 'personTime', title: '人时', minWidth: 150 },
+    { field: 'equipTime', title: '机时', minWidth: 150 },
+    { field: 'inreportNumber', title: '投入量', minWidth: 150 },
+    { field: 'outreportNumber', title: '报工数量 （产出量）', minWidth: 150 },
+    { field: 'unqualityNnumber', title: '损耗量', minWidth: 150 },
+    { field: 'inwarehouseNumber', title: '入库数量', minWidth: 150 },
     { field: 'materialUseNumber', title: '物料使用量', minWidth: 150 },
     { field: 'weight', title: '重量', minWidth: 150 },
-    { field: 'cxEquipCode', title: '压机设备号', minWidth: 150 },
     { field: 'jlqEnergyValue', title: '焦炉气能耗', minWidth: 150 },
     { field: 'denergyValue', title: '电能耗', minWidth: 150 },
     { field: 'trqEnergyValue', title: '天然气能耗', minWidth: 150 },
@@ -125,6 +126,8 @@ const queryParams = ref({
   processCode: '',
   // 工作站编号
   workstationCode: '',
+  // 工作站名称
+  workstationName: '',
   // 工单号
   worksheetCode: '',
   // 产品料号
@@ -209,6 +212,13 @@ onMounted(() => {
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.workstationCode" />
+        </FormItem>
+        <!-- 工作站编号 -->
+        <FormItem
+          :label="$t('productionDaily.workstationName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.workstationName" />
         </FormItem>
 
         <!-- 工单号 -->

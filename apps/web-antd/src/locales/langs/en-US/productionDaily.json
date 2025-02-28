@@ -2,6 +2,7 @@
   "timeFrame": "Time Range",
   "processCode": "Process Code",
   "workstationCode": "Workstation Code",
+  "workstationName": "Workstation Name",
   "worksheetCode": "Worksheet Code",
   "productCode": "Product Code",
   "productName": "Product Name"

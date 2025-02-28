@@ -2,6 +2,7 @@
   "timeFrame": "时间范围",
   "processCode": "工序编号",
   "workstationCode": "工作站编号",
+  "workstationName": "工作站名称",
   "worksheetCode": "工单号",
   "productCode": "产品料号",
   "productName": "产品名称"
