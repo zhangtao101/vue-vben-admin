@@ -594,6 +594,18 @@ onMounted(() => {
                           </FormItem>
                         </Col>
                         <Col :span="8" class="mb-2">
+                          <!-- 库位号 -->
+                          <FormItem
+                            :label="$t('waterContentMaintenance.warehouseCode')"
+                            :name="[i, index, 'warehouseCode']"
+                            :rules="[
+                              { required: false, message: '该项为必填项!' },
+                            ]"
+                          >
+                            <Input v-model:value="item.warehouseCode" />
+                          </FormItem>
+                        </Col>
+                        <Col :span="8" class="mb-2">
                           <!-- 储位号 -->
                           <FormItem
                             :label="
@@ -605,18 +617,6 @@ onMounted(() => {
                             ]"
                           >
                             <Input v-model:value="item.wrehouseAreaCode" />
-                          </FormItem>
-                        </Col>
-                        <Col :span="8" class="mb-2">
-                          <!-- 库位号 -->
-                          <FormItem
-                            :label="$t('waterContentMaintenance.warehouseCode')"
-                            :name="[i, index, 'warehouseCode']"
-                            :rules="[
-                              { required: false, message: '该项为必填项!' },
-                            ]"
-                          >
-                            <Input v-model:value="item.warehouseCode" />
                           </FormItem>
                         </Col>
                         <Col :span="8" class="mb-2">
