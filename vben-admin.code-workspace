@@ -5,6 +5,10 @@
       "path": "apps/web-antd",
     },
     {
+      "name": "@vben/web-energy-management",
+      "path": "apps/web-energy-management",
+    },
+    {
       "name": "@vben/web-ai",
       "path": "apps/web-my-ai",
     },
