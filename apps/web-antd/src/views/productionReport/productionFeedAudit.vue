@@ -87,6 +87,12 @@ const columns = ref([
     width: 170,
   },
   {
+    dataIndex: 'remark',
+    ellipsis: true,
+    title: '备注',
+    width: 170,
+  },
+  {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
