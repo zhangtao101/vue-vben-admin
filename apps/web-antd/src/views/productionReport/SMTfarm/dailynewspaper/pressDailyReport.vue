@@ -277,6 +277,9 @@ onMounted(() => {
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>
+        <template #footerData="{ column }">
+          <span> {{ collect[column.field] }} </span>
+        </template>
       </Grid>
     </Card>
     <!-- endregion -->
