@@ -13,57 +13,59 @@ import { $t } from '#/locales';
 
 // region 表格操作
 
+// 表格配置项
 const gridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
+  align: 'center', // 表格内容居中
+  border: true, // 显示边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: '线损对象名称', minWidth: 200 },
-    { field: 'batchCode', title: '统计周期', minWidth: 200 },
-    { field: 'productCode', title: '统计时间', minWidth: 150 },
-    { field: 'productName', title: '线损率(%)', minWidth: 150 },
-    { field: 'workstationCode', title: '供入电量(kWh)', minWidth: 150 },
-    { field: 'workstationName', title: '供入明细完整率(%)', minWidth: 150 },
-    { field: 'processCode', title: '供出电量(kWh)', minWidth: 150 },
-    { field: 'processName', title: '供出明细完整率(%)', minWidth: 150 },
+    { title: '序号', type: 'seq', width: 50 }, // 自动生成序号列
+    { field: 'worksheetCode', title: '线损对象名称', minWidth: 200 }, // 线损对象名称列
+    { field: 'batchCode', title: '统计周期', minWidth: 200 }, // 统计周期列
+    { field: 'productCode', title: '统计时间', minWidth: 150 }, // 统计时间列
+    { field: 'productName', title: '线损率(%)', minWidth: 150 }, // 线损率列
+    { field: 'workstationCode', title: '供入电量(kWh)', minWidth: 150 }, // 供入电量列
+    { field: 'workstationName', title: '供入明细完整率(%)', minWidth: 150 }, // 供入明细完整率列
+    { field: 'processCode', title: '供出电量(kWh)', minWidth: 150 }, // 供出电量列
+    { field: 'processName', title: '供出明细完整率(%)', minWidth: 150 }, // 供出明细完整率列
   ],
-  height: 500,
-  stripe: true,
+  height: 500, // 表格高度
+  stripe: true, // 启用斑马纹
   sortConfig: {
-    multiple: true,
+    multiple: true, // 允许多列排序
   },
   proxyConfig: {
     ajax: {
-      query: async ({ page }) => {
-        return await queryData({
+      query: async () => {
+        /**
+         * { page }
+       * {
           page: page.currentPage,
           pageSize: page.pageSize,
-        });
+        }
+       */
+        return await queryData();
       },
     },
   },
   toolbarConfig: {
-    custom: true,
-    // import: true,
-    // export: true,
-    refresh: true,
-    zoom: true,
+    custom: true, // 自定义工具栏
+    refresh: true, // 刷新按钮
+    zoom: true, // 缩放按钮
   },
 };
 
-const gridEvents: VxeGridListeners<any> = {
-  /* cellClick: ({ row }) => {
-    message.info(`cell-click: ${row.name}`);
-  },*/
-};
+// 表格事件监听
+const gridEvents: VxeGridListeners<any> = {};
 
+// 使用表格组件
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
  * 获取物料类型的中文描述
- * @param state 物料类型编码编码
+ * @param state 物料类型编码
+ * @returns 物料类型的中文描述
  */
-function getMaterialTypeText(state: number) {
+function getMaterialTypeText(state: number): string {
   switch (state) {
     case 1: {
       return '原料';
@@ -80,22 +82,16 @@ function getMaterialTypeText(state: number) {
 // endregion
 
 // region 查询数据
+
 // 查询参数
 const queryParams = ref({
-  // 查询时间
-  searchTime: [] as any,
-  //  工序编号
-  processCode: '',
-  // 工作站编号
-  workstationCode: '',
-  // 工作站名称
-  workstationName: '',
-  // 工单号
-  worksheetCode: '',
-  // 产品料号
-  productCode: '',
-  // 产品名称
-  productName: '',
+  searchTime: [] as any, // 查询时间范围
+  processCode: '', // 工序编号
+  workstationCode: '', // 工作站编号
+  workstationName: '', // 工作站名称
+  worksheetCode: '', // 工单号
+  productCode: '', // 产品料号
+  productName: '', // 产品名称
 });
 
 /**
@@ -103,14 +99,16 @@ const queryParams = ref({
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  * { page, pageSize }: any
  */
-function queryData() {
-  return new Promise((resolve, _reject) => {
+function queryData(): Promise<any> {
+  return new Promise((resolve) => {
     const params: any = { ...queryParams.value };
     if (params.searchTime && params.searchTime.length === 2) {
+      // 格式化时间范围
       params.startTime = params.searchTime[0].format('YYYY-MM-DD');
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
+    // 返回模拟数据
     resolve({
       total: 0,
       items: [],

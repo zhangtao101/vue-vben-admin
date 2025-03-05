@@ -60,6 +60,14 @@
     "update:deps": "npx taze -r -w",
     "version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile"
   },
+  "dependencies": {
+    "@types/jquery": "^3.5.32",
+    "@types/lodash-es": "^4.17.12",
+    "@types/sortablejs": "^1.15.8",
+    "lodash-es": "^4.17.21",
+    "qs": "^6.13.1",
+    "sortablejs": "^1.15.6"
+  },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",
     "@changesets/cli": "catalog:",
@@ -120,13 +128,5 @@
       "canvas",
       "node-gyp"
     ]
-  },
-  "dependencies": {
-    "@types/jquery": "^3.5.32",
-    "@types/lodash-es": "^4.17.12",
-    "@types/sortablejs": "^1.15.8",
-    "lodash-es": "^4.17.21",
-    "qs": "^6.13.1",
-    "sortablejs": "^1.15.6"
   }
 }
