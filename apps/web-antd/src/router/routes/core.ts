@@ -206,6 +206,97 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'productionDaily',
         path: 'productionDaily',
       },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/pressDailyReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '压机日报',
+          code: 'WM_322',
+        },
+        name: 'pressDailyReport',
+        path: 'pressDailyReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/kilnDaily.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '窑炉日报',
+          code: 'WM_322',
+        },
+        name: 'kilnDaily',
+        path: 'kilnDaily',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/glazeLineDaily.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '釉线日报',
+          code: 'WM_322',
+        },
+        name: 'glazeLineDaily',
+        path: 'glazeLineDaily',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/poliShing.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '抛光产量日报',
+          code: 'WM_322',
+        },
+        name: 'poliShing',
+        path: 'poliShing',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/polishingShutdownDailyReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '抛光停机日报',
+          code: 'WM_322',
+        },
+        name: 'polishingShutdownDailyReport',
+        path: 'polishingShutdownDailyReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/powderDaily.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '粉料统计日报',
+          code: 'WM_322',
+        },
+        name: 'powderDaily',
+        path: 'powderDaily',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/reportonactuallossofkilnglazematerials.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '窑釉料实际损耗日报',
+          code: 'WM_322',
+        },
+        name: 'reportonactuallossofkilnglazematerials',
+        path: 'reportonactuallossofkilnglazematerials',
+      },
     ],
   },
 ];

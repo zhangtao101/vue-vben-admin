@@ -4,6 +4,6 @@
   "workstationCode": "工作站编号",
   "workstationName": "工作站名称",
   "worksheetCode": "工单号",
-  "productCode": "产品料号",
+  "productCode": "产品编码",
   "productName": "产品名称"
 }

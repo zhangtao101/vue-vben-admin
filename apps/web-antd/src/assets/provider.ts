@@ -260,9 +260,11 @@ export const provider = function () {
             fields: [
               { text: '材料编码', field: 'materialCode' },
               { text: '材料名称', field: 'materialName' },
+              { text: '批次', field: 'lot' },
               { text: '规格', field: '' },
               { text: '单位', field: 'unit' },
               { text: '领用量', field: 'receiveNumber' },
+              { text: '储位', field: 'storageLocation' },
             ],
           },
           columns: [
@@ -276,6 +278,12 @@ export const provider = function () {
               {
                 title: '材料名称',
                 field: 'materialName',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '批次',
+                field: 'lot',
                 align: 'center',
                 width: 100,
               },
@@ -294,6 +302,12 @@ export const provider = function () {
               {
                 title: '领用量',
                 field: 'receiveNumber',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '储位',
+                field: 'storageLocation',
                 align: 'center',
                 width: 100,
               },

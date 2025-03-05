@@ -686,18 +686,24 @@ function printFile() {
         row.lv = 'P';
       });
       data = {
-        year: dayjs().year(),
-        month: dayjs().month(),
-        day: dayjs().day(),
+        time: dayjs().format('YYYY年MM月DD日'),
+        materialRequisitionNumber: selectedRows[0].applyCode,
         semiFinishedProduct: selectedRows,
       };
+      // todo
       ob = queryPrintTemplateDetails('semiFinishedProductPrinting');
     } else {
+      selectedRows.forEach((row: any) => {
+        if (row.remark) {
+          const arr = row.remark.split(',');
+          row.storageLocation = arr[1];
+          row.lot = arr[2];
+        }
+      });
       data = {
-        year: dayjs().year(),
-        month: dayjs().month(),
-        day: dayjs().day(),
+        time: dayjs().format('YYYY年MM月DD日'),
         applyOrgCode: selectedRows[0].applyOrgCode,
+        materialRequisitionNumber: selectedRows[0].applyCode,
         applyOrgName: selectedRows[0].applyOrgName,
         materialRequisition: selectedRows,
       };
