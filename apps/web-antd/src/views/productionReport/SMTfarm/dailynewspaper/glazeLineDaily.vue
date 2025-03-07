@@ -38,7 +38,13 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productName', title: '产品名称', minWidth: 200 },
     {
       field: 'reportNumber',
-      title: '进线量',
+      title: '进线量(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'reportNumberM',
+      title: '进线量(M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -54,24 +60,6 @@ const gridOptions: VxeGridProps<any> = {
         {
           field: 'dlValue',
           title: '电能',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'jlqValue',
-          title: '焦炉气',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'smjValue',
-          title: '水煤气',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'trqValue',
-          title: '天然气',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },

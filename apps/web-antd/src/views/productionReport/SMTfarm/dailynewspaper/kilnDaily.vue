@@ -43,8 +43,8 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productCode', title: '产品编码', minWidth: 200 },
     { field: 'materialName', title: '产品名称', minWidth: 200 },
     {
-      field: 'inNumberT',
-      title: '进窑量(T)',
+      field: 'inNumberP',
+      title: '进窑量(片)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -55,8 +55,8 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      field: 'outNumberT',
-      title: '出窑合格量(T)',
+      field: 'outNumberP',
+      title: '出窑合格量(片)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -73,8 +73,8 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      field: 'interimStock',
-      title: '入中间品库量(m2)',
+      field: 'interimStockP',
+      title: '入中间品库量(片)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -101,6 +101,23 @@ const gridOptions: VxeGridProps<any> = {
         },
       ],
     },
+    {
+      title: '燃气',
+      children: [
+        {
+          field: 'wgStopTrqValue',
+          title: '卧干器',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'YlStopTrqValue',
+          title: '窑炉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
     /* {
       title: '水煤气用量M3',
       children: [
@@ -108,18 +125,6 @@ const gridOptions: VxeGridProps<any> = {
         { field: 'dlValue', title: '窑炉', minWidth: 150,  slots: { footer: 'footerData' } },
       ],
     },*/
-    {
-      field: 'wgStopTrqValue',
-      title: '卧干停窑燃气',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'YlStopTrqValue',
-      title: '窑炉停窑燃气',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
   ],
   footerData: [{ seq: '合计' }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 6 }],
