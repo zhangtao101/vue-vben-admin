@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryEnamelDayStatistics } from '#/api';
+import { queryPGStopDayStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -36,22 +36,137 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '类型', minWidth: 200 },
-    { field: 'day', title: '线号', minWidth: 200 },
-    { field: 'day', title: '磨边产量', minWidth: 200 },
-    { field: 'day', title: '抛光产量', minWidth: 200 },
-    { field: 'day', title: '停机时间合计(h)', minWidth: 200 },
-    { field: 'day', title: '工艺停机(h)', minWidth: 200 },
-    { field: 'day', title: '修理停机', minWidth: 200 },
-    { field: 'day', title: '无砖停机', minWidth: 200 },
-    { field: 'day', title: '水电气停机', minWidth: 200 },
-    { field: 'day', title: '大修停机', minWidth: 200 },
-    { field: 'day', title: '无人放空', minWidth: 200 },
-    { field: 'day', title: '其他停机', minWidth: 200 },
-    { field: 'day', title: '瞬时停机', minWidth: 200 },
-    { field: 'day', title: '改造停机', minWidth: 200 },
-    { field: 'day', title: '春节放假', minWidth: 200 },
-    { field: 'day', title: '计划停机', minWidth: 200 },
+    { field: 'type', title: '类型', minWidth: 200 },
+    { field: 'materialName', title: '产品名称', minWidth: 200 },
+    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'lineName', title: '线号', minWidth: 200 },
+    { field: 'mBNumber', title: '磨边产量', minWidth: 200 },
+    { field: 'pGNumber', title: '抛光产量', minWidth: 200 },
+    { field: 'stopTime', title: '停机时间合计(h)', minWidth: 200 },
+    {
+      title: '工艺停机',
+      children: [
+        {
+          field: 'gYTCDB',
+          title: '打包',
+          minWidth: 150,
+        },
+        {
+          field: 'gYTCPG',
+          title: '抛光',
+          minWidth: 150,
+        },
+        {
+          field: 'gYTCSC',
+          title: '窑炉',
+          minWidth: 150,
+        },
+        {
+          field: 'gYTCSY',
+          title: '施釉',
+          minWidth: 150,
+        },
+        {
+          field: 'gYTCWG',
+          title: '卧干',
+          minWidth: 150,
+        },
+        {
+          field: 'gYTCCX',
+          title: '成型',
+          minWidth: 150,
+        },
+        {
+          field: 'gYTCYL',
+          title: '原料',
+          minWidth: 150,
+        },
+      ],
+    },
+    {
+      title: '生产停机',
+      children: [
+        {
+          field: 'sCTCDB',
+          title: '打包',
+          minWidth: 150,
+        },
+        {
+          field: 'sCTCPG',
+          title: '抛光',
+          minWidth: 150,
+        },
+        {
+          field: 'sCTCSC',
+          title: '窑炉',
+          minWidth: 150,
+        },
+        {
+          field: 'sCTCSY',
+          title: '施釉',
+          minWidth: 150,
+        },
+        {
+          field: 'sCTCWG',
+          title: '卧干',
+          minWidth: 150,
+        },
+        {
+          field: 'sCTCYL',
+          title: '原料',
+          minWidth: 150,
+        },
+        {
+          field: 'sCTCCX',
+          title: '成型',
+          minWidth: 150,
+        },
+      ],
+    },
+    {
+      title: '设备故障',
+      children: [
+        {
+          field: 'sBGZDB',
+          title: '打包',
+          minWidth: 150,
+        },
+        {
+          field: 'sBGZPG',
+          title: '抛光',
+          minWidth: 150,
+        },
+        {
+          field: 'sBGZYL',
+          title: '窑炉',
+          minWidth: 150,
+        },
+        {
+          field: 'sBGZYX',
+          title: '施釉',
+          minWidth: 150,
+        },
+        {
+          field: 'sBGZSG',
+          title: '卧干',
+          minWidth: 150,
+        },
+        {
+          field: 'sBGZFZ',
+          title: '原料',
+          minWidth: 150,
+        },
+        {
+          field: 'sBGZCX',
+          title: '成型',
+          minWidth: 150,
+        },
+      ],
+    },
+    { field: 'sCZC', title: '转产', minWidth: 200 },
+    { field: 'cNXZ', title: '产能限制', minWidth: 200 },
+    { field: 'zRZH', title: '自然灾害', minWidth: 200 },
+    { field: 'sBQX', title: '设备清洗', minWidth: 200 },
   ],
   footerData: [{ seq: '抛光汇总' }, { seq: '磨边胡总' }, { seq: '合计' }],
   mergeFooterItems: [
@@ -117,8 +232,8 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 工单号
-  worksheetCode: '',
+  // 线号
+  lineName: '',
 });
 
 /**
@@ -133,7 +248,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryEnamelDayStatistics({
+    queryPGStopDayStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -184,12 +299,12 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 工单号 -->
+        <!-- 线号 -->
         <FormItem
-          :label="$t('productionDaily.worksheetCode')"
+          :label="$t('productionDaily.wireNumber')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.worksheetCode" />
+          <Input v-model:value="queryParams.lineName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

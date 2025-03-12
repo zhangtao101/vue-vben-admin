@@ -35,24 +35,36 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'worksheetCode', title: '工单号', minWidth: 200 },
     { field: 'lineName', title: '生产批号', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'productName', title: '产品名称', minWidth: 200 },
+    { field: 'productName', title: '产品名称', minWidth: 250 },
+
     {
-      field: 'reportNumber',
-      title: '进线量(片)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'reportNumberM',
-      title: '进线量(M2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'qualityNumber',
-      title: '出线量',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
+      title: '报工良品',
+      children: [
+        {
+          field: 'reportNumber',
+          title: '进线量(片)',
+          minWidth: 200,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'reportNumberM',
+          title: '进线量(M2)',
+          minWidth: 200,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'qualityNumber',
+          title: '出线量(片)',
+          minWidth: 200,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'qualityNumberM',
+          title: '出线量(M2)',
+          minWidth: 200,
+          slots: { footer: 'footerData' },
+        },
+      ],
     },
     {
       title: '能耗',

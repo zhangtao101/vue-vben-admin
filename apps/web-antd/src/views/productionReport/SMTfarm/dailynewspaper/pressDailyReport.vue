@@ -36,7 +36,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
+    { field: 'day', title: '报工日期', minWidth: 200 },
     { field: 'equipCode', title: '压机号', minWidth: 200 },
     { field: 'worksheetCode', title: '工单号', minWidth: 200 },
     { field: 'lineName', title: '生产批号', minWidth: 200 },
@@ -95,7 +95,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'equipTime',
-      title: '工时(h)',
+      title: '机时(h)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

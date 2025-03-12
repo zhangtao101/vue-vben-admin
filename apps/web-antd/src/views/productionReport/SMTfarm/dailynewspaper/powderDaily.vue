@@ -36,7 +36,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
+    { field: 'day', title: '报工日期', minWidth: 200 },
     { field: 'productCode', title: '产品编号', minWidth: 200 },
     {
       title: '配方',
@@ -44,7 +44,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'planNumber',
-      title: '计划批量(万M2)',
+      title: '计划批量(KG)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -64,30 +64,32 @@ const gridOptions: VxeGridProps<any> = {
       children: [
         {
           field: 'pjInNumber',
-          title: '放浆量(T)',
+          title: '实际(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'unFeedNumber',
+          title: '盘盈(T)',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
+    { field: 'ballMillNumber', title: '球磨机号', minWidth: 150 },
+    { field: 'towerNumber', title: '塔号', minWidth: 150 },
+    { field: 'pfCurrentTime', title: '工单用时', minWidth: 150 },
     {
-      title: '喷干量(T)',
-      children: [
-        { field: 'equipName', title: '塔号', minWidth: 150 },
-        { field: 'pfCurrentTime', title: '喷干时间', minWidth: 150 },
-        {
-          field: 'dayInNumber',
-          title: '当日',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'zfOutNumber',
-          title: '批累计',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
+      field: 'dayInNumber',
+      title: '工单当日量',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'zfOutNumber',
+      title: '工单累计量',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
     },
     {
       title: '天然气用量(M3)',
@@ -169,7 +171,7 @@ const gridOptions: VxeGridProps<any> = {
         },
         {
           field: 'dlperUseNumber',
-          title: '单耗M3/T',
+          title: '单耗',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -274,6 +276,13 @@ function queryData({ page, pageSize }: any) {
     })
       .then(({ dayStatisticsDtos: { total, list }, ...p }) => {
         collect.value = p;
+        list.forEach((item: any) => {
+          if (item.worksheetCode.includes('ZJ')) {
+            item.ballMillNumber = item.equipName;
+          } else {
+            item.towerNumber = item.equipName;
+          }
+        });
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,

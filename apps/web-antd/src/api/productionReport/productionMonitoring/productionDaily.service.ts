@@ -20,6 +20,14 @@ export async function queryEnamelDayStatistics(params: any) {
   );
 }
 /**
+ * 查询抛光停机日报
+ */
+export async function queryPGStopDayStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPGStopDayStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
  * 查询窑炉日报
  */
 export async function queryYLDayStatistics(params: any) {

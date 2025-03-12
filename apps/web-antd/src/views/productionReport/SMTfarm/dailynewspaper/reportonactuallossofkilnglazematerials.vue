@@ -15,7 +15,6 @@ import {
   Input,
   RangePicker,
 } from 'ant-design-vue';
-import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { queryProductionDaily } from '#/api';
@@ -41,12 +40,12 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'batchCode', title: '产品批号', minWidth: 200 },
     {
       field: 'productCode',
-      title: `${getTime()}年装载产量(M2)`,
+      title: `装载产量(M2)`,
       minWidth: 150,
     },
     {
       field: 'productName',
-      title: `${getTime()}年出窑产量(M2)`,
+      title: `出窑产量(M2)`,
       minWidth: 150,
     },
     { field: 'workstationCode', title: '釉料理论总单耗(Kg/M2)', minWidth: 150 },
@@ -344,13 +343,6 @@ function queryData({ page, pageSize }: any) {
         reject(error);
       });
   });
-}
-
-/**
- * 获取当前年份
- */
-function getTime() {
-  return dayjs().format('YY');
 }
 
 // endregion

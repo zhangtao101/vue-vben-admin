@@ -241,6 +241,9 @@ function showReportForWorkDrawer(row: any) {
     .then((res) => {
       reportForWorkDrawer.value = true;
       editDetails.value = res;
+      editDetails.value.forEach((item: any) => {
+        unitConversion(item);
+      });
     })
     .finally(() => {
       row.loading = false;
@@ -252,6 +255,40 @@ function showReportForWorkDrawer(row: any) {
  */
 function reportForWorkDrawerClose() {
   reportForWorkDrawer.value = false;
+}
+
+/**
+ * 获取转换后的单位
+ * @param unit 未转换的单位
+ */
+function getUnit(unit: string) {
+  switch (unit) {
+    case 'kg': {
+      return 'T';
+    }
+    case '片': {
+      return 'M²';
+    }
+  }
+}
+
+/**
+ * 单位转换
+ * @param item 需要转换的对象
+ */
+function unitConversion(item: any) {
+  switch (item.unit) {
+    case 'kg': {
+      item.qualityNumber_zf = item.qualityNumber / 1000;
+      item.unqualityNumber_zf = item.unqualityNumber / 1000;
+      break;
+    }
+    case '片': {
+      item.qualityNumber_zf = item.qualityNumber * (item.zhxs || 0);
+      item.unqualityNumber_zf = item.unqualityNumber * (item.zhxs || 0);
+      break;
+    }
+  }
 }
 // endregion
 
@@ -420,9 +457,10 @@ onMounted(() => {});
     <div v-if="editDetails && editDetails.length > 0">
       <div v-for="item of editDetails" :key="item.id" class="mb-8">
         <Descriptions bordered :column="2" class="mb-4">
-          <DescriptionsItem label="报工总数">
+          <DescriptionsItem label="报工总数" :span="2">
             {{ item.reportNumber }}
           </DescriptionsItem>
+          <!-- 良品数 -->
           <DescriptionsItem label="良品数">
             <InputNumber
               v-model:value="item.qualityNumber"
@@ -431,10 +469,21 @@ onMounted(() => {});
               @change="
                 () => {
                   item.reportNumber = item.qualityNumber + item.unqualityNumber;
+                  unitConversion(item);
                 }
               "
             />
           </DescriptionsItem>
+          <!-- 转换后的良品数 -->
+          <DescriptionsItem label="良品数">
+            <InputNumber
+              v-model:value="item.qualityNumber_zf"
+              :addon-after="getUnit(item.unit)"
+              :min="0"
+              readonly
+            />
+          </DescriptionsItem>
+
           <DescriptionsItem label="废品数">
             <InputNumber
               v-model:value="item.unqualityNumber"
@@ -443,8 +492,18 @@ onMounted(() => {});
               @change="
                 () => {
                   item.reportNumber = item.qualityNumber + item.unqualityNumber;
+                  unitConversion(item);
                 }
               "
+            />
+          </DescriptionsItem>
+          <!-- 转换后的良品数 -->
+          <DescriptionsItem label="废品数">
+            <InputNumber
+              v-model:value="item.unqualityNumber_zf"
+              :addon-after="getUnit(item.unit)"
+              :min="0"
+              readonly
             />
           </DescriptionsItem>
           <DescriptionsItem label="人时">
