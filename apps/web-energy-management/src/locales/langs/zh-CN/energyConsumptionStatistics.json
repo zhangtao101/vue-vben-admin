@@ -1,0 +1,23 @@
+{
+  "timeFrame": "时间范围",
+  "timeGranularity": "时间粒度",
+  "hourS": "小时",
+  "day": "日",
+  "month": "月",
+  "year": "年",
+  "wattHourCharge": "电度费用",
+  "averageElectricityPrice": "平均电价",
+  "electricityPrice": "电价",
+  "electricityBillDuringPeakHours": "峰时段电费",
+  "normalPeriodCharge": "平时段电费",
+  "peakCharge": "尖时段电费",
+  "totalElectricityCharge": "总电费",
+  "valleyCharge": "谷时段电费",
+  "undefinedType": "未定义的类型",
+  "electricCharge": "电费(元)",
+  "electricityConsumptionAndUnit": "用电量(kWh)",
+  "chart": "图表",
+  "table": "表格",
+  "electricityRateAnalysis": "电费分析",
+  "electricityConsumption": "电费用量"
+}

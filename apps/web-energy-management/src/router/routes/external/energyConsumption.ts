@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
   {
     component: () =>
       import(
-        '#/views/energyConsumptionStatistics/useEnergyThroughoutTheEntireSection/energyFlowDirection.vue'
+        '#/views/energyConsumptionAnalysis/useEnergyThroughoutTheEntireSection/energyFlowDirection.vue'
       ),
     meta: {
       icon: VBEN_LOGO_URL,
@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
   {
     component: () =>
       import(
-        '#/views/energyConsumptionStatistics/useEnergyThroughoutTheEntireSection/lossAnalysis.vue'
+        '#/views/energyConsumptionAnalysis/useEnergyThroughoutTheEntireSection/lossAnalysis.vue'
       ),
     meta: {
       icon: VBEN_LOGO_URL,
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
   {
     component: () =>
       import(
-        '#/views/energyConsumptionStatistics/testAnalysis/productEnergyConsumption.vue'
+        '#/views/energyConsumptionAnalysis/testAnalysis/productEnergyConsumption.vue'
       ),
     meta: {
       icon: VBEN_LOGO_URL,
@@ -45,7 +45,7 @@ const routes: RouteRecordRaw[] = [
   {
     component: () =>
       import(
-        '#/views/energyConsumptionStatistics/testAnalysis/systemEnergyConsumption.vue'
+        '#/views/energyConsumptionAnalysis/testAnalysis/systemEnergyConsumption.vue'
       ),
     meta: {
       icon: VBEN_LOGO_URL,
@@ -58,7 +58,7 @@ const routes: RouteRecordRaw[] = [
   {
     component: () =>
       import(
-        '#/views/energyConsumptionStatistics/testAnalysis/teamEnergyConsumption.vue'
+        '#/views/energyConsumptionAnalysis/testAnalysis/teamEnergyConsumption.vue'
       ),
     meta: {
       icon: VBEN_LOGO_URL,
@@ -67,6 +67,72 @@ const routes: RouteRecordRaw[] = [
     },
     name: 'teamEnergyConsumption',
     path: '/teamEnergyConsumption',
+  },
+  // 耗能统计
+  {
+    component: () =>
+      import(
+        '#/views/energyConsumptionStatistics/energyConsumptionCost/electricityCost.vue'
+      ),
+    meta: {
+      icon: VBEN_LOGO_URL,
+      title: '电度电费',
+      ignoreAccess: true,
+    },
+    name: 'electricityCost',
+    path: '/electricityCost',
+  },
+  {
+    component: () =>
+      import(
+        '#/views/energyConsumptionStatistics/energyConsumptionCost/adjustmentFee.vue'
+      ),
+    meta: {
+      icon: VBEN_LOGO_URL,
+      title: '力调电费',
+      ignoreAccess: true,
+    },
+    name: 'adjustmentFee',
+    path: '/adjustmentFee',
+  },
+  {
+    component: () =>
+      import(
+        '#/views/energyConsumptionStatistics/energyConsumptionCost/comprehensiveWaterFee.vue'
+      ),
+    meta: {
+      icon: VBEN_LOGO_URL,
+      title: '综合水费',
+      ignoreAccess: true,
+    },
+    name: 'comprehensiveWaterFee',
+    path: '/comprehensiveWaterFee',
+  },
+  {
+    component: () =>
+      import(
+        '#/views/energyConsumptionStatistics/qualityAnalysis/electricityConsumptionData.vue'
+      ),
+    meta: {
+      icon: VBEN_LOGO_URL,
+      title: '用电数据',
+      ignoreAccess: true,
+    },
+    name: 'electricityConsumptionData',
+    path: '/electricityConsumptionData',
+  },
+  {
+    component: () =>
+      import(
+        '#/views/energyConsumptionStatistics/qualityAnalysis/waterUsageData.vue'
+      ),
+    meta: {
+      icon: VBEN_LOGO_URL,
+      title: '用水数据',
+      ignoreAccess: true,
+    },
+    name: 'waterUsageData',
+    path: '/waterUsageData',
   },
 ];
 
