@@ -13,9 +13,12 @@ async function initApplication() {
   // region 加载图标
 
   // 动态导入 @iconify/json/json 下的所有图标集
-  const iconCollections = import.meta.glob('@iconify/json/json/*.json', {
-    eager: true,
-  });
+  const iconCollections = import.meta.glob(
+    '../node_modules/@iconify/json/json/*.json',
+    {
+      eager: true,
+    },
+  );
 
   // 遍历所有图标集并注册
   for (const path in iconCollections) {

@@ -13,4 +13,7 @@ export const overridesPreferences = defineOverridesPreferences({
   theme: {
     mode: 'light',
   },
+  copyright: {
+    date: '2026',
+  },
 });

@@ -445,7 +445,7 @@ const steps: TourProps['steps'] = [
 function closeGuide() {
   open.value = false;
 
-  if (current.value === steps.length - 1) {
+  if (current.value === steps!.length - 1) {
     const guide_str = localStorage.getItem('guide');
     let guide: any;
     if (guide_str) {
