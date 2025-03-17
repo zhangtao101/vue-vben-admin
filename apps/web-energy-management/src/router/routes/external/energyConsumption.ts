@@ -134,6 +134,17 @@ const routes: RouteRecordRaw[] = [
     name: 'waterUsageData',
     path: '/waterUsageData',
   },
+  {
+    component: () =>
+      import('#/views/configurationEditing/configurationEditing.vue'),
+    meta: {
+      icon: VBEN_LOGO_URL,
+      title: '组态编辑',
+      ignoreAccess: true,
+    },
+    name: 'configurationEditing',
+    path: '/configurationEditing',
+  },
 ];
 
 export default routes;

@@ -51,3 +51,19 @@ export async function queryPressDayStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPressDayStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ *  抛光产量日报查询
+ */
+export async function queryPolishingYieldDayStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPolishingYieldDayStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ *  粉料移交报表查询
+ */
+export async function queryFLTransferStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getFLTransferStatistics?${qs.stringify(params)}`,
+  );
+}

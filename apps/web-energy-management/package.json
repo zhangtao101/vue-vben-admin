@@ -38,6 +38,7 @@
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
+    "maotu": "0.6.5-beta1",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"

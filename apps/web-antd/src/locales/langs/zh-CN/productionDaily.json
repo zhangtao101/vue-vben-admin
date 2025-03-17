@@ -6,5 +6,7 @@
   "worksheetCode": "工单号",
   "productCode": "产品编码",
   "productName": "产品名称",
-  "wireNumber": "线号"
+  "wireNumber": "线号",
+  "batchNumber": "批次号",
+  "basicFormula": "基础配方"
 }

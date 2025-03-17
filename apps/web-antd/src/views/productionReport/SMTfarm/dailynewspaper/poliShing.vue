@@ -180,6 +180,8 @@ const queryParams = ref({
   worksheetCode: '',
 });
 
+// 汇总数据
+const collect = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -197,7 +199,8 @@ function queryData({ page, pageSize }: any) {
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ total, list }) => {
+      .then(({ statisticsDtos: { total, list }, ...p }) => {
+        collect.value = p;
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
@@ -269,6 +272,9 @@ onMounted(() => {
       <Grid>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
+        </template>
+        <template #footerData="{ column }">
+          <span> {{ collect[column.field] }} </span>
         </template>
       </Grid>
     </Card>

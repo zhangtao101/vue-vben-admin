@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryYLReportDayStatistics } from '#/api';
+import { queryPolishingYieldDayStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -37,22 +37,23 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'productCode', title: '生产线', minWidth: 200 },
-    { field: 'productCode', title: '班次', minWidth: 200 },
-    { field: 'productCode', title: '单片面积(M2)', minWidth: 200 },
+    { field: 'sCline', title: '生产线', minWidth: 200 },
+    { field: 'cLass', title: '班次', minWidth: 200 },
+    { field: 'singleArea', title: '单片面积(M2)', minWidth: 200 },
+    { field: 'productName', title: '产品名称', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'productCode', title: '产品批号', minWidth: 200 },
+    { field: 'lineName', title: '产品批号', minWidth: 200 },
     {
-      title: '生产产量',
+      title: '生产产量(M2)',
       children: [
         {
-          field: 'feedNumber',
+          field: 'plannedProduction',
           title: '计划',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'feedNumber',
+          field: 'actualProduction',
           title: '实际',
           minWidth: 150,
           slots: { footer: 'footerData' },
@@ -60,16 +61,16 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '生产时间(h)',
+      title: '生产时间(H)',
       children: [
         {
-          field: 'feedNumber',
+          field: 'plannedTime',
           title: '计划',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'feedNumber',
+          field: 'actualTime',
           title: '实际',
           minWidth: 150,
           slots: { footer: 'footerData' },
@@ -78,19 +79,19 @@ const gridOptions: VxeGridProps<any> = {
           title: '停机时间(h)',
           children: [
             {
-              field: 'feedNumber',
+              field: 'faultStopTime',
               title: '故障时间',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: 'feedNumber',
+              field: 'workStopTime',
               title: '工艺停机',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: 'feedNumber',
+              field: 'otherStopTime',
               title: '其他停机',
               minWidth: 150,
               slots: { footer: 'footerData' },
@@ -103,19 +104,19 @@ const gridOptions: VxeGridProps<any> = {
       title: '单位产能差异(m2/h)',
       children: [
         {
-          field: 'feedNumber',
+          field: 'plannedUnitProduction',
           title: '计划',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'feedNumber',
+          field: 'actualUnitProduction',
           title: '实际',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'feedNumber',
+          field: 'differenceUnitProduction',
           title: '差异',
           minWidth: 150,
           slots: { footer: 'footerData' },
@@ -126,58 +127,30 @@ const gridOptions: VxeGridProps<any> = {
       title: '电耗差异(kwh/m2)',
       children: [
         {
-          field: 'feedNumber',
+          field: 'useElectricity',
           title: '用电量',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'feedNumber',
+          field: 'targetElectricity',
           title: '目标',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'feedNumber',
+          field: 'actualElectricity',
           title: '实际',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'feedNumber',
+          field: 'differenceElectricity',
           title: '差异',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
-    },
-
-    {
-      title: '备注',
-      children: [
-        {
-          field: 'dluseEnergyNumber',
-          title: '耗单位产能差异原因',
-          minWidth: 150,
-        },
-        {
-          field: 'dluseEnergyNumber',
-          title: '故障原因',
-          minWidth: 150,
-        },
-      ],
-    },
-    {
-      field: 'feedNumber',
-      title: '开机时间',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'feedNumber',
-      title: '班长',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
@@ -242,12 +215,8 @@ const queryParams = ref({
   searchTime: [] as any,
   // 工单号
   worksheetCode: '',
-  // 工序编号
-  processCode: '',
-  // 工作站编号
-  workstationCode: '',
-  // 工作站名称
-  workstationName: '',
+  // 批次号
+  lineName: '',
   // 产品料号
   productCode: '',
   // 产品名称
@@ -269,7 +238,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryYLReportDayStatistics({
+    queryPolishingYieldDayStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -328,28 +297,12 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 工序编号 -->
+        <!-- 批次号 -->
         <FormItem
-          :label="$t('productionDaily.processCode')"
+          :label="$t('productionDaily.batchNumber')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.processCode" />
-        </FormItem>
-
-        <!-- 工作站编号 -->
-        <FormItem
-          :label="$t('productionDaily.workstationCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.workstationCode" />
-        </FormItem>
-
-        <!-- 工作站名称 -->
-        <FormItem
-          :label="$t('productionDaily.workstationName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.workstationName" />
+          <Input v-model:value="queryParams.lineName" />
         </FormItem>
 
         <!-- 产品料号 -->

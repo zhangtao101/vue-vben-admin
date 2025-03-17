@@ -37,6 +37,7 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     { field: 'day', title: '报工日期', minWidth: 200 },
+    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
     { field: 'productCode', title: '产品编号', minWidth: 200 },
     {
       title: '配方',
@@ -49,11 +50,47 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'reportNumber',
+      title: '工单当日报工量',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       title: '球磨机',
       children: [
         {
+          field: 'ballMillNumber',
+          title: '球磨机号',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
           field: 'feedNumber',
           title: '加料量(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'unFeedNumber',
+          title: '盘盈(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'dayInNumber',
+          title: '产出',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'currentTime',
+          title: '球磨机时',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'dluseEnergyNumber',
+          title: '能耗',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -68,31 +105,19 @@ const gridOptions: VxeGridProps<any> = {
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
-        {
-          field: 'unFeedNumber',
-          title: '盘盈(T)',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
       ],
     },
-    { field: 'ballMillNumber', title: '球磨机号', minWidth: 150 },
-    { field: 'towerNumber', title: '塔号', minWidth: 150 },
-    { field: 'pfCurrentTime', title: '工单用时', minWidth: 150 },
     {
-      field: 'dayInNumber',
-      title: '工单当日量',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
+      title: '喷干塔',
+      children: [
+        { field: 'towerNumber', title: '塔号', minWidth: 150 },
+        { field: 'reportNumber', title: '产出', minWidth: 150 },
+        { field: 'dayInNumber', title: '能耗', minWidth: 150 },
+        { field: 'pfCurrentTime', title: '入库里', minWidth: 150 },
+      ],
     },
     {
-      field: 'zfOutNumber',
-      title: '工单累计量',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
-    },
-    {
-      title: '天然气用量(M3)',
+      title: '喷粉天然气用量(M3)',
       children: [
         {
           field: 'trquseEnergyNumber',
@@ -111,7 +136,7 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '焦炉气用量(M3)',
+      title: '喷粉焦炉气用量(M3)',
       children: [
         {
           field: 'jlquseEnergyNumber',
@@ -130,7 +155,7 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '水煤浆用量(M3)',
+      title: '喷粉水煤浆用量(M3)',
       children: [
         {
           field: 'smjuseEnergyNumber',
@@ -149,19 +174,7 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      field: 'currentTime',
-      title: '喷干用时（小时）',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'perOutput',
-      title: '单位产能（吨/小时）',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      title: '电耗量',
+      title: '喷粉电耗量',
       children: [
         {
           field: 'dluseEnergyNumber',
@@ -181,7 +194,7 @@ const gridOptions: VxeGridProps<any> = {
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 5 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -277,10 +290,47 @@ function queryData({ page, pageSize }: any) {
       .then(({ dayStatisticsDtos: { total, list }, ...p }) => {
         collect.value = p;
         list.forEach((item: any) => {
+          let arr: string[] = [];
           if (item.worksheetCode.includes('ZJ')) {
             item.ballMillNumber = item.equipName;
+            arr = [
+              'equipName',
+              'reportNumber',
+              'dayInNumber',
+              'pfCurrentTime',
+              'trquseEnergyNumber',
+              'trqperUseNumber',
+              'trqstartEnergyNumber',
+              'trqendEnergyNumber',
+              'jlquseEnergyNumber',
+              'jlqperUseNumber',
+              'jlqstartEnergyNumber',
+              'jlqendEnergyNumber',
+              'smjuseEnergyNumber',
+              'smjperUseNumber',
+              'smjstartEnergyNumber',
+              'smjendEnergyNumber',
+              'dluseEnergyNumber',
+              'dlperUseNumber',
+              'dlstartEnergyNumber',
+              'dlendEnergyNumber',
+            ];
           } else {
             item.towerNumber = item.equipName;
+            arr = [
+              'equipName',
+              'feedNumber',
+              'unfeedNumber',
+              'dayInNumber',
+              'currentTime',
+              'dluseEnergyNumber',
+              'dlperUseNumber',
+              'dlstartEnergyNumber',
+              'dlendEnergyNumber',
+            ];
+          }
+          for (const key of arr) {
+            item[key] = undefined;
           }
         });
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。

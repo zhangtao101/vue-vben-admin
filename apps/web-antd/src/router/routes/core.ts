@@ -166,7 +166,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '工单冲红',
-          code: 'WM_284',
         },
         name: 'productRed',
         path: 'productRed',
@@ -177,7 +176,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '工单状态查看',
-          code: 'WM_460',
         },
         name: 'workOrderStatusQuery',
         path: 'workOrderStatusQuery',
@@ -190,7 +188,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '领料申请',
-          code: 'WM_322',
         },
         name: 'storesRequisition',
         path: 'storesRequisition',
@@ -201,7 +198,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '生产日报',
-          code: 'WM_322',
         },
         name: 'productionDaily',
         path: 'productionDaily',
@@ -214,7 +210,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '压机日报',
-          code: 'WM_322',
         },
         name: 'pressDailyReport',
         path: 'pressDailyReport',
@@ -227,7 +222,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '窑炉日报',
-          code: 'WM_322',
         },
         name: 'kilnDaily',
         path: 'kilnDaily',
@@ -240,7 +234,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '釉线日报',
-          code: 'WM_322',
         },
         name: 'glazeLineDaily',
         path: 'glazeLineDaily',
@@ -253,7 +246,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '抛光产量日报',
-          code: 'WM_322',
         },
         name: 'poliShing',
         path: 'poliShing',
@@ -266,7 +258,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '抛光停机日报',
-          code: 'WM_322',
         },
         name: 'polishingShutdownDailyReport',
         path: 'polishingShutdownDailyReport',
@@ -279,7 +270,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '粉料统计日报',
-          code: 'WM_322',
         },
         name: 'powderDaily',
         path: 'powderDaily',
@@ -292,10 +282,21 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '窑釉料实际损耗日报',
-          code: 'WM_322',
         },
         name: 'reportonactuallossofkilnglazematerials',
         path: 'reportonactuallossofkilnglazematerials',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/powderTransfer.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '粉料移交报表',
+        },
+        name: 'powderTransfer',
+        path: 'powderTransfer',
       },
     ],
   },

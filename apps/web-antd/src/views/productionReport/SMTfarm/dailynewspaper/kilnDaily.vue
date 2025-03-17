@@ -85,6 +85,18 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'interimStock',
+      title: '入中间品库量(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'centosRate',
+      title: '投入产出率',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       title: '天然气用量M3',
       children: [
         {
@@ -102,7 +114,24 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '燃气',
+      title: '电耗',
+      children: [
+        {
+          field: 'wgDlValue',
+          title: '卧干器',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'ylDlValue',
+          title: '窑炉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '停窑天然气用量M3',
       children: [
         {
           field: 'wgStopTrqValue',
@@ -118,16 +147,26 @@ const gridOptions: VxeGridProps<any> = {
         },
       ],
     },
-    /* {
-      title: '水煤气用量M3',
+    {
+      title: '停窑电耗',
       children: [
-        { field: 'dlValue', title: '卧干器', minWidth: 150,  slots: { footer: 'footerData' } },
-        { field: 'dlValue', title: '窑炉', minWidth: 150,  slots: { footer: 'footerData' } },
+        {
+          field: 'wgStopDlValue',
+          title: '卧干器',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'ylStopDlValue',
+          title: '窑炉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
       ],
-    },*/
+    },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 6 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
   showFooter: true,

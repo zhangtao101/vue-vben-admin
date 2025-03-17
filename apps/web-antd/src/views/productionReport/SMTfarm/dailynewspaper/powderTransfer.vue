@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryEnamelDayStatistics } from '#/api';
+import { queryFLTransferStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -30,68 +30,29 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', field: 'seq', width: 50 },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'lineName', title: '生产批号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'productName', title: '产品名称', minWidth: 250 },
-
     {
-      title: '报工良品',
-      children: [
-        {
-          field: 'reportNumber',
-          title: '进线量(片)',
-          minWidth: 200,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'reportNumberM',
-          title: '进线量(M2)',
-          minWidth: 200,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'qualityNumber',
-          title: '出线量(片)',
-          minWidth: 200,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'qualityNumberM',
-          title: '出线量(M2)',
-          minWidth: 200,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'centosRate',
-          title: '投入产出率',
-          minWidth: 250,
-          slots: { footer: 'footerData' },
-        },
-      ],
+      title: '序号',
+      type: 'seq',
+      field: 'seq',
+      width: 50,
+    },
+    { field: 'day', title: '日期', minWidth: 200 },
+    { field: 'materialName', title: '基础配方', minWidth: 200 },
+    {
+      field: 'sprayQuantity',
+      title: '喷干量',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
     },
     {
-      title: '能耗',
-      children: [
-        {
-          field: 'dlValue',
-          title: '电能',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'trqValue',
-          title: '天然气',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
+      field: 'transferQuantity',
+      title: '移交量',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 6 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -150,12 +111,13 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 工单号
-  worksheetCode: '',
+  // 基础配方
+  materialName: '',
 });
 
 // 汇总数据
 const collect = ref<any>({});
+
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -168,12 +130,12 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryEnamelDayStatistics({
+    queryFLTransferStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
+      .then(({ dayStatisticsDtos: { total, list }, ...p }) => {
         collect.value = p;
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
@@ -186,7 +148,6 @@ function queryData({ page, pageSize }: any) {
       });
   });
 }
-
 // endregion
 
 // region 权限查询
@@ -222,10 +183,10 @@ onMounted(() => {
 
         <!-- 工单号 -->
         <FormItem
-          :label="$t('productionDaily.worksheetCode')"
+          :label="$t('productionDaily.basicFormula')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.worksheetCode" />
+          <Input v-model:value="queryParams.materialName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
