@@ -17,7 +17,10 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryPolishingYieldDayStatistics } from '#/api';
+import {
+  excelPathPolishingYieldDay,
+  queryPolishingYieldDayStatistics,
+} from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -264,6 +267,22 @@ const author = ref<string[]>([]);
 
 // endregion
 
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  excelPathPolishingYieldDay(params).then((data) => {
+    window.open(data);
+  });
+}
+
+// endregion
+
 // region 初始化
 
 onMounted(() => {
@@ -337,6 +356,12 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
+        </template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>

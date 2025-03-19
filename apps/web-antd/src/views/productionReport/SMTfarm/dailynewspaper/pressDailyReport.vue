@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryPressDayStatistics } from '#/api';
+import { excelPathPressDay, queryPressDayStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -77,19 +77,49 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'oDryBilletWeight',
-      title: '干坯重量',
+      title: '干坯重量(kg/m2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'wgInWeight',
+      title: '卧干投入量',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'wgInNumber',
+      title: '卧干入库量',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'centosRate',
+      title: '投入产出率',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'dlValue',
-      title: '电耗',
+      title: '电耗(KWH)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'trqValue',
+      title: '天然气能耗(M3)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'dlStopValue',
-      title: '停机能耗',
+      title: '停机电耗(KWH)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'trqStopValue',
+      title: '停机气耗(M3/H)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -203,6 +233,22 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  excelPathPressDay(params).then((data) => {
+    window.open(data);
+  });
+}
+
+// endregion
+
 // region 权限查询
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
@@ -274,6 +320,12 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
+        </template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>

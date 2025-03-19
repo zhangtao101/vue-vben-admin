@@ -75,3 +75,46 @@ export async function queryEnergyConsumptionStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getEnergyConsumptionStatistics?${qs.stringify(params)}`,
   );
 }
+
+// region 报表导出
+/**
+ * 压机日报导出
+ */
+export async function excelPathPressDay(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPressDay?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 窑炉日报导出
+ */
+export async function excelPathYLDay(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYLDay?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 釉线日报导出
+ */
+export async function excelPathEnamelDay(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathEnamelDay?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光产量日报导出
+ */
+export async function excelPathPolishingYieldDay(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPolishingYieldDay?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 料车间工单生产日报导出
+ */
+export async function excelPathYLReportDay(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYLReportDay?${qs.stringify(params)}`,
+  );
+}
+// endregion
