@@ -9,7 +9,26 @@ export namespace AuthApi {
 
   /** 登录接口返回值 */
   export interface LoginResult {
-    accessToken: string;
+    Authorization: string;
+    user: {
+      // 创建时间
+      ctime: string;
+      // 描述
+      discription: string;
+      // id
+      id: number;
+      // 是否删除
+      isDelete: number;
+      // 是否启用
+      isEnable: number;
+      perName: string;
+      // 用户编码
+      userCode: string;
+      // 用户名
+      userName: string;
+      // 工号
+      workNumber: string;
+    };
   }
 
   export interface RefreshTokenResult {
