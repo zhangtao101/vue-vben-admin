@@ -9,6 +9,10 @@
       "path": "apps/web-energy-management",
     },
     {
+      "name": "@vben/web-ipc",
+      "path": "apps/web-ipc",
+    },
+    {
       "name": "@vben/web-ai",
       "path": "apps/web-my-ai",
     },

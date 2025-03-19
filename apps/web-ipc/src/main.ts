@@ -11,9 +11,10 @@ import { overridesPreferences } from './preferences';
  */
 async function initApplication() {
   // region 加载图标
+
   // 动态导入 @iconify/json/json 下的所有图标集
   const iconCollections = import.meta.glob(
-    '../../../node_modules/@iconify/json/json/*.json',
+    '../node_modules/@iconify/json/json/*.json',
     {
       eager: true,
     },

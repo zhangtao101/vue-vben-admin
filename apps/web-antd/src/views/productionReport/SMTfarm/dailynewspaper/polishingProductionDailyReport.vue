@@ -243,7 +243,7 @@ function queryData({ page, pageSize }: any) {
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ dayStatisticsDtos: { total, list }, ...p }) => {
+      .then(({ statisticsDtos: { total, list }, ...p }) => {
         collect.value = p;
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({

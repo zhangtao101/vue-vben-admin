@@ -67,3 +67,11 @@ export async function queryFLTransferStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getFLTransferStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ *  能源报表查询
+ */
+export async function queryEnergyConsumptionStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getEnergyConsumptionStatistics?${qs.stringify(params)}`,
+  );
+}
