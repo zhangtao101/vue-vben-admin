@@ -97,17 +97,6 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '平浆池',
-      children: [
-        {
-          field: 'pjInNumber',
-          title: '实际(T)',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
-    },
-    {
       title: '喷干塔',
       children: [
         { field: 'towerNumber', title: '塔号', minWidth: 150 },
