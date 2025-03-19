@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathEnamelDay, queryEnamelDayStatistics } from '#/api';
+import { excelPathYLDay, queryYLDayStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -30,77 +30,135 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', field: 'seq', width: 50 },
+    {
+      title: '序号',
+      type: 'seq',
+      field: 'seq',
+      width: 50,
+    },
     { field: 'day', title: '日期', minWidth: 200 },
+    { field: 'ylLine', title: '窑炉线', minWidth: 200 },
     { field: 'worksheetCode', title: '工单号', minWidth: 200 },
     { field: 'lineName', title: '生产批号', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'productName', title: '产品名称', minWidth: 250 },
-
+    { field: 'materialName', title: '产品名称', minWidth: 200 },
     {
-      title: '报工良品',
+      field: 'inNumberP',
+      title: '进窑量(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'inNumberM2',
+      title: '进窑量(m2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'outNumberM2',
+      title: '出窑合格量(m2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'outNumberP',
+      title: '出窑合格量(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'equipTime',
+      title: '工时',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'finishedPartsStorage',
+      title: '入成品库量(m2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'interimStockP',
+      title: '入中间品库量(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'interimStock',
+      title: '入中间品库量(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'centosRate',
+      title: '投入产出率',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      title: '天然气用量M3',
       children: [
         {
-          field: 'reportNumber',
-          title: '进线量(片)',
-          minWidth: 200,
+          field: 'ylTrqValue',
+          title: '窑炉',
+          minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'reportNumberM',
-          title: '进线量(M2)',
-          minWidth: 200,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'qualityNumber',
-          title: '出线量(片)',
-          minWidth: 200,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'qualityNumberM',
-          title: '出线量(M2)',
-          minWidth: 200,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'centosRate',
-          title: '投入产出率',
-          minWidth: 250,
+          field: 'wgqTrqValue',
+          title: '卧干器',
+          minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '能耗',
+      title: '电耗',
       children: [
         {
-          field: 'dlValue',
-          title: '电能',
+          field: 'wgDlValue',
+          title: '卧干器',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'trqValue',
-          title: '天然气(M3)',
+          field: 'ylDlValue',
+          title: '窑炉',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '停机能耗',
+      title: '停窑天然气用量M3',
       children: [
         {
-          field: 'stopDlValue',
-          title: '电能',
+          field: 'wgStopTrqValue',
+          title: '卧干器',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'stopTrqValue',
-          title: '天然气(M3)',
+          field: 'YlStopTrqValue',
+          title: '窑炉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '停窑电耗',
+      children: [
+        {
+          field: 'wgStopDlValue',
+          title: '卧干器',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'ylStopDlValue',
+          title: '窑炉',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -108,7 +166,7 @@ const gridOptions: VxeGridProps<any> = {
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 6 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -169,6 +227,10 @@ const queryParams = ref({
   searchTime: [] as any,
   // 工单号
   worksheetCode: '',
+  // 产品编码
+  productCode: '',
+  // 产品名称
+  materialName: '',
 });
 
 // 汇总数据
@@ -185,7 +247,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryEnamelDayStatistics({
+    queryYLDayStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -215,7 +277,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathEnamelDay(params).then((data) => {
+  excelPathYLDay(params).then((data) => {
     window.open(data);
   });
 }
@@ -259,6 +321,22 @@ onMounted(() => {
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.worksheetCode" />
+        </FormItem>
+
+        <!-- 产品编号 -->
+        <FormItem
+          :label="$t('productionDaily.productCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.productCode" />
+        </FormItem>
+
+        <!-- 产品名称 -->
+        <FormItem
+          :label="$t('productionDaily.productName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.materialName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

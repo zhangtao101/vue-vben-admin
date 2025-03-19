@@ -55,14 +55,20 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      field: 'outNumberM2',
-      title: '出窑合格量(m2)',
+      field: 'outNumberP',
+      title: '出窑合格量(片)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'outNumberP',
-      title: '出窑合格量(片)',
+      field: 'outNumberM2',
+      title: '出窑合格量(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'bfBrick',
+      title: '报废砖量(M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -97,7 +103,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      title: '天然气用量M3',
+      title: '天然气用量(M3)',
       children: [
         {
           field: 'ylTrqValue',
@@ -105,23 +111,11 @@ const gridOptions: VxeGridProps<any> = {
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
-        {
-          field: 'wgqTrqValue',
-          title: '卧干器',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
       ],
     },
     {
-      title: '电耗',
+      title: '电耗(KWH)',
       children: [
-        {
-          field: 'wgDlValue',
-          title: '卧干器',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
         {
           field: 'ylDlValue',
           title: '窑炉',
@@ -131,14 +125,8 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '停窑天然气用量M3',
+      title: '停窑天然气用量(M3)',
       children: [
-        {
-          field: 'wgStopTrqValue',
-          title: '卧干器',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
         {
           field: 'YlStopTrqValue',
           title: '窑炉',
@@ -148,14 +136,8 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '停窑电耗',
+      title: '停窑电耗(KWH)',
       children: [
-        {
-          field: 'wgStopDlValue',
-          title: '卧干器',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
         {
           field: 'ylStopDlValue',
           title: '窑炉',

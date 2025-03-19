@@ -168,12 +168,13 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'zRZH', title: '自然灾害', minWidth: 200 },
     { field: 'sBQX', title: '设备清洗', minWidth: 200 },
   ],
-  footerData: [{ seq: '抛光汇总' }, { seq: '磨边胡总' }, { seq: '合计' }],
-  mergeFooterItems: [
-    { row: 0, col: 0, rowspan: 1, colspan: 2 },
-    { row: 1, col: 0, rowspan: 1, colspan: 2 },
-    { row: 2, col: 0, rowspan: 1, colspan: 2 },
-  ],
+  footerData: [{ seq: '抛光汇总' }, { seq: '磨边汇总' }, { seq: '合计' }],
+  footerSpanMethod: ({ $columnIndex }) => {
+    // 自定义表尾合并单元格
+    if ($columnIndex === 0) {
+      return { rowspan: 1, colspan: 5 };
+    }
+  },
   height: 500,
   stripe: true,
   showFooter: true,
@@ -241,7 +242,7 @@ const queryParams = ref({
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
 function queryData({ page, pageSize }: any) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const params: any = { ...queryParams.value };
     if (params.searchTime && params.searchTime.length === 2) {
       params.startTime = params.searchTime[0].format('YYYY-MM-DD');
@@ -253,15 +254,19 @@ function queryData({ page, pageSize }: any) {
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ total, list }) => {
+      .then(({ statisticsDtos: { total, list }, ...p }) => {
+        collect.value = p;
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
           items: list,
         });
       })
-      .catch((error) => {
-        reject(error);
+      .catch(() => {
+        resolve({
+          total: 0,
+          items: [],
+        });
       });
   });
 }
@@ -325,6 +330,9 @@ onMounted(() => {
       <Grid>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
+        </template>
+        <template #footerData="{ column }">
+          <span> {{ collect[column.field] }} </span>
         </template>
       </Grid>
     </Card>

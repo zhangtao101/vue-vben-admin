@@ -78,13 +78,13 @@ const gridOptions: VxeGridProps<any> = {
         },
         {
           field: 'dayInNumber',
-          title: '产出',
+          title: '放浆量(T)',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'currentTime',
-          title: '球磨机时',
+          title: '球磨机时(H)',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -100,9 +100,9 @@ const gridOptions: VxeGridProps<any> = {
       title: '喷干塔',
       children: [
         { field: 'towerNumber', title: '塔号', minWidth: 150 },
-        { field: 'reportNumber', title: '产出', minWidth: 150 },
-        { field: 'dayInNumber', title: '能耗', minWidth: 150 },
-        { field: 'pfCurrentTime', title: '入库里', minWidth: 150 },
+        { field: 'zfReportNumber', title: '领用量(T)', minWidth: 150 },
+        { field: 'dayInNumber', title: '能耗(KWH)', minWidth: 150 },
+        { field: 'pfCurrentTime', title: '入库量(T)', minWidth: 150 },
       ],
     },
     {
@@ -110,12 +110,12 @@ const gridOptions: VxeGridProps<any> = {
       children: [
         {
           field: 'trquseEnergyNumber',
-          title: '耗量',
+          title: '耗量(M3)',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'perUseNumber',
+          field: 'trqperUseNumber',
           title: '单耗M3/T',
           minWidth: 150,
           slots: { footer: 'footerData' },
@@ -144,7 +144,7 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '喷粉水煤浆用量(M3)',
+      title: '喷粉水煤浆用量(KG)',
       children: [
         {
           field: 'smjuseEnergyNumber',
@@ -154,7 +154,7 @@ const gridOptions: VxeGridProps<any> = {
         },
         {
           field: 'smjperUseNumber',
-          title: '单耗M3/T',
+          title: '单耗KG/T',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -163,22 +163,22 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '喷粉电耗量',
+      title: '喷粉电耗量(KWH)',
       children: [
         {
-          field: 'dluseEnergyNumber',
+          field: 'zfdluseEnergyNumbe',
           title: '耗量',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'dlperUseNumber',
-          title: '单耗',
+          field: 'zfdlperUseNumber',
+          title: '单耗(KWH)',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
-        { field: 'dlstartEnergyNumber', title: '开始读数', minWidth: 150 },
-        { field: 'dlendEnergyNumber', title: '结束读数', minWidth: 150 },
+        { field: 'zfdlstartEnergyNumbe', title: '开始读数', minWidth: 150 },
+        { field: 'zfdlendEnergyNumbe', title: '结束读数', minWidth: 150 },
       ],
     },
   ],
@@ -279,12 +279,19 @@ function queryData({ page, pageSize }: any) {
       .then(({ dayStatisticsDtos: { total, list }, ...p }) => {
         collect.value = p;
         list.forEach((item: any) => {
+          // feedNumber unFeedNumber pjInNumber
+          const unitArr = ['feedNumber', 'unFeedNumber', 'pjInNumber'];
+
+          for (const key of unitArr) {
+            item[key] = item[key] / 1000;
+            p[key] = p[key] / 1000;
+          }
           let arr: string[] = [];
           if (item.worksheetCode.includes('ZJ')) {
             item.ballMillNumber = item.equipName;
             arr = [
               'equipName',
-              'reportNumber',
+              'zfReportNumber',
               'dayInNumber',
               'pfCurrentTime',
               'trquseEnergyNumber',
@@ -299,10 +306,10 @@ function queryData({ page, pageSize }: any) {
               'smjperUseNumber',
               'smjstartEnergyNumber',
               'smjendEnergyNumber',
-              'dluseEnergyNumber',
-              'dlperUseNumber',
-              'dlstartEnergyNumber',
-              'dlendEnergyNumber',
+              'zfdluseEnergyNumbe',
+              'zfdlperUseNumber',
+              'zfdlstartEnergyNumbe',
+              'zfdlendEnergyNumbe',
             ];
           } else {
             item.towerNumber = item.equipName;
