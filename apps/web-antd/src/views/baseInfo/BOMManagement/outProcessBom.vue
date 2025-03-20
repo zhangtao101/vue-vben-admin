@@ -6,10 +6,10 @@ import { computed, h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import {
-  MaterialSymbolsDeleteOutline,
-  MaterialSymbolsLightPrintOutline,
-  MaterialSymbolsSearch,
-  PhEyeLight,
+  MdiEyeOutline,
+  MdiLightDelete,
+  MdiLightPrinter,
+  MdiSearch,
 } from '@vben/icons';
 import { $t } from '@vben/locales';
 
@@ -372,7 +372,7 @@ function closePrint() {
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
           >
             {{ $t('common.search') }}
@@ -436,7 +436,7 @@ function closePrint() {
             <Tooltip>
               <template #title>{{ $t('common.view') }}</template>
               <Button
-                :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+                :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
                 class="mr-2"
                 type="link"
                 @click="showDetails(record)"
@@ -448,7 +448,7 @@ function closePrint() {
               <template #title>{{ $t('common.print') }}</template>
               <Button
                 :icon="
-                  h(MaterialSymbolsLightPrintOutline, {
+                  h(MdiLightPrinter, {
                     class: 'inline-block size-6',
                   })
                 "
@@ -469,7 +469,7 @@ function closePrint() {
               >
                 <Button
                   :icon="
-                    h(MaterialSymbolsDeleteOutline, {
+                    h(MdiLightDelete, {
                       class: 'inline-block size-6',
                     })
                   "

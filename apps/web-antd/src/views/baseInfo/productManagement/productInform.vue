@@ -5,7 +5,7 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsSearch, MingcuteEditLine } from '@vben/icons';
+import { MdiEditOutline, MdiSearch } from '@vben/icons';
 
 import {
   Button,
@@ -239,7 +239,7 @@ onMounted(() => {
 
           <FormItem>
             <Button
-              :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+              :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
               type="primary"
               @click="() => gridApi.reload()"
             >
@@ -286,9 +286,7 @@ onMounted(() => {
                     {{ $t('common.edit') }}
                   </template>
                   <Button
-                    :icon="
-                      h(MingcuteEditLine, { class: 'inline-block size-6' })
-                    "
+                    :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
                     @click="showEdit(row)"
                     class="mr-4"
                     type="link"

@@ -13,61 +13,36 @@ export const MdiGoogle = createIconifyIcon('mdi:google');
 export const MdiQqchat = createIconifyIcon('mdi:qqchat');
 
 // 查询
-export const MaterialSymbolsSearch = createIconifyIcon(
-  'material-symbols:search',
-);
+export const MdiSearch = createIconifyIcon('mdi:search');
 // 更新
-export const GrommetIconsUpdate = createIconifyIcon('grommet-icons:update');
+export const MdiUpdate = createIconifyIcon('mdi:update');
 // 编辑
-export const MingcuteEditLine = createIconifyIcon('mingcute:edit-line');
+export const MdiEditOutline = createIconifyIcon('mdi:edit-outline');
 // 编辑
-export const GisLayerAltEdit = createIconifyIcon('gis:layer-alt-edit');
+export const MdiFileEditOutline = createIconifyIcon('mdi:file-edit-outline');
 // 删除
-export const MaterialSymbolsDeleteOutline = createIconifyIcon(
-  'material-symbols:delete-outline',
-);
+export const MdiLightDelete = createIconifyIcon('mdi-light:delete');
 // 设置
-export const SystemUiconsSettings = createIconifyIcon('system-uicons:settings');
-// 更新
-export const SolarSmartphoneUpdateLinear = createIconifyIcon(
-  'solar:smartphone-update-linear',
-);
-
-// 列表
-export const SystemUiconsList = createIconifyIcon('system-uicons:list');
+export const MdiLightSettings = createIconifyIcon('mdi-light:settings');
 // 查看
-export const PhEyeLight = createIconifyIcon('ph:eye-light');
+export const MdiEyeOutline = createIconifyIcon('mdi:eye-outline');
 // 文件上传
-export const IconParkInboxIn = createIconifyIcon('icon-park:inbox-in');
+export const MdiTrayUpload = createIconifyIcon('mdi:tray-upload');
 // 打印
-export const MaterialSymbolsLightPrintOutline = createIconifyIcon(
-  'material-symbols-light:print-outline',
-);
-// 问号
-export const PhQuestion = createIconifyIcon('ph:question');
+export const MdiLightPrinter = createIconifyIcon('mdi-light:printer');
 // 保存
-export const SaveOutline = createIconifyIcon('material-symbols:save-outline');
+export const MdiLightContentSave = createIconifyIcon('mdi-light:content-save');
 // 加号
-export const MaterialSymbolsLightAdd = createIconifyIcon(
-  'material-symbols-light:add',
-);
-// 设置
-export const HugeiconsMailSetting = createIconifyIcon(
-  'hugeicons:mail-setting-02',
-);
+export const MdiAdd = createIconifyIcon('mdi:add');
 // 变更
-export const QlementineAlternate = createIconifyIcon(
-  'qlementine-icons:alternate-16',
-);
+export const MdiImportExport = createIconifyIcon('mdi:import-export');
 // ×
 export const IconParkSolidError = createIconifyIcon('icon-park-solid:error');
 // √
 export const MdiSuccess = createIconifyIcon('mdi:success');
 // 导出
-export const UilExport = createIconifyIcon('uil:export');
+export const MdiExportVariant = createIconifyIcon('mdi:export-variant');
 // 人员报工
 export const UilReporter = createIconifyIcon('oui:reporter');
 // 能源采集
-export const HugeiconsRenewableEnergy = createIconifyIcon(
-  'hugeicons:renewable-energy',
-);
+export const MdiEnergyCircle = createIconifyIcon('mdi:energy-circle');

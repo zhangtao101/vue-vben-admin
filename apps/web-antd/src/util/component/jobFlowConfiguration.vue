@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { h, ref, watch } from 'vue';
 
-import { MaterialSymbolsLightAdd } from '@vben/icons';
+import { MdiAdd } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -664,7 +664,7 @@ function submit() {
     </Form>
     <Button
       v-if="!isShowStatus"
-      :icon="h(MaterialSymbolsLightAdd, { class: 'inline-block size-6' })"
+      :icon="h(MdiAdd, { class: 'inline-block size-6' })"
       class="w-full"
       type="dashed"
       @click="

@@ -7,10 +7,10 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import {
-  MaterialSymbolsDeleteOutline,
-  MaterialSymbolsSearch,
-  MingcuteEditLine,
-  PhEyeLight,
+  MdiEditOutline,
+  MdiEyeOutline,
+  MdiLightDelete,
+  MdiSearch,
 } from '@vben/icons';
 import { $t } from '@vben/locales';
 
@@ -905,7 +905,7 @@ onMounted(async () => {
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="() => gridApi.reload()"
           >
@@ -995,7 +995,7 @@ onMounted(async () => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button
-              :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+              :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="editRow(row, true)"
@@ -1005,7 +1005,7 @@ onMounted(async () => {
           <Tooltip v-if="author.includes('编辑')">
             <template #title>{{ $t('common.edit') }}</template>
             <Button
-              :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+              :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="editRow(row)"
@@ -1017,7 +1017,7 @@ onMounted(async () => {
             <template #title>{{ $t('common.delete') }}</template>
             <Button
               :icon="
-                h(MaterialSymbolsDeleteOutline, {
+                h(MdiLightDelete, {
                   class: 'inline-block size-6',
                 })
               "
@@ -1217,7 +1217,7 @@ onMounted(async () => {
             <template #title>{{ $t('common.delete') }}</template>
             <Button
               :icon="
-                h(MaterialSymbolsDeleteOutline, {
+                h(MdiLightDelete, {
                   class: 'inline-block size-6',
                 })
               "

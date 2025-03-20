@@ -3,7 +3,7 @@ import { computed, h, onMounted, ref, unref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsSearch, PhEyeLight } from '@vben/icons';
+import { MdiEyeOutline, MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -370,7 +370,7 @@ onMounted(() => {
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="queryData()"
           >
@@ -402,7 +402,7 @@ onMounted(() => {
             <Tooltip>
               <template #title>{{ $t('common.view') }}</template>
               <Button
-                :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+                :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
                 class="mr-4"
                 type="link"
                 @click="showDetails(record)"

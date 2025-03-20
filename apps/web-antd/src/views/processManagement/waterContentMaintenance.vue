@@ -7,10 +7,10 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import {
-  MaterialSymbolsLightPrintOutline,
-  MaterialSymbolsSearch,
-  MingcuteEditLine,
-  UilExport,
+  MdiEditOutline,
+  MdiExportVariant,
+  MdiLightPrinter,
+  MdiSearch,
 } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
@@ -475,7 +475,7 @@ onMounted(() => {
 
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="() => gridApi.reload()"
           >
@@ -512,7 +512,7 @@ onMounted(() => {
           <Tooltip v-if="author.includes('编辑')">
             <template #title>{{ $t('common.edit') }}</template>
             <Button
-              :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+              :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="showEdit(row)"
@@ -522,7 +522,7 @@ onMounted(() => {
           <Tooltip>
             <template #title>{{ $t('common.export') }}</template>
             <Button
-              :icon="h(UilExport, { class: 'inline-block size-6' })"
+              :icon="h(MdiExportVariant, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="exportFile(row.workSheetCode)"
@@ -533,7 +533,7 @@ onMounted(() => {
             <template #title>{{ $t('common.print') }}</template>
             <Button
               :icon="
-                h(MaterialSymbolsLightPrintOutline, {
+                h(MdiLightPrinter, {
                   class: 'inline-block size-6',
                 })
               "

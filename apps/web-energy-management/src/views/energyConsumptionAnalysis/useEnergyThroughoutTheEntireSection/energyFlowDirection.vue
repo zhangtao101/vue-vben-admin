@@ -2,7 +2,7 @@
 import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Chart } from '@antv/g2';
@@ -175,7 +175,7 @@ onMounted(() => {
 
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="queryData()"
           >

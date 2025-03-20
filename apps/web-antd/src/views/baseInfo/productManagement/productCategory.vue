@@ -5,7 +5,7 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
 import {
   Button,
@@ -203,7 +203,7 @@ onMounted(() => {
 
           <FormItem>
             <Button
-              :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+              :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
               type="primary"
               @click="() => gridApi.reload()"
             >

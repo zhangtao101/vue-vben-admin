@@ -6,14 +6,14 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import {
-  HugeiconsMailSetting,
   IconParkSolidError,
-  MaterialSymbolsDeleteOutline,
-  MaterialSymbolsSearch,
+  MdiEditOutline,
+  MdiEyeOutline,
+  MdiLightContentSave,
+  MdiLightDelete,
+  MdiLightSettings,
+  MdiSearch,
   MdiSuccess,
-  MingcuteEditLine,
-  PhEyeLight,
-  SaveOutline,
 } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
@@ -905,7 +905,7 @@ onMounted(async () => {
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="() => gridApi.reload()"
           >
@@ -962,7 +962,7 @@ onMounted(async () => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button
-              :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+              :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="editRow(row, true)"
@@ -972,7 +972,7 @@ onMounted(async () => {
           <Tooltip v-if="row.auditState !== 2 && editButton">
             <template #title>{{ $t('common.edit') }}</template>
             <Button
-              :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+              :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="editRow(row)"
@@ -1009,7 +1009,7 @@ onMounted(async () => {
             <template #title>{{ $t('common.delete') }}</template>
             <Button
               :icon="
-                h(MaterialSymbolsDeleteOutline, {
+                h(MdiLightDelete, {
                   class: 'inline-block size-6',
                 })
               "
@@ -1130,7 +1130,9 @@ onMounted(async () => {
                 <Tooltip>
                   <template #title>{{ $t('common.save') }}</template>
                   <Button
-                    :icon="h(SaveOutline, { class: 'inline-block size-6' })"
+                    :icon="
+                      h(MdiLightContentSave, { class: 'inline-block size-6' })
+                    "
                     class="mr-4"
                     type="link"
                     @click="selectOperation(record)"
@@ -1151,7 +1153,9 @@ onMounted(async () => {
                 <Tooltip>
                   <template #title>{{ $t('common.save') }}</template>
                   <Button
-                    :icon="h(SaveOutline, { class: 'inline-block size-6' })"
+                    :icon="
+                      h(MdiLightContentSave, { class: 'inline-block size-6' })
+                    "
                     class="mr-4"
                     type="link"
                     @click="record.isCostCenterCodeEdit = false"
@@ -1168,9 +1172,7 @@ onMounted(async () => {
                   </template>
                   <Button
                     :disabled="!record.id"
-                    :icon="
-                      h(MingcuteEditLine, { class: 'inline-block size-6' })
-                    "
+                    :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
                     class="mr-4"
                     type="link"
                     @click="record.isCostCenterCodeEdit = true"
@@ -1188,7 +1190,7 @@ onMounted(async () => {
               </template>
               <Button
                 :disabled="!record.id"
-                :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+                :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
                 class="mr-4"
                 type="link"
                 @click="showJobFlowConfiguration(record)"
@@ -1200,9 +1202,7 @@ onMounted(async () => {
                 {{ $t('workStationMaintenance.configuringDeviceResources') }}
               </template>
               <Button
-                :icon="
-                  h(HugeiconsMailSetting, { class: 'inline-block size-6' })
-                "
+                :icon="h(MdiLightSettings, { class: 'inline-block size-6' })"
                 class="mr-4"
                 type="link"
                 @click="showEquipSelect(record)"
@@ -1213,7 +1213,7 @@ onMounted(async () => {
               <template #title>{{ $t('common.delete') }}</template>
               <Button
                 :icon="
-                  h(MaterialSymbolsDeleteOutline, {
+                  h(MdiLightDelete, {
                     class: 'inline-block size-6',
                   })
                 "

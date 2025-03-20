@@ -3,7 +3,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
 
-import { MaterialSymbolsSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -178,7 +178,7 @@ onMounted(() => {
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="() => gridApi.reload()"
           >

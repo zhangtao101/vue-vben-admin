@@ -4,11 +4,7 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import {
-  GisLayerAltEdit,
-  MaterialSymbolsSearch,
-  MingcuteEditLine,
-} from '@vben/icons';
+import { MdiEditOutline, MdiFileEditOutline, MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -261,7 +257,7 @@ onMounted(async () => {});
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="() => gridApi.reload()"
           >
@@ -304,7 +300,7 @@ onMounted(async () => {});
               {{ $t('common.edit') }}
             </template>
             <Button
-              :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+              :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="showEdit(row)"
@@ -316,7 +312,7 @@ onMounted(async () => {});
               {{ $t('common.templateEdit') }}
             </template>
             <Button
-              :icon="h(GisLayerAltEdit, { class: 'inline-block size-6' })"
+              :icon="h(MdiFileEditOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="showPrintTemplate(row)"

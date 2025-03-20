@@ -3,11 +3,7 @@ import { computed, h, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import {
-  IconParkSolidError,
-  MaterialSymbolsSearch,
-  MdiSuccess,
-} from '@vben/icons';
+import { IconParkSolidError, MdiSearch, MdiSuccess } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -313,7 +309,7 @@ onMounted(() => {
 
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="queryData()"
           >

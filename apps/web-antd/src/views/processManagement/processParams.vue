@@ -5,12 +5,12 @@ import { useRoute } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import {
   IconParkSolidError,
-  MaterialSymbolsDeleteOutline,
-  MaterialSymbolsSearch,
+  MdiEditOutline,
+  MdiEyeOutline,
+  MdiImportExport,
+  MdiLightDelete,
+  MdiSearch,
   MdiSuccess,
-  MingcuteEditLine,
-  PhEyeLight,
-  QlementineAlternate,
 } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
@@ -694,7 +694,7 @@ onMounted(() => {
 
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="queryData()"
           >
@@ -793,7 +793,7 @@ onMounted(() => {
             <Tooltip>
               <template #title>{{ $t('common.view') }}</template>
               <Button
-                :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+                :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
                 class="mr-4"
                 type="link"
                 @click="
@@ -806,7 +806,7 @@ onMounted(() => {
             <Tooltip v-if="record.auditState !== 2 && editButton">
               <template #title>{{ $t('common.edit') }}</template>
               <Button
-                :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+                :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
                 class="mr-4"
                 type="link"
                 @click="editRow(record)"
@@ -820,7 +820,7 @@ onMounted(() => {
             >
               <template #title>{{ $t('common.alter') }}</template>
               <Button
-                :icon="h(QlementineAlternate, { class: 'inline-block size-6' })"
+                :icon="h(MdiImportExport, { class: 'inline-block size-6' })"
                 class="mr-4"
                 type="link"
                 @click="editRow(record, true)"
@@ -858,7 +858,7 @@ onMounted(() => {
               <template #title>{{ $t('common.delete') }}</template>
               <Button
                 :icon="
-                  h(MaterialSymbolsDeleteOutline, {
+                  h(MdiLightDelete, {
                     class: 'inline-block size-6',
                   })
                 "
@@ -963,7 +963,7 @@ onMounted(() => {
               <template #title>{{ $t('common.delete') }}</template>
               <Button
                 :icon="
-                  h(MaterialSymbolsDeleteOutline, {
+                  h(MdiLightDelete, {
                     class: 'inline-block size-6',
                   })
                 "

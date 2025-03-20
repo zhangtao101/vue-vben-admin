@@ -3,11 +3,7 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref, watch } from 'vue';
 
-import {
-  GrommetIconsUpdate,
-  HugeiconsRenewableEnergy,
-  UilReporter,
-} from '@vben/icons';
+import { MdiEnergyCircle, MdiUpdate, UilReporter } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -402,7 +398,7 @@ onMounted(() => {});
             {{ $t('common.flushRed') }}
           </template>
           <Button
-            :icon="h(GrommetIconsUpdate, { class: 'inline-block size-6' })"
+            :icon="h(MdiUpdate, { class: 'inline-block size-6' })"
             :loading="row.loading"
             class="mr-4"
             type="link"
@@ -431,9 +427,7 @@ onMounted(() => {});
             {{ $t('common.energyHarvesting') }}
           </template>
           <Button
-            :icon="
-              h(HugeiconsRenewableEnergy, { class: 'inline-block size-6' })
-            "
+            :icon="h(MdiEnergyCircle, { class: 'inline-block size-6' })"
             :loading="row.loading"
             class="mr-4"
             type="link"

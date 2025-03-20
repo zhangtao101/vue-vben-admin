@@ -3,5 +3,7 @@
   "productNumber": "产品编号",
   "productName": "产品名称",
   "workOrderNumber": "工单号",
-  "workstationType": "工作站类型"
+  "workstationType": "工作站类型",
+  "workOrderStatus": "工单状态",
+  "reportTheWorkStatus": "工单报工状态"
 }

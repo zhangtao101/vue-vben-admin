@@ -4,7 +4,7 @@ import type { TreeProps } from 'ant-design-vue';
 import { computed, h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
 import {
   Button,
@@ -177,7 +177,7 @@ function paginationChange(page: any) {
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
           >
             {{ $t('common.search') }}

@@ -5,7 +5,7 @@ import { h, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
 import {
   Button,
@@ -148,6 +148,10 @@ const queryParams = ref({
   worksheetCode: '',
   // 类型
   workstationType: 1,
+  // 工单状态
+  state: '',
+  // 工单报工状态
+  reportState: '',
 });
 
 // 工作站类别
@@ -175,6 +179,40 @@ const workstationTypes = ref([
   {
     label: '抛光（抛光、打包、复选）',
     value: 6,
+  },
+]);
+/**
+ * 状态类型
+ */
+const statusTypes = ref([
+  {
+    label: '未生产',
+    value: -1,
+  },
+  {
+    label: '生产中',
+    value: 1,
+  },
+  {
+    label: '完工下线',
+    value: 2,
+  },
+  {
+    label: '暂停下线',
+    value: 3,
+  },
+]);
+/**
+ * 报工状态类型
+ */
+const reportStatusTypes = ref([
+  {
+    label: '未报工',
+    value: 1,
+  },
+  {
+    label: '已报工',
+    value: 2,
   },
 ]);
 
@@ -294,9 +332,32 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
+        <!-- 工单状态 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.workOrderStatus')"
+          style="margin-bottom: 1em"
+        >
+          <Select
+            v-model:value="queryParams.state"
+            :options="statusTypes"
+            class="!w-64"
+          />
+        </FormItem>
+        <!-- 工单报工状态 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.reportTheWorkStatus')"
+          style="margin-bottom: 1em"
+        >
+          <Select
+            v-model:value="queryParams.reportState"
+            :options="reportStatusTypes"
+            class="!w-64"
+          />
+        </FormItem>
+
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="() => gridApi.reload()"
           >

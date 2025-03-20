@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryEnergyConsumptionStatistics } from '#/api';
+import { excelPathYLDay, queryPolishedStorageDayStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -36,71 +36,19 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    {
-      field: 'workstationName ',
-      title: '工作站名称',
-      minWidth: 200,
-    },
-    {
-      field: 'productCode',
-      title: '产品编号',
-      minWidth: 200,
-    },
-    {
-      field: 'productName',
-      title: '产品名称',
-      minWidth: 200,
-    },
-    {
-      field: 'meterNumber',
-      title: '仪表编号',
-      minWidth: 200,
-    },
-    {
-      field: 'startCollectionTime',
-      title: '开始采集时间',
-      minWidth: 200,
-    },
-    {
-      field: 'endCollectionTime',
-      title: '结束采集时间',
-      minWidth: 200,
-    },
-    {
-      field: 'startNumber',
-      title: '开始读数',
-      minWidth: 200,
-    },
-    {
-      field: 'endNumber',
-      title: '结束读数',
-      minWidth: 200,
-    },
-    {
-      field: 'energyType',
-      title: '能耗类型',
-      minWidth: 200,
-    },
-    {
-      field: 'energyConsumption',
-      title: '能耗消耗量',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'collectionType',
-      title: '采集类型（正常或异常）',
-      minWidth: 200,
-    },
-    {
-      field: 'errorCause',
-      title: '异常原因',
-      minWidth: 200,
-    },
+    { field: 'day', title: '入库日期', minWidth: 200 },
+    { field: 'lineName', title: '线号', minWidth: 200 },
+    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'level', title: '等级', minWidth: 200 },
+    { field: 'size', title: '尺寸', minWidth: 200 },
+    { field: 'color', title: '色号', minWidth: 200 },
+    { field: 'reason', title: '降等原因', minWidth: 200 },
+    { field: 'place', title: '产地/年份', minWidth: 200 },
+    { field: 'totalNumber', title: '总片数', minWidth: 200 },
+    { field: 'totalM2', title: '总平方', minWidth: 200 },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -181,7 +129,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryEnergyConsumptionStatistics({
+    queryPolishedStorageDayStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -197,6 +145,22 @@ function queryData({ page, pageSize }: any) {
       .catch((error) => {
         reject(error);
       });
+  });
+}
+
+// endregion
+
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  excelPathYLDay(params).then((data) => {
+    window.open(data);
   });
 }
 
@@ -273,6 +237,12 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
+        </template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>

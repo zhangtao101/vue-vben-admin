@@ -6,10 +6,10 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import {
-  MaterialSymbolsDeleteOutline,
-  MaterialSymbolsSearch,
-  MingcuteEditLine,
-  PhEyeLight,
+  MdiEditOutline,
+  MdiEyeOutline,
+  MdiLightDelete,
+  MdiSearch,
 } from '@vben/icons';
 
 import {
@@ -383,7 +383,7 @@ onMounted(() => {
 
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="() => gridApi.reload()"
           >
@@ -408,7 +408,7 @@ onMounted(() => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button
-              :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+              :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="viewRow(row)"
@@ -419,7 +419,7 @@ onMounted(() => {
             <template #title>{{ $t('common.edit') }}</template>
             <Button
               v-if="editButton"
-              :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+              :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
               @click="editRow(row)"
@@ -432,7 +432,7 @@ onMounted(() => {
             <Button
               v-if="delButton"
               :icon="
-                h(MaterialSymbolsDeleteOutline, {
+                h(MdiLightDelete, {
                   class: 'inline-block size-6',
                 })
               "

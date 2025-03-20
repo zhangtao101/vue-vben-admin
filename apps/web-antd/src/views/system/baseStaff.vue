@@ -7,11 +7,7 @@ import { h, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import {
-  MaterialSymbolsDeleteOutline,
-  MaterialSymbolsSearch,
-  MingcuteEditLine,
-} from '@vben/icons';
+import { MdiEditOutline, MdiLightDelete, MdiSearch } from '@vben/icons';
 
 import {
   Button,
@@ -566,7 +562,7 @@ onMounted(() => {
 
           <FormItem>
             <Button
-              :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+              :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
               type="primary"
               @click="() => gridApi.reload()"
             >
@@ -626,9 +622,7 @@ onMounted(() => {
                   <template #title>{{ $t('common.edit') }}</template>
                   <Button
                     v-if="editButton"
-                    :icon="
-                      h(MingcuteEditLine, { class: 'inline-block size-6' })
-                    "
+                    :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
                     type="link"
                     @click="showEdit(row)"
                   />
@@ -640,7 +634,7 @@ onMounted(() => {
                   <Button
                     v-if="delButton"
                     :icon="
-                      h(MaterialSymbolsDeleteOutline, {
+                      h(MdiLightDelete, {
                         class: 'inline-block size-6',
                       })
                     "

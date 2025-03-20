@@ -5,7 +5,7 @@ import { h, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsDeleteOutline, MingcuteEditLine } from '@vben/icons';
+import { MdiEditOutline, MdiLightDelete } from '@vben/icons';
 
 import {
   Button,
@@ -526,7 +526,7 @@ onMounted(() => {
                     <Button
                       v-if="editButton"
                       :icon="
-                        h(MingcuteEditLine, { class: 'inline-block size-6' })
+                        h(MdiEditOutline, { class: 'inline-block size-6' })
                       "
                       type="link"
                       @click="showEdit(record)"
@@ -539,7 +539,7 @@ onMounted(() => {
                     <Button
                       v-if="delButton"
                       :icon="
-                        h(MaterialSymbolsDeleteOutline, {
+                        h(MdiLightDelete, {
                           class: 'inline-block size-6',
                         })
                       "

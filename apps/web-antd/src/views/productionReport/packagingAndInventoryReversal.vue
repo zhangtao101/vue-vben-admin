@@ -5,7 +5,7 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MaterialSymbolsSearch } from '@vben/icons';
+import { MdiSearch, MdiUpdate } from '@vben/icons';
 
 import {
   Button,
@@ -13,11 +13,15 @@ import {
   Form,
   FormItem,
   Input,
-  RangePicker,
+  message,
+  Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathYLDay, queryYLDayStatistics } from '#/api';
+import {
+  callbackInout,
+  getInWarehouseHistoryList,
+} from '#/api/productionReport/packagingAndInventoryReversal.service';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -36,140 +40,23 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'ylLine', title: '窑炉线', minWidth: 200 },
+    { field: 'code', title: '入库单号', minWidth: 200 },
     { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'lineName', title: '生产批号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'materialName', title: '产品名称', minWidth: 200 },
+    { field: 'batchCode', title: '入库批次号', minWidth: 200 },
+    { field: 'warehouseCode', title: '库位', minWidth: 200 },
+    { field: 'number', title: '入库数量', minWidth: 200 },
+    { field: 'packageNumber', title: '包装箱数', minWidth: 200 },
+    { field: 'opTime', title: '入库时间', minWidth: 200 },
     {
-      field: 'inNumberP',
-      title: '进窑量(片)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'inNumberM2',
-      title: '进窑量(m2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'outNumberM2',
-      title: '出窑合格量(m2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'outNumberP',
-      title: '出窑合格量(片)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'equipTime',
-      title: '工时',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'finishedPartsStorage',
-      title: '入成品库量(m2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'interimStockP',
-      title: '入中间品库量(片)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'interimStock',
-      title: '入中间品库量(M2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'centosRate',
-      title: '投入产出率',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      title: '天然气用量M3',
-      children: [
-        {
-          field: 'ylTrqValue',
-          title: '窑炉',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'wgqTrqValue',
-          title: '卧干器',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
-    },
-    {
-      title: '电耗',
-      children: [
-        {
-          field: 'wgDlValue',
-          title: '卧干器',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'ylDlValue',
-          title: '窑炉',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
-    },
-    {
-      title: '停窑天然气用量M3',
-      children: [
-        {
-          field: 'wgStopTrqValue',
-          title: '卧干器',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'YlStopTrqValue',
-          title: '窑炉',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
-    },
-    {
-      title: '停窑电耗',
-      children: [
-        {
-          field: 'wgStopDlValue',
-          title: '卧干器',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'ylStopDlValue',
-          title: '窑炉',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: '操作',
+      minWidth: 120,
     },
   ],
-  footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
-  showFooter: true,
   sortConfig: {
     multiple: true,
   },
@@ -201,21 +88,20 @@ const gridEvents: VxeGridListeners<any> = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
- * 获取物料类型的中文描述
- * @param state 物料类型编码编码
+ * 冲销
+ * @param row
  */
-function getMaterialTypeText(state: number) {
-  switch (state) {
-    case 1: {
-      return '原料';
+function chargeAgainst(row: any) {
+  callbackInout({
+    recordId: row.id,
+  }).then(({ code }) => {
+    if (code === 200) {
+      message.success('冲销成功');
+      gridApi.reload();
+    } else {
+      message.error('冲销失败');
     }
-    case 2: {
-      return '砖坯';
-    }
-    default: {
-      return '未定义的类型';
-    }
-  }
+  });
 }
 
 // endregion
@@ -223,62 +109,30 @@ function getMaterialTypeText(state: number) {
 // region 查询数据
 // 查询参数
 const queryParams = ref({
-  // 查询时间
-  searchTime: [] as any,
   // 工单号
   worksheetCode: '',
-  // 产品编码
-  productCode: '',
-  // 产品名称
-  materialName: '',
 });
 
-// 汇总数据
-const collect = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
-    const params: any = { ...queryParams.value };
-    if (params.searchTime && params.searchTime.length === 2) {
-      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
-      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
-      params.searchTime = undefined;
-    }
-    queryYLDayStatistics({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+    getInWarehouseHistoryList({
+      ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
-        collect.value = p;
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+      .then((data) => {
         resolve({
-          total,
-          items: list,
+          total: data.length,
+          items: data,
         });
       })
       .catch((error) => {
         reject(error);
       });
-  });
-}
-
-// endregion
-
-// region 文件下载
-
-function downloadTemplate() {
-  const params: any = { ...queryParams.value };
-  if (params.searchTime && params.searchTime.length === 2) {
-    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
-    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
-    params.searchTime = undefined;
-  }
-  excelPathYLDay(params).then((data) => {
-    window.open(data);
   });
 }
 
@@ -307,14 +161,6 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 时间范围 -->
-        <FormItem
-          :label="$t('productionDaily.timeFrame')"
-          style="margin-bottom: 1em"
-        >
-          <RangePicker v-model:value="queryParams.searchTime" />
-        </FormItem>
-
         <!-- 工单号 -->
         <FormItem
           :label="$t('productionDaily.worksheetCode')"
@@ -323,25 +169,9 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 产品编号 -->
-        <FormItem
-          :label="$t('productionDaily.productCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.productCode" />
-        </FormItem>
-
-        <!-- 产品名称 -->
-        <FormItem
-          :label="$t('productionDaily.productName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.materialName" />
-        </FormItem>
-
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="() => gridApi.reload()"
           >
@@ -355,17 +185,21 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
-        <template #toolbar-tools>
-          <!-- 导出按钮 -->
-          <Button type="primary" @click="downloadTemplate()">
-            {{ $t('common.export') }}
-          </Button>
-        </template>
-        <template #materialType="{ row }">
-          <span> {{ getMaterialTypeText(row.materialType) }} </span>
-        </template>
-        <template #footerData="{ column }">
-          <span> {{ collect[column.field] }} </span>
+        <template #action="{ row }">
+          <!-- 冲红 -->
+          <Tooltip>
+            <template #title>
+              {{ $t('common.flushRed') }}
+            </template>
+            <Button
+              :icon="h(MdiUpdate, { class: 'inline-block size-6' })"
+              :loading="row.loading"
+              class="mr-4"
+              type="link"
+              @click="chargeAgainst(row)"
+              v-if="author.includes('冲销')"
+            />
+          </Tooltip>
         </template>
       </Grid>
     </Card>

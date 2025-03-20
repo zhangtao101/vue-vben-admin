@@ -5,13 +5,13 @@ import { computed, h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import {
-  IconParkInboxIn,
-  MaterialSymbolsDeleteOutline,
-  MaterialSymbolsSearch,
-  MingcuteEditLine,
-  PhEyeLight,
-  SolarSmartphoneUpdateLinear,
-  SystemUiconsSettings,
+  MdiEditOutline,
+  MdiEyeOutline,
+  MdiLightDelete,
+  MdiLightSettings,
+  MdiSearch,
+  MdiTrayUpload,
+  MdiUpdate,
 } from '@vben/icons';
 
 import {
@@ -421,7 +421,7 @@ function eyeClose() {
 
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
           >
             {{ $t('common.search') }}
@@ -485,7 +485,7 @@ function eyeClose() {
                     <template #title>{{ $t('common.edit') }}</template>
                     <Button
                       :icon="
-                        h(MingcuteEditLine, { class: 'inline-block size-6' })
+                        h(MdiEditOutline, { class: 'inline-block size-6' })
                       "
                       type="link"
                       @click="showEdit(record)"
@@ -498,7 +498,7 @@ function eyeClose() {
                     </template>
                     <Button
                       :icon="
-                        h(SystemUiconsSettings, {
+                        h(MdiLightSettings, {
                           class: 'inline-block size-6',
                         })
                       "
@@ -513,7 +513,7 @@ function eyeClose() {
                     </template>
                     <Button
                       :icon="
-                        h(SolarSmartphoneUpdateLinear, {
+                        h(MdiUpdate, {
                           class: 'inline-block size-6',
                         })
                       "
@@ -524,7 +524,7 @@ function eyeClose() {
                   <Tooltip>
                     <template #title>{{ $t('common.view') }}</template>
                     <Button
-                      :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+                      :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
                       type="link"
                       @click="showEye(record)"
                     />
@@ -535,7 +535,7 @@ function eyeClose() {
                     <template #title>{{ $t('common.delete') }}</template>
                     <Button
                       :icon="
-                        h(MaterialSymbolsDeleteOutline, {
+                        h(MdiLightDelete, {
                           class: 'inline-block size-6',
                         })
                       "
@@ -657,7 +657,7 @@ function eyeClose() {
             name="file"
           >
             <div class="flex justify-center">
-              <IconParkInboxIn class="size-16" />
+              <MdiTrayUpload class="size-16" />
             </div>
             <p class="ant-upload-text">
               {{ $t('ui.widgets.file.tips') }}

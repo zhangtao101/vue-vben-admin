@@ -4,11 +4,11 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import {
-  MaterialSymbolsDeleteOutline,
-  MaterialSymbolsSearch,
-  MingcuteEditLine,
-  PhEyeLight,
-  SystemUiconsSettings,
+  MdiEditOutline,
+  MdiEyeOutline,
+  MdiLightDelete,
+  MdiLightSettings,
+  MdiSearch,
 } from '@vben/icons';
 
 import {
@@ -472,7 +472,7 @@ onMounted(() => {
 
         <FormItem style="margin-bottom: 1em">
           <Button
-            :icon="h(MaterialSymbolsSearch, { class: 'inline-block mr-2' })"
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="
               paging.current = 1;
@@ -528,7 +528,7 @@ onMounted(() => {
             <Tooltip>
               <template #title>{{ $t('common.view') }}</template>
               <Button
-                :icon="h(PhEyeLight, { class: 'inline-block size-6' })"
+                :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
                 class="mr-4"
                 type="link"
                 @click="viewRow(record)"
@@ -539,7 +539,7 @@ onMounted(() => {
               <template #title>{{ $t('common.edit') }}</template>
               <Button
                 v-if="editButton"
-                :icon="h(MingcuteEditLine, { class: 'inline-block size-6' })"
+                :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
                 class="mr-4"
                 type="link"
                 @click="editRow(record)"
@@ -552,7 +552,7 @@ onMounted(() => {
               <Button
                 v-if="delButton"
                 :icon="
-                  h(MaterialSymbolsDeleteOutline, {
+                  h(MdiLightDelete, {
                     class: 'inline-block size-6',
                   })
                 "
@@ -640,7 +640,7 @@ onMounted(() => {
           <!-- 权限配置按钮 -->
           <Button
             :icon="
-              h(SystemUiconsSettings, {
+              h(MdiLightSettings, {
                 class: 'inline-block size-4 align-top mt-[3px]',
               })
             "
@@ -656,7 +656,7 @@ onMounted(() => {
           <!-- 权限配置按钮 -->
           <Button
             :icon="
-              h(SystemUiconsSettings, {
+              h(MdiLightSettings, {
                 class: 'inline-block size-4 align-top mt-[3px]',
               })
             "
