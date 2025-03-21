@@ -1,9 +1,14 @@
 {
-  "timeFrame": "Time Range",
+  "timeFrame": "Reporting Time Frame",
   "processCode": "Process Code",
   "workstationCode": "Workstation Code",
   "workstationName": "Workstation Name",
   "worksheetCode": "Worksheet Code",
   "productCode": "Product Code",
-  "productName": "Product Name"
+  "productName": "Product Name",
+  "wireNumber": "Wire Number",
+  "batchNumber": "Batch Number",
+  "basicFormula": "Basic Formula",
+  "productionLine": "Production Line",
+  "productLotNumber": "Product Lot Number"
 }
