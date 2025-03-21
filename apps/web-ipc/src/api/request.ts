@@ -50,7 +50,7 @@ function createRequestClient(baseURL: string) {
   }
 
   function formatToken(token: null | string) {
-    return token ? `Bearer ${token}` : null;
+    return token ?? null;
   }
 
   // 请求头处理
@@ -70,9 +70,22 @@ function createRequestClient(baseURL: string) {
     fulfilled: (response) => {
       const { data: responseData, status } = response;
 
-      const { code, data } = responseData;
-      if (status >= 200 && status < 400 && code === 0) {
+      const { code, data, msg }: any = responseData;
+      if (status >= 200 && status < 400 && code === 200) {
         return data;
+      }
+      // 如果业务状态码不为200，显示错误消息
+      else if (code !== 200) {
+        // message.error(msg); // 显示错误消息
+        // 如果业务状态码为401，处理未授权情况
+        if (code === 401) {
+          const accessStore = useAccessStore(); // 使用Vuex的useAccessStore来获取访问存储的状态
+          const authStore = useAuthStore(); // 使用Vuex的useAuthStore来获取认证存储的状态
+          accessStore.setAccessToken(null); // 清除访问令牌
+          // 执行退出登录的操作
+          authStore.logout().then();
+        }
+        throw new Error(msg); // 抛出异常，包含错误消息
       }
 
       throw Object.assign({}, response, { response });
