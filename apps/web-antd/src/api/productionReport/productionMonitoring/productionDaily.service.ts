@@ -91,6 +91,14 @@ export async function queryPolishingZLDayStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPolishingZLDayStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ *  玻化砖产品投入产出报表查询
+ */
+export async function queryBHZInOutApproval(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getBHZInOutApproval?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**
