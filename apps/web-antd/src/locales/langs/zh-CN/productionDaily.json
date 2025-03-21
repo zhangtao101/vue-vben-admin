@@ -8,5 +8,7 @@
   "productName": "产品名称",
   "wireNumber": "线号",
   "batchNumber": "批次号",
-  "basicFormula": "基础配方"
+  "basicFormula": "基础配方",
+  "productionLine": "生产线",
+  "productLotNumber": "产品批号"
 }

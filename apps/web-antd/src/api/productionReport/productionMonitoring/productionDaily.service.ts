@@ -83,6 +83,14 @@ export async function queryPolishedStorageDayStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPolishedStorageDayStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ *  抛光质量报表查询
+ */
+export async function queryPolishingZLDayStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPolishingZLDayStatistics?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**

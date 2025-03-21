@@ -17,10 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  excelPathPolishingYieldDay,
-  queryPolishingYieldDayStatistics,
-} from '#/api';
+import { excelPathYLDay, queryYLDayStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -39,129 +36,33 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'sCline', title: '生产线', minWidth: 200 },
-    { field: 'cLass', title: '班次', minWidth: 200 },
-    { field: 'singleArea', title: '单片面积(M2)', minWidth: 200 },
-    { field: 'productName', title: '产品名称', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'lineName', title: '产品批号', minWidth: 200 },
-    { field: 'inReportNumberP', title: '领用量（片）', minWidth: 200 },
-    { field: 'plannedProductionP', title: '计划生产量(片)', minWidth: 200 },
-    { field: 'actualProductionP', title: '实际生产量(片)', minWidth: 200 },
+    { field: '', title: '日期', minWidth: 200 },
+    { field: '', title: '班次', minWidth: 200 },
+    { field: '', title: '线号', minWidth: 200 },
+    { field: '', title: '编码', minWidth: 200 },
+    { field: '', title: '规格', minWidth: 200 },
+    { field: '', title: '批号', minWidth: 200 },
     {
-      title: '生产产量(M2)',
-      children: [
-        {
-          field: 'plannedProduction',
-          title: '计划',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'actualProduction',
-          title: '实际',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
-    },
-    { field: 'centosRate', title: '投入产出率', minWidth: 200 },
-    {
-      title: '生产时间(H)',
-      children: [
-        {
-          field: 'plannedTime',
-          title: '计划',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'actualTime',
-          title: '实际',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          title: '停机时间(h)',
-          children: [
-            {
-              field: 'faultStopTime',
-              title: '故障时间',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'workStopTime',
-              title: '工艺停机',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'otherStopTime',
-              title: '其他停机',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-          ],
-        },
-      ],
+      field: '',
+      title: '数量（包）',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
     },
     {
-      title: '单位产能差异(m2/h)',
-      children: [
-        {
-          field: 'plannedUnitProduction',
-          title: '计划',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'actualUnitProduction',
-          title: '实际',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'differenceUnitProduction',
-          title: '差异',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
+      field: '',
+      title: '托盘数',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
     },
     {
-      title: '电耗差异(kwh/m2)',
-      children: [
-        {
-          field: 'useElectricity',
-          title: '用电量',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'targetElectricity',
-          title: '目标',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'actualElectricity',
-          title: '实际',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'differenceElectricity',
-          title: '差异',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
+      field: '',
+      title: '包/托',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -222,17 +123,14 @@ const queryParams = ref({
   searchTime: [] as any,
   // 工单号
   worksheetCode: '',
-  // 批次号
-  lineName: '',
-  // 产品料号
+  // 产品编码
   productCode: '',
   // 产品名称
-  productName: '',
+  materialName: '',
 });
 
 // 汇总数据
 const collect = ref<any>({});
-
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -245,7 +143,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPolishingYieldDayStatistics({
+    queryYLDayStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -263,11 +161,6 @@ function queryData({ page, pageSize }: any) {
       });
   });
 }
-// endregion
-
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
 
 // endregion
 
@@ -280,10 +173,16 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPolishingYieldDay(params).then((data) => {
+  excelPathYLDay(params).then((data) => {
     window.open(data);
   });
 }
+
+// endregion
+
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
 
 // endregion
 
@@ -320,15 +219,7 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 批次号 -->
-        <FormItem
-          :label="$t('productionDaily.batchNumber')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.lineName" />
-        </FormItem>
-
-        <!-- 产品料号 -->
+        <!-- 产品编号 -->
         <FormItem
           :label="$t('productionDaily.productCode')"
           style="margin-bottom: 1em"
@@ -341,7 +232,7 @@ onMounted(() => {
           :label="$t('productionDaily.productName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.productName" />
+          <Input v-model:value="queryParams.materialName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

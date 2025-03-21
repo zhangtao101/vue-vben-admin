@@ -92,15 +92,12 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
  * @param row
  */
 function chargeAgainst(row: any) {
+  row.loading = true;
   callbackInout({
     recordId: row.id,
-  }).then(({ code }) => {
-    if (code === 200) {
-      message.success('冲销成功');
-      gridApi.reload();
-    } else {
-      message.error('冲销失败');
-    }
+  }).then(() => {
+    message.success('冲销成功');
+    gridApi.reload();
   });
 }
 
@@ -189,7 +186,7 @@ onMounted(() => {
           <!-- 冲红 -->
           <Tooltip>
             <template #title>
-              {{ $t('common.flushRed') }}
+              {{ $t('common.chargeAgainst') }}
             </template>
             <Button
               :icon="h(MdiUpdate, { class: 'inline-block size-6' })"

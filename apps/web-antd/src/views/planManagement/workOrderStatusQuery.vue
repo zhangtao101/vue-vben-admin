@@ -341,6 +341,7 @@ onMounted(() => {
             v-model:value="queryParams.state"
             :options="statusTypes"
             class="!w-64"
+            allow-clear
           />
         </FormItem>
         <!-- 工单报工状态 -->
@@ -352,6 +353,7 @@ onMounted(() => {
             v-model:value="queryParams.reportState"
             :options="reportStatusTypes"
             class="!w-64"
+            allow-clear
           />
         </FormItem>
 

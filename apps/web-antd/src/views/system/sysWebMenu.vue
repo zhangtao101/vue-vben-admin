@@ -569,6 +569,7 @@ onMounted(() => {
       placement="right"
       root-class-name="root-class-name"
       style="color: red"
+      @close="closeDrawer"
     >
       <Form
         ref="editForm"

@@ -100,9 +100,9 @@ const gridOptions: VxeGridProps<any> = {
       title: '喷干塔',
       children: [
         { field: 'towerNumber', title: '塔号', minWidth: 150 },
-        { field: 'zfReportNumber', title: '领用量(T)', minWidth: 150 },
-        { field: 'dayInNumber', title: '能耗(KWH)', minWidth: 150 },
-        { field: 'pfCurrentTime', title: '入库量(T)', minWidth: 150 },
+        { field: 'zfReportNumber', title: '产出', minWidth: 150 },
+        { field: 'zfDayInNumber', title: '入库量(T)', minWidth: 150 },
+        { field: 'pfCurrentTime', title: '喷干机时', minWidth: 150 },
       ],
     },
     {
