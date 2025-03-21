@@ -81,6 +81,14 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
               title: $t('page.dashboard.workspace'),
             },
           },
+          {
+            name: 'productionOperation',
+            path: '/productionOperation',
+            component: '/productionOperation',
+            meta: {
+              title: '生产作业',
+            },
+          },
         ],
       });
       return routes;
