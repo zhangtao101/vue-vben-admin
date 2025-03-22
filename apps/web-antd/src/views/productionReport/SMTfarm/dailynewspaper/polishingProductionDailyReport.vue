@@ -46,8 +46,9 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productName', title: '产品名称', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
     { field: 'lineName', title: '产品批号', minWidth: 200 },
-    { field: 'inReportNumberP', title: '领用量（片）', minWidth: 200 },
     { field: 'plannedProductionP', title: '计划生产量(片)', minWidth: 200 },
+    { field: 'inReportNumberM', title: '领用量（M2）', minWidth: 200 },
+    { field: 'inReportNumberP', title: '领用量（片）', minWidth: 200 },
     { field: 'actualProductionP', title: '实际生产量(片)', minWidth: 200 },
     {
       title: '生产产量(M2)',

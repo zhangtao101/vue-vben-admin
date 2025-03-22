@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { Card, Form, FormItem, Select } from 'ant-design-vue';
+import { Button, Card, Form, FormItem, Select } from 'ant-design-vue';
 
 // region 工作站查询信息
 // 产线列表
@@ -35,7 +35,7 @@ const queryParams = ref({
 <template>
   <Page>
     <Card>
-      <Form layout="lnline" :model="queryParams">
+      <Form layout="inline" :model="queryParams">
         <FormItem
           :label="$t('productionOperation.productionOrderNumber')"
           class="m-0 border-l-4 border-sky-500 pl-4"
@@ -50,6 +50,9 @@ const queryParams = ref({
             :options="listOfProcesses"
             class="!w-64"
           />
+        </FormItem>
+        <FormItem>
+          <Button type="primary">查询</Button>
         </FormItem>
       </Form>
     </Card>
