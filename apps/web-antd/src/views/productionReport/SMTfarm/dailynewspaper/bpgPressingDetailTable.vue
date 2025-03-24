@@ -18,8 +18,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathPolishedStorageDayStatistics,
-  queryPolishedStorageDayStatistics,
+  excelPathBHZPressureDetailStatistics,
+  queryBHZPressureDetailStatistics,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -39,19 +39,41 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '入库日期', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
+    { field: 'ylLine', title: '窑炉线', minWidth: 200 },
+    { field: 'lineName', title: '生产批号', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'level', title: '等级', minWidth: 200 },
-    { field: 'size', title: '尺寸', minWidth: 200 },
-    { field: 'color', title: '色号', minWidth: 200 },
-    { field: 'reason', title: '降等原因', minWidth: 200 },
-    { field: 'place', title: '产地/年份', minWidth: 200 },
-    { field: 'totalNumber', title: '总片数', minWidth: 200 },
-    { field: 'totalM2', title: '总平方', minWidth: 200 },
+    {
+      field: 'flMaterialNumber',
+      title: '粉料用量',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'pressQuantity',
+      title: '压制量（M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'wasteQuantity',
+      title: '废粉',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
   ],
-  footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
+  footerData: [
+    { seq: '合计' },
+    { seq: '废粉用量' },
+    { seq: '移交量＝压制量+废粉*60%' },
+  ],
+  footerSpanMethod: ({ $columnIndex }) => {
+    // 自定义表尾合并单元格
+    if ($columnIndex === 0) {
+      return { rowspan: 1, colspan: 4 };
+    } else if ($columnIndex <= 3) {
+      return { rowspan: 1, colspan: 0 };
+    }
+  },
   height: 500,
   stripe: true,
   showFooter: true,
@@ -110,12 +132,10 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 工单号
-  worksheetCode: '',
   // 产品编码
   productCode: '',
-  // 产品名称
-  materialName: '',
+  // 产品批号
+  lineName: '',
 });
 
 // 汇总数据
@@ -132,7 +152,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPolishedStorageDayStatistics({
+    queryBHZPressureDetailStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -162,7 +182,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPolishedStorageDayStatistics(params).then((data) => {
+  excelPathBHZPressureDetailStatistics(params).then((data) => {
     window.open(data);
   });
 }
@@ -200,14 +220,6 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 工单号 -->
-        <FormItem
-          :label="$t('productionDaily.worksheetCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.worksheetCode" />
-        </FormItem>
-
         <!-- 产品编号 -->
         <FormItem
           :label="$t('productionDaily.productCode')"
@@ -216,12 +228,12 @@ onMounted(() => {
           <Input v-model:value="queryParams.productCode" />
         </FormItem>
 
-        <!-- 产品名称 -->
+        <!-- 产品批号 -->
         <FormItem
-          :label="$t('productionDaily.productName')"
+          :label="$t('productionDaily.productLotNumber')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.materialName" />
+          <Input v-model:value="queryParams.lineName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -249,8 +261,12 @@ onMounted(() => {
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>
-        <template #footerData="{ column }">
-          <span> {{ collect[column.field] }} </span>
+        <template #footerData="{ column, rowIndex }">
+          <div v-if="column.field === 'flMaterialNumber'">
+            <span v-if="rowIndex === 0">{{ collect.flMaterialNumber }}</span>
+            <span v-if="rowIndex === 1">{{ collect.wasteMaterialNumber }}</span>
+            <span v-if="rowIndex === 2">{{ collect.transferQuantity }}</span>
+          </div>
         </template>
       </Grid>
     </Card>

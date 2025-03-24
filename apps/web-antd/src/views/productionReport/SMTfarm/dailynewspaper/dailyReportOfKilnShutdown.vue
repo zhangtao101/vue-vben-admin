@@ -20,6 +20,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { excelPathYLDay, queryYLDayStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import KilnDetails from '#/util/component/kilnDetails.vue';
 
 // 路由信息
 const route = useRoute();
@@ -36,129 +37,346 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'ylLine', title: '窑炉线', minWidth: 200 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'lineName', title: '生产批号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'materialName', title: '产品名称', minWidth: 200 },
     {
-      field: 'inNumberP',
-      title: '进窑量(片)',
+      field: '1',
+      title: '窑号',
       minWidth: 200,
-      slots: { footer: 'footerData' },
+      slots: { default: 'kilnNumber' },
     },
     {
-      field: 'inNumberM2',
-      title: '进窑量(m2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'outNumberP',
-      title: '出窑合格量(片)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'outNumberM2',
-      title: '出窑合格量(M2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'bfBrick',
-      title: '报废砖量(M2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'equipTime',
-      title: '工时',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'finishedPartsStorage',
-      title: '入成品库量(m2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'interimStockP',
-      title: '入中间品库量(片)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'interimStock',
-      title: '入中间品库量(M2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'centosRate',
-      title: '投入产出率',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      title: '天然气用量',
+      title: '停机非生产',
       children: [
         {
-          field: 'ylTrqValue',
-          title: '用气量(M3)',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
+          title: '大修',
+          children: [
+            {
+              field: '2',
+              title: '时间',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: '燃气',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
         },
         {
-          field: 'trqValueDH',
-          title: '窑炉单耗(M3)',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
+          title: '放假(升降温)',
+          children: [
+            {
+              field: '2',
+              title: '时间',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: '燃气',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
+        },
+        {
+          title: '不可抗拒(雷电/限电/限气)',
+          children: [
+            {
+              field: '2',
+              title: '时间',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: '燃气',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
+        },
+        {
+          title: '小计',
+          children: [
+            {
+              field: '2',
+              title: '时间',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: '燃气',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
         },
       ],
     },
     {
-      title: '电能',
+      title: '空烧时间',
       children: [
         {
-          field: 'ylDlValue',
-          title: '用电量(KWH)',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
+          title: '转产',
+          children: [
+            {
+              title: '定额',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: '实际',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+          ],
         },
         {
-          field: 'dlValueDH',
-          title: '单耗(KWH/入库中间库量M2))',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
+          title: '新品实验研发n',
+          children: [
+            {
+              field: '2',
+              title: '时间',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: '燃气',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
+        },
+        {
+          title: '工艺调整',
+          children: [
+            {
+              field: '2',
+              title: '时间',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: '燃气',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
+        },
+        {
+          title: '故障空烧',
+          children: [
+            {
+              title: '粉制',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: '成型',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: '烧干',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: '窑炉',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: '釉线',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          title: '模具/粉车维修',
+          children: [
+            {
+              field: '2',
+              title: '时间',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: '燃气',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
+        },
+        {
+          title: '责任',
+          children: [
+            {
+              title: '粉制(混料/断料)',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: '亚光(操作调整)',
+              children: [
+                {
+                  field: '2',
+                  title: '时间',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: '燃气',
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          title: '小计',
+          children: [
+            {
+              field: '2',
+              title: '时间',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: '燃气',
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
         },
       ],
     },
     {
-      title: '停窑',
+      title: '合计',
       children: [
         {
-          field: 'YlStopTrqValue',
-          title: '天然气(M3)',
+          field: '2',
+          title: '时间',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'ylStopDlValue',
-          title: '电耗(KWH)',
+          field: '2',
+          title: '燃气',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
   ],
-  footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
-  height: 500,
+  height: 400,
   stripe: true,
-  showFooter: true,
   sortConfig: {
     multiple: true,
   },
@@ -189,24 +407,6 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-/**
- * 获取物料类型的中文描述
- * @param state 物料类型编码编码
- */
-function getMaterialTypeText(state: number) {
-  switch (state) {
-    case 1: {
-      return '原料';
-    }
-    case 2: {
-      return '砖坯';
-    }
-    default: {
-      return '未定义的类型';
-    }
-  }
-}
-
 // endregion
 
 // region 查询数据
@@ -236,6 +436,14 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
+    resolve({
+      total: 1,
+      items: [
+        {
+          kilnNumber: '123',
+        },
+      ],
+    });
     queryYLDayStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
@@ -271,6 +479,22 @@ function downloadTemplate() {
   });
 }
 
+// endregion
+
+// region 详情
+// 是否显示详情
+const isShow = ref(false);
+// 详情数据
+const details = ref<any>({});
+
+/**
+ * 显示详情
+ * @param row
+ */
+function showDetails(row: any) {
+  details.value = row;
+  isShow.value = true;
+}
 // endregion
 
 // region 权限查询
@@ -342,7 +566,7 @@ onMounted(() => {
     <!-- endregion -->
 
     <!-- region 表格主体 -->
-    <Card>
+    <Card class="mb-8">
       <Grid>
         <template #toolbar-tools>
           <!-- 导出按钮 -->
@@ -350,15 +574,17 @@ onMounted(() => {
             {{ $t('common.export') }}
           </Button>
         </template>
-        <template #materialType="{ row }">
-          <span> {{ getMaterialTypeText(row.materialType) }} </span>
-        </template>
-        <template #footerData="{ column }">
-          <span> {{ collect[column.field] }} </span>
+        <template #kilnNumber="{ row }">
+          <Button type="link" @click="showDetails(row)">
+            {{ row.kilnNumber }}
+          </Button>
         </template>
       </Grid>
     </Card>
     <!-- endregion -->
+    <Card :title="$t('productionDaily.dailyDetails')" v-if="isShow">
+      <KilnDetails :kiln-number="details.kilnNumber" />
+    </Card>
   </Page>
 </template>
 

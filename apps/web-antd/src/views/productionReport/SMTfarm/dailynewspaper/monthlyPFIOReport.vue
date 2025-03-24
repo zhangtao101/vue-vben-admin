@@ -17,10 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  excelPathPolishingZLDayStatistics,
-  queryPolishingYieldDayStatistics,
-} from '#/api';
+import { excelPathYLDay, queryYLDayStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -38,123 +35,275 @@ const gridOptions: VxeGridProps<any> = {
       type: 'seq',
       field: 'seq',
       width: 50,
+      fixed: 'left',
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'sCline', title: '生产线', minWidth: 200 },
-    { field: 'cLass', title: '班次', minWidth: 200 },
-    { field: 'singleArea', title: '单片面积(M2)', minWidth: 200 },
-    { field: 'productName', title: '产品名称', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'lineName', title: '产品批号', minWidth: 200 },
-    { field: 'plannedProductionP', title: '计划生产量(片)', minWidth: 200 },
-    { field: 'inReportNumberM', title: '领用量（M2）', minWidth: 200 },
-    { field: 'inReportNumberP', title: '领用量（片）', minWidth: 200 },
-    { field: 'actualProductionP', title: '实际生产量(片)', minWidth: 200 },
     {
-      title: '生产产量(M2)',
+      field: '',
+      title: '生产线',
+      minWidth: 200,
+      fixed: 'left',
+    },
+    { field: '', title: '生产状态', minWidth: 120, fixed: 'left' },
+    { field: '', title: '开工日', minWidth: 120, fixed: 'left' },
+    { field: '', title: '完工日', minWidth: 120, fixed: 'left' },
+    { field: '', title: '新老产品', minWidth: 120, fixed: 'left' },
+    { field: '', title: '批号', minWidth: 120, fixed: 'left' },
+    { field: '', title: '投入编号', minWidth: 120, fixed: 'left' },
+
+    {
+      field: '',
+      title: '期初盘存',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: '',
+      title: '领用待抛库',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: '',
+      title: '领用JG库',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: '',
+      title: '领用JJ库',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: '',
+      title: '领用釉面砖库',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: '',
+      title: '期初与本领料合计',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: '',
+      title: '产出编号',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      title: '入成品库',
       children: [
         {
-          field: 'plannedProduction',
-          title: '计划',
+          field: '',
+          title: 'PA^',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'actualProduction',
-          title: '实际',
+          field: '',
+          title: 'PA^%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '1^',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '1^%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '2＾',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: 'OA',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: 'OB',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '小计',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
-    { field: 'centosRate', title: '投入产出率', minWidth: 200 },
     {
-      title: '生产时间(H)',
+      title: '入待加工库',
       children: [
         {
-          field: 'plannedTime',
-          title: '计划',
+          field: '',
+          title: 'PA^',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'actualTime',
-          title: '实际',
+          field: '',
+          title: '1^',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          title: '停机时间(h)',
-          children: [
-            {
-              field: 'faultStopTime',
-              title: '故障时间',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'workStopTime',
-              title: '工艺停机',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'otherStopTime',
-              title: '其他停机',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: '单位产能差异(m2/h)',
-      children: [
-        {
-          field: 'plannedUnitProduction',
-          title: '计划',
+          field: '',
+          title: '2＾',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'actualUnitProduction',
-          title: '实际',
+          field: '',
+          title: 'OA＾',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'differenceUnitProduction',
-          title: '差异',
+          field: '',
+          title: 'OB＾',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '小计',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '电耗差异(kwh/m2)',
+      title: '入待抛库',
       children: [
         {
-          field: 'useElectricity',
-          title: '用电量',
+          field: '',
+          title: 'P^',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'targetElectricity',
-          title: '目标',
+          field: '',
+          title: '1^',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'actualElectricity',
-          title: '实际',
+          field: '',
+          title: '小计',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      field: '',
+      title: '入库合计',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      title: '本月损耗',
+      children: [
+        {
+          field: '',
+          title: '操作',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'differenceElectricity',
-          title: '差异',
+          field: '',
+          title: '尺寸',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '合计',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '损耗率%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '上砖前破碎',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '报废',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      field: '',
+      title: '期末盘存',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: '',
+      title: '备注',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: '',
+      title: '重复加工量',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      title: '色号统计',
+      children: [
+        {
+          field: '',
+          title: '色号个数',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: 'PA最大色号量',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: 'PA一色集中率',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '标准损耗',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: '',
+          title: '标准损耗量',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -162,7 +311,7 @@ const gridOptions: VxeGridProps<any> = {
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -223,17 +372,14 @@ const queryParams = ref({
   searchTime: [] as any,
   // 工单号
   worksheetCode: '',
-  // 批次号
-  lineName: '',
-  // 产品料号
+  // 产品编码
   productCode: '',
   // 产品名称
-  productName: '',
+  materialName: '',
 });
 
 // 汇总数据
 const collect = ref<any>({});
-
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -246,7 +392,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPolishingYieldDayStatistics({
+    queryYLDayStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -264,11 +410,6 @@ function queryData({ page, pageSize }: any) {
       });
   });
 }
-// endregion
-
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
 
 // endregion
 
@@ -281,10 +422,16 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPolishingZLDayStatistics(params).then((data) => {
+  excelPathYLDay(params).then((data) => {
     window.open(data);
   });
 }
+
+// endregion
+
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
 
 // endregion
 
@@ -321,15 +468,7 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 批次号 -->
-        <FormItem
-          :label="$t('productionDaily.batchNumber')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.lineName" />
-        </FormItem>
-
-        <!-- 产品料号 -->
+        <!-- 产品编号 -->
         <FormItem
           :label="$t('productionDaily.productCode')"
           style="margin-bottom: 1em"
@@ -342,7 +481,7 @@ onMounted(() => {
           :label="$t('productionDaily.productName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.productName" />
+          <Input v-model:value="queryParams.materialName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

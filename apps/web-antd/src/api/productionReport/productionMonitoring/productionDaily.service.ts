@@ -100,6 +100,32 @@ export async function queryBHZInOutApproval(params: any) {
   );
 }
 
+/**
+ * 查询窑线停机日报(明细)
+ */
+export async function queryYXStopDayMXStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYXStopDayMXStatistics?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 玻化分厂压制量明细表
+ */
+export async function queryBHZPressureDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getBHZPressureDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 制釉间生产表
+ */
+export async function queryGlazingRoomDayStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getGlazingRoomDayStatistics?${qs.stringify(params)}`,
+  );
+}
+
 // region 报表导出
 /**
  * 压机日报导出
@@ -139,6 +165,62 @@ export async function excelPathPolishingYieldDay(params: any) {
 export async function excelPathYLReportDay(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYLReportDay?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 窑线停机日报导出(明细)
+ */
+export async function excelPathYXStopDayMXStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYXStopDayMXStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 玻化砖产品投入产出批报导出
+ */
+export async function excelPathBHZInOutApproval(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathBHZInOutApproval?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 能耗日报导出
+ */
+export async function excelPathEnergyConsumptionStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathEnergyConsumptionStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光入库日报导出
+ */
+export async function excelPathPolishedStorageDayStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPolishedStorageDayStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光质量日报导出
+ */
+export async function excelPathPolishingZLDayStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPolishingZLDayStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 玻化分厂压制量明细表导出
+ */
+export async function excelPathBHZPressureDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathBHZPressureDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 制釉间生产日报导出
+ */
+export async function excelGlazingRoomDayStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelGlazingRoomDayStatistics?${qs.stringify(params)}`,
   );
 }
 // endregion

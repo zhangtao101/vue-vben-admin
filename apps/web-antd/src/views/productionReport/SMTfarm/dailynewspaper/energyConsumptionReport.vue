@@ -17,7 +17,10 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryEnergyConsumptionStatistics } from '#/api';
+import {
+  excelPathEnergyConsumptionStatistics,
+  queryEnergyConsumptionStatistics,
+} from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -59,12 +62,12 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'startCollectionTime',
-      title: '开始采集时间',
+      title: '正常开始采集时间',
       minWidth: 200,
     },
     {
       field: 'endCollectionTime',
-      title: '结束采集时间',
+      title: '正常结束采集时间',
       minWidth: 200,
     },
     {
@@ -78,19 +81,33 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 200,
     },
     {
-      field: 'energyType',
-      title: '能耗类型',
+      field: 'trqValue',
+      title: '天然气',
+      minWidth: 120,
+    },
+    {
+      field: 'jlqValue',
+      title: '焦炉气',
+      minWidth: 120,
+    },
+    {
+      field: 'smjValue',
+      title: '水煤浆',
+      minWidth: 120,
+    },
+    {
+      field: 'dlValue',
+      title: '电能',
+      minWidth: 120,
+    },
+    {
+      field: 'YCstartCollectionTime',
+      title: '异常开始采集时间',
       minWidth: 200,
     },
     {
-      field: 'energyConsumption',
-      title: '能耗消耗量',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'collectionType',
-      title: '采集类型（正常或异常）',
+      field: 'YCendCollectionTime',
+      title: '异常结束采集时间',
       minWidth: 200,
     },
     {
@@ -208,6 +225,22 @@ const author = ref<string[]>([]);
 
 // endregion
 
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  excelPathEnergyConsumptionStatistics(params).then((data) => {
+    window.open(data);
+  });
+}
+
+// endregion
+
 // region 初始化
 
 onMounted(() => {
@@ -273,6 +306,12 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
+        </template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>

@@ -2,7 +2,6 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
@@ -18,14 +17,18 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathPolishedStorageDayStatistics,
-  queryPolishedStorageDayStatistics,
+  excelPathYXStopDayMXStatistics,
+  queryYXStopDayMXStatistics,
 } from '#/api';
 import { $t } from '#/locales';
-import { queryAuth } from '#/util';
 
-// 路由信息
-const route = useRoute();
+const props = defineProps({
+  // 父组件传递过来的参数
+  kilnNumber: {
+    type: String,
+    default: '',
+  },
+});
 
 // region 表格操作
 
@@ -39,22 +42,75 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '入库日期', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'level', title: '等级', minWidth: 200 },
-    { field: 'size', title: '尺寸', minWidth: 200 },
-    { field: 'color', title: '色号', minWidth: 200 },
-    { field: 'reason', title: '降等原因', minWidth: 200 },
-    { field: 'place', title: '产地/年份', minWidth: 200 },
-    { field: 'totalNumber', title: '总片数', minWidth: 200 },
-    { field: 'totalM2', title: '总平方', minWidth: 200 },
+    {
+      field: 'worksCenterCode',
+      title: '工作中心代码',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'worksCenterName',
+      title: '工作中心名称',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'day',
+      title: '日期',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'cLass',
+      title: '班次',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'worksheetType',
+      title: '工单单别',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'worksheetCode',
+      title: '工单单号',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'lineName',
+      title: '产品批号',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'productCode',
+      title: '产品编号',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'stopTime',
+      title: '停窑时间',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'stopReason',
+      title: '停窑原因',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'stopTrqValue',
+      title: '停窑燃气',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
   ],
-  footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
-  height: 500,
+  height: 400,
   stripe: true,
-  showFooter: true,
   sortConfig: {
     multiple: true,
   },
@@ -85,24 +141,6 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-/**
- * 获取物料类型的中文描述
- * @param state 物料类型编码编码
- */
-function getMaterialTypeText(state: number) {
-  switch (state) {
-    case 1: {
-      return '原料';
-    }
-    case 2: {
-      return '砖坯';
-    }
-    default: {
-      return '未定义的类型';
-    }
-  }
-}
-
 // endregion
 
 // region 查询数据
@@ -110,12 +148,10 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 工单号
-  worksheetCode: '',
   // 产品编码
   productCode: '',
-  // 产品名称
-  materialName: '',
+  // 产品批号
+  lineName: '',
 });
 
 // 汇总数据
@@ -132,10 +168,11 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPolishedStorageDayStatistics({
+    queryYXStopDayMXStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
+      sCline: props.kilnNumber, // 从 props 中获取 kilnNumber 参数。
     })
       .then(({ statisticsDtos: { total, list }, ...p }) => {
         collect.value = p;
@@ -162,27 +199,33 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPolishedStorageDayStatistics(params).then((data) => {
+  params.sCline = props.kilnNumber;
+  excelPathYXStopDayMXStatistics(params).then((data) => {
     window.open(data);
   });
 }
 
 // endregion
 
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
+// region 详情
+// 是否显示详情
+const isShow = ref(false);
+// 详情数据
+const details = ref<any>({});
 
+/**
+ * 显示详情
+ * @param row
+ */
+function showDetails(row: any) {
+  details.value = row;
+  isShow.value = true;
+}
 // endregion
 
 // region 初始化
 
-onMounted(() => {
-  // 查询权限
-  queryAuth(route.meta.code as string).then((data) => {
-    author.value = data;
-  });
-});
+onMounted(() => {});
 
 // endregion
 </script>
@@ -200,14 +243,6 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 工单号 -->
-        <FormItem
-          :label="$t('productionDaily.worksheetCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.worksheetCode" />
-        </FormItem>
-
         <!-- 产品编号 -->
         <FormItem
           :label="$t('productionDaily.productCode')"
@@ -216,12 +251,12 @@ onMounted(() => {
           <Input v-model:value="queryParams.productCode" />
         </FormItem>
 
-        <!-- 产品名称 -->
+        <!-- 产品批号 -->
         <FormItem
-          :label="$t('productionDaily.productName')"
+          :label="$t('productionDaily.productLotNumber')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.materialName" />
+          <Input v-model:value="queryParams.lineName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -246,11 +281,10 @@ onMounted(() => {
             {{ $t('common.export') }}
           </Button>
         </template>
-        <template #materialType="{ row }">
-          <span> {{ getMaterialTypeText(row.materialType) }} </span>
-        </template>
-        <template #footerData="{ column }">
-          <span> {{ collect[column.field] }} </span>
+        <template #kilnNumber="{ row }">
+          <Button type="link" @click="showDetails(row)">
+            {{ row.kilnNumber }}
+          </Button>
         </template>
       </Grid>
     </Card>

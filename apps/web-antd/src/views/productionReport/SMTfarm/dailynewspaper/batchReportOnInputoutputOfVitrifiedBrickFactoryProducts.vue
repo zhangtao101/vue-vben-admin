@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathYLDay, queryBHZInOutApproval } from '#/api';
+import { excelPathBHZInOutApproval, queryBHZInOutApproval } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -198,7 +198,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathYLDay(params).then((data) => {
+  excelPathBHZInOutApproval(params).then((data) => {
     window.open(data);
   });
 }

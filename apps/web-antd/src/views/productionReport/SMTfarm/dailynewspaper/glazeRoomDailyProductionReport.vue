@@ -18,8 +18,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathPolishedStorageDayStatistics,
-  queryPolishedStorageDayStatistics,
+  excelGlazingRoomDayStatistics,
+  queryGlazingRoomDayStatistics,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -39,19 +39,27 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '入库日期', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
+    { field: 'day', title: '日期', minWidth: 200 },
+    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'level', title: '等级', minWidth: 200 },
-    { field: 'size', title: '尺寸', minWidth: 200 },
-    { field: 'color', title: '色号', minWidth: 200 },
-    { field: 'reason', title: '降等原因', minWidth: 200 },
-    { field: 'place', title: '产地/年份', minWidth: 200 },
-    { field: 'totalNumber', title: '总片数', minWidth: 200 },
-    { field: 'totalM2', title: '总平方', minWidth: 200 },
+    { field: 'productName', title: '产品名称', minWidth: 200 },
+    { field: 'ballMillCode', title: '球磨机号', minWidth: 200 },
+    {
+      field: 'inreportNumber',
+      title: '当日投入量（KG）',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'outreportNumber',
+      title: '当日产出量（KG）',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    { field: 'tankName', title: '存浆容器（八角桶）', minWidth: 200 },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -132,7 +140,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPolishedStorageDayStatistics({
+    queryGlazingRoomDayStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -162,7 +170,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPolishedStorageDayStatistics(params).then((data) => {
+  excelGlazingRoomDayStatistics(params).then((data) => {
     window.open(data);
   });
 }
