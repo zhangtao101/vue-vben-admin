@@ -1,8 +1,7 @@
 import { initPreferences } from '@vben/preferences';
 import { unmountGlobalLoading } from '@vben/utils';
 
-// eslint-disable-next-line n/no-extraneous-import
-import { addCollection } from '@iconify/vue';
+import loadIconCollection from '#/util/icon-localization';
 
 import { overridesPreferences } from './preferences';
 
@@ -11,20 +10,7 @@ import { overridesPreferences } from './preferences';
  */
 async function initApplication() {
   // region 加载图标
-
-  // 动态导入 @iconify/json/json 下的所有图标集
-  const iconCollections = import.meta.glob(
-    '../node_modules/@iconify/json/json/*.json',
-    {
-      eager: true,
-    },
-  );
-
-  // 遍历所有图标集并注册
-  for (const path in iconCollections) {
-    const collection: any = iconCollections[path];
-    addCollection(collection.default);
-  }
+  loadIconCollection();
 
   // endregion
 

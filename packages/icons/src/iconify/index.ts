@@ -46,3 +46,7 @@ export const MdiExportVariant = createIconifyIcon('mdi:export-variant');
 export const UilReporter = createIconifyIcon('oui:reporter');
 // 能源采集
 export const MdiEnergyCircle = createIconifyIcon('mdi:energy-circle');
+// 上箭头
+export const MdiChevronUp = createIconifyIcon('mdi:chevron-up');
+// 下箭头
+export const MdiChevronDown = createIconifyIcon('mdi:chevron-down');
