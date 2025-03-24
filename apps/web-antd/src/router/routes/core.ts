@@ -322,6 +322,17 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'polishingProductionDailyReport',
         path: 'polishingProductionDailyReport',
       },
+      {
+        component: () =>
+          import('#/views/productionReport/packagingAndInventoryReversal.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '打包入库冲销',
+          code: 'WM_473',
+        },
+        name: 'packagingAndInventoryReversal',
+        path: 'packagingAndInventoryReversal',
+      },
     ],
   },
 ];
