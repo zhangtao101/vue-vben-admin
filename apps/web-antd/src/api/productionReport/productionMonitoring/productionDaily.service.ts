@@ -125,6 +125,14 @@ export async function queryGlazingRoomDayStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getGlazingRoomDayStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ * 压机月报
+ */
+export async function queryPressMonthStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPressMonthStatistics?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**
@@ -221,6 +229,14 @@ export async function excelPathBHZPressureDetailStatistics(params: any) {
 export async function excelGlazingRoomDayStatistics(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelGlazingRoomDayStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 压机月报导出
+ */
+export async function excelPathPressMonth(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPressMonth?${qs.stringify(params)}`,
   );
 }
 // endregion

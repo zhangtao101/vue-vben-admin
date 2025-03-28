@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathYLDay, queryYLDayStatistics } from '#/api';
+import { excelPathPressMonth, queryPressMonthStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -36,82 +36,82 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '月份', minWidth: 200 },
-    { field: 'ylLine', title: '开始日期', minWidth: 200 },
-    { field: 'worksheetCode', title: '结束日期', minWidth: 200 },
-    { field: 'lineName', title: '工单号', minWidth: 200 },
-    { field: 'productCode', title: '压机编号', minWidth: 200 },
-    { field: 'materialName', title: '生产批次号', minWidth: 200 },
-    { field: '1', title: '产品编码', minWidth: 200 },
-    { field: '2', title: '产品名称', minWidth: 200 },
+    { field: 'month', title: '月份', minWidth: 200 },
+    { field: 'startDay', title: '开始日期', minWidth: 200 },
+    { field: 'endDay', title: '结束日期', minWidth: 200 },
+    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
+    { field: 'equipCode', title: '压机编号', minWidth: 200 },
+    { field: 'lineName', title: '生产批次号', minWidth: 200 },
+    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'materialName', title: '产品名称', minWidth: 200 },
     {
-      field: 'inNumberP',
+      field: 'usePowderNumber',
       title: '粉料用量(T)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'wasteMaterialNumber',
       title: '废粉量T(T)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'pressingWeightNumber',
       title: '压制量(M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'oDryBilletWeight',
       title: '干坯重量(KG/M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'wgInNumber',
       title: '卧干入库量(M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'wgInWeight',
       title: '卧干投入量(M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'centosRate',
       title: '投入产出率',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'equipTime',
       title: '工时',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'dlValue',
       title: '电耗',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'trqValue',
       title: '天然气',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'dlStopValue',
       title: '停机电耗',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inNumberP',
+      field: 'trqStopValue',
       title: '停机天然气能耗',
       minWidth: 200,
       slots: { footer: 'footerData' },
@@ -183,6 +183,8 @@ const queryParams = ref({
   productCode: '',
   // 产品名称
   materialName: '',
+  // 生产批次号
+  lineName: '',
 });
 
 // 汇总数据
@@ -199,7 +201,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryYLDayStatistics({
+    queryPressMonthStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -229,7 +231,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathYLDay(params).then((data) => {
+  excelPathPressMonth(params).then((data) => {
     window.open(data);
   });
 }
@@ -289,6 +291,14 @@ onMounted(() => {
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.materialName" />
+        </FormItem>
+
+        <!-- 批次号 -->
+        <FormItem
+          :label="$t('productionDaily.batchNumber')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.lineName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
