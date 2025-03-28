@@ -308,6 +308,10 @@ function reportenergyHarvestingDrawerClose() {
   reportForWorkDrawer.value = false;
 }
 
+/**
+ * 获取能源类型文本
+ * @param type
+ */
 function getTypeText(type: number) {
   switch (type) {
     case 1: {
@@ -325,6 +329,28 @@ function getTypeText(type: number) {
     default: {
       return '未定义的能源类型';
     }
+  }
+}
+
+/**
+ * 能源变更, 计算变更后的数值
+ * @param item 需要计算的对象
+ */
+function energyChange(item: any) {
+  if (
+    (item.startEnergyValue && item.endEnergyValue) ||
+    (item.startEnergyValue === 0 && item.endEnergyValue === 0)
+  ) {
+    // 获取倍数
+    const multiple = (energyEquipCode: string) => {
+      const arr = energyEquipCode.split('-');
+      return Number.isNaN(arr[arr.length - 1] as string)
+        ? 1
+        : Number.parseInt(arr[arr.length - 1] as string, 10);
+    };
+    item.energyValue =
+      (item.endEnergyValue - item.startEnergyValue) *
+      multiple(item.energyEquipCode);
   }
 }
 // endregion
@@ -598,8 +624,26 @@ onMounted(() => {});
         <DescriptionsItem label="仪表编号">
           {{ item.energyEquipCode }}
         </DescriptionsItem>
-        <DescriptionsItem label="仪表读数">
+        <!--        <DescriptionsItem label="仪表读数">
           <InputNumber v-model:value="item.energyValue" :min="0" />
+        </DescriptionsItem>-->
+        <DescriptionsItem label="仪表开始读数">
+          <InputNumber
+            v-model:value="item.startEnergyValue"
+            :min="0"
+            @change="energyChange(item)"
+          />
+        </DescriptionsItem>
+        <DescriptionsItem label="仪表结束读数">
+          <InputNumber
+            v-model:value="item.endEnergyValue"
+            :min="item.startEnergyValue || 0"
+            :disabled="!(item.startEnergyValue || item.startEnergyValue === 0)"
+            @change="energyChange(item)"
+          />
+        </DescriptionsItem>
+        <DescriptionsItem label="能耗">
+          {{ item.energyValue }}
         </DescriptionsItem>
         <DescriptionsItem label="异常说明">
           {{ item.errorName }}
