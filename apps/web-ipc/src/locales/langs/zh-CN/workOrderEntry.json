@@ -1,0 +1,15 @@
+{
+  "workCenter": "工作中心",
+  "workOrderNumber": "工单编号",
+  "materialCode": "物料编码",
+  "workOrderStatus": "工单状态",
+  "pullIn": "进站",
+  "recover": "恢复",
+  "pause": "暂停",
+  "reassignment": "改派",
+  "inService": "已开工",
+  "beInOrder": "就绪",
+  "notYetStarted": "未开始",
+  "outbound": "出站",
+  "downline": "下线"
+}

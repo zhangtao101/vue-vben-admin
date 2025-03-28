@@ -1,10 +1,26 @@
 <script lang="ts" setup>
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { MdiChevronDown, MdiChevronUp, MdiHome } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Card, Form, FormItem, Select } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Form,
+  FormItem,
+  Input,
+  Select,
+  TabPane,
+  Tabs,
+} from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import OperationalMatters from '#/util/component/operationalMatters.vue';
+import StepExecution from '#/util/component/stepExecution.vue';
 
 // region 工作站查询信息
 // 产线列表
@@ -30,11 +46,214 @@ const queryParams = ref({
 });
 
 // endregion
+
+// region 作业信息
+// region 收缩
+// 作业信息是否收缩
+const jobInformationContraction = ref(false);
+
+/**
+ * 作业信息收缩展开
+ */
+function jobInformationContractionChange() {
+  jobInformationContraction.value = !jobInformationContraction.value;
+}
+// endregion
+
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    {
+      title: '序号',
+      type: 'seq',
+      field: 'seq',
+      width: 50,
+    },
+    {
+      field: 'worksCenterCode',
+      title: '工单编号',
+      minWidth: 200,
+    },
+    {
+      field: 'worksCenterName',
+      title: '进站时间',
+      minWidth: 200,
+    },
+    {
+      field: 'day',
+      title: '当前工序',
+      minWidth: 200,
+    },
+    {
+      field: 'cLass',
+      title: '工单进度',
+      minWidth: 200,
+    },
+    {
+      field: '1',
+      title: '工单状态',
+      minWidth: 200,
+    },
+    {
+      field: '2',
+      title: '人员',
+      minWidth: 200,
+    },
+    {
+      field: '3',
+      title: '工单操作',
+      minWidth: 200,
+    },
+  ],
+  maxHeight: 400,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
+  },
+};
+
+// gridApi
+const [Grid] = useVbenVxeGrid({ gridOptions });
+
+// region 查询数据
+// 查询参数
+const jobInformationQueryConditions = ref({
+  // 查询时间
+  searchTime: [] as any,
+  // 产品编码
+  productCode: '',
+  // 产品批号
+  lineName: '',
+});
+
+/**
+ * 查询数据
+ * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ */
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve, _reject) => {
+    const params: any = { ...jobInformationQueryConditions.value };
+    if (params.searchTime && params.searchTime.length === 2) {
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+      params.searchTime = undefined;
+    }
+    resolve({
+      total: page * pageSize,
+      items: [{}],
+    });
+    /* queryYXStopDayMXStatistics({
+      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+      pageNum: page, // 当前页码。
+      pageSize, // 每页显示的数据条数。
+    })
+      .then(({ statisticsDtos: { total, list }, ...p }) => {
+        collect.value = p;
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });*/
+  });
+}
+
+// endregion
+
+// endregion
+
+// region 工艺路线
+// region 收缩
+// 工艺路线是否收缩
+const processShrinkage = ref(false);
+
+/**
+ * 作业信息收缩展开
+ */
+function processShrinkageChange() {
+  processShrinkage.value = !processShrinkage.value;
+}
+// endregion
+// 工艺路线列表
+const processRouteList = ref([
+  {
+    label: '路线A',
+    value: 1,
+  },
+  {
+    label: '路线b',
+    value: 2,
+  },
+  {
+    label: '路线c',
+    value: 3,
+  },
+  {
+    label: '路线d',
+    value: 4,
+  },
+]);
+// 当前选中的工艺路线
+const checkedProcess = ref(1);
+
+/**
+ * 工艺路线切换
+ * @param value
+ */
+function processChange(value: number) {
+  checkedProcess.value = value;
+}
+// endregion
+
+// region 操作事项
+// region 收缩
+// 操作事项是否收缩
+const operationEventShrinkage = ref(false);
+
+/**
+ * 作业信息收缩展开
+ */
+function operationEventShrinkageChange() {
+  operationEventShrinkage.value = !operationEventShrinkage.value;
+}
+// endregion
+// 选中的操作事项
+const theSelectedOperation = ref<any>([]);
+/**
+ * 操作事项切换
+ * @param key
+ */
+function tabsChange(key: any) {
+  theSelectedOperation.value = key;
+}
+// endregion
 </script>
 
 <template>
   <Page>
-    <Card>
+    <!-- region 工作站查询信息 -->
+    <Card class="mb-5">
       <Form layout="inline" :model="queryParams">
         <FormItem
           :label="$t('productionOperation.productionOrderNumber')"
@@ -51,12 +270,158 @@ const queryParams = ref({
             class="!w-64"
           />
         </FormItem>
-        <FormItem>
-          <Button type="primary">查询</Button>
-        </FormItem>
       </Form>
     </Card>
+    <!-- endregion -->
+
+    <!--- region 作业信息 -->
+    <Card :title="$t('productionOperation.jobInformation')" class="mb-5">
+      <template #extra>
+        <MdiChevronDown
+          class="cursor-pointer text-2xl"
+          v-if="jobInformationContraction"
+          @click="jobInformationContractionChange"
+        />
+        <MdiChevronUp
+          class="cursor-pointer text-2xl"
+          v-else
+          @click="jobInformationContractionChange"
+        />
+      </template>
+      <template v-if="!jobInformationContraction">
+        <Form layout="inline" :model="queryParams">
+          <!-- 工单编号 -->
+          <FormItem :label="$t('productionOperation.workOrderNumber')">
+            <Select
+              :model:value="queryParams.productionLineId"
+              :options="listOfProductionLines"
+              class="mr-4 !w-64"
+            />
+          </FormItem>
+          <!-- 产品名称 -->
+          <FormItem :label="$t('productionOperation.productName')">
+            <Input />
+          </FormItem>
+          <!-- 产品编号 -->
+          <FormItem :label="$t('productionOperation.productNumber')">
+            <Input />
+          </FormItem>
+        </Form>
+        <Grid>
+          <template #toolbar-tools> </template>
+        </Grid>
+      </template>
+    </Card>
+    <!--- endregion -->
+
+    <!--- region 工艺路线 -->
+    <Card :title="$t('productionOperation.processRoute')" class="mb-5">
+      <template #extra>
+        <MdiChevronDown
+          class="cursor-pointer text-2xl"
+          v-if="processShrinkage"
+          @click="processShrinkageChange"
+        />
+        <MdiChevronUp
+          class="cursor-pointer text-2xl"
+          v-else
+          @click="processShrinkageChange"
+        />
+      </template>
+      <template v-if="!processShrinkage">
+        <Form layout="inline" :model="queryParams">
+          <!-- 工单编号 -->
+          <FormItem :label="$t('productionOperation.workOrderNumber')">
+            <Input />
+          </FormItem>
+          <!-- 产品名称 -->
+          <FormItem :label="$t('productionOperation.productName')">
+            <Input />
+          </FormItem>
+        </Form>
+        <div class="mt-5">
+          <Button
+            v-for="item of processRouteList"
+            :type="item.value !== checkedProcess ? 'default' : 'primary'"
+            size="large"
+            class="mr-4 w-32"
+            :key="item.value"
+            @click="processChange(item.value)"
+          >
+            {{ item.label }}
+          </Button>
+        </div>
+      </template>
+    </Card>
+    <!--- endregion -->
+
+    <!--- region 操作事项  -->
+    <Card :title="$t('productionOperation.operationalMatters')" class="mb-5">
+      <template #extra>
+        <MdiChevronDown
+          class="cursor-pointer text-2xl"
+          v-if="operationEventShrinkage"
+          @click="operationEventShrinkageChange"
+        />
+        <MdiChevronUp
+          class="cursor-pointer text-2xl"
+          v-else
+          @click="operationEventShrinkageChange"
+        />
+      </template>
+      <template v-if="!operationEventShrinkage">
+        <Tabs @change="tabsChange">
+          <TabPane key="1">
+            <template #tab>
+              <MdiHome class="inline-block" />
+              工序操作
+            </template>
+            <OperationalMatters />
+          </TabPane>
+          <TabPane key="2">
+            <template #tab>
+              <MdiHome class="inline-block" />
+              质量检验
+            </template>
+            444
+          </TabPane>
+          <TabPane key="3">
+            <template #tab>
+              <MdiHome class="inline-block" />
+              SOP查看
+            </template>
+            333
+          </TabPane>
+          <TabPane key="4">
+            <template #tab>
+              <MdiHome class="inline-block" />
+              安灯
+            </template>
+            222
+          </TabPane>
+        </Tabs>
+      </template>
+    </Card>
+    <!--- endregion -->
+
+    <!--- region 工步执行  -->
+    <Card :title="$t('productionOperation.workStepExecution')" class="mb-5">
+      <template #extra>
+        <MdiChevronDown
+          class="cursor-pointer text-2xl"
+          v-if="operationEventShrinkage"
+          @click="operationEventShrinkageChange"
+        />
+        <MdiChevronUp
+          class="cursor-pointer text-2xl"
+          v-else
+          @click="operationEventShrinkageChange"
+        />
+      </template>
+      <StepExecution />
+    </Card>
+    <!-- endregion -->
   </Page>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

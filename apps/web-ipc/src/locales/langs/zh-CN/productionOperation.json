@@ -1,3 +1,19 @@
 {
-  "productionOrderNumber": "生产订单号"
+  "productionOrderNumber": "生产订单号",
+  "workOrderNumber": "工单编号",
+  "productName": "产品名称",
+  "productNumber": "产品编号",
+  "processRoute": "工艺路线",
+  "jobInformation": "作业信息",
+  "operationalMatters": "操作事项",
+  "workStepExecution": "工步执行",
+  "automaticCleaningOfTheDeviceIsEnabled": "设备自动清洁使能",
+  "automaticCleaningStatusOfTheDevice": "设备自动清洁状态",
+  "automaticEquipmentCleaningTime": "设备自动清洁计时",
+  "automaticDeviceCleaningTimeout": "设备自动清洁超时",
+  "yes": "是",
+  "no": "否",
+  "beCleaning": "清洗中",
+  "completed": "已完成",
+  "notYetStarted": "未开始"
 }

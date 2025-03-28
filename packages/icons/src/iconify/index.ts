@@ -50,3 +50,5 @@ export const MdiEnergyCircle = createIconifyIcon('mdi:energy-circle');
 export const MdiChevronUp = createIconifyIcon('mdi:chevron-up');
 // 下箭头
 export const MdiChevronDown = createIconifyIcon('mdi:chevron-down');
+// 家
+export const MdiHome = createIconifyIcon('mdi:home');

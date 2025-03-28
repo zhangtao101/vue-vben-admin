@@ -1,0 +1,11 @@
+{
+  "toDoTask": "待办任务",
+  "all": "全部",
+  "waitingToBeClaimed": "待领取",
+  "toBeProcessed": "待处理",
+  "completed": "已完成",
+  "workOrderNumber": "工单编号",
+  "currentOperation": "当前工序",
+  "currentState": "当前状态",
+  "jobPosition": "作业位置"
+}
