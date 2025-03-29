@@ -5,3 +5,11 @@
 # equipmentOperationStatus
 
 > 设备运行状态
+
+# equipmentLocationInformation
+
+> 设备点位信息
+
+# equipmentMonitoringInformation
+
+> 设备监控信息

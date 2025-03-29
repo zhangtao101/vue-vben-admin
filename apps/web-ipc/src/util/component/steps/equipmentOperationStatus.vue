@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { $t } from '@vben/locales';
 
-import { Col, Row } from 'ant-design-vue';
+import { Col, Row, Tag } from 'ant-design-vue';
 
 /**
  * 获取清洗状态描述
  */
-function obtainTheDeviceCleanStatus(status: number) {
+/* function obtainTheDeviceCleanStatus(status: number) {
   switch (status) {
     case 1: {
       return $t('productionOperation.yes');
@@ -21,7 +21,7 @@ function obtainTheDeviceCleanStatus(status: number) {
       return $t('productionOperation.no');
     }
   }
-}
+}*/
 
 /**
  * 获取标签的class
@@ -45,9 +45,15 @@ function getValueClass() {
       <span :class="getLabelClass()">{{
         $t('equipmentOperationStatus.equipmentAvailable')
       }}</span>
-      <span class="rounded-full border p-2">
-        {{ obtainTheDeviceCleanStatus(1) }}
-      </span>
+      <Tag :bordered="false" color="success" class="align-middle text-xl">
+        通讯
+      </Tag>
+      <Tag :bordered="false" color="error" class="align-middle text-xl">
+        Ready
+      </Tag>
+      <Tag :bordered="false" color="warning" class="align-middle text-xl">
+        远程
+      </Tag>
     </Col>
   </Row>
   <Row class="mb-4">

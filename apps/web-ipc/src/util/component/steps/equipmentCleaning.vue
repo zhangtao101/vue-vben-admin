@@ -41,9 +41,9 @@ function getValueClass() {
 <template>
   <Row class="mb-4">
     <Col :span="12">
-      <!-- 设备自动清洁使能 -->
+      <!-- 前工步执行状况 -->
       <span :class="getLabelClass()">{{
-        $t('productionOperation.automaticCleaningOfTheDeviceIsEnabled')
+        $t('productionOperation.implementationStatus')
       }}</span>
       <span :class="getValueClass()">
         {{ obtainTheDeviceCleanStatus(1) }}
@@ -55,20 +55,6 @@ function getValueClass() {
       <!-- 设备自动清洁状态 -->
       <span :class="getLabelClass()">{{
         $t('productionOperation.automaticCleaningStatusOfTheDevice')
-      }}</span>
-      <span :class="getValueClass()">2222</span>
-    </Col>
-    <Col :span="8">
-      <!-- 设备自动清洁计时 -->
-      <span :class="getLabelClass()">{{
-        $t('productionOperation.automaticEquipmentCleaningTime')
-      }}</span>
-      <span :class="getValueClass()">2222</span>
-    </Col>
-    <Col :span="8">
-      <!-- 设备自动清洁超时 -->
-      <span :class="getLabelClass()">{{
-        $t('productionOperation.automaticDeviceCleaningTimeout')
       }}</span>
       <span :class="getValueClass()">2222</span>
     </Col>

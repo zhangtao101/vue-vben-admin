@@ -36,6 +36,18 @@ const items = [
     description: '步骤3的描述',
   },
   {
+    title: '步骤1',
+    description: '步骤1的描述',
+  },
+  {
+    title: '步骤2',
+    description: '步骤2的描述',
+  },
+  {
+    title: '步骤3',
+    description: '步骤3的描述',
+  },
+  {
     title: '步骤4',
     description: '步骤4的描述',
     disabled: true,
@@ -69,6 +81,22 @@ const discreteOperationStep = ref([
     label: '路线d',
     value: 4,
   },
+  {
+    label: '路线A',
+    value: 11,
+  },
+  {
+    label: '路线b',
+    value: 21,
+  },
+  {
+    label: '路线c',
+    value: 31,
+  },
+  {
+    label: '路线d',
+    value: 41,
+  },
 ]);
 const checkedDiscreteOperationStep = ref(1);
 
@@ -88,30 +116,32 @@ function discreteOperationStepCChange(value: number) {
     :options="jobType"
     class="mb-8"
   />
-  <Steps
-    v-model:current="current"
-    :items="items"
-    v-if="theSelectedJobType === '1'"
-  >
-    <template #progressDot="{ prefixCls }">
-      <Popover>
-        <span :class="`${prefixCls}-icon-dot`"></span>
-      </Popover>
-    </template>
-  </Steps>
-  <div v-else>
-    <Button
-      v-for="item of discreteOperationStep"
-      :type="
-        item.value !== checkedDiscreteOperationStep ? 'default' : 'primary'
-      "
-      size="large"
-      class="mr-4 w-32"
-      :key="item.value"
-      @click="discreteOperationStepCChange(item.value)"
+  <div class="overflow-y-auto">
+    <Steps
+      v-model:current="current"
+      :items="items"
+      v-if="theSelectedJobType === '1'"
     >
-      {{ item.label }}
-    </Button>
+      <template #progressDot="{ prefixCls }">
+        <Popover>
+          <span :class="`${prefixCls}-icon-dot`"></span>
+        </Popover>
+      </template>
+    </Steps>
+    <div v-else class="whitespace-nowrap">
+      <Button
+        v-for="item of discreteOperationStep"
+        :type="
+          item.value !== checkedDiscreteOperationStep ? 'default' : 'primary'
+        "
+        size="large"
+        class="mr-4 w-32"
+        :key="item.value"
+        @click="discreteOperationStepCChange(item.value)"
+      >
+        {{ item.label }}
+      </Button>
+    </div>
   </div>
 </template>
 
