@@ -30,29 +30,22 @@ const items = ref([
   {
     value: '1',
     payload: {
-      label: '设备',
+      label: '首检',
       count: 2,
     },
   },
   {
     value: '2',
     payload: {
-      label: '质量',
+      label: '巡检',
       count: 11,
     },
   },
   {
     value: '3',
     payload: {
-      label: '技术',
+      label: '末检',
       count: 4,
-    },
-  },
-  {
-    value: '4',
-    payload: {
-      label: '物料',
-      count: 0,
     },
   },
 ]);
