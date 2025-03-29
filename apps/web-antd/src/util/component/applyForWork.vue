@@ -627,12 +627,18 @@ onMounted(() => {});
         <!--        <DescriptionsItem label="仪表读数">
           <InputNumber v-model:value="item.energyValue" :min="0" />
         </DescriptionsItem>-->
+        <DescriptionsItem label="仪表开始时间">
+          {{ item.energyStartTime }}
+        </DescriptionsItem>
         <DescriptionsItem label="仪表开始读数">
           <InputNumber
             v-model:value="item.startEnergyValue"
             :min="0"
             @change="energyChange(item)"
           />
+        </DescriptionsItem>
+        <DescriptionsItem label="仪表结束时间">
+          {{ item.energyEndTime }}
         </DescriptionsItem>
         <DescriptionsItem label="仪表结束读数">
           <InputNumber
