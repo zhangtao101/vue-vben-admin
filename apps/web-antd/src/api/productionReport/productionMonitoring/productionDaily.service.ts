@@ -133,6 +133,22 @@ export async function queryPressMonthStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPressMonthStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ * 抛光厂投入产出月报
+ */
+export async function queryExcelPathMonthPolishPressInOutPut(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathMonthPolishPressInOutPut?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 釉线月报
+ */
+export async function queryEnamelMonthStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getEnamelMonthStatistics?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**
@@ -237,6 +253,22 @@ export async function excelGlazingRoomDayStatistics(params: any) {
 export async function excelPathPressMonth(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPressMonth?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光厂投入产出月报导出
+ */
+export async function excelPathMonthPolishPressInOutPut(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathMonthPolishPressInOutPut?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 釉线月报导出
+ */
+export async function excelPathEnamelMonth(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathEnamelMonth?${qs.stringify(params)}`,
   );
 }
 // endregion

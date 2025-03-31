@@ -324,6 +324,188 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/energyConsumptionReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '能耗报表',
+          code: 'WM_322',
+        },
+        name: 'energyConsumptionReport',
+        path: 'energyConsumptionReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/polishingWarehouseDailyReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '抛光入库日报',
+          code: 'WM_322',
+        },
+        name: 'polishingWarehouseDailyReport',
+        path: 'polishingWarehouseDailyReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/brokenSummary.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '破碎汇总',
+          code: 'WM_322',
+        },
+        name: 'brokenSummary',
+        path: 'brokenSummary',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/productionStatisticsOfAutomaticPackagingMachine.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '自动打包机生产统计',
+          code: 'WM_322',
+        },
+        name: 'productionStatisticsOfAutomaticPackagingMachine',
+        path: 'productionStatisticsOfAutomaticPackagingMachine',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/sectionLoss.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '工段损耗',
+          code: 'WM_322',
+        },
+        name: 'sectionLoss',
+        path: 'sectionLoss',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/polishingQualityDailyReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '抛光质量日报',
+          code: 'WM_322',
+        },
+        name: 'polishingQualityDailyReport',
+        path: 'polishingQualityDailyReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/batchReportOnInputoutputOfVitrifiedBrickFactoryProducts.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '玻化砖厂产品投入产出批报',
+          code: 'WM_322',
+        },
+        name: 'batchReportOnInputoutputOfVitrifiedBrickFactoryProducts',
+        path: 'batchReportOnInputoutputOfVitrifiedBrickFactoryProducts',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/dailyReportOfKilnShutdown.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '窑炉停机日报',
+          code: 'WM_322',
+        },
+        name: 'dailyReportOfKilnShutdown',
+        path: 'dailyReportOfKilnShutdown',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyBPGIOReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '玻化砖厂生产投入产出月报',
+          code: 'WM_322',
+        },
+        name: 'monthlyBPGIOReport',
+        path: 'monthlyBPGIOReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyPFIOReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '抛光厂投入产出月报',
+          code: 'WM_322',
+        },
+        name: 'monthlyPFIOReport',
+        path: 'monthlyPFIOReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/bpgPressingDetailTable.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '玻化砖厂压制量明细表',
+          code: 'WM_322',
+        },
+        name: 'bpgPressingDetailTable',
+        path: 'bpgPressingDetailTable',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/glazeRoomDailyProductionReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '制釉间生产日报',
+          code: 'WM_322',
+        },
+        name: 'glazeRoomDailyProductionReport',
+        path: 'glazeRoomDailyProductionReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyReportOfCompressor.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '压机月报',
+          code: 'WM_322',
+        },
+        name: 'monthlyReportOfCompressor',
+        path: 'monthlyReportOfCompressor',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/glazeLineMonthlyReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '釉线月报',
+          code: 'WM_322',
+        },
+        name: 'glazeLineMonthlyReport',
+        path: 'glazeLineMonthlyReport',
+      },
+      {
+        component: () =>
           import('#/views/productionReport/packagingAndInventoryReversal.vue'),
         meta: {
           ignoreAccess: true,

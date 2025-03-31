@@ -4,6 +4,7 @@
   "workstationCode": "工作站编号",
   "workstationName": "工作站名称",
   "worksheetCode": "工单号",
+  "inputNumber": "投入编号",
   "productCode": "产品编码",
   "productName": "产品名称",
   "wireNumber": "线号",

@@ -17,10 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  excelPathMonthPolishPressInOutPut,
-  queryExcelPathMonthPolishPressInOutPut,
-} from '#/api';
+import { excelPathEnamelMonth, queryEnamelMonthStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -39,105 +36,94 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
+    { field: 'startDay', title: '开始日期', minWidth: 120 },
     {
-      field: 'lineName',
-      title: '生产线',
-      minWidth: 200,
-    },
-    { field: 'startday', title: '开始日期', minWidth: 120 },
-    {
-      field: 'endday',
+      field: 'endDay',
       title: '结束日期',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'materialCode',
-      title: '投入编号',
+      field: 'worksheetCode',
+      title: '工单号',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'dp',
-      title: '领用待抛库',
+      field: 'lineName',
+      title: '生产批次号',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'sumLl',
-      title: '领料合计',
+      field: 'productCode',
+      title: '产品编码',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'outProductCode',
-      title: '产出编号',
+      field: 'productName',
+      title: '产品名称',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'PA',
-      title: 'PA',
+      field: 'reportNumber',
+      title: '进线量(片)',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'PAl',
-      title: 'PA率',
+      field: 'reportNumberM',
+      title: '进线量(M2)',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'One',
-      title: '1等品',
+      field: 'qualityNumber',
+      title: '出线量(片)',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'Onel',
-      title: '1等品率',
+      field: 'qualityNumberM',
+      title: '出线量(M2)',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'sum',
-      title: '入库合计',
+      field: 'centosRate',
+      title: '投入产出率(%)',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'sumLc',
-      title: '损耗合计',
+      field: 'dlValue',
+      title: '电能',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'Lcl',
-      title: '损耗率',
+      field: 'trqValue',
+      title: '天然气',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'color',
-      title: '色号',
+      field: 'stopDlValue',
+      title: '停机电耗',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'maxColor',
-      title: 'PA最大色号',
-      minWidth: 120,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'colorl',
-      title: 'PA一色集中率',
+      field: 'stopTrqValue',
+      title: '停机天然气能耗',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -196,10 +182,10 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 投入编号
+  // 产品名称
+  materialName: '',
+  // 产品编码
   productCode: '',
-  // 生产线
-  lineName: '',
 });
 
 // 汇总数据
@@ -216,7 +202,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryExcelPathMonthPolishPressInOutPut({
+    queryEnamelMonthStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -246,7 +232,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathMonthPolishPressInOutPut(params).then((data) => {
+  excelPathEnamelMonth(params).then((data) => {
     window.open(data);
   });
 }
@@ -284,20 +270,20 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 投入编号 -->
+        <!-- 产品编码 -->
         <FormItem
-          :label="$t('productionDaily.inputNumber')"
+          :label="$t('productionDaily.productCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.productCode" />
         </FormItem>
 
-        <!-- 生产线 -->
+        <!-- 产品名称 -->
         <FormItem
-          :label="$t('productionDaily.productionLine')"
+          :label="$t('productionDaily.productName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.lineName" />
+          <Input v-model:value="queryParams.materialName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
