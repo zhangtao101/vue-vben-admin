@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { $t } from '@vben/locales';
 
-import { Button, Col, Row } from 'ant-design-vue';
+import { Col, Row } from 'ant-design-vue';
 
 /**
  * 获取清洗状态描述
@@ -41,9 +41,9 @@ function getValueClass() {
 <template>
   <Row class="mb-4">
     <Col :span="12">
-      <!-- 前工步执行状况 -->
+      <!-- 设备可用 -->
       <span :class="getLabelClass()">
-        {{ $t('productionOperation.implementationStatus') }}
+        {{ $t('productionOperation.equipmentAvailable') }}
       </span>
       <span :class="getValueClass()">
         {{ obtainTheDeviceCleanStatus(3) }}
@@ -52,45 +52,22 @@ function getValueClass() {
   </Row>
   <Row class="mb-4">
     <Col :span="8">
-      <!-- 清洁模式 -->
+      <!-- 当前工单" -->
       <span :class="getLabelClass()">
-        {{ $t('productionOperation.cleaningMode') }}
+        {{ $t('productionOperation.currentWorkOrder') }}
       </span>
       <span :class="getValueClass()">
-        {{ $t('productionOperation.auto') }}
+        {{ $t('productionOperation.none') }}
       </span>
     </Col>
     <Col :span="8">
-      <!-- 清洁状态 -->
+      <!-- 待进工单 -->
       <span :class="getLabelClass()">
-        {{ $t('productionOperation.cleanCondition') }}
+        {{ $t('productionOperation.pendingWorkOrder') }}
       </span>
       <span :class="getValueClass()">
-        {{ $t('productionOperation.beCleaning') }}
+        {{ $t('productionOperation.none') }}
       </span>
-    </Col>
-    <Col :span="8">
-      <!-- 清洁计时 -->
-      <span :class="getLabelClass()">
-        {{ $t('productionOperation.cleaningTimer') }}
-      </span>
-      <span :class="getValueClass()">15min</span>
-    </Col>
-  </Row>
-  <Row class="mb-4">
-    <Col :span="8">
-      <!-- 清洁超时 -->
-      <span :class="getLabelClass()">
-        {{ $t('productionOperation.cleaningTimeout') }}
-      </span>
-      <span :class="getValueClass()">
-        {{ $t('productionOperation.no') }}
-      </span>
-    </Col>
-    <!-- 超时时才会出现 -->
-    <Col :span="8">
-      <Button type="primary" size="large" class="mr-4">手动再次清洁</Button>
-      <Button type="primary" size="large" danger>手动结束作业</Button>
     </Col>
   </Row>
 </template>

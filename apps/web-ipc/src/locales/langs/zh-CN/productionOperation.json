@@ -11,14 +11,19 @@
   "cleaningMode": "清洁模式",
   "cleanCondition": "清洁状态",
   "cleaningTimer": "清洁计时",
+  "cleaningTimeout": "清洁超时",
   "auto": "自动",
   "manualOperation": "手动",
   "manualRecleaning": "手动再次清洗",
   "manualEndJob": "手动结束作业",
   "yes": "是",
   "no": "否",
+  "none": "暂无",
   "beCleaning": "清洗中",
   "completed": "已完成",
   "notYetStarted": "未开始",
-  "overtime": "超时"
+  "overtime": "超时",
+  "equipmentAvailable": "设备可用",
+  "currentWorkOrder": "当前工单",
+  "pendingWorkOrder": "待进工单"
 }

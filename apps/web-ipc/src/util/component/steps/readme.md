@@ -13,3 +13,11 @@
 # equipmentMonitoringInformation
 
 > 设备监控信息
+
+# resourceInspection
+
+> 资源检验
+
+# processEntryStation
+
+> 工序进站
