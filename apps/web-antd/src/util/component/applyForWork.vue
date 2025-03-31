@@ -334,10 +334,10 @@ function getTypeText(type: number) {
 
 /**
  * 能源变更, 计算变更后的数值
- * @param item 需要计算的对象
+ * @param _item 需要计算的对象
  */
-function energyChange(item: any) {
-  if (
+function energyChange(_item: any) {
+  /* if (
     (item.startEnergyValue && item.endEnergyValue) ||
     (item.startEnergyValue === 0 && item.endEnergyValue === 0)
   ) {
@@ -351,7 +351,8 @@ function energyChange(item: any) {
     item.energyValue =
       (item.endEnergyValue - item.startEnergyValue) *
       multiple(item.energyEquipCode);
-  }
+  }*/
+  return 0;
 }
 // endregion
 
@@ -649,7 +650,11 @@ onMounted(() => {});
           />
         </DescriptionsItem>
         <DescriptionsItem label="能耗">
-          {{ item.energyValue }}
+          <InputNumber
+            v-model:value="item.energyValue"
+            :min="0"
+            @change="energyChange(item)"
+          />
         </DescriptionsItem>
         <DescriptionsItem label="异常说明">
           {{ item.errorName }}
