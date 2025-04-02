@@ -52,3 +52,7 @@ export const MdiChevronUp = createIconifyIcon('mdi:chevron-up');
 export const MdiChevronDown = createIconifyIcon('mdi:chevron-down');
 // 家
 export const MdiHome = createIconifyIcon('mdi:home');
+// 扫码
+export const MdQrcodeScan = createIconifyIcon('mdi:qrcode-scan');
+// 完成
+export const CarbonTaskComplete = createIconifyIcon('carbon:task-complete');

@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { $t } from '@vben/locales';
 
-import { Tag } from 'ant-design-vue';
-
 /**
  * 获取清洗状态描述
  */
-/* function obtainTheDeviceCleanStatus(status: number) {
+function obtainTheDeviceCleanStatus(status: number) {
   switch (status) {
     case 1: {
       return $t('productionOperation.yes');
@@ -21,7 +19,7 @@ import { Tag } from 'ant-design-vue';
       return $t('productionOperation.no');
     }
   }
-}*/
+}
 
 /**
  * 获取标签的class
@@ -41,44 +39,34 @@ function getValueClass() {
 <template>
   <div>
     <div class="mb-4 mr-8 inline-block">
-      <!-- 设备可用 -->
+      <!-- 前工步执行状况 -->
       <span :class="getLabelClass()">
-        {{ $t('equipmentOperationStatus.equipmentAvailable') }}
+        {{ $t('productionOperation.implementationStatus') }}
       </span>
-      <Tag :bordered="false" color="success" class="align-middle text-xl">
-        通讯
-      </Tag>
-      <Tag :bordered="false" color="error" class="align-middle text-xl">
-        Ready
-      </Tag>
-      <Tag :bordered="false" color="warning" class="align-middle text-xl">
-        远程
-      </Tag>
+      <span :class="getValueClass()">
+        {{ obtainTheDeviceCleanStatus(3) }}
+      </span>
     </div>
   </div>
+
   <div>
     <div class="mb-4 mr-8 inline-block">
-      <!-- 设备堵料 -->
+      <!-- 产品名称 -->
       <span :class="getLabelClass()">
-        {{ $t('equipmentOperationStatus.equipmentPlugging') }}
+        {{ $t('productionOperation.productName') }}
       </span>
-      <span :class="getValueClass()">2222</span>
-    </div>
-    <div class="mb-4 mr-8 inline-block">
-      <!-- 堵料原因 -->
-      <span :class="getLabelClass()">
-        {{ $t('equipmentOperationStatus.cloggingCause') }}
+      <span :class="getValueClass()">
+        {{ $t('productionOperation.none') }}
       </span>
-      <span :class="getValueClass()">2222</span>
     </div>
-  </div>
-  <div>
     <div class="mb-4 mr-8 inline-block">
       <!-- 设备状态 -->
       <span :class="getLabelClass()">
-        {{ $t('equipmentOperationStatus.deviceStatus') }}
+        {{ $t('productionOperation.deviceStatus') }}
       </span>
-      <span :class="getValueClass()">2222</span>
+      <span :class="getValueClass()">
+        {{ $t('productionOperation.shutDown') }}
+      </span>
     </div>
   </div>
 </template>

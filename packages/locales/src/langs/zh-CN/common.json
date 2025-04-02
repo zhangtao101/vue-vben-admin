@@ -42,5 +42,7 @@
   "abort": "中止",
   "cancelAbort": "取消中止",
   "blockDeletion": "整单删除",
-  "erpDocument": "ERP单据"
+  "erpDocument": "ERP单据",
+  "scanTheCodeAndFeedTheMaterial": "扫码上料",
+  "feedingComplete": "投料完成"
 }

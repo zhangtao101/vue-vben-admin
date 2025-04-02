@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { $t } from '@vben/locales';
 
+import { Button, Input } from 'ant-design-vue';
+
 /**
  * 获取清洗状态描述
  */
@@ -32,7 +34,7 @@ function getLabelClass() {
  * 获取值的class
  */
 function getValueClass() {
-  return 'inline-block w-24 border p-2 text-center';
+  return 'inline-block min-w-24 border p-2 text-center';
 }
 </script>
 
@@ -47,25 +49,46 @@ function getValueClass() {
         {{ obtainTheDeviceCleanStatus(3) }}
       </span>
     </div>
+    <div class="mb-4 mr-8 inline-block">
+      <!-- 设备状态 -->
+      <span :class="getLabelClass()">
+        {{ $t('productionOperation.deviceStatus') }}
+      </span>
+      <span :class="getValueClass()">
+        {{ $t('productionOperation.shutDown') }}
+      </span>
+    </div>
   </div>
   <div>
     <div class="mb-4 mr-8 inline-block">
-      <!-- 工单编号" -->
+      <!-- 原配方号" -->
+      <label :class="getLabelClass()" for="originalRecipeNumber">
+        {{ $t('productionOperation.originalRecipeNumber') }}
+      </label>
+      <Input class="w-56 leading-[30px]" id="originalRecipeNumber" />
+    </div>
+    <div class="mb-4 mr-8 inline-block">
+      <!-- 目标配方号" -->
+      <label :class="getLabelClass()" for="targetRecipeNumber">
+        {{ $t('productionOperation.targetRecipeNumber') }}
+      </label>
+      <Input class="w-56 leading-[30px]" id="targetRecipeNumber" />
+    </div>
+  </div>
+  <div>
+    <div class="mb-4 mr-8 inline-block">
+      <!-- 配方下发状态" -->
       <span :class="getLabelClass()">
-        {{ $t('productionOperation.workOrderNumber') }}
+        {{ $t('productionOperation.formulaDeliveryCondition') }}
       </span>
       <span :class="getValueClass()">
-        {{ $t('productionOperation.none') }}
+        {{ $t('productionOperation.automaticallyDeliveredSuccessfully') }}
       </span>
     </div>
     <div class="mb-4 mr-8 inline-block">
-      <!-- 产品名称 -->
-      <span :class="getLabelClass()">
-        {{ $t('productionOperation.productName') }}
-      </span>
-      <span :class="getValueClass()">
-        {{ $t('productionOperation.none') }}
-      </span>
+      <Button type="primary">
+        {{ $t('productionOperation.manualDelivery') }}
+      </Button>
     </div>
   </div>
 </template>

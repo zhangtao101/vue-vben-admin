@@ -28,7 +28,7 @@ const defaultEmits = defineEmits(['changed']);
 
 // region 树菜单数据查询
 // 树菜单数据
-const treeData = ref([]);
+const treeData = ref<any[]>([]);
 // 树菜单字段自定义
 const fieldNames = ref({
   children: 'children',
@@ -36,7 +36,7 @@ const fieldNames = ref({
 });
 
 function queryTree() {
-  materialTypeGetTree().then((data) => {
+  materialTypeGetTree().then((data: any) => {
     treeData.value = [data];
   });
 }
@@ -117,7 +117,7 @@ function RadioChange() {
 /**
  * 查询物料列表
  */
-function queryData({ page, pageSize }) {
+function queryData({ page, pageSize }: any) {
   return new Promise((resolve) => {
     materialTypeGetByMaterialCodeAndName({
       ...queryParams.value,

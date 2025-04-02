@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { $t } from '@vben/locales';
 
-import { Button, Col, Row } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 
 /**
  * 获取清洗状态描述
@@ -39,8 +39,8 @@ function getValueClass() {
 </script>
 
 <template>
-  <Row class="mb-4">
-    <Col :span="12">
+  <div>
+    <div class="mb-4 mr-8 inline-block">
       <!-- 前工步执行状况 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.implementationStatus') }}
@@ -48,10 +48,11 @@ function getValueClass() {
       <span :class="getValueClass()">
         {{ obtainTheDeviceCleanStatus(3) }}
       </span>
-    </Col>
-  </Row>
-  <Row class="mb-4">
-    <Col :span="8">
+    </div>
+  </div>
+
+  <div>
+    <div class="mb-4 mr-8 inline-block">
       <!-- 清洁模式 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.cleaningMode') }}
@@ -59,8 +60,8 @@ function getValueClass() {
       <span :class="getValueClass()">
         {{ $t('productionOperation.auto') }}
       </span>
-    </Col>
-    <Col :span="8">
+    </div>
+    <div class="mb-4 mr-8 inline-block">
       <!-- 清洁状态 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.cleanCondition') }}
@@ -68,17 +69,17 @@ function getValueClass() {
       <span :class="getValueClass()">
         {{ $t('productionOperation.beCleaning') }}
       </span>
-    </Col>
-    <Col :span="8">
+    </div>
+    <div class="mb-4 mr-8 inline-block">
       <!-- 清洁计时 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.cleaningTimer') }}
       </span>
       <span :class="getValueClass()">15min</span>
-    </Col>
-  </Row>
-  <Row class="mb-4">
-    <Col :span="8">
+    </div>
+  </div>
+  <div>
+    <div class="mb-4 mr-8 inline-block">
       <!-- 清洁超时 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.cleaningTimeout') }}
@@ -86,13 +87,13 @@ function getValueClass() {
       <span :class="getValueClass()">
         {{ $t('productionOperation.no') }}
       </span>
-    </Col>
-    <!-- 超时时才会出现 -->
-    <Col :span="8">
+    </div>
+    <div class="mb-4 mr-8 inline-block">
+      <!-- 超时时才会出现 -->
       <Button type="primary" size="large" class="mr-4">手动再次清洁</Button>
       <Button type="primary" size="large" danger>手动结束作业</Button>
-    </Col>
-  </Row>
+    </div>
+  </div>
 </template>
 
 <style scoped></style>

@@ -42,5 +42,7 @@
   "abort": "Abort",
   "cancelAbort": "Cancel Abort",
   "blockDeletion": "Block Deletion",
-  "erpDocument": "ERP Document"
+  "erpDocument": "ERP Document",
+  "scanTheCodeAndFeedTheMaterial": "Scan The Code And Feed The Material",
+  "feedingComplete": "Feeding Complete"
 }
