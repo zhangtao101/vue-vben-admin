@@ -10,9 +10,11 @@ import { $t } from '@vben/locales';
 import {
   Button,
   Card,
+  Col,
   Form,
   FormItem,
   Input,
+  Row,
   Select,
   TabPane,
   Tabs,
@@ -275,20 +277,13 @@ function tabsChange(key: any) {
     <!-- endregion -->
 
     <!--- region 作业信息 -->
-    <Card :title="$t('productionOperation.jobInformation')" class="mb-5">
-      <template #extra>
-        <MdiChevronDown
-          class="cursor-pointer text-2xl"
-          v-if="jobInformationContraction"
-          @click="jobInformationContractionChange"
-        />
-        <MdiChevronUp
-          class="cursor-pointer text-2xl"
-          v-else
-          @click="jobInformationContractionChange"
-        />
-      </template>
-      <template v-if="!jobInformationContraction">
+    <Row class="mb-4">
+      <Col :span="4">
+        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          {{ $t('productionOperation.jobInformation') }}
+        </span>
+      </Col>
+      <Col :span="19">
         <Form layout="inline" :model="queryParams">
           <!-- 工单编号 -->
           <FormItem :label="$t('productionOperation.workOrderNumber')">
@@ -302,33 +297,36 @@ function tabsChange(key: any) {
           <FormItem :label="$t('productionOperation.productName')">
             <Input />
           </FormItem>
-          <!-- 产品编号 -->
-          <FormItem :label="$t('productionOperation.productNumber')">
-            <Input />
-          </FormItem>
         </Form>
-        <Grid>
-          <template #toolbar-tools> </template>
-        </Grid>
-      </template>
+      </Col>
+      <Col :span="1">
+        <MdiChevronDown
+          class="float-right inline-block cursor-pointer text-2xl"
+          v-if="jobInformationContraction"
+          @click="jobInformationContractionChange"
+        />
+        <MdiChevronUp
+          class="float-right inline-block cursor-pointer text-2xl"
+          v-else
+          @click="jobInformationContractionChange"
+        />
+      </Col>
+    </Row>
+    <Card class="mb-5" v-if="!jobInformationContraction">
+      <Grid>
+        <template #toolbar-tools> </template>
+      </Grid>
     </Card>
     <!--- endregion -->
 
     <!--- region 工艺路线 -->
-    <Card :title="$t('productionOperation.processRoute')" class="mb-5">
-      <template #extra>
-        <MdiChevronDown
-          class="cursor-pointer text-2xl"
-          v-if="processShrinkage"
-          @click="processShrinkageChange"
-        />
-        <MdiChevronUp
-          class="cursor-pointer text-2xl"
-          v-else
-          @click="processShrinkageChange"
-        />
-      </template>
-      <template v-if="!processShrinkage">
+    <Row class="mb-4">
+      <Col :span="4">
+        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          {{ $t('productionOperation.processRoute') }}
+        </span>
+      </Col>
+      <Col :span="19">
         <Form layout="inline" :model="queryParams">
           <!-- 工单编号 -->
           <FormItem :label="$t('productionOperation.workOrderNumber')">
@@ -339,85 +337,115 @@ function tabsChange(key: any) {
             <Input />
           </FormItem>
         </Form>
-        <div class="mt-5">
-          <Button
-            v-for="item of processRouteList"
-            :type="item.value !== checkedProcess ? 'default' : 'primary'"
-            size="large"
-            class="mr-4 w-32"
-            :key="item.value"
-            @click="processChange(item.value)"
-          >
-            {{ item.label }}
-          </Button>
-        </div>
-      </template>
+      </Col>
+      <Col :span="1">
+        <MdiChevronDown
+          class="float-right inline-block cursor-pointer text-2xl"
+          v-if="jobInformationContraction"
+          @click="processShrinkageChange"
+        />
+        <MdiChevronUp
+          class="float-right inline-block cursor-pointer text-2xl"
+          v-else
+          @click="processShrinkageChange"
+        />
+      </Col>
+    </Row>
+    <Card class="mb-5" v-if="processShrinkage">
+      <div class="mt-5">
+        <Button
+          v-for="item of processRouteList"
+          :type="item.value !== checkedProcess ? 'default' : 'primary'"
+          size="large"
+          class="mr-4 w-32"
+          :key="item.value"
+          @click="processChange(item.value)"
+        >
+          {{ item.label }}
+        </Button>
+      </div>
     </Card>
     <!--- endregion -->
 
     <!--- region 操作事项  -->
-    <Card :title="$t('productionOperation.operationalMatters')" class="mb-5">
-      <template #extra>
-        <MdiChevronDown
-          class="cursor-pointer text-2xl"
-          v-if="operationEventShrinkage"
-          @click="operationEventShrinkageChange"
-        />
-        <MdiChevronUp
-          class="cursor-pointer text-2xl"
-          v-else
-          @click="operationEventShrinkageChange"
-        />
-      </template>
-      <template v-if="!operationEventShrinkage">
+    <Row class="mb-4">
+      <Col :span="4">
+        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          {{ $t('productionOperation.operationalMatters') }}
+        </span>
+      </Col>
+      <Col :span="19">
         <Tabs @change="tabsChange">
           <TabPane key="1">
             <template #tab>
               <MdiHome class="inline-block" />
               工序操作
             </template>
-            <OperationalMatters />
           </TabPane>
           <TabPane key="2">
             <template #tab>
               <MdiHome class="inline-block" />
               质量检验
             </template>
-            444
           </TabPane>
           <TabPane key="3">
             <template #tab>
               <MdiHome class="inline-block" />
               SOP查看
             </template>
-            333
           </TabPane>
           <TabPane key="4">
             <template #tab>
               <MdiHome class="inline-block" />
               安灯
             </template>
-            222
           </TabPane>
         </Tabs>
-      </template>
-    </Card>
-    <!--- endregion -->
-
-    <!--- region 工步执行  -->
-    <Card :title="$t('productionOperation.workStepExecution')" class="mb-5">
-      <template #extra>
+      </Col>
+      <Col :span="1">
         <MdiChevronDown
-          class="cursor-pointer text-2xl"
+          class="float-right inline-block cursor-pointer text-2xl"
           v-if="operationEventShrinkage"
           @click="operationEventShrinkageChange"
         />
         <MdiChevronUp
-          class="cursor-pointer text-2xl"
+          class="float-right inline-block cursor-pointer text-2xl"
           v-else
           @click="operationEventShrinkageChange"
         />
+      </Col>
+    </Row>
+    <Card v-if="!operationEventShrinkage" class="mb-5">
+      <template v-if="theSelectedOperation === '1'">
+        <OperationalMatters />
       </template>
+      <template v-if="theSelectedOperation === '2'"> 1 </template>
+      <template v-if="theSelectedOperation === '3'"> 2 </template>
+      <template v-if="theSelectedOperation === '4'"> 3 </template>
+    </Card>
+    <!--- endregion -->
+
+    <!--- region 工步执行  -->
+    <Row class="mb-4">
+      <Col :span="4">
+        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          {{ $t('productionOperation.workStepExecution') }}
+        </span>
+      </Col>
+      <Col :span="1" :offset="19">
+        <MdiChevronDown
+          class="float-right inline-block cursor-pointer text-2xl"
+          v-if="operationEventShrinkage"
+          @click="operationEventShrinkageChange"
+        />
+        <MdiChevronUp
+          class="float-right inline-block cursor-pointer text-2xl"
+          v-else
+          @click="operationEventShrinkageChange"
+        />
+      </Col>
+    </Row>
+    <Card class="mb-5">
       <StepExecution />
     </Card>
     <!-- endregion -->
