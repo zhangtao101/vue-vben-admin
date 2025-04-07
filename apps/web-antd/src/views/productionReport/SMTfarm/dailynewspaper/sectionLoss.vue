@@ -35,6 +35,27 @@ const queryParams = ref({
 
 const activeKey = ref<string>('1');
 
+const lossesInEachSection = ref<any>();
+const monthlyDetailsOfPowderMaterials = ref<any>();
+const summaryTableOfSectionLosses = ref<any>();
+
+function queryData() {
+  switch (activeKey.value) {
+    case '1': {
+      lossesInEachSection.value.reload();
+      break;
+    }
+    case '2': {
+      monthlyDetailsOfPowderMaterials.value.reload();
+      break;
+    }
+    case '3': {
+      summaryTableOfSectionLosses.value.reload();
+      break;
+    }
+  }
+}
+
 // endregion
 
 // region 初始化
@@ -85,7 +106,7 @@ onMounted(() => {});
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="() => {}"
+            @click="queryData"
           >
             {{ $t('common.search') }}
           </Button>
@@ -98,13 +119,22 @@ onMounted(() => {});
     <Card>
       <Tabs v-model:active-key="activeKey" type="card">
         <TabPane key="1" tab="各工段能耗">
-          <LossesInEachSection :query-params="queryParams" />
+          <LossesInEachSection
+            ref="lossesInEachSection"
+            :query-params="queryParams"
+          />
         </TabPane>
         <TabPane key="2" tab="粉料分月明细">
-          <MonthlyDetailsOfPowderMaterials :query-params="queryParams" />
+          <MonthlyDetailsOfPowderMaterials
+            ref="monthlyDetailsOfPowderMaterials"
+            :query-params="queryParams"
+          />
         </TabPane>
         <TabPane key="3" tab="汇总">
-          <SummaryTableOfSectionLosses :query-params="queryParams" />
+          <SummaryTableOfSectionLosses
+            ref="summaryTableOfSectionLosses"
+            :query-params="queryParams"
+          />
         </TabPane>
       </Tabs>
     </Card>

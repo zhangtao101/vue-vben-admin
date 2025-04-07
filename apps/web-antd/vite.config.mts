@@ -18,6 +18,8 @@ export default defineConfig(async () => {
             rewrite: (path) => path.replace(/^\/ht/, ''),
             // 代理目标地址
             target: 'https://v507z46671.yicp.fun',
+            // target: 'https://540qgmj80458.vicp.fun',
+            // target: 'http://192.168.0.215:8050',
             // target: 'http://271z43k730.zicp.vip',
             // target: 'http://192.168.7.131:8050',
             // target: 'http://192.168.199.205:8050',

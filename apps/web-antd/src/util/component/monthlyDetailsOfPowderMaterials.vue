@@ -53,7 +53,7 @@ const gridOptions: VxeGridProps<any> = {
 
 const gridEvents: VxeGridListeners<any> = {};
 
-const [Grid] = useVbenVxeGrid({ gridEvents, gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // endregion
 
@@ -108,6 +108,18 @@ function queryData({ page, pageSize }: any) {
       });
   });
 }
+
+// endregion
+
+// region 暴露方法
+
+const reload = () => {
+  gridApi.reload();
+};
+
+defineExpose({
+  reload,
+});
 
 // endregion
 

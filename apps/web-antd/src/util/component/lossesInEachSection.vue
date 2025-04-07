@@ -200,7 +200,7 @@ const gridEvents: VxeGridListeners<any> = {
   },*/
 };
 
-const [Grid] = useVbenVxeGrid({ gridEvents, gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
  * 获取物料类型的中文描述
@@ -272,6 +272,18 @@ function downloadTemplate() {
     window.open(data);
   });
 }
+
+// endregion
+
+// region 暴露方法
+
+const reload = () => {
+  gridApi.reload();
+};
+
+defineExpose({
+  reload,
+});
 
 // endregion
 

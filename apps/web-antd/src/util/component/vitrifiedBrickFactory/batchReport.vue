@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathYLDay, queryYLDayStatistics } from '#/api';
+import { excelPathBHZInOutApproval, queryBHZInOutApproval } from '#/api';
 import { $t } from '#/locales';
 
 const props = defineProps({
@@ -17,6 +17,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
+
 // region 表格操作
 
 const gridOptions: VxeGridProps<any> = {
@@ -29,100 +30,65 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: '', title: '月份', minWidth: 50 },
     {
-      field: '',
-      title: '粉料厂预算（%）',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
+      field: 'day',
+      title: '日期',
+      minWidth: 120,
     },
     {
-      field: '',
-      title: '粉料厂实际（%）',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
+      field: 'worksheetCode',
+      title: '工单号',
+      minWidth: 200,
     },
     {
-      field: '',
-      title: '粉料厂实际-预算（%）',
-      minWidth: 180,
-      slots: { footer: 'footerData' },
+      field: 'lineName',
+      title: '生产批号',
+      minWidth: 200,
     },
     {
-      field: '',
-      title: '窑炉厂预算（%）',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
+      field: 'productCode',
+      title: '产品编码',
+      minWidth: 200,
     },
     {
-      field: '',
-      title: '窑炉厂实际（%）',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: '',
-      title: '窑炉厂实际-预算（%）',
-      minWidth: 180,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: '',
-      title: '抛光厂预算（%）',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: '',
-      title: '抛光厂实际（%）',
-      minWidth: 150,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: '',
-      title: '抛光厂实际-预算（%）',
-      minWidth: 180,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: '',
-      title: '粉料厂投入产出率（%）',
-      minWidth: 180,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: '',
-      title: '一次烧窑炉投入产出率（%）',
+      field: 'flMaterialNumber',
+      title: '粉料用量(吨）',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: '',
-      title: '抛光投入产出率（%）',
-      minWidth: 180,
+      field: 'pressQuantity',
+      title: '压制量(M2)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: '',
-      title: 'PA率预算（%）',
-      minWidth: 150,
+      field: 'pressTon',
+      title: '压制量(吨)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: '',
-      title: 'PA率实际（%）',
-      minWidth: 150,
+      field: 'inYLQuantity',
+      title: '进窑量(M2)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: '',
-      title: 'PA率实际-预算（%）',
-      minWidth: 150,
+      field: 'inStorageQuantity',
+      title: '入库量(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'inYLRate',
+      title: '入库/进窑',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -192,7 +158,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryYLDayStatistics({
+    queryBHZInOutApproval({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -222,7 +188,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathYLDay(params).then((data) => {
+  excelPathBHZInOutApproval(params).then((data) => {
     window.open(data);
   });
 }
@@ -240,6 +206,7 @@ defineExpose({
 });
 
 // endregion
+
 // region 初始化
 
 onMounted(() => {});

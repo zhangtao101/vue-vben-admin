@@ -17,10 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  excelPathMonthPolishPressInOutPut,
-  queryPolishPressMonthInOutPutStatistics,
-} from '#/api';
+import { excelPathYLMonth, queryYLMonthStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -39,101 +36,116 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
+    { field: 'startDay', title: '开始日期', minWidth: 200 },
+    { field: 'endDay', title: '结束日期', minWidth: 200 },
+    { field: 'ylLine', title: '窑炉线', minWidth: 200 },
+    { field: 'lineName', title: '生产批号', minWidth: 200 },
+    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'materialName', title: '产品名称', minWidth: 200 },
     {
-      field: 'lineName',
-      title: '生产线',
+      field: 'inNumberP',
+      title: '进窑量(片)',
       minWidth: 200,
-    },
-    { field: 'startday', title: '开始日期', minWidth: 120 },
-    {
-      field: 'endday',
-      title: '结束日期',
-      minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'materialCode',
-      title: '投入编号',
-      minWidth: 120,
+      field: 'inNumberM2',
+      title: '进窑量(m2)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'dp',
-      title: '领用待抛库',
-      minWidth: 120,
+      field: 'outNumberP',
+      title: '出窑合格量(片)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'sumLl',
-      title: '领料合计',
-      minWidth: 120,
+      field: 'outNumberM2',
+      title: '出窑合格量(M2)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'outProductCode',
-      title: '产出编号',
-      minWidth: 120,
+      field: 'bfBrick',
+      title: '报废砖量(M2)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'pa',
-      title: 'PA',
-      minWidth: 120,
+      field: 'equipTime',
+      title: '工时',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'pal',
-      title: 'PA率',
-      minWidth: 120,
+      field: 'interimStockP',
+      title: '入中间库量(片)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'one',
-      title: '1等品',
-      minWidth: 120,
+      field: 'interimStock',
+      title: '入中间库量(M2)',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'onel',
-      title: '1等品率',
-      minWidth: 120,
+      field: 'centosRate',
+      title: '投入产出率',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'sum',
-      title: '入库合计',
-      minWidth: 120,
-      slots: { footer: 'footerData' },
+      title: '天然气用量',
+      children: [
+        {
+          field: 'ylTrqValue',
+          title: '用气量(M3)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'trqValueDH',
+          title: '单耗(M3)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
     },
     {
-      field: 'sumLc',
-      title: '损耗合计',
-      minWidth: 120,
-      slots: { footer: 'footerData' },
+      title: '电能',
+      children: [
+        {
+          field: 'ylDlValue',
+          title: '窑炉电耗(KWH)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'dlValueDH',
+          title: '窑炉电单耗(KWH)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
     },
     {
-      field: 'lcl',
-      title: '损耗率',
-      minWidth: 120,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'color',
-      title: '色号',
-      minWidth: 120,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'maxColor',
-      title: 'PA最大色号',
-      minWidth: 120,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'colorl',
-      title: 'PA一色集中率',
-      minWidth: 120,
-      slots: { footer: 'footerData' },
+      title: '停窑',
+      children: [
+        {
+          field: 'YlStopTrqValue',
+          title: '天然气(M3)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'ylStopDlValue',
+          title: '电耗(KWH)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
     },
   ],
   footerData: [{ seq: '合计' }],
@@ -196,10 +208,14 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 投入编号
+  // 产品编码
   productCode: '',
-  // 生产线
-  lineName: '',
+  // 产品名称
+  materialName: '',
+  // 产品批号
+  batchCode: '',
+  // 窑炉线
+  ylLine: '',
 });
 
 // 汇总数据
@@ -216,7 +232,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPolishPressMonthInOutPutStatistics({
+    queryYLMonthStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -246,7 +262,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathMonthPolishPressInOutPut(params).then((data) => {
+  excelPathYLMonth(params).then((data) => {
     window.open(data);
   });
 }
@@ -284,20 +300,36 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 投入编号 -->
+        <!-- 产品编号 -->
         <FormItem
-          :label="$t('productionDaily.inputNumber')"
+          :label="$t('productionDaily.productCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.productCode" />
         </FormItem>
 
-        <!-- 生产线 -->
+        <!-- 产品名称 -->
         <FormItem
-          :label="$t('productionDaily.productionLine')"
+          :label="$t('productionDaily.productName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.lineName" />
+          <Input v-model:value="queryParams.materialName" />
+        </FormItem>
+
+        <!-- 产品批号 -->
+        <FormItem
+          :label="$t('productionDaily.batchNumber')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.batchCode" />
+        </FormItem>
+
+        <!-- 窑炉线 -->
+        <FormItem
+          :label="$t('productionDaily.kilnLine')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.ylLine" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

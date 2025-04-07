@@ -43,7 +43,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productCode', title: '产品编码', minWidth: 200 },
     { field: 'materialName', title: '产品名称', minWidth: 200 },
     {
-      title: '粉料用量（T）',
+      title: '工单粉料用量（T）',
       children: [
         {
           field: 'usePowderNumber',
@@ -76,7 +76,7 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      field: 'oDryBilletWeight',
+      field: 'odryBilletWeight',
       title: '干坯重量(kg/m2)',
       minWidth: 200,
       slots: { footer: 'footerData' },

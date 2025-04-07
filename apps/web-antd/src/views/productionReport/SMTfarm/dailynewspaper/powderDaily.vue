@@ -78,7 +78,7 @@ const gridOptions: VxeGridProps<any> = {
         },
         {
           field: 'dayInNumber',
-          title: '放浆量(T)',
+          title: '球磨机入库量(T)',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -166,7 +166,7 @@ const gridOptions: VxeGridProps<any> = {
       title: '喷粉电耗量(KWH)',
       children: [
         {
-          field: 'zfdluseEnergyNumbe',
+          field: 'zfdluseEnergyNumber',
           title: '耗量',
           minWidth: 150,
           slots: { footer: 'footerData' },
@@ -280,11 +280,16 @@ function queryData({ page, pageSize }: any) {
         collect.value = p;
         list.forEach((item: any) => {
           // feedNumber unFeedNumber pjInNumber
-          const unitArr = ['feedNumber', 'unFeedNumber', 'pjInNumber'];
+          const unitArr = [
+            'feedNumber',
+            'dayInNumber',
+            'unFeedNumber',
+            'pjInNumber',
+            'zfDayInNumber',
+          ];
 
           for (const key of unitArr) {
-            item[key] = item[key] / 1000;
-            p[key] = p[key] / 1000;
+            item[key] = item[key] ? (item[key] / 1000).toFixed(3) : 0;
           }
           let arr: string[] = [];
           if (item.worksheetCode.includes('ZJ')) {
@@ -292,7 +297,7 @@ function queryData({ page, pageSize }: any) {
             arr = [
               'equipName',
               'zfReportNumber',
-              'dayInNumber',
+              'zfDayInNumber',
               'pfCurrentTime',
               'trquseEnergyNumber',
               'trqperUseNumber',

@@ -64,7 +64,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'productName',
       title: '产品名称',
-      minWidth: 120,
+      minWidth: 250,
       slots: { footer: 'footerData' },
     },
     {
@@ -123,7 +123,7 @@ const gridOptions: VxeGridProps<any> = {
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -186,6 +186,8 @@ const queryParams = ref({
   materialName: '',
   // 产品编码
   productCode: '',
+  // 工单号
+  worksheetCode: '',
 });
 
 // 汇总数据
@@ -284,6 +286,14 @@ onMounted(() => {
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.materialName" />
+        </FormItem>
+
+        <!-- 工单号 -->
+        <FormItem
+          :label="$t('productionDaily.worksheetCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

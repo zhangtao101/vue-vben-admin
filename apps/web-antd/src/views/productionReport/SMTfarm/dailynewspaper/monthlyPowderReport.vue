@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathPressMonth, queryPressMonthStatistics } from '#/api';
+import { excelPathYLReportMonth, queryYLReportMonthStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -36,89 +36,211 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '月份', minWidth: 200 },
-    { field: 'startDay', title: '开始日期', minWidth: 200 },
-    { field: 'endDay', title: '结束日期', minWidth: 200 },
+    { field: 'month', title: '日期', minWidth: 200 },
+    { field: 'startDay', title: '开始时间', minWidth: 200 },
+    { field: 'endDay', title: '结束时间', minWidth: 200 },
     { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'equipCode', title: '压机编号', minWidth: 200 },
-    { field: 'lineName', title: '生产批次号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'materialName', title: '产品名称', minWidth: 200 },
+    { field: 'productCode', title: '产品编号', minWidth: 200 },
+    { field: 'productName', title: '产品名称（配方名称）', minWidth: 200 },
     {
-      field: 'usePowderNumber',
-      title: '粉料用量(T)',
+      field: 'planNumber',
+      title: '计划数',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'reportNumber',
+      title: '当月报工数量(T)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'wasteMaterialNumber',
-      title: '废粉量T(T)',
+      field: 'equipCode',
+      title: '设备编号',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'pressingWeightNumber',
-      title: '压制量(M2)',
+      field: 'equipName',
+      title: '设备名称',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'odryBilletWeight',
-      title: '干坯重量(KG/M2)',
-      minWidth: 200,
+      title: '球磨机',
+      children: [
+        {
+          field: 'feedNumber',
+          title: '球磨机加料量(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'unFeedNumber',
+          title: '盘盈加料量(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'dayInNumber',
+          title: '当月入库量(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '喷干塔',
+      children: [
+        {
+          field: 'pfCurrentTime',
+          title: '喷干持续时间',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'zfOutNumber',
+          title: '累计喷干量(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'zffeedNumber',
+          title: '投入量(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'zfReportNumber',
+          title: '报工量(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'zfDayInNumber',
+          title: '当月入库量(喷粉)(T)',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      field: 'dlstartEnergyNumber',
+      title: '电量开始读数',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'wgInNumber',
-      title: '卧干入库量(M2)',
-      minWidth: 200,
+      field: 'dlendEnergyNumber',
+      title: '电量结束读数',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'wgInWeight',
-      title: '卧干投入量(M2)',
-      minWidth: 200,
+      field: 'dluseEnergyNumber',
+      title: '使用能耗',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'centosRate',
-      title: '投入产出率',
-      minWidth: 200,
+      field: 'dlperUseNumber',
+      title: '电量单位能耗',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'equipTime',
-      title: '工时',
-      minWidth: 200,
+      field: 'trqstartEnergyNumber',
+      title: '天然气开始读数',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'dlValue',
-      title: '电耗',
-      minWidth: 200,
+      field: 'trqendEnergyNumber',
+      title: '天然气结束读数',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'trqValue',
-      title: '天然气',
-      minWidth: 200,
+      field: 'trquseEnergyNumber',
+      title: '天然气使用量',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'dlStopValue',
-      title: '停机电耗',
-      minWidth: 200,
+      field: 'smjstartEnergyNumber',
+      title: '水煤浆开始读数',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'trqStopValue',
-      title: '停机天然气能耗',
-      minWidth: 200,
+      field: 'smjendEnergyNumber',
+      title: '水煤浆结束读数',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'smjuseEnergyNumber',
+      title: '水煤浆使用量',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'jlqstartEnergyNumber',
+      title: '焦炉气开始读数',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'jlqendEnergyNumber',
+      title: '焦炉气结束读数',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'jlquseEnergyNumber',
+      title: '焦炉气使用读数',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'currentTime',
+      title: '工单用时',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'perOutput',
+      title: '单位产能',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'dlperUseNumber',
+      title: '电量单位能耗',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'jlqperUseNumber',
+      title: '焦炉气单位能耗',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'trqperUseNumber',
+      title: '天然气单位能耗',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'smjperUseNumber',
+      title: '水煤浆单位能耗',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 5 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -179,16 +301,21 @@ const queryParams = ref({
   searchTime: [] as any,
   // 工单号
   worksheetCode: '',
-  // 产品编码
+  // 工序编号
+  processCode: '',
+  // 工作站编号
+  workstationCode: '',
+  // 工作站名称
+  workstationName: '',
+  // 产品料号
   productCode: '',
   // 产品名称
-  materialName: '',
-  // 生产批次号
-  lineName: '',
+  productName: '',
 });
 
 // 汇总数据
 const collect = ref<any>({});
+
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -201,12 +328,12 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPressMonthStatistics({
+    queryYLReportMonthStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
+      .then(({ monthStatisticsDtos: { total, list }, ...p }) => {
         collect.value = p;
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
@@ -219,6 +346,11 @@ function queryData({ page, pageSize }: any) {
       });
   });
 }
+// endregion
+
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
 
 // endregion
 
@@ -231,16 +363,10 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPressMonth(params).then((data) => {
+  excelPathYLReportMonth(params).then((data) => {
     window.open(data);
   });
 }
-
-// endregion
-
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
 
 // endregion
 
@@ -277,7 +403,31 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 产品编号 -->
+        <!-- 工序编号 -->
+        <FormItem
+          :label="$t('productionDaily.processCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.processCode" />
+        </FormItem>
+
+        <!-- 工作站编号 -->
+        <FormItem
+          :label="$t('productionDaily.workstationCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.workstationCode" />
+        </FormItem>
+
+        <!-- 工作站名称 -->
+        <FormItem
+          :label="$t('productionDaily.workstationName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.workstationName" />
+        </FormItem>
+
+        <!-- 产品料号 -->
         <FormItem
           :label="$t('productionDaily.productCode')"
           style="margin-bottom: 1em"
@@ -290,15 +440,7 @@ onMounted(() => {
           :label="$t('productionDaily.productName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.materialName" />
-        </FormItem>
-
-        <!-- 批次号 -->
-        <FormItem
-          :label="$t('productionDaily.batchNumber')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.lineName" />
+          <Input v-model:value="queryParams.productName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

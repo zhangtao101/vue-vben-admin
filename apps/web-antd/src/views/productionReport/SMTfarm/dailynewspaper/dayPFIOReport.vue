@@ -18,8 +18,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathMonthPolishPressInOutPut,
-  queryExcelPathMonthPolishPressInOutPut,
+  excelPathDayPolishPressInOutPut,
+  queryPolishPressDayInOutPutStatistics,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -76,25 +76,25 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      field: 'PA',
+      field: 'pa',
       title: 'PA',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'PAl',
+      field: 'pal',
       title: 'PA率',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'One',
+      field: 'one',
       title: '1等品',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'Onel',
+      field: 'onel',
       title: '1等品率',
       minWidth: 120,
       slots: { footer: 'footerData' },
@@ -112,7 +112,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      field: 'Lcl',
+      field: 'lcl',
       title: '损耗率',
       minWidth: 120,
       slots: { footer: 'footerData' },
@@ -216,7 +216,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryExcelPathMonthPolishPressInOutPut({
+    queryPolishPressDayInOutPutStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -246,7 +246,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathMonthPolishPressInOutPut(params).then((data) => {
+  excelPathDayPolishPressInOutPut(params).then((data) => {
     window.open(data);
   });
 }
