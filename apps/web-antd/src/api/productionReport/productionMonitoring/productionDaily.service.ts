@@ -36,6 +36,30 @@ export async function queryYLDayStatistics(params: any) {
   );
 }
 /**
+ * 前破碎汇总
+ */
+export async function queryPreCrushingSummaryStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPreCrushingSummaryStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 生产总量与批次统计
+ */
+export async function queryProductionAndBatchStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getProductionAndBatchStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 粉料分月明细表
+ */
+export async function queryPowderMonthlyDetailsStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPowderMonthlyDetailsStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
  * 查询窑炉月报
  */
 export async function queryYLMonthStatistics(params: any) {
@@ -173,6 +197,22 @@ export async function queryEnamelMonthStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getEnamelMonthStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ * 生产复选汇总表
+ */
+export async function queryProduceChecklistsStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getProduceChecklistsStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光分厂电耗
+ */
+export async function queryPGDetailOfElectricityStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPGDetailOfElectricityStatistics?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**
@@ -189,6 +229,30 @@ export async function excelPathPressDay(params: any) {
 export async function excelPathYLDay(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYLDay?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 前破碎汇总导出
+ */
+export async function excelPathPreCrushingSummary(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPreCrushingSummary?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 粉料分月明细表导出
+ */
+export async function excelPathPowderMonthlyDetailsStatistics() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPowderMonthlyDetailsStatistics`,
+  );
+}
+/**
+ * 生产总量与批次统计导出
+ */
+export async function excelPathProductionAndBatchStatistics() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathProductionAndBatchStatistics`,
   );
 }
 /**
@@ -317,6 +381,22 @@ export async function excelPathDayPolishPressInOutPut(params: any) {
 export async function excelPathEnamelMonth(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathEnamelMonth?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 生产复选汇总表导出
+ */
+export async function excelPathProduceChecklists(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathProduceChecklists?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 生产复选汇总表导出
+ */
+export async function excelPathPGDetailOfElectricityStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPGDetailOfElectricityStatistics?${qs.stringify(params)}`,
   );
 }
 // endregion

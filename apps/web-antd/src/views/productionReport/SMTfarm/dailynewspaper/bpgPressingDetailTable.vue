@@ -39,7 +39,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'ylLine', title: '窑炉线', minWidth: 200 },
+    { field: 'day', title: '日期', minWidth: 200 },
     { field: 'lineName', title: '生产批号', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
     {

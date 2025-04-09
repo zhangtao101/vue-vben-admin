@@ -18,7 +18,7 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathPolishingZLDayStatistics,
+  excelPathPolishingYieldDay,
   queryPolishingYieldDayStatistics,
 } from '#/api';
 import { $t } from '#/locales';
@@ -46,10 +46,30 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productName', title: '产品名称', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
     { field: 'lineName', title: '产品批号', minWidth: 200 },
-    { field: 'plannedProductionP', title: '计划生产量(片)', minWidth: 200 },
-    { field: 'inReportNumberM2', title: '领用量（M2）', minWidth: 200 },
-    { field: 'inReportNumberP', title: '领用量（片）', minWidth: 200 },
-    { field: 'actualProductionP', title: '实际生产量(片)', minWidth: 200 },
+    {
+      field: 'plannedProductionP',
+      title: '计划生产量(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'inReportNumberM2',
+      title: '领用量（M2）',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'inReportNumberP',
+      title: '领用量（片）',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'actualProductionP',
+      title: '实际生产量(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
     {
       title: '生产产量(M2)',
       children: [
@@ -162,7 +182,7 @@ const gridOptions: VxeGridProps<any> = {
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 8 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -281,7 +301,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPolishingZLDayStatistics(params).then((data) => {
+  excelPathPolishingYieldDay(params).then((data) => {
     window.open(data);
   });
 }

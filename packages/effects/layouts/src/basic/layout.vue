@@ -198,17 +198,18 @@ const headerSlots = computed(() => {
     @side-mouse-leave="handleSideMouseLeave"
     @toggle-sidebar="toggleSidebar"
     @update:sidebar-collapse="
-      (value: boolean) => updatePreferences({ sidebar: { collapsed: value } })
+      (value: boolean = false) =>
+        updatePreferences({ sidebar: { collapsed: value } })
     "
     @update:sidebar-enable="
       (value: boolean) => updatePreferences({ sidebar: { enable: value } })
     "
     @update:sidebar-expand-on-hover="
-      (value: boolean) =>
+      (value: boolean = false) =>
         updatePreferences({ sidebar: { expandOnHover: value } })
     "
     @update:sidebar-extra-collapse="
-      (value: boolean) =>
+      (value: boolean = false) =>
         updatePreferences({ sidebar: { extraCollapse: value } })
     "
   >

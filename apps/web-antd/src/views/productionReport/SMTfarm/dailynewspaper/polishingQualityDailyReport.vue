@@ -17,7 +17,10 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathYLDay, queryPolishingZLDayStatistics } from '#/api';
+import {
+  excelPathPolishingZLDayStatistics,
+  queryPolishingZLDayStatistics,
+} from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -43,12 +46,42 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productCode', title: '产品编码', minWidth: 200 },
     { field: 'lineName', title: '产品批号', minWidth: 200 },
     { field: 'size', title: '面积', minWidth: 200 },
-    { field: 'inReportNumber', title: '投入量(片)', minWidth: 200 },
-    { field: 'inReportNumberM2', title: '投入量(M2)', minWidth: 200 },
-    { field: 'outReportNumber', title: '产出量(片)', minWidth: 200 },
-    { field: 'outReportNumberM2', title: '产出量(M2)', minWidth: 200 },
-    { field: 'qpssum', title: '前破碎合计(片)', minWidth: 200 },
-    { field: 'qpssumM2', title: '前破碎合计(M2)', minWidth: 200 },
+    {
+      field: 'inReportNumber',
+      title: '投入量(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'inReportNumberM2',
+      title: '投入量(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'outReportNumber',
+      title: '产出量(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'outReportNumberM2',
+      title: '产出量(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'qpssum',
+      title: '前破碎合计(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'qpssumM2',
+      title: '前破碎合计(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
     {
       title: '入库PA率(PA量/入库量)',
       children: [
@@ -407,7 +440,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathYLDay(params).then((data) => {
+  excelPathPolishingZLDayStatistics(params).then((data) => {
     window.open(data);
   });
 }

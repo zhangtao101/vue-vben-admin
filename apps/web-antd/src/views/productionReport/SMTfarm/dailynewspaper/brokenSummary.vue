@@ -17,7 +17,10 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathYLDay, queryYLDayStatistics } from '#/api';
+import {
+  excelPathPreCrushingSummary,
+  queryPreCrushingSummaryStatistics,
+} from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -36,19 +39,18 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: '', title: '线号', minWidth: 200 },
-    { field: '', title: '批号', minWidth: 200 },
-    { field: '', title: '产品编码', minWidth: 200 },
-    { field: '', title: '编码+批号', minWidth: 200 },
-    { field: '', title: '规格', minWidth: 200 },
-    { field: '', title: '规格', minWidth: 200 },
+    { field: 'day', title: '日期', minWidth: 200 },
+    { field: 'lineName', title: '线号', minWidth: 200 },
+    { field: 'batchName', title: '批号', minWidth: 200 },
+    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'batchCode', title: '编码+批号', minWidth: 200 },
+    { field: 'specification', title: '规格', minWidth: 200 },
     {
-      field: '',
+      field: 'qpsm2',
       title: '前破碎平方（M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
-    { field: '', title: '窑线', minWidth: 200 },
   ],
   footerData: [{ seq: '合计' }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
@@ -110,12 +112,8 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 工单号
-  worksheetCode: '',
   // 产品编码
   productCode: '',
-  // 产品名称
-  materialName: '',
 });
 
 // 汇总数据
@@ -132,7 +130,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryYLDayStatistics({
+    queryPreCrushingSummaryStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -162,7 +160,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathYLDay(params).then((data) => {
+  excelPathPreCrushingSummary(params).then((data) => {
     window.open(data);
   });
 }
@@ -200,28 +198,12 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 工单号 -->
-        <FormItem
-          :label="$t('productionDaily.worksheetCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.worksheetCode" />
-        </FormItem>
-
         <!-- 产品编号 -->
         <FormItem
           :label="$t('productionDaily.productCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.productCode" />
-        </FormItem>
-
-        <!-- 产品名称 -->
-        <FormItem
-          :label="$t('productionDaily.productName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.materialName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

@@ -18,8 +18,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathPolishedStorageDayStatistics,
-  queryPolishedStorageDayStatistics,
+  excelPathPGDetailOfElectricityStatistics,
+  queryPGDetailOfElectricityStatistics,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -39,29 +39,46 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '入库日期', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'level', title: '等级', minWidth: 200 },
-    { field: 'size', title: '尺寸', minWidth: 200 },
-    { field: 'color', title: '色号', minWidth: 200 },
-    { field: 'reason', title: '降等原因', minWidth: 200 },
-    { field: 'place', title: '产地/年份', minWidth: 200 },
+    { field: 'day', title: '报工日期', minWidth: 200 },
+    { field: 'workstation', title: '工作中心', minWidth: 200 },
+    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
+    { field: 'productCode', title: '全产品编码', minWidth: 200 },
+    { field: 'batchName', title: '批号', minWidth: 200 },
+    { field: 'bm', title: '编码+批号', minWidth: 200 },
+
     {
-      field: 'totalNumber',
-      title: '总片数',
+      field: 'inReportNumber',
+      title: '当期领用（M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'totalM2',
-      title: '总平方',
+      field: 'inStorageNumber',
+      title: '入库量（M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'dlValue',
+      title: '用电量（KWH)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'stopValue',
+      title: '停线用电（KWH)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'sumValue',
+      title: '合计',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 5 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -120,12 +137,15 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
+  // 工单号
+  worksheetCode: '',
   // 产品编码
-  productCode: '',
+  processCode: '',
 });
 
 // 汇总数据
 const collect = ref<any>({});
+
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -138,7 +158,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPolishedStorageDayStatistics({
+    queryPGDetailOfElectricityStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -156,6 +176,11 @@ function queryData({ page, pageSize }: any) {
       });
   });
 }
+// endregion
+
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
 
 // endregion
 
@@ -168,16 +193,10 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPolishedStorageDayStatistics(params).then((data) => {
+  excelPathPGDetailOfElectricityStatistics(params).then((data) => {
     window.open(data);
   });
 }
-
-// endregion
-
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
 
 // endregion
 
@@ -206,12 +225,20 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 产品编号 -->
+        <!-- 工单号 -->
+        <FormItem
+          :label="$t('productionDaily.worksheetCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.worksheetCode" />
+        </FormItem>
+
+        <!-- 产品编码 -->
         <FormItem
           :label="$t('productionDaily.productCode')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.productCode" />
+          <Input v-model:value="queryParams.processCode" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

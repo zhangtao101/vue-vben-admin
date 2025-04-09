@@ -18,8 +18,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathPolishedStorageDayStatistics,
-  queryPolishedStorageDayStatistics,
+  excelPathProduceChecklists,
+  queryProduceChecklistsStatistics,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -39,29 +39,50 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '入库日期', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
+    { field: 'month', title: '日期', minWidth: 200 },
+    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
     { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'level', title: '等级', minWidth: 200 },
-    { field: 'size', title: '尺寸', minWidth: 200 },
-    { field: 'color', title: '色号', minWidth: 200 },
-    { field: 'reason', title: '降等原因', minWidth: 200 },
-    { field: 'place', title: '产地/年份', minWidth: 200 },
+    { field: 'materialCode', title: '领用编码', minWidth: 200 },
+    { field: 'ly', title: '领用(M2)', minWidth: 200 },
     {
-      field: 'totalNumber',
-      title: '总片数',
+      field: 'lytotal',
+      title: '领用总计',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'totalM2',
-      title: '总平方',
+      field: 'inMaterialCode',
+      title: '入库编码',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'in',
+      title: '入库',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'inTotal',
+      title: '入库总计',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'loss',
+      title: '损益',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'lossl',
+      title: '损耗率',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 5 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -120,12 +141,15 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 产品编码
+  // 领用编码
   productCode: '',
+  // 工单号
+  worksheetCode: '',
 });
 
 // 汇总数据
 const collect = ref<any>({});
+
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -138,7 +162,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPolishedStorageDayStatistics({
+    queryProduceChecklistsStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -156,6 +180,11 @@ function queryData({ page, pageSize }: any) {
       });
   });
 }
+// endregion
+
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
 
 // endregion
 
@@ -168,16 +197,10 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathPolishedStorageDayStatistics(params).then((data) => {
+  excelPathProduceChecklists(params).then((data) => {
     window.open(data);
   });
 }
-
-// endregion
-
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
 
 // endregion
 
@@ -206,12 +229,20 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 产品编号 -->
+        <!-- 产品编码 -->
         <FormItem
           :label="$t('productionDaily.productCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.productCode" />
+        </FormItem>
+
+        <!-- 工单号 -->
+        <FormItem
+          :label="$t('productionDaily.worksheetCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
