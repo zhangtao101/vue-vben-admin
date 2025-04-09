@@ -202,24 +202,6 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-/**
- * 获取物料类型的中文描述
- * @param state 物料类型编码编码
- */
-function getMaterialTypeText(state: number) {
-  switch (state) {
-    case 1: {
-      return '原料';
-    }
-    case 2: {
-      return '砖坯';
-    }
-    default: {
-      return '未定义的类型';
-    }
-  }
-}
-
 // endregion
 
 // region 查询数据
@@ -303,9 +285,6 @@ onMounted(() => {});
         <Button type="primary" @click="downloadTemplate()">
           {{ $t('common.export') }}
         </Button>
-      </template>
-      <template #materialType="{ row }">
-        <span> {{ getMaterialTypeText(row.materialType) }} </span>
       </template>
       <template #footerData="{ column }">
         <span> {{ collect[column.field] }} </span>
