@@ -214,6 +214,41 @@ export async function queryPGDetailOfElectricityStatistics(params: any) {
   );
 }
 
+/**
+ * 粉料厂停机明细表
+ */
+export async function queryFLStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getFLStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 釉线停机明细表
+ */
+export async function queryYXStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYXStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 窑炉停机明细表
+ */
+export async function queryYLStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYLStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 压机停机明细表
+ */
+export async function queryYJStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYJStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+
 // region 报表导出
 /**
  * 压机日报导出
@@ -397,6 +432,38 @@ export async function excelPathProduceChecklists(params: any) {
 export async function excelPathPGDetailOfElectricityStatistics(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPGDetailOfElectricityStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 粉料停机明细表导出
+ */
+export async function excelPathFLStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathFLStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 釉线停机明细表导出
+ */
+export async function excelPathYXStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYXStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 窑炉停机明细表导出
+ */
+export async function excelPathYLStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYLStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 压机停机明细表导出
+ */
+export async function excelPathYJStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYJStopDetailStatistics?${qs.stringify(params)}`,
   );
 }
 // endregion

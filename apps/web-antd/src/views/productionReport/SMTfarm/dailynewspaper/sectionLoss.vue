@@ -11,14 +11,10 @@ import {
   FormItem,
   Input,
   RangePicker,
-  TabPane,
-  Tabs,
 } from 'ant-design-vue';
 
 import { $t } from '#/locales';
 import LossesInEachSection from '#/util/component/lossesInEachSection.vue';
-import MonthlyDetailsOfPowderMaterials from '#/util/component/monthlyDetailsOfPowderMaterials.vue';
-import SummaryTableOfSectionLosses from '#/util/component/summaryTableOfSectionLosses.vue';
 
 // region 查询数据
 // 查询参数
@@ -117,26 +113,10 @@ onMounted(() => {});
 
     <!-- region 表格主体 -->
     <Card>
-      <Tabs v-model:active-key="activeKey" type="card">
-        <TabPane key="1" tab="各工段能耗">
-          <LossesInEachSection
-            ref="lossesInEachSection"
-            :query-params="queryParams"
-          />
-        </TabPane>
-        <TabPane key="2" tab="粉料分月明细">
-          <MonthlyDetailsOfPowderMaterials
-            ref="monthlyDetailsOfPowderMaterials"
-            :query-params="queryParams"
-          />
-        </TabPane>
-        <TabPane key="3" tab="汇总">
-          <SummaryTableOfSectionLosses
-            ref="summaryTableOfSectionLosses"
-            :query-params="queryParams"
-          />
-        </TabPane>
-      </Tabs>
+      <LossesInEachSection
+        ref="lossesInEachSection"
+        :query-params="queryParams"
+      />
     </Card>
     <!-- endregion -->
   </Page>
