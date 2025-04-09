@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { Button, Popover, RadioGroup, Steps } from 'ant-design-vue';
+import { Button, Popover, Steps } from 'ant-design-vue';
 
 // region 操作步骤类型
 // 作业类型列表
-const jobType = [
-  {
-    label: '有序作业',
-    value: '1',
-  },
-  {
-    label: '离散作业',
-    value: '2',
-  },
-];
+// const jobType = [
+//   {
+//     label: '有序作业',
+//     value: '1',
+//   },
+//   {
+//     label: '离散作业',
+//     value: '2',
+//   },
+// ];
 // 当前选中的作业类型
 const theSelectedJobType = ref('1');
 
@@ -111,11 +111,11 @@ function discreteOperationStepCChange(value: number) {
 </script>
 
 <template>
-  <RadioGroup
+  <!-- <RadioGroup
     v-model:value="theSelectedJobType"
     :options="jobType"
     class="mb-8"
-  />
+  /> -->
   <div class="overflow-y-auto">
     <Steps
       v-model:current="current"

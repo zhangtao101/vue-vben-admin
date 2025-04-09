@@ -162,7 +162,7 @@ const gridOptions: VxeGridProps<any> = {
 };
 
 const gridEvents: any = {
-  radioChange: ({ row }) => {
+  radioChange: ({ row }: any) => {
     message.info(`radioChange: ${row}`);
   },
 };

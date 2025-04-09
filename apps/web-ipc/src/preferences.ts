@@ -10,19 +10,23 @@ export const overridesPreferences = defineOverridesPreferences({
   app: {
     // accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
-    layout: 'sidebar-mixed-nav',
+    layout: 'sidebar-nav',
   },
   sidebar: {
-    collapsed: true,
-    extraCollapse: true,
+    collapsedShowTitle: true,
+    width: 250,
   },
   theme: {
     mode: 'light',
     builtinType: 'custom',
     colorPrimary: 'hsl(179 90% 39%)',
-    radius: '1',
+    radius: '0.75',
   },
   copyright: {
     date: '2026',
+  },
+  widget: {
+    lockScreen: false,
+    notification: false,
   },
 });

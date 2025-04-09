@@ -14,6 +14,8 @@ import {
   Form,
   FormItem,
   Input,
+  RadioButton,
+  RadioGroup,
   Row,
   Select,
   TabPane,
@@ -45,6 +47,7 @@ const listOfProcesses = ref([
 const queryParams = ref({
   productionLineId: '',
   processId: '',
+  test: 'a',
 });
 
 // endregion
@@ -160,7 +163,7 @@ function queryData({ page, pageSize }: any) {
     }
     resolve({
       total: page * pageSize,
-      items: [{}],
+      items: [{}, {}],
     });
     /* queryYXStopDayMXStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
@@ -255,12 +258,13 @@ function tabsChange(key: any) {
 <template>
   <Page>
     <!-- region 工作站查询信息 -->
-    <Card class="mb-5">
-      <Form layout="inline" :model="queryParams">
-        <FormItem
-          :label="$t('productionOperation.productionOrderNumber')"
-          class="m-0 border-l-4 border-sky-500 pl-4"
-        >
+    <Row class="mb-4">
+      <Col :span="23" class="flex">
+        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          {{ $t('productionOperation.homeworkStation') }}
+        </span>
+
+        <div class="w-4/5 pl-4">
           <Select
             :model:value="queryParams.productionLineId"
             :options="listOfProductionLines"
@@ -271,20 +275,29 @@ function tabsChange(key: any) {
             :options="listOfProcesses"
             class="!w-64"
           />
-        </FormItem>
-      </Form>
-    </Card>
+
+          <RadioGroup
+            v-model:value="queryParams.test"
+            button-style="solid"
+            class="float-right"
+          >
+            <RadioButton value="a">Hangzhou</RadioButton>
+            <RadioButton value="1">1</RadioButton>
+            <RadioButton value="2">2</RadioButton>
+          </RadioGroup>
+        </div>
+      </Col>
+    </Row>
+    <hr class="mb-4" />
     <!-- endregion -->
 
     <!--- region 作业信息 -->
     <Row class="mb-4">
-      <Col :span="4">
+      <Col :span="23" class="flex">
         <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
           {{ $t('productionOperation.jobInformation') }}
         </span>
-      </Col>
-      <Col :span="19">
-        <Form layout="inline" :model="queryParams">
+        <Form layout="inline" :model="queryParams" class="w-4/5 pl-4">
           <!-- 工单编号 -->
           <FormItem :label="$t('productionOperation.workOrderNumber')">
             <Select
@@ -317,17 +330,16 @@ function tabsChange(key: any) {
         <template #toolbar-tools> </template>
       </Grid>
     </Card>
+    <hr class="mb-4" />
     <!--- endregion -->
 
     <!--- region 工艺路线 -->
     <Row class="mb-4">
-      <Col :span="4">
+      <Col :span="23" class="flex">
         <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
           {{ $t('productionOperation.processRoute') }}
         </span>
-      </Col>
-      <Col :span="19">
-        <Form layout="inline" :model="queryParams">
+        <Form layout="inline" :model="queryParams" class="w-4/5 pl-4">
           <!-- 工单编号 -->
           <FormItem :label="$t('productionOperation.workOrderNumber')">
             <Input />
@@ -365,17 +377,18 @@ function tabsChange(key: any) {
         </Button>
       </div>
     </Card>
+    <hr class="mb-4" />
     <!--- endregion -->
 
     <!--- region 操作事项  -->
     <Row class="mb-4">
-      <Col :span="4">
-        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+      <Col :span="23" class="flex">
+        <span
+          class="border-l-4 border-sky-500 pl-4 text-2xl font-black leading-[2]"
+        >
           {{ $t('productionOperation.operationalMatters') }}
         </span>
-      </Col>
-      <Col :span="19">
-        <Tabs @change="tabsChange">
+        <Tabs @change="tabsChange" class="w-4/5 pl-8">
           <TabPane key="1">
             <template #tab>
               <MdiHome class="inline-block" />
@@ -423,6 +436,7 @@ function tabsChange(key: any) {
       <template v-if="theSelectedOperation === '3'"> 2 </template>
       <template v-if="theSelectedOperation === '4'"> 3 </template>
     </Card>
+    <hr class="mb-4" />
     <!--- endregion -->
 
     <!--- region 工步执行  -->
@@ -452,4 +466,8 @@ function tabsChange(key: any) {
   </Page>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.ant-tabs-tab) {
+  font-size: 18px;
+}
+</style>
