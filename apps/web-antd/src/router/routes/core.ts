@@ -506,6 +506,162 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/dayPFIOReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '抛光厂投入产出日报',
+          code: 'WM_322',
+        },
+        name: 'dayPFIOReport',
+        path: 'dayPFIOReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/kilnMonthlyReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '窑炉月报',
+          code: 'WM_322',
+        },
+        name: 'kilnMonthlyReport',
+        path: 'kilnMonthlyReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyPowderReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '粉料月报',
+          code: 'WM_322',
+        },
+        name: 'monthlyPowderReport',
+        path: 'monthlyPowderReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/totalProductionAndBatchStatistics.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '生产总量与批次统计',
+          code: 'WM_322',
+        },
+        name: 'totalProductionAndBatchStatistics',
+        path: 'totalProductionAndBatchStatistics',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyDetailedListOfPowderMaterials.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '粉料分月明细表',
+          code: 'WM_322',
+        },
+        name: 'monthlyDetailedListOfPowderMaterials',
+        path: 'monthlyDetailedListOfPowderMaterials',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/productionSelectionSummaryTable.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '生产复选汇总表',
+          code: 'WM_322',
+        },
+        name: 'productionSelectionSummaryTable',
+        path: 'productionSelectionSummaryTable',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/energyConsumptionOfPolishingFactory.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '抛光分厂能耗',
+          code: 'WM_322',
+        },
+        name: 'energyConsumptionOfPolishingFactory',
+        path: 'energyConsumptionOfPolishingFactory',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/powderFactoryShutdownDetails.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '粉料厂停机明细表',
+          code: 'WM_322',
+        },
+        name: 'powderFactoryShutdownDetails',
+        path: 'powderFactoryShutdownDetails',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/detailedListOfGlazeLineShutdown.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '釉线停机明细表',
+          code: 'WM_322',
+        },
+        name: 'detailedListOfGlazeLineShutdown',
+        path: 'detailedListOfGlazeLineShutdown',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/detailedListOfKilnShutdown.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '窑炉停机明细表',
+          code: 'WM_322',
+        },
+        name: 'detailedListOfKilnShutdown',
+        path: 'detailedListOfKilnShutdown',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/pressShutdownDetailsTable.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '压机停机明细表',
+          code: 'WM_322',
+        },
+        name: 'pressShutdownDetailsTable',
+        path: 'pressShutdownDetailsTable',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/polishingShutdownDetails.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '抛光停机明细表',
+          code: 'WM_322',
+        },
+        name: 'polishingShutdownDetails',
+        path: 'polishingShutdownDetails',
+      },
+      {
+        component: () =>
           import('#/views/productionReport/packagingAndInventoryReversal.vue'),
         meta: {
           ignoreAccess: true,

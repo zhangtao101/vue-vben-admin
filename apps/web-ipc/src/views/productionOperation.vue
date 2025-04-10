@@ -325,7 +325,10 @@ function tabsChange(key: any) {
         />
       </Col>
     </Row>
-    <Card class="mb-5" v-if="!jobInformationContraction">
+    <Card
+      class="jobInformationContraction mb-5"
+      v-if="!jobInformationContraction"
+    >
       <Grid>
         <template #toolbar-tools> </template>
       </Grid>
@@ -469,5 +472,12 @@ function tabsChange(key: any) {
 <style scoped lang="scss">
 :deep(.ant-tabs-tab) {
   font-size: 18px;
+}
+
+:deep(.jobInformationContraction) {
+  .ant-card-body {
+    padding-top: 0.5em;
+    padding-bottom: 1em;
+  }
 }
 </style>

@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryPGStopDayStatistics } from '#/api';
+import { excelPathPGStopHZStatistics, queryPGStopHZStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -36,28 +36,62 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'type', title: '类型', minWidth: 200 },
-    { field: 'materialName', title: '产品名称', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
-    { field: 'mBNumber', title: '磨边产量', minWidth: 200 },
-    { field: 'pGNumber', title: '抛光产量', minWidth: 200 },
-    { field: 'stopTime', title: '停机时间合计(h)', minWidth: 200 },
+    {
+      field: 'type',
+      title: '类型',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'materialName',
+      title: '产品名称',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'productCode',
+      title: '产品编码',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'lineName',
+      title: '线号',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'mbnumber',
+      title: '磨边产量',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'pgnumber',
+      title: '抛光产量',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'stopTime',
+      title: '停机时间合计(h)',
+      minWidth: 200,
+    },
     {
       title: '工艺停机',
       children: [
         {
-          field: 'gYTCDB',
+          field: 'gytcdb',
           title: '打包',
           minWidth: 150,
         },
         {
-          field: 'gYTCPG',
+          field: 'gytcpg',
           title: '抛光',
           minWidth: 150,
         },
         {
-          field: 'gYTCSC',
+          field: 'gytcsc',
           title: '窑炉',
           minWidth: 150,
         },
@@ -67,17 +101,17 @@ const gridOptions: VxeGridProps<any> = {
           minWidth: 150,
         },
         {
-          field: 'gYTCWG',
+          field: 'gytcsy',
           title: '卧干',
           minWidth: 150,
         },
         {
-          field: 'gYTCCX',
+          field: 'gytccx',
           title: '成型',
           minWidth: 150,
         },
         {
-          field: 'gYTCYL',
+          field: 'gytcyl',
           title: '原料',
           minWidth: 150,
         },
@@ -87,37 +121,37 @@ const gridOptions: VxeGridProps<any> = {
       title: '生产停机',
       children: [
         {
-          field: 'sCTCDB',
+          field: 'sctcdb',
           title: '打包',
           minWidth: 150,
         },
         {
-          field: 'sCTCPG',
+          field: 'sctcpg',
           title: '抛光',
           minWidth: 150,
         },
         {
-          field: 'sCTCSC',
+          field: 'sctcsc',
           title: '窑炉',
           minWidth: 150,
         },
         {
-          field: 'sCTCSY',
+          field: 'sctcsy',
           title: '施釉',
           minWidth: 150,
         },
         {
-          field: 'sCTCWG',
+          field: 'sctcwg',
           title: '卧干',
           minWidth: 150,
         },
         {
-          field: 'sCTCYL',
+          field: 'sctcyl',
           title: '原料',
           minWidth: 150,
         },
         {
-          field: 'sCTCCX',
+          field: 'sctccx',
           title: '成型',
           minWidth: 150,
         },
@@ -127,54 +161,48 @@ const gridOptions: VxeGridProps<any> = {
       title: '设备故障',
       children: [
         {
-          field: 'sBGZDB',
+          field: 'sbgzdb',
           title: '打包',
           minWidth: 150,
         },
         {
-          field: 'sBGZPG',
+          field: 'sbgzpg',
           title: '抛光',
           minWidth: 150,
         },
         {
-          field: 'sBGZYL',
+          field: 'sbgzyl',
           title: '窑炉',
           minWidth: 150,
         },
         {
-          field: 'sBGZYX',
+          field: 'sbgzyx',
           title: '施釉',
           minWidth: 150,
         },
         {
-          field: 'sBGZSG',
+          field: 'sbgzsg',
           title: '卧干',
           minWidth: 150,
         },
         {
-          field: 'sBGZFZ',
+          field: 'sbgzfz',
           title: '原料',
           minWidth: 150,
         },
         {
-          field: 'sBGZCX',
+          field: 'sbgzcx',
           title: '成型',
           minWidth: 150,
         },
       ],
     },
-    { field: 'sCZC', title: '转产', minWidth: 200 },
-    { field: 'cNXZ', title: '产能限制', minWidth: 200 },
-    { field: 'zRZH', title: '自然灾害', minWidth: 200 },
-    { field: 'sBQX', title: '设备清洗', minWidth: 200 },
+    { field: 'sczc', title: '转产', minWidth: 200 },
+    { field: 'cnxz', title: '产能限制', minWidth: 200 },
+    { field: 'zrzh', title: '自然灾害', minWidth: 200 },
+    { field: 'sbqx', title: '设备清洗', minWidth: 200 },
   ],
-  footerData: [{ seq: '抛光汇总' }, { seq: '磨边汇总' }, { seq: '合计' }],
-  footerSpanMethod: ({ $columnIndex }) => {
-    // 自定义表尾合并单元格
-    if ($columnIndex === 0) {
-      return { rowspan: 1, colspan: 5 };
-    }
-  },
+  footerData: [{}, {}],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -235,8 +263,11 @@ const queryParams = ref({
   searchTime: [] as any,
   // 线号
   lineName: '',
+  // 产品编号
+  productCode: '',
 });
 
+const collect = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -249,7 +280,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryPGStopDayStatistics({
+    queryPGStopHZStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -268,6 +299,22 @@ function queryData({ page, pageSize }: any) {
           items: [],
         });
       });
+  });
+}
+
+// endregion
+
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  excelPathPGStopHZStatistics(params).then((data) => {
+    window.open(data);
   });
 }
 
@@ -312,6 +359,14 @@ onMounted(() => {
           <Input v-model:value="queryParams.lineName" />
         </FormItem>
 
+        <!-- 产品编码 -->
+        <FormItem
+          :label="$t('productionDaily.productCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.productCode" />
+        </FormItem>
+
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
@@ -328,11 +383,32 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
+        </template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>
-        <template #footerData="{ column }">
-          <span> {{ collect[column.field] }} </span>
+        <template #footerData="{ rowIndex, columnIndex }">
+          <div v-if="rowIndex === 0">
+            <span v-if="columnIndex === 1">总产量</span>
+            <span v-if="columnIndex === 2">{{ collect.znumber }}</span>
+            <span v-if="columnIndex === 3">磨边总产量</span>
+            <span v-if="columnIndex === 4">{{ collect.mBNumber }}</span>
+            <span v-if="columnIndex === 5">抛光总产量</span>
+            <span v-if="columnIndex === 6">{{ collect.pGNumber }}</span>
+          </div>
+          <div v-if="rowIndex === 1">
+            <span v-if="columnIndex === 1">停机总时间</span>
+            <span v-if="columnIndex === 2">{{ collect.stopTime }}</span>
+            <span v-if="columnIndex === 3">磨边停机时间</span>
+            <span v-if="columnIndex === 4">{{ collect.sumMBStopTime }}</span>
+            <span v-if="columnIndex === 5">抛光停机时间</span>
+            <span v-if="columnIndex === 6">{{ collect.sumPGStopTime }}</span>
+          </div>
         </template>
       </Grid>
     </Card>

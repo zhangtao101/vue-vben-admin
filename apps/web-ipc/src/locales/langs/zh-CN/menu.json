@@ -1,0 +1,9 @@
+{
+  "productionOperation": "生产作业",
+  "dispatchOperation": "派工作业",
+  "workOrderInbound": "工单进站",
+  "workOrderOutbound": "工单出站",
+  "andonManagement": "安灯管理",
+  "qualityInspection": "质量检验",
+  "workFlow": "作业流程"
+}

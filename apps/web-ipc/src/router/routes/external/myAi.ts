@@ -48,60 +48,6 @@ const routes: RouteRecordRaw[] = [
           ignoreAccess: true,
         },
       },
-      {
-        name: 'productionOperation',
-        path: '/productionOperation',
-        component: import('#/views/productionOperation.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: '生产作业',
-        },
-      },
-      {
-        name: 'dispatchHomework',
-        path: '/dispatchHomework',
-        component: import('#/views/dispatchHomework.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: '派工作业',
-        },
-      },
-      {
-        name: 'workOrderEntry',
-        path: '/workOrderEntry',
-        component: import('#/views/workOrderEntry.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: '工单进站',
-        },
-      },
-      {
-        name: 'workOrderOutbound',
-        path: '/workOrderOutbound',
-        component: import('#/views/workOrderOutbound.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: '工单出站',
-        },
-      },
-      {
-        name: 'andon',
-        path: '/andon',
-        component: import('#/views/andon.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: '安灯管理',
-        },
-      },
-      {
-        name: 'qualityInspection',
-        path: '/qualityInspection',
-        component: import('#/views/qualityInspection.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: '质量检验',
-        },
-      },
     ],
   },
 ];

@@ -37,3 +37,18 @@ const tokenTheme = computed(() => {
     </App>
   </ConfigProvider>
 </template>
+<style lang="scss">
+:root {
+  .dark,
+  .dark[data-theme='default'] {
+    /* 搜索框 */
+    --accent: 223deg 30.95% 19.35%;
+
+    /* 搜索框内快捷键颜色 */
+    --background: 213.13deg 46.21% 28.43%;
+
+    /* header */
+    --header: var(--background);
+  }
+}
+</style>

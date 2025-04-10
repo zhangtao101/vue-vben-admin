@@ -20,11 +20,11 @@ export async function queryEnamelDayStatistics(params: any) {
   );
 }
 /**
- * 查询抛光停机日报
+ * 抛光停机汇总
  */
-export async function queryPGStopDayStatistics(params: any) {
+export async function queryPGStopHZStatistics(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPGStopDayStatistics?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPGStopHZStatistics?${qs.stringify(params)}`,
   );
 }
 /**
@@ -248,6 +248,14 @@ export async function queryYJStopDetailStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYJStopDetailStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ * 抛光停机明细表
+ */
+export async function queryPGStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPGStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**
@@ -464,6 +472,22 @@ export async function excelPathYLStopDetailStatistics(params: any) {
 export async function excelPathYJStopDetailStatistics(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYJStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光停机明细表导出
+ */
+export async function excelPathPGStopDetailStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPGStopDetailStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光停机汇总导出
+ */
+export async function excelPathPGStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPGStopHZStatistics?${qs.stringify(params)}`,
   );
 }
 // endregion
