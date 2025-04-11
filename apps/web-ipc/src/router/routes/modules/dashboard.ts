@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'productionOperation',
         path: '/productionOperation',
-        component: import('#/views/productionOperation.vue'),
+        component: import('#/views/flow/productionOperation.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.productionOperation'),
@@ -57,7 +57,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'dispatchHomework',
         path: '/dispatchHomework',
-        component: import('#/views/dispatchHomework.vue'),
+        component: import('#/views/flow/dispatchHomework.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.dispatchOperation'),
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'workOrderEntry',
         path: '/workOrderEntry',
-        component: import('#/views/workOrderEntry.vue'),
+        component: import('#/views/flow/workOrderEntry.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.workOrderInbound'),
@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'workOrderOutbound',
         path: '/workOrderOutbound',
-        component: import('#/views/workOrderOutbound.vue'),
+        component: import('#/views/flow/workOrderOutbound.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.workOrderOutbound'),
@@ -84,7 +84,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'andon',
         path: '/andon',
-        component: import('#/views/andon.vue'),
+        component: import('#/views/flow/andon.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.andonManagement'),
@@ -93,7 +93,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'qualityInspection',
         path: '/qualityInspection',
-        component: import('#/views/qualityInspection.vue'),
+        component: import('#/views/flow/qualityInspection.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.qualityInspection'),

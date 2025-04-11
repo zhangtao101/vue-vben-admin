@@ -82,14 +82,14 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      field: 'wgInWeight',
-      title: '卧干投入量',
+      field: 'wgInNumber',
+      title: '工单卧干入库量',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'wgInNumber',
-      title: '卧干入库量',
+      field: 'wgInWeight',
+      title: '工单卧干投入量',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -107,7 +107,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'trqValue',
-      title: '天然气能耗(M3)',
+      title: '工单天然气能耗(M3)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

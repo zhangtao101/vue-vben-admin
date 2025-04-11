@@ -256,6 +256,46 @@ export async function queryPGStopDetailStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getPGStopDetailStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ * 釉线停机汇总
+ */
+export async function queryYXStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYXStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 窑炉停机汇总
+ */
+export async function queryYLStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYLStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 各分厂停窑燃气
+ */
+export async function queryShutdownGasStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getShutdownGasStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 压机停机汇总
+ */
+export async function queryYJStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYJStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 粉料厂停机汇总
+ */
+export async function queryFLStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getFLStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**
@@ -320,6 +360,54 @@ export async function excelPathEnamelDay(params: any) {
 export async function excelPathPolishingYieldDay(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPolishingYieldDay?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 釉线停机汇总导出
+ */
+export async function excelPathYXStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYXStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 窑炉停机汇总导出
+ */
+export async function excelPathYLStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYLStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 各分厂停窑燃气导出
+ */
+export async function excelPathShutdownGasStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathShutdownGasStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 粉料移交导出
+ */
+export async function excelPathFLTransfer(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathFLTransfer?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 压机停机汇总导出
+ */
+export async function excelPathYJStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYJStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 压机停机汇总导出
+ */
+export async function excelPathFLStopHZStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathFLStopHZStatistics?${qs.stringify(params)}`,
   );
 }
 /**

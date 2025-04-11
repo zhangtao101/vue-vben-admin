@@ -44,7 +44,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'class', title: '班次', minWidth: 200 },
     { field: 'singleArea', title: '单片面积(M2)', minWidth: 200 },
     { field: 'productName', title: '产品名称', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'materialCode', title: '产品编码', minWidth: 200 },
     { field: 'lineName', title: '产品批号', minWidth: 200 },
     {
       field: 'plannedProductionP',
@@ -53,14 +53,14 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inReportNumberM2',
-      title: '领用量（M2）',
-      minWidth: 200,
+      field: 'plannedProduction',
+      title: '计划生产量(M2)',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'inReportNumberP',
-      title: '领用量（片）',
+      field: 'inReportNumberM2',
+      title: '领用量（M2）',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -71,21 +71,16 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      title: '生产产量(M2)',
-      children: [
-        {
-          field: 'plannedProduction',
-          title: '计划',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-        {
-          field: 'actualProduction',
-          title: '实际',
-          minWidth: 150,
-          slots: { footer: 'footerData' },
-        },
-      ],
+      field: 'inReportNumberP',
+      title: '领用量（片）',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'actualProduction',
+      title: '实际生产量(M2)',
+      minWidth: 150,
+      slots: { footer: 'footerData' },
     },
     { field: 'centosRate', title: '投入产出率', minWidth: 200 },
     {

@@ -205,7 +205,7 @@ const [JobGrid, jobGridApi] = useVbenVxeGrid({
  */
 function queryJobData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
-    const params: any = {};
+    const params: any = { ...queryParams.value };
     if (params.searchTime && params.searchTime.length === 2) {
       params.startTime = params.searchTime[0].format('YYYY-MM-DD');
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');

@@ -7,17 +7,10 @@ import { useRoute } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 
-import {
-  Button,
-  Card,
-  Form,
-  FormItem,
-  Input,
-  RangePicker,
-} from 'ant-design-vue';
+import { Button, Card, Form, FormItem, RangePicker } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathFLTransfer, queryFLTransferStatistics } from '#/api';
+import { excelPathYLStopHZStatistics, queryYLStopHZStatistics } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -37,25 +30,77 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     { field: 'month', title: '日期', minWidth: 200 },
-    { field: 'materialName', title: '基础配方', minWidth: 200 },
+    { field: 'lineName', title: '线号', minWidth: 200 },
+    { field: 'stopTime', title: '停机时间合计', minWidth: 200 },
+    { field: 'stopTrqValue', title: '停机燃气', minWidth: 200 },
     {
-      field: 'sprayQuantity',
-      title: '喷干量',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
+      title: '工艺停产',
+      children: [
+        { field: 'gytcdb', title: '打包', minWidth: 150 },
+        { field: 'gytcdbnh', title: '打包能耗', minWidth: 150 },
+        { field: 'gytcpg', title: '抛光', minWidth: 150 },
+        { field: 'gytcpgnh', title: '抛光能耗', minWidth: 150 },
+        { field: 'gytcsc', title: '窑炉', minWidth: 150 },
+        { field: 'gytcscnh', title: '窑炉能耗', minWidth: 150 },
+        { field: 'sctcsy', title: '施釉', minWidth: 150 },
+        { field: 'gytcsynh', title: '施釉能耗', minWidth: 150 },
+        { field: 'gytcwg', title: '卧干', minWidth: 150 },
+        { field: 'gytcwgnh', title: '卧干能耗', minWidth: 150 },
+        { field: 'gytccx', title: '成型', minWidth: 150 },
+        { field: 'gytccxnh', title: '成型能耗', minWidth: 150 },
+        { field: 'gytcyl', title: '原料', minWidth: 150 },
+        { field: 'gytcylnh', title: '原料能耗', minWidth: 150 },
+      ],
     },
     {
-      field: 'transferQuantity',
-      title: '移交量',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
+      title: '生产停产',
+      children: [
+        { field: 'sctcdb', title: '打包', minWidth: 150 },
+        { field: 'sctcdbnh', title: '打包能耗', minWidth: 150 },
+        { field: 'sctcpg', title: '抛光', minWidth: 150 },
+        { field: 'sctcpgnh', title: '抛光能耗', minWidth: 150 },
+        { field: 'sctcsc', title: '窑炉', minWidth: 150 },
+        { field: 'sctcscnh', title: '窑炉能耗', minWidth: 150 },
+        { field: 'sctcsy', title: '施釉', minWidth: 150 },
+        { field: 'sctcsynh', title: '施釉能耗', minWidth: 150 },
+        { field: 'sctcwg', title: '卧干', minWidth: 150 },
+        { field: 'sctcwgnh', title: '卧干能耗', minWidth: 150 },
+        { field: 'sctccx', title: '成型', minWidth: 150 },
+        { field: 'sctccxnh', title: '成型能耗', minWidth: 150 },
+        { field: 'sctcyl', title: '原料', minWidth: 150 },
+        { field: 'sctcylnh', title: '原料能耗', minWidth: 150 },
+      ],
     },
+    {
+      title: '设备故障',
+      children: [
+        { field: 'sbgzdb', title: '打包', minWidth: 150 },
+        { field: 'sbgzdbn', title: '打包能耗', minWidth: 150 },
+        { field: 'sbgzpg', title: '抛光', minWidth: 150 },
+        { field: 'sbgzpgnh', title: '抛光能耗', minWidth: 150 },
+        { field: 'sbgzyl', title: '窑炉', minWidth: 150 },
+        { field: 'sbgzylnh', title: '窑炉能耗', minWidth: 150 },
+        { field: 'sbgzyx', title: '施釉', minWidth: 150 },
+        { field: 'sbgzyxnh', title: '施釉能耗', minWidth: 150 },
+        { field: 'sbgzsg', title: '卧干', minWidth: 150 },
+        { field: 'sbgzsgnh', title: '卧干能耗', minWidth: 150 },
+        { field: 'sbgzcx', title: '成型', minWidth: 150 },
+        { field: 'sbgzcxnh', title: '成型能耗', minWidth: 150 },
+        { field: 'sbgzfz', title: '原料', minWidth: 150 },
+        { field: 'sbgzfznh', title: '原料能耗', minWidth: 150 },
+      ],
+    },
+    { field: 'sczc', title: '转产', minWidth: 150 },
+    { field: 'sczcn', title: '转产能耗', minWidth: 150 },
+    { field: 'cnxz', title: '产能限制', minWidth: 150 },
+    { field: 'cnxznh', title: '产能限制能耗', minWidth: 150 },
+    { field: 'zrzh', title: '自然灾害', minWidth: 150 },
+    { field: 'zrzhnh', title: '自然灾害能耗', minWidth: 150 },
+    { field: 'sbqx', title: '设备清洗', minWidth: 150 },
+    { field: 'sbqxnh', title: '设备清洗能耗', minWidth: 150 },
   ],
-  footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 3 }],
   height: 500,
   stripe: true,
-  showFooter: true,
   sortConfig: {
     multiple: true,
   },
@@ -86,24 +131,6 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-/**
- * 获取物料类型的中文描述
- * @param state 物料类型编码编码
- */
-function getMaterialTypeText(state: number) {
-  switch (state) {
-    case 1: {
-      return '原料';
-    }
-    case 2: {
-      return '砖坯';
-    }
-    default: {
-      return '未定义的类型';
-    }
-  }
-}
-
 // endregion
 
 // region 查询数据
@@ -111,12 +138,7 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 基础配方
-  materialName: '',
 });
-
-// 汇总数据
-const collect = ref<any>({});
 
 /**
  * 查询数据
@@ -130,13 +152,12 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryFLTransferStatistics({
+    queryYLStopHZStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
-        collect.value = p;
+      .then(({ total, list }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
@@ -150,6 +171,12 @@ function queryData({ page, pageSize }: any) {
 }
 // endregion
 
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
+
+// endregion
+
 // region 文件下载
 
 function downloadTemplate() {
@@ -159,16 +186,10 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathFLTransfer(params).then((data) => {
+  excelPathYLStopHZStatistics(params).then((data) => {
     window.open(data);
   });
 }
-
-// endregion
-
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
 
 // endregion
 
@@ -197,14 +218,6 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 工单号 -->
-        <FormItem
-          :label="$t('productionDaily.basicFormula')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.materialName" />
-        </FormItem>
-
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
@@ -226,12 +239,6 @@ onMounted(() => {
           <Button type="primary" @click="downloadTemplate()">
             {{ $t('common.export') }}
           </Button>
-        </template>
-        <template #materialType="{ row }">
-          <span> {{ getMaterialTypeText(row.materialType) }} </span>
-        </template>
-        <template #footerData="{ column }">
-          <span> {{ collect[column.field] }} </span>
         </template>
       </Grid>
     </Card>

@@ -7,17 +7,13 @@ import { useRoute } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 
-import {
-  Button,
-  Card,
-  Form,
-  FormItem,
-  Input,
-  RangePicker,
-} from 'ant-design-vue';
+import { Button, Card, Form, FormItem, RangePicker } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathFLTransfer, queryFLTransferStatistics } from '#/api';
+import {
+  excelPathShutdownGasStatistics,
+  queryShutdownGasStatistics,
+} from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -37,22 +33,40 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     { field: 'month', title: '日期', minWidth: 200 },
-    { field: 'materialName', title: '基础配方', minWidth: 200 },
+    { field: 'yline', title: '窑线', minWidth: 200 },
     {
-      field: 'sprayQuantity',
-      title: '喷干量',
+      field: 'wgValue',
+      title: '卧干天然气用量M3',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'transferQuantity',
-      title: '移交量',
+      field: 'ylValue',
+      title: '窑线天然气用量M3',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'sumValue',
+      title: '窑线天然气用量M3',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'stopValue',
+      title: '停窑天然气用量M3\n',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'bfb',
+      title: '占比',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 3 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -86,24 +100,6 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-/**
- * 获取物料类型的中文描述
- * @param state 物料类型编码编码
- */
-function getMaterialTypeText(state: number) {
-  switch (state) {
-    case 1: {
-      return '原料';
-    }
-    case 2: {
-      return '砖坯';
-    }
-    default: {
-      return '未定义的类型';
-    }
-  }
-}
-
 // endregion
 
 // region 查询数据
@@ -111,11 +107,7 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 基础配方
-  materialName: '',
 });
-
-// 汇总数据
 const collect = ref<any>({});
 
 /**
@@ -130,7 +122,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryFLTransferStatistics({
+    queryShutdownGasStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -150,6 +142,12 @@ function queryData({ page, pageSize }: any) {
 }
 // endregion
 
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
+
+// endregion
+
 // region 文件下载
 
 function downloadTemplate() {
@@ -159,16 +157,10 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathFLTransfer(params).then((data) => {
+  excelPathShutdownGasStatistics(params).then((data) => {
     window.open(data);
   });
 }
-
-// endregion
-
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
 
 // endregion
 
@@ -197,14 +189,6 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 工单号 -->
-        <FormItem
-          :label="$t('productionDaily.basicFormula')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.materialName" />
-        </FormItem>
-
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
@@ -226,9 +210,6 @@ onMounted(() => {
           <Button type="primary" @click="downloadTemplate()">
             {{ $t('common.export') }}
           </Button>
-        </template>
-        <template #materialType="{ row }">
-          <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>
         <template #footerData="{ column }">
           <span> {{ collect[column.field] }} </span>
