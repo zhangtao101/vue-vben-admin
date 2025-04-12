@@ -281,6 +281,14 @@ export async function queryShutdownGasStatistics(params: any) {
   );
 }
 /**
+ * 抛光线入库产量汇总表
+ */
+export async function queryStorageOutputOfPolishingLineStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getStorageOutputOfPolishingLineStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
  * 压机停机汇总
  */
 export async function queryYJStopHZStatistics(params: any) {
@@ -384,6 +392,16 @@ export async function excelPathYLStopHZStatistics(params: any) {
 export async function excelPathShutdownGasStatistics(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathShutdownGasStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光线入库产量汇总表导出
+ */
+export async function excelPathStorageOutputOfPolishingLineStatistics(
+  params: any,
+) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathStorageOutputOfPolishingLineStatistics?${qs.stringify(params)}`,
   );
 }
 /**
