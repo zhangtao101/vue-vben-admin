@@ -118,6 +118,12 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'qps',
+      title: '上砖前破碎',
+      minWidth: 120,
+      slots: { footer: 'footerData' },
+    },
+    {
       field: 'color',
       title: '色号',
       minWidth: 120,
