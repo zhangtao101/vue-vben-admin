@@ -11,14 +11,13 @@ import Unclaimed from '#/util/component/andon/unclaimed.vue';
 
 // region 查询数据
 // 查询条件
-const checkedType = ref('1');
+const checkedType = ref('4');
 
 function tabsChange(key: any) {
   checkedType.value = key;
   query();
 }
 
-const unclaimedRef = ref();
 const pendingProcessingRef = ref();
 const completedRef = ref();
 /**
@@ -26,16 +25,12 @@ const completedRef = ref();
  */
 function query() {
   switch (checkedType.value) {
-    case '1': {
-      unclaimedRef.value?.reload();
-      break;
-    }
-    case '2': {
-      pendingProcessingRef.value?.reload();
-      break;
-    }
     case '3': {
       completedRef.value?.reload();
+      break;
+    }
+    case '4': {
+      pendingProcessingRef.value?.reload();
       break;
     }
     default: {
@@ -53,15 +48,7 @@ function query() {
   <Page id="page">
     <Card>
       <Tabs :value="checkedType" @change="tabsChange" class="mb-4">
-        <TabPane key="1">
-          <template #tab>
-            <MdiHome class="inline-block" />
-            <!-- 待领取 -->
-            {{ $t('andon.waitingToBeClaimed') }}
-          </template>
-          <Unclaimed ref="unclaimedRef" :show-type="checkedType" />
-        </TabPane>
-        <TabPane key="2">
+        <TabPane key="4">
           <template #tab>
             <MdiHome class="inline-block" />
             <!-- 待处理 -->
@@ -72,8 +59,8 @@ function query() {
         <TabPane key="3">
           <template #tab>
             <MdiHome class="inline-block" />
-            <!-- 已完成 -->
-            {{ $t('andon.completed') }}
+            <!-- 判定完成 -->
+            {{ $t('andon.judgmentCompleted') }}
           </template>
           <Unclaimed ref="completedRef" :show-type="checkedType" />
         </TabPane>

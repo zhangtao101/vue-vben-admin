@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h } from 'vue';
+import { h, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -11,10 +11,9 @@ import { Button, Form, FormItem, Input, Tooltip } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 const props = defineProps({
-  // 这里定义组件的 props
-  queryParams: {
-    type: Object,
-    default: () => ({}),
+  showType: {
+    type: String,
+    default: '1',
   },
 });
 
@@ -46,22 +45,37 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: '5',
-      title: '当前工序',
+      title: '工序',
       minWidth: 200,
     },
     {
       field: '4',
-      title: '作业位置',
+      title: '关联设备',
       minWidth: 200,
     },
     {
-      field: '4',
-      title: '任务产生时间',
+      field: '5',
+      title: '呼叫人员',
       minWidth: 200,
     },
     {
-      field: '4',
-      title: '任务类型',
+      field: '6',
+      title: '问题等级',
+      minWidth: 200,
+    },
+    {
+      field: '7',
+      title: '任务判定时间',
+      minWidth: 200,
+    },
+    {
+      field: '8',
+      title: '任务来源',
+      minWidth: 200,
+    },
+    {
+      field: '9',
+      title: '异常类型',
       minWidth: 200,
     },
     {
@@ -71,9 +85,10 @@ const gridOptions: VxeGridProps<any> = {
         default: 'action',
       },
       fixed: 'right',
+      visible: props.showType !== '3',
     },
   ],
-  height: 400,
+  maxHeight: 400,
   stripe: true,
   sortConfig: {
     multiple: true,
@@ -101,13 +116,14 @@ const gridEvents: any = {};
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
+const queryParams = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
-    const params: any = { ...props.queryParams };
+    const params: any = { ...queryParams.value };
     if (params.searchTime && params.searchTime.length === 2) {
       params.startTime = params.searchTime[0].format('YYYY-MM-DD');
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
@@ -165,7 +181,7 @@ defineExpose({
       <Input />
     </FormItem>
     <FormItem class="!mb-4">
-      <Button type="primary" @click="query" class="mr-4">
+      <Button type="primary" @click="gridApi.reload()" class="mr-4">
         {{ $t('common.search') }}
       </Button>
       <Button @click="reload()">
@@ -173,11 +189,11 @@ defineExpose({
       </Button>
     </FormItem>
   </Form>
-  <Grid class="mt-4">
+  <Grid class="h-auto">
     <template #toolbar-tools> </template>
     <template #action>
       <!-- 任务领取 -->
-      <Tooltip>
+      <Tooltip v-if="showType === '1'">
         <template #title>
           {{ $t('andon.taskCollection') }}
         </template>
@@ -186,6 +202,51 @@ defineExpose({
           :icon="
             h(IconifyIcon, {
               icon: 'mdi:invoice-receive',
+              class: 'inline-block text-2xl',
+            })
+          "
+        />
+      </Tooltip>
+      <!-- 签到 -->
+      <Tooltip v-if="showType === '2' || showType === '4'">
+        <template #title>
+          {{ $t('andon.signIn') }}
+        </template>
+        <Button
+          type="link"
+          :icon="
+            h(IconifyIcon, {
+              icon: 'material-symbols:tv-signin-outline',
+              class: 'inline-block text-2xl',
+            })
+          "
+        />
+      </Tooltip>
+      <!-- 处理 -->
+      <Tooltip v-if="showType === '2'">
+        <template #title>
+          {{ $t('andon.handle') }}
+        </template>
+        <Button
+          type="link"
+          :icon="
+            h(IconifyIcon, {
+              icon: 'material-symbols:security-update-warning-outline-rounded',
+              class: 'inline-block text-2xl',
+            })
+          "
+        />
+      </Tooltip>
+      <!-- 判定 -->
+      <Tooltip v-if="showType === '4'">
+        <template #title>
+          {{ $t('andon.judge') }}
+        </template>
+        <Button
+          type="link"
+          :icon="
+            h(IconifyIcon, {
+              icon: 'mdi:file-alert',
               class: 'inline-block text-2xl',
             })
           "

@@ -82,8 +82,29 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'andon',
-        path: '/andon',
+        name: 'qualityInspection',
+        path: '/qualityInspection',
+        component: import('#/views/flow/qualityInspection.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.qualityInspection'),
+        },
+      },
+    ],
+  },
+  {
+    component: BasicLayout,
+    meta: {
+      icon: 'lucide:layout-dashboard',
+      order: -1,
+      title: $t('menu.andonManagement'),
+    },
+    name: 'andon',
+    path: '/andon',
+    children: [
+      {
+        name: 'andonManagement',
+        path: '/andonManagement',
         component: import('#/views/flow/andon.vue'),
         meta: {
           ignoreAccess: true,
@@ -91,12 +112,12 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'qualityInspection',
-        path: '/qualityInspection',
-        component: import('#/views/flow/qualityInspection.vue'),
+        name: 'andonProblemAssessment',
+        path: '/andonProblemAssessment',
+        component: import('#/views/flow/andonProblemAssessment.vue'),
         meta: {
           ignoreAccess: true,
-          title: $t('menu.qualityInspection'),
+          title: $t('menu.andonProblemAssessment'),
         },
       },
     ],

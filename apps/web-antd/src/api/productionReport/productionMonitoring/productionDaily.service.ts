@@ -76,6 +76,14 @@ export async function queryYLReportDayStatistics(params: any) {
   );
 }
 /**
+ *  各工段损耗率
+ */
+export async function queryLossRatesPerSection(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getLossRatesPerSection?${qs.stringify(params)}`,
+  );
+}
+/**
  *  粉料车间统计月报查询
  */
 export async function queryYLReportMonthStatistics(params: any) {
@@ -289,6 +297,14 @@ export async function queryStorageOutputOfPolishingLineStatistics(params: any) {
   );
 }
 /**
+ * 窑炉厂用电明细
+ */
+export async function queryYLDetailOfElectricityStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getYLDetailOfElectricityStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
  * 压机停机汇总
  */
 export async function queryYJStopHZStatistics(params: any) {
@@ -302,6 +318,14 @@ export async function queryYJStopHZStatistics(params: any) {
 export async function queryFLStopHZStatistics(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getFLStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 玻化砖厂产品生产时间统计表
+ */
+export async function queryBHZInProductionTime(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getBHZInProductionTime?${qs.stringify(params)}`,
   );
 }
 
@@ -320,6 +344,14 @@ export async function excelPathPressDay(params: any) {
 export async function excelPathYLDay(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYLDay?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 各工段损耗率导出
+ */
+export async function excelPathLossRatesPerSection(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathLossRatesPerSection?${qs.stringify(params)}`,
   );
 }
 /**
@@ -405,6 +437,14 @@ export async function excelPathStorageOutputOfPolishingLineStatistics(
   );
 }
 /**
+ * 窑炉厂用电明细导出
+ */
+export async function excelPathYLDetailOfElectricityStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathYLDetailOfElectricityStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
  * 粉料移交导出
  */
 export async function excelPathFLTransfer(params: any) {
@@ -426,6 +466,14 @@ export async function excelPathYJStopHZStatistics(params: any) {
 export async function excelPathFLStopHZStatistics(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathFLStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 抛光线入库产量汇总表导出
+ */
+export async function excelPathBHZInProductionTime(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathBHZInProductionTime?${qs.stringify(params)}`,
   );
 }
 /**

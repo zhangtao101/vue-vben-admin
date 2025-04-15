@@ -13,5 +13,6 @@
   "productionLine": "生产线",
   "productLotNumber": "产品批号",
   "dailyDetails": "日报详情",
-  "kilnLine": "窑炉线"
+  "kilnLine": "窑炉线",
+  "kilnNumber": "窑号"
 }

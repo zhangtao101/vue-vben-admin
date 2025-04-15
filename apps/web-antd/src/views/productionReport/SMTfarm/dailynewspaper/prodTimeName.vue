@@ -17,10 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  excelPathStorageOutputOfPolishingLineStatistics,
-  queryStorageOutputOfPolishingLineStatistics,
-} from '#/api';
+import { excelPathBHZInProductionTime, queryBHZInProductionTime } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -39,59 +36,191 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '日期', minWidth: 200 },
-    { field: 'linename', title: '生产线', minWidth: 200 },
+    { field: 'startDay', title: '开始日期', minWidth: 200 },
+    { field: 'endDay', title: '结束日期', minWidth: 200 },
+    { field: 'batchCode', title: '生产批号', minWidth: 200 },
+    { field: 'lineName', title: '窑号', minWidth: 200 },
+    { field: 'productCode', title: '产品编码', minWidth: 200 },
     {
-      field: 'lyzpqpy',
-      title: '全抛釉(M2)',
+      field: 'sctime',
+      title: '烧成时间',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzpcbz',
-      title: '超白砖(M2)',
-      minWidth: 200,
+      title: '工艺停产',
+      children: [
+        {
+          field: 'gytcdb',
+          title: '打包',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'gytcpg',
+          title: '抛光',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'gytcsc',
+          title: '窑炉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sctcsy',
+          title: '施釉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'gytcwg',
+          title: '卧干',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'gytccx',
+          title: '成型',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'gytcyl',
+          title: '原料',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '生产停产',
+      children: [
+        {
+          field: 'sctcdb',
+          title: '打包',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sctcpg',
+          title: '抛光',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sctcsc',
+          title: '窑炉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sctcsy',
+          title: '施釉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sctcwg',
+          title: '卧干',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sctccx',
+          title: '成型',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sctcyl',
+          title: '原料',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '设备故障',
+      children: [
+        {
+          field: 'sbgzdb',
+          title: '打包',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sbgzpg',
+          title: '抛光',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sbgzyl',
+          title: '窑炉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sbgzyx',
+          title: '施釉',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sbgzsg',
+          title: '卧干',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sbgzcx',
+          title: '成型',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'sbgzfz',
+          title: '原料',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      field: 'sczc',
+      title: '转产',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzpptz',
-      title: '普通砖(M2)',
-      minWidth: 200,
+      field: 'cnxz',
+      title: '产能限制',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzprpz',
-      title: '柔抛砖(M2)',
-      minWidth: 200,
+      field: 'zrzh',
+      title: '自然灾害',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzpspz',
-      title: '刷抛砖(M2)',
-      minWidth: 200,
+      field: 'sbqx',
+      title: '设备清洗',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzppjz',
-      title: '抛晶砖(M2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'sumPG',
-      title: '抛光小计(M2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'sumMB',
-      title: '磨边砖入库产量(M2)',
-      minWidth: 200,
+      field: 'xj',
+      title: '停机时间小计',
+      minWidth: 150,
       slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 6 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -132,11 +261,16 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 线号
+  // 产品编码
+  productCode: '',
+  // 产品批号
   lineName: '',
+  // 窑号
+  YHName: '',
 });
-const collect = ref<any>({});
 
+// 汇总数据
+const collect = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -149,7 +283,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryStorageOutputOfPolishingLineStatistics({
+    queryBHZInProductionTime({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -184,7 +318,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathStorageOutputOfPolishingLineStatistics(params).then((data) => {
+  excelPathBHZInProductionTime(params).then((data) => {
     window.open(data);
   });
 }
@@ -215,12 +349,26 @@ onMounted(() => {
         >
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
-        <!-- 线号 -->
+        <!-- 产品编码 -->
         <FormItem
-          :label="$t('productionDaily.productionLine')"
+          :label="$t('productionDaily.productCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.productCode" />
+        </FormItem>
+        <!-- 批次号 -->
+        <FormItem
+          :label="$t('productionDaily.batchNumber')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.lineName" />
+        </FormItem>
+        <!-- 窑号 -->
+        <FormItem
+          :label="$t('productionDaily.kilnNumber')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.YHName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

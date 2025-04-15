@@ -4,14 +4,7 @@ import { h, onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 
-import {
-  Button,
-  Card,
-  Form,
-  FormItem,
-  Input,
-  RangePicker,
-} from 'ant-design-vue';
+import { Button, Card, Form, FormItem, RangePicker } from 'ant-design-vue';
 
 import { $t } from '#/locales';
 import LossesInEachSection from '#/util/component/lossesInEachSection.vue';
@@ -21,12 +14,6 @@ import LossesInEachSection from '#/util/component/lossesInEachSection.vue';
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 工单号
-  worksheetCode: '',
-  // 产品编码
-  productCode: '',
-  // 产品名称
-  materialName: '',
 });
 
 const activeKey = ref<string>('1');
@@ -72,30 +59,6 @@ onMounted(() => {});
           style="margin-bottom: 1em"
         >
           <RangePicker v-model:value="queryParams.searchTime" />
-        </FormItem>
-
-        <!-- 工单号 -->
-        <FormItem
-          :label="$t('productionDaily.worksheetCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.worksheetCode" />
-        </FormItem>
-
-        <!-- 产品编号 -->
-        <FormItem
-          :label="$t('productionDaily.productCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.productCode" />
-        </FormItem>
-
-        <!-- 产品名称 -->
-        <FormItem
-          :label="$t('productionDaily.productName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.materialName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

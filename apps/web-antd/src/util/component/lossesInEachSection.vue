@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathYLDay, queryYLDayStatistics } from '#/api';
+import { excelPathLossRatesPerSection, queryLossRatesPerSection } from '#/api';
 import { $t } from '#/locales';
 
 const props = defineProps({
@@ -29,7 +29,8 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: '', title: '月份', minWidth: 50 },
+    { field: 'month', title: '月份', minWidth: 150 },
+    { field: 'ylLine', title: '窑线', minWidth: 150 },
     {
       title: '粉料段',
       children: [
@@ -37,19 +38,19 @@ const gridOptions: VxeGridProps<any> = {
           title: '原料 → 粉料',
           children: [
             {
-              field: '',
+              field: 'feedNumber',
               title: '投入泥料量T',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: '',
+              field: 'outNumber',
               title: '产出粉料量T',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: '',
+              field: 'flLossRate',
               title: '损耗%',
               minWidth: 150,
               slots: { footer: 'footerData' },
@@ -58,7 +59,6 @@ const gridOptions: VxeGridProps<any> = {
         },
       ],
     },
-    { field: '', title: '产品分类', minWidth: 50 },
     {
       title: '配送段',
       children: [
@@ -66,19 +66,19 @@ const gridOptions: VxeGridProps<any> = {
           title: '粉料 → 砖坯',
           children: [
             {
-              field: '',
+              field: 'feesFlNumber',
               title: '投入粉料量T',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: '',
+              field: 'outZP',
               title: '产出砖坯量T',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: '',
+              field: 'lossRate',
               title: '损耗%',
               minWidth: 150,
               slots: { footer: 'footerData' },
@@ -94,19 +94,19 @@ const gridOptions: VxeGridProps<any> = {
           title: '砖坯 → 中间库或成品库',
           children: [
             {
-              field: '',
+              field: 'pressQuantity',
               title: '压制量（平方米）',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: '',
+              field: 'inStorageNumber',
               title: '入库量（平方米）',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: '',
+              field: 'ylLossRate',
               title: '损耗%',
               minWidth: 150,
               slots: { footer: 'footerData' },
@@ -122,19 +122,19 @@ const gridOptions: VxeGridProps<any> = {
           title: '中间库 → 成品库',
           children: [
             {
-              field: '',
+              field: 'pginStorageNumber',
               title: '中间库素砖（平方米）',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: '',
+              field: 'outStorageNumber',
               title: '成品库入库（平方米）',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
-              field: '',
+              field: 'pgLossRate',
               title: '损耗%',
               minWidth: 150,
               slots: { footer: 'footerData' },
@@ -147,19 +147,19 @@ const gridOptions: VxeGridProps<any> = {
       title: 'P等品比率',
       children: [
         {
-          field: '',
+          field: 'pgtotalInStorageNumber',
           title: '总入库量（平方米）',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: '',
+          field: 'pinStorageNumber',
           title: 'P等入库量（平方米）',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: '',
+          field: 'plossRate',
           title: 'P等比率',
           minWidth: 150,
           slots: { footer: 'footerData' },
@@ -168,7 +168,7 @@ const gridOptions: VxeGridProps<any> = {
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 3 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -220,7 +220,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryYLDayStatistics({
+    queryLossRatesPerSection({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -250,7 +250,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathYLDay(params).then((data) => {
+  excelPathLossRatesPerSection(params).then((data) => {
     window.open(data);
   });
 }

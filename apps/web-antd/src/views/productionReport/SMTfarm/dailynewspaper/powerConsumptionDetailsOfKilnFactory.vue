@@ -18,8 +18,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathStorageOutputOfPolishingLineStatistics,
-  queryStorageOutputOfPolishingLineStatistics,
+  excelPathYLDetailOfElectricityStatistics,
+  queryYLDetailOfElectricityStatistics,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -40,58 +40,53 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     { field: 'month', title: '日期', minWidth: 200 },
-    { field: 'linename', title: '生产线', minWidth: 200 },
+    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'lineName', title: '生产批号', minWidth: 200 },
     {
-      field: 'lyzpqpy',
-      title: '全抛釉(M2)',
+      field: 'pressQuantity',
+      title: '压制量(M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzpcbz',
-      title: '超白砖(M2)',
+      field: 'inReportNumber',
+      title: '入中间库量(M2)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzpptz',
-      title: '普通砖(M2)',
+      field: 'yjdlValue',
+      title: '压机用电量(KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzprpz',
-      title: '柔抛砖(M2)',
+      field: 'yldlValue',
+      title: '窑炉用电量(KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzpspz',
-      title: '刷抛砖(M2)',
+      field: 'yxdlValue',
+      title: '釉线用电量(KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'lyzppjz',
-      title: '抛晶砖(M2)',
+      field: 'totalDlValue',
+      title: '总用电量(KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: 'sumPG',
-      title: '抛光小计(M2)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'sumMB',
-      title: '磨边砖入库产量(M2)',
+      field: 'stopValue',
+      title: '停窑电量(KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
   footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
+  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
   height: 500,
   stripe: true,
   showFooter: true,
@@ -132,7 +127,9 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 线号
+  // 产品编码
+  productCode: '',
+  // 产品批号
   lineName: '',
 });
 const collect = ref<any>({});
@@ -149,7 +146,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryStorageOutputOfPolishingLineStatistics({
+    queryYLDetailOfElectricityStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -184,7 +181,7 @@ function downloadTemplate() {
     params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     params.searchTime = undefined;
   }
-  excelPathStorageOutputOfPolishingLineStatistics(params).then((data) => {
+  excelPathYLDetailOfElectricityStatistics(params).then((data) => {
     window.open(data);
   });
 }
@@ -215,9 +212,16 @@ onMounted(() => {
         >
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
-        <!-- 线号 -->
+        <!-- 产品编码 -->
         <FormItem
-          :label="$t('productionDaily.productionLine')"
+          :label="$t('productionDaily.productCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.productCode" />
+        </FormItem>
+        <!-- 产品批号 -->
+        <FormItem
+          :label="$t('productionDaily.productLotNumber')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.lineName" />

@@ -286,6 +286,9 @@ onMounted(() => {});
             {{ row.kilnNumber }}
           </Button>
         </template>
+        <template #footerData="{ column }">
+          <span> {{ collect[column.field] }} </span>
+        </template>
       </Grid>
     </Card>
     <!-- endregion -->

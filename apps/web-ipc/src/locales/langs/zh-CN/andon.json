@@ -4,9 +4,13 @@
   "waitingToBeClaimed": "待领取",
   "toBeProcessed": "待处理",
   "completed": "已完成",
+  "judgmentCompleted": "判定完成",
   "workOrderNumber": "工单编号",
   "currentOperation": "当前工序",
   "currentState": "当前状态",
   "jobPosition": "作业位置",
-  "taskCollection": "任务领取"
+  "taskCollection": "任务领取",
+  "signIn": "签到",
+  "handle": "处理",
+  "judge": "问题判定"
 }

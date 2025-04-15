@@ -1,7 +1,11 @@
 // eslint-disable-next-line n/no-extraneous-import
 import carbon from '@iconify/json/json/carbon.json';
 // eslint-disable-next-line n/no-extraneous-import
+import fluentMdl2 from '@iconify/json/json/fluent-mdl2.json';
+// eslint-disable-next-line n/no-extraneous-import
 import iconParkSolid from '@iconify/json/json/icon-park-solid.json';
+// eslint-disable-next-line n/no-extraneous-import
+import materialSymbols from '@iconify/json/json/material-symbols.json';
 // eslint-disable-next-line n/no-extraneous-import
 import mdiLight from '@iconify/json/json/mdi-light.json';
 // eslint-disable-next-line n/no-extraneous-import
@@ -17,4 +21,6 @@ export default function loadIconCollection() {
   addCollection(oui);
   addCollection(carbon);
   addCollection(mdiLight);
+  addCollection(fluentMdl2);
+  addCollection(materialSymbols as any);
 }
