@@ -328,6 +328,14 @@ export async function queryBHZInProductionTime(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getBHZInProductionTime?${qs.stringify(params)}`,
   );
 }
+/**
+ * 玻化砖厂明细表
+ */
+export async function queryBHZMXStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getBHZMXStatistics?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**
@@ -474,6 +482,14 @@ export async function excelPathFLStopHZStatistics(params: any) {
 export async function excelPathBHZInProductionTime(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathBHZInProductionTime?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 玻化砖厂明细表
+ */
+export async function excelPathgetBHZMXStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathgetBHZMXStatistics?${qs.stringify(params)}`,
   );
 }
 /**

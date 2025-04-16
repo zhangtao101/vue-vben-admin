@@ -18,8 +18,6 @@ import {
   RadioGroup,
   Row,
   Select,
-  TabPane,
-  Tabs,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -240,14 +238,8 @@ function operationEventShrinkageChange() {
 }
 // endregion
 // 选中的操作事项
-const theSelectedOperation = ref<any>([]);
-/**
- * 操作事项切换
- * @param key
- */
-function tabsChange(key: any) {
-  theSelectedOperation.value = key;
-}
+const theSelectedOperation = ref<any>('1');
+
 // endregion
 </script>
 
@@ -379,37 +371,32 @@ function tabsChange(key: any) {
     <!--- region 操作事项  -->
     <Row class="mb-4">
       <Col :span="23" class="flex">
-        <span
-          class="border-l-4 border-sky-500 pl-4 text-2xl font-black leading-[2]"
-        >
+        <span class="mr-4 border-l-4 border-sky-500 pl-4 text-2xl font-black">
           {{ $t('productionOperation.operationalMatters') }}
         </span>
-        <Tabs @change="tabsChange" class="w-4/5 pl-8">
-          <TabPane key="1">
-            <template #tab>
-              <MdiHome class="inline-block" />
-              工序操作
-            </template>
-          </TabPane>
-          <TabPane key="2">
-            <template #tab>
-              <MdiHome class="inline-block" />
-              质量检验
-            </template>
-          </TabPane>
-          <TabPane key="3">
-            <template #tab>
-              <MdiHome class="inline-block" />
-              SOP查看
-            </template>
-          </TabPane>
-          <TabPane key="4">
-            <template #tab>
-              <MdiHome class="inline-block" />
-              安灯
-            </template>
-          </TabPane>
-        </Tabs>
+
+        <RadioGroup
+          v-model:value="theSelectedOperation"
+          button-style="solid"
+          class="float-right"
+        >
+          <RadioButton value="1">
+            <MdiHome class="inline-block" />
+            工序操作
+          </RadioButton>
+          <RadioButton value="2">
+            <MdiHome class="inline-block" />
+            质量检验
+          </RadioButton>
+          <RadioButton value="3">
+            <MdiHome class="inline-block" />
+            SOP查看
+          </RadioButton>
+          <RadioButton value="4">
+            <MdiHome class="inline-block" />
+            安灯
+          </RadioButton>
+        </RadioGroup>
       </Col>
       <Col :span="1">
         <MdiChevronDown

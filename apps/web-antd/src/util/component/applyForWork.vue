@@ -213,6 +213,7 @@ function flushRed(row: any) {
   worksheetReportUpdate(params)
     .then(() => {
       message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
+      gridApi.reload();
     })
     .finally(() => {
       row.loading = false;
