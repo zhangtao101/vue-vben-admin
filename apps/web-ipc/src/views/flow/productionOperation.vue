@@ -442,7 +442,7 @@ const theSelectedOperation = ref<any>('1');
         />
       </Col>
     </Row>
-    <Card class="mb-5">
+    <Card class="mb-5 min-h-72">
       <StepExecution />
     </Card>
     <!-- endregion -->

@@ -206,7 +206,7 @@ function submit() {
       editMessage.value.printData = '';
     }
     savePrintTemplate(editMessage.value).then(() => {
-      message.success('操作成功!');
+      message.success($t('common.successfulOperation'));
       close();
       gridApi.reload();
     });

@@ -56,7 +56,7 @@ function query() {
           </template>
           <Unclaimed ref="pendingProcessingRef" :show-type="checkedType" />
         </TabPane>
-        <TabPane key="3">
+        <TabPane key="5">
           <template #tab>
             <MdiHome class="inline-block" />
             <!-- 判定完成 -->

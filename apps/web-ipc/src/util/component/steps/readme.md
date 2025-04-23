@@ -45,3 +45,11 @@
 # processReporting
 
 > 工序报工
+
+# andonCall
+
+> 安灯呼叫
+
+# LlampInstallationRecord
+
+> 安灯记录

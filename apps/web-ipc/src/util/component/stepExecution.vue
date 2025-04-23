@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import AndonCall from '#/util/component/steps/andonCall.vue';
 import DeviceClearing from '#/util/component/steps/deviceClearing.vue';
 import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
 import EquipmentLocationInformation from '#/util/component/steps/equipmentLocationInformation.vue';
 import EquipmentMonitoringInformation from '#/util/component/steps/equipmentMonitoringInformation.vue';
 import EquipmentOperationStatus from '#/util/component/steps/equipmentOperationStatus.vue';
 import FormulaDistribution from '#/util/component/steps/formulaDistribution.vue';
+import LampInstallationRecord from '#/util/component/steps/lampInstallationRecord.vue';
 import MaterialFeeding from '#/util/component/steps/materialFeeding.vue';
 import MaterialFeedingSlitting from '#/util/component/steps/materialFeedingSlitting.vue';
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
@@ -14,10 +16,18 @@ import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 
-const status = ref(12);
+const status = ref(13);
+
+function toggle() {
+  status.value = -1;
+  setTimeout(() => {
+    status.value = 14;
+  });
+}
 </script>
 
 <template>
+  <button @click="toggle">11111</button>
   <!-- 设备清洗 -->
   <EquipmentCleaning v-if="status === 1" />
   <!-- 设备运行状态 -->
@@ -42,6 +52,12 @@ const status = ref(12);
   <DeviceClearing v-if="status === 11" />
   <!-- 工序报工 -->
   <ProcessReporting v-if="status === 12" />
+  <!-- 安灯呼叫 -->
+  <AndonCall v-if="status === 13" />
+  <!-- 安灯记录查询 -->
+  <LampInstallationRecord v-if="status === 14" />
+  <!-- 安灯评价 -->
+  <LampInstallationRecord :state="3" v-if="status === 15" />
 </template>
 
 <style scoped></style>

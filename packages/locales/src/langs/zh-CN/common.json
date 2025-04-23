@@ -44,5 +44,8 @@
   "blockDeletion": "整单删除",
   "erpDocument": "ERP单据",
   "scanTheCodeAndFeedTheMaterial": "扫码上料",
-  "feedingComplete": "投料完成"
+  "feedingComplete": "投料完成",
+  "abnormalFilling": "异常填报",
+  "drafts": "草稿箱",
+  "callOut": "呼叫"
 }

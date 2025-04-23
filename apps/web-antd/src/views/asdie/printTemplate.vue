@@ -134,7 +134,7 @@ const exportJson = () => {
   // message.info(json);
   details.value.printData = JSON.stringify(json);
   savePrintTemplate(details.value).then(() => {
-    message.success('操作成功!');
+    message.success($t('common.successfulOperation'));
     setTimeout(() => {
       window.close();
     }, 1200);

@@ -363,6 +363,12 @@ watch(
     gridApi.reload();
   },
 );
+watch(
+  () => prop.processName,
+  () => {
+    gridApi.reload();
+  },
+);
 onMounted(() => {});
 </script>
 

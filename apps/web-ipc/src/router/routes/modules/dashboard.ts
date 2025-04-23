@@ -105,7 +105,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'andonManagement',
         path: '/andonManagement',
-        component: import('#/views/flow/andon.vue'),
+        component: import('#/views/andon/andon.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.andonManagement'),
@@ -114,10 +114,31 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'andonProblemAssessment',
         path: '/andonProblemAssessment',
-        component: import('#/views/flow/andonProblemAssessment.vue'),
+        component: import('#/views/andon/andonProblemAssessment.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.andonProblemAssessment'),
+        },
+      },
+    ],
+  },
+  {
+    component: BasicLayout,
+    meta: {
+      icon: 'lucide:layout-dashboard',
+      order: -1,
+      title: '报表管理',
+    },
+    name: 'bb',
+    path: '/bb',
+    children: [
+      {
+        name: 'test',
+        path: 'test',
+        component: import('#/views/reportForms/test.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.dispatchOperation'),
         },
       },
     ],

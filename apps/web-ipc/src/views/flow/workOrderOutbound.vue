@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'ant-design-vue/es/form';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, ref } from 'vue';
@@ -10,24 +12,25 @@ import { $t } from '@vben/locales';
 import {
   Button,
   Card,
+  Descriptions,
+  DescriptionsItem,
+  Drawer,
   Form,
   FormItem,
   Input,
+  InputNumber,
   message,
+  Space,
   Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  obtainTheListOfOutgoingWorkOrders,
+  reportToWorkAndLeaveTheStation,
+} from '#/api';
 
 // region 工作站查询信息
-
-// 查询条件
-const queryParams = ref<any>({
-  productionLineId: '',
-  processId: '',
-});
-
-// endregion
 
 // region 作业信息
 const gridOptions: VxeGridProps<any> = {
@@ -41,42 +44,37 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     {
-      field: '1',
+      field: 'worksheetCode',
       title: '工单编号',
       minWidth: 200,
     },
     {
-      field: '2',
+      field: 'productCode',
       title: '产品编码',
       minWidth: 200,
     },
     {
-      field: '3',
+      field: 'productName',
+      title: '产品名称',
+      minWidth: 200,
+    },
+    {
+      field: 'equipName',
       title: '作业资源',
       minWidth: 200,
     },
     {
-      field: '5',
+      field: 'planStartDate',
       title: '实际开始时间',
       minWidth: 200,
     },
     {
-      field: '4',
+      field: 'worksheetPlanNumber',
       title: '计划数量',
       minWidth: 200,
     },
     {
-      field: '4',
-      title: '良品数量',
-      minWidth: 200,
-    },
-    {
-      field: '4',
-      title: '不良数量',
-      minWidth: 200,
-    },
-    {
-      field: '4',
+      field: 'sendStateName',
       title: '工单状态',
       minWidth: 200,
     },
@@ -113,23 +111,24 @@ const gridOptions: VxeGridProps<any> = {
   },
 };
 
-const gridEvents: any = {
-  radioChange: ({ row }) => {
-    message.info(`radioChange: ${row}`);
-  },
-};
+const gridEvents: any = {};
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+// endregion
 
 // region 查询数据
 // 查询参数
-const jobInformationQueryConditions = ref({
-  // 查询时间
-  searchTime: [] as any,
-  // 产品编码
+const queryParams = ref({
+  // 工作中心编号
+  workstationCode: 'GZZ-CX0001',
+  // 模式选择( 1手动  2自动)
+  modelType: '1',
+  // 产品编号
   productCode: '',
-  // 产品批号
-  lineName: '',
+  // 工单号
+  worksheetCode: '',
+  // 工单派发状态
+  sendState: '',
 });
 
 /**
@@ -137,85 +136,131 @@ const jobInformationQueryConditions = ref({
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
 function queryData({ page, pageSize }: any) {
-  return new Promise((resolve, _reject) => {
-    const params: any = { ...jobInformationQueryConditions.value };
-    if (params.searchTime && params.searchTime.length === 2) {
-      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
-      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
-      params.searchTime = undefined;
-    }
-    resolve({
-      total: page * pageSize,
-      items: [{}, {}, {}],
-    });
-    /* queryYXStopDayMXStatistics({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
-    })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
-        collect.value = p;
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-        resolve({
-          total,
-          items: list,
-        });
+  return new Promise((resolve, reject) => {
+    const params: any = { ...queryParams.value };
+    if (params.workstationCode) {
+      obtainTheListOfOutgoingWorkOrders({
+        ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+        pageNum: page, // 当前页码。
+        pageSize, // 每页显示的数据条数。
       })
-      .catch((error) => {
-        reject(error);
-      });*/
+        .then(({ total, list }) => {
+          // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+          resolve({
+            total,
+            items: list,
+          });
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    } else {
+      resolve({
+        total: 0,
+        items: [],
+      });
+    }
   });
-}
-
-/**
- * 重置查询条件
- */
-function reload() {
-  queryParams.value = {};
-  gridApi.reload();
 }
 
 // endregion
 
+// region 下线
+// 下线抽屉是否显示
+const downlineDrawer = ref(false);
+// 是否为完工出站
+const isCompleted = ref(false);
+// 选中行数据
+const editItem = ref<any>({});
+// 编辑的form表单数据
+const formData = ref({
+  qualityNumber: 0,
+  unqualityNumber: 0,
+  personTime: 0,
+  equipTime: 0,
+});
+
+/**
+ * 显示下线抽屉
+ * @param row 当前行数据
+ * @param completed 是否为完工出站
+ */
+function show(row: any, completed: boolean) {
+  isCompleted.value = completed;
+  editItem.value = row;
+  downlineDrawer.value = true;
+}
+
+/**
+ * 关闭下线抽屉
+ */
+function close() {
+  downlineDrawer.value = false;
+  editItem.value = {};
+  formData.value = {
+    qualityNumber: 0,
+    unqualityNumber: 0,
+    personTime: 0,
+    equipTime: 0,
+  };
+}
+
+function valueValidator(_rule: Rule, value: number) {
+  // 检查是否为数字
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return Promise.reject(new Error('该项必须是数字'));
+  }
+  return value >= 0
+    ? Promise.resolve()
+    : Promise.reject(new Error('该项为必填项'));
+}
+
+const formRef = ref();
+function submit() {
+  formRef.value.validate().then(() => {
+    const params = {
+      ...formData.value,
+      opType: isCompleted.value ? 2 : 3,
+      id: editItem.value.id,
+    };
+    reportToWorkAndLeaveTheStation(params).then(() => {
+      message.success($t('common.successfulOperation'));
+      close();
+      gridApi.reload();
+    });
+  });
+}
 // endregion
 </script>
 
 <template>
   <Page id="page">
-    <Card class="mb-5">
-      <!--工作中心 -->
-      <FormItem :label="$t('workOrderEntry.workCenter')">
-        <Input />
-      </FormItem>
-    </Card>
-
-    <!-- region 表格内容 -->
-    <Card class="mb-5">
+    <Card class="mb-4">
       <Form layout="inline" :model="queryParams">
+        <!--工作中心 -->
+        <FormItem :label="$t('workOrderEntry.workCenter')" class="!mb-4 w-full">
+          <Input v-model:value="queryParams.workstationCode" />
+        </FormItem>
         <!--工单编号 -->
         <FormItem :label="$t('workOrderEntry.workOrderNumber')">
-          <Input />
+          <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
-        <!--物料编码 -->
-        <FormItem :label="$t('workOrderEntry.materialCode')">
-          <Input />
-        </FormItem>
-        <!--工单状态 -->
-        <FormItem :label="$t('workOrderEntry.workOrderStatus')">
-          <Input />
+        <!--产品编号 -->
+        <FormItem :label="$t('workOrderEntry.productCode')">
+          <Input v-model:value="queryParams.productCode" />
         </FormItem>
         <FormItem>
           <Button type="primary" @click="gridApi.reload()" class="mr-4">
             {{ $t('common.search') }}
           </Button>
-          <Button @click="reload()">
-            {{ $t('common.reset') }}
-          </Button>
         </FormItem>
       </Form>
+    </Card>
+    <!-- region 表格内容 -->
+    <Card class="mb-5">
       <Grid class="mt-4">
         <template #toolbar-tools> </template>
-        <template #action>
+        <template #action="{ row }">
           <!-- 出站 ="{ row }"-->
           <Tooltip>
             <template #title>{{ $t('workOrderEntry.outbound') }}</template>
@@ -227,12 +272,14 @@ function reload() {
                   class: 'inline-block text-2xl',
                 })
               "
+              @click="show(row, true)"
             />
           </Tooltip>
           <!-- 下线 -->
           <Tooltip>
             <template #title>{{ $t('workOrderEntry.downline') }}</template>
             <Button
+              danger
               type="link"
               :icon="
                 h(IconifyIcon, {
@@ -240,12 +287,130 @@ function reload() {
                   class: 'inline-block text-2xl',
                 })
               "
+              @click="show(row, false)"
             />
           </Tooltip>
         </template>
       </Grid>
     </Card>
     <!-- endregion -->
+
+    <Drawer
+      :title="
+        isCompleted
+          ? $t('workOrderEntry.outbound')
+          : $t('workOrderEntry.downline')
+      "
+      v-model:open="downlineDrawer"
+      placement="right"
+      :width="800"
+      :footer-style="{ textAlign: 'right' }"
+      @close="close"
+    >
+      <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+        {{ $t('workOrderEntry.workOrderInformation') }}
+      </span>
+      <Descriptions bordered :column="2" class="mb-4 mt-4">
+        <!-- 工单编号 -->
+        <DescriptionsItem :label="$t('workOrderEntry.workOrderNumber')">
+          {{ editItem.worksheetCode }}
+        </DescriptionsItem>
+        <!-- 产品名称 -->
+        <DescriptionsItem :label="$t('workOrderEntry.productName')">
+          {{ editItem.productName }}
+        </DescriptionsItem>
+        <!-- 作业资源 -->
+        <DescriptionsItem :label="$t('workOrderEntry.workArea')">
+          {{ editItem.equipName }}
+        </DescriptionsItem>
+        <!-- 计划数量 -->
+        <DescriptionsItem :label="$t('workOrderEntry.plannedQuantity')">
+          {{ editItem.worksheetPlanNumber }}
+        </DescriptionsItem>
+        <!-- 工单状态 -->
+        <DescriptionsItem :label="$t('workOrderEntry.workOrderStatus')">
+          {{ editItem.sendStateName }}
+        </DescriptionsItem>
+      </Descriptions>
+
+      <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+        {{ $t('workOrderEntry.workReportingInformation') }}
+      </span>
+      <Form
+        :model="formData"
+        :label-col="{ span: 8 }"
+        :wrapper-col="{ span: 16 }"
+        autocomplete="off"
+        layout="inline"
+        name="editMessageForm"
+        ref="formRef"
+      >
+        <!-- 良品数 -->
+        <FormItem
+          :label="$t('workOrderEntry.numberOfGoodProducts')"
+          :rules="{
+            required: true,
+            message: '该项为必填项',
+            validator: valueValidator,
+          }"
+          name="qualityNumber"
+          class="mb-4 mt-4 w-[40%]"
+        >
+          <InputNumber v-model:value="formData.qualityNumber" :min="0" />
+        </FormItem>
+        <!-- 不良数 -->
+        <FormItem
+          :label="$t('workOrderEntry.badNumber')"
+          :rules="{
+            required: true,
+            message: '该项为必填项',
+            validator: valueValidator,
+          }"
+          name="unqualityNumber"
+          class="mb-4 mt-4 w-[40%]"
+        >
+          <InputNumber v-model:value="formData.unqualityNumber" :min="0" />
+        </FormItem>
+        <!-- 人时 -->
+        <FormItem
+          :label="$t('workOrderEntry.whenPeopleArePresent')"
+          :rules="{
+            required: true,
+            message: '该项为必填项',
+            validator: valueValidator,
+          }"
+          name="personTime"
+          class="mb-4 mt-4 w-[40%]"
+        >
+          <InputNumber v-model:value="formData.personTime" :min="0" />
+        </FormItem>
+        <!-- 机时 -->
+        <FormItem
+          :label="$t('workOrderEntry.whenTheMachineIsAvailable')"
+          :rules="{
+            required: true,
+            message: '该项为必填项',
+            validator: valueValidator,
+          }"
+          name="equipTime"
+          class="mb-4 mt-4 w-[40%]"
+        >
+          <InputNumber v-model:value="formData.equipTime" :min="0" />
+        </FormItem>
+      </Form>
+      <template #footer>
+        <Space>
+          <!-- 取消 -->
+          <Button @click="close">
+            {{ $t('common.cancel') }}
+          </Button>
+          <!-- 确认 -->
+          <Button type="primary" @click="submit()">
+            {{ $t('common.confirm') }}
+          </Button>
+        </Space>
+      </template>
+    </Drawer>
   </Page>
 </template>
 

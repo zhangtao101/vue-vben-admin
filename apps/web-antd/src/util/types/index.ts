@@ -88,3 +88,20 @@ export const DELAY_STATE = [
     value: '3',
   },
 ];
+/**
+ * 评价状态
+ */
+export const EVALUATION_STATUS = [
+  {
+    label: '非常满意',
+    value: '1',
+  },
+  {
+    label: '满意',
+    value: '2',
+  },
+  {
+    label: '不满意',
+    value: '3',
+  },
+];
