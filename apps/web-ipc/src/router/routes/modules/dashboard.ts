@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'productionOperation',
         path: '/productionOperation',
-        component: import('#/views/flow/productionOperation.vue'),
+        component: () => import('#/views/flow/productionOperation.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.productionOperation'),
@@ -57,7 +57,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'dispatchHomework',
         path: '/dispatchHomework',
-        component: import('#/views/flow/dispatchHomework.vue'),
+        component: () => import('#/views/flow/dispatchHomework.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.dispatchOperation'),
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'workOrderEntry',
         path: '/workOrderEntry',
-        component: import('#/views/flow/workOrderEntry.vue'),
+        component: () => import('#/views/flow/workOrderEntry.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.workOrderInbound'),
@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'workOrderOutbound',
         path: '/workOrderOutbound',
-        component: import('#/views/flow/workOrderOutbound.vue'),
+        component: () => import('#/views/flow/workOrderOutbound.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.workOrderOutbound'),
@@ -84,7 +84,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'qualityInspection',
         path: '/qualityInspection',
-        component: import('#/views/flow/qualityInspection.vue'),
+        component: () => import('#/views/flow/qualityInspection.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.qualityInspection'),
@@ -105,7 +105,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'andonManagement',
         path: '/andonManagement',
-        component: import('#/views/andon/andon.vue'),
+        component: () => import('#/views/andon/andon.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.andonManagement'),
@@ -114,10 +114,19 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'andonProblemAssessment',
         path: '/andonProblemAssessment',
-        component: import('#/views/andon/andonProblemAssessment.vue'),
+        component: () => import('#/views/andon/andonProblemAssessment.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.andonProblemAssessment'),
+        },
+      },
+      {
+        name: 'andengFillingOut',
+        path: '/andengFillingOut',
+        component: () => import('#/views/andon/andengFillingOut.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.andengFillingOut'),
         },
       },
     ],
@@ -135,7 +144,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'test',
         path: 'test',
-        component: import('#/views/reportForms/test.vue'),
+        component: () => import('#/views/reportForms/test.vue'),
         meta: {
           ignoreAccess: true,
           title: $t('menu.dispatchOperation'),

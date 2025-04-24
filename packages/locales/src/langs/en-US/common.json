@@ -28,6 +28,7 @@
   "maintenancePAS": "Maintenance Pas",
   "updatedMaterialLabelDescription": "Updated Material Label Description",
   "view": "View",
+  "more": "More",
   "templateDownload": "Template Download",
   "export": "Export",
   "import": "Import",
@@ -44,5 +45,12 @@
   "blockDeletion": "Block Deletion",
   "erpDocument": "ERP Document",
   "scanTheCodeAndFeedTheMaterial": "Scan The Code And Feed The Material",
-  "feedingComplete": "Feeding Complete"
+  "feedingComplete": "Feeding Complete",
+  "abnormalFilling": "Abnormal Reporting",
+  "drafts": "Draft Box",
+  "callOut": "Call",
+  "toBeProcessed": "To Be Dealt With",
+  "theUserGoesToWork": "The User Goes To Work",
+  "theUserIsOffWork": "The User Is Off Work",
+  "oneClickWork": "One Click Work"
 }

@@ -28,6 +28,7 @@
   "maintenancePAS": "维护PAS",
   "updatedMaterialLabelDescription": "更新物料标签描述",
   "view": "查看",
+  "more": "更多",
   "templateDownload": "模板下载",
   "export": "导出",
   "import": "导入",
@@ -47,5 +48,13 @@
   "feedingComplete": "投料完成",
   "abnormalFilling": "异常填报",
   "drafts": "草稿箱",
-  "callOut": "呼叫"
+  "callOut": "呼叫",
+  "toBeProcessed": "待处理",
+  "theUserGoesToWork": "用户上工",
+  "theUserIsOffWork": "用户下工",
+  "oneClickWork": "一键下工",
+  "startWork": "开工",
+  "completed": "完工",
+  "pause": "暂停",
+  "forcedOffline": "强制下线"
 }

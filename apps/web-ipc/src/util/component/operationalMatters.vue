@@ -1,113 +1,73 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
-import { Button, Popover, Steps } from 'ant-design-vue';
+import { Popover, Steps } from 'ant-design-vue';
 
-// region 操作步骤类型
-// 作业类型列表
-// const jobType = [
-//   {
-//     label: '有序作业',
-//     value: '1',
-//   },
-//   {
-//     label: '离散作业',
-//     value: '2',
-//   },
-// ];
-// 当前选中的作业类型
-const theSelectedJobType = ref('1');
+import { getOpFunctions } from '#/api';
 
-// endregion
+const props = defineProps({
+  // 详情Id
+  detailsId: {
+    type: Number,
+    default: -1,
+  },
+  // 作业类型 1:有序作业 2:离散作业
+  type: {
+    type: Number,
+    default: 1,
+  },
+  // 工单号
+  worksheetCode: {
+    type: String,
+    default: '',
+  },
+});
 
 // region 有序操作步骤
 // 步骤条数据
-const items = [
-  {
-    title: '步骤1',
-    description: '步骤1的描述',
-  },
-  {
-    title: '步骤2',
-    description: '步骤2的描述',
-  },
-  {
-    title: '步骤3',
-    description: '步骤3的描述',
-  },
-  {
-    title: '步骤1',
-    description: '步骤1的描述',
-  },
-  {
-    title: '步骤2',
-    description: '步骤2的描述',
-  },
-  {
-    title: '步骤3',
-    description: '步骤3的描述',
-  },
-  {
-    title: '步骤4',
-    description: '步骤4的描述',
-    disabled: true,
-  },
-  {
-    title: '步骤5',
-    description: '步骤5的描述',
-    disabled: true,
-  },
-];
+const stepBar = ref<any>([]);
 // 当前步骤
 const current = ref(1);
 
 // endregion
 
-// region 离散操作步骤
-const discreteOperationStep = ref([
-  {
-    label: '路线A',
-    value: 1,
-  },
-  {
-    label: '路线b',
-    value: 2,
-  },
-  {
-    label: '路线c',
-    value: 3,
-  },
-  {
-    label: '路线d',
-    value: 4,
-  },
-  {
-    label: '路线A',
-    value: 11,
-  },
-  {
-    label: '路线b',
-    value: 21,
-  },
-  {
-    label: '路线c',
-    value: 31,
-  },
-  {
-    label: '路线d',
-    value: 41,
-  },
-]);
-const checkedDiscreteOperationStep = ref(1);
-
 /**
- * 操作步骤切换
- * @param value
+ * 查询步骤列表
  */
-function discreteOperationStepCChange(value: number) {
-  checkedDiscreteOperationStep.value = value;
+function querySteps() {
+  getOpFunctions({
+    opDetailId: props.detailsId,
+    worksheetCode: props.worksheetCode,
+  }).then((data) => {
+    stepBar.value = [];
+    data.forEach((step: any) => {
+      stepBar.value.push({
+        title: step.functionTypeName,
+        description: step.currentWorksheet
+          ? `当前正在进行工单: ${step.currentWorksheet} 加工`
+          : '当前无工单进行中',
+        id: step.id,
+      });
+    });
+    /**
+     *
+     *   {
+     *     title: '步骤1',
+     *     description: '步骤1的描述',
+     *   },
+     */
+  });
 }
-// endregion
+
+watch(
+  () => props.detailsId,
+  () => {
+    querySteps();
+  },
+);
+onMounted(() => {
+  querySteps();
+});
 </script>
 
 <template>
@@ -117,18 +77,14 @@ function discreteOperationStepCChange(value: number) {
     class="mb-8"
   /> -->
   <div class="overflow-y-auto">
-    <Steps
-      v-model:current="current"
-      :items="items"
-      v-if="theSelectedJobType === '1'"
-    >
+    <Steps v-model:current="current" :items="stepBar" v-if="props.type === 1">
       <template #progressDot="{ prefixCls }">
         <Popover>
           <span :class="`${prefixCls}-icon-dot`"></span>
         </Popover>
       </template>
     </Steps>
-    <div v-else class="whitespace-nowrap">
+    <!--    <div v-else class="whitespace-nowrap">
       <Button
         v-for="item of discreteOperationStep"
         :type="
@@ -141,7 +97,7 @@ function discreteOperationStepCChange(value: number) {
       >
         {{ item.label }}
       </Button>
-    </div>
+    </div>-->
   </div>
 </template>
 

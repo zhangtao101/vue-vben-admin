@@ -12,6 +12,15 @@ export function obtainTheWorkOrderManagementList(params: any) {
   );
 }
 /**
+ * 获取工单列表
+ * @param params 参数
+ */
+export function obtainTheWorkOrderList(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getAllSheetList?${qs.stringify(params)}`,
+  );
+}
+/**
  * 移出
  * @param params 参数
  */
