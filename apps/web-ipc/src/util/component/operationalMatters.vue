@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 
-import { Popover, Steps } from 'ant-design-vue';
+import { Button, Popover, Steps } from 'ant-design-vue';
 
 import { getOpFunctions } from '#/api';
 
@@ -84,20 +84,18 @@ onMounted(() => {
         </Popover>
       </template>
     </Steps>
-    <!--    <div v-else class="whitespace-nowrap">
+    <div v-else>
       <Button
-        v-for="item of discreteOperationStep"
-        :type="
-          item.value !== checkedDiscreteOperationStep ? 'default' : 'primary'
-        "
+        v-for="(item, index) of stepBar"
+        :type="index !== current ? 'default' : 'primary'"
         size="large"
-        class="mr-4 w-32"
-        :key="item.value"
-        @click="discreteOperationStepCChange(item.value)"
+        class="mb-4 mr-4 w-32"
+        :key="item.id"
+        @click="() => (current = index)"
       >
-        {{ item.label }}
+        {{ item.title }}
       </Button>
-    </div>-->
+    </div>
   </div>
 </template>
 

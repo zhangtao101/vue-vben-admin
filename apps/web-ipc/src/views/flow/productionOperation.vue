@@ -699,7 +699,7 @@ onMounted(() => {
     <Card v-if="operationEventShrinkage" class="mb-5">
       <OperationalMatters
         :details-id="theSelectedOperation"
-        :type="ruleType"
+        :type="1"
         :worksheet-code="theCurrentlySelectedWorkOrderNumber"
         v-if="theSelectedOperation && theCurrentlySelectedWorkOrderNumber"
       />
