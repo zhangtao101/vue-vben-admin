@@ -189,7 +189,6 @@ function queryData({ page, pageSize }: any) {
         break;
       }
     }
-    // todo 草稿箱未完成
     ob.then(({ total, list }: any) => {
       // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
       resolve({
