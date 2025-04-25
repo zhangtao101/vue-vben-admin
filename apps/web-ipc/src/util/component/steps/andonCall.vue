@@ -24,7 +24,6 @@ const andonCall = ref();
 function showAndonCall(type: number) {
   andonCallType.value = type;
   showAndon.value = true;
-  // todo 设定 place 手填: 1 呼叫:2 草稿:3
 }
 
 /**

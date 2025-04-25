@@ -35,5 +35,9 @@
   "ordinary": "请输入相关描述",
   "remarks": "备注",
   "detailedDescription": "详细描述",
-  "required": "该项为必填项"
+  "required": "该项为必填项",
+  "drafts": "草稿箱",
+  "error": "该项为必填项",
+  "processingResult": "处理结果",
+  "toBeDetermined": "待判定"
 }

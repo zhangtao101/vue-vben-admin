@@ -6,6 +6,35 @@ import { onMounted, ref } from 'vue';
 import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { equipmentMonitoringQuery } from '#/api';
+
+const props = defineProps({
+  // 工步id
+  functionId: {
+    type: Number,
+    default: 0,
+  },
+  // 工序ID
+  bindingId: {
+    type: Number,
+    default: 0,
+  },
+  // 工单编号
+  worksheetCode: {
+    type: String,
+    default: '',
+  },
+  // 设备编号
+  equipCode: {
+    type: String,
+    default: '',
+  },
+  // 工作中心
+  workstationCode: {
+    type: String,
+    default: '',
+  },
+});
 
 // region 作业信息
 const gridOptions: VxeGridProps<any> = {
@@ -19,37 +48,47 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     {
-      field: '1',
+      field: 'name',
       title: '数据名称',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
-      field: '2',
+      field: 'expression',
       title: '点位信息',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
-      field: '3',
+      field: 'dataTypeName',
+      title: '数据类型',
+      minWidth: 120,
+    },
+    {
+      field: 'standardValue',
       title: '设置值',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
-      field: '4',
+      field: 'value',
       title: '当前值',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
-      field: '5',
-      title: '阈值',
-      minWidth: 200,
+      field: 'maxValue',
+      title: '上限阈值',
+      minWidth: 120,
     },
     {
-      field: '6',
+      field: 'minValue',
+      title: '下限阈值',
+      minWidth: 120,
+    },
+    {
+      field: 'errorDescription',
       title: '报警',
       minWidth: 200,
     },
     {
-      field: '7',
+      field: 'remark',
       title: '备注',
       minWidth: 200,
     },
@@ -102,24 +141,20 @@ const queryParams = ref<any>({
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
 function queryData({ page, pageSize }: any) {
-  return new Promise((resolve, _reject) => {
-    const params: any = { ...queryParams.value };
-    if (params.searchTime && params.searchTime.length === 2) {
-      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
-      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
-      params.searchTime = undefined;
-    }
-    resolve({
-      total: page * pageSize,
-      items: [{}, {}, {}],
-    });
-    /* queryYXStopDayMXStatistics({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+  return new Promise((resolve, reject) => {
+    const params: any = {
+      workstationCode: props.workstationCode,
+      equipCode: props.equipCode,
+      worksheetCode: props.worksheetCode,
+      bindingId: props.bindingId,
+      functionId: props.functionId,
+    };
+    equipmentMonitoringQuery({
+      ...params,
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
-        collect.value = p;
+      .then(({ total, list }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
@@ -128,7 +163,7 @@ function queryData({ page, pageSize }: any) {
       })
       .catch((error) => {
         reject(error);
-      });*/
+      });
   });
 }
 

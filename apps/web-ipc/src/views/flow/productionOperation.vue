@@ -422,6 +422,8 @@ function processShrinkageChange() {
 const processRouteList = ref<any>([]);
 // 当前选中的工艺路线
 const checkedProcess = ref(1);
+// 当前选中的工艺路线ID
+const checkedProcessId = ref(0);
 // 当前选中的工单
 const theCurrentlySelectedWorkOrderNumber = ref('');
 
@@ -440,6 +442,18 @@ function queryProcess(workstationCode: string, worksheetCode: string) {
     checkedProcess.value = processRouteList.value[0].processCode;
     processChange(processRouteList.value[0]);
   });
+}
+
+// 当前工步
+const currentWorkingStep = ref<any>();
+/**
+ * 工艺路线切换
+ * @param val
+ */
+function workStepConversion(val: any) {
+  currentWorkingStep.value = {
+    ...val,
+  };
 }
 // endregion
 
@@ -468,6 +482,7 @@ const ruleType = ref<any>([]);
  */
 function processChange(item: any) {
   checkedProcess.value = item.processCode;
+  checkedProcessId.value = item.id;
   listOfOperationItems.value = item.details;
   theSelectedOperation.value = item.details[0].id;
   ruleType.value = item.details[0].ruleType;
@@ -701,6 +716,7 @@ onMounted(() => {
         :details-id="theSelectedOperation"
         :type="1"
         :worksheet-code="theCurrentlySelectedWorkOrderNumber"
+        @current-change="workStepConversion"
         v-if="theSelectedOperation && theCurrentlySelectedWorkOrderNumber"
       />
     </Card>
@@ -728,7 +744,14 @@ onMounted(() => {
       </Col>
     </Row>
     <Card class="mb-5 min-h-72">
-      <StepExecution />
+      <StepExecution
+        :workstation-code="selectedWorkstation"
+        :equip-code="theSelectedProcessEquipment"
+        :worksheet-code="theCurrentlySelectedWorkOrderNumber"
+        :binding-id="checkedProcessId"
+        :step="currentWorkingStep"
+        v-if="currentWorkingStep"
+      />
     </Card>
     <!-- endregion -->
 

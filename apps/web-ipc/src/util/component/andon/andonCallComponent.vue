@@ -20,17 +20,17 @@ import {
 });
 const params = ref<any>({
   // 工单编号
-  workorder_code: '',
+  workorderCode: '',
   // 设备编号
-  equip_code: '',
+  equipCode: '',
   // 设备名称
-  equip_name: '',
+  equipName: '',
   // 产品名称
   product: '',
   // 物料编号
-  material_code: '',
+  materialCode: '',
   // 呼叫人员
-  create_user: '',
+  createUser: '',
   // 工序
   process: '',
   // 位置
@@ -40,7 +40,7 @@ const params = ref<any>({
   // 任务来源
   source: 1,
   exigency: 1,
-  andon_error: 1,
+  andonErrorType: 1,
 });
 
 // region 紧急程度
@@ -62,15 +62,65 @@ const exceptionType = ref([
 // endregion
 
 // region 暴露方法
+const errors = ref<any>({});
+
+function verification(key?: any) {
+  const requiredParameters = key
+    ? [key]
+    : ['workorderCode', 'product', 'equipCode', 'materialCode'];
+  let isError = false;
+  requiredParameters.forEach((item) => {
+    if (params.value[item]) {
+      errors.value[item] = false;
+    } else {
+      errors.value[item] = true;
+      isError = true;
+    }
+  });
+  return isError;
+}
 
 const getValue = () => {
-  return {
-    ...params.value,
+  return verification()
+    ? false
+    : {
+        ...params.value,
+      };
+};
+
+/**
+ * 重置
+ */
+const reset = () => {
+  params.value = {
+    // 工单编号
+    workorderCode: '',
+    // 设备编号
+    equipCode: '',
+    // 设备名称
+    equipName: '',
+    // 产品名称
+    product: '',
+    // 物料编号
+    materialCode: '',
+    // 呼叫人员
+    createUser: '',
+    // 工序
+    process: '',
+    // 位置
+    location: '',
+    // 描述
+    description: '',
+    // 任务来源
+    source: 1,
+    exigency: 1,
+    andonErrorType: 1,
   };
 };
 
 defineExpose({
   getValue,
+  reset,
 });
 
 // endregion
@@ -82,12 +132,16 @@ defineExpose({
     <DescriptionsItem :label="$t('andon.workOrderNumber')">
       <template v-if="type === 1">
         <Input
-          v-model:value="params.workorder_code"
+          v-model:value="params.workorderCode"
           :placeholder="$t('andon.inputPrompt')"
+          @change="verification('workorderCode')"
         />
+        <span class="mt-1 block text-red-500">
+          {{ errors.workorderCode ? $t('andon.error') : ' ' }}
+        </span>
       </template>
       <template v-else>
-        {{ params.workorder_code }}
+        {{ params.workorderCode }}
       </template>
     </DescriptionsItem>
     <!-- 产品名称 -->
@@ -96,7 +150,11 @@ defineExpose({
         <Input
           v-model:value="params.product"
           :placeholder="$t('andon.inputPrompt')"
+          @change="verification('product')"
         />
+        <span class="mt-1 block text-red-500">
+          {{ errors.product ? $t('andon.error') : ' ' }}
+        </span>
       </template>
       <template v-else>{{ params.product }}</template>
     </DescriptionsItem>
@@ -104,21 +162,29 @@ defineExpose({
     <DescriptionsItem :label="$t('andon.equipmentNumber')">
       <template v-if="type === 1">
         <Input
-          v-model:value="params.equip_code"
+          v-model:value="params.equipCode"
           :placeholder="$t('andon.inputPrompt')"
+          @change="verification('equipCode')"
         />
+        <span class="mt-1 block text-red-500">
+          {{ errors.equipCode ? $t('andon.error') : ' ' }}
+        </span>
       </template>
-      <template v-else>{{ params.equip_code }}</template>
+      <template v-else>{{ params.equipCode }}</template>
     </DescriptionsItem>
     <!-- 物料编号 -->
     <DescriptionsItem :label="$t('andon.materialNumber')">
       <template v-if="type === 1">
         <Input
-          v-model:value="params.material_code"
+          v-model:value="params.materialCode"
           :placeholder="$t('andon.inputPrompt')"
+          @change="verification('materialCode')"
         />
+        <span class="mt-1 block text-red-500">
+          {{ errors.materialCode ? $t('andon.error') : ' ' }}
+        </span>
       </template>
-      <template v-else>{{ params.material_code }}</template>
+      <template v-else>{{ params.materialCode }}</template>
     </DescriptionsItem>
     <!-- 紧急程度 -->
     <DescriptionsItem :label="$t('andon.degreeOfUrgency')">
@@ -127,10 +193,6 @@ defineExpose({
         :options="degreeOfUrgency"
         :disabled="type === 2"
       />
-    </DescriptionsItem>
-    <!-- 呼叫人员 -->
-    <DescriptionsItem :label="$t('andon.caller')">
-      {{ params.create_user }}
     </DescriptionsItem>
     <!-- 位置 -->
     <DescriptionsItem :label="$t('andon.position')">
@@ -145,14 +207,14 @@ defineExpose({
     <!-- 异常类型 -->
     <DescriptionsItem :label="$t('andon.exceptionType')">
       <Select
-        v-model:value="params.andon_error"
+        v-model:value="params.andonErrorType"
         :options="exceptionType"
         :disabled="type === 2"
         class="min-w-32"
       />
     </DescriptionsItem>
     <!-- 描述 -->
-    <DescriptionsItem :label="$t('andon.description')" v-if="type === 2">
+    <DescriptionsItem :label="$t('andon.description')">
       <Textarea v-model:value="params.description" :rows="4" />
     </DescriptionsItem>
   </Descriptions>

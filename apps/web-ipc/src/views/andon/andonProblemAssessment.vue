@@ -51,10 +51,14 @@ function query() {
         <TabPane key="4">
           <template #tab>
             <MdiHome class="inline-block" />
-            <!-- 待处理 -->
-            {{ $t('andon.toBeProcessed') }}
+            <!-- 待判定 -->
+            {{ $t('andon.toBeDetermined') }}
           </template>
-          <Unclaimed ref="pendingProcessingRef" :show-type="checkedType" />
+          <Unclaimed
+            ref="pendingProcessingRef"
+            :show-type="checkedType"
+            v-if="checkedType === '4'"
+          />
         </TabPane>
         <TabPane key="5">
           <template #tab>
@@ -62,7 +66,11 @@ function query() {
             <!-- 判定完成 -->
             {{ $t('andon.judgmentCompleted') }}
           </template>
-          <Unclaimed ref="completedRef" :show-type="checkedType" />
+          <Unclaimed
+            ref="completedRef"
+            :show-type="checkedType"
+            v-if="checkedType === '5'"
+          />
         </TabPane>
       </Tabs>
     </Card>

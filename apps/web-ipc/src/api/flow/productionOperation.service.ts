@@ -4,7 +4,6 @@ import qs from 'qs';
 import { requestClient } from '#/api/request';
 /**
  * 工作站列表获取
- * @param params 参数
  */
 export function workstationListAcquisition() {
   return requestClient.get(
@@ -89,5 +88,33 @@ export function getSheetProces(params: any) {
 export function getOpFunctions(params: any) {
   return requestClient.get(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getOpFunctions?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 资源检核状态查询
+ * @param params 参数
+ */
+export function queryOfResourceVerificationStatus(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listCheckInfo?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 设备监控查询
+ * @param params 参数
+ */
+export function equipmentMonitoringQuery(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listParam?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 设备清洗信息
+ * @param params 参数
+ */
+export function equipmentCleaningInformation(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipClean?${qs.stringify(params)}`,
   );
 }

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 import AndonCall from '#/util/component/steps/andonCall.vue';
 import DeviceClearing from '#/util/component/steps/deviceClearing.vue';
 import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
@@ -16,48 +14,173 @@ import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 
-const status = ref(13);
-
-function toggle() {
-  status.value = -1;
-  setTimeout(() => {
-    status.value = 14;
-  });
-}
+defineProps({
+  // 工步详情
+  step: {
+    type: Object,
+    default: () => ({}),
+  },
+  // 工序ID
+  bindingId: {
+    type: Number,
+    default: 0,
+  },
+  // 工单编号
+  worksheetCode: {
+    type: String,
+    default: '',
+  },
+  // 设备编号
+  equipCode: {
+    type: String,
+    default: '',
+  },
+  // 工作中心
+  workstationCode: {
+    type: String,
+    default: '',
+  },
+});
 </script>
 
 <template>
-  <button @click="toggle">11111</button>
-  <!-- 设备清洗 -->
-  <EquipmentCleaning v-if="status === 1" />
-  <!-- 设备运行状态 -->
-  <EquipmentOperationStatus v-if="status === 2" />
-  <!-- 设备点位信息 -->
-  <EquipmentLocationInformation v-if="status === 3" />
-  <!-- 设备监控信息 -->
-  <EquipmentMonitoringInformation v-if="status === 4" />
   <!-- 资源检验 -->
-  <ResourceInspection v-if="status === 5" />
+  <ResourceInspection
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 1"
+  />
+  <!-- 设备清洗 -->
+  <EquipmentCleaning
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 2"
+  />
   <!-- 工序进站 -->
-  <ProcessEntryStation v-if="status === 6" />
-  <!-- 物料投料 -->
-  <MaterialFeeding v-if="status === 7" />
-  <!-- 工序出站 -->
-  <ProcessOutbound v-if="status === 8" />
+  <ProcessEntryStation
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 3"
+  />
   <!-- 配方下发 -->
-  <FormulaDistribution v-if="status === 9" />
-  <!-- 物料投料-分切 -->
-  <MaterialFeedingSlitting v-if="status === 10" />
+  <FormulaDistribution
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 4"
+  />
+  <!-- 物料投料 -->
+  <MaterialFeeding
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 5"
+  />
   <!-- 设备清空 -->
-  <DeviceClearing v-if="status === 11" />
+  <DeviceClearing
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 6"
+  />
+  <!-- 工序出站 -->
+  <ProcessOutbound
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 7"
+  />
   <!-- 工序报工 -->
-  <ProcessReporting v-if="status === 12" />
+  <ProcessReporting
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 9"
+  />
+  <!-- 设备监控信息 -->
+  <EquipmentMonitoringInformation
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 10"
+  />
+
+  <!-- 设备运行状态 -->
+  <EquipmentOperationStatus
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 999"
+  />
+  <!-- 设备点位信息 -->
+  <EquipmentLocationInformation
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 998"
+  />
+  <!-- 物料投料-分切 -->
+  <MaterialFeedingSlitting
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 9996"
+  />
   <!-- 安灯呼叫 -->
-  <AndonCall v-if="status === 13" />
+  <AndonCall
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 995"
+  />
   <!-- 安灯记录查询 -->
-  <LampInstallationRecord v-if="status === 14" />
+  <LampInstallationRecord
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 994"
+  />
   <!-- 安灯评价 -->
-  <LampInstallationRecord :state="3" v-if="status === 15" />
+  <LampInstallationRecord
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :state="3"
+    v-if="step.type === 993"
+  />
 </template>
 
 <style scoped></style>

@@ -23,11 +23,13 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['currentChange']);
+
 // region 有序操作步骤
 // 步骤条数据
 const stepBar = ref<any>([]);
 // 当前步骤
-const current = ref(1);
+const current = ref(-1);
 
 // endregion
 
@@ -43,19 +45,14 @@ function querySteps() {
     data.forEach((step: any) => {
       stepBar.value.push({
         title: step.functionTypeName,
+        functionType: step.functionType,
         description: step.currentWorksheet
           ? `当前正在进行工单: ${step.currentWorksheet} 加工`
           : '当前无工单进行中',
         id: step.id,
       });
     });
-    /**
-     *
-     *   {
-     *     title: '步骤1',
-     *     description: '步骤1的描述',
-     *   },
-     */
+    current.value = 2;
   });
 }
 
@@ -65,6 +62,13 @@ watch(
     querySteps();
   },
 );
+watch(current, () => {
+  emit('currentChange', {
+    id: stepBar.value[current.value].id,
+    type: stepBar.value[current.value].functionType,
+  });
+});
+
 onMounted(() => {
   querySteps();
 });

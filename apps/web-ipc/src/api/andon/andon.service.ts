@@ -8,7 +8,7 @@ import { requestClient } from '#/api/request';
  * @param params
  */
 export async function handAddition(params: any) {
-  return requestClient.get<any>(
+  return requestClient.post<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/insert`,
     params,
   );
@@ -18,7 +18,7 @@ export async function handAddition(params: any) {
  * @param params
  */
 export async function onLightCall(params: any) {
-  return requestClient.get<any>(
+  return requestClient.post<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/insertself`,
     params,
   );
@@ -33,6 +33,16 @@ export async function lampInstallationRecordQuery(params: any) {
   );
 }
 /**
+ * 草稿箱记录查询
+ * @param params
+ */
+export async function draftBoxRecordQuery(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/listByDraft?${qs.stringify(params)}`,
+  );
+}
+
+/**
  * 安灯评价列表查询
  * @param params
  */
@@ -42,7 +52,7 @@ export async function evaluationListQuery(params: any) {
   );
 }
 /**
- * 查询安灯待处理列表
+ * 问题待判定页面显示数据
  * @param params
  */
 export async function queryTheListOfAndonPendingProcessing(params: any) {
@@ -83,7 +93,7 @@ export async function fetchAndonPendingList(params: any) {
  */
 export async function queryAndonCompletedList(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/searchFinish?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/handle/searchFinish?${qs.stringify(params)}`,
   );
 }
 /**
@@ -144,5 +154,26 @@ export async function taskCollection(id: any) {
   return requestClient.put<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/handle/update/${id}`,
     {},
+  );
+}
+
+/**
+ * 异常填报
+ * @param params
+ */
+export async function abnormalFilling(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/handle/abnormal`,
+    params,
+  );
+}
+/**
+ * 问题处理
+ * @param params
+ */
+export async function problemHandling(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/handle/solve`,
+    params,
   );
 }

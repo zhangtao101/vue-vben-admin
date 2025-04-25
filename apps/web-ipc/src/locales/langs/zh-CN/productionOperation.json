@@ -20,7 +20,7 @@
   "emptyTimeout": "清空超时",
   "auto": "自动",
   "manualOperation": "手动",
-  "manualRecleaning": "手动再次清洗",
+  "manualRecleaning": "手动开始清洗",
   "manualEndJob": "手动结束作业",
   "yes": "是",
   "no": "否",
@@ -55,5 +55,8 @@
   "currentDeviceFeedingStatus": "当前设备投料状态",
   "endOfFeeding": "投料结束",
   "cumulativeQuantity": "累计数量",
-  "accumulatedWeight": "累计重量"
+  "accumulatedWeight": "累计重量",
+  "equipmentPlugging": "设备堵料",
+  "cloggingCause": "堵料原因",
+  "cleaningSettingDuration": "清洁设置时长"
 }

@@ -11,7 +11,6 @@ import {
   Drawer,
   Form,
   FormItem,
-  Input,
   message,
   Modal,
   Progress,
@@ -54,12 +53,12 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     {
-      field: 'andon_code',
+      field: 'andonCode',
       title: '任务编号',
       minWidth: 120,
     },
     {
-      field: 'workorder_code',
+      field: 'workorderCode',
       title: '工单编号',
       minWidth: 120,
     },
@@ -69,7 +68,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 120,
     },
     {
-      field: 'equip_code',
+      field: 'equipCode',
       title: '关联设备',
       minWidth: 120,
     },
@@ -86,7 +85,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'level' },
     },
     {
-      field: 'level_reason',
+      field: 'levelReason',
       title: '升级类型',
       minWidth: 120,
     },
@@ -97,7 +96,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'processingProgress' },
     },
     {
-      field: 'andon_error_type',
+      field: 'andonErrorType',
       title: '异常类别',
       minWidth: 120,
       slots: { default: 'error' },
@@ -204,9 +203,11 @@ const errorColums = ['生产异常', '质量异常', '设备异常', '物料异�
  */
 const scheduleColumns = [
   '问题判定待签到',
+  '问题处理签到',
   '问题判定处理中',
   '问题待领取',
   '问题已领取',
+  '问题超时',
   '问题处理待签到',
   '问题处理处理中',
   '完成',
@@ -216,9 +217,11 @@ const scheduleColumns = [
  */
 const scheduleColors = [
   '#FFA07A',
+  '#FFA07A',
   '#FFFF00',
   '#FFA07A',
   '#00BFFF',
+  '#FFA07A',
   '#FFA07A',
   '#FFFF00',
   '#32CD32',
@@ -245,10 +248,6 @@ function getPercent(schedule: number) {
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
     // lampInstallationRecordQuery
-    resolve({
-      total: page * pageSize,
-      items: [{ schedule: 1 }, { schedule: 2 }],
-    });
     const params = {
       pageNum: page,
       pageSize,
@@ -256,12 +255,20 @@ function queryData({ page, pageSize }: any) {
       state: props.state === 3 ? 3 : undefined,
     };
     if (props.state === 3) {
-      evaluationListQuery(params).then((_data: any) => {
+      evaluationListQuery(params).then(({ total, list }: any) => {
         // console.log(data);
+        resolve({
+          total,
+          items: list,
+        });
       });
     } else {
-      lampInstallationRecordQuery(params).then((_data: any) => {
+      lampInstallationRecordQuery(params).then(({ total, list }: any) => {
         // console.log(data);
+        resolve({
+          total,
+          items: list,
+        });
       });
     }
   });
@@ -272,19 +279,17 @@ function queryData({ page, pageSize }: any) {
  * @param id
  */
 function queryRemarksFun(id: string) {
-  queryRemark(id).then((_remarks: any) => {
+  queryRemark(id).then((data: any) => {
     // console.log(remarks);
-  });
-
-  Modal.info({
-    title: 'This is a notification message',
-    content: h('div', {}, [
-      h('p', 'some messages...some messages...'),
-      h('p', 'some messages...some messages...'),
-    ]),
-    onOk() {
-      // console.log('ok');
-    },
+    const arr = data.split(';');
+    const pArr: any[] = [];
+    arr.forEach((item: any) => {
+      pArr.push(h('p', item));
+    });
+    Modal.info({
+      title: '处理结果查看',
+      content: h('div', {}, pArr),
+    });
   });
 }
 // endregion
@@ -295,7 +300,9 @@ const showViewDrawer = ref(false);
 // 当前评价的安灯记录
 const editItem = ref<any>({});
 // form表单数据
-const formState = ref<any>({});
+const formState = ref<any>({
+  degree: 1,
+});
 // form表单
 const formRef = ref();
 
@@ -311,6 +318,9 @@ function showViewDrawerFun(row: any) {
  */
 function close() {
   showViewDrawer.value = false;
+  formState.value = {
+    degree: 1,
+  };
 }
 
 /**
@@ -320,7 +330,7 @@ function submit() {
   formRef.value.validate().then(() => {
     const params = {
       ...formState.value,
-      andon_id: editItem.value.id,
+      andonId: editItem.value.id,
     };
     anDengSEvaluation(params).then(() => {
       message.success($t('common.successfulOperation'));
@@ -399,7 +409,8 @@ function getPlaceholder() {
     :width="600"
     class="custom-class"
     placement="right"
-    title="查看详情"
+    title="评价"
+    @close="close"
   >
     <Form
       ref="formRef"
@@ -408,15 +419,6 @@ function getPlaceholder() {
       :wrapper-col="{ span: 16 }"
       autocomplete="off"
     >
-      <!-- 评价人员 -->
-      <FormItem
-        :label="$t('andon.evaluator')"
-        :rules="[{ required: true, message: $t('andon.required') }]"
-        style="margin-bottom: 1em"
-        name="evaluatePeople"
-      >
-        <Input v-model:value="formState.evaluatePeople" />
-      </FormItem>
       <!-- 评价结论 -->
       <FormItem
         :label="$t('andon.evaluationConclusion')"
