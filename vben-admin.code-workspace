@@ -1,24 +1,24 @@
 {
   "folders": [
     {
-      "name": "@vben/web-antd",
-      "path": "apps/web-antd",
+      "name": "@vben/data-management-platform",
+      "path": "apps/data-management-platform",
     },
     {
-      "name": "@vben/web-data-management-platform",
-      "path": "apps/web-data-management-platform",
+      "name": "@vben/energy-management",
+      "path": "apps/energy-management",
     },
     {
-      "name": "@vben/web-energy-management",
-      "path": "apps/web-energy-management",
+      "name": "@vben/ipc",
+      "path": "apps/ipc",
     },
     {
-      "name": "@vben/web-ipc",
-      "path": "apps/web-ipc",
+      "name": "@vben/mes",
+      "path": "apps/mes",
     },
     {
-      "name": "@vben/web-ai",
-      "path": "apps/web-my-ai",
+      "name": "@vben/my-ai",
+      "path": "apps/my-ai",
     },
     {
       "name": "@vben/commitlint-config",

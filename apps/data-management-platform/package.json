@@ -1,5 +1,5 @@
 {
-  "name": "@vben/web-ai",
+  "name": "@vben/data-management-platform",
   "version": "5.5.2",
   "homepage": "https://vben.pro",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
@@ -21,6 +21,8 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@univerjs/presets": "^0.6.9",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
@@ -38,6 +40,7 @@
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
+    "maotu": "0.6.5-beta1",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
