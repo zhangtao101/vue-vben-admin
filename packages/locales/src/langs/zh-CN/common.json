@@ -56,5 +56,11 @@
   "startWork": "开工",
   "completed": "完工",
   "pause": "暂停",
-  "forcedOffline": "强制下线"
+  "forcedOffline": "强制下线",
+  "collect": "领取",
+  "start": "开始",
+  "continue": "继续",
+  "toggle": "切换",
+  "taskCompleted": "任务完成",
+  "taskSuspended": "任务暂存"
 }

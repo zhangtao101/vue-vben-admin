@@ -80,8 +80,9 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 4"
   />
-  <!-- 物料投料 -->
-  <MaterialFeeding
+
+  <!-- 物料投料-分切 -->
+  <MaterialFeedingSlitting
     :workstation-code="workstationCode"
     :equip-code="equipCode"
     :worksheet-code="worksheetCode"
@@ -114,7 +115,7 @@ defineProps({
     :worksheet-code="worksheetCode"
     :binding-id="bindingId"
     :function-id="step.id"
-    v-if="step.type === 9"
+    v-if="step.type === 8"
   />
   <!-- 设备监控信息 -->
   <EquipmentMonitoringInformation
@@ -123,9 +124,18 @@ defineProps({
     :worksheet-code="worksheetCode"
     :binding-id="bindingId"
     :function-id="step.id"
-    v-if="step.type === 10"
+    v-if="step.type === 9"
   />
 
+  <!-- 物料投料 -->
+  <MaterialFeeding
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 10"
+  />
   <!-- 设备运行状态 -->
   <EquipmentOperationStatus
     :workstation-code="workstationCode"
@@ -133,25 +143,7 @@ defineProps({
     :worksheet-code="worksheetCode"
     :binding-id="bindingId"
     :function-id="step.id"
-    v-if="step.type === 999"
-  />
-  <!-- 设备点位信息 -->
-  <EquipmentLocationInformation
-    :workstation-code="workstationCode"
-    :equip-code="equipCode"
-    :worksheet-code="worksheetCode"
-    :binding-id="bindingId"
-    :function-id="step.id"
-    v-if="step.type === 998"
-  />
-  <!-- 物料投料-分切 -->
-  <MaterialFeedingSlitting
-    :workstation-code="workstationCode"
-    :equip-code="equipCode"
-    :worksheet-code="worksheetCode"
-    :binding-id="bindingId"
-    :function-id="step.id"
-    v-if="step.type === 9996"
+    v-if="step.type === 11"
   />
   <!-- 安灯呼叫 -->
   <AndonCall
@@ -160,7 +152,7 @@ defineProps({
     :worksheet-code="worksheetCode"
     :binding-id="bindingId"
     :function-id="step.id"
-    v-if="step.type === 995"
+    v-if="step.type === 12"
   />
   <!-- 安灯记录查询 -->
   <LampInstallationRecord
@@ -169,7 +161,7 @@ defineProps({
     :worksheet-code="worksheetCode"
     :binding-id="bindingId"
     :function-id="step.id"
-    v-if="step.type === 994"
+    v-if="step.type === 13"
   />
   <!-- 安灯评价 -->
   <LampInstallationRecord
@@ -179,7 +171,17 @@ defineProps({
     :binding-id="bindingId"
     :function-id="step.id"
     :state="3"
-    v-if="step.type === 993"
+    v-if="step.type === 14"
+  />
+
+  <!-- 设备点位信息 -->
+  <EquipmentLocationInformation
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 999"
   />
 </template>
 

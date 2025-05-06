@@ -482,11 +482,26 @@ const ruleType = ref<any>([]);
  */
 function processChange(item: any) {
   checkedProcess.value = item.processCode;
-  checkedProcessId.value = item.id;
+  checkedProcessId.value = item.bindingId;
   listOfOperationItems.value = item.details;
   theSelectedOperation.value = item.details[0].id;
   ruleType.value = item.details[0].ruleType;
 }
+
+// endregion
+
+// region 工步执行
+// region 收缩
+// 工步执行是否收缩
+const workStepExecutionContraction = ref(true);
+
+/**
+ * 作业信息收缩展开
+ */
+function workStepExecutionContractionChange() {
+  workStepExecutionContraction.value = !workStepExecutionContraction.value;
+}
+// endregion
 
 // endregion
 
@@ -733,17 +748,17 @@ onMounted(() => {
       <Col :span="1" :offset="19">
         <MdiChevronDown
           class="float-right inline-block cursor-pointer text-2xl"
-          v-if="operationEventShrinkage"
-          @click="operationEventShrinkageChange"
+          v-if="workStepExecutionContraction"
+          @click="workStepExecutionContractionChange"
         />
         <MdiChevronUp
           class="float-right inline-block cursor-pointer text-2xl"
           v-else
-          @click="operationEventShrinkageChange"
+          @click="workStepExecutionContractionChange"
         />
       </Col>
     </Row>
-    <Card class="mb-5 min-h-72">
+    <Card class="mb-5 min-h-72" v-if="workStepExecutionContraction">
       <StepExecution
         :workstation-code="selectedWorkstation"
         :equip-code="theSelectedProcessEquipment"

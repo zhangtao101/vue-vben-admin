@@ -22,8 +22,9 @@ const props = defineProps({
 // 查询条件
 
 const queryParams = ref<any>({
-  productionLineId: '',
-  processId: '',
+  planCode: '',
+  workSheetCode: '',
+  productName: '',
 });
 
 // endregion
@@ -126,15 +127,6 @@ const gridEvents: any = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // region 查询数据
-// 查询参数
-const jobInformationQueryConditions = ref({
-  // 查询时间
-  searchTime: [] as any,
-  // 产品编码
-  productCode: '',
-  // 产品批号
-  lineName: '',
-});
 
 /**
  * 查询数据
@@ -142,7 +134,7 @@ const jobInformationQueryConditions = ref({
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
-    const params: any = { ...jobInformationQueryConditions.value };
+    const params: any = { ...queryParams.value };
     if (params.searchTime && params.searchTime.length === 2) {
       params.startTime = params.searchTime[0].format('YYYY-MM-DD');
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
@@ -219,15 +211,15 @@ function completed() {
     <Form layout="inline" :model="queryParams">
       <!--计划编号 -->
       <FormItem :label="$t('dispatchHomework.planNumber')">
-        <Input />
+        <Input v-model:value="queryParams.planCode" />
       </FormItem>
       <!--工单编码 -->
       <FormItem :label="$t('dispatchHomework.workOrderCoding')">
-        <Input />
+        <Input v-model:value="queryParams.workSheetCode" />
       </FormItem>
       <!--产品名称 -->
       <FormItem :label="$t('dispatchHomework.productName')">
-        <Input />
+        <Input v-model:value="queryParams.productName" />
       </FormItem>
       <FormItem>
         <Button type="primary" @click="gridApi.reload()" class="mr-4">

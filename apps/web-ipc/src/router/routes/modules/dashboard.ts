@@ -136,7 +136,38 @@ const routes: RouteRecordRaw[] = [
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
-      title: '报表管理',
+      title: $t('menu.poorHandling'),
+    },
+    name: 'poorHandling',
+    path: '/poorHandling',
+    children: [
+      {
+        name: 'badJudgment',
+        path: 'badJudgment',
+        component: () => import('#/views/poorHandling/badJudgment.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.badJudgment'),
+        },
+      },
+      {
+        name: 'rework',
+        path: 'rework/:id',
+        component: () => import('#/views/poorHandling/rework.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.rework'),
+          hideInMenu: true,
+        },
+      },
+    ],
+  },
+  {
+    component: BasicLayout,
+    meta: {
+      icon: 'lucide:layout-dashboard',
+      order: -1,
+      title: $t('menu.reportManagement'),
     },
     name: 'bb',
     path: '/bb',

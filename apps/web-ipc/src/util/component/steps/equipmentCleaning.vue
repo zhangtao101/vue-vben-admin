@@ -3,9 +3,13 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, Spin } from 'ant-design-vue';
+import { Button, message, Spin } from 'ant-design-vue';
 
-import { equipmentCleaningInformation } from '#/api';
+import {
+  equipmentCleaningInformation,
+  manualCleaningOfTheEquipment,
+  manuallyFinishTheCleaning,
+} from '#/api';
 
 const props = defineProps({
   // 工步id
@@ -46,7 +50,7 @@ function getLabelClass() {
  * 获取值的class
  */
 function getValueClass() {
-  return 'inline-block w-24 border p-2 text-center';
+  return 'inline-block w-48 border p-2 text-center';
 }
 
 /**
@@ -75,6 +79,28 @@ function queryData() {
     .finally(() => {
       spinning.value = false;
     });
+}
+
+/**
+ * 提交
+ * @param bol 是否为手动清空
+ */
+function submit(bol: boolean) {
+  const params = {
+    workstationCode: props.workstationCode,
+    equipCode: props.equipCode,
+    worksheetCode: props.worksheetCode,
+    bindingId: props.bindingId,
+    functionId: props.functionId,
+    nextTemplateCode: details.value.nextTemplateCode,
+  };
+  const ob = bol
+    ? manualCleaningOfTheEquipment(params)
+    : manuallyFinishTheCleaning(params);
+  ob.then(() => {
+    message.success($t('common.successfulOperation'));
+    queryData();
+  });
 }
 
 onMounted(() => {
@@ -129,7 +155,9 @@ onMounted(() => {
         <span :class="getLabelClass()">
           {{ $t('productionOperation.cleaningSettingDuration') }}
         </span>
-        <span :class="getValueClass()"> {{ details.setMinute || 0 }}分钟 </span>
+        <span :class="getValueClass()">
+          {{ details.cleanMinute || 0 }}分钟
+        </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
         <!-- 清洁超时 -->
@@ -140,13 +168,26 @@ onMounted(() => {
           {{ $t('productionOperation.no') }}
         </span>
       </div>
-      <div
-        class="float-right mb-4 mr-8 inline-block"
-        v-if="details.overTimeFlag === 1"
-      >
-        <!-- 超时时才会出现 -->
-        <Button type="primary" size="large" class="mr-4">手动再次清洁</Button>
-        <Button type="primary" size="large" danger>手动结束作业</Button>
+      <div class="float-right mb-4 mr-8 inline-block">
+        <!-- 超时时才会出现  v-if="details.overTimeFlag === 1" -->
+        <Button
+          type="primary"
+          size="large"
+          class="mr-4"
+          @click="submit(true)"
+          :disabled="[1, 2, 3].includes(details.cleanlinessFlag)"
+        >
+          {{ $t('productionOperation.manualRecleaning') }}
+        </Button>
+        <Button
+          type="primary"
+          size="large"
+          danger
+          @click="submit(false)"
+          :disabled="![1, 2, 3].includes(details.cleanlinessFlag)"
+        >
+          {{ $t('productionOperation.manualEndJob') }}
+        </Button>
       </div>
     </div>
   </Spin>

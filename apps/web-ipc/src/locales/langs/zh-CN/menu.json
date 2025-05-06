@@ -7,5 +7,9 @@
   "qualityInspection": "质量检验",
   "workFlow": "作业流程",
   "andonProblemAssessment": "问题判定",
-  "andengFillingOut": "安灯填报"
+  "andengFillingOut": "安灯填报",
+  "badJudgment": "不良处理",
+  "rework": "不良返工",
+  "poorHandling": "不良处理",
+  "reportManagement": "报表管理"
 }

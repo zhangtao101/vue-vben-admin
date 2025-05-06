@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
@@ -12,25 +12,47 @@ import {
   Textarea,
 } from 'ant-design-vue';
 
-/* const props = */ defineProps({
+const props = defineProps({
+  // 工步id
+  functionId: {
+    type: Number,
+    default: 0,
+  },
+  // 工序ID
+  bindingId: {
+    type: Number,
+    default: 0,
+  },
+  // 工单编号
+  worksheetCode: {
+    type: String,
+    default: '',
+  },
+  // 设备编号
+  equipCode: {
+    type: String,
+    default: '',
+  },
+  // 工作中心
+  workstationCode: {
+    type: String,
+    default: '',
+  },
   type: {
     type: Number,
     default: 1,
   },
 });
+
 const params = ref<any>({
   // 工单编号
   workorderCode: '',
   // 设备编号
   equipCode: '',
-  // 设备名称
-  equipName: '',
   // 产品名称
   product: '',
   // 物料编号
   materialCode: '',
-  // 呼叫人员
-  createUser: '',
   // 工序
   process: '',
   // 位置
@@ -94,17 +116,13 @@ const getValue = () => {
 const reset = () => {
   params.value = {
     // 工单编号
-    workorderCode: '',
+    workorderCode: props.worksheetCode,
     // 设备编号
-    equipCode: '',
-    // 设备名称
-    equipName: '',
+    equipCode: props.equipCode,
     // 产品名称
     product: '',
     // 物料编号
     materialCode: '',
-    // 呼叫人员
-    createUser: '',
     // 工序
     process: '',
     // 位置
@@ -124,6 +142,15 @@ defineExpose({
 });
 
 // endregion
+
+onMounted(() => {
+  if (props.worksheetCode) {
+    params.value.workorderCode = props.worksheetCode;
+  }
+  if (props.equipCode) {
+    params.value.equipCode = props.equipCode;
+  }
+});
 </script>
 
 <template>
@@ -144,20 +171,6 @@ defineExpose({
         {{ params.workorderCode }}
       </template>
     </DescriptionsItem>
-    <!-- 产品名称 -->
-    <DescriptionsItem :label="$t('andon.productName')">
-      <template v-if="type === 1">
-        <Input
-          v-model:value="params.product"
-          :placeholder="$t('andon.inputPrompt')"
-          @change="verification('product')"
-        />
-        <span class="mt-1 block text-red-500">
-          {{ errors.product ? $t('andon.error') : ' ' }}
-        </span>
-      </template>
-      <template v-else>{{ params.product }}</template>
-    </DescriptionsItem>
     <!-- 设备编号 -->
     <DescriptionsItem :label="$t('andon.equipmentNumber')">
       <template v-if="type === 1">
@@ -172,44 +185,44 @@ defineExpose({
       </template>
       <template v-else>{{ params.equipCode }}</template>
     </DescriptionsItem>
+    <!-- 产品名称 -->
+    <DescriptionsItem :label="$t('andon.productName')">
+      <Input
+        v-model:value="params.product"
+        :placeholder="$t('andon.inputPrompt')"
+        @change="verification('product')"
+      />
+      <span class="mt-1 block text-red-500">
+        {{ errors.product ? $t('andon.error') : ' ' }}
+      </span>
+    </DescriptionsItem>
     <!-- 物料编号 -->
     <DescriptionsItem :label="$t('andon.materialNumber')">
-      <template v-if="type === 1">
-        <Input
-          v-model:value="params.materialCode"
-          :placeholder="$t('andon.inputPrompt')"
-          @change="verification('materialCode')"
-        />
-        <span class="mt-1 block text-red-500">
-          {{ errors.materialCode ? $t('andon.error') : ' ' }}
-        </span>
-      </template>
-      <template v-else>{{ params.materialCode }}</template>
+      <Input
+        v-model:value="params.materialCode"
+        :placeholder="$t('andon.inputPrompt')"
+        @change="verification('materialCode')"
+      />
+      <span class="mt-1 block text-red-500">
+        {{ errors.materialCode ? $t('andon.error') : ' ' }}
+      </span>
     </DescriptionsItem>
     <!-- 紧急程度 -->
     <DescriptionsItem :label="$t('andon.degreeOfUrgency')">
-      <RadioGroup
-        v-model:value="params.exigency"
-        :options="degreeOfUrgency"
-        :disabled="type === 2"
-      />
+      <RadioGroup v-model:value="params.exigency" :options="degreeOfUrgency" />
     </DescriptionsItem>
     <!-- 位置 -->
     <DescriptionsItem :label="$t('andon.position')">
-      <template v-if="type === 1">
-        <Input
-          v-model:value="params.location"
-          :placeholder="$t('andon.inputPrompt')"
-        />
-      </template>
-      <template v-else>{{ params.location }}</template>
+      <Input
+        v-model:value="params.location"
+        :placeholder="$t('andon.inputPrompt')"
+      />
     </DescriptionsItem>
     <!-- 异常类型 -->
     <DescriptionsItem :label="$t('andon.exceptionType')">
       <Select
         v-model:value="params.andonErrorType"
         :options="exceptionType"
-        :disabled="type === 2"
         class="min-w-32"
       />
     </DescriptionsItem>

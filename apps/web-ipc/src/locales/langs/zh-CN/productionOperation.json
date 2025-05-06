@@ -58,5 +58,12 @@
   "accumulatedWeight": "累计重量",
   "equipmentPlugging": "设备堵料",
   "cloggingCause": "堵料原因",
-  "cleaningSettingDuration": "清洁设置时长"
+  "cleaningSettingDuration": "清洁设置时长",
+  "manuallyClearAgain": "手动再次清空",
+  "snCode": "SN码",
+  "weight": "重量（报工数）",
+  "equipmentNumber": "设备号（称量设备）",
+  "labelNumber": "标签编号",
+  "materialNumber": "物料编号",
+  "inputQuantity": "投入量"
 }

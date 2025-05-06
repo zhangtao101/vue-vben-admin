@@ -118,3 +118,152 @@ export function equipmentCleaningInformation(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipClean?${qs.stringify(params)}`,
   );
 }
+
+/**
+ * 工序进站信息查询
+ * @param params 参数
+ */
+export function processEntryInformationQuery(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listProcessIn?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 配方下发信息查询
+ * @param params 参数
+ */
+export function queryOfFormulaDistributionInformation(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listParamSend?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 配方下发
+ * @param params 参数
+ */
+export function theFormulaHasBeenIssued(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/paramTempSend`,
+    params,
+  );
+}
+/**
+ * 2、投料结束
+ * @param params 参数
+ */
+export function endOfFeeding(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/finishFeed`,
+    params,
+  );
+}
+/**
+ * 物料投料信息查询-分切
+ * @param params 参数
+ */
+export function materialFeedingInformationQuerySlitting(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listFeed?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 设备清空信息查询
+ * @param params 参数
+ */
+export function deviceClearanceInformationQuery(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipClear?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 设备手动清空
+ * @param params 参数
+ */
+export function manualClearanceOfTheEquipment(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/equipClear`,
+    params,
+  );
+}
+/**
+ * 设备手动结束作业
+ * @param params 参数
+ */
+export function theEquipmentManuallyFinishesTheOperation(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/equipClearFinish`,
+    params,
+  );
+}
+
+/**
+ * 1、工序出站信息查询
+ * @param params 参数
+ */
+export function processExitInformationQuery(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listProcessOut?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 工序报工信息查询
+ * @param params 参数
+ */
+export function processReportingInformationQuery(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listReport?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 工序报工
+ * @param params 参数
+ */
+export function processReporting(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/report`,
+    params,
+  );
+}
+
+/**
+ * 设备手动清洁
+ * @param params 参数
+ */
+export function manualCleaningOfTheEquipment(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/equipClean`,
+    params,
+  );
+}
+/**
+ * 设备手动结束清洁
+ * @param params 参数
+ */
+export function manuallyFinishTheCleaning(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/equipCleanFinish`,
+    params,
+  );
+}
+/**
+ * 2、投料
+ * @param params 参数
+ */
+export function feedingMaterials(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/feed`,
+    params,
+  );
+}
+/**
+ * 3、单个物料投料完成
+ * @param params 参数
+ */
+export function feedingComplete(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/feedClear`,
+    params,
+  );
+}

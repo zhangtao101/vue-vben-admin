@@ -52,5 +52,15 @@
   "toBeProcessed": "To Be Dealt With",
   "theUserGoesToWork": "The User Goes To Work",
   "theUserIsOffWork": "The User Is Off Work",
-  "oneClickWork": "One Click Work"
+  "oneClickWork": "One Click Work",
+  "startWork": "Start Work",
+  "completed": "Completed",
+  "pause": "Pause",
+  "forcedOffline": "Forced Offline",
+  "collect": "Collect",
+  "start": "Start",
+  "continue": "Continue",
+  "toggle": "Toggle",
+  "taskCompleted": "Task Completed",
+  "taskSuspended": "Task Temporary Storage"
 }

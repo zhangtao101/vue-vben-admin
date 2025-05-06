@@ -9,6 +9,34 @@ import { Button, Drawer, message, Space, Tooltip } from 'ant-design-vue';
 import { handAddition, onLightCall } from '#/api';
 import AndonCallComponent from '#/util/component/andon/andonCallComponent.vue';
 
+defineProps({
+  // 工步id
+  functionId: {
+    type: Number,
+    default: 0,
+  },
+  // 工序ID
+  bindingId: {
+    type: Number,
+    default: 0,
+  },
+  // 工单编号
+  worksheetCode: {
+    type: String,
+    default: '',
+  },
+  // 设备编号
+  equipCode: {
+    type: String,
+    default: '',
+  },
+  // 工作中心
+  workstationCode: {
+    type: String,
+    default: '',
+  },
+});
+
 // region 显示安灯呼叫
 // 安灯呼叫的类型
 const andonCallType = ref(1);
@@ -99,7 +127,16 @@ function close() {
     :footer-style="{ textAlign: 'right' }"
     @close="close"
   >
-    <AndonCallComponent ref="andonCall" :type="andonCallType" />
+    <AndonCallComponent
+      ref="andonCall"
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="functionId"
+      :type="andonCallType"
+      v-if="showAndon"
+    />
 
     <template #footer>
       <Space>

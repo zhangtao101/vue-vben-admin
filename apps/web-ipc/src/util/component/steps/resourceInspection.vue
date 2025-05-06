@@ -46,7 +46,7 @@ function getLabelClass() {
  * 获取值的class
  */
 function getValueClass() {
-  return 'inline-block w-24 border p-2 text-center';
+  return 'inline-block w-48 border p-2 text-center';
 }
 
 /**

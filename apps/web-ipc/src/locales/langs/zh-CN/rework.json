@@ -1,0 +1,11 @@
+{
+  "materialHandling": "物料处理",
+  "reworkProcess": "返工工序",
+  "theProcessesWithinTheTechnologicalRoute": "工艺路线内工序",
+  "processesOutsideTheTechnologicalRoute": "工艺路线外工序",
+  "feedingMaterials": "投料",
+  "addMaterials": "加料",
+  "noMaterialsAdded": "不加料",
+  "processNumber": "工序编号",
+  "processName": "工序名称"
+}
