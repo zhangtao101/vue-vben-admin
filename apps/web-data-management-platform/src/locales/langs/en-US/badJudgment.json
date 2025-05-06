@@ -1,0 +1,11 @@
+{
+  "sn": "Product SN Code",
+  "workOrderNumber": "Work Order Number",
+  "poorOperation": "Defective Operation",
+  "reasonsForScrapping": "Reasons for Scrap",
+  "misjudgedQuantity": "Misjudged Quantity",
+  "defectiveQuantity": "Defective Quantity",
+  "scrapQuantity": "Scrap Quantity",
+  "concessionAcceptanceQuantity": "Concession Acceptance Quantity",
+  "poorHandling": "Defective Handling"
+}

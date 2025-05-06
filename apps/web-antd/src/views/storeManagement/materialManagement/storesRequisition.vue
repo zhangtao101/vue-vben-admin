@@ -690,7 +690,6 @@ function printFile() {
         materialRequisitionNumber: selectedRows[0].applyCode,
         semiFinishedProduct: selectedRows,
       };
-      // todo
       ob = queryPrintTemplateDetails('semiFinishedProductPrinting');
     } else {
       selectedRows.forEach((row: any) => {

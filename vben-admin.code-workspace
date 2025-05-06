@@ -5,6 +5,10 @@
       "path": "apps/web-antd",
     },
     {
+      "name": "@vben/web-data-management-platform",
+      "path": "apps/web-data-management-platform",
+    },
+    {
       "name": "@vben/web-energy-management",
       "path": "apps/web-energy-management",
     },
