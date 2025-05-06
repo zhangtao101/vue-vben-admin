@@ -81,15 +81,6 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.workOrderOutbound'),
         },
       },
-      {
-        name: 'qualityInspection',
-        path: '/qualityInspection',
-        component: () => import('#/views/flow/qualityInspection.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: $t('menu.qualityInspection'),
-        },
-      },
     ],
   },
   {
@@ -141,6 +132,15 @@ const routes: RouteRecordRaw[] = [
     name: 'poorHandling',
     path: '/poorHandling',
     children: [
+      {
+        name: 'qualityInspection',
+        path: '/qualityInspection',
+        component: () => import('#/views/poorHandling/qualityInspection.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.qualityInspection'),
+        },
+      },
       {
         name: 'badJudgment',
         path: 'badJudgment',
