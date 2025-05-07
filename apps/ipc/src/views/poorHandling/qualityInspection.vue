@@ -8,18 +8,15 @@ import { IconifyIcon, IconParkSolidError, MdiSuccess } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
-  Badge,
+  BadgeRibbon,
   Button,
   Card,
-  Col,
   Drawer,
   Form,
   FormItem,
   Input,
   message,
   Modal,
-  Row,
-  Segmented,
   Tooltip,
 } from 'ant-design-vue';
 
@@ -45,21 +42,21 @@ const items = ref([
     value: '1',
     payload: {
       label: '首检',
-      count: 2,
+      count: 0,
     },
   },
   {
     value: '2',
     payload: {
       label: '巡检',
-      count: 11,
+      count: 0,
     },
   },
   {
     value: '3',
     payload: {
       label: '末检',
-      count: 4,
+      count: 0,
     },
   },
 ]);
@@ -144,6 +141,7 @@ function queryStatisticsOfTheNumberOfClaimedItems() {
     statisticsOfTheNumberOfClaimedItems.value[0]!.payload.count = count1;
     statisticsOfTheNumberOfClaimedItems.value[1]!.payload.count = count2;
     statisticsOfTheNumberOfClaimedItems.value[2]!.payload.count = count3;
+    query();
   });
 }
 
@@ -266,6 +264,13 @@ const gridEvents: any = {
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+/**
+ * 查询数据
+ */
+function query() {
+  gridApi.reload();
+}
 
 // region 查询数据
 // 查询参数
@@ -462,54 +467,54 @@ onMounted(() => {
 
 <template>
   <Page id="page">
-    <Card class="mb-5 text-center">
-      <Segmented
-        v-model:value="checkedItem"
-        :options="items"
-        @change="
+    <div class="mb-5 flex justify-center text-center">
+      <BadgeRibbon
+        :text="item.payload.count"
+        :color="getColor(item.payload)"
+        v-for="item of items"
+        :key="item.value"
+        @click="
           () => {
+            checkedItem = item.value;
             queryStatisticsOfTheNumberOfClaimedItems();
-            gridApi.reload();
           }
         "
       >
-        <template #label="{ payload = {} }">
-          <Badge
-            :count="payload.count || 0"
-            class="mr-4 mt-4 p-2"
-            :color="getColor(payload)"
-            show-zero
-          >
-            <div>{{ payload.label }}</div>
-          </Badge>
-        </template>
-      </Segmented>
-    </Card>
-    <Row class="mb-4">
-      <Col :span="4">
-        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
-          {{ $t('qualityInspection.toDoTask') }}
-        </span>
-      </Col>
-      <Col :span="16">
-        <Segmented
-          v-model:value="checkedType"
-          :options="statisticsOfTheNumberOfClaimedItems"
-          @change="() => gridApi.reload()"
+        <Card
+          :title="item.payload.label"
+          class="ml-8 w-48 cursor-pointer hover:bg-sky-500/20"
+          :class="checkedItem === item.value ? 'bg-blue-500' : ''"
+        />
+      </BadgeRibbon>
+    </div>
+    <hr class="mb-2" />
+    <div class="mb-4 flex">
+      <span
+        class="border-l-4 border-sky-500 pl-4 text-2xl font-black leading-[4rem]"
+      >
+        {{ $t('qualityInspection.toDoTask') }}
+      </span>
+      <div class="flex text-center">
+        <BadgeRibbon
+          :text="item.payload.count"
+          :color="getColor(item.payload)"
+          v-for="item of statisticsOfTheNumberOfClaimedItems"
+          :key="item.value"
+          @click="
+            () => {
+              checkedType = item.value;
+              gridApi.reload();
+            }
+          "
         >
-          <template #label="{ payload = {} }">
-            <Badge
-              :count="payload.count || 0"
-              class="mr-4 mt-4 p-2"
-              :color="getColor(payload)"
-              show-zero
-            >
-              <div>{{ payload.label }}</div>
-            </Badge>
-          </template>
-        </Segmented>
-      </Col>
-    </Row>
+          <Card
+            :title="item.payload.label"
+            class="ml-8 w-36 cursor-pointer hover:bg-sky-500/20"
+            :class="checkedType === item.value ? 'bg-blue-500' : ''"
+          />
+        </BadgeRibbon>
+      </div>
+    </div>
     <Card>
       <Form layout="inline" :model="queryParams">
         <!--工单编号 -->
@@ -641,4 +646,10 @@ onMounted(() => {
   </Page>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.bg-blue-500) {
+  .ant-card-head-title {
+    color: #fff;
+  }
+}
+</style>

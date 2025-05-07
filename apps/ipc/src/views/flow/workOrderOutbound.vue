@@ -3,7 +3,7 @@ import type { Rule } from 'ant-design-vue/es/form';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -20,6 +20,7 @@ import {
   Input,
   InputNumber,
   message,
+  Select,
   Space,
   Tooltip,
 } from 'ant-design-vue';
@@ -28,9 +29,8 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   obtainTheListOfOutgoingWorkOrders,
   reportToWorkAndLeaveTheStation,
+  workstationListAcquisition,
 } from '#/api';
-
-// region 工作站查询信息
 
 // region 作业信息
 const gridOptions: VxeGridProps<any> = {
@@ -120,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 // 查询参数
 const queryParams = ref({
   // 工作中心编号
-  workstationCode: 'GZZ-CX0001',
+  workstationCode: '',
   // 模式选择( 1手动  2自动)
   modelType: '1',
   // 产品编号
@@ -231,6 +231,32 @@ function submit() {
   });
 }
 // endregion
+
+// region 工作中心查询
+const listOfProductionLines = ref<any>([]);
+
+/**
+ * 查询工作站列表
+ */
+function queryListOfProductionLines() {
+  workstationListAcquisition().then((data) => {
+    listOfProductionLines.value = [];
+    data.forEach((item: any) => {
+      listOfProductionLines.value.push({
+        value: item.workstationCode,
+        label: `${item.workstationName}__${item.workstationCode}`,
+      });
+    });
+  });
+}
+const filterOption = (input: string, option: any) => {
+  return option.label.toLowerCase().includes(input.toLowerCase());
+};
+
+// endregion
+onMounted(() => {
+  queryListOfProductionLines();
+});
 </script>
 
 <template>
@@ -239,7 +265,14 @@ function submit() {
       <Form layout="inline" :model="queryParams">
         <!--工作中心 -->
         <FormItem :label="$t('workOrderEntry.workCenter')" class="!mb-4 w-full">
-          <Input v-model:value="queryParams.workstationCode" />
+          <Select
+            v-model:value="queryParams.workstationCode"
+            :options="listOfProductionLines"
+            :filter-option="filterOption"
+            show-search
+            class="mr-4 !w-full"
+            @change="() => gridApi.reload()"
+          />
         </FormItem>
         <!--工单编号 -->
         <FormItem :label="$t('workOrderEntry.workOrderNumber')">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -14,13 +14,14 @@ import {
   Select,
 } from 'ant-design-vue';
 
+import { workstationListAcquisition } from '#/api';
 import WorkOrderEntryTable from '#/util/component/workOrderEntryTable.vue';
 
 // region 查询数据
 // 查询参数
 const queryParams = ref({
   // 工作中心编号
-  workstationCode: 'GZZ-CX0001',
+  workstationCode: '',
   // 模式选择( 1手动  2自动)
   modelType: '1',
   // 产品编号
@@ -82,6 +83,32 @@ function query(isReset = false) {
 }
 
 // endregion
+
+// region 工作中心查询
+const listOfProductionLines = ref<any>([]);
+
+/**
+ * 查询工作站列表
+ */
+function queryListOfProductionLines() {
+  workstationListAcquisition().then((data) => {
+    listOfProductionLines.value = [];
+    data.forEach((item: any) => {
+      listOfProductionLines.value.push({
+        value: item.workstationCode,
+        label: `${item.workstationName}__${item.workstationCode}`,
+      });
+    });
+  });
+}
+const filterOption = (input: string, option: any) => {
+  return option.label.toLowerCase().includes(input.toLowerCase());
+};
+
+// endregion
+onMounted(() => {
+  queryListOfProductionLines();
+});
 </script>
 
 <template>
@@ -90,7 +117,14 @@ function query(isReset = false) {
       <Form layout="inline" :model="queryParams">
         <!--工作中心 -->
         <FormItem :label="$t('workOrderEntry.workCenter')" class="!mb-4 w-full">
-          <Input v-model:value="queryParams.workstationCode" />
+          <Select
+            v-model:value="queryParams.workstationCode"
+            :options="listOfProductionLines"
+            :filter-option="filterOption"
+            show-search
+            class="mr-4 !w-full"
+            @change="query(false)"
+          />
         </FormItem>
         <!--模式选择 -->
         <FormItem :label="$t('workOrderEntry.modelType')" class="!mb-4 w-full">

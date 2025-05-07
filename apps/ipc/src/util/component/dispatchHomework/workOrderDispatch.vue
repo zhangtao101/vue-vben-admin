@@ -35,7 +35,6 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     {
       type: 'radio',
-      field: 'planCode',
       width: 50,
     },
     {
@@ -46,42 +45,47 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'workSheetCode',
       title: '工单编号',
-      minWidth: 200,
+      minWidth: 180,
     },
     {
       field: 'productCode',
       title: '产品编码',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'productName',
       title: '产品名称',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
-      field: '4',
+      field: 'produceWorkshop',
+      title: '待派区域',
+      minWidth: 120,
+    },
+    {
+      field: 'customerName',
       title: '客户名称',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
       field: 'workSheetPlanNumber',
       title: '工单计划数',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
       field: 'planDateStart',
       title: '预计开始时间',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
       field: '6',
       title: '预计结束时间',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
       field: 'remark',
       title: '备注',
-      minWidth: 200,
+      minWidth: 120,
     },
   ],
   height: 400,
@@ -146,10 +150,10 @@ function queryData({ page, pageSize }: any) {
       pageSize, // 每页显示的数据条数。
       type: props.type,
     })
-      .then(({ total, list }) => {
+      .then(({ totalSize, list }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
-          total,
+          total: totalSize,
           items: list,
         });
       })
@@ -249,7 +253,8 @@ function completed() {
   >
     <EquipmentResources
       :workstation-info="item"
-      :work-order-id="currentRow.id"
+      :work-order-id="`${currentRow.id}`"
+      :is-active="currentRow.updateUsername === item.equipCode"
       v-for="item of deviceList"
       :key="item.equipCode"
       :show="true"

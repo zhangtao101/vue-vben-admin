@@ -45,6 +45,11 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  // 是否活跃
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
 });
 const emit = defineEmits(['close']);
 // region 已派工单列表
@@ -369,6 +374,7 @@ defineExpose({
   >
     <div
       class="cursor-pointer rounded-t-lg bg-cyan-500 pb-1 pt-1 text-center text-xl text-white"
+      :class="isActive ? 'bg-cyan-500' : 'cursor-not-allowed bg-gray-300'"
       @click="displaysTheWorkOrderColumnTable({})"
     >
       <IconifyIcon
@@ -380,7 +386,7 @@ defineExpose({
     <Row class="h-[92px]">
       <Col
         span="12"
-        class="cursor-pointer border-r-2 text-center"
+        class="cursor-pointer border-r-2 text-center hover:bg-amber-200"
         @click="massSending"
       >
         <div class="mb-2 mt-3 text-base font-black">
@@ -393,7 +399,7 @@ defineExpose({
       </Col>
       <Col
         span="12"
-        class="cursor-pointer border-r-2 text-center"
+        class="cursor-pointer border-r-2 text-center hover:bg-amber-200"
         @click="showJobDrawerFun()"
       >
         <div class="mb-2 mt-3 text-base font-black">

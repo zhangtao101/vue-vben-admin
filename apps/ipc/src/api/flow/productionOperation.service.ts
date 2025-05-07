@@ -19,6 +19,15 @@ export function obtainTheListOfProcessEquipment(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getAllEquipList?${qs.stringify(params)}`,
   );
 }
+/**
+ * 获取用户列表
+ * @param params 参数
+ */
+export function getUserList() {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/user/listUserByWorkNumber?workNumber=`,
+  );
+}
 
 /**
  * 用户上工

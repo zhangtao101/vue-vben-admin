@@ -80,7 +80,7 @@ onMounted(() => {
     :options="jobType"
     class="mb-8"
   /> -->
-  <div class="overflow-y-auto">
+  <div class="h-24 overflow-y-auto">
     <Steps v-model:current="current" :items="stepBar" v-if="props.type === 1">
       <template #progressDot="{ prefixCls }">
         <Popover>
