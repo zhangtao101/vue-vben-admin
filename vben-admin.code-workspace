@@ -5,6 +5,26 @@
       "path": "apps/backend-mock",
     },
     {
+      "name": "@vben/data-management-platform",
+      "path": "apps/data-management-platform",
+    },
+    {
+      "name": "@vben/energy-management",
+      "path": "apps/energy-management",
+    },
+    {
+      "name": "@vben/ipc",
+      "path": "apps/ipc",
+    },
+    {
+      "name": "@vben/mes",
+      "path": "apps/mes",
+    },
+    {
+      "name": "@vben/my-ai",
+      "path": "apps/my-ai",
+    },
+    {
       "name": "@vben/web-antd",
       "path": "apps/web-antd",
     },
