@@ -35,6 +35,16 @@ defineProps({
     type: String,
     default: '',
   },
+  // 产品编号
+  productCode: {
+    type: String,
+    default: '',
+  },
+  // 产品名称
+  productName: {
+    type: String,
+    default: '',
+  },
 });
 
 // region 显示安灯呼叫
@@ -59,7 +69,7 @@ function showAndonCall(type: number) {
  */
 function submit() {
   const params = andonCall.value.getValue();
-  params.place = 1;
+  params.place = andonCallType.value === 1 ? 2 : 1;
   handAddition(params).then(() => {
     close();
     message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
@@ -68,9 +78,8 @@ function submit() {
 /**
  * 保存草稿 / 异常填报
  */
-function saveDraft(place: 2 | 3) {
+function saveDraft() {
   const params = andonCall.value.getValue();
-  params.place = place;
   onLightCall(params).then(() => {
     close();
     message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
@@ -135,6 +144,9 @@ function close() {
       :binding-id="bindingId"
       :function-id="functionId"
       :type="andonCallType"
+      :place="andonCallType === 1 ? 2 : 1"
+      :product-code="productCode"
+      :product-name="productName"
       v-if="showAndon"
     />
 
@@ -145,21 +157,15 @@ function close() {
           {{ $t('common.cancel') }}
         </Button>
         <template v-if="andonCallType === 1">
-          <!-- 异常填报 -->
-          <Button type="primary" @click="saveDraft(2)">
-            {{ $t('common.abnormalFilling') }}
-          </Button>
-          <!-- 草稿箱 -->
+          <!-- 暂存 -->
           <Button type="primary" @click="saveDraft(3)">
-            {{ $t('common.drafts') }}
+            {{ $t('common.temporaryStorage') }}
           </Button>
         </template>
-        <template v-if="andonCallType === 2">
-          <!-- 呼叫  -->
-          <Button type="primary" @click="submit()">
-            {{ $t('common.callOut') }}
-          </Button>
-        </template>
+        <!-- 提交  -->
+        <Button type="primary" @click="submit()">
+          {{ $t('common.submit') }}
+        </Button>
       </Space>
     </template>
   </Drawer>

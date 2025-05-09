@@ -72,7 +72,8 @@
     "exceljs": "^4.4.0",
     "lodash-es": "^4.17.21",
     "qs": "^6.13.1",
-    "sortablejs": "^1.15.6"
+    "sortablejs": "^1.15.6",
+    "vue-qrcode-reader": "^5.7.2"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

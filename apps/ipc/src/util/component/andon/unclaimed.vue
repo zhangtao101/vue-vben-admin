@@ -18,10 +18,13 @@ import {
   Modal,
   Select,
   Space,
+  Spin,
   Textarea,
   Tooltip,
   Upload,
 } from 'ant-design-vue';
+// eslint-disable-next-line n/no-extraneous-import
+import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -30,6 +33,7 @@ import {
   anomalyDetermination,
   draftBoxRecordQuery,
   fetchAndonPendingList,
+  fuzzyQueryOfEquipmentNumber,
   problemHandling,
   queryAndonCompletedList,
   queryAndonPendingList,
@@ -282,6 +286,51 @@ function signInSubmission() {
       gridApi.reload();
     });
   });
+}
+// endregion
+
+// region 设备编号模糊查询
+const listOfEquipmentNumbers = ref<any>([]);
+const fetching = ref(false);
+
+function listOfEquipmentNumbersSearch(val: string) {
+  if (val) {
+    fetching.value = true;
+    fuzzyQueryOfEquipmentNumber({
+      equipmentCode: val,
+      pageNum: 1,
+      pageSize: 200,
+    })
+      .then((data: any) => {
+        listOfEquipmentNumbers.value = data;
+      })
+      .finally(() => {
+        fetching.value = false;
+      });
+  }
+}
+
+/**
+ * 防抖函数
+ */
+const listOfEquipmentNumbersSearchThrottling = debounce(
+  (value: string) => listOfEquipmentNumbersSearch(value),
+  500,
+);
+
+/**
+ * 选择第一个
+ * @param count 选择次数
+ */
+function choose(count: number = 0) {
+  if (listOfEquipmentNumbers.value.length > 0) {
+    const item = listOfEquipmentNumbers.value[0];
+    signInFormState.value.equipCode = item.equipmentCode;
+  } else {
+    setTimeout(() => {
+      choose(count + 1);
+    }, 800);
+  }
 }
 // endregion
 
@@ -612,7 +661,25 @@ onMounted(() => {
         style="margin-bottom: 1em"
         name="equipCode"
       >
-        <Input v-model:value="signInFormState.equipCode" />
+        <Select
+          v-model:value="signInFormState.equipCode"
+          show-search
+          placeholder="input search text"
+          style="width: 200px"
+          :default-active-first-option="false"
+          :show-arrow="false"
+          :filter-option="false"
+          :field-names="{ label: 'equipmentName', value: 'equipmentCode' }"
+          :not-found-content="fetching ? undefined : null"
+          :options="listOfEquipmentNumbers"
+          @search="listOfEquipmentNumbersSearchThrottling"
+          @keydown.enter="choose()"
+          class="!w-full"
+        >
+          <template v-if="fetching" #notFoundContent>
+            <Spin size="small" />
+          </template>
+        </Select>
       </FormItem>
       <!-- 人员工号 -->
       <FormItem
@@ -673,9 +740,7 @@ onMounted(() => {
           style="width: 300px"
           :options="errorTypes"
           :filter-option="filterOption"
-          v-if="!whetherItIsInTheProcessingState"
         />
-        <Input v-model:value="anomalyDeterminationData.andonErrorCode" v-else />
       </FormItem>
       <!-- 详细描述 -->
       <FormItem
@@ -702,7 +767,7 @@ onMounted(() => {
       </FormItem>
       <!-- 异常图片 -->
       <FormItem
-        :label="$t('andon.detailedDescription')"
+        :label="$t('andon.abnormalPicture')"
         style="margin-bottom: 1em"
         name="photo"
       >

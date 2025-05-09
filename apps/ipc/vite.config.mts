@@ -19,6 +19,7 @@ export default defineConfig(async () => {
             // 代理目标地址
             target: 'https://v507z46671.yicp.fun',
             // target: 'http://540qgmj80458.vicp.fun',
+            // target: 'http://540qgmj80458.vicp.fun',
             // target: 'http://27yw1bk43730.vicp.fun',
             // target: 'http:/192.168.0.215:8050',
             // target: 'http:/192.168.31.196:8050',

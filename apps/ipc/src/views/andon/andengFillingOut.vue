@@ -7,9 +7,8 @@ import { $t } from '@vben/locales';
 
 import { Button, Card, message, TabPane, Tabs } from 'ant-design-vue';
 
-import { onLightCall } from '#/api';
+import { abnormalFilling, onLightCall } from '#/api';
 import AndonCallComponent from '#/util/component/andon/andonCallComponent.vue';
-import Unclaimed from '#/util/component/andon/unclaimed.vue';
 import LampInstallationRecord from '#/util/component/steps/lampInstallationRecord.vue';
 
 // region 查询数据
@@ -55,10 +54,18 @@ const andonCall = ref();
 /**
  * 保存草稿-3 / 异常填报-2
  */
-function saveDraft(place: 2 | 3) {
+function saveDraft() {
   const params = andonCall.value.getValue();
-  params.place = place;
   onLightCall(params).then(() => {
+    message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
+  });
+}
+/**
+ * 提交
+ */
+function submit() {
+  const params = andonCall.value.getValue();
+  abnormalFilling(params).then(() => {
     message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
     andonCall.value.reset();
   });
@@ -80,26 +87,19 @@ function saveDraft(place: 2 | 3) {
             ref="andonCall"
             :type="1"
             v-if="checkedType === '1'"
+            :place="3"
           />
 
           <div class="float-right mt-4">
-            <!-- 草稿箱 -->
-            <Button type="primary" class="mr-4" @click="saveDraft(3)">
-              {{ $t('common.toBeProcessed') }}
+            <!-- 暂存 -->
+            <Button type="primary" class="mr-4" @click="saveDraft()">
+              {{ $t('common.temporaryStorage') }}
+            </Button>
+            <!-- 提交 -->
+            <Button type="primary" class="mr-4" @click="submit()">
+              {{ $t('common.submit') }}
             </Button>
           </div>
-        </TabPane>
-        <TabPane key="2">
-          <template #tab>
-            <MdiHome class="inline-block" />
-            <!-- 草稿箱 -->
-            {{ $t('andon.drafts') }}
-          </template>
-          <Unclaimed
-            ref="completedRef"
-            show-type="7"
-            v-if="checkedType === '2'"
-          />
         </TabPane>
         <TabPane key="8">
           <template #tab>

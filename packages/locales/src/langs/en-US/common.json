@@ -62,5 +62,6 @@
   "continue": "Continue",
   "toggle": "Toggle",
   "taskCompleted": "Task Completed",
-  "taskSuspended": "Task Temporary Storage"
+  "taskSuspended": "Task Temporary Storage",
+  "submit": "Submit"
 }

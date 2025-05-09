@@ -33,6 +33,33 @@ export async function lampInstallationRecordQuery(params: any) {
   );
 }
 /**
+ * 设备编号模糊查询
+ * @param params
+ */
+export async function fuzzyQueryOfEquipmentNumber(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentLedger/fuzzyQueryByequipmentCode?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 显示缓存
+ * @param params
+ */
+export async function displayCache(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/listByDraft?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 工单编号模糊查询
+ * @param params
+ */
+export async function fuzzyQueryOfWorkOrderNumbers(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/plan/worksheet/search?${qs.stringify(params)}`,
+  );
+}
+/**
  * 草稿箱记录查询
  * @param params
  */

@@ -13,7 +13,6 @@ import {
   FormItem,
   message,
   Modal,
-  Progress,
   RadioGroup,
   Space,
   Textarea,
@@ -40,11 +39,49 @@ const props = defineProps({
   },
 });
 
+// region 处理进度
+
+/**
+ * 处理进度文本
+ */
+const scheduleColumns = [
+  '问题判定待签到',
+  '问题处理签到',
+  '问题判定处理中',
+  '问题待领取',
+  '问题已领取',
+  '问题超时',
+  '问题处理待签到',
+  '问题处理处理中',
+  '完成',
+];
+/**
+ * 处理进度文本颜色列表
+ */
+const scheduleColors = [
+  'bg-sky-500/25',
+  'bg-sky-500/50',
+  'bg-sky-500/75',
+  'bg-sky-500/100',
+  'bg-sky-500',
+  'bg-pink-500',
+  'bg-cyan-500/100',
+  'bg-cyan-500',
+  'bg-green-500',
+];
+
+// endregion
 // region 表格
 
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
+  cellClassName({ row, column }) {
+    if (column.field === 'schedule') {
+      return scheduleColors[row.schedule - 1];
+    }
+    return null;
+  },
   columns: [
     {
       title: '序号',
@@ -60,7 +97,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'workorderCode',
       title: '工单编号',
-      minWidth: 120,
+      minWidth: 200,
     },
     {
       field: 'process',
@@ -92,7 +129,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'schedule',
       title: '处理进度',
-      minWidth: 280,
+      minWidth: 150,
       slots: { default: 'processingProgress' },
     },
     {
@@ -193,48 +230,6 @@ function getNumberText(num: number) {
 }
 // cuow
 const errorColums = ['生产异常', '质量异常', '设备异常', '物料异常', '误触'];
-
-// endregion
-
-// region 处理进度
-
-/**
- * 处理进度文本
- */
-const scheduleColumns = [
-  '问题判定待签到',
-  '问题处理签到',
-  '问题判定处理中',
-  '问题待领取',
-  '问题已领取',
-  '问题超时',
-  '问题处理待签到',
-  '问题处理处理中',
-  '完成',
-];
-/**
- * 处理进度文本颜色列表
- */
-const scheduleColors = [
-  '#FFA07A',
-  '#FFA07A',
-  '#FFFF00',
-  '#FFA07A',
-  '#00BFFF',
-  '#FFA07A',
-  '#FFA07A',
-  '#FFFF00',
-  '#32CD32',
-];
-
-/**
- * 获取进度百分比
- * @param schedule 进度
- * @returns 进度百分比
- */
-function getPercent(schedule: number) {
-  return ((schedule || 0) / scheduleColumns.length) * 100;
-}
 
 // endregion
 
@@ -371,13 +366,6 @@ function getPlaceholder() {
       <span> {{ errorColums[row.schedule - 1] || '未定义' }} </span>
     </template>
     <template #processingProgress="{ row }">
-      <Progress
-        :percent="getPercent(row.schedule)"
-        :show-info="false"
-        :stroke-color="scheduleColors[row.schedule - 1]"
-        style="width: 120px"
-        size="small"
-      />
       {{ scheduleColumns[row.schedule - 1] || '未定义' }}
     </template>
     <template #action="{ row }">

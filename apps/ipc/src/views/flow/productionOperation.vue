@@ -119,17 +119,20 @@ const gridOptions: VxeGridProps<any> = {
     isHover: true,
   },
   radioConfig: {
-    labelField: 'worksheetCode',
     trigger: 'row',
   },
   columns: [
     {
       type: 'radio',
-      title: '工单编号',
-      minWidth: 220,
+      minWidth: 60,
     },
     {
       field: 'worksheetCode',
+      title: '工单号',
+      minWidth: 200,
+    },
+    {
+      field: 'productCode',
       title: '产品编号',
       minWidth: 200,
     },
@@ -209,8 +212,11 @@ const gridOptions: VxeGridProps<any> = {
     },
   },
 };
+// 选中的工单
+const theSelectedWorkOrder = ref<any>({});
 const gridEvents: any = {
   radioChange: ({ newValue }: any) => {
+    theSelectedWorkOrder.value = newValue;
     queryProcess(selectedWorkstation.value, newValue.worksheetCode);
   },
 };
@@ -228,6 +234,7 @@ function setRadioByKey(worksheetCode: string = '') {
       ? tableData.find((item: any) => item.worksheetCode === worksheetCode)
       : tableData[0];
     gridApi.grid.setRadioRow(row);
+    theSelectedWorkOrder.value = row;
     queryProcess(selectedWorkstation.value, row.worksheetCode);
   }, 500);
 }
@@ -882,6 +889,8 @@ onBeforeUnmount(() => {
           :workstation-code="selectedWorkstation"
           :equip-code="theSelectedProcessEquipment"
           :worksheet-code="theCurrentlySelectedWorkOrderNumber"
+          :product-code="theSelectedWorkOrder.productCode"
+          :product-name="theSelectedWorkOrder.productName"
           :binding-id="checkedProcessId"
           :step="currentWorkingStep"
           v-if="currentWorkingStep"

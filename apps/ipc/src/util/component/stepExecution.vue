@@ -40,6 +40,16 @@ defineProps({
     type: String,
     default: '',
   },
+  // 产品编号
+  productCode: {
+    type: String,
+    default: '',
+  },
+  // 产品名称
+  productName: {
+    type: String,
+    default: '',
+  },
 });
 </script>
 
@@ -152,6 +162,8 @@ defineProps({
     :worksheet-code="worksheetCode"
     :binding-id="bindingId"
     :function-id="step.id"
+    :product-code="productCode"
+    :product-name="productName"
     v-if="step.type === 12"
   />
   <!-- 安灯记录查询 -->

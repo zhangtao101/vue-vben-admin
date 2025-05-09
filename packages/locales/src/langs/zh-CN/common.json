@@ -62,5 +62,7 @@
   "continue": "继续",
   "toggle": "切换",
   "taskCompleted": "任务完成",
-  "taskSuspended": "任务暂存"
+  "taskSuspended": "任务暂存",
+  "temporaryStorage": "暂存",
+  "submit": "提交"
 }

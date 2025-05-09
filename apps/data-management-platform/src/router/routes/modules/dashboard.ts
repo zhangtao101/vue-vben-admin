@@ -35,27 +35,6 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  {
-    component: BasicLayout,
-    meta: {
-      icon: 'lucide:layout-dashboard',
-      order: -1,
-      title: $t('menu.reportManagement'),
-    },
-    name: 'bb',
-    path: '/bb',
-    children: [
-      {
-        name: 'test',
-        path: 'test',
-        component: () => import('#/views/reportForms/test.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: $t('menu.dispatchOperation'),
-        },
-      },
-    ],
-  },
 ];
 
 export default routes;
