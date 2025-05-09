@@ -14,7 +14,7 @@ export const overridesPreferences = defineOverridesPreferences({
     defaultHomePath: '/workFlow/productionOperation',
   },
   sidebar: {
-    autoActivateChild: true,
+    autoActivateChild: false,
     collapsedShowTitle: true,
     fixedButton: false,
     width: 250,

@@ -37,6 +37,10 @@ const props = defineProps({
     type: Number,
     default: -1,
   },
+  place: {
+    type: Number,
+    default: undefined,
+  },
 });
 
 // region 处理进度
@@ -153,7 +157,7 @@ const gridOptions: VxeGridProps<any> = {
       visible: props.state === 3,
     },
   ],
-  height: 200,
+  height: 300,
   stripe: true,
   sortConfig: {
     multiple: true,
@@ -243,11 +247,11 @@ const errorColums = ['生产异常', '质量异常', '设备异常', '物料异�
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
     // lampInstallationRecordQuery
-    const params = {
+    const params: any = {
       pageNum: page,
       pageSize,
       process: props.process,
-      state: props.state === 3 ? 3 : undefined,
+      state: props.state === 3 || props.place === 3 ? 3 : undefined,
     };
     if (props.state === 3) {
       evaluationListQuery(params).then(({ total, list }: any) => {
