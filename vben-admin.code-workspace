@@ -1,24 +1,24 @@
 {
   "folders": [
     {
-      "name": "@vben/data-management-platform",
-      "path": "apps/data-management-platform",
+      "name": "@vben/backend-mock",
+      "path": "apps/backend-mock",
     },
     {
-      "name": "@vben/energy-management",
-      "path": "apps/energy-management",
+      "name": "@vben/web-antd",
+      "path": "apps/web-antd",
     },
     {
-      "name": "@vben/ipc",
-      "path": "apps/ipc",
+      "name": "@vben/web-ele",
+      "path": "apps/web-ele",
     },
     {
-      "name": "@vben/mes",
-      "path": "apps/mes",
+      "name": "@vben/web-naive",
+      "path": "apps/web-naive",
     },
     {
-      "name": "@vben/my-ai",
-      "path": "apps/my-ai",
+      "name": "@vben/docs",
+      "path": "docs",
     },
     {
       "name": "@vben/commitlint-config",
@@ -155,6 +155,10 @@
     {
       "name": "@vben/utils",
       "path": "packages/utils",
+    },
+    {
+      "name": "@vben/playground",
+      "path": "playground",
     },
     {
       "name": "@vben/turbo-run",

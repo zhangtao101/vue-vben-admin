@@ -17,6 +17,10 @@
   "horizontalTip": "Horizontal menu mode, all menus displayed at the top",
   "twoColumn": "Two Column",
   "twoColumnTip": "Vertical Two Column Menu Mode",
+  "headerSidebarNav": "Header Vertical",
+  "headerSidebarNavTip": "Header Full Width, Sidebar Navigation Mode",
+  "headerTwoColumn": "Header Two Column",
+  "headerTwoColumnTip": "Header Navigation & Sidebar Two Column co-exists",
   "mixedMenu": "Mixed Menu",
   "mixedMenuTip": "Vertical & Horizontal Menu Co-exists",
   "fullContent": "Full Content",
@@ -25,6 +29,7 @@
   "plain": "Plain",
   "rounded": "Rounded",
   "copyPreferences": "Copy Preferences",
+  "copyPreferencesSuccessTitle": "Copy successful",
   "copyPreferencesSuccess": "Copy successful, please override in `src/preferences.ts` under app",
   "clearAndLogout": "Clear Cache & Logout",
   "mode": "Mode",
@@ -33,12 +38,25 @@
   "dynamicTitle": "Dynamic Title",
   "watermark": "Watermark",
   "checkUpdates": "Periodic update check",
+  "position": {
+    "title": "Preferences Postion",
+    "header": "Header",
+    "auto": "Auto",
+    "fixed": "Fixed"
+  },
   "sidebar": {
+    "buttons": "Show Buttons",
+    "buttonFixed": "Fixed",
+    "buttonCollapsed": "Collapsed",
     "title": "Sidebar",
     "width": "Width",
     "visible": "Show Sidebar",
     "collapsed": "Collpase Menu",
-    "collapsedShowTitle": "Show Menu Title"
+    "collapsedShowTitle": "Show Menu Title",
+    "autoActivateChild": "Auto Activate SubMenu",
+    "autoActivateChildTip": "`Enabled` to automatically activate the submenu while click menu.",
+    "expandOnHover": "Expand On Hover",
+    "expandOnHoverTip": "When the mouse hovers over menu, \n `Enabled` to expand children menus \n `Disabled` to expand whole sidebar."
   },
   "tabbar": {
     "title": "Tabbar",
@@ -48,7 +66,12 @@
     "showRefresh": "Show Refresh Button",
     "showMaximize": "Show Maximize Button",
     "persist": "Persist Tabs",
-    "dragable": "Enable Dragable Sort",
+    "maxCount": "Max Count of Tabs",
+    "maxCountTip": "When the number of tabs exceeds the maximum,\nthe oldest tab will be closed.\n Set to 0 to disable count checking.",
+    "draggable": "Enable Draggable Sort",
+    "wheelable": "Support Mouse Wheel",
+    "middleClickClose": "Close Tab when Mouse Middle Button Click",
+    "wheelableTip": "When enabled, the Tabbar area responds to vertical scrolling events of the scroll wheel.",
     "styleType": {
       "title": "Tabs Style",
       "chrome": "Chrome",
@@ -97,6 +120,8 @@
     "radius": "Radius",
     "light": "Light",
     "dark": "Dark",
+    "darkSidebar": "Semi Dark Sidebar",
+    "darkHeader": "Semi Dark Header",
     "darkMenu": "Semi Dark Menu",
     "weakMode": "Weak Mode",
     "grayMode": "Gray Mode",
@@ -125,7 +150,11 @@
     "modeStatic": "Static",
     "modeFixed": "Fixed",
     "modeAuto": "Auto hide & Show",
-    "modeAutoScroll": "Scroll to Hide & Show"
+    "modeAutoScroll": "Scroll to Hide & Show",
+    "menuAlign": "Menu Align",
+    "menuAlignStart": "Start",
+    "menuAlignEnd": "End",
+    "menuAlignCenter": "Center"
   },
   "footer": {
     "title": "Footer",
@@ -156,6 +185,7 @@
     "languageToggle": "Enable Language Toggle",
     "notification": "Enable Notification",
     "sidebarToggle": "Enable Sidebar Toggle",
-    "lockScreen": "Enable Lock Screen"
+    "lockScreen": "Enable Lock Screen",
+    "refresh": "Enable Refresh"
   }
 }

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ExtendedModalApi, ModalProps } from './modal';
 
-import { computed, nextTick, provide, ref, useId, watch } from 'vue';
+import { computed, nextTick, provide, ref, unref, useId, watch } from 'vue';
 
 import {
   useIsMobile,
@@ -34,6 +34,7 @@ interface Props extends ModalProps {
 
 const props = withDefaults(defineProps<Props>(), {
   appendToMain: false,
+  destroyOnClose: false,
   modalApi: undefined,
 });
 
@@ -67,6 +68,7 @@ const {
   confirmText,
   contentClass,
   description,
+  destroyOnClose,
   draggable,
   footer: showFooter,
   footerClass,
@@ -80,6 +82,7 @@ const {
   overlayBlur,
   showCancelButton,
   showConfirmButton,
+  submitting,
   title,
   titleTooltip,
   zIndex,
@@ -99,10 +102,15 @@ const { dragging, transform } = useModalDraggable(
   shouldDraggable,
 );
 
+const firstOpened = ref(false);
+const isClosed = ref(true);
+
 watch(
   () => state?.value?.isOpen,
   async (v) => {
     if (v) {
+      isClosed.value = false;
+      if (!firstOpened.value) firstOpened.value = true;
       await nextTick();
       if (!contentRef.value) return;
       const innerContentRef = contentRef.value.getContentRef();
@@ -112,19 +120,20 @@ watch(
       dialogRef.value.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
     }
   },
+  { immediate: true },
 );
 
-watch(
-  () => showLoading.value,
-  (v) => {
-    if (v && wrapperRef.value) {
-      wrapperRef.value.scrollTo({
-        // behavior: 'smooth',
-        top: 0,
-      });
-    }
-  },
-);
+// watch(
+//   () => [showLoading.value, submitting.value],
+//   ([l, s]) => {
+//     if ((s || l) && wrapperRef.value) {
+//       wrapperRef.value.scrollTo({
+//         // behavior: 'smooth',
+//         top: 0,
+//       });
+//     }
+//   },
+// );
 
 function handleFullscreen() {
   props.modalApi?.setState((prev) => {
@@ -135,13 +144,13 @@ function handleFullscreen() {
   });
 }
 function interactOutside(e: Event) {
-  if (!closeOnClickModal.value) {
+  if (!closeOnClickModal.value || submitting.value) {
     e.preventDefault();
     e.stopPropagation();
   }
 }
 function escapeKeyDown(e: KeyboardEvent) {
-  if (!closeOnPressEscape.value) {
+  if (!closeOnPressEscape.value || submitting.value) {
     e.preventDefault();
   }
 }
@@ -156,7 +165,11 @@ function handerOpenAutoFocus(e: Event) {
 function pointerDownOutside(e: Event) {
   const target = e.target as HTMLElement;
   const isDismissableModal = target?.dataset.dismissableModal;
-  if (!closeOnClickModal.value || isDismissableModal !== id) {
+  if (
+    !closeOnClickModal.value ||
+    isDismissableModal !== id ||
+    submitting.value
+  ) {
     e.preventDefault();
     e.stopPropagation();
   }
@@ -167,14 +180,25 @@ function handleFocusOutside(e: Event) {
   e.stopPropagation();
 }
 const getAppendTo = computed(() => {
-  return appendToMain.value ? `#${ELEMENT_ID_MAIN_CONTENT}` : undefined;
+  return appendToMain.value
+    ? `#${ELEMENT_ID_MAIN_CONTENT}>div:not(.absolute)>div`
+    : undefined;
 });
+
+const getForceMount = computed(() => {
+  return !unref(destroyOnClose) && unref(firstOpened);
+});
+
+function handleClosed() {
+  isClosed.value = true;
+  props.modalApi?.onClosed();
+}
 </script>
 <template>
   <Dialog
     :modal="false"
     :open="state?.isOpen"
-    @update:open="() => modalApi?.close()"
+    @update:open="() => (!submitting ? modalApi?.close() : undefined)"
   >
     <DialogContent
       ref="contentRef"
@@ -190,9 +214,11 @@ const getAppendTo = computed(() => {
               shouldFullscreen,
             'top-1/2 !-translate-y-1/2': centered && !shouldFullscreen,
             'duration-300': !dragging,
+            hidden: isClosed,
           },
         )
       "
+      :force-mount="getForceMount"
       :modal="modal"
       :open="state?.isOpen"
       :show-close="closable"
@@ -200,7 +226,8 @@ const getAppendTo = computed(() => {
       :overlay-blur="overlayBlur"
       close-class="top-3"
       @close-auto-focus="handleFocusOutside"
-      @closed="() => modalApi?.onClosed()"
+      @closed="handleClosed"
+      :close-disabled="submitting"
       @escape-key-down="escapeKeyDown"
       @focus-outside="handleFocusOutside"
       @interact-outside="interactOutside"
@@ -247,18 +274,13 @@ const getAppendTo = computed(() => {
         ref="wrapperRef"
         :class="
           cn('relative min-h-40 flex-1 overflow-y-auto p-3', contentClass, {
-            'pointer-events-none overflow-hidden': showLoading,
+            'pointer-events-none': showLoading || submitting,
           })
         "
       >
-        <VbenLoading
-          v-if="showLoading"
-          class="size-full h-auto min-h-full"
-          spinning
-        />
         <slot></slot>
       </div>
-
+      <VbenLoading v-if="showLoading || submitting" spinning />
       <VbenIconButton
         v-if="fullscreenButton"
         class="hover:bg-accent hover:text-accent-foreground text-foreground/80 flex-center absolute right-10 top-3 hidden size-6 rounded-full px-1 text-lg opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none sm:block"
@@ -287,18 +309,19 @@ const getAppendTo = computed(() => {
             :is="components.DefaultButton || VbenButton"
             v-if="showCancelButton"
             variant="ghost"
+            :disabled="submitting"
             @click="() => modalApi?.onCancel()"
           >
             <slot name="cancelText">
               {{ cancelText || $t('cancel') }}
             </slot>
           </component>
-
+          <slot name="center-footer"></slot>
           <component
             :is="components.PrimaryButton || VbenButton"
             v-if="showConfirmButton"
             :disabled="confirmDisabled"
-            :loading="confirmLoading"
+            :loading="confirmLoading || submitting"
             @click="() => modalApi?.onConfirm()"
           >
             <slot name="confirmText">
