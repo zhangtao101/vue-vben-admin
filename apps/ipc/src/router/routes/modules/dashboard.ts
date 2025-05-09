@@ -5,7 +5,6 @@ import { $t } from '#/locales';
 
 const routes: RouteRecordRaw[] = [
   {
-    component: BasicLayout,
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -36,7 +35,6 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    component: BasicLayout,
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -47,7 +45,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'productionOperation',
-        path: '/productionOperation',
+        path: 'productionOperation',
         component: () => import('#/views/flow/productionOperation.vue'),
         meta: {
           ignoreAccess: true,
@@ -56,7 +54,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'dispatchHomework',
-        path: '/dispatchHomework',
+        path: 'dispatchHomework',
         component: () => import('#/views/flow/dispatchHomework.vue'),
         meta: {
           ignoreAccess: true,
@@ -65,7 +63,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'workOrderEntry',
-        path: '/workOrderEntry',
+        path: 'workOrderEntry',
         component: () => import('#/views/flow/workOrderEntry.vue'),
         meta: {
           ignoreAccess: true,
@@ -84,7 +82,6 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    component: BasicLayout,
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -95,7 +92,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'andonManagement',
-        path: '/andonManagement',
+        path: 'andonManagement',
         component: () => import('#/views/andon/andon.vue'),
         meta: {
           ignoreAccess: true,
@@ -104,7 +101,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'andonProblemAssessment',
-        path: '/andonProblemAssessment',
+        path: 'andonProblemAssessment',
         component: () => import('#/views/andon/andonProblemAssessment.vue'),
         meta: {
           ignoreAccess: true,
@@ -113,7 +110,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'andengFillingOut',
-        path: '/andengFillingOut',
+        path: 'andengFillingOut',
         component: () => import('#/views/andon/andengFillingOut.vue'),
         meta: {
           ignoreAccess: true,
@@ -123,7 +120,6 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    component: BasicLayout,
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -134,7 +130,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'qualityInspection',
-        path: '/qualityInspection',
+        path: 'qualityInspection',
         component: () => import('#/views/poorHandling/qualityInspection.vue'),
         meta: {
           ignoreAccess: true,

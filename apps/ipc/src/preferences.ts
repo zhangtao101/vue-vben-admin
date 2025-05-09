@@ -10,19 +10,25 @@ export const overridesPreferences = defineOverridesPreferences({
   app: {
     // accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
-    layout: 'sidebar-nav',
+    layout: 'mixed-nav',
+    defaultHomePath: '/workFlow/productionOperation',
   },
   sidebar: {
+    autoActivateChild: true,
     collapsedShowTitle: true,
+    fixedButton: false,
     width: 250,
   },
   theme: {
     mode: 'light',
     builtinType: 'custom',
     colorPrimary: 'hsl(179 90% 39%)',
+    semiDarkHeader: true,
     radius: '0.75',
   },
   copyright: {
+    companyName: '',
+    companySiteLink: '/',
     date: '2026',
   },
   widget: {
