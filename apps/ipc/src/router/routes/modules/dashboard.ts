@@ -162,7 +162,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  {
+  /* {
     component: BasicLayout,
     meta: {
       icon: 'lucide:layout-dashboard',
@@ -182,7 +182,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
+  },*/
 ];
 
 export default routes;
