@@ -132,40 +132,73 @@ const workOrderType = ref('2');
 const dataLength = ref(-1);
 
 /**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ * 查询工单管理列表数据
+ * 功能：获取分页工单数据并处理不同模型类型参数
+ * 流程：
+ * 1. 合并父组件传递的查询参数
+ * 2. 处理自动模式下的分页类型参数
+ * 3. 调用工单管理列表接口获取数据
+ * 4. 更新全局数据长度状态
+ * 5. 返回表格组件需要的分页数据结构
+ *
+ * 接口说明：
+ * obtainTheWorkOrderManagementList - 工单管理列表接口，接收参数：
+ *   - ...props.queryParams: 父组件传递的查询条件
+ *   - pageNum: 当前页码
+ *   - pageSize: 每页数据量
+ *   - pagetype: 当modelType=2时附加的分页类型参数
+ *
+ * 数据结构处理：
+ * - 自动模式(modelType=2)下添加pagetype参数区分自动/工单总列表
+ * - dataLength: 存储当前页数据量用于控制上下移按钮状态
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = {
       ...props.queryParams,
     };
+    // 处理自动模式下的分页类型参数
     if (props.queryParams.modelType === '2') {
       params.pagetype = workOrderType.value;
     }
+
     obtainTheWorkOrderManagementList({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
+      ...params, // 合并所有查询条件
+      pageNum: page, // 接口当前页码
+      pageSize, // 接口每页数据量
     })
       .then(({ total, list }) => {
-        dataLength.value = list.length;
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        dataLength.value = list.length; // 更新当前页数据量
         resolve({
-          total,
-          items: list,
+          total, // 总数据量
+          items: list, // 当前页数据集合
         });
       })
       .catch((error) => {
-        reject(error);
+        reject(error); // 异常处理
       });
   });
 }
 
 /**
- * 获取状态文本
- * @param status 状态
- * @returns 状态文本
+ * 获取工单状态文本描述
+ * 功能：将状态码转换为可读的工单状态文本
+ * 流程：
+ * 1. 接收数字类型的状态码
+ * 2. 通过switch-case匹配预定义状态
+ * 3. 返回对应的中文状态描述
+ *
+ * @param status - 工单状态码（0:未开工 1:已开工 3:暂停下线）
+ * @returns 状态文本描述
+ *
+ * 状态说明：
+ * - 0: 工单创建后尚未开始执行
+ * - 1: 工单已开始生产作业
+ * - 3: 工单被主动暂停或异常中断
+ *
+ * 注意：
+ * - 状态码2在业务逻辑中未使用（可能为预留或弃用状态）
+ * - 返回文本直接使用中文，如需国际化需改用$t()方法
  */
 function getStatusText(status: number) {
   switch (status) {
@@ -185,6 +218,23 @@ function getStatusText(status: number) {
 
 // region 进站
 
+/**
+ * 处理工单进站操作
+ * 功能：执行工单进站操作并进行二次确认
+ * 流程：
+ * 1. 弹出确认对话框提示用户确认进站
+ * 2. 确认后调用进站接口提交工单ID
+ * 3. 操作成功时刷新表格数据并显示成功提示
+ *
+ * 接口说明：
+ * inputSheet - 工单进站接口，接收参数：
+ *   - id: 当前工单唯一标识（来自行数据row.id）
+ *
+ * 注意事项：
+ * - 使用ant-design的Modal组件实现操作确认
+ * - 成功提示使用国际化处理的多语言文本
+ * - 标题及取消提示暂为中文硬编码，需根据需求国际化
+ */
 function inputSheetCode(row: any) {
   Modal.confirm({
     cancelText: '取消',
@@ -207,9 +257,24 @@ function inputSheetCode(row: any) {
 
 // endregion
 // region 删除
+
 /**
- * 删除
- * @param row
+ * 处理工单删除操作
+ * 功能：执行工单删除操作并进行二次确认
+ * 流程：
+ * 1. 弹出确认对话框提示用户确认删除
+ * 2. 确认后调用删除接口提交工单ID
+ * 3. 操作成功时刷新表格数据并显示提示
+ *
+ * 接口说明：
+ * deleteWorksheet - 工单删除接口，接收参数：
+ *   - id: 当前工单唯一标识（来自行数据row.id）
+ *
+ * 注意事项：
+ * - 使用ant-design的Modal组件实现操作确认
+ * - 成功提示使用国际化处理的多语言文本
+ * - 删除操作不可逆，需确保二次确认的必要性
+ * - 标题及取消提示暂为中文硬编码，需根据需求国际化
  */
 function delSheetCode(row: any) {
   Modal.confirm({
@@ -230,9 +295,24 @@ function delSheetCode(row: any) {
 }
 // endregion
 // region 移入&移出&上下移
+
 /**
- * 移入
- * @param row
+ * 处理工单移入操作
+ * 功能：执行工单移入操作并进行二次确认
+ * 流程：
+ * 1. 弹出确认对话框提示用户确认移入
+ * 2. 确认后调用移入接口提交工单ID
+ * 3. 操作成功时刷新表格数据并显示提示
+ *
+ * 接口说明：
+ * moveIn - 工单移入接口，接收参数：
+ *   - id: 当前工单唯一标识（来自行数据row.id）
+ *
+ * 注意事项：
+ * - 使用ant-design的Modal组件实现操作确认
+ * - 成功提示使用国际化处理的多语言文本
+ * - 移入操作通常在自动模式下进行工单调度
+ * - 标题及取消提示暂为中文硬编码，需根据需求国际化
  */
 function moveInFun(row: any) {
   Modal.confirm({
@@ -254,8 +334,24 @@ function moveInFun(row: any) {
   });
 }
 /**
- * 移出
- * @param row
+ * 处理工单移出操作
+ * 功能：执行工单移出操作并进行二次确认
+ * 流程：
+ * 1. 弹出确认对话框提示用户确认移出
+ * 2. 确认后调用移出接口提交工单信息
+ * 3. 操作成功时刷新表格数据并显示提示
+ *
+ * 接口说明：
+ * moveOut - 工单移出接口，接收参数：
+ *   - id: 当前工单唯一标识（来自行数据row.id）
+ *   - worksheetCode: 工单编号（来自行数据row.worksheetCode）
+ *
+ * 注意事项：
+ * - 使用ant-design的Modal组件实现操作确认
+ * - 成功提示使用国际化处理的多语言文本
+ * - 移出操作通常用于将工单从当前列表中移除
+ * - 需同时提交工单ID和编号确保接口准确性
+ * - 标题及取消提示暂为中文硬编码，需根据需求国际化
  */
 function moveOutFun(row: any) {
   Modal.confirm({
@@ -279,9 +375,29 @@ function moveOutFun(row: any) {
 }
 
 /**
- * 上下移
- * @param index 当前行索引
- * @param direction 方向
+ * 处理工单顺序调整
+ * 功能：实现工单在列表中的上下位置交换
+ * 流程：
+ * 1. 获取当前表格完整数据
+ * 2. 根据方向计算目标位置索引
+ * 3. 构建交换顺序的接口参数
+ * 4. 调用顺序调整接口提交数据
+ * 5. 操作成功后刷新表格数据
+ *
+ * @param index - 当前操作行索引
+ * @param direction - 移动方向 ('up'上移/'down'下移)
+ *
+ * 接口说明：
+ * moveUpAndDown - 顺序调整接口，接收参数：
+ *   - Array<{id:工单ID, orderNo:新序号}>
+ *   需要同时提交交换位置的两个工单信息：
+ *   - 当前工单ID + 目标位置工单的orderNo
+ *   - 目标工单ID + 当前工单的orderNo
+ *
+ * 注意事项：
+ * - 移动范围已在模板中校验(rowIndex > 0 和 rowIndex < dataLength -1)
+ * - 使用$t实现操作成功的国际化提示
+ * - 接口需要成对提交两个工单的新序号才能实现位置交换
  */
 function sorting(index: number, direction: 'down' | 'up') {
   const data = gridApi.grid.getTableData();

@@ -169,9 +169,23 @@ const gridEvents: any = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // region 查询数据
+
 /**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ * 查询质检标准数据
+ * 功能：根据任务编号获取关联的质检标准信息
+ * 流程：
+ * 1. 调用质检标准查询接口获取原始数据
+ * 2. 为每条数据附加当前任务ID
+ * 3. 转换数据结构适配前端表格显示
+ *
+ * 接口说明：
+ * getAllStandardByCode - 质检标准查询接口，接收参数：
+ *   - recordCode: 当前质检任务编号（来自父组件 recordCode）
+ *
+ * 数据结构处理：
+ * - 为每个质检标准附加 recordId 字段（当前任务ID）
+ * - 返回 total 为数据总条数（未分页）
+ * - items 为处理后的质检标准列表
  */
 function queryData() {
   return new Promise((resolve, _reject) => {
@@ -180,11 +194,11 @@ function queryData() {
     })
       .then((data: any) => {
         data.forEach((item: any) => {
-          item.recordId = props.recordId;
+          item.recordId = props.recordId; // 注入当前任务ID
         });
         resolve({
-          total: data.length,
-          items: data,
+          total: data.length, // 总记录数
+          items: data, // 处理后的质检标准数据
         });
       })
       .catch((error: any) => {
@@ -199,79 +213,114 @@ function queryData() {
 
 // region 操作
 /**
- * 新增行
+ * 新增质检数据行
+ * 功能：在表格中插入新的可编辑空行用于数据录入
+ * 流程：
+ * 1. 调用表格API插入新行
+ * 2. 初始化行数据状态：
+ *   - isEdit: 标记为可编辑状态
+ *   - recordId: 关联当前质检任务ID
+ *
+ * 使用场景：当用户需要添加新的质检项数据时触发
  */
 function addRow() {
   gridApi.grid.insert({
-    isEdit: true,
-    recordId: props.recordId,
+    isEdit: true, // 标记为新增编辑状态
+    recordId: props.recordId, // 绑定当前任务ID
   });
 }
 
 /**
- * 删除行
- * @param row
+ * 删除质检数据行
+ * 功能：从表格中移除指定行数据并进行二次确认
+ * 流程：
+ * 1. 弹出确认对话框进行风险提示
+ * 2. 确认后调用表格API移除指定行
+ * 3. 显示国际化操作结果提示
+ *
+ * @param row - 要删除的行数据对象
+ *
+ * 注意事项：
+ * - 使用ant-design的Modal.confirm实现二次确认
+ * - 实际数据删除需在接口成功后执行（当前为前端移除）
+ * - 成功提示使用国际化处理的多语言文本
  */
 function delRow(row: any) {
-  // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
     cancelText: '取消',
-    // 确认按钮的文本
     okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
       message.warning('已取消!');
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
       gridApi.grid.remove(row);
       message.success($t('common.successfulOperation'));
     },
-    // 确认框的标题文本
     title: '是否确认删除该条数据?',
   });
 }
 
 /**
- * 暂停任务
+ * 暂停质检任务
+ * 功能：暂停当前进行中的质检任务并提交相关数据
+ * 流程：
+ * 1. 弹出确认对话框进行二次确认
+ * 2. 确认后获取当前表格中所有质检数据
+ * 3. 调用任务暂停接口提交数据
+ * 4. 成功时：
+ *   - 显示国际化成功提示
+ *   - 通知父组件关闭当前界面
+ *
+ * 接口说明：
+ * taskStop - 任务暂停接口，接收参数：
+ *   - 当前表格中所有质检数据（tableData）
+ *
+ * 注意事项：
+ * - 使用ant-design的Modal.confirm实现操作确认
+ * - 提交数据包含当前表格所有行数据
+ * - 成功操作后通过emit触发父组件更新
  */
 function stop() {
-  // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
     cancelText: '取消',
-    // 确认按钮的文本
     okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
       message.warning('已取消!');
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
-      // 调用删除按钮的操作，传递按钮的编码和类型参数
       taskStop(gridApi.grid.getTableData().tableData).then(() => {
-        // 如果删除操作成功，显示操作成功的提示信息
-        message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
+        message.success($t('common.successfulOperation'));
         emit('close');
       });
     },
-    // 确认框的标题文本
     title: '是否确认暂停任务?',
   });
 }
+
 /**
- * 完成任务
+ * 提交并完成质检任务
+ * 功能：验证并提交完整的质检数据以完成任务
+ * 流程：
+ * 1. 校验表格中所有质检项的必填字段：
+ *   - 检验数量（允许0值）
+ *   - 不良数量（允许0值）
+ *   - 检验结果
+ * 2. 全部数据合规时弹出确认对话框
+ * 3. 确认后提交当前所有质检数据
+ * 4. 成功时：
+ *   - 显示国际化成功提示
+ *   - 通知父组件关闭当前界面
+ *
+ * 接口说明：
+ * taskClear - 任务完成接口，接收参数：
+ *   - 当前表格中所有质检数据（tableData）
+ *
+ * 注意事项：
+ * - 使用双重循环校验每行数据的完整性
+ * - 允许数值型字段为0但不可为空
+ * - 未通过校验时显示具体错误提示
  */
 function completed() {
   // 需要校验的数据
@@ -285,31 +334,21 @@ function completed() {
     });
   });
   if (ok) {
-    // 弹出确认框，询问用户是否确认删除该行数据
     Modal.confirm({
-      // 取消按钮的文本
       cancelText: '取消',
-      // 确认按钮的文本
       okText: '确认',
-      // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
       okType: 'danger',
 
-      // 用户取消操作时触发的回调函数
       onCancel() {
-        // 弹出警告提示，提示用户取消了删除操作
         message.warning('已取消!');
       },
 
-      // 用户确认操作时触发的回调函数
       onOk() {
-        // 调用删除按钮的操作，传递按钮的编码和类型参数
         taskClear(gridApi.grid.getTableData().tableData).then(() => {
-          // 如果删除操作成功，显示操作成功的提示信息
-          message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
+          message.success($t('common.successfulOperation'));
           emit('close');
         });
       },
-      // 确认框的标题文本
       title: '是否确认完成任务?',
     });
   } else {
@@ -332,34 +371,66 @@ const qualityInspectionItemsMap = ref<any>({});
 const displayTheDialogBox = ref(false);
 const editItem = ref<any>({});
 
+/**
+ * 打开质检项选择对话框
+ * 功能：激活质检项选择界面并初始化编辑行数据
+ * 流程：
+ * 1. 保存当前编辑行数据至响应式对象
+ * 2. 显示质检项选择对话框
+ *
+ * @param row - 当前要编辑的行数据对象
+ *
+ * 使用场景：当用户点击质检项名称列进行编辑时触发
+ */
 function showDialogBox(row: any) {
-  editItem.value = row;
-  displayTheDialogBox.value = true;
+  editItem.value = row; // 存储当前编辑行数据
+  displayTheDialogBox.value = true; // 激活对话框显示状态
 }
 
-// 定义一个函数，用于查询质检项
+/**
+ * 查询质检项数据
+ * 功能：获取当前任务关联的质检项并构建数据结构
+ * 流程：
+ * 1. 调用质检项查询接口获取原始数据
+ * 2. 格式化数据为选择器需要的{label, value}格式
+ * 3. 建立质检项代码与详细信息的映射关系
+ *
+ * 接口说明：
+ * getAllStandard - 质检项查询接口，接收参数：
+ *   - recordCode: 当前质检任务编号（来自父组件 props.recordCode）
+ *
+ * 数据结构处理：
+ * - qualityInspectionItems: 用于下拉选择的选项集合
+ * - qualityInspectionItemsMap: 键值对映射表，便于快速查找质检项详情
+ */
 function queryOfQualityInspectionItems() {
-  // 调用 getAllStandard 函数，传入 recordCode 参数，获取质检项的标准数据
   getAllStandard({
-    recordCode: props.recordCode, // 使用 props 中的 recordCode 作为查询条件
+    recordCode: props.recordCode,
   }).then((data: any) => {
-    // 遍历返回的质检项数据
     data.forEach((item: any) => {
-      // 将每个质检项的名称和代码封装为一个对象，添加到 qualityInspectionItems 列表中
       qualityInspectionItems.value.push({
-        label: `${item.itemName}(${item.itemCode})`, // 质检项名称
-        value: item.itemCode, // 质检项代码
+        label: `${item.itemName}(${item.itemCode})`,
+        value: item.itemCode,
       });
-      // 将质检项的详细信息存储到 qualityInspectionItemsMap 映射中，以质检项代码为键
       qualityInspectionItemsMap.value[item.itemCode] = {
-        ...item, // 展开 item 对象，存储所有字段
+        ...item,
       };
     });
   });
 }
 
 /**
- * 质检项对话框关闭
+ * 关闭质检项选择对话框
+ * 功能：重置质检项选择对话框状态并隐藏界面
+ * 流程：
+ * 1. 清空质检项搜索关键字
+ * 2. 重置当前选中的质检项
+ * 3. 隐藏质检项选择对话框
+ *
+ * 涉及状态变量：
+ * - keyWordsOfQualityInspectionItems: 存储搜索关键词的响应式变量
+ * - selectedQualityInspectionItems: 存储当前选中质检项的响应式变量
+ * - displayTheDialogBox: 控制对话框显示状态的响应式变量
  */
 function theQualityInspectionItemsAreClosed() {
   keyWordsOfQualityInspectionItems.value = '';
@@ -367,7 +438,21 @@ function theQualityInspectionItemsAreClosed() {
   displayTheDialogBox.value = false;
 }
 /**
- * 改变值
+ * 处理质检项选择变更
+ * 功能：将选中的质检项信息同步到当前编辑行
+ * 流程：
+ * 1. 从质检项映射表中获取选中项的完整数据
+ * 2. 将关键字段(itemCode/itemName/judgeDescription)更新到编辑行
+ * 3. 关闭质检项选择对话框
+ *
+ * 关键字段说明：
+ * - itemCode: 质检项编码
+ * - itemName: 质检项名称
+ * - judgeDescription: 检验标准描述
+ *
+ * 实现逻辑：
+ * - 通过选中的质检项代码从映射表获取完整对象
+ * - 批量更新当前编辑行的指定字段
  */
 function handleChange() {
   const keys = ['itemCode', 'itemName', 'judgeDescription'];
@@ -392,41 +477,67 @@ const selectedQualityInspectionTemplate = ref<any>();
 const templateKeywords = ref('');
 // 显示质检模板抽屉
 const show = ref(false);
+
 /**
- * 质检模板查询
+ * 查询质检模板数据
+ * 功能：获取当前任务关联的质检模板并构建数据结构
+ * 流程：
+ * 1. 调用质检模板查询接口获取原始数据
+ * 2. 格式化数据为选择器需要的{label, value}格式
+ * 3. 建立模板代码与模板详情的映射关系
+ *
+ * 接口说明：
+ * getAllQcFormByParam - 质检模板查询接口，接收参数：
+ *   - recordCode: 当前质检任务编号（来自父组件 props.recordCode）
+ *
+ * 数据结构处理：
+ * - qualityInspectionTemplate: 存储模板选择器的选项集合
+ * - qualityInspectionTemplateMap: 键值对映射表，键为模板编码，值为模板包含的质检项集合
  */
 function queryOfQualityInspectionTemplates() {
   getAllQcFormByParam({
     recordCode: props.recordCode,
   }).then((data: any) => {
-    // 遍历返回的质检项数据
     data.forEach((item: any) => {
-      // 将每个质检项的名称和代码封装为一个对象，添加到 qualityInspectionItems 列表中
       qualityInspectionTemplate.value.push({
         label: `${item.formName}(${item.formCode})`,
         value: item.formCode,
       });
       qualityInspectionTemplateMap.value[item.formCode] = [
-        ...item.detailItemDtos, // 存储所有字段
+        ...item.detailItemDtos, // 存储模板包含的所有质检项
       ];
     });
   });
 }
 
 /**
- * 选中质检模板
+ * 处理质检模板选择确认
+ * 功能：应用选中的质检模板数据到当前表格
+ * 流程：
+ * 1. 弹出确认对话框进行二次确认
+ * 2. 确认后加载选中模板对应的质检项数据
+ * 3. 关闭模板选择界面
+ * 4. 显示操作成功提示
+ *
+ * 接口说明：
+ * gridApi.grid.loadData - 表格数据加载方法，接收参数：
+ *   - 选中模板对应的质检项数组
+ *
+ * 数据结构说明：
+ * - qualityInspectionTemplateMap: 存储模板编码与质检项数组的映射关系
+ * - selectedQualityInspectionTemplate: 当前选中的模板编码
+ *
+ * 注意事项：
+ * - 使用ant-design的Modal组件实现操作确认
+ * - 实际业务中需确保模板数据已通过接口验证
+ * - 成功提示使用国际化处理的多语言文本
  */
 function templateChanged() {
   Modal.confirm({
-    // 取消按钮的文本
     cancelText: '取消',
-    // 确认按钮的文本
     okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
     okType: 'danger',
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
       message.warning('已取消!');
     },
     onOk() {
@@ -438,17 +549,24 @@ function templateChanged() {
       close();
       message.success($t('common.successfulOperation'));
     },
-    // 确认框的标题文本
     title: '是否确认选中质检模板?',
   });
 }
 
 /**
- * 挂壁对话框
+ * 关闭质检模板选择对话框
+ * 功能：重置模板选择界面状态并清空选中项
+ * 流程：
+ * 1. 隐藏质检模板选择对话框
+ * 2. 清空当前选中的模板记录
+ *
+ * 涉及状态变量：
+ * - show: 控制模板选择对话框显示状态的响应式变量
+ * - selectedQualityInspectionTemplate: 存储当前选中模板编码的响应式变量
  */
 function close() {
-  show.value = false;
-  selectedQualityInspectionTemplate.value = undefined;
+  show.value = false; // 关闭对话框显示
+  selectedQualityInspectionTemplate.value = undefined; // 重置选中模板
 }
 
 // endregion

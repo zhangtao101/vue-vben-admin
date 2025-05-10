@@ -36,11 +36,28 @@ const loading = ref(false);
 // endregion
 
 /**
- * 查询步骤列表
+ * 查询操作步骤数据
+ * 功能：获取并构建工序步骤数据结构
+ * 流程：
  * 1. 调用接口获取操作功能数据
- * 2. 处理接口返回数据，构建步骤条结构
- * 3. 设置当前激活的步骤索引
- * 4. 更新加载状态
+ * 2. 格式化步骤数据为步骤条组件所需结构
+ * 3. 自动定位当前进行中的步骤
+ * 4. 更新全局加载状态
+ *
+ * 接口说明：
+ * getOpFunctions - 操作功能查询接口，接收参数：
+ *   - opDetailId: 工序详情ID（来自父组件props.detailsId）
+ *   - worksheetCode: 当前工单编号（来自父组件props.worksheetCode）
+ *
+ * 数据结构处理：
+ * - title: 步骤显示名称（取自functionTypeName）
+ * - functionType: 功能类型标识（用于后续操作类型判断）
+ * - description: 动态提示信息（根据currentWorksheet存在性生成）
+ * - id: 步骤唯一标识（用于步骤跟踪）
+ *
+ * 状态控制：
+ * - loading: 控制加载动画显示
+ * - current: 记录当前激活步骤索引
  */
 function querySteps() {
   loading.value = true; // 开始加载，显示加载状态
