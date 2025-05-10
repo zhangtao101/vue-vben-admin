@@ -66,7 +66,6 @@ export function inputSheet(params: any) {
  */
 export function deleteWorksheet(params: any) {
   return requestClient.delete(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/sheet/inout/deleteWorksheet`,
-    params,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/sheet/inout/deleteWorksheet/${params}`,
   );
 }

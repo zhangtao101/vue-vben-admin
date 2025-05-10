@@ -44,15 +44,6 @@ const routes: RouteRecordRaw[] = [
     path: '/workFlow',
     children: [
       {
-        name: 'productionOperation',
-        path: 'productionOperation',
-        component: () => import('#/views/flow/productionOperation.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: $t('menu.productionOperation'),
-        },
-      },
-      {
         name: 'dispatchHomework',
         path: 'dispatchHomework',
         component: () => import('#/views/flow/dispatchHomework.vue'),
@@ -68,6 +59,15 @@ const routes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: $t('menu.workOrderInbound'),
+        },
+      },
+      {
+        name: 'productionOperation',
+        path: 'productionOperation',
+        component: () => import('#/views/flow/productionOperation.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.productionOperation'),
         },
       },
       {

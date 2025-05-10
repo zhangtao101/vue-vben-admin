@@ -279,7 +279,8 @@ function showJobDrawerFun() {
 function closeJobDrawer() {
   showJobDrawer.value = false;
 }
-
+// 提交加载状态
+const submitLoading = ref(false);
 /**
  * 提交
  */
@@ -313,11 +314,16 @@ function submit() {
           isUpdateFlag: item.allowForAdjustment ? 1 : 2,
         });
       });
-      sendListProduct(params).then(() => {
-        message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
-        closeJobDrawer();
-        emit('close');
-      });
+      submitLoading.value = true;
+      sendListProduct(params)
+        .then(() => {
+          message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
+          closeJobDrawer();
+          emit('close');
+        })
+        .finally(() => {
+          submitLoading.value = false;
+        });
     },
 
     // 确认框的标题文本
@@ -447,7 +453,7 @@ defineExpose({
       <Button danger type="primary" @click="closeJobDrawer" class="mr-4">
         {{ $t('common.cancel') }}
       </Button>
-      <Button type="primary" @click="submit">
+      <Button type="primary" @click="submit" :loading="submitLoading">
         {{ $t('common.confirmedDistribution') }}
       </Button>
     </template>

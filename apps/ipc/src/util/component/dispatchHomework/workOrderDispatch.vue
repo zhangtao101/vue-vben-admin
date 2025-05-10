@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, Card, Form, FormItem, Input } from 'ant-design-vue';
+import { Button, Card, Form, FormItem, Input, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getLineProductCheck, searchProduceWorkSheetList } from '#/api';
@@ -246,21 +246,23 @@ function completed() {
   <!-- endregion -->
 
   <!-- region 资源指派 -->
-  <Card
-    class="mb-5"
-    :title="$t('dispatchHomework.resourceAssignment')"
-    v-if="deviceList.length > 0"
-  >
-    <EquipmentResources
-      :workstation-info="item"
-      :work-order-id="`${currentRow.id}`"
-      :is-active="currentRow.updateUsername === item.equipCode"
-      v-for="item of deviceList"
-      :key="item.equipCode"
-      :show="true"
-      @close="completed"
-    />
-  </Card>
+  <Spin :spinning="deviceListLoading">
+    <Card
+      class="mb-5 min-h-40"
+      :title="$t('dispatchHomework.resourceAssignment')"
+      v-if="deviceList.length > 0"
+    >
+      <EquipmentResources
+        :workstation-info="item"
+        :work-order-id="`${currentRow.id}`"
+        :is-active="currentRow.updateUsername === item.equipCode"
+        v-for="item of deviceList"
+        :key="item.equipCode"
+        :show="true"
+        @close="completed"
+      />
+    </Card>
+  </Spin>
   <!-- endregion -->
 </template>
 

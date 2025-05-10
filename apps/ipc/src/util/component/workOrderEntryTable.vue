@@ -220,9 +220,7 @@ function delSheetCode(row: any) {
       message.warning('已取消删除!');
     },
     onOk() {
-      deleteWorksheet({
-        id: row.id,
-      }).then(() => {
+      deleteWorksheet(row.id).then(() => {
         message.success($t('common.successfulOperation'));
         gridApi.reload();
       });
