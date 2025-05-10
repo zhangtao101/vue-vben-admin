@@ -239,17 +239,27 @@ const gridEvents: any = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
- * 选中行
- * @param worksheetCode 工单号
+ * 选中表格中的指定行
+ * @param worksheetCode - 工单号（可选参数，默认为空字符串）
+ * @description
+ * - 如果提供了工单号，则在表格数据中查找对应的行并选中。
+ * - 如果未提供工单号，则默认选中表格的第一行。
+ * - 选中行后，更新选中的工单信息，并触发工艺路线查询。
  */
 function setRadioByKey(worksheetCode: string = '') {
+  // 延迟 500 毫秒执行，确保表格数据已经加载完成
   setTimeout(() => {
+    // 获取表格数据
     const { tableData } = gridApi.grid.getTableData();
+    // 根据工单号查找对应的行，如果未提供工单号，则默认选中第一行
     const row = worksheetCode
-      ? tableData.find((item: any) => item.worksheetCode === worksheetCode)
-      : tableData[0];
+      ? tableData.find((item: any) => item.worksheetCode === worksheetCode) // 查找匹配工单号的行
+      : tableData[0]; // 如果未提供工单号，则选中第一行
+    // 设置表格的选中行
     gridApi.grid.setRadioRow(row);
+    // 更新选中的工单信息
     theSelectedWorkOrder.value = row;
+    // 根据选中的工单号查询工艺路线
     queryProcess(selectedWorkstation.value, row.worksheetCode);
   }, 500);
 }
@@ -629,21 +639,37 @@ function workStepExecutionContractionChange() {
 // endregion
 
 // region 页面缩放
-// 缩放比例
+// 定义一个响应式变量，用于存储当前的缩放比例，默认值为 80（表示 80% 的缩放比例）
 const zoomSize = ref(80);
-// 缩放对象
+
+// 定义一个响应式变量，用于存储需要缩放的页面对象（DOM 元素）
 const page = ref();
+
+/**
+ * 设置页面的缩放比例
+ * @param size - 缩放比例值（百分比形式，如 80 表示 80%）
+ * @description
+ * - 该函数通过修改页面对象的 `style.zoom` 属性来实现缩放效果。
+ * - `size` 参数是一个数字，表示缩放比例的百分比值。
+ */
 function zoom(size: any) {
+  // 将缩放比例值设置到页面对象的 `style.zoom` 属性中，格式为百分比字符串
   page.value.style.zoom = `${size}%`;
 }
 
 // endregion
 
+// 在组件挂载完成后执行的操作
 onMounted(() => {
+  // 查询生产线列表
   queryListOfProductionLines();
+  // 根据当前的缩放比例值（zoomSize.value）设置页面的缩放
   zoom(zoomSize.value);
 });
+
+// 在组件卸载前执行的操作
 onBeforeUnmount(() => {
+  // 将页面缩放比例重置为 100%，确保组件卸载后页面恢复默认缩放比例
   zoom(100);
 });
 </script>
