@@ -91,7 +91,7 @@ onMounted(() => {
           {{ $t('productionOperation.equipmentAvailable') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFlagName }}
+          {{ details.readyFlagName || '暂无' }}
         </span>
       </div>
     </div>
@@ -102,7 +102,7 @@ onMounted(() => {
           {{ $t('productionOperation.equipmentPlugging') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.nextFuncEnableName }}
+          {{ details.nextFuncEnableName || '暂无' }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -111,7 +111,7 @@ onMounted(() => {
           {{ $t('productionOperation.cloggingCause') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.nextFuncEnableReason }}
+          {{ details.nextFuncEnableReason || '暂无' }}
         </span>
       </div>
     </div>
@@ -122,7 +122,7 @@ onMounted(() => {
           {{ $t('productionOperation.deviceStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.machineStatusName }}
+          {{ details.machineStatusName || '暂无' }}
         </span>
       </div>
     </div>
