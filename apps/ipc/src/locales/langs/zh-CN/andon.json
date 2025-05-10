@@ -41,5 +41,6 @@
   "drafts": "草稿箱",
   "error": "该项为必填项",
   "processingResult": "处理结果",
-  "toBeDetermined": "待判定"
+  "toBeDetermined": "待判定",
+  "pleaseCompleteTheRequiredFields": "请填写所需的栏位"
 }

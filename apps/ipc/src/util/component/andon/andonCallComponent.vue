@@ -9,6 +9,7 @@ import {
   Descriptions,
   DescriptionsItem,
   Input,
+  message,
   RadioGroup,
   Select,
   Spin,
@@ -287,11 +288,30 @@ const getValue = () => {
   if (uploadFile.value.length > 0) {
     filePath = uploadFile.value[0].response.data;
   }
-  return {
-    ...params.value,
-    photo: filePath,
-    place: props.place,
-  };
+  const requiredFields = ['equipCode', 'andonErrorType', 'andonErrorCode'];
+  const requiredFieldsLabels = [
+    'equipmentNumber',
+    'exceptionType',
+    'specificQuestions',
+  ];
+  let isError = false;
+  for (let i = 0, size = requiredFields.length; i < size; i++) {
+    if (!params.value[requiredFields[i] as string]) {
+      message.error(
+        `${$t('andon.pleaseCompleteTheRequiredFields')}--${$t(`andon.${requiredFieldsLabels[i]}`)}`,
+      );
+      isError = true;
+    }
+  }
+  if (isError) {
+    throw new Error($t('andon.pleaseCompleteTheRequiredFields'));
+  } else {
+    return {
+      ...params.value,
+      photo: filePath,
+      place: props.place,
+    };
+  }
 };
 
 /**
@@ -376,7 +396,7 @@ onMounted(() => {
       </template>
     </DescriptionsItem>
     <!-- 设备编号 -->
-    <DescriptionsItem :label="$t('andon.equipmentNumber')">
+    <DescriptionsItem :label="$t('andon.equipmentNumber')" class="required">
       <!--      <template v-if="type === 1">
 
       </template>
@@ -421,7 +441,7 @@ onMounted(() => {
       />
     </DescriptionsItem>
     <!-- 异常类型 -->
-    <DescriptionsItem :label="$t('andon.exceptionType')">
+    <DescriptionsItem :label="$t('andon.exceptionType')" class="required">
       <Select
         v-model:value="params.andonErrorType"
         :options="exceptionType"
@@ -429,7 +449,11 @@ onMounted(() => {
       />
     </DescriptionsItem>
     <!-- 具体问题 -->
-    <DescriptionsItem :label="$t('andon.specificQuestions')" v-if="place !== 1">
+    <DescriptionsItem
+      :label="$t('andon.specificQuestions')"
+      v-if="place !== 1"
+      class="required"
+    >
       <Select
         v-model:value="params.andonErrorCode"
         show-search
@@ -460,4 +484,13 @@ onMounted(() => {
   </Descriptions>
 </template>
 
-<style scoped></style>
+<style scoped>
+:deep(.required) {
+  &.ant-descriptions-item-label span {
+    &::before {
+      color: #f5222d;
+      content: ' *';
+    }
+  }
+}
+</style>
