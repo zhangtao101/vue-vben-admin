@@ -61,8 +61,32 @@ const details = ref<any>({});
  * 加载中
  */
 const spinning = ref<any>(false);
+
 /**
- * 查询数据
+ * 查询设备清洁信息
+ * 功能：获取设备清洁相关数据并更新视图状态
+ * 流程：
+ * 1. 设置加载状态为true（显示加载动画）
+ * 2. 调用设备清洁信息查询接口
+ * 3. 接口返回后更新详情数据
+ * 4. 无论成功失败都关闭加载状态
+ *
+ * 接口说明：
+ * equipmentCleaningInformation - 设备清洁信息查询接口
+ * 参数结构：
+ * {
+ *   workstationCode: 工作中心编号,
+ *   equipCode: 设备编号,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序ID,
+ *   functionId: 工步ID
+ * }
+ *
+ * 注意事项：
+ * - 依赖props传递设备/工单相关标识参数
+ * - 使用finally保证加载状态始终会被重置
+ * - 直接更新响应式对象details实现视图自动更新
+ * - 未处理接口异常情况，需根据业务需求补充错误处理
  */
 function queryData() {
   spinning.value = true;
@@ -82,8 +106,29 @@ function queryData() {
 }
 
 /**
- * 提交
- * @param bol 是否为手动清空
+ * 处理设备清洁操作提交
+ * 功能：根据操作类型执行设备重新清洁或人工完工操作
+ * 流程：
+ * 1. 构建基本请求参数（工作站/设备/工单信息）
+ * 2. 根据操作类型选择对应接口：
+ *   - true: 调用手动清洁设备接口
+ *   - false: 调用人工完工接口
+ * 3. 提交成功后刷新设备清洁信息
+ *
+ * @param bol - 操作类型标识
+ *             true: 手动重新清洁
+ *             false: 人工结束作业
+ *
+ * 接口说明：
+ * - manualCleaningOfTheEquipment     手动清洁设备接口
+ * - manuallyFinishTheCleaning       人工完工接口
+ *
+ * 注意事项：
+ * - 参数包含nextTemplateCode用于指定后续工序模板
+ * - 成功后会重新获取最新设备清洁状态
+ * - 使用国际化机制处理成功提示信息
+ * - 当前未处理接口异常情况，需补充错误处理逻辑
+ * - 按钮状态需与details.cleanlinessFlag联动控制
  */
 function submit(bol: boolean) {
   const params = {
@@ -165,7 +210,11 @@ onMounted(() => {
           {{ $t('productionOperation.cleaningTimeout') }}
         </span>
         <span :class="getValueClass()">
-          {{ $t('productionOperation.no') }}
+          {{
+            details.overTimeFlag === 1
+              ? $t('productionOperation.overtime')
+              : $t('productionOperation.notTimeout')
+          }}
         </span>
       </div>
       <div class="float-right mb-4 mr-8 inline-block">

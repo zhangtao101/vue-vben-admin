@@ -60,8 +60,32 @@ const details = ref<any>({});
  * 加载中
  */
 const spinning = ref<any>(false);
+
 /**
- * 查询数据
+ * 查询配方分配信息
+ * 功能：获取配方分配相关数据并更新视图状态
+ * 流程：
+ * 1. 设置加载状态为true（显示加载动画）
+ * 2. 调用配方分配信息查询接口
+ * 3. 接口返回后更新详情数据
+ * 4. 无论成功失败都关闭加载状态
+ *
+ * 接口说明：
+ * queryOfFormulaDistributionInformation - 配方分配信息查询接口
+ * 参数结构：
+ * {
+ *   workstationCode: 工作中心编号,
+ *   equipCode: 设备编号,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序ID,
+ *   functionId: 工步ID
+ * }
+ *
+ * 注意事项：
+ * - 依赖props传递设备/工单相关标识参数
+ * - 使用finally保证加载状态始终会被重置
+ * - 直接更新响应式对象details实现视图自动更新
+ * - 未处理接口异常情况，需根据业务需求补充错误处理
  */
 function queryData() {
   spinning.value = true;
@@ -80,6 +104,33 @@ function queryData() {
     });
 }
 
+/**
+ * 处理配方下发操作
+ * 功能：提交配方信息至后端服务完成下发流程
+ * 流程：
+ * 1. 构建请求参数（包含设备/工单标识及目标配方号）
+ * 2. 调用配方下发接口提交数据
+ * 3. 成功后刷新当前配方分配信息
+ *
+ * 接口说明：
+ * theFormulaHasBeenIssued - 配方下发接口
+ * 参数结构：
+ * {
+ *   workstationCode: 工作中心编号,
+ *   equipCode: 设备编号,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序ID,
+ *   functionId: 工步ID,
+ *   nextTemplateCode: 目标配方号
+ * }
+ *
+ * 注意事项：
+ * - 依赖details中nextTemplateCode作为下发目标配方
+ * - 成功后会重新获取最新配方分配状态
+ * - 使用国际化机制处理成功提示信息
+ * - 未处理接口异常情况，需补充错误处理逻辑
+ * - 与queryData函数配合实现数据刷新机制
+ */
 function submit() {
   theFormulaHasBeenIssued({
     workstationCode: props.workstationCode,

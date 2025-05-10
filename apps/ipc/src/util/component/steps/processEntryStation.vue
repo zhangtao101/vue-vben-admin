@@ -57,8 +57,33 @@ const details = ref<any>({});
  * 加载中
  */
 const spinning = ref<any>(false);
+
 /**
- * 查询数据
+ * 查询工序入站信息
+ * 功能：获取当前工序的入站状态数据
+ * 流程：
+ * 1. 开启加载状态指示
+ * 2. 构造包含工位、设备等上下文参数的请求对象
+ * 3. 调用工序入站信息查询接口
+ * 4. 存储返回数据到响应式对象
+ * 5. 始终关闭加载状态指示
+ *
+ * 接口参数说明：
+ * processEntryInformationQuery - 工序入站信息查询接口
+ * {
+ *   workstationCode: 工作站编码,
+ *   equipCode: 设备编码,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序绑定ID,
+ *   functionId: 工步ID
+ * }
+ *
+ * 注意事项：
+ * - 使用spinning控制加载状态指示器
+ * - 依赖props传入的工位/设备/工单等上下文参数
+ * - 接口返回数据直接存储到details响应式对象
+ * - 当前未处理接口异常情况，需补充错误处理逻辑
+ * - 使用finally确保无论成功失败都会关闭加载状态
  */
 function queryData() {
   spinning.value = true;
