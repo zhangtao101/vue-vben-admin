@@ -108,7 +108,7 @@ onMounted(() => {
           {{ $t('productionOperation.implementationStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFlagName }}
+          {{ details.lastFlagName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -117,7 +117,7 @@ onMounted(() => {
           {{ $t('productionOperation.deviceStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.machineStatusName }}
+          {{ details.machineStatusName || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -139,7 +139,7 @@ onMounted(() => {
           {{ $t('productionOperation.targetRecipeNumber') }}
         </label>
         <Input
-          v-model:value="details.nexttemplateCode"
+          v-model:value="details.nextTemplateCode"
           class="w-56 leading-[30px]"
           id="targetRecipeNumber"
         />

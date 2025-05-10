@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onBeforeUnmount, onMounted, ref } from 'vue';
+import { h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import {
@@ -657,6 +657,9 @@ function zoom(size: any) {
   page.value.style.zoom = `${size}%`;
 }
 
+watch(theSelectedOperation, () => {
+  currentWorkingStep.value = {};
+});
 // endregion
 
 // 在组件挂载完成后执行的操作

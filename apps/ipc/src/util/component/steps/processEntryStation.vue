@@ -91,7 +91,7 @@ onMounted(() => {
           {{ $t('productionOperation.implementationStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFlagName || '暂未定义' }}
+          {{ details.lastFlagName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -100,7 +100,7 @@ onMounted(() => {
           {{ $t('productionOperation.deviceStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.machineStatusName || '暂未定义' }}
+          {{ details.machineStatusName || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -111,7 +111,7 @@ onMounted(() => {
           {{ $t('productionOperation.workOrderNumber') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.currentJobId || '暂未定义' }}
+          {{ details.currentJobId || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -120,7 +120,7 @@ onMounted(() => {
           {{ $t('productionOperation.pendingWorkOrder') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.nextJobId || '暂未定义' }}
+          {{ details.nextJobId || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -131,7 +131,7 @@ onMounted(() => {
           {{ $t('productionOperation.productName') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.productName || '暂未定义' }}
+          {{ details.productName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -140,7 +140,7 @@ onMounted(() => {
           {{ $t('productionOperation.productNumber') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.productCode || '暂未定义' }}
+          {{ details.productCode || $t('productionOperation.none') }}
         </span>
       </div>
     </div>

@@ -116,7 +116,7 @@ onMounted(() => {
           {{ $t('productionOperation.implementationStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFlagName || '暂未定义' }}
+          {{ details.lastFlagName || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -137,7 +137,7 @@ onMounted(() => {
           {{ $t('productionOperation.emptyState') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.clearlinessFlagName || '暂未定义' }}
+          {{ details.clearlinessFlagName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -146,7 +146,7 @@ onMounted(() => {
           {{ $t('productionOperation.emptyTimer') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.clearMinute || '暂未定义' }}
+          {{ details.clearMinute || $t('productionOperation.none') }}
         </span>
       </div>
     </div>

@@ -68,6 +68,7 @@ function querySteps() {
   })
     .then((data) => {
       stepBar.value = []; // 清空步骤条数据
+      let i = -1; // 初始化步骤索引
       // 遍历接口返回数据，构建步骤条结构
       data.forEach((step: any, index: number) => {
         stepBar.value.push({
@@ -80,9 +81,13 @@ function querySteps() {
         });
         // 设置当前激活步骤索引
         if (step.currentWorksheet) {
+          i = index;
           current.value = index; // 当步骤有进行中的工单时设为当前步骤
         }
       });
+      if (i === -1) {
+        current.value = 0;
+      }
     })
     .finally(() => {
       loading.value = false; // 结束加载，隐藏加载状态
@@ -92,14 +97,23 @@ function querySteps() {
 watch(
   () => props.detailsId,
   () => {
+    current.value = -1;
     querySteps();
   },
 );
 watch(current, () => {
-  emit('currentChange', {
-    id: stepBar.value[current.value].id,
-    type: stepBar.value[current.value].functionType,
-  });
+  let params: any = {};
+  if (
+    stepBar.value &&
+    stepBar.value.length > 0 &&
+    stepBar.value[current.value]
+  ) {
+    params = {
+      id: stepBar.value[current.value].id,
+      type: stepBar.value[current.value].functionType,
+    };
+  }
+  emit('currentChange', params);
 });
 
 onMounted(() => {

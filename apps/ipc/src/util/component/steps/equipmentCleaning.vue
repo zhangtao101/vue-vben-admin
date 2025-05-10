@@ -117,7 +117,7 @@ onMounted(() => {
           {{ $t('productionOperation.implementationStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFlagName || '暂无' }}
+          {{ details.lastFlagName || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -138,7 +138,7 @@ onMounted(() => {
           {{ $t('productionOperation.cleanCondition') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.cleanlinessFlagName || '暂无' }}
+          {{ details.cleanlinessFlagName || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
