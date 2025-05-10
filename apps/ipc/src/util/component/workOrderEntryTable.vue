@@ -435,8 +435,21 @@ const reassignmentItem = ref<any>({});
 // 改派子组件对象
 const equipmentResourcesRef = ref<any>();
 /**
- * 改派
- * @param row
+ * 处理工单改派操作
+ * 功能：初始化改派数据并触发改派界面
+ * 流程：
+ * 1. 缓存当前行工单数据至响应式对象
+ * 2. 调用设备资源子组件的抽屉展示方法
+ *
+ * @param row - 当前操作行数据，包含工单完整信息
+ *
+ * 组件说明：
+ * equipmentResourcesRef - 设备资源子组件引用，提供改派界面交互能力
+ *
+ * 注意事项：
+ * - 改派操作需要设备资源子组件协同完成
+ * - 改派完成后会触发@close事件并刷新表格数据
+ * - 使用对象展开运算符(...)实现数据解构传递
  */
 function reassignment(row: any) {
   reassignmentItem.value = {
