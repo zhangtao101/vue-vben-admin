@@ -337,6 +337,7 @@ onMounted(() => {
           <Button type="primary" @click="gridApi.reload()" class="mr-4">
             {{ $t('common.search') }}
           </Button>
+          <!--          <ScanTheCode />-->
         </FormItem>
       </Form>
     </Card>

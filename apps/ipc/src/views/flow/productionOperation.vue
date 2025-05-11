@@ -5,6 +5,7 @@ import { h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import {
+  IconifyIcon,
   MdiChevronDown,
   MdiChevronUp,
   MdiEyeOutline,
@@ -43,6 +44,7 @@ import {
   listUserUpInfo,
   obtainTheListOfProcessEquipment,
   obtainTheWorkOrderList,
+  sheetReady,
   sheetWorking,
   userDown,
   userUp,
@@ -188,6 +190,12 @@ const gridOptions: VxeGridProps<any> = {
       sortable: true,
     },
     {
+      field: 'readyStateName',
+      title: '就绪状态',
+      minWidth: 120,
+      sortable: true,
+    },
+    {
       field: 'planNumber',
       title: '计划数量',
       minWidth: 120,
@@ -207,6 +215,15 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 120,
       slots: {
         default: 'workOrderOperation',
+      },
+      fixed: 'right',
+    },
+    {
+      field: 'readyOperation',
+      title: '就绪操作',
+      minWidth: 150,
+      slots: {
+        default: 'readyOperation',
       },
       fixed: 'right',
     },
@@ -306,6 +323,44 @@ function query() {
 }
 
 // endregion
+
+// endregion
+
+// region 就绪操作
+
+/**
+ * 处理就绪状态变更的确认操作
+ * @param row - 当前操作的行数据，包含工单详细信息
+ * @param type - 操作类型 (1: 就绪 / 2: 撤回就绪)
+ * @description 该函数用于：
+ * 1. 显示确认对话框询问用户是否执行操作
+ * 2. 当用户确认后调用 sheetReady 接口提交状态变更
+ * 3. 操作成功后刷新表格数据并显示提示信息
+ */
+function ready(row: any, type: number) {
+  Modal.confirm({
+    cancelText: '取消', // 取消按钮文本
+    okText: '确认', // 确认按钮文本
+    okType: 'danger', // 确认按钮危险样式
+    onCancel() {
+      // 取消操作回调
+      message.warning('已取消操作!');
+    },
+    onOk() {
+      // 确认操作回调
+      sheetReady({
+        // 调用就绪状态接口
+        id: row.id, // 工单ID来自当前行数据
+        readyState: type, // 使用传入的操作类型
+      }).then(() => {
+        // 显示操作成功的提示信息
+        message.success($t('common.successfulOperation'));
+        gridApi.reload(); // 重新加载表格数据
+      });
+    },
+    title: '是否确认该操作?', // 对话框标题
+  });
+}
 
 // endregion
 
@@ -793,6 +848,28 @@ onBeforeUnmount(() => {
                   <DownOutlined class="ml-4 inline-block" />
                 </Button>
               </Dropdown>
+            </Tooltip>
+          </template>
+          <template #readyOperation="{ row }">
+            <!-- 就绪按钮 -->
+            <Tooltip v-if="row.readyState === 0">
+              <template #title>{{ $t('common.beInOrder') }}</template>
+              <Button type="link" @click="ready(row, 1)">
+                <IconifyIcon
+                  icon="mdi:timer-sand-complete"
+                  class="inline-block size-6"
+                />
+              </Button>
+            </Tooltip>
+            <!-- 就绪撤回 -->
+            <Tooltip v-if="row.readyState === 1">
+              <template #title>{{ $t('common.readyToWithdraw') }}</template>
+              <Button type="link" @click="ready(row, 2)">
+                <IconifyIcon
+                  icon="fluent-mdl2:return-to-session"
+                  class="inline-block size-6"
+                />
+              </Button>
             </Tooltip>
           </template>
           <template #workOrderOperation="{ row }">

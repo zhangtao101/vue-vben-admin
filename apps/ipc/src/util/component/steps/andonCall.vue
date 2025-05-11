@@ -6,7 +6,7 @@ import { $t } from '@vben/locales';
 
 import { Button, Drawer, message, Space, Tooltip } from 'ant-design-vue';
 
-import { handAddition, onLightCall } from '#/api';
+import { abnormalFilling, handAddition, onLightCall } from '#/api';
 import AndonCallComponent from '#/util/component/andon/andonCallComponent.vue';
 
 defineProps({
@@ -105,7 +105,9 @@ function showAndonCall(type: number) {
 function submit() {
   const params = andonCall.value.getValue();
   params.place = andonCallType.value === 1 ? 2 : 1;
-  handAddition(params).then(() => {
+  const ob =
+    params.place === 1 ? handAddition(params) : abnormalFilling(params);
+  ob.then(() => {
     close();
     message.success($t('common.successfulOperation'));
   });
@@ -211,7 +213,7 @@ function close() {
         </Button>
         <template v-if="andonCallType === 1">
           <!-- 暂存 -->
-          <Button type="primary" @click="saveDraft(3)">
+          <Button type="primary" @click="saveDraft()">
             {{ $t('common.temporaryStorage') }}
           </Button>
         </template>

@@ -72,5 +72,8 @@
   "taskCompleted": "任务完成",
   "taskSuspended": "任务暂存",
   "temporaryStorage": "暂存",
-  "submit": "提交"
+  "submit": "提交",
+  "scanTheCode": "扫码",
+  "beInOrder": "就绪",
+  "readyToWithdraw": "就绪撤回"
 }

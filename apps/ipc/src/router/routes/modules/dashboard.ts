@@ -72,7 +72,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'workOrderOutbound',
-        path: '/workOrderOutbound',
+        path: 'workOrderOutbound',
         component: () => import('#/views/flow/workOrderOutbound.vue'),
         meta: {
           ignoreAccess: true,
