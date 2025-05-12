@@ -109,7 +109,7 @@ const typeOfOperation: {
   value: number;
 }[] = [
   {
-    label: '工序操作',
+    label: '工序过程操作',
     value: 1,
   },
   {
@@ -118,11 +118,11 @@ const typeOfOperation: {
   },
   {
     label: '安灯',
-    value: 3,
+    value: 4,
   },
   /* {
-    label: '资源状态',
-    value: 4,
+    label: 'SOP查看',
+    value: 3,
   },*/
 ];
 
