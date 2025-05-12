@@ -120,10 +120,10 @@ const typeOfOperation: {
     label: '安灯',
     value: 3,
   },
-  {
+  /* {
     label: '资源状态',
     value: 4,
-  },
+  },*/
 ];
 
 // region 查询数据及初始化
