@@ -129,41 +129,65 @@ const gridOptions: VxeGridProps<any> = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 /**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ * 查询工作站已派工单列表
+ * 功能：根据工作站编码获取已派发的工单数据
+ * 流程：
+ * 1. 从父组件属性中获取工作站设备编码
+ * 2. 调用工作站工单列表接口获取数据
+ * 3. 转换接口数据结构适配前端表格
+ *
+ * 接口说明：
+ * getWorksheetListByWorkstationCode - 工作站工单查询接口，接收参数：
+ *   - workstationCode: 工作站设备编码（来自父组件 workstationInfo.equipCode）
+ *
+ * 数据结构：
+ * - workSheetCode: 工单编号
+ * - productName: 产品名称
+ * - productCode: 产品编号
+ * - customerName: 客户名称
+ * - planDateStart: 预计开始时间
  */
 function queryData() {
   return new Promise((resolve, reject) => {
     getWorksheetListByWorkstationCode({
-      workstationCode: props.workstationInfo.equipCode,
+      workstationCode: props.workstationInfo.equipCode, // 从父组件获取工作站编码
     })
       .then((data) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
-          total: data.length,
-          items: data,
+          total: data.length, // 总记录数（未分页）
+          items: data, // 工单列表数据
         });
       })
       .catch((error) => {
-        reject(error);
+        reject(error); // 异常传递
       });
   });
 }
 // 显示工单列表抽屉
 const showWorkOrderListDrawer = ref(false);
+
 /**
- * 显示已派工单列表面板
- * @param _row
+ * 打开已派工单列表面板
+ * 功能：显示当前工作站已派发的工单列表
+ * 流程：
+ * 1. 刷新工单列表数据
+ * 2. 打开抽屉组件显示列表
+ *
+ * @param _row - 预留参数，当前未使用（保持与事件触发参数的兼容性）
  */
 function displaysTheWorkOrderColumnTable(_row: any) {
-  gridApi.reload();
-  showWorkOrderListDrawer.value = true;
+  gridApi.reload(); // 重新加载工单列表数据
+  showWorkOrderListDrawer.value = true; // 控制工单列表抽屉显示状态
 }
+
 /**
  * 关闭已派工单列表面板
+ * 功能：隐藏当前工作站工单列表的抽屉组件
+ * 操作：
+ * 1. 更新抽屉显示状态为隐藏
  */
 function closeTheWorkOrderList() {
-  showWorkOrderListDrawer.value = false;
+  showWorkOrderListDrawer.value = false; // 控制工单列表抽屉的显示状态
 }
 // endregion
 
@@ -246,116 +270,163 @@ const [JobGrid, jobGridApi] = useVbenVxeGrid({
 });
 
 /**
- * 查询数据
+ * 查询作业站设备列表数据
+ * 功能：根据工作站编码获取关联设备资源信息
+ * 流程：
+ * 1. 从父组件属性中获取工作站设备编码
+ * 2. 调用设备列表接口获取数据
+ * 3. 转换接口数据结构适配前端表格
+ *
+ * 接口说明：
+ * getAllEquipList - 设备资源查询接口，接收参数：
+ *   - workstationCode: 工作站设备编码（来自父组件 workstationInfo.equipCode）
+ *
+ * 数据结构：
+ * - equipmentName: 设备名称
+ * - model: 设备型号
+ * - worksheetNumber: 已派工单数量
+ * - capacityRate: 设备负荷率
+ * - location: 设备位置
  */
 function queryJobData() {
   return new Promise((resolve, reject) => {
     getAllEquipList({
-      workstationCode: props.workstationInfo.equipCode,
+      workstationCode: props.workstationInfo.equipCode, // 从父组件获取工作站编码
     })
       .then((data) => {
         resolve({
-          total: data.length,
-          items: data,
+          total: data.length, // 总设备数量（未分页）
+          items: data, // 设备列表数据
         });
       })
       .catch((error) => {
-        reject(error);
+        reject(error); // 异常传递
       });
   });
 }
 // 显示工单列表抽屉
 const showJobDrawer = ref(false);
+
 /**
- * 显示已派工单列表面板
+ * 打开作业站分配面板
+ * 功能：显示设备资源分配界面
+ * 流程：
+ * 1. 重新加载作业站设备列表数据
+ * 2. 打开作业站分配抽屉组件
+ *
+ * 使用场景：当用户需要查看或分配工作站设备资源时触发
  */
 function showJobDrawerFun() {
-  jobGridApi.reload();
-  showJobDrawer.value = true;
+  jobGridApi.reload(); // 刷新设备列表数据
+  showJobDrawer.value = true; // 打开作业站分配抽屉
 }
+
 /**
  * 关闭已派工单列表面板
  */
 function closeJobDrawer() {
   showJobDrawer.value = false;
 }
+// 提交加载状态
+const submitLoading = ref(false);
 
 /**
- * 提交
+ * 提交设备资源分配
+ * 功能：执行设备资源的批量派发操作
+ * 流程：
+ * 1. 弹出确认对话框进行二次确认
+ * 2. 确认后组装提交参数：
+ *   - 工单ID
+ *   - 改派ID（如果存在）
+ *   - 选中的设备列表（包含设备编码和调整标志）
+ * 3. 调用批量派发接口提交数据
+ * 4. 成功时：
+ *   - 显示操作成功提示
+ *   - 关闭分配抽屉
+ *   - 通知父组件更新
+ * 5. 无论成功失败都重置提交状态
+ *
+ * 接口说明：
+ * sendListProduct - 批量设备派发接口，接收参数：
+ *   - id: 当前工单ID
+ *   - sendId: 改派ID（可选）
+ *   - equipCodeList: 设备编码列表（包含equipCode和isUpdateFlag）
  */
 function submit() {
   Modal.confirm({
-    // 取消按钮的文本
     cancelText: '取消',
-    // 确认按钮的文本
     okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
       message.warning('已取消操作!');
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
       const params: any = {
         id: props.workOrderId,
         equipCodeList: [],
       };
+      // 处理改派场景参数
       if (props.sendId) {
         params.sendId = props.sendId;
       }
+      // 遍历选中的设备记录
       jobGridApi.grid.getCheckboxRecords().forEach((item: any) => {
         params.equipCodeList.push({
           equipCode: item.equipmentCode,
-          isUpdateFlag: item.allowForAdjustment ? 1 : 2,
+          isUpdateFlag: item.allowForAdjustment ? 1 : 2, // 转换开关状态为接口标识
         });
       });
-      sendListProduct(params).then(() => {
-        message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
-        closeJobDrawer();
-        emit('close');
-      });
+      submitLoading.value = true;
+      sendListProduct(params)
+        .then(() => {
+          message.success($t('common.successfulOperation'));
+          closeJobDrawer();
+          emit('close'); // 通知父组件关闭弹窗
+        })
+        .finally(() => {
+          submitLoading.value = false; // 重置加载状态
+        });
     },
-
-    // 确认框的标题文本
     title: '是否确认派发?',
   });
 }
 
 /**
- * 群发
+ * 执行工单群发操作
+ * 功能：将当前工单派发给整个工作站的所有设备
+ * 流程：
+ * 1. 弹出确认对话框进行风险提示
+ * 2. 确认后调用群发接口提交参数：
+ *   - equipCode: 工作站设备编码
+ *   - id: 当前工单ID
+ * 3. 成功时：
+ *   - 显示国际化成功提示
+ *   - 关闭作业站分配抽屉
+ *   - 通知父组件更新界面
+ *
+ * 接口说明：
+ * sendProduct - 工单群发接口，接收参数：
+ *   - equipCode: 工作站设备编码（来自父组件 workstationInfo）
+ *   - id: 当前处理的工单ID
  */
 function massSending() {
   Modal.confirm({
-    // 取消按钮的文本
     cancelText: '取消',
-    // 确认按钮的文本
     okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
       message.warning('已取消操作!');
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
       sendProduct({
-        equipCode: props.workstationInfo.equipCode,
-        id: props.workOrderId,
+        equipCode: props.workstationInfo.equipCode, // 当前工作站编码
+        id: props.workOrderId, // 父组件传递的工单ID
       }).then(() => {
-        message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
-        closeJobDrawer();
-        emit('close');
+        message.success($t('common.successfulOperation'));
+        closeJobDrawer(); // 关闭资源分配抽屉
+        emit('close'); // 触发父组件关闭弹窗
       });
     },
-
-    // 确认框的标题文本
     title: '是否确认派发?',
   });
 }
@@ -447,7 +518,7 @@ defineExpose({
       <Button danger type="primary" @click="closeJobDrawer" class="mr-4">
         {{ $t('common.cancel') }}
       </Button>
-      <Button type="primary" @click="submit">
+      <Button type="primary" @click="submit" :loading="submitLoading">
         {{ $t('common.confirmedDistribution') }}
       </Button>
     </template>

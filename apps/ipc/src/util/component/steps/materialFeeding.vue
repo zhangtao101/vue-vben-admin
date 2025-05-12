@@ -145,8 +145,36 @@ const gridEvents: any = {};
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 const details = ref<any>({});
+
 /**
- * 查询物料列表
+ * 查询物料投料信息
+ * 功能：获取当前工位的物料投料数据并格式化表格数据
+ * 流程：
+ * 1. 构造包含工位、设备、工单等参数的请求对象
+ * 2. 调用分切物料信息查询接口
+ * 3. 分离返回数据中的明细列表和其他属性
+ * 4. 转换接口数据适配vxe-table格式
+ *
+ * 接口参数说明：
+ * materialFeedingInformationQuerySlitting - 分切物料信息查询接口
+ * {
+ *   workstationCode: 工作站编码,
+ *   equipCode: 设备编码,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序绑定ID,
+ *   functionId: 工步ID,
+ *   feedtype: 投料类型(固定值1)
+ * }
+ *
+ * 返回数据处理：
+ * - detailDtos: 物料明细列表（用于表格行数据）
+ * - 其他属性: 存储到details响应式对象中
+ *
+ * 注意事项：
+ * - 依赖props传入的工位/设备/工单等上下文参数
+ * - feedtype参数固定为1表示分切类型
+ * - 表格数据适配需返回{total, items}格式
+ * - 使用Promise包装接口调用便于表格控件使用
  */
 function queryData() {
   return new Promise((resolve, reject) => {
@@ -171,6 +199,22 @@ function queryData() {
   });
 }
 
+/**
+ * 获取投料校验状态文本
+ * 功能：将数值型校验状态转换为可读文本
+ *
+ * @param row - 包含feedCheckFlag属性的行数据对象
+ * @returns 对应中文状态文本
+ *
+ * 注意事项：
+ * - 状态码映射关系：
+ *   1 -> 通过
+ *   2 -> 不通过
+ *   3 -> 未检测
+ * - 新增状态码时需要扩展case分支
+ * - 当前未处理未定义状态码的返回值
+ * - 用于表格feedCheckFlag列的显示
+ */
 function getFeedCheckFlagText(row: any) {
   switch (row.feedCheckFlag) {
     case 1: {
@@ -184,6 +228,21 @@ function getFeedCheckFlagText(row: any) {
     }
   }
 }
+/**
+ * 获取投料完成状态文本
+ * 功能：将数值型完成状态转换为可读文本
+ *
+ * @param row - 包含isClear属性的行数据对象
+ * @returns 对应中文状态文本
+ *
+ * 注意事项：
+ * - 状态码映射关系：
+ *   1 -> 未完成
+ *   2 -> 已完成
+ * - 新增状态码时需要扩展case分支
+ * - 当前未处理未定义状态码的返回值
+ * - 用于表格isClear列的显示
+ */
 function getIsClearText(row: any) {
   switch (row.isClear) {
     case 1: {
@@ -213,8 +272,25 @@ const editRules = ref({
 } as any);
 
 /**
- * 显示模态框
- * @param row
+ * 打开物料投料编辑抽屉
+ * 功能：初始化投料表单并显示编辑界面
+ *
+ * @param row - 当前操作的物料行数据
+ *
+ * 接口参数结构：
+ * {
+ *   materialCode: 物料编号,
+ *   workstationCode: 工作站编码,
+ *   equipCode: 设备编码,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序绑定ID,
+ *   functionId: 工步ID
+ * }
+ *
+ * 注意事项：
+ * - 会更新全局状态showDrawer控制抽屉显隐
+ * - 携带当前物料基础信息及上下文参数用于后续提交
+ * - 需与Drawer组件配合使用
  */
 function editRow(row: any) {
   showDrawer.value = true;
@@ -229,7 +305,14 @@ function editRow(row: any) {
 }
 
 /**
- * 关闭模态框
+ * 关闭投料编辑抽屉
+ * 功能：重置表单状态并隐藏编辑界面
+ *
+ * 注意事项：
+ * - 会清空当前编辑的投料表单数据
+ * - 会更新全局状态showDrawer控制抽屉显隐
+ * - 与editRow函数构成开/关配对操作
+ * - 通过响应式对象editMessage.value的置空实现表单重置
  */
 function onClose() {
   showDrawer.value = false;
@@ -237,7 +320,32 @@ function onClose() {
 }
 
 /**
- * 提交
+ * 提交投料表单数据
+ * 功能：验证并提交物料投料信息
+ * 流程：
+ * 1. 执行表单字段校验
+ * 2. 组装工作站、设备等上下文参数
+ * 3. 调用投料接口提交数据
+ * 4. 成功后刷新表格数据并关闭抽屉
+ *
+ * 接口参数结构：
+ * feedingMaterials - 物料投料提交接口
+ * {
+ *   materialCode: 物料编号,
+ *   workstationCode: 工作站编码,
+ *   equipCode: 设备编码,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序绑定ID,
+ *   functionId: 工步ID,
+ *   labelCode: 物料标签编号,
+ *   feedNumber: 投入数量
+ * }
+ *
+ * 注意事项：
+ * - 必须通过Ant Design表单验证才能提交
+ * - 提交成功后自动刷新表格最新数据
+ * - 使用国际化机制处理成功提示信息
+ * - 未处理接口异常情况，需补充错误处理逻辑
  */
 function submit() {
   editMessageForm.value.validate().then(() => {
@@ -248,9 +356,34 @@ function submit() {
     });
   });
 }
+
 /**
- * 投料完成
- * @param row
+ * 处理物料投料完成操作
+ * 功能：确认并提交物料投料完成状态
+ * 流程：
+ * 1. 弹出确认对话框进行二次确认
+ * 2. 用户确认后调用投料完成接口
+ * 3. 成功后刷新表格数据并提示操作结果
+ *
+ * @param row - 包含物料编号等信息的行数据对象
+ *
+ * 接口参数结构：
+ * feedingComplete - 物料投料完成接口
+ * {
+ *   materialCode: 物料编号,
+ *   workstationCode: 工作站编码,
+ *   equipCode: 设备编码,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序绑定ID,
+ *   functionId: 工步ID
+ * }
+ *
+ * 注意事项：
+ * - 使用Ant Design Modal组件进行危险操作确认
+ * - 集成上下文参数确保接口调用完整性
+ * - 操作成功后自动刷新表格最新状态
+ * - 使用国际化机制处理成功提示信息
+ * - 当前未处理接口异常情况，需补充错误处理逻辑
  */
 function feedingCompleteFun(row: any) {
   // 弹出确认框，询问用户是否确认删除该行数据

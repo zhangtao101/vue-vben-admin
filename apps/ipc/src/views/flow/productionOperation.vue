@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onBeforeUnmount, onMounted, ref } from 'vue';
+import { h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import {
+  IconifyIcon,
   MdiChevronDown,
   MdiChevronUp,
   MdiEyeOutline,
@@ -29,6 +30,7 @@ import {
   Row,
   Select,
   Space,
+  Spin,
   Table,
   Tooltip,
   Transfer,
@@ -42,6 +44,7 @@ import {
   listUserUpInfo,
   obtainTheListOfProcessEquipment,
   obtainTheWorkOrderList,
+  sheetReady,
   sheetWorking,
   userDown,
   userUp,
@@ -58,22 +61,33 @@ const selectedWorkstation = ref();
 
 /**
  * 查询工作站列表
+ * 1. 调用工作站列表获取接口
+ * 2. 设置默认选中第一个工作站
+ * 3. 触发工艺设备列表查询
  */
 function queryListOfProductionLines() {
   workstationListAcquisition().then((data) => {
-    listOfProductionLines.value = data;
+    listOfProductionLines.value = data; // 更新工作站列表数据
+    // 初始化默认选中项：当未选择工作站时，自动选中第一个工作站
     if (selectedWorkstation.value === undefined) {
-      selectedWorkstation.value = data[0].workstationCode;
+      selectedWorkstation.value = data[0].workstationCode; // 取第一个工作站的编码作为默认值
     }
-    queryProcessEquipment();
+    queryProcessEquipment(); // 触发关联的工艺设备查询
   });
 }
 
 /**
  * 选中的工作站改变, 查询工艺设备列表
  */
+/**
+ * 工作站选择变更处理
+ * 当用户切换工作站时触发，用于：
+ * 1. 清空当前工艺设备选择
+ * 2. 重新加载工艺设备列表
+ * 3. 刷新关联的工单数据
+ */
 function selectedWorkstationChange() {
-  queryProcessEquipment();
+  queryProcessEquipment(); // 触发工艺设备查询流程
 }
 
 // 艺设备列表
@@ -83,15 +97,18 @@ const theSelectedProcessEquipment = ref();
 
 /**
  * 查询工艺设备列表
+ * 1. 清空当前选择的工艺设备
+ * 2. 调用接口获取指定工作站的设备列表
+ * 3. 更新工艺设备数据并触发工单查询
  */
 function queryProcessEquipment() {
-  theSelectedProcessEquipment.value = undefined;
+  theSelectedProcessEquipment.value = undefined; // 重置当前选择的设备
   obtainTheListOfProcessEquipment({
-    workstationCode: selectedWorkstation.value,
+    workstationCode: selectedWorkstation.value, // 使用当前选中的工作站编码
   }).then((data) => {
-    listOfProcesses.value = data;
-    theSelectedProcessEquipment.value = undefined;
-    query();
+    listOfProcesses.value = data; // 更新工艺设备列表数据
+    theSelectedProcessEquipment.value = undefined; // 保持设备选择为空状态
+    query(); // 触发工单数据重新加载
   });
 }
 // endregion
@@ -113,10 +130,10 @@ function jobInformationContractionChange() {
 // region 表格
 
 const gridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
+  align: 'center', // 设置所有列内容水平居中显示
+  border: true, // 显示表格边框线
   rowConfig: {
-    isHover: true,
+    isHover: true, // 启用行悬停高亮效果
   },
   radioConfig: {
     trigger: 'row',
@@ -173,6 +190,12 @@ const gridOptions: VxeGridProps<any> = {
       sortable: true,
     },
     {
+      field: 'readyStateName',
+      title: '就绪状态',
+      minWidth: 120,
+      sortable: true,
+    },
+    {
       field: 'planNumber',
       title: '计划数量',
       minWidth: 120,
@@ -192,6 +215,15 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 120,
       slots: {
         default: 'workOrderOperation',
+      },
+      fixed: 'right',
+    },
+    {
+      field: 'readyOperation',
+      title: '就绪操作',
+      minWidth: 150,
+      slots: {
+        default: 'readyOperation',
       },
       fixed: 'right',
     },
@@ -224,47 +256,61 @@ const gridEvents: any = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
- * 选中行
- * @param worksheetCode 工单号
+ * 选中表格中的指定行
+ * @param worksheetCode - 工单号（可选参数，默认为空字符串）
+ * @description
+ * - 如果提供了工单号，则在表格数据中查找对应的行并选中。
+ * - 如果未提供工单号，则默认选中表格的第一行。
+ * - 选中行后，更新选中的工单信息，并触发工艺路线查询。
  */
 function setRadioByKey(worksheetCode: string = '') {
+  // 延迟 500 毫秒执行，确保表格数据已经加载完成
   setTimeout(() => {
+    // 获取表格数据
     const { tableData } = gridApi.grid.getTableData();
+    // 根据工单号查找对应的行，如果未提供工单号，则默认选中第一行
     const row = worksheetCode
-      ? tableData.find((item: any) => item.worksheetCode === worksheetCode)
-      : tableData[0];
+      ? tableData.find((item: any) => item.worksheetCode === worksheetCode) // 查找匹配工单号的行
+      : tableData[0]; // 如果未提供工单号，则选中第一行
+    // 设置表格的选中行
     gridApi.grid.setRadioRow(row);
+    // 更新选中的工单信息
     theSelectedWorkOrder.value = row;
+    // 根据选中的工单号查询工艺路线
     queryProcess(selectedWorkstation.value, row.worksheetCode);
   }, 500);
 }
 
-// region 查询数据
-
 /**
  * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ * 这个函数用于：
+ * 1. 构建包含设备编码和工作站编码的查询参数
+ * 2. 调用工单列表接口获取数据
+ * 3. 自动选中首条工单记录
+ * 4. 返回适配vxe-table的分页数据结构
  */
 function queryData() {
   return new Promise((resolve, _reject) => {
     const params: any = {
-      worksheetCode: '',
-      equipCode: theSelectedProcessEquipment.value,
-      workstationCode: selectedWorkstation.value,
+      worksheetCode: '', // 工单号（留空查询全部）
+      equipCode: theSelectedProcessEquipment.value, // 当前选中的工艺设备编码
+      workstationCode: selectedWorkstation.value, // 当前选择的工作站编码
     };
 
     obtainTheWorkOrderList(params)
       .then((data) => {
+        // 当有数据时自动选中第一条记录
         if (data.length > 0) {
-          setRadioByKey(data[0].worksheetCode);
+          setRadioByKey(data[0].worksheetCode); // 根据工单号设置选中状态
         }
+        // 返回vxe-table要求的格式
         resolve({
-          total: data.length,
-          items: data,
+          total: data.length, // 数据总条数
+          items: data, // 当前页数据集合
         });
       })
       .catch((error) => {
-        _reject(error);
+        _reject(error); // 将错误传递给调用方
       });
   });
 }
@@ -277,6 +323,44 @@ function query() {
 }
 
 // endregion
+
+// endregion
+
+// region 就绪操作
+
+/**
+ * 处理就绪状态变更的确认操作
+ * @param row - 当前操作的行数据，包含工单详细信息
+ * @param type - 操作类型 (1: 就绪 / 2: 撤回就绪)
+ * @description 该函数用于：
+ * 1. 显示确认对话框询问用户是否执行操作
+ * 2. 当用户确认后调用 sheetReady 接口提交状态变更
+ * 3. 操作成功后刷新表格数据并显示提示信息
+ */
+function ready(row: any, type: number) {
+  Modal.confirm({
+    cancelText: '取消', // 取消按钮文本
+    okText: '确认', // 确认按钮文本
+    okType: 'danger', // 确认按钮危险样式
+    onCancel() {
+      // 取消操作回调
+      message.warning('已取消操作!');
+    },
+    onOk() {
+      // 确认操作回调
+      sheetReady({
+        // 调用就绪状态接口
+        id: row.id, // 工单ID来自当前行数据
+        readyState: type, // 使用传入的操作类型
+      }).then(() => {
+        // 显示操作成功的提示信息
+        message.success($t('common.successfulOperation'));
+        gridApi.reload(); // 重新加载表格数据
+      });
+    },
+    title: '是否确认该操作?', // 对话框标题
+  });
+}
 
 // endregion
 
@@ -313,7 +397,6 @@ function queryAllUser() {
 
 /**
  * 查询上工人员
- * @param row
  */
 function searchForStaffOnSite() {
   listUserUpInfo({
@@ -514,6 +597,8 @@ const checkedProcess = ref(1);
 const checkedProcessId = ref(0);
 // 当前选中的工单
 const theCurrentlySelectedWorkOrderNumber = ref('');
+// 工艺路线列表加载状态
+const processRouteListLoading = ref(false);
 
 /**
  * 查询工艺路线
@@ -522,14 +607,19 @@ const theCurrentlySelectedWorkOrderNumber = ref('');
  */
 function queryProcess(workstationCode: string, worksheetCode: string) {
   theCurrentlySelectedWorkOrderNumber.value = worksheetCode;
+  processRouteListLoading.value = true;
   getSheetProces({
     workstationCode,
     worksheetCode,
-  }).then((data) => {
-    processRouteList.value = data;
-    checkedProcess.value = processRouteList.value[0].processCode;
-    processChange(processRouteList.value[0]);
-  });
+  })
+    .then((data) => {
+      processRouteList.value = data;
+      checkedProcess.value = processRouteList.value[0].processCode;
+      processChange(processRouteList.value[0]);
+    })
+    .finally(() => {
+      processRouteListLoading.value = false;
+    });
 }
 
 // 当前工步
@@ -566,13 +656,22 @@ const ruleType = ref<any>([]);
 
 /**
  * 工艺路线切换
- * @param item
+ * @param item - 当前选中的工艺路线项，包含工艺路线的详细信息
  */
 function processChange(item: any) {
+  // 更新当前选中的工艺路线代码
   checkedProcess.value = item.processCode;
+
+  // 更新当前选中的工艺路线绑定 ID
   checkedProcessId.value = item.bindingId;
+
+  // 更新操作项列表，使用当前工艺路线的详细操作步骤
   listOfOperationItems.value = item.details;
+
+  // 默认选中当前工艺路线的第一个操作项
   theSelectedOperation.value = item.details[0].id;
+
+  // 更新当前选中操作项的规则类型
   ruleType.value = item.details[0].ruleType;
 }
 
@@ -580,11 +679,12 @@ function processChange(item: any) {
 
 // region 工步执行
 // region 收缩
-// 工步执行是否收缩
+// 工步执行是否收缩（true: 折叠状态，false: 展开状态）
 const workStepExecutionContraction = ref(true);
 
 /**
- * 作业信息收缩展开
+ * 切换工步执行区域展开/折叠状态
+ * 通过取反当前收缩状态值实现展开折叠切换
  */
 function workStepExecutionContractionChange() {
   workStepExecutionContraction.value = !workStepExecutionContraction.value;
@@ -594,21 +694,40 @@ function workStepExecutionContractionChange() {
 // endregion
 
 // region 页面缩放
-// 缩放比例
+// 定义一个响应式变量，用于存储当前的缩放比例，默认值为 80（表示 80% 的缩放比例）
 const zoomSize = ref(80);
-// 缩放对象
+
+// 定义一个响应式变量，用于存储需要缩放的页面对象（DOM 元素）
 const page = ref();
+
+/**
+ * 设置页面的缩放比例
+ * @param size - 缩放比例值（百分比形式，如 80 表示 80%）
+ * @description
+ * - 该函数通过修改页面对象的 `style.zoom` 属性来实现缩放效果。
+ * - `size` 参数是一个数字，表示缩放比例的百分比值。
+ */
 function zoom(size: any) {
+  // 将缩放比例值设置到页面对象的 `style.zoom` 属性中，格式为百分比字符串
   page.value.style.zoom = `${size}%`;
 }
 
+watch(theSelectedOperation, () => {
+  currentWorkingStep.value = {};
+});
 // endregion
 
+// 在组件挂载完成后执行的操作
 onMounted(() => {
+  // 查询生产线列表
   queryListOfProductionLines();
+  // 根据当前的缩放比例值（zoomSize.value）设置页面的缩放
   zoom(zoomSize.value);
 });
+
+// 在组件卸载前执行的操作
 onBeforeUnmount(() => {
+  // 将页面缩放比例重置为 100%，确保组件卸载后页面恢复默认缩放比例
   zoom(100);
 });
 </script>
@@ -629,7 +748,7 @@ onBeforeUnmount(() => {
       <!-- region 工作站查询信息 -->
       <Row class="mb-4">
         <Col :span="23" class="flex">
-          <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.homeworkStation') }}
           </span>
 
@@ -674,18 +793,18 @@ onBeforeUnmount(() => {
       <!--- region 作业信息 -->
       <Row class="mb-4">
         <Col :span="23" class="flex">
-          <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.jobInformation') }}
           </span>
         </Col>
         <Col :span="1">
           <MdiChevronDown
-            class="float-right inline-block cursor-pointer text-2xl"
+            class="float-right inline-block cursor-pointer text-xl"
             v-if="!jobInformationContraction"
             @click="jobInformationContractionChange"
           />
           <MdiChevronUp
-            class="float-right inline-block cursor-pointer text-2xl"
+            class="float-right inline-block cursor-pointer text-xl"
             v-else
             @click="jobInformationContractionChange"
           />
@@ -731,6 +850,28 @@ onBeforeUnmount(() => {
               </Dropdown>
             </Tooltip>
           </template>
+          <template #readyOperation="{ row }">
+            <!-- 就绪按钮 -->
+            <Tooltip v-if="row.readyState === 0">
+              <template #title>{{ $t('common.beInOrder') }}</template>
+              <Button type="link" @click="ready(row, 1)">
+                <IconifyIcon
+                  icon="mdi:timer-sand-complete"
+                  class="inline-block size-6"
+                />
+              </Button>
+            </Tooltip>
+            <!-- 就绪撤回 -->
+            <Tooltip v-if="row.readyState === 1">
+              <template #title>{{ $t('common.readyToWithdraw') }}</template>
+              <Button type="link" @click="ready(row, 2)">
+                <IconifyIcon
+                  icon="fluent-mdl2:return-to-session"
+                  class="inline-block size-6"
+                />
+              </Button>
+            </Tooltip>
+          </template>
           <template #workOrderOperation="{ row }">
             <!-- 更多操作 -->
             <Tooltip>
@@ -741,7 +882,7 @@ onBeforeUnmount(() => {
                     <!-- 开工 -->
                     <MenuItem
                       @click="workOrderOperation(row, 1)"
-                      :disabled="row.sendState === 1"
+                      :disabled="row.sendState === 4"
                     >
                       {{ $t('common.startWork') }}
                     </MenuItem>
@@ -783,44 +924,48 @@ onBeforeUnmount(() => {
       <!--- region 工艺路线 -->
       <Row class="mb-4">
         <Col :span="23" class="flex">
-          <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.processRoute') }}
           </span>
         </Col>
         <Col :span="1">
           <MdiChevronDown
-            class="float-right inline-block cursor-pointer text-2xl"
+            class="float-right inline-block cursor-pointer text-xl"
             v-if="!processShrinkage"
             @click="processShrinkageChange"
           />
           <MdiChevronUp
-            class="float-right inline-block cursor-pointer text-2xl"
+            class="float-right inline-block cursor-pointer text-xl"
             v-else
             @click="processShrinkageChange"
           />
         </Col>
       </Row>
-      <Card class="mb-5" v-if="processShrinkage">
-        <div class="mt-5">
-          <Button
-            v-for="item of processRouteList"
-            :type="item.processCode !== checkedProcess ? 'default' : 'primary'"
-            size="large"
-            class="mr-4 w-32"
-            :key="item.processCode"
-            @click="processChange(item)"
-          >
-            {{ item.processName }}
-          </Button>
-        </div>
-      </Card>
+      <Spin :spinning="processRouteListLoading">
+        <Card class="mb-5" v-if="processShrinkage">
+          <div class="mt-5">
+            <Button
+              v-for="item of processRouteList"
+              :type="
+                item.processCode !== checkedProcess ? 'default' : 'primary'
+              "
+              size="large"
+              class="mr-4 w-32"
+              :key="item.processCode"
+              @click="processChange(item)"
+            >
+              {{ item.processName }}
+            </Button>
+          </div>
+        </Card>
+      </Spin>
       <hr class="mb-4" />
       <!--- endregion -->
 
       <!--- region 操作事项  -->
       <Row class="mb-4">
         <Col :span="23" class="flex">
-          <span class="mr-4 border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          <span class="mr-4 border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.operationalMatters') }}
           </span>
 
@@ -841,12 +986,12 @@ onBeforeUnmount(() => {
         </Col>
         <Col :span="1">
           <MdiChevronDown
-            class="float-right inline-block cursor-pointer text-2xl"
+            class="float-right inline-block cursor-pointer text-xl"
             v-if="!operationEventShrinkage"
             @click="operationEventShrinkageChange"
           />
           <MdiChevronUp
-            class="float-right inline-block cursor-pointer text-2xl"
+            class="float-right inline-block cursor-pointer text-xl"
             v-else
             @click="operationEventShrinkageChange"
           />
@@ -867,18 +1012,18 @@ onBeforeUnmount(() => {
       <!--- region 工步执行  -->
       <Row class="mb-4">
         <Col :span="4">
-          <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+          <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.workStepExecution') }}
           </span>
         </Col>
         <Col :span="1" :offset="19">
           <MdiChevronDown
-            class="float-right inline-block cursor-pointer text-2xl"
+            class="float-right inline-block cursor-pointer text-xl"
             v-if="!workStepExecutionContraction"
             @click="workStepExecutionContractionChange"
           />
           <MdiChevronUp
-            class="float-right inline-block cursor-pointer text-2xl"
+            class="float-right inline-block cursor-pointer text-xl"
             v-else
             @click="workStepExecutionContractionChange"
           />

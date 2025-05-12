@@ -64,15 +64,26 @@ const items = ref([
 const checkedItem = ref<any>('1');
 
 /**
- * 数量初始化
+ * 初始化各检查类型任务数量
+ * 功能：获取首检/巡检/末检的待处理任务数量
+ * 流程：
+ * 1. 遍历检查类型配置项
+ * 2. 对每个检查类型发起数量查询请求
+ * 3. 更新对应类型的任务计数显示
+ * 4. 首检类型额外触发统计信息刷新
+ *
+ * 注意事项：
+ * - 使用异步请求获取最新任务数量
+ * - 首检类型初始化后会同步更新统计面板数据
  */
 function itemInit() {
   items.value.forEach((item) => {
     getCheckCounts({
       checkType: item.value,
     }).then((data) => {
-      item.payload.count = data;
+      item.payload.count = data; // 更新当前检查类型的任务计数
       if (item.value === '1') {
+        // 首检类型需要刷新统计面板
         queryStatisticsOfTheNumberOfClaimedItems();
       }
     });
@@ -80,20 +91,32 @@ function itemInit() {
 }
 
 /**
- * 获取颜色
- * @param payload
+ * 获取任务数量对应的状态颜色
+ * 功能：根据任务数量值返回对应的颜色标识
+ * 颜色规则：
+ * - 0 任务：绿色（lime）
+ * - 1-2 任务：蓝色（blue）
+ * - 3-9 任务：黄色（yellow）
+ * - 10+ 任务：红色（red）
+ *
+ * @param payload - 包含任务数量(count)的对象
+ * @returns 颜色名称字符串
+ *
+ * 实现逻辑：
+ * 1. 按任务数量从高到低进行判断
+ * 2. 优先级顺序：红 > 黄 > 蓝 > 绿
  */
 function getColor(payload: any) {
   if (payload.count === 0) {
-    return 'lime';
+    return 'lime'; // 无任务状态
   } else if (payload.count < 3) {
-    return 'blue';
+    return 'blue'; // 低量任务
   } else if (payload.count >= 10) {
-    return 'red';
+    return 'red'; // 紧急状态（任务积压）
   } else if (payload.count >= 3) {
-    return 'yellow';
+    return 'yellow'; // 警告状态
   }
-  return 'green';
+  return 'green'; // 默认安全色
 }
 
 // endregion
@@ -125,23 +148,37 @@ const statisticsOfTheNumberOfClaimedItems = ref([
 
 const checkedType = ref('1');
 
+/**
+ * 查询任务统计面板数据
+ * 功能：获取并更新三类任务状态的数量统计
+ * 流程：
+ * 1. 并行请求三种任务类型数量：
+ *    - 待领取任务数
+ *    - 处理中任务数
+ *    - 已完成任务数
+ * 2. 更新统计面板显示数据
+ * 3. 触发表格数据刷新
+ *
+ * 接口说明：
+ * - getQualityPendingTasksCount：待领取任务计数
+ * - getAllQcFormCount：处理中任务计数
+ * - getAllFinishQcFormCount：已完成任务计数
+ */
 function queryStatisticsOfTheNumberOfClaimedItems() {
+  // 并行发起三个统计接口请求
   const ob = Promise.all([
-    getQualityPendingTasksCount({
-      checkType: checkedItem.value,
-    }),
-    getAllQcFormCount({
-      checkType: checkedItem.value,
-    }),
-    getAllFinishQcFormCount({
-      checkType: checkedItem.value,
-    }),
+    getQualityPendingTasksCount({ checkType: checkedItem.value }),
+    getAllQcFormCount({ checkType: checkedItem.value }),
+    getAllFinishQcFormCount({ checkType: checkedItem.value }),
   ]);
+
   ob.then(([count1, count2, count3]) => {
-    statisticsOfTheNumberOfClaimedItems.value[0]!.payload.count = count1;
-    statisticsOfTheNumberOfClaimedItems.value[1]!.payload.count = count2;
-    statisticsOfTheNumberOfClaimedItems.value[2]!.payload.count = count3;
-    query();
+    // 更新统计面板数据
+    statisticsOfTheNumberOfClaimedItems.value[0]!.payload.count = count1; // 待领取
+    statisticsOfTheNumberOfClaimedItems.value[1]!.payload.count = count2; // 处理中
+    statisticsOfTheNumberOfClaimedItems.value[2]!.payload.count = count3; // 已完成
+
+    query(); // 刷新主表格数据
   });
 }
 
@@ -284,40 +321,59 @@ const jobInformationQueryConditions = ref({
 });
 
 /**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ * 分页查询质检任务数据
+ * 功能：根据任务状态类型获取对应分页列表
+ * 流程：
+ * 1. 合并基础查询参数（工单/工序/位置）
+ * 2. 根据当前选中状态类型切换数据源：
+ *    - 待领取任务（1）
+ *    - 处理中任务（2）
+ *    - 已完成任务（3）
+ * 3. 转换接口数据结构适配前端表格
+ *
+ * 接口说明：
+ * - getQualityPendingTasks：待领取任务接口
+ * - getAllQcForm：处理中任务接口
+ * - getAllFinishQcForm：已完成任务接口
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
+    // 构造请求参数
     const params: any = {
       ...jobInformationQueryConditions.value,
-      checkType: checkedItem.value,
-      pageSize,
-      pageNum: page,
+      checkType: checkedItem.value, // 当前检查类型（首检/巡检/末检）
+      pageSize, // 分页大小
+      pageNum: page, // 当前页码
     };
+
+    // 根据任务状态类型选择接口
     let ob: any;
     switch (checkedType.value) {
       case '1': {
+        // 待领取任务
         ob = getQualityPendingTasks(params);
         break;
       }
       case '2': {
+        // 处理中任务
         ob = getAllQcForm(params);
         break;
       }
       case '3': {
+        // 已完成任务
         ob = getAllFinishQcForm(params);
         break;
       }
     }
+
+    // 处理接口响应
     ob.then(({ total, list }: any) => {
-      // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
       resolve({
-        total,
-        items: list,
+        total, // 总记录数
+        items: list, // 当前页数据
       });
     }).catch((error: any) => {
-      _reject(error);
+      _reject(error); // 异常传递
     });
   });
 }
@@ -330,47 +386,50 @@ function reload() {
   gridApi.reload();
 }
 
+/**
+ * 处理质检任务领取操作
+ * 功能：执行任务领取的二次确认及后续操作
+ * 流程：
+ * 1. 弹出确认对话框进行领取确认
+ * 2. 确认后调用任务领取接口
+ * 3. 成功时：
+ *    - 刷新顶部统计数据
+ *    - 刷新统计面板数据
+ *    - 重新加载表格数据
+ * 4. 失败时显示具体错误信息
+ *
+ * @param row - 当前操作行数据，包含任务ID等必要字段
+ *
+ * 接口说明：
+ * applyTask - 任务领取接口，接收任务ID(qcRecordId)和当前行数据
+ */
 function collect(row: any) {
-  // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
     cancelText: '取消',
-    // 确认按钮的文本
     okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
     okType: 'danger',
+    title: '是否确认领取该任务?',
 
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了操作
       message.warning('已取消!');
     },
 
-    // 用户确认操作时触发的回调函数
     onOk() {
-      // 调用删除按钮的操作，传递按钮的编码和类型参数
       applyTask({
         ...row,
-        qcRecordId: row.id,
+        qcRecordId: row.id, // 将任务ID映射到接口需要的字段
       })
         .then(() => {
-          // 如果删除操作成功，显示操作成功的提示信息
-          message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
-          itemInit();
-          queryStatisticsOfTheNumberOfClaimedItems();
-          gridApi.reload();
+          message.success($t('common.successfulOperation'));
+          itemInit(); // 刷新顶部检查类型计数
+          queryStatisticsOfTheNumberOfClaimedItems(); // 更新统计面板
+          gridApi.reload(); // 刷新任务列表
         })
         .catch((error) => {
-          // 如果删除操作失败，显示错误提示信息
-          message.error($t('common.operationFailure')); // 操作失败的提示信息（通过国际化处理）
-
-          // 显示具体的错误信息
-          message.error(error.msg); // 显示从服务器返回的错误消息
+          message.error($t('common.operationFailure'));
+          message.error(error.msg); // 显示接口返回的具体错误
         });
     },
-
-    // 确认框的标题文本
-    title: '是否确认领取该任务?',
   });
 }
 
@@ -387,74 +446,83 @@ const showEdit = ref<any>(false);
 const startStatus = ref<any>(false);
 
 /**
- * 显示抽屉
- * @param row
+ * 打开质检任务填报抽屉
+ * 功能：初始化并显示检验任务填报界面
+ * 流程：
+ * 1. 保存当前任务数据至编辑对象
+ * 2. 控制抽屉组件显示状态
+ * 3. 设置任务启动模式（开始/继续）
+ *
+ * @param row - 当前操作行数据，包含任务详情
+ * @param isStart - 是否为启动模式：
+ *   - true: 新任务启动
+ *   - false: 继续现有任务
  */
 function showEditFun(row: any, isStart = false) {
-  editItem.value = row;
-  showEdit.value = true;
-  startStatus.value = isStart;
+  editItem.value = row; // 存储当前任务数据
+  showEdit.value = true; // 显示抽屉组件
+  startStatus.value = isStart; // 设置任务启动状态标识
 }
 
 /**
- * 关闭抽屉
+ * 关闭任务填报抽屉
+ * 功能：重置检验任务填报相关状态
+ * 流程：
+ * 1. 隐藏抽屉组件
+ * 2. 清空当前编辑的任务数据
+ * 3. 重置任务启动状态标识
  */
 function close() {
-  showEdit.value = false;
-  editItem.value = {};
-  startStatus.value = false;
+  showEdit.value = false; // 控制抽屉关闭
+  editItem.value = {}; // 清空当前编辑数据
+  startStatus.value = false; // 重置启动状态
 }
+
 // endregion
 
 // region 审核
 
 /**
- * 处理审核操作（通过或不通过）。
- * @param row 要处理的审核数据对象，包含需要审核的数据信息。
- * @param isPass 布尔值，指示是否通过审核。为 true 时表示通过审核，false 表示不通过审核。
+ * 处理质检任务审核操作
+ * 功能：执行任务审核的二次确认及状态更新
+ * 流程：
+ * 1. 根据审核类型设置对话框标题和状态码
+ *   - 通过：状态码2，标题"是否确认通过..."
+ *   - 不通过：状态码3，标题"是否确认不通过..."
+ * 2. 弹出确认对话框获取用户确认
+ * 3. 确认后调用审核接口提交审核结果
+ * 4. 成功时：
+ *   - 刷新顶部检查类型计数
+ *   - 更新统计面板数据
+ *   - 重新加载任务列表
+ *
+ * @param row - 当前审核任务数据，包含任务ID等必要字段
+ * @param isPass - 审核结果标识，true表示通过，false表示不通过
+ *
+ * 接口说明：
+ * taskAudit - 任务审核接口，接收任务ID和审核类型参数
  */
 function handleAudit(row: any, isPass: boolean) {
-  // 根据 isPass 的值设置对话框的标题和 audioFun 的状态码
-  // 如果 isPass 为 true，表示审核通过，否则表示审核不通过
   const title = isPass ? '是否确认通过该条数据?' : '是否确认不通过该条数据?';
   const statusCode = isPass ? 2 : 3;
 
-  // 调用 Modal.confirm 方法显示一个确认对话框，让用户确认是否执行审核操作
   Modal.confirm({
-    /**
-     * 设置取消按钮的文本为 '取消'。
-     */
     cancelText: '取消',
-    /**
-     * 设置确认按钮的文本为 '确认'。
-     */
     okText: '确认',
-    /**
-     * 设置确认按钮的类型为 'primary'，表示这是一个主要的操作。
-     */
     okType: 'primary',
-    /**
-     * 定义确认操作的回调函数。
-     * 如果用户点击确认按钮，调用 audioFun 函数处理审核逻辑。
-     */
+    title,
+
     onOk() {
-      // 根据审核结果调用 audioFun 函数，传入 row.id 和状态码
       taskAudit({
         id: row.id,
         auditType: statusCode,
       }).then(() => {
-        // 显示成功消息
         message.success($t('common.successfulOperation'));
-
-        itemInit();
-        queryStatisticsOfTheNumberOfClaimedItems();
-        gridApi.reload();
+        itemInit(); // 刷新检查类型任务计数
+        queryStatisticsOfTheNumberOfClaimedItems(); // 更新统计面板
+        gridApi.reload(); // 刷新任务列表
       });
     },
-    /**
-     * 设置对话框的标题，根据 isPass 的值显示不同的提示。
-     */
-    title,
   });
 }
 

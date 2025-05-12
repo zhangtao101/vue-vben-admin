@@ -125,28 +125,43 @@ const queryParams = ref<any>({
 });
 
 /**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ * 查询返工工序列表数据
+ * 功能：根据查询条件获取返工工序分页数据
+ * 流程：
+ * 1. 合并基础查询参数（工序编号/名称）
+ * 2. 添加业务参数：
+ *   - 工序类型（工艺路线内/外）
+ *   - 当前缺陷单ID
+ * 3. 调用工序列表接口获取数据
+ * 4. 转换接口数据结构适配前端表格
+ *
+ * 接口说明：
+ * getReworkProceList - 返工工序查询接口，接收以下参数：
+ *   - proceCode: 工序编号
+ *   - proceName: 工序名称
+ *   - type: 工序类型（1-工艺路线内，2-工艺路线外）
+ *   - defectId: 关联的缺陷单ID
  */
 function queryData() {
   return new Promise((resolve, reject) => {
+    // 构造请求参数
     const params: any = {
-      ...queryParams.value,
-      type: theSelectedOperation.value,
-      defectId: id.value,
+      ...queryParams.value, // 基础查询条件
+      type: theSelectedOperation.value, // 工序类型选择
+      defectId: id.value, // 当前缺陷单ID
     };
-    getReworkProceList({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-    })
+
+    // 调用工序列表接口
+    getReworkProceList(params)
       .then((data) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        // 转换接口响应数据格式
         resolve({
-          total: data.length,
-          items: data,
+          total: data.length, // 总记录数（未分页）
+          items: data, // 工序列表数据
         });
       })
       .catch((error) => {
-        reject(error);
+        reject(error); // 异常传递
       });
   });
 }
@@ -216,23 +231,40 @@ const feedingMaterials: VxeGridProps<any> = {
 
 const [FmGrid, fmGridApi] = useVbenVxeGrid({ gridOptions: feedingMaterials });
 
+/**
+ * 查询返工物料列表数据
+ * 功能：根据缺陷单ID获取关联物料及用量信息
+ * 流程：
+ * 1. 构造请求参数（当前缺陷单ID）
+ * 2. 调用物料列表接口获取数据
+ * 3. 转换接口数据结构适配前端表格
+ *
+ * 接口说明：
+ * getReworkMaterialList - 返工物料查询接口，接收参数：
+ *   - defectId: 当前处理的缺陷单ID
+ *
+ * 数据结构：
+ * - materialCode: 物料编号
+ * - materialName: 物料名称
+ * - unit: 计量单位
+ * - auxiliaryDoage: 标准用量
+ * - singleDosage: 实际用量（可编辑字段）
+ */
 function queryFmData() {
   return new Promise((resolve, reject) => {
     const params: any = {
-      defectId: id.value,
+      defectId: id.value, // 从路由参数中获取的缺陷单ID
     };
-    getReworkMaterialList({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-    })
+
+    getReworkMaterialList(params)
       .then((data) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
-          total: data.length,
-          items: data,
+          total: data.length, // 总记录数（未分页）
+          items: data, // 物料列表数据
         });
       })
       .catch((error) => {
-        reject(error);
+        reject(error); // 异常传递
       });
   });
 }
@@ -242,6 +274,25 @@ function queryFmData() {
 const { closeCurrentTab } = useTabs();
 
 const submitLoading = ref(false);
+/**
+ * 提交返工确认数据
+ * 功能：执行返工方案最终确认及数据提交
+ * 流程：
+ * 1. 弹出确认对话框进行二次确认
+ * 2. 确认后组装提交参数：
+ *   - 缺陷单ID
+ *   - 加料状态标识（1需加料/2不需加料）
+ *   - 选中的工序列表
+ *   - 物料用量表格数据
+ * 3. 调用确认接口提交数据
+ * 4. 成功时：
+ *   - 显示操作成功提示
+ *   - 关闭当前标签页
+ * 5. 无论成功失败都重置提交状态
+ *
+ * 接口说明：
+ * reowrkConfirm - 返工确认接口，接收完整的返工方案数据
+ */
 function submit() {
   Modal.confirm({
     title: '确认提交',
@@ -249,20 +300,19 @@ function submit() {
     okText: '确认',
     cancelText: '取消',
     onOk() {
-      submitLoading.value = true;
+      submitLoading.value = true; // 开启加载状态防止重复提交
       reowrkConfirm({
-        defectId: id.value,
-        isMaterialFlag: feedingStatus.value ? 1 : 2,
-        proceList: currentRow.value,
-        planMaterialLists: fmGridApi.grid.getTableData().tableData,
+        defectId: id.value, // 当前处理的缺陷单ID
+        isMaterialFlag: feedingStatus.value ? 1 : 2, // 转换加料开关为接口需要的标识
+        proceList: currentRow.value, // 用户选择的工序列表
+        planMaterialLists: fmGridApi.grid.getTableData().tableData, // 带实际用量的物料数据
       })
         .then(() => {
           message.success($t('common.successfulOperation'));
-          closeCurrentTab();
-          // router.go(-1);
+          closeCurrentTab(); // 关闭当前操作标签页
         })
         .finally(() => {
-          submitLoading.value = false;
+          submitLoading.value = false; // 重置提交状态
         });
     },
   });

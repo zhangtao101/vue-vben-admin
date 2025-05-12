@@ -615,6 +615,7 @@ function submit() {
     // 遍历工作站详情数组，构建绑定 VM 数组
     workStationDetail.value.forEach((item: any, index: number) => {
       if (!item.costCenterCode) {
+        message.error($t('ui.fallback.costCenterError'));
         throw new Error($t('ui.fallback.costCenterError'));
       }
       params.bindingVMs.push({

@@ -1,10 +1,11 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import { BasicLayout } from '#/layouts';
 import { $t } from '#/locales';
 
 const routes: RouteRecordRaw[] = [
-  {
+  /*
+  // 概览页
+   {
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -33,7 +34,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
+  },*/
   {
     meta: {
       icon: 'lucide:layout-dashboard',
@@ -43,15 +44,6 @@ const routes: RouteRecordRaw[] = [
     name: 'workFlow',
     path: '/workFlow',
     children: [
-      {
-        name: 'productionOperation',
-        path: 'productionOperation',
-        component: () => import('#/views/flow/productionOperation.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: $t('menu.productionOperation'),
-        },
-      },
       {
         name: 'dispatchHomework',
         path: 'dispatchHomework',
@@ -71,8 +63,17 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'productionOperation',
+        path: 'productionOperation',
+        component: () => import('#/views/flow/productionOperation.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.productionOperation'),
+        },
+      },
+      {
         name: 'workOrderOutbound',
-        path: '/workOrderOutbound',
+        path: 'workOrderOutbound',
         component: () => import('#/views/flow/workOrderOutbound.vue'),
         meta: {
           ignoreAccess: true,
@@ -158,8 +159,9 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  /*
+  // 报表管理
   {
-    component: BasicLayout,
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -178,7 +180,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
+  },*/
 ];
 
 export default routes;

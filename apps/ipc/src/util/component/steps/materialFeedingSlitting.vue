@@ -57,8 +57,33 @@ const details = ref<any>({});
  * 加载中
  */
 const spinning = ref<any>(false);
+
 /**
- * 查询数据
+ * 查询分切物料投料信息
+ * 功能：获取分切工序的物料投料数据
+ * 流程：
+ * 1. 开启加载状态指示
+ * 2. 构造包含工位、设备等上下文参数的请求对象
+ * 3. 调用分切物料信息查询接口
+ * 4. 存储返回数据到响应式对象
+ * 5. 始终关闭加载状态指示
+ *
+ * 接口参数说明：
+ * materialFeedingInformationQuerySlitting - 分切物料信息查询接口
+ * {
+ *   workstationCode: 工作站编码,
+ *   equipCode: 设备编码,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序绑定ID,
+ *   functionId: 工步ID,
+ *   feedtype: 投料类型(固定值2)
+ * }
+ *
+ * 注意事项：
+ * - 使用spinning控制加载状态指示器
+ * - feedtype参数固定为2表示分切类型
+ * - 接口返回数据直接存储到details响应式对象
+ * - 当前未处理接口异常情况，需补充错误处理逻辑
  */
 function queryData() {
   spinning.value = true;
@@ -78,6 +103,32 @@ function queryData() {
     });
 }
 
+/**
+ * 提交分切投料完成操作
+ * 功能：确认并完成分切工序的物料投料流程
+ * 流程：
+ * 1. 组装工作站、设备等上下文参数
+ * 2. 携带来自接口的下个模板编号(nextTemplateCode)
+ * 3. 调用投料完成接口提交数据
+ * 4. 成功后刷新当前状态数据并提示操作结果
+ *
+ * 接口参数结构：
+ * endOfFeeding - 结束投料接口
+ * {
+ *   workstationCode: 工作站编码,
+ *   equipCode: 设备编码,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序绑定ID,
+ *   functionId: 工步ID,
+ *   nextTemplateCode: 后续模板编号（来自接口返回）
+ * }
+ *
+ * 注意事项：
+ * - nextTemplateCode必须来自最新查询的接口数据
+ * - 操作成功后自动刷新当前状态数据
+ * - 使用国际化机制处理成功提示信息
+ * - 当前未处理接口异常情况，需补充错误处理逻辑
+ */
 function submit() {
   endOfFeeding({
     workstationCode: props.workstationCode,

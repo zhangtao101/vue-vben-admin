@@ -21,6 +21,16 @@ export function obtainTheWorkOrderList(params: any) {
   );
 }
 /**
+ * 工单就绪
+ * @param params 参数
+ */
+export function sheetReady(params: any) {
+  return requestClient.put(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/sheet/inout/sheetReady`,
+    params,
+  );
+}
+/**
  * 移出
  * @param params 参数
  */
@@ -66,7 +76,6 @@ export function inputSheet(params: any) {
  */
 export function deleteWorksheet(params: any) {
   return requestClient.delete(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/sheet/inout/deleteWorksheet`,
-    params,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/sheet/inout/deleteWorksheet/${params}`,
   );
 }

@@ -18,7 +18,7 @@ import { workstationListAcquisition } from '#/api';
 import WorkOrderEntryTable from '#/util/component/workOrderEntryTable.vue';
 
 // region 查询数据
-// 查询参数
+// 定义查询参数
 const queryParams = ref({
   // 工作中心编号
   workstationCode: '',
@@ -31,7 +31,8 @@ const queryParams = ref({
   // 工单派发状态
   sendState: '',
 });
-// 模式列表
+
+// 定义模式选择选项
 const operationModeOptions = ref([
   {
     label: '手动',
@@ -42,7 +43,8 @@ const operationModeOptions = ref([
     value: '2',
   },
 ]);
-// 工单派发状态  0 未开工  1已开工  3暂停下线  非必填
+
+// 定义工单派发状态选项
 const theStatusOfWorkOrderDispatch = ref([
   {
     label: '未开工',
@@ -58,33 +60,29 @@ const theStatusOfWorkOrderDispatch = ref([
   },
 ]);
 
-// 表格对象
+// 定义表格组件引用
 const workOrderEntryTableRef = ref();
+
 /**
- * 查询
- * @param isReset 是否重置
+ * 执行查询操作
+ * @param isReset 是否重置查询条件
  */
 function query(isReset = false) {
   if (isReset) {
     queryParams.value = {
-      // 工作中心编号
       workstationCode: '',
-      // 模式选择( 1手动  2自动)
       modelType: '1',
-      // 产品编号
       productCode: '',
-      // 工单号
       worksheetCode: '',
-      // 工单派发状态
       sendState: '',
     };
   }
   workOrderEntryTableRef.value.query();
 }
-
 // endregion
 
 // region 工作中心查询
+// 定义生产线列表
 const listOfProductionLines = ref<any>([]);
 
 /**
@@ -101,14 +99,22 @@ function queryListOfProductionLines() {
     });
   });
 }
+
+/**
+ * 筛选选项
+ * @param input 输入值
+ * @param option 选项
+ * @returns 是否匹配
+ */
 const filterOption = (input: string, option: any) => {
   return option.label.toLowerCase().includes(input.toLowerCase());
 };
 
-// endregion
+// 组件挂载时执行
 onMounted(() => {
   queryListOfProductionLines();
 });
+// endregion
 </script>
 
 <template>

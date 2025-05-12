@@ -182,7 +182,7 @@ defineProps({
     :worksheet-code="worksheetCode"
     :binding-id="bindingId"
     :function-id="step.id"
-    :state="3"
+    :place="3"
     v-if="step.type === 14"
   />
 

@@ -39,5 +39,6 @@
   "drafts": "Drafts",
   "error": "This field is required",
   "processingResult": "Processing Result",
-  "toBeDetermined": "To Be Determined"
+  "toBeDetermined": "To Be Determined",
+  "pleaseCompleteTheRequiredFields": "Please Fill In The Required Fields"
 }

@@ -155,36 +155,56 @@ const queryParams = ref<any>({
 });
 
 /**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ * 查询未完成缺陷数据
+ * 功能：获取未处理缺陷列表并处理分页逻辑
+ * 步骤：
+ * 1. 合并查询条件参数
+ * 2. 调用未完成缺陷列表接口
+ * 3. 转换接口数据为表格所需格式
+ * 4. 处理接口异常情况
+ *
+ * @param {object} params 分页参数
+ * @param {number} params.page 当前页码
+ * @param {number} params.pageSize 每页数据量
+ * @returns {Promise} 返回适配表格的分页数据
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
+    // 合并查询条件
     const params: any = { ...queryParams.value };
+
+    // 调用未完成缺陷列表接口
     getNotFinishDefectList({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
+      ...params, // 保留所有查询条件
+      pageNum: page, // 接口需要的当前页码参数
+      pageSize, // 接口需要的每页数量参数
     })
       .then(({ total, list }) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        // 转换接口数据结构为表格组件需要的格式
         resolve({
-          total,
-          items: list,
+          total, // 总记录数
+          items: list, // 当前页数据列表
         });
       })
       .catch((error) => {
-        reject(error);
+        reject(error); // 异常处理
       });
   });
 }
 
 /**
- * 重置查询条件
+ * 重置查询条件并刷新表格
+ * 功能：
+ * 1. 清空当前查询参数
+ * 2. 重新加载表格数据
+ *
+ * 操作流程：
+ * 1. 将查询条件对象重置为空对象
+ * 2. 调用表格API重新加载数据
  */
 function reload() {
-  queryParams.value = {};
-  gridApi.reload();
+  queryParams.value = {}; // 重置所有查询条件
+  gridApi.reload(); // 触发表格数据重新加载
 }
 
 // endregion
@@ -320,74 +340,88 @@ const [BadGrid, badGridApi] = useVbenVxeGrid({
  * 查询不良数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
+/**
+ * 查询特定类型的不良数据
+ * 功能：根据当前选择的操作类型获取不良数据列表
+ * 流程：
+ * 1. 合并基础查询参数和当前操作类型
+ * 2. 调用分页接口获取数据
+ * 3. 转换接口数据结构适配表格组件
+ *
+ * 参数说明：
+ * @param page 当前页码
+ * @param pageSize 每页数据量
+ *
+ * 接口特性：
+ * getDefectListByType - 根据操作类型(1-误判,2-返工等)获取对应不良数据
+ */
 function queryBadData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
+    // 合并查询条件（基础查询参数 + 当前操作类型）
     const params: any = {
       ...queryParams.value,
-      type: theSelectedOperation.value,
+      type: theSelectedOperation.value, // 从操作类型选择器获取当前类型值
     };
+
+    // 调用分页查询接口
     getDefectListByType({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
+      ...params, // 携带所有查询条件
+      pageNum: page, // 接口页码参数
+      pageSize, // 每页数据量参数
     })
       .then(({ total, list }) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        // 转换接口返回数据结构
         resolve({
-          total,
-          items: list,
+          total, // 总记录数
+          items: list, // 当前页数据列表
         });
       })
       .catch((error) => {
-        reject(error);
+        reject(error); // 异常处理
       });
   });
 }
 
 /**
- * 不良确认提交
+ * 不良数据确认提交
+ * 功能：执行不良处理确认操作并更新相关表格数据
+ * 流程：
+ * 1. 弹出二次确认对话框
+ * 2. 确认后调用缺陷确认接口
+ * 3. 成功时刷新主表和不良表数据
+ * 4. 失败时显示错误详情
+ *
+ * @param row - 当前操作行数据，包含缺陷记录ID等关键信息
  */
 function submissionOfAdverseConfirmation(row: any) {
-  // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
     cancelText: '取消',
-    // 确认按钮的文本
     okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
-    okType: 'danger',
+    okType: 'danger', // 表示危险操作
+    title: '是否确认提交数据?',
 
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消操作
+      // 取消操作处理
       message.warning('已取消!');
     },
 
-    // 用户确认操作时触发的回调函数
     onOk() {
-      // 调用删除按钮的操作，传递按钮的编码和类型参数
+      // 确认操作处理
       defectConfirm({
-        id: row.id,
-        type: theSelectedOperation.value,
+        id: row.id, // 当前缺陷记录ID
+        type: theSelectedOperation.value, // 当前选择的操作类型（1-误判等）
       })
         .then(() => {
-          // 如果删除操作成功，显示操作成功的提示信息
-          message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
-
-          gridApi.query();
-          badGridApi.query();
+          message.success($t('common.successfulOperation'));
+          // 双表联刷新
+          gridApi.query(); // 刷新主缺陷表
+          badGridApi.query(); // 刷新不良处理表
         })
         .catch((error) => {
-          // 如果删除操作失败，显示错误提示信息
-          message.error($t('common.operationFailure')); // 操作失败的提示信息（通过国际化处理）
-
-          // 显示具体的错误信息
-          message.error(error.msg); // 显示从服务器返回的错误消息
+          message.error($t('common.operationFailure')); // 通用错误提示
+          message.error(error.msg); // 显示接口返回的具体错误信息
         });
     },
-
-    // 确认框的标题文本
-    title: '是否确认提交数据?',
   });
 }
 
@@ -420,43 +454,67 @@ const editRules = ref({
     { message: '此项为必填项', required: true, trigger: 'change' },
   ],
 } as any);
+
 /**
- * 显示操作
- * @param row
+ * 显示不良处理编辑抽屉
+ * 功能：初始化编辑表单并打开抽屉组件
+ *
+ * @param row - 当前操作行数据，包含不良记录ID等关键信息
+ * 操作流程：
+ * 1. 打开右侧抽屉组件
+ * 2. 初始化表单数据：
+ *    - 绑定当前记录ID
+ *    - 重置各数量字段为0
  */
 function showDrawerFun(row: any) {
-  showDrawer.value = true;
+  showDrawer.value = true; // 控制抽屉组件显示
   editItem.value = {
-    id: row.id,
-    errorNumber: 0,
-    defectNumber: 0,
-    wasteNumber: 0,
-    receiveNumber: 0,
+    id: row.id, // 记录当前不良项ID
+    errorNumber: 0, // 误判数量初始化
+    defectNumber: 0, // 不良数量初始化
+    wasteNumber: 0, // 报废数量初始化
+    receiveNumber: 0, // 让步接收数量初始化
   };
 }
 
 /**
- * 保存
+ * 提交不良判定结果
+ * 功能：验证并提交表单数据，处理后续操作
+ * 流程：
+ * 1. 执行表单字段验证
+ * 2. 调用判定结果提交接口
+ * 3. 成功时：
+ *    - 显示操作成功提示
+ *    - 关闭编辑抽屉
+ *    - 刷新主表格和不良处理表格数据
+ * 4. 错误时由接口自动处理（未显式捕获）
  */
 function submit() {
   editForm.value.validate().then(() => {
+    // 调用判定接口提交表单数据
     judgement(editItem.value).then(() => {
       message.success($t('common.successfulOperation'));
-      close();
-      gridApi.reload();
-      badGridApi.reload();
+      close(); // 关闭抽屉组件
+      gridApi.reload(); // 刷新主缺陷表
+      badGridApi.reload(); // 刷新不良处理表
     });
   });
 }
 
 /**
- * 关闭抽屉
+ * 关闭编辑抽屉并重置状态
+ * 功能：
+ * 1. 隐藏抽屉组件
+ * 2. 清空当前编辑数据
+ *
+ * 操作流程：
+ * 1. 将抽屉显示状态置为false
+ * 2. 重置编辑对象为空状态
  */
 function close() {
-  showDrawer.value = false;
-  editItem.value = {};
+  showDrawer.value = false; // 关闭抽屉组件
+  editItem.value = {}; // 清空当前编辑项数据
 }
-
 // endregion
 
 onMounted(() => {});

@@ -71,5 +71,8 @@
   "toggle": "Toggle",
   "taskCompleted": "Task Completed",
   "taskSuspended": "Task Temporary Storage",
-  "submit": "Submit"
+  "submit": "Submit",
+  "scanTheCode": "Scan The Code",
+  "beInOrder": "Ready",
+  "readyToWithdraw": "Ready To Withdraw"
 }

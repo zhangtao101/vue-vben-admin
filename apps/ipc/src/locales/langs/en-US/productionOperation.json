@@ -29,6 +29,7 @@
   "completed": "Completed",
   "notYetStarted": "Not Started",
   "overtime": "Overtime",
+  "notTimeout": "Not Timeout",
   "equipmentAvailable": "Equipment Available",
   "currentWorkOrder": "Current Work Order",
   "pendingWorkOrder": "Pending Work Order",

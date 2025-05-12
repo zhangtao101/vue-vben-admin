@@ -131,8 +131,35 @@ const gridEvents: any = {};
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 const details = ref<any>({});
+
 /**
- * 查询物料列表
+ * 查询报工物料列表数据
+ * 功能：获取当前工序的报工明细数据
+ * 流程：
+ * 1. 构造包含工位、设备等上下文参数的请求对象
+ * 2. 调用报工信息查询接口获取原始数据
+ * 3. 分离返回数据中的SN列表和其他属性
+ * 4. 转换接口数据适配vxe-table格式
+ *
+ * 接口参数说明：
+ * processReportingInformationQuery - 报工信息查询接口
+ * {
+ *   workstationCode: 工作站编码,
+ *   equipCode: 设备编码,
+ *   worksheetCode: 工单编号,
+ *   bindingId: 工序绑定ID,
+ *   functionId: 工步ID
+ * }
+ *
+ * 返回数据处理：
+ * - snList: SN明细列表（用于表格行数据）
+ * - 其他属性: 存储到details响应式对象中
+ *
+ * 注意事项：
+ * - 使用Promise包装接口调用便于表格控件使用
+ * - 异常时返回空数据集保证表格正常显示
+ * - 总条数直接取snList数组长度
+ * - 需保持返回数据结构{total, items}与vxe-table兼容
  */
 function queryData() {
   return new Promise((resolve, _reject) => {
@@ -145,7 +172,6 @@ function queryData() {
     })
       .then(({ snList, ...p }: any) => {
         details.value = p;
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total: snList.length,
           items: snList,
@@ -178,6 +204,24 @@ const editRules = ref<any>({
   userName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
 });
 
+/**
+ * 打开报工编辑抽屉
+ * 功能：初始化报工表单并显示编辑界面
+ *
+ * @param row - 当前操作的报工行数据（可选）
+ * @param readonly - 是否开启只读模式（可选）
+ *
+ * 流程：
+ * 1. 设置抽屉可见状态为true
+ * 2. 根据传入行数据初始化表单或创建新记录
+ * 3. 设置只读状态控制表单交互
+ *
+ * 注意事项：
+ * - 当row存在时进入编辑模式，复制当前行数据
+ * - 当row未传入时进入新增模式，携带工单和产品基础信息
+ * - 通过readonly参数控制表单是否为只读状态
+ * - 与close函数构成抽屉开/关配对操作
+ */
 function showDrawer(row?: any, readonly?: boolean) {
   show.value = true;
   editItem.value = row
@@ -190,7 +234,15 @@ function showDrawer(row?: any, readonly?: boolean) {
 }
 
 /**
- * 关闭抽屉
+ * 关闭报工编辑抽屉
+ * 功能：重置表单状态并隐藏编辑界面
+ *
+ * 注意事项：
+ * - 会清空当前编辑的报工表单数据
+ * - 会重置Ant Design表单的验证状态
+ * - 与showDrawer函数构成开/关配对操作
+ * - 通过响应式对象show.value控制抽屉显隐
+ * - 保留表单引用editForm.value后续复用
  */
 function close() {
   show.value = false;
@@ -199,7 +251,27 @@ function close() {
 }
 
 /**
- * 提交
+ * 提交报工表单数据
+ * 功能：验证并提交工序报工信息
+ * 流程：
+ * 1. 执行Ant Design表单验证
+ * 2. 组装工序绑定ID等上下文参数
+ * 3. 调用报工接口提交表单数据
+ * 4. 成功后刷新表格数据并提示操作结果
+ *
+ * 接口参数结构：
+ * processReporting - 报工提交接口
+ * {
+ *   ...editItem.value, // 包含SN码、重量、设备号等表单字段
+ *   bindingId: 当前工序绑定ID
+ * }
+ *
+ * 注意事项：
+ * - 必须通过表单字段校验才能提交
+ * - 提交成功后自动刷新表格最新数据
+ * - 使用国际化机制处理成功提示信息
+ * - 未处理接口异常情况，需补充错误处理逻辑
+ * - 操作完成后自动关闭编辑抽屉
  */
 function submit() {
   editForm.value.validate().then(() => {
