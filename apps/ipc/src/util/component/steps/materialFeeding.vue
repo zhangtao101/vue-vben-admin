@@ -432,7 +432,7 @@ function feedingCompleteFun(row: any) {
       </span>
       <span :class="getValueClass()">
         <!--        {{ obtainTheDeviceCleanStatus(3) }}-->
-        {{ details?.lastFeedFlagName }}
+        {{ details?.lastFeedFlagName || $t('productionOperation.none') }}
       </span>
     </div>
     <div class="mb-4 mr-8 inline-block">
@@ -442,7 +442,7 @@ function feedingCompleteFun(row: any) {
       </span>
       <!-- 手动 -->
       <span :class="getValueClass()">
-        {{ details?.feedModelName }}
+        {{ details?.feedModelName || $t('productionOperation.none') }}
       </span>
     </div>
   </div>

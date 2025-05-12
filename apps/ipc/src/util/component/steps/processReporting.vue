@@ -303,7 +303,7 @@ onMounted(() => {
         {{ $t('productionOperation.workOrderNumber') }}
       </span>
       <span :class="getValueClass()">
-        {{ details.currentJobId }}
+        {{ details.currentJobId || $t('productionOperation.none') }}
       </span>
     </div>
     <div class="mb-4 mr-8 inline-block">
@@ -312,7 +312,7 @@ onMounted(() => {
         {{ $t('productionOperation.productName') }}
       </span>
       <span :class="getValueClass()">
-        {{ details.productName }}
+        {{ details.productName || $t('productionOperation.none') }}
       </span>
     </div>
     <div class="mb-4 mr-8 inline-block">

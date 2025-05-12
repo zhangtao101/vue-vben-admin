@@ -249,6 +249,8 @@ const theSelectedWorkOrder = ref<any>({});
 const gridEvents: any = {
   radioChange: ({ newValue }: any) => {
     theSelectedWorkOrder.value = newValue;
+    processRouteList.value = [];
+    theSelectedOperation.value = undefined;
     queryProcess(selectedWorkstation.value, newValue.worksheetCode);
   },
 };

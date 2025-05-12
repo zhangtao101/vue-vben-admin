@@ -33,6 +33,7 @@ import {
   taskAudit,
 } from '#/api';
 import InspectionTaskFilling from '#/util/component/inspectionTaskFilling.vue';
+import ScanTheCode from '#/util/component/scanTheCode.vue';
 
 // region 上方事项
 
@@ -590,18 +591,47 @@ onMounted(() => {
           :label="$t('qualityInspection.workOrderNumber')"
           class="!mb-4"
         >
-          <Input v-model:value="jobInformationQueryConditions.worksheetCode" />
+          <div class="flex">
+            <Input
+              v-model:value="jobInformationQueryConditions.worksheetCode"
+            />
+            <ScanTheCode
+              @scan-the-code="
+                (val) => {
+                  jobInformationQueryConditions.worksheetCode = val;
+                }
+              "
+            />
+          </div>
         </FormItem>
         <!--当前工序 -->
         <FormItem
           :label="$t('qualityInspection.currentOperation')"
           class="!mb-4"
         >
-          <Input v-model:value="jobInformationQueryConditions.processCode" />
+          <div class="flex">
+            <Input v-model:value="jobInformationQueryConditions.processCode" />
+            <ScanTheCode
+              @scan-the-code="
+                (val) => {
+                  jobInformationQueryConditions.processCode = val;
+                }
+              "
+            />
+          </div>
         </FormItem>
         <!--作业位置 -->
         <FormItem :label="$t('qualityInspection.jobPosition')" class="!mb-4">
-          <Input v-model:value="jobInformationQueryConditions.equipCode" />
+          <div class="flex">
+            <Input v-model:value="jobInformationQueryConditions.equipCode" />
+            <ScanTheCode
+              @scan-the-code="
+                (val) => {
+                  jobInformationQueryConditions.equipCode = val;
+                }
+              "
+            />
+          </div>
         </FormItem>
         <FormItem class="!mb-4">
           <Button type="primary" @click="gridApi.reload()" class="mr-4">

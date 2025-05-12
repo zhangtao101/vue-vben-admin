@@ -25,6 +25,7 @@ import {
   fuzzyQueryOfWorkOrderNumbers,
   queryErrorType,
 } from '#/api';
+import ScanTheCode from '#/util/component/scanTheCode.vue';
 
 const props = defineProps({
   // 工步id
@@ -527,26 +528,37 @@ onMounted(() => {
     <!-- 工单编号 -->
     <DescriptionsItem :label="$t('andon.workOrderNumber')">
       <template v-if="type === 1">
-        <Select
-          v-model:value="params.workorderCode"
-          show-search
-          placeholder="input search text"
-          style="width: 200px"
-          :default-active-first-option="false"
-          :show-arrow="false"
-          :filter-option="false"
-          :field-names="{ label: 'workSheetCode', value: 'workSheetCode' }"
-          :not-found-content="fetching ? undefined : null"
-          :options="listOfWorkOrderNumbers"
-          @search="listOfWorkOrderNumbersSearchThrottling"
-          @change="workorderCodeChange"
-          @keydown.enter="choose(1)"
-          class="!w-full"
-        >
-          <template v-if="fetching" #notFoundContent>
-            <Spin size="small" />
-          </template>
-        </Select>
+        <div class="flex">
+          <Select
+            v-model:value="params.workorderCode"
+            show-search
+            placeholder="input search text"
+            style="width: 200px"
+            :default-active-first-option="false"
+            :show-arrow="false"
+            :filter-option="false"
+            :field-names="{ label: 'workSheetCode', value: 'workSheetCode' }"
+            :not-found-content="fetching ? undefined : null"
+            :options="listOfWorkOrderNumbers"
+            @search="listOfWorkOrderNumbersSearchThrottling"
+            @change="workorderCodeChange"
+            @keydown.enter="choose(1)"
+            class="!w-full"
+          >
+            <template v-if="fetching" #notFoundContent>
+              <Spin size="small" />
+            </template>
+          </Select>
+          <ScanTheCode
+            @scan-the-code="
+              (val) => {
+                params.workorderCode = val;
+                listOfWorkOrderNumbersSearchThrottling(val);
+                choose(1);
+              }
+            "
+          />
+        </div>
       </template>
       <template v-else>
         {{ params.workorderCode }}
@@ -558,25 +570,36 @@ onMounted(() => {
 
       </template>
       <template v-else>{{ params.equipCode }}</template>-->
-      <Select
-        v-model:value="params.equipCode"
-        show-search
-        placeholder="input search text"
-        style="width: 200px"
-        :default-active-first-option="false"
-        :show-arrow="false"
-        :filter-option="false"
-        :field-names="{ label: 'equipmentName', value: 'equipmentCode' }"
-        :not-found-content="fetching ? undefined : null"
-        :options="listOfEquipmentNumbers"
-        @search="listOfEquipmentNumbersSearchThrottling"
-        @keydown.enter="choose(2)"
-        class="!w-full"
-      >
-        <template v-if="fetching" #notFoundContent>
-          <Spin size="small" />
-        </template>
-      </Select>
+      <div class="flex">
+        <Select
+          v-model:value="params.equipCode"
+          show-search
+          placeholder="input search text"
+          style="width: 200px"
+          :default-active-first-option="false"
+          :show-arrow="false"
+          :filter-option="false"
+          :field-names="{ label: 'equipmentName', value: 'equipmentCode' }"
+          :not-found-content="fetching ? undefined : null"
+          :options="listOfEquipmentNumbers"
+          @search="listOfEquipmentNumbersSearchThrottling"
+          @keydown.enter="choose(2)"
+          class="!w-full"
+        >
+          <template v-if="fetching" #notFoundContent>
+            <Spin size="small" />
+          </template>
+        </Select>
+        <ScanTheCode
+          @scan-the-code="
+            (val) => {
+              params.equipCode = val;
+              listOfEquipmentNumbersSearchThrottling(val);
+              choose(2);
+            }
+          "
+        />
+      </div>
     </DescriptionsItem>
     <!-- 产品名称 -->
     <DescriptionsItem :label="$t('andon.productName')">
@@ -592,10 +615,19 @@ onMounted(() => {
     </DescriptionsItem>
     <!-- 位置 -->
     <DescriptionsItem :label="$t('andon.position')">
-      <Input
-        v-model:value="params.location"
-        :placeholder="$t('andon.inputPrompt')"
-      />
+      <div class="flex">
+        <Input
+          v-model:value="params.location"
+          :placeholder="$t('andon.inputPrompt')"
+        />
+        <ScanTheCode
+          @scan-the-code="
+            (val) => {
+              params.location = val;
+            }
+          "
+        />
+      </div>
     </DescriptionsItem>
     <!-- 异常类型 -->
     <DescriptionsItem :label="$t('andon.exceptionType')" class="required">

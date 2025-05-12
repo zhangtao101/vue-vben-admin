@@ -39,6 +39,7 @@ import {
   judgement,
 } from '#/api';
 import { router } from '#/router';
+import ScanTheCode from '#/util/component/scanTheCode.vue';
 
 // region 工作站查询信息
 
@@ -527,11 +528,29 @@ onMounted(() => {});
       <Form layout="inline" :model="queryParams">
         <!--产品SN码 -->
         <FormItem :label="$t('badJudgment.sn')">
-          <Input v-model:value="queryParams.productSnCode" />
+          <div class="flex">
+            <Input v-model:value="queryParams.productSnCode" />
+            <ScanTheCode
+              @scan-the-code="
+                (val) => {
+                  queryParams.productSnCode = val;
+                }
+              "
+            />
+          </div>
         </FormItem>
         <!--工单号 -->
         <FormItem :label="$t('badJudgment.workOrderNumber')">
-          <Input v-model:value="queryParams.worksheetCode" />
+          <div class="flex">
+            <Input v-model:value="queryParams.worksheetCode" />
+            <ScanTheCode
+              @scan-the-code="
+                (val) => {
+                  queryParams.worksheetCode = val;
+                }
+              "
+            />
+          </div>
         </FormItem>
         <FormItem>
           <Button

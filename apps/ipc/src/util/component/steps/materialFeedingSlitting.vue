@@ -157,7 +157,7 @@ onMounted(() => {
           {{ $t('productionOperation.implementationStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFlagName }}
+          {{ details.lastFlagName || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -169,7 +169,7 @@ onMounted(() => {
           {{ $t('productionOperation.currentMode') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.feedModelName }}
+          {{ details.feedModelName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -178,7 +178,7 @@ onMounted(() => {
           {{ $t('productionOperation.modeSwitchingTimes') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.feedModelChangeCount }}
+          {{ details.feedModelChangeCount || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -190,7 +190,7 @@ onMounted(() => {
           {{ $t('productionOperation.preEquipmentFeeding') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFeedFlagName }}
+          {{ details.lastFeedFlagName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -199,7 +199,7 @@ onMounted(() => {
           {{ $t('productionOperation.frontDevicePlugSetting') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFeedWaiteFlagName }}
+          {{ details.lastFeedWaiteFlagName || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -211,7 +211,7 @@ onMounted(() => {
           {{ $t('productionOperation.feedIsAllowedForPostStageEquipment') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.nextFeedFlagName }}
+          {{ details.nextFeedFlagName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -220,7 +220,7 @@ onMounted(() => {
           {{ $t('productionOperation.postEquipmentWorkOrder') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.nextWorksheetCode }}
+          {{ details.nextWorksheetCode || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -229,7 +229,7 @@ onMounted(() => {
           {{ $t('productionOperation.statusOfTheLastDevice') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.nextMachineStatusName }}
+          {{ details.nextMachineStatusName || $t('productionOperation.none') }}
         </span>
       </div>
     </div>
@@ -241,7 +241,7 @@ onMounted(() => {
           {{ $t('productionOperation.currentDeviceFeedingStatus') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.machineStatusName }}
+          {{ details.machineStatusName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
