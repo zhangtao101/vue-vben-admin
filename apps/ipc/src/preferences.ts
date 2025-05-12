@@ -35,4 +35,8 @@ export const overridesPreferences = defineOverridesPreferences({
     lockScreen: false,
     notification: false,
   },
+  logo: {
+    enable: true,
+    source: '/logo.png',
+  },
 });

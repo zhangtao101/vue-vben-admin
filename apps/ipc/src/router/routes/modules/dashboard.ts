@@ -1,10 +1,11 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import { BasicLayout } from '#/layouts';
 import { $t } from '#/locales';
 
 const routes: RouteRecordRaw[] = [
-  {
+  /*
+  // 概览页
+   {
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -33,7 +34,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
+  },*/
   {
     meta: {
       icon: 'lucide:layout-dashboard',
@@ -158,8 +159,9 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  /*
+  // 报表管理
   {
-    component: BasicLayout,
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -178,7 +180,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
+  },*/
 ];
 
 export default routes;
