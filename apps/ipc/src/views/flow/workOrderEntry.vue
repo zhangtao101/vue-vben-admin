@@ -15,6 +15,7 @@ import {
 } from 'ant-design-vue';
 
 import { workstationListAcquisition } from '#/api';
+import ScanTheCode from '#/util/component/scanTheCode.vue';
 import WorkOrderEntryTable from '#/util/component/workOrderEntryTable.vue';
 
 // region 查询数据
@@ -128,8 +129,16 @@ onMounted(() => {
             :options="listOfProductionLines"
             :filter-option="filterOption"
             show-search
-            class="mr-4 !w-full"
+            class="mr-4 !w-[80%]"
             @change="query(false)"
+          />
+          <ScanTheCode
+            @scan-the-code="
+              (val) => {
+                queryParams.workstationCode = val;
+                query(false);
+              }
+            "
           />
         </FormItem>
         <!--模式选择 -->

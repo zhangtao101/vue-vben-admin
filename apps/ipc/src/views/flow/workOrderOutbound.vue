@@ -31,6 +31,7 @@ import {
   reportToWorkAndLeaveTheStation,
   workstationListAcquisition,
 } from '#/api';
+import ScanTheCode from '#/util/component/scanTheCode.vue';
 
 // region 作业信息
 const gridOptions: VxeGridProps<any> = {
@@ -321,8 +322,16 @@ onMounted(() => {
             :options="listOfProductionLines"
             :filter-option="filterOption"
             show-search
-            class="mr-4 !w-full"
+            class="mr-4 !w-[80%]"
             @change="() => gridApi.reload()"
+          />
+          <ScanTheCode
+            @scan-the-code="
+              (val) => {
+                queryParams.workstationCode = val;
+                gridApi.reload();
+              }
+            "
           />
         </FormItem>
         <!--工单编号 -->
@@ -337,7 +346,6 @@ onMounted(() => {
           <Button type="primary" @click="gridApi.reload()" class="mr-4">
             {{ $t('common.search') }}
           </Button>
-          <!--          <ScanTheCode />-->
         </FormItem>
       </Form>
     </Card>

@@ -75,5 +75,6 @@
   "submit": "提交",
   "scanTheCode": "扫码",
   "beInOrder": "就绪",
-  "readyToWithdraw": "就绪撤回"
+  "readyToWithdraw": "就绪撤回",
+  "scanCodePrompt": "请传入具体的元素对象!"
 }

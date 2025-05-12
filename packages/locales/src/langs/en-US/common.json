@@ -74,5 +74,6 @@
   "submit": "Submit",
   "scanTheCode": "Scan The Code",
   "beInOrder": "Ready",
-  "readyToWithdraw": "Ready To Withdraw"
+  "readyToWithdraw": "Ready To Withdraw",
+  "scanCodePrompt": "Please pass in the specific element object!"
 }
