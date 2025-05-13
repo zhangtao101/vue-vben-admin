@@ -71,5 +71,9 @@
   "taskCompleted": "任务完成",
   "cancelTheFilling": "取消填报",
   "taskStatus": "任务状态",
-  "taskType": "任务类型"
+  "taskType": "任务类型",
+  "sourceCode": "源码",
+  "transcoding": "转码",
+  "transcodedList": "已转码列表",
+  "unbind": "解绑"
 }

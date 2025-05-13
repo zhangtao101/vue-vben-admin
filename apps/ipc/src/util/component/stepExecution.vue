@@ -5,6 +5,7 @@ import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
 import EquipmentLocationInformation from '#/util/component/steps/equipmentLocationInformation.vue';
 import EquipmentMonitoringInformation from '#/util/component/steps/equipmentMonitoringInformation.vue';
 import EquipmentOperationStatus from '#/util/component/steps/equipmentOperationStatus.vue';
+import FirstInspection from '#/util/component/steps/firstInspection.vue';
 import FormulaDistribution from '#/util/component/steps/formulaDistribution.vue';
 import LampInstallationRecord from '#/util/component/steps/lampInstallationRecord.vue';
 import MaterialFeeding from '#/util/component/steps/materialFeeding.vue';
@@ -13,6 +14,8 @@ import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue'
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
+import Selfinspection from '#/util/component/steps/selfinspection.vue';
+import Transcoding from '#/util/component/steps/transcoding.vue';
 
 defineProps({
   // 工步详情
@@ -184,6 +187,51 @@ defineProps({
     :function-id="step.id"
     :place="3"
     v-if="step.type === 14"
+  />
+  <!-- 转码 -->
+  <Transcoding
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 15"
+  />
+  <!-- 首检 -->
+  <FirstInspection
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 16"
+  />
+  <!-- 自检 -->
+  <Selfinspection
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 17"
+  />
+  <!-- 巡检 -->
+  <Selfinspection
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 18"
+  />
+  <!-- 末检 -->
+  <Selfinspection
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    v-if="step.type === 19"
   />
 
   <!-- 设备点位信息 -->

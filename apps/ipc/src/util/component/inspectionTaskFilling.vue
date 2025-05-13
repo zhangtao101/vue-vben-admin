@@ -541,11 +541,14 @@ function templateChanged() {
       message.warning('已取消!');
     },
     onOk() {
-      gridApi.grid.loadData(
+      const arr =
         qualityInspectionTemplateMap.value[
           selectedQualityInspectionTemplate.value
-        ] || [],
-      );
+        ] || [];
+      arr.forEach((item: any) => {
+        item.recordId = props.recordId;
+      });
+      gridApi.grid.loadData(arr);
       close();
       message.success($t('common.successfulOperation'));
     },
