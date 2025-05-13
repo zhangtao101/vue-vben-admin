@@ -35,6 +35,27 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  // 报表管理
+  {
+    meta: {
+      icon: 'lucide:layout-dashboard',
+      order: -1,
+      title: $t('menu.reportManagement'),
+    },
+    name: 'reportManager',
+    path: '/reportManager',
+    children: [
+      {
+        name: 'reportManager',
+        path: 'reportManager',
+        component: () => import('#/views/reportManager/reportManager.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.dispatchOperation'),
+        },
+      },
+    ],
+  },
 ];
 
 export default routes;
