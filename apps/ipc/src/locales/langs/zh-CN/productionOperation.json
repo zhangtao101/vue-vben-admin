@@ -66,5 +66,10 @@
   "equipmentNumber": "设备号（称量设备）",
   "labelNumber": "标签编号",
   "materialNumber": "物料编号",
-  "inputQuantity": "投入量"
+  "inputQuantity": "投入量",
+  "taskSuspended":  "任务暂停",
+  "taskCompleted": "任务完成",
+  "cancelTheFilling": "取消填报",
+  "taskStatus": "任务状态",
+  "taskType": "任务类型"
 }
