@@ -92,12 +92,12 @@ const routes: RouteRecordRaw[] = [
     path: '/andon',
     children: [
       {
-        name: 'andonManagement',
-        path: 'andonManagement',
-        component: () => import('#/views/andon/andon.vue'),
+        name: 'andengFillingOut',
+        path: 'andengFillingOut',
+        component: () => import('#/views/andon/andengFillingOut.vue'),
         meta: {
           ignoreAccess: true,
-          title: $t('menu.andonManagement'),
+          title: $t('menu.andengFillingOut'),
         },
       },
       {
@@ -110,12 +110,12 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'andengFillingOut',
-        path: 'andengFillingOut',
-        component: () => import('#/views/andon/andengFillingOut.vue'),
+        name: 'andonManagement',
+        path: 'andonManagement',
+        component: () => import('#/views/andon/andon.vue'),
         meta: {
           ignoreAccess: true,
-          title: $t('menu.andengFillingOut'),
+          title: $t('menu.andonManagement'),
         },
       },
     ],

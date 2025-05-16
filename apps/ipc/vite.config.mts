@@ -17,7 +17,8 @@ export default defineConfig(async () => {
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/ht/, ''),
             // 代理目标地址
-            target: 'https://v507z46671.yicp.fun',
+            // target: 'https://v507z46671.yicp.fun',
+            target: 'https://l507466s71.vicp.fun',
             // target: 'http://540qgmj80458.vicp.fun',
             // target: 'http://540qgmj80458.vicp.fun',
             // target: 'http://27yw1bk43730.vicp.fun',

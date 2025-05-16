@@ -725,7 +725,7 @@ onMounted(() => {
       :title="$t('qualityInspection.inspectionTaskFilling')"
       v-model:open="showEdit"
       placement="top"
-      :height="500"
+      height="80%"
       @close="close"
     >
       <InspectionTaskFilling

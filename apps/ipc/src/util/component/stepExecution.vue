@@ -14,6 +14,7 @@ import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue'
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
+import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
 
@@ -232,6 +233,96 @@ defineProps({
     :binding-id="bindingId"
     :function-id="step.id"
     v-if="step.type === 19"
+  />
+  <!-- 转向节压装 - 扫码作业 -- 和城 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 20"
+  />
+  <!-- 焊接底座 - 扫码作业 -- 和城 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 21"
+  />
+  <!-- 人工检验 - 扫码作业 -- 和城 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 22"
+  />
+  <!-- 弹簧压装 - 扫码作业 -- 和城 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 23"
+  />
+  <!-- 扫码出站 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 24"
+  />
+  <!-- 转向节压装 - 扫码作业 -- 马瑞利 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 25"
+  />
+  <!-- 焊接底座 - 扫码作业 -- 马瑞利 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 26"
+  />
+  <!-- 人工检验 - 扫码作业 -- 马瑞利 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 27"
+  />
+  <!-- 弹簧压装 - 扫码作业 -- 马瑞利 -->
+  <ScanningHomework
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 28"
   />
 
   <!-- 设备点位信息 -->

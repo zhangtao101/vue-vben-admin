@@ -1073,12 +1073,11 @@ onBeforeUnmount(() => {
     <Drawer
       v-model:open="whetherPersonnelOperationsAreDisplayed"
       :footer-style="{ textAlign: 'right' }"
-      :height="500"
+      height="80%"
       placement="top"
       title="人员上/下工"
       @close="shutDownPersonnelOperations"
     >
-      {{ jobNumberThatHasAlreadyStartedWorking }}
       <Transfer
         v-model:target-keys="jobNumberThatHasAlreadyStartedWorking"
         :data-source="userList"

@@ -8,6 +8,7 @@ import Login from '#/views/_core/authentication/login.vue';
 
 const BasicLayout = () => import('#/layouts/basic.vue');
 const AuthPageLayout = () => import('#/layouts/auth.vue');
+const EmptyLayout = () => import('#/layouts/empty.vue');
 /** 全局404页面 */
 const fallbackNotFoundRoute: RouteRecordRaw = {
   component: () => import('#/views/_core/fallback/not-found.vue'),
