@@ -217,7 +217,10 @@ onMounted(() => {
           }}
         </span>
       </div>
-      <div class="float-right mb-4 mr-8 inline-block">
+      <div
+        class="float-right mb-4 mr-8 inline-block"
+        v-if="details.overTimeFlag === 1"
+      >
         <!-- 超时时才会出现  v-if="details.overTimeFlag === 1" -->
         <Button
           type="primary"

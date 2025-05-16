@@ -3,9 +3,9 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Spin } from 'ant-design-vue';
+import { Button, InputNumber, message, Modal, Spin } from 'ant-design-vue';
 
-import { processExitInformationQuery } from '#/api';
+import { listByOutReport, outReport } from '#/api';
 
 const props = defineProps({
   // 工步id
@@ -46,7 +46,7 @@ function getLabelClass() {
  * 获取值的class
  */
 function getValueClass() {
-  return 'inline-block w-48 border p-2 text-center';
+  return 'inline-block min-w-48 border p-2 text-center';
 }
 
 /**
@@ -69,7 +69,7 @@ const spinning = ref<any>(false);
  * 5. 始终关闭加载状态指示
  *
  * 接口参数说明：
- * processExitInformationQuery - 工序出站信息查询接口
+ * listByOutReport - 工序出站信息查询接口
  * {
  *   workstationCode: 工作站编码,
  *   equipCode: 设备编码,
@@ -87,7 +87,7 @@ const spinning = ref<any>(false);
  */
 function queryData() {
   spinning.value = true;
-  processExitInformationQuery({
+  listByOutReport({
     workstationCode: props.workstationCode,
     equipCode: props.equipCode,
     worksheetCode: props.worksheetCode,
@@ -102,6 +102,39 @@ function queryData() {
     });
 }
 
+/**
+ * 提交报工操作
+ * @function
+ * @description 报工流程：
+ * 1. 弹出二次确认对话框
+ * 2. 确认后调用报工接口提交当前详情数据
+ * 3. 操作成功显示国际化提示
+ *
+ * @example
+ * // 点击提交按钮时触发
+ * submit();
+ *
+ * @see {@link outReport} 使用的报工接口
+ * @see {@link details} 报工数据来源：包含工单/产品/数量等信息
+ */
+function submit() {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      message.warning('已取消操作!');
+    },
+    onOk() {
+      outReport({ ...details.value, bindingId: props.bindingId }).then(() => {
+        message.success($t('common.successfulOperation'));
+        queryData();
+      });
+    },
+    title: '是否确认报工操作?',
+  });
+}
+
 onMounted(() => {
   queryData();
 });
@@ -111,17 +144,14 @@ onMounted(() => {
   <Spin :spinning="spinning">
     <div>
       <div class="mb-4 mr-8 inline-block">
-        <!-- 前工步执行状况 -->
+        <!-- 当前工单 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.implementationStatus') }}
+          {{ $t('productionOperation.currentWorkOrder') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.lastFlagName || $t('productionOperation.none') }}
+          {{ details.worksheetCode || $t('productionOperation.none') }}
         </span>
       </div>
-    </div>
-
-    <div>
       <div class="mb-4 mr-8 inline-block">
         <!-- 产品名称 -->
         <span :class="getLabelClass()">
@@ -129,15 +159,6 @@ onMounted(() => {
         </span>
         <span :class="getValueClass()">
           {{ details.productName || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 当前工单 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.currentWorkOrder') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.currentJobId || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">
@@ -149,16 +170,61 @@ onMounted(() => {
           {{ details.productCode || $t('productionOperation.none') }}
         </span>
       </div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 计划数量 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.plannedQuantity') }}
+        </span>
+        <span :class="getValueClass()">
+          {{ details.planNumber || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 累计完成数量 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.cumulativeCompletedQuantity') }}
+        </span>
+        <span :class="getValueClass()">
+          {{ details.finishNumber || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 累计不良数量 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.cumulativeNumberOfDefects') }}
+        </span>
+        <span :class="getValueClass()">
+          {{ details.totalUnqualityNumber || $t('productionOperation.none') }}
+        </span>
+      </div>
     </div>
     <div>
       <div class="mb-4 mr-8 inline-block">
-        <!-- 设备状态 -->
+        <!-- 良品数量 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.deviceStatus') }}
+          {{ $t('productionOperation.quantityOfGoodProducts') }}
         </span>
-        <span :class="getValueClass()">
-          {{ details.machineStatusName || $t('productionOperation.none') }}
+        <InputNumber
+          v-model:value="details.reportNumber"
+          class="w-72"
+          min="0"
+        />
+      </div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 不良品数量 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.quantityOfDefectiveProducts') }}
         </span>
+        <InputNumber
+          v-model:value="details.unqualityNumber"
+          class="w-72"
+          min="0"
+        />
+      </div>
+      <div class="mb-4 mr-8 inline-block">
+        <Button type="primary" @click="submit">
+          {{ $t('common.submit') }}
+        </Button>
       </div>
     </div>
   </Spin>

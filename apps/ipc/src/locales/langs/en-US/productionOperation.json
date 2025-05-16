@@ -29,7 +29,7 @@
   "completed": "Completed",
   "notYetStarted": "Not Started",
   "overtime": "Overtime",
-  "notTimeout": "Not Timeout",
+  "notTimeout": "Not Timed Out",
   "equipmentAvailable": "Equipment Available",
   "currentWorkOrder": "Current Work Order",
   "pendingWorkOrder": "Pending Work Order",
@@ -66,5 +66,10 @@
   "equipmentNumber": "Equipment Number (Weighing Equipment)",
   "labelNumber": "Label Number",
   "materialNumber": "Material Number",
-  "inputQuantity": "Input Quantity"
+  "inputQuantity": "Input Quantity",
+  "taskSuspended": "Task Suspended",
+  "taskCompleted": "Task Completed",
+  "cancelTheFilling": "Cancel Filling",
+  "taskStatus": "Task Status",
+  "taskType": "Task Type"
 }

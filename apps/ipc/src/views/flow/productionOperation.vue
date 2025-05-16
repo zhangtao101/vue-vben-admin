@@ -9,7 +9,6 @@ import {
   MdiChevronDown,
   MdiChevronUp,
   MdiEyeOutline,
-  MdiHome,
 } from '@vben/icons';
 import { $t } from '@vben/locales';
 
@@ -35,6 +34,8 @@ import {
   Tooltip,
   Transfer,
 } from 'ant-design-vue';
+// eslint-disable-next-line n/no-extraneous-import
+import { Enum } from 'enum-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -52,7 +53,26 @@ import {
 } from '#/api';
 import OperationalMatters from '#/util/component/operationalMatters.vue';
 import StepExecution from '#/util/component/stepExecution.vue';
-
+// region 图标
+const iconEnum: any = Enum({
+  SOP查看: {
+    label: 'SOP查看',
+    value: 'mdi:eye-outline',
+  },
+  安灯: {
+    label: '安灯',
+    value: 'mdi:alarm-light',
+  },
+  质量检验: {
+    label: '质量检验',
+    value: 'mdi:quality-medium',
+  },
+  工序过程操作: {
+    label: '工序过程操作',
+    value: 'fluent-mdl2:processing-run',
+  },
+});
+// endregion
 // region 工作站查询信息
 // 工作站列表
 const listOfProductionLines = ref([]);
@@ -249,6 +269,8 @@ const theSelectedWorkOrder = ref<any>({});
 const gridEvents: any = {
   radioChange: ({ newValue }: any) => {
     theSelectedWorkOrder.value = newValue;
+    processRouteList.value = [];
+    theSelectedOperation.value = undefined;
     queryProcess(selectedWorkstation.value, newValue.worksheetCode);
   },
 };
@@ -979,7 +1001,10 @@ onBeforeUnmount(() => {
               v-for="item of listOfOperationItems"
               :key="item.id"
             >
-              <MdiHome class="inline-block text-xl" />
+              <IconifyIcon
+                :icon="iconEnum[item.opTypeName]"
+                class="inline-block text-xl"
+              />
               {{ item.opTypeName }}
             </RadioButton>
           </RadioGroup>
@@ -1048,12 +1073,11 @@ onBeforeUnmount(() => {
     <Drawer
       v-model:open="whetherPersonnelOperationsAreDisplayed"
       :footer-style="{ textAlign: 'right' }"
-      :height="500"
+      height="80%"
       placement="top"
       title="人员上/下工"
       @close="shutDownPersonnelOperations"
     >
-      {{ jobNumberThatHasAlreadyStartedWorking }}
       <Transfer
         v-model:target-keys="jobNumberThatHasAlreadyStartedWorking"
         :data-source="userList"

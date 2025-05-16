@@ -37,7 +37,7 @@ const routes: RouteRecordRaw[] = [
   },*/
   {
     meta: {
-      icon: 'lucide:layout-dashboard',
+      icon: 'mdi:assignment',
       order: -1,
       title: $t('menu.workFlow'),
     },
@@ -49,6 +49,7 @@ const routes: RouteRecordRaw[] = [
         path: 'dispatchHomework',
         component: () => import('#/views/flow/dispatchHomework.vue'),
         meta: {
+          icon: 'mdi:shuffle-variant',
           ignoreAccess: true,
           title: $t('menu.dispatchOperation'),
         },
@@ -58,6 +59,7 @@ const routes: RouteRecordRaw[] = [
         path: 'workOrderEntry',
         component: () => import('#/views/flow/workOrderEntry.vue'),
         meta: {
+          icon: 'mdi:elevator-down',
           ignoreAccess: true,
           title: $t('menu.workOrderInbound'),
         },
@@ -67,6 +69,7 @@ const routes: RouteRecordRaw[] = [
         path: 'productionOperation',
         component: () => import('#/views/flow/productionOperation.vue'),
         meta: {
+          icon: 'mdi:file-clock-outline',
           ignoreAccess: true,
           title: $t('menu.productionOperation'),
         },
@@ -76,6 +79,7 @@ const routes: RouteRecordRaw[] = [
         path: 'workOrderOutbound',
         component: () => import('#/views/flow/workOrderOutbound.vue'),
         meta: {
+          icon: 'mdi:elevator-up',
           ignoreAccess: true,
           title: $t('menu.workOrderOutbound'),
         },
@@ -84,7 +88,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     meta: {
-      icon: 'lucide:layout-dashboard',
+      icon: 'mdi:alarm-light',
       order: -1,
       title: $t('menu.andonManagement'),
     },
@@ -92,12 +96,13 @@ const routes: RouteRecordRaw[] = [
     path: '/andon',
     children: [
       {
-        name: 'andonManagement',
-        path: 'andonManagement',
-        component: () => import('#/views/andon/andon.vue'),
+        name: 'andengFillingOut',
+        path: 'andengFillingOut',
+        component: () => import('#/views/andon/andengFillingOut.vue'),
         meta: {
+          icon: 'mdi:file-edit-outline',
           ignoreAccess: true,
-          title: $t('menu.andonManagement'),
+          title: $t('menu.andengFillingOut'),
         },
       },
       {
@@ -105,24 +110,26 @@ const routes: RouteRecordRaw[] = [
         path: 'andonProblemAssessment',
         component: () => import('#/views/andon/andonProblemAssessment.vue'),
         meta: {
+          icon: 'mdi:report-problem',
           ignoreAccess: true,
           title: $t('menu.andonProblemAssessment'),
         },
       },
       {
-        name: 'andengFillingOut',
-        path: 'andengFillingOut',
-        component: () => import('#/views/andon/andengFillingOut.vue'),
+        name: 'andonManagement',
+        path: 'andonManagement',
+        component: () => import('#/views/andon/andon.vue'),
         meta: {
+          icon: 'mdi:alarm-light',
           ignoreAccess: true,
-          title: $t('menu.andengFillingOut'),
+          title: $t('menu.andonManagement'),
         },
       },
     ],
   },
   {
     meta: {
-      icon: 'lucide:layout-dashboard',
+      icon: 'mdi:quality-medium',
       order: -1,
       title: $t('menu.poorHandling'),
     },
@@ -134,6 +141,7 @@ const routes: RouteRecordRaw[] = [
         path: 'qualityInspection',
         component: () => import('#/views/poorHandling/qualityInspection.vue'),
         meta: {
+          icon: 'mdi:quality-medium',
           ignoreAccess: true,
           title: $t('menu.qualityInspection'),
         },
@@ -143,6 +151,7 @@ const routes: RouteRecordRaw[] = [
         path: 'badJudgment',
         component: () => import('#/views/poorHandling/badJudgment.vue'),
         meta: {
+          icon: 'mdi:error-outline',
           ignoreAccess: true,
           title: $t('menu.badJudgment'),
         },

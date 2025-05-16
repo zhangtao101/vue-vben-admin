@@ -42,6 +42,7 @@ import {
   queryTheListOfAndonPendingProcessing,
   taskCollection,
 } from '#/api';
+import ScanTheCode from '#/util/component/scanTheCode.vue';
 
 const props = defineProps({
   showType: {
@@ -748,15 +749,42 @@ onMounted(() => {
   <Form layout="inline" :model="queryParams" class="mb-4">
     <!--工单编号 -->
     <FormItem :label="$t('andon.workOrderNumber')" class="!mb-4">
-      <Input v-model:value="queryParams.workorderCode" />
+      <div class="flex">
+        <Input v-model:value="queryParams.workorderCode" />
+        <ScanTheCode
+          @scan-the-code="
+            (val) => {
+              queryParams.workorderCode = val;
+            }
+          "
+        />
+      </div>
     </FormItem>
     <!--当前工序 -->
     <FormItem :label="$t('andon.currentOperation')" class="!mb-4">
-      <Input v-model:value="queryParams.process" />
+      <div class="flex">
+        <Input v-model:value="queryParams.process" />
+        <ScanTheCode
+          @scan-the-code="
+            (val) => {
+              queryParams.process = val;
+            }
+          "
+        />
+      </div>
     </FormItem>
     <!--作业位置 -->
     <FormItem :label="$t('andon.jobPosition')" class="!mb-4">
-      <Input v-model:value="queryParams.location" />
+      <div class="flex">
+        <Input v-model:value="queryParams.location" />
+        <ScanTheCode
+          @scan-the-code="
+            (val) => {
+              queryParams.location = val;
+            }
+          "
+        />
+      </div>
     </FormItem>
     <FormItem class="!mb-4">
       <Button type="primary" @click="gridApi.reload()" class="mr-4">

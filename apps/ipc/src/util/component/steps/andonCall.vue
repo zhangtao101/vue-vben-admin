@@ -187,7 +187,7 @@ function close() {
     :title="$t('andon.onLightCall')"
     v-model:open="showAndon"
     placement="top"
-    :height="500"
+    height="80%"
     :footer-style="{ textAlign: 'right' }"
     @close="close"
   >

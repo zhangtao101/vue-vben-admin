@@ -203,7 +203,7 @@ onMounted(() => {
           {{ $t('productionOperation.formulaDeliveryCondition') }}
         </span>
         <span :class="getValueClass()">
-          {{ details.tempSendFlagName }}
+          {{ details.tempSendFlagName || $t('productionOperation.none') }}
         </span>
       </div>
       <div class="mb-4 mr-8 inline-block">

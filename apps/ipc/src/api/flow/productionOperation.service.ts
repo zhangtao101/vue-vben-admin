@@ -215,6 +215,25 @@ export function processExitInformationQuery(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listProcessOut?${qs.stringify(params)}`,
   );
 }
+/**
+ * 工序报工信息查询
+ * @param params 参数
+ */
+export function listByOutReport(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByOutReport?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 出站报工操作
+ * @param params 参数
+ */
+export function outReport(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/outReport`,
+    params,
+  );
+}
 
 /**
  * 工序报工信息查询
@@ -274,5 +293,43 @@ export function feedingComplete(params: any) {
   return requestClient.post(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/feedClear`,
     params,
+  );
+}
+/**
+ * 人工绑码
+ * @param params 参数
+ */
+export function snCodeBinding(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snCodeBinding`,
+    params,
+  );
+}
+/**
+ * 人工解绑条码
+ * @param params 参数
+ */
+export function snCodeBindingCallBack(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snCodeBindingCallBack`,
+    params,
+  );
+}
+/**
+ * 扫码页面查询
+ * @param params 参数
+ */
+export function listByCodeScan(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByCodeScan?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 绑码条码校验
+ * @param params 参数
+ */
+export function checkCodeBinding(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/checkCodeBinding?${qs.stringify(params)}`,
   );
 }

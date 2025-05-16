@@ -444,7 +444,7 @@ defineExpose({
     v-if="workstationInfo && show"
   >
     <div
-      class="cursor-pointer rounded-t-lg bg-cyan-500 pb-1 pt-1 text-center text-xl text-white"
+      class="cursor-pointer rounded-t-lg bg-cyan-500 pb-1 pt-1 text-center text-xl text-white hover:bg-amber-200"
       :class="isActive ? 'bg-cyan-500' : 'cursor-not-allowed bg-gray-300'"
       @click="displaysTheWorkOrderColumnTable({})"
     >
@@ -488,7 +488,7 @@ defineExpose({
   <!-- region 已派工列表 -->
   <Drawer
     v-model:open="showWorkOrderListDrawer"
-    :height="500"
+    height="80%"
     placement="top"
     :title="$t('dispatchHomework.sentOut')"
     @close="closeTheWorkOrderList"
@@ -501,7 +501,7 @@ defineExpose({
   <Drawer
     v-model:open="showJobDrawer"
     :footer-style="{ textAlign: 'right' }"
-    :height="500"
+    height="80%"
     placement="top"
     :title="$t('dispatchHomework.resourceAssignment')"
     @close="closeJobDrawer"
