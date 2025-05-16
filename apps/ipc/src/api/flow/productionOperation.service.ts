@@ -276,3 +276,41 @@ export function feedingComplete(params: any) {
     params,
   );
 }
+/**
+ * 人工绑码
+ * @param params 参数
+ */
+export function snCodeBinding(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snCodeBinding`,
+    params,
+  );
+}
+/**
+ * 人工解绑条码
+ * @param params 参数
+ */
+export function snCodeBindingCallBack(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snCodeBindingCallBack`,
+    params,
+  );
+}
+/**
+ * 扫码页面查询
+ * @param params 参数
+ */
+export function listByCodeScan(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByCodeScan?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 绑码条码校验
+ * @param params 参数
+ */
+export function checkCodeBinding(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/checkCodeBinding?${qs.stringify(params)}`,
+  );
+}

@@ -274,7 +274,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 23"
   />
-  <!-- 扫码出站 -->
+  <!-- 出站报工 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"

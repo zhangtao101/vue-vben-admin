@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Col, Row, Spin } from 'ant-design-vue';
+import { Button, Col, Row, Spin } from 'ant-design-vue';
 
-import { queryOfResourceVerificationStatus } from '#/api';
+import { listByCodeScan } from '#/api';
 
 const props = defineProps({
   // 工步id
@@ -74,14 +75,13 @@ const showType = ref<any>({
     'equipmentInterlocking',
     'processingStatus',
     'producedQuantity',
-    'appearanceInspection',
     'testConclusion',
   ],
   23: [
     'singlePieceSNCode',
-    'workOrderNumber',
-    'detectedQuantity',
-    'testConclusion',
+    'equipmentInterlocking',
+    'processingStatus',
+    'producedQuantity',
   ],
   25: [
     'singlePieceSNCode',
@@ -135,34 +135,31 @@ const spinning = ref<any>(false);
 
 /**
  * 查询资源验证状态
- * 功能：获取当前工位的资源校验状态数据
- * 流程：
+ * @function
+ * @async
+ * @description 获取当前工位的资源校验状态数据，包含以下流程：
  * 1. 开启加载状态指示
- * 2. 构造包含工位、设备等上下文参数的请求对象
+ * 2. 从组件props中获取上下文参数
  * 3. 调用资源验证状态查询接口
- * 4. 存储返回数据到响应式对象
+ * 4. 存储接口返回数据
  * 5. 始终关闭加载状态指示
  *
- * 接口参数说明：
- * queryOfResourceVerificationStatus - 资源验证状态查询接口
- * {
- *   workstationCode: 工作站编码,
- *   equipCode: 设备编码,
- *   worksheetCode: 工单编号,
- *   bindingId: 工序绑定ID,
- *   functionId: 工步ID
+ * @throws {Error} 需要调用者补充异常处理逻辑
+ *
+ * @example
+ * // 典型调用流程
+ * try {
+ *   await queryData();
+ * } catch (error) {
+ *   // 待补充的错误处理
  * }
  *
- * 注意事项：
- * - 使用spinning控制加载状态指示器
- * - 依赖props传入的工位/设备/工单等上下文参数
- * - 接口返回数据直接存储到details响应式对象
- * - 当前未处理接口异常情况，需补充错误处理逻辑
- * - 使用finally确保无论成功失败都会关闭加载状态
+ * @see {@link listByCodeScan} 使用的API接口
+ * @see {@link props} 参数来源：工步ID/工序ID/工单编号等上下文参数
  */
 function queryData() {
   spinning.value = true;
-  queryOfResourceVerificationStatus({
+  listByCodeScan({
     workstationCode: props.workstationCode,
     equipCode: props.equipCode,
     worksheetCode: props.worksheetCode,
@@ -195,8 +192,18 @@ onMounted(() => {
             {{ $t('productionOperation.singlePieceSNCode') }}
           </span>
           <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+            {{ details.snCode || $t('productionOperation.none') }}
           </span>
+          <Button type="link" :danger="details.checkResult === -1">
+            <IconifyIcon
+              :icon="
+                details.checkResult === -1
+                  ? 'mdi:error-outline'
+                  : 'mdi:success-circle-outline'
+              "
+              class="inline-block align-middle text-2xl"
+            />
+          </Button>
         </div>
         <!-- endregion-->
         <!-- region 工单编号 -->
@@ -208,7 +215,7 @@ onMounted(() => {
             {{ $t('productionOperation.workOrderNumber') }}
           </span>
           <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+            {{ details.worksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
@@ -221,7 +228,7 @@ onMounted(() => {
             {{ $t('productionOperation.equipmentInterlocking') }}
           </span>
           <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+            {{ details.error || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
@@ -234,7 +241,7 @@ onMounted(() => {
             {{ $t('productionOperation.processingStatus') }}
           </span>
           <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+            {{ details.workingStateName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
@@ -247,7 +254,7 @@ onMounted(() => {
             {{ $t('productionOperation.producedQuantity') }}
           </span>
           <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+            {{ details.totalNumber || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
@@ -260,7 +267,7 @@ onMounted(() => {
             {{ $t('productionOperation.detectedQuantity') }}
           </span>
           <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+            {{ details.totalNumber || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
@@ -273,7 +280,7 @@ onMounted(() => {
             {{ $t('productionOperation.appearanceInspection') }}
           </span>
           <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+            {{ details.defectFlagName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
@@ -286,7 +293,7 @@ onMounted(() => {
             {{ $t('productionOperation.testConclusion') }}
           </span>
           <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+            {{ details.defectFlagName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->

@@ -17,9 +17,15 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
+import {
+  checkCodeBinding,
+  listByCodeScan,
+  snCodeBinding,
+  snCodeBindingCallBack,
+} from '#/api';
 import ScanTheCode from '#/util/component/scanTheCode.vue';
 
-defineProps({
+const props = defineProps({
   // 工步id
   functionId: {
     type: Number,
@@ -54,10 +60,6 @@ function getLabelClass() {
   return 'inline-block w-full border p-2 text-center';
 }
 
-/**
- * 加载中
- */
-const spinning = ref<any>(false);
 // region 绑码
 // 源码
 const sourceCode = ref('');
@@ -99,14 +101,36 @@ function bindCode() {
 const transcodedList = ref<any>([]);
 
 function add() {
-  transcodedList.value.push({
-    text: `${sourceCode.value} ==> ${transcoding.value}`,
+  snCodeBinding({
+    snCode: sourceCode.value,
+    barcode: transcoding.value,
+  }).then(() => {
+    queryData();
+    sourceCode.value = '';
+    transcoding.value = '';
   });
-  sourceCode.value = '';
-  transcoding.value = '';
 }
 
-function unbind(index: number) {
+/**
+ * 执行条码解绑操作
+ * @function
+ * @description 解除绑定流程：
+ * 1. 弹出二次确认对话框
+ * 2. 确认后调用解绑接口
+ * 3. 解绑成功刷新数据并提示
+ *
+ * @param {object} item - 要解绑的条码项
+ * @param {string} item.qrcode - 二维码值
+ * @param {string} item.barcode - 条形码值
+ *
+ * @example
+ * // 在已绑定列表点击解绑按钮时触发
+ * unbind({ qrcode: 'QR123', barcode: 'BR456' });
+ *
+ * @see {@link snCodeBindingCallBack} 使用的解绑接口
+ * @see {@link queryData} 数据刷新方法
+ */
+function unbind(item: any) {
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
@@ -115,15 +139,94 @@ function unbind(index: number) {
       message.warning('已取消操作!');
     },
     onOk() {
-      transcodedList.value.splice(index, 1);
-      message.success($t('common.successfulOperation'));
+      snCodeBindingCallBack({
+        snCode: item.qrcode,
+        barcode: item.barcode,
+      }).then(() => {
+        message.success($t('common.successfulOperation'));
+        queryData();
+      });
     },
     title: '是否确认解除绑定?',
   });
 }
+
+/**
+ * 执行条码绑定验证
+ * @function
+ * @async
+ * @description 重量判定/条码验证流程：
+ * 1. 调用绑定验证接口检查条码有效性
+ * 2. 验证通过后触发转码变更流程
+ *
+ * @param {string} val - 待验证的原始条码（来自扫码枪输入或手动输入）
+ *
+ * @example
+ * // 典型调用场景：扫码枪输入条码后
+ * judgementOfWeight('SN123456789');
+ *
+ * @see {@link checkCodeBinding} 使用的验证接口
+ * @see {@link transcodingChange} 验证通过后触发的转码方法
+ */
+function judgementOfWeight(val: string) {
+  checkCodeBinding({
+    code: val,
+    worksheetCode: props.worksheetCode,
+  }).then(() => {
+    transcodingChange();
+  });
+}
 // endregion
 
-onMounted(() => {});
+/**
+ * 加载中
+ */
+const spinning = ref<any>(false);
+/**
+ * 查询资源验证状态
+ * @function
+ * @async
+ * @description 获取当前工位的资源校验状态数据，包含以下流程：
+ * 1. 开启加载状态指示
+ * 2. 从组件props中获取上下文参数
+ * 3. 调用资源验证状态查询接口
+ * 4. 存储接口返回数据
+ * 5. 始终关闭加载状态指示
+ *
+ * @throws {Error} 需要调用者补充异常处理逻辑
+ *
+ * @example
+ * // 典型调用流程
+ * try {
+ *   await queryData();
+ * } catch (error) {
+ *   // 待补充的错误处理
+ * }
+ *
+ * @see {@link listByCodeScan} 使用的API接口
+ * @see {@link props} 参数来源：工步ID/工序ID/工单编号等上下文参数
+ */
+function queryData() {
+  spinning.value = true;
+  listByCodeScan({
+    workstationCode: props.workstationCode,
+    equipCode: props.equipCode,
+    worksheetCode: props.worksheetCode,
+    bindingId: props.bindingId,
+    functionId: props.functionId,
+  })
+    .then(({ snCode, list }) => {
+      transcodedList.value = list;
+      sourceCode.value = snCode;
+    })
+    .finally(() => {
+      spinning.value = false;
+    });
+}
+
+onMounted(() => {
+  queryData();
+});
 </script>
 
 <template>
@@ -146,7 +249,7 @@ onMounted(() => {});
                 @scan-the-code="
                   (val) => {
                     sourceCode = val;
-                    sourceCodeChange();
+                    judgementOfWeight(val);
                   }
                 "
               />
@@ -167,7 +270,7 @@ onMounted(() => {});
                 @scan-the-code="
                   (val) => {
                     transcoding = val;
-                    transcodingChange();
+                    judgementOfWeight(val);
                   }
                 "
               />
@@ -184,12 +287,12 @@ onMounted(() => {});
           :data-source="transcodedList"
           class="h-[300px] overflow-y-auto"
         >
-          <template #renderItem="{ item, index }">
+          <template #renderItem="{ item }">
             <ListItem>
-              {{ item.text }}
+              {{ item.qrcode }} ==> {{ item.barcode }}
               <template #actions>
                 <Tooltip :title="$t('productionOperation.unbind')">
-                  <Button type="link" @click="unbind(index)">
+                  <Button type="link" @click="unbind(item)">
                     <template #icon>
                       <IconifyIcon
                         icon="carbon:unlink"
