@@ -215,6 +215,25 @@ export function processExitInformationQuery(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listProcessOut?${qs.stringify(params)}`,
   );
 }
+/**
+ * 工序报工信息查询
+ * @param params 参数
+ */
+export function listByOutReport(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByOutReport?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 出站报工操作
+ * @param params 参数
+ */
+export function outReport(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/outReport`,
+    params,
+  );
+}
 
 /**
  * 工序报工信息查询

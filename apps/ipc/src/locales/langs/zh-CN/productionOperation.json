@@ -88,5 +88,10 @@
   "parameterBinding": "参数绑定",
   "processVerification": "工序校验",
   "detectedQuantity": "已检测数量",
-  "bindTheBarcode": "绑定条码"
+  "bindTheBarcode": "绑定条码",
+  "plannedQuantity": "计划数量",
+  "quantityOfGoodProducts": "良品数量",
+  "quantityOfDefectiveProducts": "不良品数量",
+  "cumulativeCompletedQuantity": "累计完成数量",
+  "cumulativeNumberOfDefects": "累计不良数量"
 }

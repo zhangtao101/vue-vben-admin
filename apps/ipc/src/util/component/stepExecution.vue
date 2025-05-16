@@ -13,6 +13,7 @@ import MaterialFeedingSlitting from '#/util/component/steps/materialFeedingSlitt
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
+import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
@@ -275,7 +276,7 @@ defineProps({
     v-if="step.type === 23"
   />
   <!-- 出站报工 -->
-  <ScanningHomework
+  <ReportForWorkExit
     :workstation-code="workstationCode"
     :equip-code="equipCode"
     :worksheet-code="worksheetCode"
