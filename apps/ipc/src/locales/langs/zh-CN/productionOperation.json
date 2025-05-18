@@ -63,7 +63,7 @@
   "manuallyClearAgain": "手动再次清空",
   "snCode": "SN码",
   "weight": "重量（报工数）",
-  "equipmentNumber": "设备号（称量设备）",
+  "equipmentNumber": "设备编号",
   "labelNumber": "标签编号",
   "materialNumber": "物料编号",
   "inputQuantity": "投入量",
@@ -93,5 +93,6 @@
   "quantityOfGoodProducts": "良品数量",
   "quantityOfDefectiveProducts": "不良品数量",
   "cumulativeCompletedQuantity": "累计完成数量",
-  "cumulativeNumberOfDefects": "累计不良数量"
+  "cumulativeNumberOfDefects": "累计不良数量",
+  "allowForAdjustment": "允许调整"
 }

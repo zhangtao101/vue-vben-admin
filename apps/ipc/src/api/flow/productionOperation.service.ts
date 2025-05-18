@@ -333,3 +333,22 @@ export function checkCodeBinding(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/checkCodeBinding?${qs.stringify(params)}`,
   );
 }
+/**
+ * 获取可以指派的设备清单
+ * @param params 参数
+ */
+export function listEquipSend(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipSend?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 资源指派确认
+ * @param params 参数
+ */
+export function sendEquip(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/sendEquip`,
+    params,
+  );
+}

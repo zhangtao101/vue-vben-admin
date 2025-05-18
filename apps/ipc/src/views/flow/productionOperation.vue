@@ -71,6 +71,10 @@ const iconEnum: any = Enum({
     label: '工序过程操作',
     value: 'fluent-mdl2:processing-run',
   },
+  资源指派: {
+    label: '资源指派',
+    value: 'mdi:resize',
+  },
 });
 // endregion
 // region 工作站查询信息
@@ -965,19 +969,23 @@ onBeforeUnmount(() => {
       </Row>
       <Spin :spinning="processRouteListLoading">
         <Card class="mb-5" v-if="processShrinkage">
-          <div class="mt-5">
-            <Button
+          <div class="mt-5 w-full whitespace-nowrap">
+            <div
               v-for="item of processRouteList"
-              :type="
-                item.processCode !== checkedProcess ? 'default' : 'primary'
-              "
-              size="large"
-              class="mr-4 w-32"
+              class="m-4 inline-block w-36 cursor-pointer rounded-xl border p-2 text-center hover:bg-amber-200 hover:text-black"
+              :class="{
+                'bg-sky-500 text-white': item.workingState === 1,
+                'bg-green-500 text-white': item.workingState === 2,
+                'bg-gray-200': item.workingState === -1,
+                'anomaly border-4':
+                  item.errorFlag === 1 && item.processCode !== checkedProcess,
+                'border-4 border-sky-500': item.processCode === checkedProcess,
+              }"
               :key="item.processCode"
               @click="processChange(item)"
             >
-              {{ item.processName }}
-            </Button>
+              <div>{{ item.processName }}</div>
+            </div>
           </div>
         </Card>
       </Spin>
@@ -1025,7 +1033,7 @@ onBeforeUnmount(() => {
       <Card v-if="operationEventShrinkage" class="mb-5">
         <OperationalMatters
           :details-id="theSelectedOperation"
-          :type="1"
+          :type="2"
           :worksheet-code="theCurrentlySelectedWorkOrderNumber"
           @current-change="workStepConversion"
           v-if="theSelectedOperation && theCurrentlySelectedWorkOrderNumber"

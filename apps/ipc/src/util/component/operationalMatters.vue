@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 
-import { Button, Popover, Spin, Steps } from 'ant-design-vue';
+import { IconifyIcon } from '@vben/icons';
+
+import { Spin } from 'ant-design-vue';
 
 import { getOpFunctions } from '#/api';
 
@@ -74,10 +76,12 @@ function querySteps() {
         stepBar.value.push({
           title: step.functionTypeName, // 步骤名称
           functionType: step.functionType, // 功能类型
+          status: step.workingState, // 执行状态
           description: step.currentWorksheet // 步骤描述
-            ? `当前正在进行工单: ${step.currentWorksheet} 加工` // 有工单时的提示
-            : '当前无工单进行中', // 无工单时的提示
+            ? `${step.currentWorksheet}` // 有工单时的提示
+            : '-', // 无工单时的提示
           id: step.id, // 步骤唯一标识
+          errorFlag: step.errorFlag, // 错误标识
         });
         // 设置当前激活步骤索引
         if (step.currentWorksheet) {
@@ -128,28 +132,65 @@ onMounted(() => {
     class="mb-8"
   /> -->
   <Spin :spinning="loading">
-    <div class="h-24 overflow-y-auto">
-      <Steps v-model:current="current" :items="stepBar" v-if="props.type === 1">
-        <template #progressDot="{ prefixCls }">
-          <Popover>
-            <span :class="`${prefixCls}-icon-dot`"></span>
-          </Popover>
+    <div class="overflow-y-auto pb-4 pt-4">
+      <div v-if="props.type === 1" class="w-full whitespace-nowrap">
+        <template v-for="(item, index) of stepBar" :key="index">
+          <IconifyIcon
+            icon="mdi:arrow-right"
+            class="ml-4 mr-4 inline-block align-baseline text-4xl"
+            v-if="index > 0"
+          />
+          <div
+            class="inline-block w-48 cursor-pointer rounded-xl border p-4 text-center hover:bg-amber-200 hover:text-black"
+            :class="{
+              'bg-sky-500 text-white': item.status === 1,
+              'bg-green-500 text-white': item.status === 2,
+              'bg-gray-200': item.status === -1,
+              'anomaly border-4': item.errorFlag === 1 && current !== index,
+              'border-4 border-sky-500': current === index,
+            }"
+            @click="current = index"
+          >
+            <div class="text-xl font-black">{{ item.title }}</div>
+            <div>{{ item.description }}</div>
+          </div>
         </template>
-      </Steps>
-      <div v-else>
-        <Button
-          v-for="(item, index) of stepBar"
-          :type="index !== current ? 'default' : 'primary'"
-          size="large"
-          class="mb-4 mr-4 w-32"
-          :key="item.id"
-          @click="() => (current = index)"
-        >
-          {{ item.title }}
-        </Button>
+      </div>
+      <div v-else class="w-full whitespace-nowrap">
+        <template v-for="(item, index) of stepBar" :key="index">
+          <div
+            class="m-4 inline-block w-48 cursor-pointer rounded-xl border p-2 text-center hover:bg-amber-200 hover:text-black"
+            :class="{
+              'bg-sky-500 text-white': item.status === 1,
+              'bg-green-500 text-white': item.status === 2,
+              'bg-gray-200': item.status === -1,
+              'anomaly border-4': item.errorFlag === 1 && current !== index,
+              'border-4 border-sky-500': current === index,
+            }"
+            @click="current = index"
+          >
+            <div class="text-xl font-black">{{ item.title }}</div>
+            <div>{{ item.description }}</div>
+          </div>
+        </template>
       </div>
     </div>
   </Spin>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.anomaly {
+  @keyframes blink {
+    0%,
+    100% {
+      border-color: transparent;
+    }
+
+    50% {
+      border-color: red;
+    }
+  }
+
+  animation: blink 1s infinite;
+}
+</style>

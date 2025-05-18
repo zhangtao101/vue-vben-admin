@@ -732,6 +732,8 @@ onMounted(() => {
         :record-code="editItem.recordCode"
         :is-start="startStatus"
         :record-id="editItem.id"
+        :defect-number="editItem.totalDefectNnumber"
+        :check-number="editItem.totalCheckNumber"
         @close="
           () => {
             gridApi.reload();

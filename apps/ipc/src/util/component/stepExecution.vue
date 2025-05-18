@@ -14,6 +14,7 @@ import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue'
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
+import ResourceAssignment from '#/util/component/steps/resourceAssignment.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
@@ -188,6 +189,7 @@ defineProps({
     :binding-id="bindingId"
     :function-id="step.id"
     :place="3"
+    :state="3"
     v-if="step.type === 14"
   />
   <!-- 转码 -->
@@ -324,6 +326,16 @@ defineProps({
     :function-id="step.id"
     :show-type-number="step.type"
     v-if="step.type === 28"
+  />
+  <!-- 资源指派 -->
+  <ResourceAssignment
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 29"
   />
 
   <!-- 设备点位信息 -->

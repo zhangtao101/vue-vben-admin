@@ -34,6 +34,8 @@ import {
 
 // 加料状态
 const feedingStatus = ref(false);
+// 是否开立返工工单
+const reworkSheetFlag = ref(false);
 
 // 操作事项列表
 const listOfOperationItems = ref<any>([
@@ -304,6 +306,7 @@ function submit() {
       reowrkConfirm({
         defectId: id.value, // 当前处理的缺陷单ID
         isMaterialFlag: feedingStatus.value ? 1 : 2, // 转换加料开关为接口需要的标识
+        reworkSheetFlag: reworkSheetFlag.value ? 1 : 2, // 转换加料开关为接口需要的标识
         proceList: currentRow.value, // 用户选择的工序列表
         planMaterialLists: fmGridApi.grid.getTableData().tableData, // 带实际用量的物料数据
       })
@@ -326,7 +329,7 @@ function submit() {
     <!--- region 物料处理  -->
     <Row class="mb-4 items-center">
       <Col :span="4">
-        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+        <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
           {{ $t('rework.materialHandling') }}
         </span>
       </Col>
@@ -339,11 +342,27 @@ function submit() {
       </Col>
     </Row>
     <!-- endregion -->
+    <!--- region 是否开立返工工单  -->
+    <Row class="mb-4 items-center">
+      <Col :span="4">
+        <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
+          {{ $t('rework.openingTitle') }}
+        </span>
+      </Col>
+      <Col :span="20">
+        <Switch
+          v-model:checked="reworkSheetFlag"
+          :checked-children="$t('rework.open')"
+          :un-checked-children="$t('rework.notToOpen')"
+        />
+      </Col>
+    </Row>
+    <!-- endregion -->
 
     <!--- region 返工工序  -->
     <Row class="mb-4 items-center">
       <Col :span="4">
-        <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+        <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
           {{ $t('rework.reworkProcess') }}
         </span>
       </Col>

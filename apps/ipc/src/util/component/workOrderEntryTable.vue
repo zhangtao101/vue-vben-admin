@@ -11,6 +11,7 @@ import {
   Card,
   message,
   Modal,
+  Radio,
   RadioButton,
   RadioGroup,
   Tooltip,
@@ -19,7 +20,7 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteWorksheet,
-  inputSheet,
+  inputSheetBatch,
   moveIn,
   moveOut,
   moveUpAndDown,
@@ -63,22 +64,27 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'sendState',
       title: '工单状态',
-      minWidth: 200,
+      minWidth: 150,
       slots: { default: 'sendState' },
+    },
+    {
+      field: 'modelTypeName',
+      title: '工单模式',
+      minWidth: 200,
     },
     {
       field: 'planStartDate',
       title: '预计开始时间',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'planEndDate',
       title: '预计结束时间',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       title: '操作',
-      minWidth: 200,
+      minWidth: 180,
       slots: {
         default: 'action',
       },
@@ -153,14 +159,11 @@ const dataLength = ref(-1);
  * - dataLength: 存储当前页数据量用于控制上下移按钮状态
  */
 function queryData({ page, pageSize }: any) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const params: any = {
       ...props.queryParams,
+      pagetype: workOrderType.value,
     };
-    // 处理自动模式下的分页类型参数
-    if (props.queryParams.modelType === '2') {
-      params.pagetype = workOrderType.value;
-    }
 
     obtainTheWorkOrderManagementList({
       ...params, // 合并所有查询条件
@@ -174,8 +177,11 @@ function queryData({ page, pageSize }: any) {
           items: list, // 当前页数据集合
         });
       })
-      .catch((error) => {
-        reject(error); // 异常处理
+      .catch(() => {
+        resolve({
+          total: 0, // 总数据量
+          items: [], // 当前页数据集合
+        });
       });
   });
 }
@@ -235,7 +241,7 @@ function getStatusText(status: number) {
  * - 成功提示使用国际化处理的多语言文本
  * - 标题及取消提示暂为中文硬编码，需根据需求国际化
  */
-function inputSheetCode(row: any) {
+function inputSheetCode() {
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
@@ -244,8 +250,16 @@ function inputSheetCode(row: any) {
       message.warning('已取消进站!');
     },
     onOk() {
-      inputSheet({
-        id: row.id,
+      const ids: string[] = [];
+      gridApi.grid.getTableData().tableData.forEach((item: any) => {
+        if (workOrderType.value === '1') {
+          ids.push(item.sendId);
+        } else {
+          ids.push(item.id);
+        }
+      });
+      inputSheetBatch({
+        ids,
       }).then(() => {
         message.success($t('common.successfulOperation'));
         gridApi.reload();
@@ -295,42 +309,61 @@ function delSheetCode(row: any) {
 }
 // endregion
 // region 移入&移出&上下移
-
+/**
+ * 工单模式
+ */
+const modelType = ref(1);
+/**
+ * 显示移入对话框
+ */
+const showIn = ref(false);
+/**
+ * 移入数据
+ */
+const inItem = ref<any>({});
 /**
  * 处理工单移入操作
- * 功能：执行工单移入操作并进行二次确认
+ *
+ * 功能：执行工单移入操作并进行二次确认，支持选择手动/自动模式
+ *
  * 流程：
- * 1. 弹出确认对话框提示用户确认移入
- * 2. 确认后调用移入接口提交工单ID
- * 3. 操作成功时刷新表格数据并显示提示
+ * 1. 初始化模式类型为手动（modelType.value = 1）
+ * 2. 弹出带模式选择框的确认对话框
+ * 3. 用户可选择手动或自动模式
+ * 4. 确认后调用移入接口提交工单ID和模式类型
+ * 5. 操作成功时刷新表格数据并显示国际化成功提示
+ * 6. 取消操作时显示取消提示
+ *
+ *
+ * @throws {Error} 当接口调用失败时抛出异常
  *
  * 接口说明：
- * moveIn - 工单移入接口，接收参数：
- *   - id: 当前工单唯一标识（来自行数据row.id）
+ * moveIn - 工单移入接口
+ * @param {object} params 接口参数
+ * @param {string} params.id - 工单ID（来自row.id）
+ * @param {number} params.modelType - 模式类型（1:手动 2:自动）
+ *
+ * 组件配置：
+ * - 使用ant-design的Modal.confirm创建确认对话框
+ * - 对话框内容包含RadioGroup单选组件：
+ *   - Radio选项1: value=1 显示"手动"
+ *   - Radio选项2: value=2 显示"自动"
+ * - 对话框标题固定为中文"是否确认移入?"
  *
  * 注意事项：
- * - 使用ant-design的Modal组件实现操作确认
- * - 成功提示使用国际化处理的多语言文本
- * - 移入操作通常在自动模式下进行工单调度
- * - 标题及取消提示暂为中文硬编码，需根据需求国际化
+ * - 模式选择值通过v-model绑定到modelType响应式变量
+ * - 成功提示使用$t('common.successfulOperation')实现国际化
+ * - 操作完成后通过gridApi.reload()刷新表格数据
+ * - 对话框取消文本和确认文本使用中文硬编码
  */
-function moveInFun(row: any) {
-  Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
-    okType: 'danger',
-    onCancel() {
-      message.warning('已取消移入!');
-    },
-    onOk() {
-      moveIn({
-        id: row.id,
-      }).then(() => {
-        message.success($t('common.successfulOperation'));
-        gridApi.reload();
-      });
-    },
-    title: '是否确认移入?',
+function moveInFun() {
+  moveIn({
+    id: inItem.value.id,
+    modelType: modelType.value,
+  }).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+    showIn.value = false;
   });
 }
 /**
@@ -483,14 +516,18 @@ defineExpose({
   <!-- region 表格内容 -->
   <Card class="mb-5">
     <Grid class="mt-4">
+      <template #toolbar-tools>
+        <Button type="primary" @click="inputSheetCode()">
+          {{ $t('workOrderEntry.pullIn') }}
+        </Button>
+      </template>
       <template #toolbar-actions>
         <RadioGroup
           v-model:value="workOrderType"
           button-style="solid"
-          v-if="queryParams.modelType === '2'"
           @change="() => gridApi.reload()"
         >
-          <RadioButton value="1">自动列表</RadioButton>
+          <RadioButton value="1">待执行列表</RadioButton>
           <RadioButton value="2">工单总列表</RadioButton>
         </RadioGroup>
       </template>
@@ -499,7 +536,7 @@ defineExpose({
       </template>
       <template #action="{ row, rowIndex }">
         <!-- 进站 ="{ row }"-->
-        <Tooltip v-if="queryParams.modelType === '1' && row.sendState !== 3">
+        <!--        <Tooltip v-if="row.sendState !== 3">
           <template #title>{{ $t('workOrderEntry.pullIn') }}</template>
           <Button
             type="link"
@@ -511,9 +548,9 @@ defineExpose({
             "
             @click="inputSheetCode(row)"
           />
-        </Tooltip>
+        </Tooltip>-->
         <!-- 恢复 -->
-        <Tooltip v-if="queryParams.modelType === '1' && row.sendState === 3">
+        <Tooltip v-if="row.sendState === 3">
           <template #title>{{ $t('workOrderEntry.recover') }}</template>
           <Button
             type="link"
@@ -539,7 +576,7 @@ defineExpose({
           />
         </Tooltip>-->
         <!-- 改派 -->
-        <Tooltip v-if="queryParams.modelType === '1' || workOrderType === '2'">
+        <Tooltip v-if="workOrderType === '2'">
           <template #title>{{ $t('workOrderEntry.reassignment') }}</template>
           <Button
             type="link"
@@ -553,7 +590,7 @@ defineExpose({
           />
         </Tooltip>
         <!-- 移入 -->
-        <Tooltip v-if="queryParams.modelType === '2' && workOrderType === '2'">
+        <Tooltip v-if="workOrderType === '2'">
           <template #title>{{ $t('workOrderEntry.moveIn') }}</template>
           <Button
             type="link"
@@ -563,11 +600,17 @@ defineExpose({
                 class: 'inline-block text-2xl',
               })
             "
-            @click="moveInFun(row)"
+            @click="
+              () => {
+                inItem = row;
+                showIn = true;
+                modelType = 1;
+              }
+            "
           />
         </Tooltip>
         <!-- 移出 -->
-        <Tooltip v-if="queryParams.modelType === '2' && workOrderType === '1'">
+        <Tooltip v-if="workOrderType === '1'">
           <template #title>{{ $t('workOrderEntry.moveOut') }}</template>
           <Button
             type="link"
@@ -581,13 +624,7 @@ defineExpose({
           />
         </Tooltip>
         <!-- 上移 -->
-        <Tooltip
-          v-if="
-            queryParams.modelType === '2' &&
-            workOrderType === '1' &&
-            rowIndex > 0
-          "
-        >
+        <Tooltip v-if="workOrderType === '1' && rowIndex > 0">
           <template #title>{{ $t('workOrderEntry.moveUp') }}</template>
           <Button
             type="link"
@@ -601,13 +638,7 @@ defineExpose({
           />
         </Tooltip>
         <!-- 下移 -->
-        <Tooltip
-          v-if="
-            queryParams.modelType === '2' &&
-            workOrderType === '1' &&
-            rowIndex < dataLength - 1
-          "
-        >
+        <Tooltip v-if="workOrderType === '1' && rowIndex < dataLength - 1">
           <template #title>
             {{ $t('workOrderEntry.moveDown') }}
           </template>
@@ -623,7 +654,7 @@ defineExpose({
           />
         </Tooltip>
         <!-- 删除 -->
-        <Tooltip v-if="queryParams.modelType === '1' || workOrderType === '2'">
+        <Tooltip v-if="workOrderType === '2'">
           <template #title>{{ $t('common.delete') }}</template>
           <Button
             type="link"
@@ -649,6 +680,13 @@ defineExpose({
     :show="false"
     @close="reassignmentClose"
   />
+
+  <Modal v-model:open="showIn" title="是否确认移入?" @ok="moveInFun">
+    <RadioGroup v-model:value="modelType">
+      <Radio :value="1">手动</Radio>
+      <Radio :value="2">自动</Radio>
+    </RadioGroup>
+  </Modal>
 </template>
 
 <style scoped></style>

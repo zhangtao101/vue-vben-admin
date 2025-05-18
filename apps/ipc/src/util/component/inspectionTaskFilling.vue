@@ -42,6 +42,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  defectNumber: {
+    type: Number,
+    default: 0,
+  },
+  checkNumber: {
+    type: Number,
+    default: 0,
+  },
 });
 // 事件
 const emit = defineEmits(['close']);
@@ -261,6 +269,10 @@ function delRow(row: any) {
   });
 }
 
+// 检验产品总数
+const toatlCheckNumber = ref(0);
+// 不良产品总数
+const totalDefectNumber = ref(0);
 /**
  * 暂停质检任务
  * 功能：暂停当前进行中的质检任务并提交相关数据
@@ -290,7 +302,11 @@ function stop() {
       message.warning('已取消!');
     },
     onOk() {
-      taskStop(gridApi.grid.getTableData().tableData).then(() => {
+      taskStop({
+        toatlCheckNumber: toatlCheckNumber.value,
+        totalDefectNumber: totalDefectNumber.value,
+        insertVms: gridApi.grid.getTableData().tableData,
+      }).then(() => {
         message.success($t('common.successfulOperation'));
         emit('close');
       });
@@ -298,7 +314,6 @@ function stop() {
     title: '是否确认暂停任务?',
   });
 }
-
 /**
  * 提交并完成质检任务
  * 功能：验证并提交完整的质检数据以完成任务
@@ -344,7 +359,11 @@ function completed() {
       },
 
       onOk() {
-        taskClear(gridApi.grid.getTableData().tableData).then(() => {
+        taskClear({
+          toatlCheckNumber: toatlCheckNumber.value,
+          totalDefectNumber: totalDefectNumber.value,
+          insertVms: gridApi.grid.getTableData().tableData,
+        }).then(() => {
           message.success($t('common.successfulOperation'));
           emit('close');
         });
@@ -575,6 +594,8 @@ function close() {
 // endregion
 
 onMounted(() => {
+  totalDefectNumber.value = props.defectNumber;
+  toatlCheckNumber.value = props.checkNumber;
   queryOfQualityInspectionItems();
   queryOfQualityInspectionTemplates();
 });
@@ -583,6 +604,26 @@ onMounted(() => {
 <template>
   <div>
     <Grid>
+      <!--    toatlCheckNumber  检验产品总数
+totalDefectNumber 不良产品总数  -->
+      <template #toolbar-actions>
+        <label class="mr-4">
+          {{ $t('qualityInspection.inspectTheTotalNumberOfProducts') }}:
+          <InputNumber
+            v-model:value="toatlCheckNumber"
+            class="ml-4 w-40"
+            :min="0"
+          />
+        </label>
+        <label>
+          {{ $t('qualityInspection.theTotalNumberOfDefectiveProducts') }}:
+          <InputNumber
+            v-model:value="totalDefectNumber"
+            class="ml-4 w-40"
+            :min="0"
+          />
+        </label>
+      </template>
       <template #toolbar-tools>
         <!-- 切换按钮 -->
         <Button type="primary" class="mr-4" @click="show = true">
