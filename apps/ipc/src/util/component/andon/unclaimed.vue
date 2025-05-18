@@ -38,7 +38,6 @@ import {
   queryAndonCompletedList,
   queryAndonPendingList,
   queryAndonPendingPickList,
-  queryErrorType,
   queryTheListOfAndonPendingProcessing,
   taskCollection,
 } from '#/api';
@@ -705,45 +704,7 @@ defineExpose({
 
 // endregion
 
-// region 异常列表
-const errorTypes = ref<any>([]);
-/**
- * 查询异常列表
- */
-function queryError() {
-  queryErrorType().then((data: any) => {
-    errorTypes.value = data;
-  });
-}
-
-/**
- * 搜索框选项过滤方法
- * 功能：实现选择器组件的自定义搜索过滤逻辑
- *
- * @param input - 用户输入的搜索关键词
- * @param option - 待匹配的选项对象，需包含label属性
- *
- * 实现逻辑：
- * 1. 将输入值和选项标签统一转换为小写
- * 2. 检查选项标签是否包含输入关键词
- *
- * 注意事项：
- * - 匹配过程大小写不敏感
- * - 依赖选项对象的label属性进行匹配
- * - 适用于ant-design-vue选择器的filter-option属性
- */
-const filterOption = (input: string, option: any) => {
-  return option.label.toLowerCase().includes(input.toLowerCase());
-};
-// endregion
-
-// region 异常填报
-
-// endregion
-
-onMounted(() => {
-  queryError();
-});
+onMounted(() => {});
 </script>
 <template>
   <Form layout="inline" :model="queryParams" class="mb-4">
@@ -975,21 +936,6 @@ onMounted(() => {
       :wrapper-col="{ span: 16 }"
       autocomplete="off"
     >
-      <!-- 异常类型 -->
-      <FormItem
-        :label="$t('andon.exceptionType')"
-        :rules="[{ required: true, message: $t('andon.required') }]"
-        style="margin-bottom: 1em"
-        name="andonErrorCode"
-      >
-        <Select
-          v-model:value="anomalyDeterminationData.andonErrorCode"
-          show-search
-          style="width: 300px"
-          :options="errorTypes"
-          :filter-option="filterOption"
-        />
-      </FormItem>
       <!-- 详细描述 -->
       <FormItem
         :label="$t('andon.detailedDescription')"
