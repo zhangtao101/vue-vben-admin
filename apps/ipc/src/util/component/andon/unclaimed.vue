@@ -38,6 +38,8 @@ import {
   queryAndonCompletedList,
   queryAndonPendingList,
   queryAndonPendingPickList,
+  queryErrorType,
+  queryTheEmployeeNumber,
   queryTheListOfAndonPendingProcessing,
   taskCollection,
 } from '#/api';
@@ -326,6 +328,7 @@ const theSignInObjectOfTheEditor = ref<any>({});
  * - 关闭抽屉时会自动清空编辑对象
  */
 function showTheSignInDrawer(row: any) {
+  queryUserCode(row.id);
   signInDrawerDisplay.value = true;
   theSignInObjectOfTheEditor.value = row;
 }
@@ -691,6 +694,71 @@ function taskCollectionFun(id: any) {
 }
 
 // endregion
+// region 签到人查询
+const userCodeList = ref<any>([]);
+
+/**
+ * 查询员工工号列表
+ * 功能：根据任务ID获取关联员工工号，并转换为下拉选项格式
+ * 流程：
+ * 1. 调用查询接口获取原始数据
+ * 2. 遍历接口返回的工号数组
+ * 3. 转换为包含 label/value 键值对的对象格式
+ * 4. 将转换后的选项存入响应式工号列表
+ *
+ * @param id - 任务唯一标识
+ *           对应安灯任务记录的ID
+ *
+ * 注意事项：
+ * - 依赖 queryTheEmployeeNumber 接口的正确返回
+ * - 数据转换是为了适配 ant-design-vue 的 Select 组件格式
+ * - 使用响应式列表 userCodeList 存储结果
+ * - 多次调用会导致列表追加数据，需要根据业务需求决定是否清空旧数据
+ */
+function queryUserCode(id: any) {
+  queryTheEmployeeNumber(id).then((data: any) => {
+    data.forEach((item: any) => {
+      userCodeList.value.push({
+        label: item,
+        value: item,
+      });
+    });
+  });
+}
+
+// endregion
+
+// region 异常列表
+const errorTypes = ref<any>([]);
+/**
+ * 查询异常列表
+ */
+function queryError() {
+  queryErrorType().then((data: any) => {
+    errorTypes.value = data;
+  });
+}
+
+/**
+ * 搜索框选项过滤方法
+ * 功能：实现选择器组件的自定义搜索过滤逻辑
+ *
+ * @param input - 用户输入的搜索关键词
+ * @param option - 待匹配的选项对象，需包含label属性
+ *
+ * 实现逻辑：
+ * 1. 将输入值和选项标签统一转换为小写
+ * 2. 检查选项标签是否包含输入关键词
+ *
+ * 注意事项：
+ * - 匹配过程大小写不敏感
+ * - 依赖选项对象的label属性进行匹配
+ * - 适用于ant-design-vue选择器的filter-option属性
+ */
+const filterOption = (input: string, option: any) => {
+  return option.label.toLowerCase().includes(input.toLowerCase());
+};
+// endregion
 
 // region 暴露方法
 
@@ -704,7 +772,9 @@ defineExpose({
 
 // endregion
 
-onMounted(() => {});
+onMounted(() => {
+  queryError();
+});
 </script>
 <template>
   <Form layout="inline" :model="queryParams" class="mb-4">
@@ -897,7 +967,12 @@ onMounted(() => {});
         style="margin-bottom: 1em"
         name="userCode"
       >
-        <Input v-model:value="signInFormState.userCode" />
+        <Select
+          v-model:value="signInFormState.userCode"
+          style="width: 120px"
+          :options="userCodeList"
+          allow-clear
+        />
       </FormItem>
     </Form>
     <template #footer>
@@ -936,6 +1011,22 @@ onMounted(() => {});
       :wrapper-col="{ span: 16 }"
       autocomplete="off"
     >
+      <!-- 异常类型 -->
+      <FormItem
+        :label="$t('andon.exceptionType')"
+        :rules="[{ required: true, message: $t('andon.required') }]"
+        style="margin-bottom: 1em"
+        name="andonErrorCode"
+        v-if="!whetherItIsInTheProcessingState || isFillInTheForm"
+      >
+        <Select
+          v-model:value="anomalyDeterminationData.andonErrorCode"
+          show-search
+          style="width: 300px"
+          :options="errorTypes"
+          :filter-option="filterOption"
+        />
+      </FormItem>
       <!-- 详细描述 -->
       <FormItem
         :label="$t('andon.detailedDescription')"

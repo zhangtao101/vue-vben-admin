@@ -398,6 +398,7 @@ function moveOutFun(row: any) {
       moveOut({
         id: row.id,
         worksheetCode: row.worksheetCode,
+        equipCode: row.equipCode,
       }).then(() => {
         message.success($t('common.successfulOperation'));
         gridApi.reload();
