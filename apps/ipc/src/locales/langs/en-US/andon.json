@@ -25,6 +25,7 @@
   "description": "Description",
   "position": "Position",
   "exceptionType": "Exception Type",
+  "specificQuestions": "Specific Issues",
   "anDengSEvaluation": "Andon Evaluation",
   "inputPrompt": "Please enter/scan",
   "eye": "View Processing Result",
@@ -35,10 +36,11 @@
   "ordinary": "Please enter relevant description",
   "remarks": "Remarks",
   "detailedDescription": "Detailed Description",
+  "abnormalPicture": "Abnormal Picture",
   "required": "This field is required",
   "drafts": "Drafts",
   "error": "This field is required",
   "processingResult": "Processing Result",
   "toBeDetermined": "To Be Determined",
-  "pleaseCompleteTheRequiredFields": "Please Fill In The Required Fields"
+  "pleaseCompleteTheRequiredFields": "Please complete the required fields"
 }
