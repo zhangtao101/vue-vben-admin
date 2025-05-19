@@ -152,7 +152,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 10"
   />
-  <!-- 设备运行状态 -->
+  <!-- 设备运行状态(弃用) -->
   <EquipmentOperationStatus
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -173,25 +173,9 @@ defineProps({
     v-if="step.type === 12"
   />
   <!-- 安灯记录查询 -->
-  <LampInstallationRecord
-    :workstation-code="workstationCode"
-    :equip-code="equipCode"
-    :worksheet-code="worksheetCode"
-    :binding-id="bindingId"
-    :function-id="step.id"
-    v-if="step.type === 13"
-  />
+  <LampInstallationRecord v-if="step.type === 13" />
   <!-- 安灯评价 -->
-  <LampInstallationRecord
-    :workstation-code="workstationCode"
-    :equip-code="equipCode"
-    :worksheet-code="worksheetCode"
-    :binding-id="bindingId"
-    :function-id="step.id"
-    :place="3"
-    :state="3"
-    v-if="step.type === 14"
-  />
+  <LampInstallationRecord :place="3" :state="3" v-if="step.type === 14" />
   <!-- 转码 -->
   <Transcoding
     :workstation-code="workstationCode"

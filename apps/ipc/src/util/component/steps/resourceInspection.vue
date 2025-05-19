@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Spin } from 'ant-design-vue';
+import { Empty, Spin } from 'ant-design-vue';
 
 import { queryOfResourceVerificationStatus } from '#/api';
 
@@ -52,7 +52,7 @@ function getValueClass() {
 /**
  * 详情
  */
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 加载中
  */
@@ -109,48 +109,51 @@ onMounted(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 设备可用 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.equipmentAvailable') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.readyFlagName || $t('productionOperation.none') }}
-        </span>
+    <template v-if="details">
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 设备可用 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.equipmentAvailable') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.readyFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 设备堵料" -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.equipmentPlugging') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.nextFuncEnableName || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 设备堵料" -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.equipmentPlugging') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.nextFuncEnableName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 堵料原因 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.cloggingCause') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.nextFuncEnableReason || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 堵料原因 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cloggingCause') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.nextFuncEnableReason || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 设备状态 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.deviceStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.machineStatusName || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 设备状态 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.deviceStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.machineStatusName || $t('productionOperation.none') }}
-        </span>
-      </div>
-    </div>
+    </template>
+    <Empty v-else />
   </Spin>
 </template>
 

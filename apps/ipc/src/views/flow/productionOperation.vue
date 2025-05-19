@@ -969,7 +969,7 @@ onBeforeUnmount(() => {
       </Row>
       <Spin :spinning="processRouteListLoading">
         <Card class="mb-5" v-if="processShrinkage">
-          <div class="mt-5 w-full whitespace-nowrap">
+          <div class="mt-5 w-full overflow-x-auto whitespace-nowrap">
             <div
               v-for="item of processRouteList"
               class="m-4 inline-block w-36 cursor-pointer rounded-xl border p-2 text-center hover:bg-amber-200 hover:text-black"
@@ -1033,7 +1033,7 @@ onBeforeUnmount(() => {
       <Card v-if="operationEventShrinkage" class="mb-5">
         <OperationalMatters
           :details-id="theSelectedOperation"
-          :type="2"
+          :type="1"
           :worksheet-code="theCurrentlySelectedWorkOrderNumber"
           @current-change="workStepConversion"
           v-if="theSelectedOperation && theCurrentlySelectedWorkOrderNumber"

@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, Input, message, Spin } from 'ant-design-vue';
+import { Button, Empty, Input, message, Spin } from 'ant-design-vue';
 
 import {
   queryOfFormulaDistributionInformation,
@@ -55,7 +55,7 @@ function getValueClass() {
 /**
  * 详情
  */
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 加载中
  */
@@ -152,66 +152,69 @@ onMounted(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 前工步执行状况 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.implementationStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.lastFlagName || $t('productionOperation.none') }}
-        </span>
+    <template v-if="details">
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 前工步执行状况 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.implementationStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.lastFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 设备状态 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.deviceStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.machineStatusName || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 设备状态 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.deviceStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.machineStatusName || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 原配方号" -->
+          <label :class="getLabelClass()" for="originalRecipeNumber">
+            {{ $t('productionOperation.originalRecipeNumber') }}
+          </label>
+          <Input
+            v-model:value="details.templateCode"
+            class="w-56 leading-[30px]"
+            id="originalRecipeNumber"
+          />
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 目标配方号" -->
+          <label :class="getLabelClass()" for="targetRecipeNumber">
+            {{ $t('productionOperation.targetRecipeNumber') }}
+          </label>
+          <Input
+            v-model:value="details.nextTemplateCode"
+            class="w-56 leading-[30px]"
+            id="targetRecipeNumber"
+          />
+        </div>
       </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 原配方号" -->
-        <label :class="getLabelClass()" for="originalRecipeNumber">
-          {{ $t('productionOperation.originalRecipeNumber') }}
-        </label>
-        <Input
-          v-model:value="details.templateCode"
-          class="w-56 leading-[30px]"
-          id="originalRecipeNumber"
-        />
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 配方下发状态" -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.formulaDeliveryCondition') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.tempSendFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <Button type="primary" @click="submit()">
+            {{ $t('productionOperation.manualDelivery') }}
+          </Button>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 目标配方号" -->
-        <label :class="getLabelClass()" for="targetRecipeNumber">
-          {{ $t('productionOperation.targetRecipeNumber') }}
-        </label>
-        <Input
-          v-model:value="details.nextTemplateCode"
-          class="w-56 leading-[30px]"
-          id="targetRecipeNumber"
-        />
-      </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 配方下发状态" -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.formulaDeliveryCondition') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.tempSendFlagName || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <Button type="primary" @click="submit()">
-          {{ $t('productionOperation.manualDelivery') }}
-        </Button>
-      </div>
-    </div>
+    </template>
+    <Empty v-else />
   </Spin>
 </template>
 

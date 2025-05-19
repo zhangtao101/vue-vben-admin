@@ -683,9 +683,9 @@ onMounted(() => {});
         >
           <InputNumber v-model:value="editItem.errorNumber" :min="0" />
         </FormItem>
-        <!-- 不良数量 -->
+        <!-- 返工数量 -->
         <FormItem
-          :label="$t('badJudgment.defectiveQuantity')"
+          :label="$t('badJudgment.quantityOfRework')"
           name="defectNumber"
         >
           <InputNumber v-model:value="editItem.defectNumber" :min="0" />

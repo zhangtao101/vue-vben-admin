@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, message, Spin } from 'ant-design-vue';
+import { Button, Empty, message, Spin } from 'ant-design-vue';
 
 import {
   equipmentCleaningInformation,
@@ -56,7 +56,7 @@ function getValueClass() {
 /**
  * 详情
  */
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 加载中
  */
@@ -155,93 +155,98 @@ onMounted(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 前工步执行状况 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.implementationStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.lastFlagName || $t('productionOperation.none') }}
-        </span>
+    <template v-if="details">
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 前工步执行状况 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.implementationStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.lastFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-    </div>
 
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清洁模式 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cleaningMode') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.cleanModel === 1 ? '自动' : '手动' }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清洁模式 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.cleaningMode') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.cleanModel === 1 ? '自动' : '手动' }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清洁状态 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.cleanCondition') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.cleanlinessFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清洁状态 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cleanCondition') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.cleanlinessFlagName || $t('productionOperation.none') }}
-        </span>
-      </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清洁计时 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cleaningTimer') }}
-        </span>
-        <span :class="getValueClass()"> {{ details.setMinute || 0 }}分钟 </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清洁设置时长 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cleaningSettingDuration') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.cleanMinute || 0 }}分钟
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清洁超时 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cleaningTimeout') }}
-        </span>
-        <span :class="getValueClass()">
-          {{
-            details.overTimeFlag === 1
-              ? $t('productionOperation.overtime')
-              : $t('productionOperation.notTimeout')
-          }}
-        </span>
-      </div>
-      <div
-        class="float-right mb-4 mr-8 inline-block"
-        v-if="details.overTimeFlag === 1"
-      >
-        <!-- 超时时才会出现  v-if="details.overTimeFlag === 1" -->
-        <Button
-          type="primary"
-          size="large"
-          class="mr-4"
-          @click="submit(true)"
-          :disabled="[1, 2, 3].includes(details.cleanlinessFlag)"
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清洁计时 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.cleaningTimer') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.setMinute || 0 }}分钟
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清洁设置时长 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.cleaningSettingDuration') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.cleanMinute || 0 }}分钟
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清洁超时 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.cleaningTimeout') }}
+          </span>
+          <span :class="getValueClass()">
+            {{
+              details.overTimeFlag === 1
+                ? $t('productionOperation.overtime')
+                : $t('productionOperation.notTimeout')
+            }}
+          </span>
+        </div>
+        <div
+          class="float-right mb-4 mr-8 inline-block"
+          v-if="details.overTimeFlag === 1"
         >
-          {{ $t('productionOperation.manualRecleaning') }}
-        </Button>
-        <Button
-          type="primary"
-          size="large"
-          danger
-          @click="submit(false)"
-          :disabled="![1, 2, 3].includes(details.cleanlinessFlag)"
-        >
-          {{ $t('productionOperation.manualEndJob') }}
-        </Button>
+          <!-- 超时时才会出现  v-if="details.overTimeFlag === 1" -->
+          <Button
+            type="primary"
+            size="large"
+            class="mr-4"
+            @click="submit(true)"
+            :disabled="[1, 2, 3].includes(details.cleanlinessFlag)"
+          >
+            {{ $t('productionOperation.manualRecleaning') }}
+          </Button>
+          <Button
+            type="primary"
+            size="large"
+            danger
+            @click="submit(false)"
+            :disabled="![1, 2, 3].includes(details.cleanlinessFlag)"
+          >
+            {{ $t('productionOperation.manualEndJob') }}
+          </Button>
+        </div>
       </div>
-    </div>
+    </template>
+    <Empty v-else />
   </Spin>
 </template>
 

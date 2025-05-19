@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 
 import { CarbonTaskComplete, MdQrcodeScan } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -9,6 +9,7 @@ import { $t } from '@vben/locales';
 import {
   Button,
   Drawer,
+  Empty,
   Form,
   FormItem,
   Input,
@@ -144,7 +145,7 @@ const gridEvents: any = {};
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-const details = ref<any>({});
+const details = ref<any>(undefined);
 
 /**
  * 查询物料投料信息
@@ -421,66 +422,73 @@ function feedingCompleteFun(row: any) {
   });
 }
 // endregion
+
+onMounted(() => {
+  queryData();
+});
 </script>
 
 <template>
-  <div>
-    <div class="mb-4 mr-8 inline-block">
-      <!-- 前工步执行状况 -->
-      <span :class="getLabelClass()">
-        {{ $t('productionOperation.implementationStatus') }}
-      </span>
-      <span :class="getValueClass()">
-        <!--        {{ obtainTheDeviceCleanStatus(3) }}-->
-        {{ details?.lastFeedFlagName || $t('productionOperation.none') }}
-      </span>
+  <template v-if="details">
+    <div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 前工步执行状况 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.implementationStatus') }}
+        </span>
+        <span :class="getValueClass()">
+          <!--        {{ obtainTheDeviceCleanStatus(3) }}-->
+          {{ details?.lastFeedFlagName || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 当前设备投料模式 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.currentDeviceFeedingMode') }}
+        </span>
+        <!-- 手动 -->
+        <span :class="getValueClass()">
+          {{ details?.feedModelName || $t('productionOperation.none') }}
+        </span>
+      </div>
     </div>
-    <div class="mb-4 mr-8 inline-block">
-      <!-- 当前设备投料模式 -->
-      <span :class="getLabelClass()">
-        {{ $t('productionOperation.currentDeviceFeedingMode') }}
-      </span>
-      <!-- 手动 -->
-      <span :class="getValueClass()">
-        {{ details?.feedModelName || $t('productionOperation.none') }}
-      </span>
-    </div>
-  </div>
-  <Grid>
-    <template #feedCheckFlag="{ row }">
-      {{ getFeedCheckFlagText(row) }}
-    </template>
-    <template #isClear="{ row }">
-      {{ getIsClearText(row) }}
-    </template>
-    <template #action="{ row }">
-      <!-- 扫码按钮 -->
-      <Tooltip>
-        <template #title>
-          {{ $t('common.scanTheCodeAndFeedTheMaterial') }}
-        </template>
-        <Button
-          :icon="h(MdQrcodeScan, { class: 'inline-block size-6' })"
-          class="mr-4"
-          type="link"
-          @click="editRow(row)"
-          :disabled="row.isClear === 2"
-        />
-        <!--       -->
-      </Tooltip>
-      <!-- 完成按钮 -->
-      <Tooltip>
-        <template #title>{{ $t('common.feedingComplete') }}</template>
-        <Button
-          :icon="h(CarbonTaskComplete, { class: 'inline-block size-6' })"
-          class="mr-4"
-          type="link"
-          @click="feedingCompleteFun(row)"
-          :disabled="row.isClear === 2"
-        />
-      </Tooltip>
-    </template>
-  </Grid>
+    <Grid>
+      <template #feedCheckFlag="{ row }">
+        {{ getFeedCheckFlagText(row) }}
+      </template>
+      <template #isClear="{ row }">
+        {{ getIsClearText(row) }}
+      </template>
+      <template #action="{ row }">
+        <!-- 扫码按钮 -->
+        <Tooltip>
+          <template #title>
+            {{ $t('common.scanTheCodeAndFeedTheMaterial') }}
+          </template>
+          <Button
+            :icon="h(MdQrcodeScan, { class: 'inline-block size-6' })"
+            class="mr-4"
+            type="link"
+            @click="editRow(row)"
+            :disabled="row.isClear === 2"
+          />
+          <!--       -->
+        </Tooltip>
+        <!-- 完成按钮 -->
+        <Tooltip>
+          <template #title>{{ $t('common.feedingComplete') }}</template>
+          <Button
+            :icon="h(CarbonTaskComplete, { class: 'inline-block size-6' })"
+            class="mr-4"
+            type="link"
+            @click="feedingCompleteFun(row)"
+            :disabled="row.isClear === 2"
+          />
+        </Tooltip>
+      </template>
+    </Grid>
+  </template>
+  <Empty v-else />
   <Drawer
     v-model:open="showDrawer"
     :footer-style="{ textAlign: 'right' }"

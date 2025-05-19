@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Spin } from 'ant-design-vue';
+import { Empty, Spin } from 'ant-design-vue';
 
 import { processEntryInformationQuery } from '#/api';
 
@@ -52,7 +52,7 @@ function getValueClass() {
 /**
  * 详情
  */
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 加载中
  */
@@ -109,66 +109,69 @@ onMounted(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 前工步执行状况 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.implementationStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.lastFlagName || $t('productionOperation.none') }}
-        </span>
+    <template v-if="details">
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 前工步执行状况 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.implementationStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.lastFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 设备状态 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.deviceStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.machineStatusName || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 设备状态 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.deviceStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.machineStatusName || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 工单编号" -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.workOrderNumber') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.currentJobId || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 待进工单" -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.pendingWorkOrder') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.nextJobId || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 工单编号" -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.workOrderNumber') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.currentJobId || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productName') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.productName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品编号 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productNumber') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.productCode || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 待进工单" -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.pendingWorkOrder') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.nextJobId || $t('productionOperation.none') }}
-        </span>
-      </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 产品名称 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.productName') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.productName || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 产品编号 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.productNumber') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.productCode || $t('productionOperation.none') }}
-        </span>
-      </div>
-    </div>
+    </template>
+    <Empty v-else />
   </Spin>
 </template>
 

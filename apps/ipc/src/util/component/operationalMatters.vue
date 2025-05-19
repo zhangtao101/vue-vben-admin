@@ -84,7 +84,7 @@ function querySteps() {
           errorFlag: step.errorFlag, // 错误标识
         });
         // 设置当前激活步骤索引
-        if (step.currentWorksheet) {
+        if (step.workingState === 1) {
           i = index;
           current.value = index; // 当步骤有进行中的工单时设为当前步骤
         }

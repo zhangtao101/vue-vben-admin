@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, message, Spin } from 'ant-design-vue';
+import { Button, Empty, message, Spin } from 'ant-design-vue';
 
 import {
   deviceClearanceInformationQuery,
@@ -55,7 +55,7 @@ function getValueClass() {
 /**
  * 详情
  */
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 加载中
  */
@@ -154,79 +154,82 @@ onMounted(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 前工步执行状况 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.implementationStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.lastFlagName || $t('productionOperation.none') }}
-        </span>
+    <template v-if="details">
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 前工步执行状况 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.implementationStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.lastFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-    </div>
 
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清空模式 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.emptyMode') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.clearModel === 1 ? '自动' : '手动' }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清空模式 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.emptyMode') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.clearModel === 1 ? '自动' : '手动' }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清空状态 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.emptyState') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.clearlinessFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清空计时 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.emptyTimer') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.clearMinute || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清空状态 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.emptyState') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.clearlinessFlagName || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 清空超时 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.emptyTimeout') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.clearOverTimeFlag === 1 ? '超时' : '未超时' }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 超时时才会出现 -->
+          <Button
+            type="primary"
+            size="large"
+            class="mr-4"
+            @click="submit(true)"
+            :disabled="details.clearlinessFlag === 2"
+          >
+            {{ $t('productionOperation.manuallyClearAgain') }}
+          </Button>
+          <Button
+            type="primary"
+            size="large"
+            danger
+            @click="submit(false)"
+            :disabled="details.clearlinessFlag !== 2"
+          >
+            {{ $t('productionOperation.manualEndJob') }}
+          </Button>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清空计时 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.emptyTimer') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.clearMinute || $t('productionOperation.none') }}
-        </span>
-      </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 清空超时 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.emptyTimeout') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.clearOverTimeFlag === 1 ? '超时' : '未超时' }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 超时时才会出现 -->
-        <Button
-          type="primary"
-          size="large"
-          class="mr-4"
-          @click="submit(true)"
-          :disabled="details.clearlinessFlag === 2"
-        >
-          {{ $t('productionOperation.manuallyClearAgain') }}
-        </Button>
-        <Button
-          type="primary"
-          size="large"
-          danger
-          @click="submit(false)"
-          :disabled="[2, 0].includes(details.clearlinessFlag)"
-        >
-          {{ $t('productionOperation.manualEndJob') }}
-        </Button>
-      </div>
-    </div>
+    </template>
+    <Empty v-else />
   </Spin>
 </template>
 
