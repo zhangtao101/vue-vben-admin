@@ -7,6 +7,7 @@ import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { equipmentMonitoringQuery } from '#/api';
+import useWebSocket from '#/util/websocket-util';
 
 const props = defineProps({
   // 工步id
@@ -205,6 +206,41 @@ function reload() {
   gridApi.reload();
 }
 
+// endregion
+
+// region websocket
+
+useWebSocket(readMessage, {
+  workstationCode: props.workstationCode,
+  equipCode: props.equipCode,
+  worksheetCode: props.worksheetCode,
+  bindingId: props.bindingId,
+  functionId: props.functionId,
+});
+
+/**
+ * WebSocket消息处理回调
+ * 功能：解析并更新资源验证状态数据
+ * 流程：
+ * 1. 解析原始消息为JSON对象
+ * 2. 验证数据有效性（非空检查）
+ * 3. 更新响应式状态数据
+ *
+ * @param message - WebSocket推送的原始消息字符串
+ *
+ * 注意事项：
+ * - 当前未处理JSON解析异常，需增加try-catch逻辑
+ * - 会直接覆盖原有状态数据，需确保数据结构一致性
+ * - 依赖父级作用域中的details响应式引用
+ */
+function readMessage(message: string) {
+  // 反序列化WebSocket消息
+  const data = JSON.parse(message);
+  // 有效性检查后更新视图数据
+  if (data) {
+    gridApi.reload();
+  }
+}
 // endregion
 
 onMounted(() => {

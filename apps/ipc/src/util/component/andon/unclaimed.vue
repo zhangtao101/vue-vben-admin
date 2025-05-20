@@ -716,6 +716,7 @@ const userCodeList = ref<any>([]);
  * - 多次调用会导致列表追加数据，需要根据业务需求决定是否清空旧数据
  */
 function queryUserCode(id: any) {
+  userCodeList.value = [];
   queryTheEmployeeNumber(id).then((data: any) => {
     data.forEach((item: any) => {
       userCodeList.value.push({
@@ -969,7 +970,7 @@ onMounted(() => {
       >
         <Select
           v-model:value="signInFormState.userCode"
-          style="width: 120px"
+          class="w-full"
           :options="userCodeList"
           allow-clear
         />
