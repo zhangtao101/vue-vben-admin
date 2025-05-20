@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { h, ref } from 'vue';
 
 import { MdiEditOutline, MdiEyeOutline } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -9,7 +9,6 @@ import { $t } from '@vben/locales';
 import {
   Button,
   Drawer,
-  Empty,
   Form,
   FormItem,
   Input,
@@ -54,7 +53,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-right';
 }
 
 /**
@@ -175,8 +174,8 @@ function queryData() {
       .then(({ snList, ...p }: any) => {
         details.value = p;
         resolve({
-          total: snList.length,
-          items: snList,
+          total: snList?.length || 0,
+          items: snList || [],
         });
       })
       .catch(() => {
@@ -327,86 +326,80 @@ function readMessage(message: string) {
 // endregion
 
 // endregion
-onMounted(() => {
-  gridApi.reload();
-});
 </script>
 
 <template>
-  <template v-if="details">
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 工单编号 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.workOrderNumber') }}：
-        </span>
-        <span :class="getValueClass()">
-          {{ details.currentJobId || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 产品名称 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.productName') }}：
-        </span>
-        <span :class="getValueClass()">
-          {{ details.productName || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 累计数量 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cumulativeQuantity') }}：
-        </span>
-        <span :class="getValueClass()">
-          {{ details.totalReportNumber || 0 }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 累计重量 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.accumulatedWeight') }}：
-        </span>
-        <span :class="getValueClass()">
-          {{ details.totalReportWeight || 0 }}
-        </span>
-      </div>
+  <div>
+    <div class="mb-4 mr-8 inline-block">
+      <!-- 工单编号 -->
+      <span :class="getLabelClass()">
+        {{ $t('productionOperation.workOrderNumber') }}：
+      </span>
+      <span :class="getValueClass()">
+        {{ details?.currentJobId || $t('productionOperation.none') }}
+      </span>
     </div>
-    <Grid>
-      <template #toolbar-tools>
-        <!-- 新增按钮 -->
-        <Button type="primary" @click="showDrawer()">
-          {{ $t('common.add') }}
-        </Button>
-      </template>
-      <template #action="{ row }">
-        <!-- 编辑按钮 ="{ row }" -->
-        <Tooltip>
-          <template #title>
-            {{ $t('common.edit') }}
-          </template>
-          <Button
-            :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
-            class="mr-4"
-            type="link"
-            @click="showDrawer(row)"
-          />
-          <!--        @click="editRow(row, true)"-->
-        </Tooltip>
-        <!-- 查看按钮 -->
-        <Tooltip>
-          <template #title>{{ $t('common.view') }}</template>
-          <Button
-            :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
-            class="mr-4"
-            type="link"
-            @click="showDrawer(row, true)"
-          />
-        </Tooltip>
-      </template>
-    </Grid>
-  </template>
-  <Empty v-else />
+    <div class="mb-4 mr-8 inline-block">
+      <!-- 产品名称 -->
+      <span :class="getLabelClass()">
+        {{ $t('productionOperation.productName') }}：
+      </span>
+      <span :class="getValueClass()">
+        {{ details?.productName || $t('productionOperation.none') }}
+      </span>
+    </div>
+    <div class="mb-4 mr-8 inline-block">
+      <!-- 累计数量 -->
+      <span :class="getLabelClass()">
+        {{ $t('productionOperation.cumulativeQuantity') }}：
+      </span>
+      <span :class="getValueClass()">
+        {{ details?.totalReportNumber || 0 }}
+      </span>
+    </div>
+    <div class="mb-4 mr-8 inline-block">
+      <!-- 累计重量 -->
+      <span :class="getLabelClass()">
+        {{ $t('productionOperation.accumulatedWeight') }}：
+      </span>
+      <span :class="getValueClass()">
+        {{ details?.totalReportWeight || 0 }}
+      </span>
+    </div>
+  </div>
+  <Grid>
+    <template #toolbar-tools>
+      <!-- 新增按钮 -->
+      <Button type="primary" @click="showDrawer()">
+        {{ $t('common.add') }}
+      </Button>
+    </template>
+    <template #action="{ row }">
+      <!-- 编辑按钮 ="{ row }" -->
+      <Tooltip>
+        <template #title>
+          {{ $t('common.edit') }}
+        </template>
+        <Button
+          :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
+          class="mr-4"
+          type="link"
+          @click="showDrawer(row)"
+        />
+        <!--        @click="editRow(row, true)"-->
+      </Tooltip>
+      <!-- 查看按钮 -->
+      <Tooltip>
+        <template #title>{{ $t('common.view') }}</template>
+        <Button
+          :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
+          class="mr-4"
+          type="link"
+          @click="showDrawer(row, true)"
+        />
+      </Tooltip>
+    </template>
+  </Grid>
 
   <Drawer
     :title="$t('andon.onLightCall')"

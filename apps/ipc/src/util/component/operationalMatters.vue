@@ -77,9 +77,6 @@ function querySteps() {
           title: step.functionTypeName, // 步骤名称
           functionType: step.functionType, // 功能类型
           status: step.workingState, // 执行状态
-          description: step.currentWorksheet // 步骤描述
-            ? `${step.currentWorksheet}` // 有工单时的提示
-            : '-', // 无工单时的提示
           id: step.id, // 步骤唯一标识
           errorFlag: step.errorFlag, // 错误标识
         });
@@ -137,40 +134,39 @@ onMounted(() => {
         <template v-for="(item, index) of stepBar" :key="index">
           <IconifyIcon
             icon="mdi:arrow-right"
-            class="ml-4 mr-4 inline-block align-baseline text-4xl"
+            class="align--center ml-4 mr-4 inline-block text-4xl"
             v-if="index > 0"
           />
           <div
-            class="inline-block w-48 cursor-pointer rounded-xl border p-4 text-center hover:bg-amber-200 hover:text-black"
+            class="inline-block w-36 cursor-pointer rounded-xl border p-2 text-center hover:bg-pink-300 hover:text-black"
             :class="{
-              'bg-sky-500 text-white': item.status === 1,
-              'bg-green-500 text-white': item.status === 2,
+              // 'bg-sky-500 text-white': item.status === 1,
+              'bg-green-500 text-white': item.status === 2 || item.status === 1,
               'bg-gray-200': item.status === -1,
+              'bg-amber-500 text-white': item.workingState === 3,
               'anomaly border-4': item.errorFlag === 1 && current !== index,
-              'border-4 border-sky-500': current === index,
+              'border-4 border-sky-300 shadow-xl': current === index,
             }"
             @click="current = index"
           >
-            <div class="text-xl font-black">{{ item.title }}</div>
-            <div>{{ item.description }}</div>
+            <div class="font-black">{{ item.title }}</div>
           </div>
         </template>
       </div>
       <div v-else class="w-full whitespace-nowrap">
         <template v-for="(item, index) of stepBar" :key="index">
           <div
-            class="m-4 inline-block w-48 cursor-pointer rounded-xl border p-2 text-center hover:bg-amber-200 hover:text-black"
+            class="m-4 inline-block w-36 cursor-pointer rounded-xl border p-2 text-center hover:bg-pink-300 hover:text-black"
             :class="{
-              'bg-sky-500 text-white': item.status === 1,
-              'bg-green-500 text-white': item.status === 2,
+              // 'bg-sky-500 text-white': item.status === 1,
+              'bg-green-500 text-white': item.status === 2 || item.status === 1,
               'bg-gray-200': item.status === -1,
               'anomaly border-4': item.errorFlag === 1 && current !== index,
-              'border-4 border-sky-500': current === index,
+              'border-4 border-sky-300 shadow-xl': current === index,
             }"
             @click="current = index"
           >
-            <div class="text-xl font-black">{{ item.title }}</div>
-            <div>{{ item.description }}</div>
+            <div class="font-black">{{ item.title }}</div>
           </div>
         </template>
       </div>
@@ -180,7 +176,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .anomaly {
-  @keyframes blink {
+  @keyframes alarm {
     0%,
     100% {
       border-color: transparent;
@@ -191,6 +187,6 @@ onMounted(() => {
     }
   }
 
-  animation: blink 1s infinite;
+  animation: alarm 1s infinite;
 }
 </style>

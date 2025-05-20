@@ -518,7 +518,11 @@ defineExpose({
   <Card class="mb-5">
     <Grid class="mt-4">
       <template #toolbar-tools>
-        <Button type="primary" @click="inputSheetCode()">
+        <Button
+          type="primary"
+          @click="inputSheetCode()"
+          v-if="workOrderType === '1'"
+        >
           {{ $t('workOrderEntry.pullIn') }}
         </Button>
       </template>

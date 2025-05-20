@@ -162,6 +162,12 @@ const gridOptions: VxeGridProps<any> = {
   radioConfig: {
     trigger: 'row',
   },
+  rowClassName: () => {
+    return 'text-lg';
+  },
+  headerRowClassName: () => {
+    return 'text-xl';
+  },
   columns: [
     {
       type: 'radio',
@@ -170,7 +176,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'worksheetCode',
       title: '工单号',
-      minWidth: 200,
+      minWidth: 180,
     },
     {
       field: 'productCode',
@@ -259,6 +265,13 @@ const gridOptions: VxeGridProps<any> = {
   },
   pagerConfig: {
     enabled: false,
+  },
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
   },
   proxyConfig: {
     ajax: {
@@ -909,6 +922,7 @@ onBeforeUnmount(() => {
                     <MenuItem
                       @click="workOrderOperation(row, 1)"
                       :disabled="row.sendState === 4"
+                      v-if="row.reportType === 1 && row.workButtonFlag === 1"
                     >
                       {{ $t('common.startWork') }}
                     </MenuItem>
@@ -969,23 +983,37 @@ onBeforeUnmount(() => {
       </Row>
       <Spin :spinning="processRouteListLoading">
         <Card class="mb-5" v-if="processShrinkage">
-          <div class="mt-5 w-full overflow-x-auto whitespace-nowrap">
-            <div
-              v-for="item of processRouteList"
-              class="m-4 inline-block w-36 cursor-pointer rounded-xl border p-2 text-center hover:bg-amber-200 hover:text-black"
-              :class="{
-                'bg-sky-500 text-white': item.workingState === 1,
-                'bg-green-500 text-white': item.workingState === 2,
-                'bg-gray-200': item.workingState === -1,
-                'anomaly border-4':
-                  item.errorFlag === 1 && item.processCode !== checkedProcess,
-                'border-4 border-sky-500': item.processCode === checkedProcess,
-              }"
-              :key="item.processCode"
-              @click="processChange(item)"
-            >
-              <div>{{ item.processName }}</div>
-            </div>
+          <div class="w-full overflow-x-auto whitespace-nowrap">
+            <template v-for="item of processRouteList" :key="item.processCode">
+              <div class="m-4 inline-block w-36 text-center">
+                <div
+                  class="mb-2 cursor-pointer rounded-xl border p-2 hover:bg-pink-200 hover:text-black"
+                  :class="{
+                    // 'bg-sky-500 text-white': item.workingState === 1,
+                    'bg-green-500 text-white':
+                      item.workingState === 2 || item.workingState === 1,
+                    'bg-gray-200': item.workingState === -1,
+                    'bg-amber-500 text-white': item.workingState === 3,
+                    'anomaly border-4':
+                      item.errorFlag === 1 &&
+                      item.processCode !== checkedProcess,
+                    'border-4 border-sky-300 shadow-xl':
+                      item.processCode === checkedProcess,
+                  }"
+                  @click="processChange(item)"
+                >
+                  <div class="font-black">{{ item.processName }}</div>
+                </div>
+                <div
+                  class="w-full cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap font-black"
+                  v-if="item.currentWorksheet"
+                >
+                  <Tooltip placement="topLeft" :title="item.currentWorksheet">
+                    {{ item.currentWorksheet }}
+                  </Tooltip>
+                </div>
+              </div>
+            </template>
           </div>
         </Card>
       </Spin>
@@ -1119,5 +1147,20 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 :deep(.ant-tabs-tab) {
   font-size: 18px;
+}
+
+.anomaly {
+  @keyframes alarm {
+    0%,
+    100% {
+      border-color: transparent;
+    }
+
+    50% {
+      border-color: red;
+    }
+  }
+
+  animation: alarm 1s infinite;
 }
 </style>

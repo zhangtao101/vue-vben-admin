@@ -27,7 +27,7 @@ import { Tag } from 'ant-design-vue';
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-right';
 }
 
 /**
