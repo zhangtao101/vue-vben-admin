@@ -7,5 +7,8 @@
   "addMaterials": "Add Materials",
   "noMaterialsAdded": "No Materials Added",
   "processNumber": "Process Number",
-  "processName": "Process Name"
+  "processName": "Process Name",
+  "openingTitle": "Open a Rework Work Order?",
+  "open": "Open",
+  "notToOpen": "Do Not Open"
 }

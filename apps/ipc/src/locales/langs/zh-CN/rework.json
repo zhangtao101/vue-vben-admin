@@ -7,5 +7,8 @@
   "addMaterials": "加料",
   "noMaterialsAdded": "不加料",
   "processNumber": "工序编号",
-  "processName": "工序名称"
+  "processName": "工序名称",
+  "openingTitle": "是否开立返工工单",
+  "open": "开立",
+  "notToOpen": "不开立"
 }

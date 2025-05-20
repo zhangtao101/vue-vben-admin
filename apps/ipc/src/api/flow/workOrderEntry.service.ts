@@ -71,6 +71,16 @@ export function inputSheet(params: any) {
   );
 }
 /**
+ * 进站批量
+ * @param params 参数
+ */
+export function inputSheetBatch(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/sheet/inout/inputSheetBatch`,
+    params,
+  );
+}
+/**
  * 删除
  * @param params 参数
  */

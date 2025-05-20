@@ -9,6 +9,7 @@ import { $t } from '@vben/locales';
 import {
   Button,
   Drawer,
+  Empty,
   Form,
   FormItem,
   Input,
@@ -25,6 +26,7 @@ import {
   feedingMaterials,
   materialFeedingInformationQuerySlitting,
 } from '#/api';
+import useWebSocket from '#/util/websocket-util';
 
 const props = defineProps({
   // 工步id
@@ -144,7 +146,7 @@ const gridEvents: any = {};
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-const details = ref<any>({});
+const details = ref<any>(undefined);
 
 /**
  * 查询物料投料信息
@@ -421,66 +423,104 @@ function feedingCompleteFun(row: any) {
   });
 }
 // endregion
+
+// region websocket
+
+useWebSocket(readMessage, {
+  workstationCode: props.workstationCode,
+  equipCode: props.equipCode,
+  worksheetCode: props.worksheetCode,
+  bindingId: props.bindingId,
+  functionId: props.functionId,
+});
+
+/**
+ * WebSocket消息处理回调
+ * 功能：解析并更新资源验证状态数据
+ * 流程：
+ * 1. 解析原始消息为JSON对象
+ * 2. 验证数据有效性（非空检查）
+ * 3. 更新响应式状态数据
+ *
+ * @param message - WebSocket推送的原始消息字符串
+ *
+ * 注意事项：
+ * - 当前未处理JSON解析异常，需增加try-catch逻辑
+ * - 会直接覆盖原有状态数据，需确保数据结构一致性
+ * - 依赖父级作用域中的details响应式引用
+ */
+function readMessage(message: string) {
+  // 反序列化WebSocket消息
+  const data = JSON.parse(message);
+  // 有效性检查后更新视图数据
+  if (data) {
+    gridApi.reload();
+  }
+}
+// endregion
 </script>
 
 <template>
-  <div>
-    <div class="mb-4 mr-8 inline-block">
-      <!-- 前工步执行状况 -->
-      <span :class="getLabelClass()">
-        {{ $t('productionOperation.implementationStatus') }}
-      </span>
-      <span :class="getValueClass()">
-        <!--        {{ obtainTheDeviceCleanStatus(3) }}-->
-        {{ details?.lastFeedFlagName || $t('productionOperation.none') }}
-      </span>
+  <template v-if="details">
+    <div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 前工步执行状况 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.implementationStatus') }}
+        </span>
+        <span :class="getValueClass()">
+          <!--        {{ obtainTheDeviceCleanStatus(3) }}-->
+          {{ details?.lastFeedFlagName || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 当前设备投料模式 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.currentDeviceFeedingMode') }}
+        </span>
+        <!-- 手动 -->
+        <span :class="getValueClass()">
+          {{ details?.feedModelName || $t('productionOperation.none') }}
+        </span>
+      </div>
     </div>
-    <div class="mb-4 mr-8 inline-block">
-      <!-- 当前设备投料模式 -->
-      <span :class="getLabelClass()">
-        {{ $t('productionOperation.currentDeviceFeedingMode') }}
-      </span>
-      <!-- 手动 -->
-      <span :class="getValueClass()">
-        {{ details?.feedModelName || $t('productionOperation.none') }}
-      </span>
-    </div>
-  </div>
-  <Grid>
-    <template #feedCheckFlag="{ row }">
-      {{ getFeedCheckFlagText(row) }}
-    </template>
-    <template #isClear="{ row }">
-      {{ getIsClearText(row) }}
-    </template>
-    <template #action="{ row }">
-      <!-- 扫码按钮 -->
-      <Tooltip>
-        <template #title>
-          {{ $t('common.scanTheCodeAndFeedTheMaterial') }}
-        </template>
-        <Button
-          :icon="h(MdQrcodeScan, { class: 'inline-block size-6' })"
-          class="mr-4"
-          type="link"
-          @click="editRow(row)"
-          :disabled="row.isClear === 2"
-        />
-        <!--       -->
-      </Tooltip>
-      <!-- 完成按钮 -->
-      <Tooltip>
-        <template #title>{{ $t('common.feedingComplete') }}</template>
-        <Button
-          :icon="h(CarbonTaskComplete, { class: 'inline-block size-6' })"
-          class="mr-4"
-          type="link"
-          @click="feedingCompleteFun(row)"
-          :disabled="row.isClear === 2"
-        />
-      </Tooltip>
-    </template>
-  </Grid>
+    <Grid>
+      <template #feedCheckFlag="{ row }">
+        {{ getFeedCheckFlagText(row) }}
+      </template>
+      <template #isClear="{ row }">
+        {{ getIsClearText(row) }}
+      </template>
+      <template #action="{ row }">
+        <!-- 扫码按钮 -->
+        <Tooltip>
+          <template #title>
+            {{ $t('common.scanTheCodeAndFeedTheMaterial') }}
+          </template>
+          <Button
+            :icon="h(MdQrcodeScan, { class: 'inline-block size-6' })"
+            class="mr-4"
+            type="link"
+            @click="editRow(row)"
+            :disabled="row.isClear === 2"
+          />
+          <!--       -->
+        </Tooltip>
+        <!-- 完成按钮 -->
+        <Tooltip>
+          <template #title>{{ $t('common.feedingComplete') }}</template>
+          <Button
+            :icon="h(CarbonTaskComplete, { class: 'inline-block size-6' })"
+            class="mr-4"
+            type="link"
+            @click="feedingCompleteFun(row)"
+            :disabled="row.isClear === 2"
+          />
+        </Tooltip>
+      </template>
+    </Grid>
+  </template>
+  <Empty v-else />
   <Drawer
     v-model:open="showDrawer"
     :footer-style="{ textAlign: 'right' }"

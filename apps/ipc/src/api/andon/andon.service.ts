@@ -163,6 +163,16 @@ export async function andonSign(params: any) {
 }
 
 /**
+ * 签到人查询
+ * @param id
+ */
+export async function queryTheEmployeeNumber(id: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/andon/sign/queryById/${id}`,
+  );
+}
+
+/**
  * 异常判定
  * @param params
  */

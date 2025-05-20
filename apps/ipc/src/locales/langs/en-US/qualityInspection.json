@@ -5,5 +5,7 @@
   "jobPosition": "Job Position",
   "inspectionTaskFilling": "Inspection Task Reporting",
   "selectionOfQualityInspectionTemplates": "Selection of Quality Inspection Templates",
-  "selectionOfQualityInspectionItems": "Selection of Quality Inspection Items"
+  "selectionOfQualityInspectionItems": "Selection of Quality Inspection Items",
+  "inspectTheTotalNumberOfProducts": "Total Number of Products Inspected",
+  "theTotalNumberOfDefectiveProducts": "Total Number of Defective Products"
 }

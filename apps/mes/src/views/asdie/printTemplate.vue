@@ -107,7 +107,7 @@ const clearPaper = () => {
 };
 
 const route = useRoute();
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 查询打印模板详情
  */
@@ -447,8 +447,8 @@ button {
     inset: 0;
     z-index: 1000;
     overflow: auto;
-    background-color: #00000073;
     outline: 0;
+    background-color: #00000073;
 
     .box {
       position: relative;
@@ -489,9 +489,9 @@ button {
 
     > li {
       > .title {
+        clear: both;
         display: block;
         padding: 4px 0;
-        clear: both;
         color: rgb(0 58 230);
       }
 
@@ -501,8 +501,8 @@ button {
         list-style: none;
 
         > li {
-          display: block;
           float: left;
+          display: block;
           width: 50%;
           max-width: 100px;
 

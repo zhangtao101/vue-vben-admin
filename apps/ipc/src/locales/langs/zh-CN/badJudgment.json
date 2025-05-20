@@ -7,5 +7,6 @@
   "defectiveQuantity": "不良数量",
   "scrapQuantity": "报废数量",
   "concessionAcceptanceQuantity": "让步接收数量",
-  "poorHandling": "不良处理"
+  "poorHandling": "不良处理",
+  "quantityOfRework": "返工数量"
 }

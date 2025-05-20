@@ -14,6 +14,7 @@ import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue'
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
+import ResourceAssignment from '#/util/component/steps/resourceAssignment.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
@@ -151,7 +152,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 10"
   />
-  <!-- 设备运行状态 -->
+  <!-- 设备运行状态(弃用) -->
   <EquipmentOperationStatus
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -172,24 +173,9 @@ defineProps({
     v-if="step.type === 12"
   />
   <!-- 安灯记录查询 -->
-  <LampInstallationRecord
-    :workstation-code="workstationCode"
-    :equip-code="equipCode"
-    :worksheet-code="worksheetCode"
-    :binding-id="bindingId"
-    :function-id="step.id"
-    v-if="step.type === 13"
-  />
+  <LampInstallationRecord v-if="step.type === 13" />
   <!-- 安灯评价 -->
-  <LampInstallationRecord
-    :workstation-code="workstationCode"
-    :equip-code="equipCode"
-    :worksheet-code="worksheetCode"
-    :binding-id="bindingId"
-    :function-id="step.id"
-    :place="3"
-    v-if="step.type === 14"
-  />
+  <LampInstallationRecord :place="3" :state="3" v-if="step.type === 14" />
   <!-- 转码 -->
   <Transcoding
     :workstation-code="workstationCode"
@@ -324,6 +310,16 @@ defineProps({
     :function-id="step.id"
     :show-type-number="step.type"
     v-if="step.type === 28"
+  />
+  <!-- 资源指派 -->
+  <ResourceAssignment
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 29"
   />
 
   <!-- 设备点位信息 -->

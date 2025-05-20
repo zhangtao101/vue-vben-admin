@@ -7,5 +7,6 @@
   "defectiveQuantity": "Defective Quantity",
   "scrapQuantity": "Scrap Quantity",
   "concessionAcceptanceQuantity": "Concession Acceptance Quantity",
-  "poorHandling": "Defective Handling"
+  "poorHandling": "Defective Handling",
+  "quantityOfRework": "Rework Quantity"
 }

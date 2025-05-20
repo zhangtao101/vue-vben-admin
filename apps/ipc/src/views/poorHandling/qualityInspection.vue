@@ -258,7 +258,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 150,
     },
     {
-      field: 'operateUser',
+      field: 'operateUserName',
       title: '任务创建人',
       minWidth: 150,
     },
@@ -732,6 +732,8 @@ onMounted(() => {
         :record-code="editItem.recordCode"
         :is-start="startStatus"
         :record-id="editItem.id"
+        :defect-number="editItem.totalDefectNnumber"
+        :check-number="editItem.totalCheckNumber"
         @close="
           () => {
             gridApi.reload();

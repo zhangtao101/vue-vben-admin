@@ -3,7 +3,14 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, InputNumber, message, Modal, Spin } from 'ant-design-vue';
+import {
+  Button,
+  Empty,
+  InputNumber,
+  message,
+  Modal,
+  Spin,
+} from 'ant-design-vue';
 
 import { listByOutReport, outReport } from '#/api';
 
@@ -52,7 +59,7 @@ function getValueClass() {
 /**
  * 详情
  */
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 加载中
  */
@@ -142,91 +149,94 @@ onMounted(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 当前工单 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.currentWorkOrder') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.worksheetCode || $t('productionOperation.none') }}
-        </span>
+    <template v-if="details">
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 当前工单 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.currentWorkOrder') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.worksheetCode || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productName') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.productName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品编号 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productNumber') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.productCode || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 计划数量 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.plannedQuantity') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.planNumber || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 累计完成数量 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.cumulativeCompletedQuantity') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.finishNumber || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 累计不良数量 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.cumulativeNumberOfDefects') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.totalUnqualityNumber || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 产品名称 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.productName') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.productName || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 良品数量 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.quantityOfGoodProducts') }}
+          </span>
+          <InputNumber
+            v-model:value="details.reportNumber"
+            class="w-72"
+            min="0"
+          />
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 不良品数量 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.quantityOfDefectiveProducts') }}
+          </span>
+          <InputNumber
+            v-model:value="details.unqualityNumber"
+            class="w-72"
+            min="0"
+          />
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <Button type="primary" @click="submit">
+            {{ $t('common.submit') }}
+          </Button>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 产品编号 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.productNumber') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.productCode || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 计划数量 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.plannedQuantity') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.planNumber || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 累计完成数量 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cumulativeCompletedQuantity') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.finishNumber || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 累计不良数量 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.cumulativeNumberOfDefects') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.totalUnqualityNumber || $t('productionOperation.none') }}
-        </span>
-      </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 良品数量 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.quantityOfGoodProducts') }}
-        </span>
-        <InputNumber
-          v-model:value="details.reportNumber"
-          class="w-72"
-          min="0"
-        />
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 不良品数量 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.quantityOfDefectiveProducts') }}
-        </span>
-        <InputNumber
-          v-model:value="details.unqualityNumber"
-          class="w-72"
-          min="0"
-        />
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <Button type="primary" @click="submit">
-          {{ $t('common.submit') }}
-        </Button>
-      </div>
-    </div>
+    </template>
+    <Empty v-else />
   </Spin>
 </template>
 

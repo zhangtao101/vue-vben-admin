@@ -211,7 +211,7 @@ function downloadTemplate() {
 // 是否显示详情
 const isShow = ref(false);
 // 详情数据
-const details = ref<any>({});
+const details = ref<any>(undefined);
 
 /**
  * 显示详情

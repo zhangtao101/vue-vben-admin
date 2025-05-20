@@ -133,7 +133,7 @@ const queryParams = ref<any>({
   lineName: '',
 });
 
-const details = ref<any>({});
+const details = ref<any>(undefined);
 
 /**
  * 查询设备监控数据

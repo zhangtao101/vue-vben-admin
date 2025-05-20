@@ -5,5 +5,7 @@
   "jobPosition": "作业位置",
   "inspectionTaskFilling": "检验任务填报",
   "selectionOfQualityInspectionTemplates": "质检模板选择",
-  "selectionOfQualityInspectionItems": "质检项选择"
+  "selectionOfQualityInspectionItems": "质检项选择",
+  "inspectTheTotalNumberOfProducts": "检验产品总数",
+  "theTotalNumberOfDefectiveProducts": "不良产品总数"
 }

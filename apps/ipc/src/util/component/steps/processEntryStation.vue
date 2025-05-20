@@ -3,9 +3,10 @@ import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Spin } from 'ant-design-vue';
+import { Empty, Spin } from 'ant-design-vue';
 
 import { processEntryInformationQuery } from '#/api';
+import useWebSocket from '#/util/websocket-util';
 
 const props = defineProps({
   // 工步id
@@ -52,7 +53,7 @@ function getValueClass() {
 /**
  * 详情
  */
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 加载中
  */
@@ -102,6 +103,41 @@ function queryData() {
     });
 }
 
+// region websocket
+
+useWebSocket(readMessage, {
+  workstationCode: props.workstationCode,
+  equipCode: props.equipCode,
+  worksheetCode: props.worksheetCode,
+  bindingId: props.bindingId,
+  functionId: props.functionId,
+});
+
+/**
+ * WebSocket消息处理回调
+ * 功能：解析并更新资源验证状态数据
+ * 流程：
+ * 1. 解析原始消息为JSON对象
+ * 2. 验证数据有效性（非空检查）
+ * 3. 更新响应式状态数据
+ *
+ * @param message - WebSocket推送的原始消息字符串
+ *
+ * 注意事项：
+ * - 当前未处理JSON解析异常，需增加try-catch逻辑
+ * - 会直接覆盖原有状态数据，需确保数据结构一致性
+ * - 依赖父级作用域中的details响应式引用
+ */
+function readMessage(message: string) {
+  // 反序列化WebSocket消息
+  const data = JSON.parse(message);
+  // 有效性检查后更新视图数据
+  if (data) {
+    details.value = data; // 直接替换整个状态对象
+  }
+}
+// endregion
+
 onMounted(() => {
   queryData();
 });
@@ -109,66 +145,69 @@ onMounted(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 前工步执行状况 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.implementationStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.lastFlagName || $t('productionOperation.none') }}
-        </span>
+    <template v-if="details">
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 前工步执行状况 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.implementationStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.lastFlagName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 设备状态 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.deviceStatus') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.machineStatusName || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 设备状态 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.deviceStatus') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.machineStatusName || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 工单编号" -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.workOrderNumber') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.currentJobId || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 待进工单" -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.pendingWorkOrder') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.nextJobId || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 工单编号" -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.workOrderNumber') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.currentJobId || $t('productionOperation.none') }}
-        </span>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productName') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.productName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品编号 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productNumber') }}
+          </span>
+          <span :class="getValueClass()">
+            {{ details.productCode || $t('productionOperation.none') }}
+          </span>
+        </div>
       </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 待进工单" -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.pendingWorkOrder') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.nextJobId || $t('productionOperation.none') }}
-        </span>
-      </div>
-    </div>
-    <div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 产品名称 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.productName') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.productName || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <div class="mb-4 mr-8 inline-block">
-        <!-- 产品编号 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.productNumber') }}
-        </span>
-        <span :class="getValueClass()">
-          {{ details.productCode || $t('productionOperation.none') }}
-        </span>
-      </div>
-    </div>
+    </template>
+    <Empty v-else />
   </Spin>
 </template>
 

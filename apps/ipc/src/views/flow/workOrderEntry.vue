@@ -4,15 +4,7 @@ import { onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import {
-  Button,
-  Card,
-  Form,
-  FormItem,
-  Input,
-  RadioGroup,
-  Select,
-} from 'ant-design-vue';
+import { Button, Card, Form, FormItem, Input, Select } from 'ant-design-vue';
 
 import { workstationListAcquisition } from '#/api';
 import ScanTheCode from '#/util/component/scanTheCode.vue';
@@ -23,8 +15,6 @@ import WorkOrderEntryTable from '#/util/component/workOrderEntryTable.vue';
 const queryParams = ref({
   // 工作中心编号
   workstationCode: '',
-  // 模式选择( 1手动  2自动)
-  modelType: '1',
   // 产品编号
   productCode: '',
   // 工单号
@@ -32,18 +22,6 @@ const queryParams = ref({
   // 工单派发状态
   sendState: '',
 });
-
-// 定义模式选择选项
-const operationModeOptions = ref([
-  {
-    label: '手动',
-    value: '1',
-  },
-  {
-    label: '自动',
-    value: '2',
-  },
-]);
 
 // 定义工单派发状态选项
 const theStatusOfWorkOrderDispatch = ref([
@@ -72,13 +50,14 @@ function query(isReset = false) {
   if (isReset) {
     queryParams.value = {
       workstationCode: '',
-      modelType: '1',
       productCode: '',
       worksheetCode: '',
       sendState: '',
     };
   }
-  workOrderEntryTableRef.value.query();
+  setTimeout(() => {
+    workOrderEntryTableRef.value?.query();
+  }, 100);
 }
 // endregion
 
@@ -139,14 +118,6 @@ onMounted(() => {
                 query(false);
               }
             "
-          />
-        </FormItem>
-        <!--模式选择 -->
-        <FormItem :label="$t('workOrderEntry.modelType')" class="!mb-4 w-full">
-          <RadioGroup
-            :options="operationModeOptions"
-            v-model:value="queryParams.modelType"
-            @change="query()"
           />
         </FormItem>
         <!--产品编号 -->

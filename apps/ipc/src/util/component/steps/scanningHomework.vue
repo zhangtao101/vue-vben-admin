@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Col, Row, Spin } from 'ant-design-vue';
+import { Button, Col, Empty, Row, Spin } from 'ant-design-vue';
 
 import { listByCodeScan } from '#/api';
 
@@ -127,7 +127,7 @@ const showType = ref<any>({
 /**
  * 详情
  */
-const details = ref<any>({});
+const details = ref<any>(undefined);
 /**
  * 加载中
  */
@@ -181,7 +181,7 @@ onMounted(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <Row>
+    <Row v-if="details">
       <Col :span="showTypeNumber >= 20 && showTypeNumber <= 23 ? 24 : 12">
         <!-- region 单件SN码 -->
         <div
@@ -379,6 +379,7 @@ onMounted(() => {
         <!-- endregion-->
       </Col>
     </Row>
+    <Empty v-else />
   </Spin>
 </template>
 

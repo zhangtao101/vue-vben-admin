@@ -39,6 +39,7 @@ import {
   queryAndonPendingList,
   queryAndonPendingPickList,
   queryErrorType,
+  queryTheEmployeeNumber,
   queryTheListOfAndonPendingProcessing,
   taskCollection,
 } from '#/api';
@@ -327,6 +328,7 @@ const theSignInObjectOfTheEditor = ref<any>({});
  * - 关闭抽屉时会自动清空编辑对象
  */
 function showTheSignInDrawer(row: any) {
+  queryUserCode(row.id);
   signInDrawerDisplay.value = true;
   theSignInObjectOfTheEditor.value = row;
 }
@@ -692,16 +694,38 @@ function taskCollectionFun(id: any) {
 }
 
 // endregion
+// region 签到人查询
+const userCodeList = ref<any>([]);
 
-// region 暴露方法
-
-const reload = () => {
-  gridApi.reload();
-};
-
-defineExpose({
-  reload,
-});
+/**
+ * 查询员工工号列表
+ * 功能：根据任务ID获取关联员工工号，并转换为下拉选项格式
+ * 流程：
+ * 1. 调用查询接口获取原始数据
+ * 2. 遍历接口返回的工号数组
+ * 3. 转换为包含 label/value 键值对的对象格式
+ * 4. 将转换后的选项存入响应式工号列表
+ *
+ * @param id - 任务唯一标识
+ *           对应安灯任务记录的ID
+ *
+ * 注意事项：
+ * - 依赖 queryTheEmployeeNumber 接口的正确返回
+ * - 数据转换是为了适配 ant-design-vue 的 Select 组件格式
+ * - 使用响应式列表 userCodeList 存储结果
+ * - 多次调用会导致列表追加数据，需要根据业务需求决定是否清空旧数据
+ */
+function queryUserCode(id: any) {
+  userCodeList.value = [];
+  queryTheEmployeeNumber(id).then((data: any) => {
+    data.forEach((item: any) => {
+      userCodeList.value.push({
+        label: item,
+        value: item,
+      });
+    });
+  });
+}
 
 // endregion
 
@@ -737,7 +761,15 @@ const filterOption = (input: string, option: any) => {
 };
 // endregion
 
-// region 异常填报
+// region 暴露方法
+
+const reload = () => {
+  gridApi.reload();
+};
+
+defineExpose({
+  reload,
+});
 
 // endregion
 
@@ -936,7 +968,12 @@ onMounted(() => {
         style="margin-bottom: 1em"
         name="userCode"
       >
-        <Input v-model:value="signInFormState.userCode" />
+        <Select
+          v-model:value="signInFormState.userCode"
+          class="w-full"
+          :options="userCodeList"
+          allow-clear
+        />
       </FormItem>
     </Form>
     <template #footer>
@@ -981,6 +1018,7 @@ onMounted(() => {
         :rules="[{ required: true, message: $t('andon.required') }]"
         style="margin-bottom: 1em"
         name="andonErrorCode"
+        v-if="!whetherItIsInTheProcessingState || isFillInTheForm"
       >
         <Select
           v-model:value="anomalyDeterminationData.andonErrorCode"
