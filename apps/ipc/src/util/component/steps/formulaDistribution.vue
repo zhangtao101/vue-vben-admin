@@ -43,7 +43,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -193,7 +193,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.implementationStatus') }}
+            {{ $t('productionOperation.implementationStatus') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.lastFlagName || $t('productionOperation.none') }}
@@ -202,7 +202,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 设备状态 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.deviceStatus') }}
+            {{ $t('productionOperation.deviceStatus') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.machineStatusName || $t('productionOperation.none') }}
@@ -213,7 +213,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 原配方号" -->
           <label :class="getLabelClass()" for="originalRecipeNumber">
-            {{ $t('productionOperation.originalRecipeNumber') }}
+            {{ $t('productionOperation.originalRecipeNumber') }}：
           </label>
           <Input
             v-model:value="details.templateCode"
@@ -224,7 +224,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 目标配方号" -->
           <label :class="getLabelClass()" for="targetRecipeNumber">
-            {{ $t('productionOperation.targetRecipeNumber') }}
+            {{ $t('productionOperation.targetRecipeNumber') }}：
           </label>
           <Input
             v-model:value="details.nextTemplateCode"
@@ -237,7 +237,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 配方下发状态" -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.formulaDeliveryCondition') }}
+            {{ $t('productionOperation.formulaDeliveryCondition') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.tempSendFlagName || $t('productionOperation.none') }}

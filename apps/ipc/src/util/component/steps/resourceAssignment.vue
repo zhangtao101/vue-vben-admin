@@ -54,7 +54,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -167,7 +167,7 @@ onMounted(() => {
         <!-- region 工单号 -->
         <div class="mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.currentWorkOrder') }}
+            {{ $t('productionOperation.currentWorkOrder') }}：
           </span>
           <span :class="getValueClass()">
             {{ props.worksheetCode || $t('productionOperation.none') }}
@@ -177,7 +177,7 @@ onMounted(() => {
         <!-- region 设备编号 -->
         <div class="mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.equipmentNumber') }}
+            {{ $t('productionOperation.equipmentNumber') }}：
           </span>
           <span :class="getValueClass()">
             <Select
@@ -195,7 +195,7 @@ onMounted(() => {
         <!-- region 允许调整 -->
         <div class="mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.allowForAdjustment') }}
+            {{ $t('productionOperation.allowForAdjustment') }}：
           </span>
           <span :class="getValueClass()">
             <RadioGroup v-model:value="details.isUpdateFlag">

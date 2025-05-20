@@ -46,7 +46,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -154,7 +154,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 当前工单 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.currentWorkOrder') }}
+            {{ $t('productionOperation.currentWorkOrder') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.worksheetCode || $t('productionOperation.none') }}
@@ -163,7 +163,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.productName') }}
+            {{ $t('productionOperation.productName') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.productName || $t('productionOperation.none') }}
@@ -172,7 +172,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 产品编号 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.productNumber') }}
+            {{ $t('productionOperation.productNumber') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.productCode || $t('productionOperation.none') }}
@@ -181,7 +181,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 计划数量 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.plannedQuantity') }}
+            {{ $t('productionOperation.plannedQuantity') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.planNumber || $t('productionOperation.none') }}
@@ -190,7 +190,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 累计完成数量 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.cumulativeCompletedQuantity') }}
+            {{ $t('productionOperation.cumulativeCompletedQuantity') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.finishNumber || $t('productionOperation.none') }}
@@ -199,7 +199,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 累计不良数量 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.cumulativeNumberOfDefects') }}
+            {{ $t('productionOperation.cumulativeNumberOfDefects') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.totalUnqualityNumber || $t('productionOperation.none') }}
@@ -210,7 +210,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 良品数量 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.quantityOfGoodProducts') }}
+            {{ $t('productionOperation.quantityOfGoodProducts') }}：
           </span>
           <InputNumber
             v-model:value="details.reportNumber"
@@ -221,7 +221,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 不良品数量 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.quantityOfDefectiveProducts') }}
+            {{ $t('productionOperation.quantityOfDefectiveProducts') }}：
           </span>
           <InputNumber
             v-model:value="details.unqualityNumber"

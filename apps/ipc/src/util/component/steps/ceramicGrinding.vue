@@ -39,7 +39,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -113,7 +113,7 @@ onMounted(() => {
       <div class="mb-4 mr-8 inline-block">
         <!-- 设备可用 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.equipmentAvailable') }}
+          {{ $t('productionOperation.equipmentAvailable') }}：
         </span>
         <span :class="getValueClass()">
           {{ details.readyFlagName || $t('productionOperation.none') }}
@@ -124,7 +124,7 @@ onMounted(() => {
       <div class="mb-4 mr-8 inline-block">
         <!-- 设备堵料" -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.equipmentPlugging') }}
+          {{ $t('productionOperation.equipmentPlugging') }}：
         </span>
         <span :class="getValueClass()">
           {{ details.nextFuncEnableName || $t('productionOperation.none') }}
@@ -133,7 +133,7 @@ onMounted(() => {
       <div class="mb-4 mr-8 inline-block">
         <!-- 堵料原因 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.cloggingCause') }}
+          {{ $t('productionOperation.cloggingCause') }}：
         </span>
         <span :class="getValueClass()">
           {{ details.nextFuncEnableReason || $t('productionOperation.none') }}
@@ -144,7 +144,7 @@ onMounted(() => {
       <div class="mb-4 mr-8 inline-block">
         <!-- 设备状态 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.deviceStatus') }}
+          {{ $t('productionOperation.deviceStatus') }}：
         </span>
         <span :class="getValueClass()">
           {{ details.machineStatusName || $t('productionOperation.none') }}

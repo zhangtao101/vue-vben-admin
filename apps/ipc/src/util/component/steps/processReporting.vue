@@ -54,7 +54,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -338,7 +338,7 @@ onMounted(() => {
       <div class="mb-4 mr-8 inline-block">
         <!-- 工单编号 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.workOrderNumber') }}
+          {{ $t('productionOperation.workOrderNumber') }}：
         </span>
         <span :class="getValueClass()">
           {{ details.currentJobId || $t('productionOperation.none') }}
@@ -347,7 +347,7 @@ onMounted(() => {
       <div class="mb-4 mr-8 inline-block">
         <!-- 产品名称 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.productName') }}
+          {{ $t('productionOperation.productName') }}：
         </span>
         <span :class="getValueClass()">
           {{ details.productName || $t('productionOperation.none') }}
@@ -356,7 +356,7 @@ onMounted(() => {
       <div class="mb-4 mr-8 inline-block">
         <!-- 累计数量 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.cumulativeQuantity') }}
+          {{ $t('productionOperation.cumulativeQuantity') }}：
         </span>
         <span :class="getValueClass()">
           {{ details.totalReportNumber || 0 }}
@@ -365,7 +365,7 @@ onMounted(() => {
       <div class="mb-4 mr-8 inline-block">
         <!-- 累计重量 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.accumulatedWeight') }}
+          {{ $t('productionOperation.accumulatedWeight') }}：
         </span>
         <span :class="getValueClass()">
           {{ details.totalReportWeight || 0 }}

@@ -60,7 +60,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -466,7 +466,7 @@ function readMessage(message: string) {
       <div class="mb-4 mr-8 inline-block">
         <!-- 前工步执行状况 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.implementationStatus') }}
+          {{ $t('productionOperation.implementationStatus') }}：
         </span>
         <span :class="getValueClass()">
           <!--        {{ obtainTheDeviceCleanStatus(3) }}-->
@@ -476,7 +476,7 @@ function readMessage(message: string) {
       <div class="mb-4 mr-8 inline-block">
         <!-- 当前设备投料模式 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.currentDeviceFeedingMode') }}
+          {{ $t('productionOperation.currentDeviceFeedingMode') }}：
         </span>
         <!-- 手动 -->
         <span :class="getValueClass()">

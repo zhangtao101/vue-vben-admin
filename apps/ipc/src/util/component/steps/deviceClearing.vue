@@ -43,7 +43,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -195,7 +195,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.implementationStatus') }}
+            {{ $t('productionOperation.implementationStatus') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.lastFlagName || $t('productionOperation.none') }}
@@ -207,7 +207,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 清空模式 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.emptyMode') }}
+            {{ $t('productionOperation.emptyMode') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.clearModel === 1 ? '自动' : '手动' }}
@@ -216,7 +216,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 清空状态 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.emptyState') }}
+            {{ $t('productionOperation.emptyState') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.clearlinessFlagName || $t('productionOperation.none') }}
@@ -225,7 +225,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 清空计时 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.emptyTimer') }}
+            {{ $t('productionOperation.emptyTimer') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.clearMinute || $t('productionOperation.none') }}
@@ -236,7 +236,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 清空超时 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.emptyTimeout') }}
+            {{ $t('productionOperation.emptyTimeout') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.clearOverTimeFlag === 1 ? '超时' : '未超时' }}

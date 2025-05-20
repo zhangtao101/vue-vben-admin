@@ -40,7 +40,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -150,7 +150,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.implementationStatus') }}
+            {{ $t('productionOperation.implementationStatus') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.lastFlagName || $t('productionOperation.none') }}
@@ -162,7 +162,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.productName') }}
+            {{ $t('productionOperation.productName') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.productName || $t('productionOperation.none') }}
@@ -171,7 +171,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 当前工单 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.currentWorkOrder') }}
+            {{ $t('productionOperation.currentWorkOrder') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.currentJobId || $t('productionOperation.none') }}
@@ -180,7 +180,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 产品编号 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.productNumber') }}
+            {{ $t('productionOperation.productNumber') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.productCode || $t('productionOperation.none') }}
@@ -191,7 +191,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 设备状态 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.deviceStatus') }}
+            {{ $t('productionOperation.deviceStatus') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.machineStatusName || $t('productionOperation.none') }}

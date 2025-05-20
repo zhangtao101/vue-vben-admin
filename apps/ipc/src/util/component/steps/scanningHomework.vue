@@ -45,7 +45,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -189,7 +189,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('singlePieceSNCode')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.singlePieceSNCode') }}
+            {{ $t('productionOperation.singlePieceSNCode') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.snCode || $t('productionOperation.none') }}
@@ -212,7 +212,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('workOrderNumber')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.workOrderNumber') }}
+            {{ $t('productionOperation.workOrderNumber') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.worksheetCode || $t('productionOperation.none') }}
@@ -225,7 +225,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('equipmentInterlocking')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.equipmentInterlocking') }}
+            {{ $t('productionOperation.equipmentInterlocking') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.error || $t('productionOperation.none') }}
@@ -238,7 +238,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('processingStatus')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.processingStatus') }}
+            {{ $t('productionOperation.processingStatus') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.workingStateName || $t('productionOperation.none') }}
@@ -251,7 +251,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('producedQuantity')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.producedQuantity') }}
+            {{ $t('productionOperation.producedQuantity') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.totalNumber || $t('productionOperation.none') }}
@@ -264,7 +264,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('detectedQuantity')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.detectedQuantity') }}
+            {{ $t('productionOperation.detectedQuantity') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.totalNumber || $t('productionOperation.none') }}
@@ -277,7 +277,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('appearanceInspection')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.appearanceInspection') }}
+            {{ $t('productionOperation.appearanceInspection') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.defectFlagName || $t('productionOperation.none') }}
@@ -290,7 +290,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('testConclusion')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.testConclusion') }}
+            {{ $t('productionOperation.testConclusion') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.defectFlagName || $t('productionOperation.none') }}
@@ -305,7 +305,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('resourceVerification')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.resourceVerification') }}
+            {{ $t('productionOperation.resourceVerification') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.readyFlagName || $t('productionOperation.none') }}
@@ -318,7 +318,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('processVerification')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.processVerification') }}
+            {{ $t('productionOperation.processVerification') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.readyFlagName || $t('productionOperation.none') }}
@@ -331,7 +331,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('workOrderBinding')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.workOrderBinding') }}
+            {{ $t('productionOperation.workOrderBinding') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.readyFlagName || $t('productionOperation.none') }}
@@ -344,7 +344,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('parameterDiscrimination')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.parameterDiscrimination') }}
+            {{ $t('productionOperation.parameterDiscrimination') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.readyFlagName || $t('productionOperation.none') }}
@@ -357,7 +357,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('parameterBinding')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.parameterBinding') }}
+            {{ $t('productionOperation.parameterBinding') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.readyFlagName || $t('productionOperation.none') }}
@@ -370,7 +370,7 @@ onMounted(() => {
           v-if="showType[showTypeNumber].includes('equipmentInterlockingR')"
         >
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.equipmentInterlocking') }}
+            {{ $t('productionOperation.equipmentInterlocking') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.readyFlagName || $t('productionOperation.none') }}

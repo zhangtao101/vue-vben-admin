@@ -27,7 +27,7 @@ import { Tag } from 'ant-design-vue';
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-center';
 }
 
 /**
@@ -43,7 +43,7 @@ function getValueClass() {
     <div class="mb-4 mr-8 inline-block">
       <!-- 设备可用 -->
       <span :class="getLabelClass()">
-        {{ $t('equipmentOperationStatus.equipmentAvailable') }}
+        {{ $t('equipmentOperationStatus.equipmentAvailable') }}：
       </span>
       <Tag :bordered="false" color="success" class="align-middle text-xl">
         通讯
@@ -60,14 +60,14 @@ function getValueClass() {
     <div class="mb-4 mr-8 inline-block">
       <!-- 设备堵料 -->
       <span :class="getLabelClass()">
-        {{ $t('equipmentOperationStatus.equipmentPlugging') }}
+        {{ $t('equipmentOperationStatus.equipmentPlugging') }}：
       </span>
       <span :class="getValueClass()">2222</span>
     </div>
     <div class="mb-4 mr-8 inline-block">
       <!-- 堵料原因 -->
       <span :class="getLabelClass()">
-        {{ $t('equipmentOperationStatus.cloggingCause') }}
+        {{ $t('equipmentOperationStatus.cloggingCause') }}：
       </span>
       <span :class="getValueClass()">2222</span>
     </div>
@@ -76,7 +76,7 @@ function getValueClass() {
     <div class="mb-4 mr-8 inline-block">
       <!-- 设备状态 -->
       <span :class="getLabelClass()">
-        {{ $t('equipmentOperationStatus.deviceStatus') }}
+        {{ $t('equipmentOperationStatus.deviceStatus') }}：
       </span>
       <span :class="getValueClass()">2222</span>
     </div>
