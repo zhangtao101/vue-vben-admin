@@ -136,6 +136,8 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 const workOrderType = ref('2');
 // 数据长度
 const dataLength = ref(-1);
+// 历史进站最后一次的下标
+const historicalEntryIndex = ref(-1);
 
 /**
  * 查询工单管理列表数据
@@ -171,6 +173,16 @@ function queryData({ page, pageSize }: any) {
       pageSize, // 接口每页数据量
     })
       .then(({ total, list }) => {
+        historicalEntryIndex.value = -1;
+        if (list && list.length > 0) {
+          for (const [i, element] of list.entries()) {
+            if (element.historyId) {
+              historicalEntryIndex.value = i;
+            } else {
+              break; // 中断循环
+            }
+          }
+        }
         dataLength.value = list.length; // 更新当前页数据量
         resolve({
           total, // 总数据量
@@ -252,10 +264,8 @@ function inputSheetCode() {
     onOk() {
       const ids: string[] = [];
       gridApi.grid.getTableData().tableData.forEach((item: any) => {
-        if (workOrderType.value === '1') {
+        if (!item.historyId) {
           ids.push(item.sendId);
-        } else {
-          ids.push(item.id);
         }
       });
       inputSheetBatch({
@@ -615,7 +625,9 @@ defineExpose({
           />
         </Tooltip>
         <!-- 移出 -->
-        <Tooltip v-if="workOrderType === '1'">
+        <Tooltip
+          v-if="workOrderType === '1' && rowIndex > historicalEntryIndex"
+        >
           <template #title>{{ $t('workOrderEntry.moveOut') }}</template>
           <Button
             type="link"
@@ -629,7 +641,9 @@ defineExpose({
           />
         </Tooltip>
         <!-- 上移 -->
-        <Tooltip v-if="workOrderType === '1' && rowIndex > 0">
+        <Tooltip
+          v-if="workOrderType === '1' && rowIndex > historicalEntryIndex + 1"
+        >
           <template #title>{{ $t('workOrderEntry.moveUp') }}</template>
           <Button
             type="link"
@@ -643,7 +657,13 @@ defineExpose({
           />
         </Tooltip>
         <!-- 下移 -->
-        <Tooltip v-if="workOrderType === '1' && rowIndex < dataLength - 1">
+        <Tooltip
+          v-if="
+            workOrderType === '1' &&
+            rowIndex < dataLength - 1 &&
+            rowIndex > historicalEntryIndex
+          "
+        >
           <template #title>
             {{ $t('workOrderEntry.moveDown') }}
           </template>
