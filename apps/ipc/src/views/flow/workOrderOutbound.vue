@@ -181,11 +181,68 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
+// region 报工信息
+const reportForWorkGridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    {
+      title: '序号',
+      type: 'seq',
+      field: 'seq',
+      width: 50,
+    },
+    {
+      field: 'worksheetCode',
+      title: '工序名称',
+      minWidth: 200,
+    },
+    {
+      field: 'productCode',
+      title: '良品数量',
+      minWidth: 200,
+    },
+    {
+      field: 'productName',
+      title: '不良数量',
+      minWidth: 200,
+    },
+    {
+      field: 'equipName',
+      title: '人时',
+      minWidth: 120,
+    },
+    {
+      field: 'planStartDate',
+      title: '机时',
+      minWidth: 120,
+    },
+  ],
+  data: [],
+  height: 400,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
+  },
+};
+
+const [ReportForGrid, reportForgridApi] = useVbenVxeGrid({
+  gridOptions: reportForWorkGridOptions,
+});
+// endregion
+
 // region 下线
 // 下线抽屉是否显示
 const downlineDrawer = ref(false);
-// 是否为完工出站
-const isCompleted = ref(false);
+// 操作类型：2-完工出站，3-强制下线 4-暂停报工
+const reportingTypeOfWork = ref(1);
 // 选中行数据
 const editItem = ref<any>({});
 // 编辑的form表单数据
@@ -195,16 +252,35 @@ const formData = ref({
   personTime: 0,
   equipTime: 0,
 });
+// 抽屉标题
+const title = ref('');
 
 /**
  * 显示下线抽屉
  * @param row 当前行数据
- * @param completed 是否为完工出站
+ * @param type 操作类型：2-完工出站，3-强制下线 4-暂停报工
  */
-function show(row: any, completed: boolean) {
-  isCompleted.value = completed;
+function show(row: any, type: number) {
+  reportingTypeOfWork.value = type;
   editItem.value = row;
   downlineDrawer.value = true;
+  setTimeout(() => {
+    reportForgridApi.grid.loadData([{}, {}, {}]);
+  }, 200);
+  switch (type) {
+    case 2: {
+      title.value = $t('workOrderEntry.outbound');
+      break;
+    }
+    case 3: {
+      title.value = $t('workOrderEntry.downline');
+      break;
+    }
+    case 4: {
+      title.value = $t('workOrderEntry.suspendWorkReporting');
+      break;
+    }
+  }
 }
 
 /**
@@ -212,6 +288,7 @@ function show(row: any, completed: boolean) {
  */
 function close() {
   downlineDrawer.value = false;
+  reportingTypeOfWork.value = -1;
   editItem.value = {};
   formData.value = {
     qualityNumber: 0,
@@ -259,7 +336,7 @@ function submit() {
     // 组装提交参数
     const params = {
       ...formData.value, // 表单数据（良品数、不良数等）
-      opType: isCompleted.value ? 2 : 3, // 操作类型：2-完工出站，3-强制下线
+      opType: reportingTypeOfWork.value, // 操作类型：2-完工出站，3-强制下线 4-暂停报工
       id: editItem.value.id, // 当前工单ID
     };
 
@@ -365,7 +442,23 @@ onMounted(() => {
                   class: 'inline-block text-2xl',
                 })
               "
-              @click="show(row, true)"
+              @click="show(row, 2)"
+            />
+          </Tooltip>
+          <!-- 暂停报工-->
+          <Tooltip>
+            <template #title>
+              {{ $t('workOrderEntry.suspendWorkReporting') }}
+            </template>
+            <Button
+              type="link"
+              :icon="
+                h(IconifyIcon, {
+                  icon: 'mdi-light:pause',
+                  class: 'inline-block text-2xl',
+                })
+              "
+              @click="show(row, 4)"
             />
           </Tooltip>
           <!-- 下线 -->
@@ -380,7 +473,7 @@ onMounted(() => {
                   class: 'inline-block text-2xl',
                 })
               "
-              @click="show(row, false)"
+              @click="show(row, 3)"
             />
           </Tooltip>
         </template>
@@ -389,11 +482,7 @@ onMounted(() => {
     <!-- endregion -->
 
     <Drawer
-      :title="
-        isCompleted
-          ? $t('workOrderEntry.outbound')
-          : $t('workOrderEntry.downline')
-      "
+      :title="title"
       v-model:open="downlineDrawer"
       placement="right"
       :width="800"
@@ -426,6 +515,10 @@ onMounted(() => {
         </DescriptionsItem>
       </Descriptions>
 
+      <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+        {{ $t('workOrderEntry.detailsOfProcessReporting') }}
+      </span>
+      <ReportForGrid />
       <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
         {{ $t('workOrderEntry.workReportingInformation') }}
       </span>
