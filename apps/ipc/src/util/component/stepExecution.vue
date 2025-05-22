@@ -5,9 +5,11 @@ import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
 import EquipmentLocationInformation from '#/util/component/steps/equipmentLocationInformation.vue';
 import EquipmentMonitoringInformation from '#/util/component/steps/equipmentMonitoringInformation.vue';
 import EquipmentOperationStatus from '#/util/component/steps/equipmentOperationStatus.vue';
+import ExitReport from '#/util/component/steps/exitReport.vue';
 import FirstInspection from '#/util/component/steps/firstInspection.vue';
 import FormulaDistribution from '#/util/component/steps/formulaDistribution.vue';
 import LampInstallationRecord from '#/util/component/steps/lampInstallationRecord.vue';
+import ManufactureEntry from '#/util/component/steps/manufactureEntry.vue';
 import MaterialFeeding from '#/util/component/steps/materialFeeding.vue';
 import MaterialFeedingSlitting from '#/util/component/steps/materialFeedingSlitting.vue';
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
@@ -16,7 +18,10 @@ import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
 import ResourceAssignment from '#/util/component/steps/resourceAssignment.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
+import ScanModule from '#/util/component/steps/scanModule.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
+import ScanTask from '#/util/component/steps/scanTask.vue';
+import ScanWorkflow from '#/util/component/steps/scanWorkflow.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
 
@@ -175,7 +180,7 @@ defineProps({
   <!-- 安灯记录查询 -->
   <LampInstallationRecord v-if="step.type === 13" />
   <!-- 安灯评价 -->
-  <LampInstallationRecord :place="3" :state="3" v-if="step.type === 14" />
+  <LampInstallationRecord :place="3" v-if="step.type === 14" />
   <!-- 转码 -->
   <Transcoding
     :workstation-code="workstationCode"
@@ -320,6 +325,76 @@ defineProps({
     :function-id="step.id"
     :show-type-number="step.type"
     v-if="step.type === 29"
+  />
+  <!-- 出站报工 - 和城 -->
+  <ExitReport
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 31"
+  />
+  <!-- 扫码作业--- 成品、半成品老练检 耐压 -->
+  <ScanModule
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 32"
+  />
+  <!-- 扫码作业--- 氦气 -->
+  <ScanModule
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 33"
+  />
+  <!-- 扫码作业--- 陶瓷 -->
+  <ScanWorkflow
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 34"
+  />
+  <!-- 扫码作业--- 半成品宗参，触点电洗，开距测试 -->
+  <ScanTask
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 35"
+  />
+  <!-- 扫码作业--- 成品宗参，高度极性 -->
+  <ScanTask
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 37"
+  />
+  <!-- 工序进站 -->
+  <ManufactureEntry
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 36"
   />
 
   <!-- 设备点位信息 -->

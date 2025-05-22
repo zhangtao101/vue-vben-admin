@@ -138,7 +138,7 @@ onMounted(() => {
             v-if="index > 0"
           />
           <div
-            class="inline-block w-36 cursor-pointer rounded-xl border p-2 text-center hover:bg-pink-300 hover:text-black"
+            class="inline-block w-auto cursor-pointer rounded-xl border p-2 pl-4 pr-4 text-center hover:bg-pink-300 hover:text-black"
             :class="{
               // 'bg-sky-500 text-white': item.status === 1,
               'bg-green-500 text-white': item.status === 2 || item.status === 1,

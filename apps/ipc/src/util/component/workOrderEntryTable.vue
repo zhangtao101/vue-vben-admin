@@ -62,10 +62,9 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 200,
     },
     {
-      field: 'sendState',
+      field: 'sendStateName',
       title: '工单状态',
       minWidth: 150,
-      slots: { default: 'sendState' },
     },
     {
       field: 'modelTypeName',
@@ -196,40 +195,6 @@ function queryData({ page, pageSize }: any) {
         });
       });
   });
-}
-
-/**
- * 获取工单状态文本描述
- * 功能：将状态码转换为可读的工单状态文本
- * 流程：
- * 1. 接收数字类型的状态码
- * 2. 通过switch-case匹配预定义状态
- * 3. 返回对应的中文状态描述
- *
- * @param status - 工单状态码（0:未开工 1:已开工 3:暂停下线）
- * @returns 状态文本描述
- *
- * 状态说明：
- * - 0: 工单创建后尚未开始执行
- * - 1: 工单已开始生产作业
- * - 3: 工单被主动暂停或异常中断
- *
- * 注意：
- * - 状态码2在业务逻辑中未使用（可能为预留或弃用状态）
- * - 返回文本直接使用中文，如需国际化需改用$t()方法
- */
-function getStatusText(status: number) {
-  switch (status) {
-    case 0: {
-      return '未开工';
-    }
-    case 1: {
-      return '已开工';
-    }
-    case 3: {
-      return '暂停下线';
-    }
-  }
 }
 
 // endregion
@@ -545,9 +510,6 @@ defineExpose({
           <RadioButton value="1">待执行列表</RadioButton>
           <RadioButton value="2">工单总列表</RadioButton>
         </RadioGroup>
-      </template>
-      <template #sendState="{ row }">
-        {{ getStatusText(row.sendState) }}
       </template>
       <template #action="{ row, rowIndex }">
         <!-- 进站 ="{ row }"-->

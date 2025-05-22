@@ -248,15 +248,6 @@ const gridOptions: VxeGridProps<any> = {
       },
       fixed: 'right',
     },
-    {
-      field: 'readyOperation',
-      title: '就绪操作',
-      minWidth: 150,
-      slots: {
-        default: 'readyOperation',
-      },
-      fixed: 'right',
-    },
   ],
   height: 200,
   stripe: true,
@@ -358,6 +349,12 @@ function queryData() {
  * 查询表格数据
  */
 function query() {
+  processRouteList.value = [];
+  checkedProcess.value = -1;
+  checkedProcessId.value = 0;
+  theSelectedOperation.value = '';
+  listOfOperationItems.value = [];
+
   gridApi.reload();
 }
 
@@ -734,7 +731,7 @@ function workStepExecutionContractionChange() {
 
 // region 页面缩放
 // 定义一个响应式变量，用于存储当前的缩放比例，默认值为 80（表示 80% 的缩放比例）
-const zoomSize = ref(80);
+const zoomSize = ref(100);
 
 // 定义一个响应式变量，用于存储需要缩放的页面对象（DOM 元素）
 const page = ref();
@@ -922,14 +919,33 @@ onBeforeUnmount(() => {
                     <MenuItem
                       @click="workOrderOperation(row, 1)"
                       :disabled="row.sendState === 4"
-                      v-if="row.reportType === 1 && row.workButtonFlag === 1"
+                      v-if="
+                        row.reportType === 1 &&
+                        row.workButtonFlag === 1 &&
+                        row.sendState === 1
+                      "
                     >
                       {{ $t('common.startWork') }}
+                    </MenuItem>
+                    <!-- 就绪按钮 -->
+                    <MenuItem
+                      @click="ready(row, 1)"
+                      v-if="row.workButtonFlag === 2 && row.readyState === 0"
+                    >
+                      {{ $t('common.beInOrder') }}
+                    </MenuItem>
+                    <!-- 就绪撤回 -->
+                    <MenuItem
+                      @click="ready(row, 2)"
+                      v-if="row.workButtonFlag === 2 && row.readyState === 1"
+                    >
+                      {{ $t('common.readyToWithdraw') }}
                     </MenuItem>
                     <!-- 完工 -->
                     <MenuItem
                       @click="workOrderOperation(row, 2)"
                       :disabled="row.sendState === 2"
+                      v-if="row.reportType === 1 && row.sendState !== 1"
                     >
                       {{ $t('common.completed') }}
                     </MenuItem>
@@ -937,6 +953,7 @@ onBeforeUnmount(() => {
                     <MenuItem
                       @click="workOrderOperation(row, 3)"
                       :disabled="row.sendState === 3"
+                      v-if="row.sendState !== 1"
                     >
                       {{ $t('common.pause') }}
                     </MenuItem>
@@ -944,6 +961,7 @@ onBeforeUnmount(() => {
                     <MenuItem
                       @click="workOrderOperation(row, 5)"
                       :disabled="row.sendState === 5"
+                      v-if="row.sendState !== 1"
                     >
                       {{ $t('common.forcedOffline') }}
                     </MenuItem>
@@ -985,9 +1003,9 @@ onBeforeUnmount(() => {
         <Card class="mb-5" v-if="processShrinkage">
           <div class="w-full overflow-x-auto whitespace-nowrap">
             <template v-for="item of processRouteList" :key="item.processCode">
-              <div class="m-4 inline-block w-36 text-center">
+              <div class="m-2 inline-block w-auto text-center">
                 <div
-                  class="mb-2 cursor-pointer rounded-xl border p-2 hover:bg-pink-200 hover:text-black"
+                  class="mb-2 cursor-pointer rounded-xl border p-2 pl-4 pr-4 hover:bg-pink-200 hover:text-black"
                   :class="{
                     // 'bg-sky-500 text-white': item.workingState === 1,
                     'bg-green-500 text-white':

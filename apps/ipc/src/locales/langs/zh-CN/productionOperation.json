@@ -95,5 +95,9 @@
   "quantityOfDefectiveProducts": "不良品数量",
   "cumulativeCompletedQuantity": "累计完成数量",
   "cumulativeNumberOfDefects": "累计不良数量",
-  "allowForAdjustment": "允许调整"
+  "allowForAdjustment": "允许调整",
+  "verificationResult": "校验结果",
+  "workstationNumber": "工位编号",
+  "testResult": "测试结果",
+  "reportForWorkAndGetARedMark": "报工冲红"
 }
