@@ -5,7 +5,7 @@ import qs from 'qs';
 
 import { getWebSocketPath } from '#/api';
 
-export default function useWebSocket(fun: any, params: any) {
+export default function useWebSocket(fun: any, params: any = {}) {
   // WebSocket 实例的引用，初始值为 null
   const socket = ref<any>(null);
   // 表示 WebSocket 是否连接的状态
@@ -24,7 +24,7 @@ export default function useWebSocket(fun: any, params: any) {
   // 建立 WebSocket 连接的函数
   const connect = async () => {
     // 获取 WebSocket 的连接路径，假设这是一个异步函数
-    const url = await getWebSocketPath();
+    const url = await getWebSocketPath(params.webSocketType);
     // 创建一个新的 WebSocket 实例
     socket.value = new WebSocket(`${url}?${qs.stringify(params)}`);
     // 监听 WebSocket 的 'open' 事件，表示连接成功

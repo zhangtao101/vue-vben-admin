@@ -352,3 +352,33 @@ export function sendEquip(params: any) {
     params,
   );
 }
+
+/**
+ * 扫码作业查询
+ * @param params 参数
+ */
+export function listHCByCodeScan(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listHCByCodeScan?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 手动扫码接口调用
+ * @param params 参数
+ */
+export function handleMaulSncode(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/handleMaulSncode?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 条码工位绑定接口
+ * @param params 参数
+ */
+export function snCodeHcBinding(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snCodeHcBinding`,
+    params,
+  );
+}

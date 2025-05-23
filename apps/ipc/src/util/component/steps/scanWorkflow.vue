@@ -5,7 +5,7 @@ import { $t } from '@vben/locales';
 
 import { Col, Row, Spin } from 'ant-design-vue';
 
-import { listByCodeScan } from '#/api';
+import { listHCByCodeScan } from '#/api';
 
 const props = defineProps({
   // 工步id
@@ -88,7 +88,7 @@ const spinning = ref<any>(false);
  */
 function queryData() {
   spinning.value = true;
-  listByCodeScan({
+  listHCByCodeScan({
     workstationCode: props.workstationCode,
     equipCode: props.equipCode,
     worksheetCode: props.worksheetCode,
@@ -118,7 +118,7 @@ onMounted(() => {
             {{ $t('productionOperation.workOrderNumber') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
+            {{ details.worksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- region 产品名称 -->
@@ -127,7 +127,7 @@ onMounted(() => {
             {{ $t('productionOperation.productName') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
+            {{ details.productName || $t('productionOperation.none') }}
           </span>
         </div>
       </Col>
@@ -138,7 +138,7 @@ onMounted(() => {
             {{ $t('productionOperation.singlePieceSNCode') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
+            {{ details.snCode || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- region 测试结果 -->
@@ -147,7 +147,7 @@ onMounted(() => {
             {{ $t('productionOperation.testResult') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
+            {{ details.defectFlagName || $t('productionOperation.none') }}
           </span>
         </div>
       </Col>
@@ -158,7 +158,7 @@ onMounted(() => {
             {{ $t('productionOperation.producedQuantity') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
+            {{ details.totalNumber || $t('productionOperation.none') }}
           </span>
         </div>
       </Col>

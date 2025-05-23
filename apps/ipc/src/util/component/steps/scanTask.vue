@@ -6,8 +6,9 @@ import { $t } from '@vben/locales';
 
 import { Button, Col, Input, Row, Spin } from 'ant-design-vue';
 
-import { listByCodeScan } from '#/api';
+import { handleMaulSncode, listHCByCodeScan } from '#/api';
 import ScanTheCode from '#/util/component/scanTheCode.vue';
+import useWebSocket from '#/util/websocket-util';
 
 const props = defineProps({
   // 工步id
@@ -94,20 +95,66 @@ const snCode = ref<any>('');
  */
 function queryData() {
   spinning.value = true;
-  listByCodeScan({
+  listHCByCodeScan({
     workstationCode: props.workstationCode,
     equipCode: props.equipCode,
     worksheetCode: props.worksheetCode,
     bindingId: props.bindingId,
     functionId: props.functionId,
+    snCode: snCode.value,
   })
     .then((data) => {
-      details.value = data;
+      details.value = {
+        ...details.value,
+        ...data,
+      };
     })
     .finally(() => {
       spinning.value = false;
     });
 }
+function queryCode() {
+  handleMaulSncode({
+    workstationCode: props.workstationCode,
+    equipCode: props.equipCode,
+    worksheetCode: props.worksheetCode,
+    bindingId: props.bindingId,
+    functionId: props.functionId,
+    snCode: snCode.value,
+  })
+    .then((data) => {
+      const keys = [
+        'checkResult',
+        'checkResultName',
+        'snCode',
+        'worksheetCode',
+        'productCode',
+        'productName',
+        'error',
+      ];
+      keys.forEach((key) => {
+        details.value[key] = data[key];
+      });
+    })
+    .finally(() => {
+      spinning.value = false;
+    });
+}
+
+// region websocket
+
+useWebSocket(readMessage, {
+  workstationCode: props.workstationCode,
+  equipCode: props.equipCode,
+  worksheetCode: props.worksheetCode,
+  bindingId: props.bindingId,
+  functionId: props.functionId,
+  webSocketType: 5,
+});
+function readMessage() {
+  queryData();
+}
+// endregion
 
 onMounted(() => {
   queryData();
@@ -128,13 +175,14 @@ onMounted(() => {
               v-model:value="snCode"
               class="w-[80%]"
               :disabled="showTypeNumber === 37"
+              @keydown.enter="queryCode()"
             />
             <ScanTheCode
               v-if="showTypeNumber === 35"
               @scan-the-code="
                 (val) => {
                   snCode = val;
-                  queryData();
+                  queryCode();
                 }
               "
             />
@@ -142,7 +190,7 @@ onMounted(() => {
           <Button
             type="link"
             :danger="details.checkResult === -1"
-            v-if="details"
+            v-if="details.checkResult"
           >
             <IconifyIcon
               :icon="
@@ -163,9 +211,9 @@ onMounted(() => {
             {{ $t('productionOperation.verificationResult') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.testResult') }}
+            {{ details.error || $t('productionOperation.none') }}
           </span>
-          <Button type="link" v-if="details" danger>
+          <Button type="link" v-if="details.error !== '通过'" danger>
             <IconifyIcon
               icon="mdi:lock-outline"
               class="inline-block align-middle text-2xl"
@@ -181,7 +229,7 @@ onMounted(() => {
             {{ $t('productionOperation.workOrderNumber') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
+            {{ details.worksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion -->
@@ -191,7 +239,7 @@ onMounted(() => {
             {{ $t('productionOperation.productName') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
+            {{ details.productName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion -->
@@ -201,7 +249,7 @@ onMounted(() => {
             {{ $t('productionOperation.testResult') }}：
           </span>
           <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
+            {{ details.defectFlagName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion -->

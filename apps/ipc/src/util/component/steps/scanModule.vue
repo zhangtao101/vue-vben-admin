@@ -6,11 +6,12 @@ import { onMounted, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Col, Input, Row, Spin } from 'ant-design-vue';
+import { Button, Col, Input, message, Row } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { listByCodeScan } from '#/api';
+import { handleMaulSncode, listHCByCodeScan, snCodeHcBinding } from '#/api';
 import ScanTheCode from '#/util/component/scanTheCode.vue';
+import useWebSocket from '#/util/websocket-util';
 
 const props = defineProps({
   // 工步id
@@ -61,58 +62,71 @@ function getValueClass() {
 /**
  * 详情
  */
-const details = ref<any>(undefined);
-/**
- * 加载中
- */
-const spinning = ref<any>(false);
+const details = ref<any>({});
 /**
  * sn码
  */
 const snCode = ref('');
-
 /**
- * 查询资源验证状态
- * @function
- * @async
- * @description 获取当前工位的资源校验状态数据，包含以下流程：
- * 1. 开启加载状态指示
- * 2. 从组件props中获取上下文参数
- * 3. 调用资源验证状态查询接口
- * 4. 存储接口返回数据
- * 5. 始终关闭加载状态指示
- *
- * @throws {Error} 需要调用者补充异常处理逻辑
- *
- * @example
- * // 典型调用流程
- * try {
- *   await queryData();
- * } catch (error) {
- *   // 待补充的错误处理
- * }
- *
- * @see {@link listByCodeScan} 使用的API接口
- * @see {@link props} 参数来源：工步ID/工序ID/工单编号等上下文参数
+ * 工位号
  */
-function queryData() {
+const stationNumber = ref('');
+/**
+ * 加载状态
+ */
+const spinning = ref(false);
+
+const stationNumberRef = ref();
+const snCodeRef = ref();
+
+function queryCode() {
   spinning.value = true;
-  listByCodeScan({
+  handleMaulSncode({
     workstationCode: props.workstationCode,
     equipCode: props.equipCode,
     worksheetCode: props.worksheetCode,
     bindingId: props.bindingId,
     functionId: props.functionId,
+    snCode: snCode.value,
   })
     .then((data) => {
-      details.value = data;
+      details.value.error = data.error;
+      details.value.checkResult = data.checkResult;
+      details.value.checkResultName = data.checkResultName;
+      bind();
     })
     .finally(() => {
       spinning.value = false;
     });
 }
 
-// region 作业信息
+function bind() {
+  if (details.value.checkResult === 1 && stationNumber.value && snCode.value) {
+    snCodeHcBinding({
+      bindingId: props.bindingId,
+      worksheetCode: props.worksheetCode,
+      snCode: snCode.value,
+      stationNo: stationNumber.value,
+    }).then(() => {
+      message.success($t('common.successfulOperation'));
+      details.value = {};
+      snCode.value = '';
+      stationNumber.value = '';
+      reload();
+      stationNumberRef.value.focus();
+    });
+  } else {
+    if (details.value.checkResult !== 1) {
+      message.success($t('common.judgmentFailed'));
+    } else if (!stationNumber.value) {
+      stationNumberRef.value.focus();
+    } else if (!snCode.value) {
+      snCodeRef.value.focus();
+    }
+  }
+}
+
+// region 表格信息
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -126,22 +140,22 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       title: '工位编号',
-      field: 't',
+      field: 'produceWorkshopCode',
       width: 100,
       visible: [32, 33].includes(props.showTypeNumber),
     },
     {
-      field: '1',
+      field: 'qcCode',
       title: '单件SN',
       minWidth: 120,
     },
     {
-      field: '2',
+      field: 'partPlanCode',
       title: '工单编号',
       minWidth: 120,
     },
     {
-      field: '3',
+      field: 'partName',
       title: '产品名称',
       minWidth: 120,
     },
@@ -159,11 +173,8 @@ const gridOptions: VxeGridProps<any> = {
   },
   proxyConfig: {
     ajax: {
-      query: async ({ page }) => {
-        return await queryTableData({
-          page: page.currentPage,
-          pageSize: page.pageSize,
-        });
+      query: async () => {
+        return await queryTableData();
       },
     },
   },
@@ -176,124 +187,172 @@ const gridOptions: VxeGridProps<any> = {
   },
 };
 // gridApi
-const [Grid] = useVbenVxeGrid({ gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
+function reload() {
+  gridApi.reload();
+}
 // region 查询数据
 
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
-function queryTableData({ page, pageSize }: any) {
+function queryTableData() {
   return new Promise((resolve, _reject) => {
-    const params: any = {};
-    if (params.searchTime && params.searchTime.length === 2) {
-      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
-      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
-      params.searchTime = undefined;
-    }
-    resolve({
-      total: page * pageSize,
-      items: [{}, {}, {}],
-    });
+    const params: any = {
+      workstationCode: props.workstationCode,
+      equipCode: props.equipCode,
+      worksheetCode: props.worksheetCode,
+      bindingId: props.bindingId,
+      functionId: props.functionId,
+    };
+    listHCByCodeScan(params).then(
+      ({ codeRecords, stationList, totalNumber }) => {
+        if (codeRecords || stationList) {
+          details.value.total = totalNumber;
+          resolve({
+            total:
+              props.showTypeNumber === 33
+                ? codeRecords.length
+                : stationList.length,
+            items: props.showTypeNumber === 33 ? codeRecords : stationList,
+          });
+        } else {
+          resolve({
+            total: 0,
+            items: [],
+          });
+        }
+      },
+    );
   });
 }
 
+// endregion
+
+// region websocket
+
+useWebSocket(readMessage, {
+  workstationCode: props.workstationCode,
+  equipCode: props.equipCode,
+  worksheetCode: props.worksheetCode,
+  bindingId: props.bindingId,
+  functionId: props.functionId,
+  webSocketType: 5,
+});
+function readMessage() {
+  gridApi.reload();
+}
 // endregion
 
 onMounted(() => {});
 </script>
 
 <template>
-  <Spin :spinning="spinning">
-    <Row>
-      <Col :span="12" class="pt-10">
-        <!-- region 单件SN码 -->
-        <div class="mb-4 mr-8 flex">
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.singlePieceSNCode') }}：
-          </span>
-          <span :class="getValueClass()" class="border-0">
-            <Input v-model:value="snCode" class="w-[70%]" />
-            <ScanTheCode
-              @scan-the-code="
-                (val) => {
-                  snCode = val;
-                  queryData();
-                }
-              "
-            />
-          </span>
-          <Button
-            type="link"
-            :danger="details.checkResult === -1"
-            v-if="details"
-          >
-            <IconifyIcon
-              :icon="
-                details.checkResult === -1
-                  ? 'mdi:error-outline'
-                  : 'mdi:success-circle-outline'
-              "
-              class="inline-block align-middle text-2xl"
-            />
-          </Button>
-        </div>
-        <!-- endregion -->
-        <!-- region 校验结果 -->
-        <div class="mb-4 mr-8 flex">
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.verificationResult') }}：
-          </span>
-          <span :class="getValueClass()">
-            {{ details?.productName || $t('productionOperation.none') }}
-          </span>
-        </div>
-        <!-- endregion -->
-        <!-- region 工位编号 -->
-        <div class="mb-4 mr-8 flex" v-if="[32, 33].includes(showTypeNumber)">
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.workstationNumber') }}：
-          </span>
-          <span :class="getValueClass()" class="border-0">
-            <Input v-model:value="snCode" class="w-[70%]" />
-            <ScanTheCode
-              @scan-the-code="
-                (val) => {
-                  snCode = val;
-                  queryData();
-                }
-              "
-            />
-          </span>
-        </div>
-        <!-- endregion -->
-        <!-- region 测试结果 -->
-        <div class="mb-4 mr-8 flex" v-if="showTypeNumber === 35">
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.testResult') }}：
-          </span>
-          <span :class="getValueClass()">
-            {{ details?.productName || $t('productionOperation.none') }}
-          </span>
-        </div>
-        <!-- endregion -->
-        <!-- region 已生产数量 -->
-        <div class="mb-4 mr-8 flex">
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.producedQuantity') }}：
-          </span>
-          <span :class="getValueClass()">
-            {{ details?.productName || $t('productionOperation.none') }}
-          </span>
-        </div>
-        <!-- endregion -->
-      </Col>
-      <Col :span="12">
-        <Grid />
-      </Col>
-    </Row>
-  </Spin>
+  <Row>
+    <Col :span="12" class="pt-10">
+      <!-- region 单件SN码 -->
+      <div class="mb-4 mr-8 flex items-center">
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.singlePieceSNCode') }}：
+        </span>
+        <span :class="getValueClass()" class="border-0">
+          <Input
+            ref="snCodeRef"
+            v-model:value="snCode"
+            class="w-[70%]"
+            @keydown.enter="queryCode()"
+            @focus="
+              () => {
+                snCode = '';
+              }
+            "
+          />
+          <ScanTheCode
+            @scan-the-code="
+              (val) => {
+                snCode = val;
+                queryCode();
+              }
+            "
+          />
+        </span>
+        <Button type="link" :danger="details.checkResult === -1" v-if="details">
+          <IconifyIcon
+            :icon="
+              details.checkResult === -1
+                ? 'mdi:error-outline'
+                : 'mdi:success-circle-outline'
+            "
+            class="inline-block align-middle text-2xl"
+          />
+        </Button>
+      </div>
+      <!-- endregion -->
+      <!-- region 校验结果 -->
+      <div class="mb-4 mr-8 flex">
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.verificationResult') }}：
+        </span>
+        <span :class="getValueClass()">
+          {{ details?.error || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <!-- endregion -->
+      <!-- region 工位编号 -->
+      <div class="mb-4 mr-8 flex" v-if="[32, 33].includes(showTypeNumber)">
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.workstationNumber') }}：
+        </span>
+        <span :class="getValueClass()" class="border-0">
+          <Input
+            ref="stationNumberRef"
+            v-model:value="stationNumber"
+            class="w-[70%]"
+            @keydown.enter="bind()"
+            @focus="
+              () => {
+                stationNumber = '';
+              }
+            "
+          />
+          <ScanTheCode
+            @scan-the-code="
+              (val) => {
+                stationNumber = val;
+                bind();
+              }
+            "
+          />
+        </span>
+      </div>
+      <!-- endregion -->
+      <!-- region 测试结果 -->
+      <div class="mb-4 mr-8 flex" v-if="showTypeNumber === 35">
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.testResult') }}：
+        </span>
+        <span :class="getValueClass()">
+          {{ details?.productName || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <!-- endregion -->
+      <!-- region 已生产数量 -->
+      <div class="mb-4 mr-8 flex">
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.producedQuantity') }}：
+        </span>
+        <span :class="getValueClass()">
+          {{ details?.total || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <!-- endregion -->
+    </Col>
+    <Col :span="12">
+      <Grid />
+    </Col>
+  </Row>
 </template>
 
 <style scoped></style>

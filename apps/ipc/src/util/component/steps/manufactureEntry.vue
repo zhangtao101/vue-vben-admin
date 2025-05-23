@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, ref } from 'vue';
 
-import { $t } from '@vben/locales';
+import { message } from 'ant-design-vue';
 
-import { Button, Col, Row, Select, Spin } from 'ant-design-vue';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
-import { listByCodeScan } from '#/api';
-
-const props = defineProps({
+defineProps({
   // 工步id
   functionId: {
     type: Number,
@@ -40,115 +40,133 @@ const props = defineProps({
   },
 });
 
-/**
- * 获取标签的class
- */
-function getLabelClass() {
-  return 'mr-4 inline-block w-48 p-2 text-right';
-}
+// region 作业信息
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    {
+      title: '序号',
+      type: 'seq',
+      field: 'seq',
+      width: 50,
+    },
+    {
+      field: '1',
+      title: '工单编号',
+      minWidth: 200,
+    },
+    {
+      field: '3',
+      title: '产品名称',
+      minWidth: 200,
+    },
+    {
+      field: '4',
+      title: '计划数量',
+      minWidth: 200,
+    },
+    {
+      field: '2',
+      title: '开工时间',
+      minWidth: 200,
+    },
+    {
+      field: '5',
+      title: '进站操作',
+      minWidth: 200,
+    },
+  ],
+  height: 400,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
+  },
+};
+
+const gridEvents: any = {
+  radioChange: ({ row }: any) => {
+    message.info(`radioChange: ${row}`);
+  },
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+// region 查询数据
+// 查询参数
+const queryParams = ref<any>({
+  // 查询时间
+  searchTime: [] as any,
+  // 产品编码
+  productCode: '',
+  // 产品批号
+  lineName: '',
+});
 
 /**
- * 获取值的class
+ * 查询数据
+ * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
-function getValueClass() {
-  return 'inline-block border p-2 text-center w-72';
-}
-/**
- * 工单列表
- */
-const workOrderList = ref<any>([]);
-/**
- * 选中的工单
- */
-const theSelectedWorkOrder = ref<any>('');
-/**
- * 加载中
- */
-const spinning = ref<any>(false);
-
-/**
- * 查询资源验证状态
- * @function
- * @async
- * @description 获取当前工位的资源校验状态数据，包含以下流程：
- * 1. 开启加载状态指示
- * 2. 从组件props中获取上下文参数
- * 3. 调用资源验证状态查询接口
- * 4. 存储接口返回数据
- * 5. 始终关闭加载状态指示
- *
- * @throws {Error} 需要调用者补充异常处理逻辑
- *
- * @example
- * // 典型调用流程
- * try {
- *   await queryData();
- * } catch (error) {
- *   // 待补充的错误处理
- * }
- *
- * @see {@link listByCodeScan} 使用的API接口
- * @see {@link props} 参数来源：工步ID/工序ID/工单编号等上下文参数
- */
-function queryData() {
-  spinning.value = true;
-  listByCodeScan({
-    workstationCode: props.workstationCode,
-    equipCode: props.equipCode,
-    worksheetCode: props.worksheetCode,
-    bindingId: props.bindingId,
-    functionId: props.functionId,
-  })
-    .then((_data) => {
-      workOrderList.value = [];
-    })
-    .finally(() => {
-      spinning.value = false;
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve, _reject) => {
+    // const params: any = { ...queryParams.value };
+    resolve({
+      total: page * pageSize,
+      items: [{}, {}, {}],
     });
+    /* queryYXStopDayMXStatistics({
+      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+      pageNum: page, // 当前页码。
+      pageSize, // 每页显示的数据条数。
+    })
+      .then(({ statisticsDtos: { total, list }, ...p }) => {
+        collect.value = p;
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });*/
+  });
 }
+
+/**
+ * 重置查询条件
+ */
+function reload() {
+  queryParams.value = {};
+  gridApi.reload();
+}
+
+// endregion
 
 onMounted(() => {
-  queryData();
+  reload();
 });
 </script>
 
 <template>
-  <Spin :spinning="spinning">
-    <Row>
-      <Col :span="24" class="pt-10">
-        <!-- region 工单编号 -->
-        <div class="mb-4 mr-8 inline-block">
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.workOrderNumber') }}：
-          </span>
-          <span :class="getValueClass()" class="border-0">
-            <Select
-              class="w-full"
-              v-model:value="theSelectedWorkOrder"
-              :options="workOrderList"
-            />
-          </span>
-        </div>
-        <!-- region 产品名称 -->
-        <div class="mb-4 mr-8 inline-block">
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.productName') }}：
-          </span>
-          <span :class="getValueClass()">
-            {{ $t('productionOperation.none') }}
-          </span>
-        </div>
-      </Col>
-    </Row>
-    <Row>
-      <Col :span="8" offset="8">
-        <!-- 工序进站 -->
-        <Button type="primary" class="w-full">
-          {{ $t('common.processEntryIntoTheStation') }}
-        </Button>
-      </Col>
-    </Row>
-  </Spin>
+  <Grid />
 </template>
 
 <style scoped></style>
