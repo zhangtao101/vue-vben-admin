@@ -168,7 +168,6 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  /*
   // 报表管理
   {
     meta: {
@@ -189,7 +188,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },*/
+  },
 ];
 
 export default routes;

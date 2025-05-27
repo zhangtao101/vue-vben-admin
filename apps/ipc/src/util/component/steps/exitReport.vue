@@ -153,7 +153,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
  * 1. 根据组件props参数构造请求参数
  * 2. 调用报工列表接口获取原始数据
  * 3. 处理接口返回数据，组装良品/不良品两行表格数据
- * 4. 返回符合vxe-grid要求的{total, items}数据结构
+ * 4. 返回符合vxe-grid要求的{total, items: any[]}数据结构
  *
  * @returns {Promise<{total: number, items: any[]}>}
  *   total - 表格数据总条数
@@ -161,69 +161,116 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
  */
 function queryData() {
   return new Promise((resolve, _reject) => {
+    // 构造请求参数对象，从组件的props中获取必要信息
     const params: any = {
+      // 工作中心编号
       workstationCode: props.workstationCode,
+      // 设备编号
       equipCode: props.equipCode,
+      // 工单编号
       worksheetCode: props.worksheetCode,
+      // 工序ID
       bindingId: props.bindingId,
+      // 工步id
       functionId: props.functionId,
     };
 
+    // 调用报工列表接口，传入构造好的请求参数
     listByOutReport(params).then((data: any) => {
+      // 合并接口返回的数据到details响应式对象中
+      // 同时更新人工复核和设备采集的良品、不良品数量
       details.value = {
         ...details.value,
         ...data,
+        // 良品的人工复核数量初始化为设备采集的良品数量
         manualReview: data.equipQualityNumber,
+        // 不良品的人工复核数量初始化为设备采集的不良品数量
         manualReviewOfDefects: data.equipUnqualityNumber,
       };
+
+      // 如果接收到WebSocket传来的数值信息
       if (numericalValue.value) {
+        // 重新计算良品的人工复核数量和设备采集的良品数量
         details.value.manualReview =
           numericalValue.value.endNumber - numericalValue.value.initNumber;
         details.value.equipQualityNumber =
           numericalValue.value.endNumber - numericalValue.value.initNumber;
       }
+
+      // 初始化表格数据数组
       const arr = [];
+      // 如果接口返回了有效数据
       if (data) {
+        // 向表格数据数组中添加良品数量的相关信息
         arr.push(
           {
+            // 报工类型为良品数量
             productReporting: '良品数量',
+            // 已报数量
             reportedQuantity: data.finishNumber,
+            // 未报数量
             unreportedQuantity: data.planNumber - data.finishNumber,
+            // 机器采集的良品数量
             machineCollection: data.equipQualityNumber,
           },
+          // 向表格数据数组中添加不良品数量的相关信息
           {
+            // 报工类型为不良品数量
             productReporting: '不良品数量',
+            // 已报的不良品数量
             reportedQuantity: data.totalUnqualityNumber,
+            // 不良品未报数量无意义，用斜杠表示
             unreportedQuantity: '/',
+            // 机器采集的不良品数量
             machineCollection: data.equipUnqualityNumber,
           },
         );
       }
+      // 解析Promise，返回表格数据的总条数和具体的行数据
       resolve({ total: arr.length, items: arr });
     });
   });
 }
 
+/**
+ * 提交报工信息
+ * 该函数用于调用 outReport 接口提交报工信息，提交成功后会执行一系列后续操作，
+ * 包括显示成功消息、重置详情数据、重新连接 WebSocket 以及刷新表格数据。
+ */
 function submit() {
+  // 调用 outReport 接口提交报工信息，将 details 数据、bindingId、functionId 和 outType 作为参数传递
   outReport({
     ...details.value,
     bindingId: props.bindingId,
     functionId: props.functionId,
     outType: details.value.outFlag,
   }).then(() => {
+    // 若接口调用成功，显示成功消息
     message.success($t('common.successfulOperation'));
+    // 重置详情数据为初始值
     details.value = {
+      // 班别，默认值为 1
       classType: 1,
+      // 机时，默认值为 0
       equipTime: 0,
+      // 人时，默认值为 0
       personTime: 0,
+      // 良品的人工复核数量，默认值为 0
       manualReview: 0,
+      // 不良品的人工复核数量，默认值为 0
       manualReviewOfDefects: 0,
+      // 差异数量，默认值为 0
       differenceQuantity: 0,
+      // 不良品差异数量，默认值为 0
       poorQuantityOfDifferences: 0,
+      // 报工数量，默认值为 0
       reportNumber: 0,
+      // 不良品数量，默认值为 0
       unqualityNumber: 0,
     };
+    // 重新连接 WebSocket
     connect();
+    // 刷新表格数据
     gridApi.reload();
   });
 }
@@ -243,40 +290,63 @@ const numericalValue = ref<any>({});
 
 /**
  * WebSocket消息处理回调
- * 功能：解析并更新资源验证状态数据
+ * 功能：解析WebSocket推送的消息，并更新详情数据中的人工复核数量和设备采集的良品数量。
  * 流程：
- * 1. 解析原始消息为JSON对象
- * 2. 验证数据有效性（非空检查）
- * 3. 更新响应式状态数据
+ * 1. 尝试将接收到的原始消息字符串解析为JSON对象。
+ * 2. 若解析成功，更新 `numericalValue` 响应式引用。
+ * 3. 根据解析后的数据更新 `details` 响应式对象中的人工复核数量和设备采集的良品数量。
  *
- * @param message - WebSocket推送的原始消息字符串
+ * @param message - WebSocket推送的原始消息字符串。
  *
  * 注意事项：
- * - 当前未处理JSON解析异常，需增加try-catch逻辑
- * - 会直接覆盖原有状态数据，需确保数据结构一致性
- * - 依赖父级作用域中的details响应式引用
+ * - 当前未处理JSON解析异常，建议增加try-catch逻辑以增强健壮性。
+ * - 会直接覆盖 `numericalValue` 原有的状态数据，需确保消息数据结构一致性。
+ * - 依赖父级作用域中的 `details` 和 `numericalValue` 响应式引用。
  */
 function readMessage(message: string) {
-  // 反序列化WebSocket消息
-  numericalValue.value = JSON.parse(message);
-  details.value.manualReview =
-    numericalValue.value.endNumber - numericalValue.value.initNumber;
-  details.value.equipQualityNumber =
-    numericalValue.value.endNumber - numericalValue.value.initNumber;
+  // 尝试反序列化WebSocket消息，将字符串转换为JSON对象
+  try {
+    numericalValue.value = JSON.parse(message);
+    // 计算并更新良品的人工复核数量，计算公式为期末数值减去期初数值
+    details.value.manualReview =
+      numericalValue.value.endNumber - numericalValue.value.initNumber;
+    // 计算并更新设备采集的良品数量，计算公式为期末数值减去期初数值
+    details.value.equipQualityNumber =
+      numericalValue.value.endNumber - numericalValue.value.initNumber;
+  } catch (error) {
+    // 若解析失败，可在此处添加错误处理逻辑，例如打印错误信息
+    console.error('WebSocket消息解析失败:', error);
+  }
 }
 
+/**
+ * 执行报工锁定操作
+ * 该函数会将报工状态标记为锁定，并调用 `equipcatchLock` 接口进行报工锁定。
+ * 当接口调用成功后，关闭 WebSocket 连接并显示成功消息。
+ */
 function lock() {
+  // 将报工状态标记为锁定，设置 outFlag 为 1
   details.value.outFlag = 1;
+  // 调用 `equipcatchLock` 接口进行报工锁定操作，传递必要的参数
   equipcatchLock({
+    // 工作中心编号
     workstationCode: props.workstationCode,
+    // 设备编号
     equipCode: props.equipCode,
+    // 工单编号
     worksheetCode: props.worksheetCode,
+    // 工序 ID
     bindingId: props.bindingId,
+    // 工步 ID
     functionId: props.functionId,
+    // 期初数值
     initNumber: numericalValue.value.initNumber,
+    // 期末数值
     endNumber: numericalValue.value.endNumber,
   }).then(() => {
+    // 报工锁定操作成功后，关闭 WebSocket 连接
     close();
+    // 显示操作成功的消息
     message.success($t('common.successfulOperation'));
   });
 }

@@ -123,33 +123,46 @@ function queryData() {
     });
 }
 
+/**
+ * 提交资源分配数据
+ * 该函数会弹出一个确认对话框，让用户确认是否提交资源分配数据。
+ * 如果用户确认，会调用 `sendEquip` 接口提交数据；如果用户取消，则显示取消提示。
+ * 提交成功后，会显示成功提示，重新查询数据并重置 `details` 对象；
+ * 提交失败则会显示通用错误提示和接口返回的具体错误信息。
+ */
 function submit() {
+  // 弹出确认对话框，让用户确认是否提交数据
   Modal.confirm({
+    // 取消按钮的文本
     cancelText: '取消',
+    // 确认按钮的文本
     okText: '确认',
-    okType: 'danger', // 表示危险操作
+    // 确认按钮的类型，设置为危险类型，表示该操作较为重要
+    okType: 'danger',
+    // 对话框的标题
     title: '是否确认提交数据?',
+    // 用户点击取消按钮时的回调函数
     onCancel() {
-      // 取消操作处理
+      // 显示取消操作的提示信息
       message.warning('已取消!');
     },
-
+    // 用户点击确认按钮时的回调函数
     onOk() {
-      // 确认操作处理
+      // 调用 `sendEquip` 接口提交资源分配数据，将 `details` 对象和工单编号作为参数传递
       sendEquip({
         ...details.value,
         worksheetCode: props.worksheetCode,
       })
+        // 接口调用成功后的回调函数
         .then(() => {
+          // 显示操作成功的提示信息
           message.success($t('common.successfulOperation'));
+          // 重新查询资源验证状态数据
           queryData();
+          // 重置 `details` 对象，将 `isUpdateFlag` 设置为 2
           details.value = {
             isUpdateFlag: 2,
           };
-        })
-        .catch((error) => {
-          message.error($t('common.operationFailure')); // 通用错误提示
-          message.error(error.msg); // 显示接口返回的具体错误信息
         });
     },
   });

@@ -66,78 +66,71 @@ const details = ref<any>(undefined);
 const spinning = ref<any>(false);
 
 /**
- * 查询工序出站信息
- * 功能：获取当前工序的出站状态数据
- * 流程：
- * 1. 开启加载状态指示
- * 2. 构造包含工位、设备等上下文参数的请求对象
- * 3. 调用工序出站信息查询接口
- * 4. 存储返回数据到响应式对象
- * 5. 始终关闭加载状态指示
- *
- * 接口参数说明：
- * listByOutReport - 工序出站信息查询接口
- * {
- *   workstationCode: 工作站编码,
- *   equipCode: 设备编码,
- *   worksheetCode: 工单编号,
- *   bindingId: 工序绑定ID,
- *   functionId: 工步ID
- * }
- *
- * 注意事项：
- * - 使用spinning控制加载状态指示器
- * - 依赖props传入的工位/设备/工单等上下文参数
- * - 接口返回数据直接存储到details响应式对象
- * - 当前未处理接口异常情况，需补充错误处理逻辑
- * - 使用finally确保无论成功失败都会关闭加载状态
+ * 查询报工数据
+ * 该函数用于调用 `listByOutReport` 接口获取报工相关数据，并在查询过程中控制加载状态。
+ * 当接口调用开始时，将 `spinning` 状态设置为 `true` 以显示加载状态；
+ * 接口调用成功后，将返回的数据赋值给 `details` 响应式对象；
+ * 无论接口调用成功或失败，最终都会将 `spinning` 状态设置为 `false` 以隐藏加载状态。
  */
 function queryData() {
+  // 设置加载状态为 true，显示加载动画
   spinning.value = true;
+  // 调用 `listByOutReport` 接口，传递必要的参数
   listByOutReport({
+    // 工作中心编号
     workstationCode: props.workstationCode,
+    // 设备编号
     equipCode: props.equipCode,
+    // 工单编号
     worksheetCode: props.worksheetCode,
+    // 工序 ID
     bindingId: props.bindingId,
+    // 工步 ID
     functionId: props.functionId,
   })
+    // 接口调用成功后的处理逻辑
     .then((data) => {
+      // 将接口返回的数据赋值给 `details` 响应式对象
       details.value = data;
     })
+    // 无论接口调用成功或失败，都会执行的最终处理逻辑
     .finally(() => {
+      // 设置加载状态为 false，隐藏加载动画
       spinning.value = false;
     });
 }
 
 /**
  * 提交报工操作
- * @function
- * @description 报工流程：
- * 1. 弹出二次确认对话框
- * 2. 确认后调用报工接口提交当前详情数据
- * 3. 操作成功显示国际化提示
- *
- * @example
- * // 点击提交按钮时触发
- * submit();
- *
- * @see {@link outReport} 使用的报工接口
- * @see {@link details} 报工数据来源：包含工单/产品/数量等信息
+ * 该函数会弹出一个二次确认对话框，让用户确认是否执行报工操作。
+ * 若用户确认，会调用 `outReport` 接口提交报工数据；若用户取消，则显示取消操作的提示信息。
+ * 报工成功后，会显示成功提示信息，并重新查询报工数据以更新页面显示。
  */
 function submit() {
+  // 弹出二次确认对话框，让用户确认是否执行报工操作
   Modal.confirm({
+    // 取消按钮的文本
     cancelText: '取消',
+    // 确认按钮的文本
     okText: '确认',
+    // 确认按钮的类型，设置为危险类型
     okType: 'danger',
+    // 用户点击取消按钮时的回调函数
     onCancel() {
+      // 显示取消操作的提示信息
       message.warning('已取消操作!');
     },
+    // 用户点击确认按钮时的回调函数
     onOk() {
+      // 调用 `outReport` 接口提交报工数据，将详情数据和工序 ID 作为参数传递
       outReport({ ...details.value, bindingId: props.bindingId }).then(() => {
+        // 接口调用成功后，显示操作成功的提示信息
         message.success($t('common.successfulOperation'));
+        // 重新查询报工数据，更新页面显示
         queryData();
       });
     },
+    // 对话框的标题
     title: '是否确认报工操作?',
   });
 }

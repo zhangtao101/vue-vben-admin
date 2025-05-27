@@ -25,38 +25,41 @@ import ScanWorkflow from '#/util/component/steps/scanWorkflow.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
 
+/**
+ * 定义组件接收的 props，用于传递工步执行所需的相关信息
+ */
 defineProps({
-  // 工步详情
+  // 工步详情对象，包含工步的类型、ID 等信息
   step: {
     type: Object,
     default: () => ({}),
   },
-  // 工序ID
+  // 工序 ID，用于标识当前工序
   bindingId: {
     type: Number,
     default: 0,
   },
-  // 工单编号
+  // 工单编号，用于标识当前工单
   worksheetCode: {
     type: String,
     default: '',
   },
-  // 设备编号
+  // 设备编号，用于标识当前使用的设备
   equipCode: {
     type: String,
     default: '',
   },
-  // 工作中心
+  // 工作中心代码，用于标识当前工作中心
   workstationCode: {
     type: String,
     default: '',
   },
-  // 产品编号
+  // 产品编号，用于标识当前生产的产品
   productCode: {
     type: String,
     default: '',
   },
-  // 产品名称
+  // 产品名称，用于显示当前生产的产品名称
   productName: {
     type: String,
     default: '',
@@ -65,7 +68,7 @@ defineProps({
 </script>
 
 <template>
-  <!-- 资源检验 -->
+  <!-- 资源检验：根据工步类型为 1 时，渲染资源检验组件，并传递相关参数 -->
   <ResourceInspection
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -74,7 +77,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 1"
   />
-  <!-- 设备清洗 -->
+  <!-- 设备清洗：根据工步类型为 2 时，渲染设备清洗组件，并传递相关参数 -->
   <EquipmentCleaning
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -83,7 +86,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 2"
   />
-  <!-- 工序进站 -->
+  <!-- 工序进站：根据工步类型为 3 时，渲染工序进站组件，并传递相关参数 -->
   <ProcessEntryStation
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -92,7 +95,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 3"
   />
-  <!-- 配方下发 -->
+  <!-- 配方下发：根据工步类型为 4 时，渲染配方下发组件，并传递相关参数 -->
   <FormulaDistribution
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -102,7 +105,7 @@ defineProps({
     v-if="step.type === 4"
   />
 
-  <!-- 物料投料-分切 -->
+  <!-- 物料投料-分切：根据工步类型为 5 时，渲染物料投料-分切组件，并传递相关参数 -->
   <MaterialFeedingSlitting
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -111,7 +114,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 5"
   />
-  <!-- 设备清空 -->
+  <!-- 设备清空：根据工步类型为 6 时，渲染设备清空组件，并传递相关参数 -->
   <DeviceClearing
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -120,7 +123,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 6"
   />
-  <!-- 工序出站 -->
+  <!-- 工序出站：根据工步类型为 7 时，渲染工序出站组件，并传递相关参数 -->
   <ProcessOutbound
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -129,7 +132,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 7"
   />
-  <!-- 工序报工 -->
+  <!-- 工序报工：根据工步类型为 8 时，渲染工序报工组件，并传递相关参数 -->
   <ProcessReporting
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -138,7 +141,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 8"
   />
-  <!-- 设备监控信息 -->
+  <!-- 设备监控信息：根据工步类型为 9 时，渲染设备监控信息组件，并传递相关参数 -->
   <EquipmentMonitoringInformation
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -148,7 +151,7 @@ defineProps({
     v-if="step.type === 9"
   />
 
-  <!-- 物料投料 -->
+  <!-- 物料投料：根据工步类型为 10 时，渲染物料投料组件，并传递相关参数 -->
   <MaterialFeeding
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -157,7 +160,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 10"
   />
-  <!-- 设备运行状态(弃用) -->
+  <!-- 设备运行状态(弃用)：根据工步类型为 11 时，渲染设备运行状态组件，并传递相关参数 -->
   <EquipmentOperationStatus
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -166,7 +169,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 11"
   />
-  <!-- 安灯呼叫 -->
+  <!-- 安灯呼叫：根据工步类型为 12 时，渲染安灯呼叫组件，并传递相关参数 -->
   <AndonCall
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -177,11 +180,11 @@ defineProps({
     :product-name="productName"
     v-if="step.type === 12"
   />
-  <!-- 安灯记录查询 -->
+  <!-- 安灯记录查询：根据工步类型为 13 时，渲染安灯记录查询组件 -->
   <LampInstallationRecord v-if="step.type === 13" />
-  <!-- 安灯评价 -->
+  <!-- 安灯评价：根据工步类型为 14 时，渲染安灯记录查询组件，并传递评价位置参数 -->
   <LampInstallationRecord :place="3" v-if="step.type === 14" />
-  <!-- 转码 -->
+  <!-- 转码：根据工步类型为 15 或 30 时，渲染转码组件，并传递相关参数 -->
   <Transcoding
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -191,7 +194,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="[15, 30].includes(step.type)"
   />
-  <!-- 首检 -->
+  <!-- 首检：根据工步类型为 16 时，渲染首检组件，并传递相关参数 -->
   <FirstInspection
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -200,7 +203,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 16"
   />
-  <!-- 自检 -->
+  <!-- 自检：根据工步类型为 17 时，渲染自检组件，并传递相关参数 -->
   <Selfinspection
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -209,7 +212,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 17"
   />
-  <!-- 巡检 -->
+  <!-- 巡检：根据工步类型为 18 时，渲染自检组件，并传递相关参数 -->
   <Selfinspection
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -218,7 +221,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 18"
   />
-  <!-- 末检 -->
+  <!-- 末检：根据工步类型为 19 时，渲染自检组件，并传递相关参数 -->
   <Selfinspection
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -227,7 +230,7 @@ defineProps({
     :function-id="step.id"
     v-if="step.type === 19"
   />
-  <!-- 转向节压装 - 扫码作业 -- 和城 -->
+  <!-- 转向节压装 - 扫码作业 -- 和城：根据工步类型为 20 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -237,7 +240,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 20"
   />
-  <!-- 焊接底座 - 扫码作业 -- 和城 -->
+  <!-- 焊接底座 - 扫码作业 -- 和城：根据工步类型为 21 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -247,7 +250,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 21"
   />
-  <!-- 人工检验 - 扫码作业 -- 和城 -->
+  <!-- 人工检验 - 扫码作业 -- 和城：根据工步类型为 22 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -257,7 +260,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 22"
   />
-  <!-- 弹簧压装 - 扫码作业 -- 和城 -->
+  <!-- 弹簧压装 - 扫码作业 -- 和城：根据工步类型为 23 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -267,7 +270,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 23"
   />
-  <!-- 出站报工 -->
+  <!-- 出站报工：根据工步类型为 24 时，渲染出站报工组件，并传递相关参数 -->
   <ReportForWorkExit
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -277,7 +280,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 24"
   />
-  <!-- 转向节压装 - 扫码作业 -- 马瑞利 -->
+  <!-- 转向节压装 - 扫码作业 -- 马瑞利：根据工步类型为 25 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -287,7 +290,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 25"
   />
-  <!-- 焊接底座 - 扫码作业 -- 马瑞利 -->
+  <!-- 焊接底座 - 扫码作业 -- 马瑞利：根据工步类型为 26 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -297,7 +300,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 26"
   />
-  <!-- 人工检验 - 扫码作业 -- 马瑞利 -->
+  <!-- 人工检验 - 扫码作业 -- 马瑞利：根据工步类型为 27 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -307,7 +310,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 27"
   />
-  <!-- 弹簧压装 - 扫码作业 -- 马瑞利 -->
+  <!-- 弹簧压装 - 扫码作业 -- 马瑞利：根据工步类型为 28 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanningHomework
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -317,7 +320,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 28"
   />
-  <!-- 资源指派 -->
+  <!-- 资源指派：根据工步类型为 29 时，渲染资源指派组件，并传递相关参数 -->
   <ResourceAssignment
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -327,7 +330,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 29"
   />
-  <!-- 工序报工 - 和城 -->
+  <!-- 工序报工 - 和城：根据工步类型为 31 时，渲染工序报工组件，并传递相关参数 -->
   <ExitReport
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -337,7 +340,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 31"
   />
-  <!-- 扫码作业--- 成品、半成品老练检 耐压 -->
+  <!-- 扫码作业--- 成品、半成品老练检 耐压：根据工步类型为 32 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanModule
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -347,7 +350,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 32"
   />
-  <!-- 扫码作业--- 氦气 -->
+  <!-- 扫码作业--- 氦气：根据工步类型为 33 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanModule
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -357,7 +360,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 33"
   />
-  <!-- 扫码作业--- 陶瓷 -->
+  <!-- 扫码作业--- 陶瓷：根据工步类型为 34 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanWorkflow
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -367,7 +370,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 34"
   />
-  <!-- 扫码作业--- 半成品宗参，触点电洗，开距测试 -->
+  <!-- 扫码作业--- 半成品宗参，触点电洗，开距测试：根据工步类型为 35 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanTask
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -377,7 +380,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 35"
   />
-  <!-- 扫码作业--- 成品宗参，高度极性 -->
+  <!-- 扫码作业--- 成品宗参，高度极性：根据工步类型为 37 时，渲染扫码作业组件，并传递相关参数 -->
   <ScanTask
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -387,7 +390,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 37"
   />
-  <!-- 工序进站 -->
+  <!-- 工序进站：根据工步类型为 36 时，渲染工序进站组件，并传递相关参数 -->
   <ManufactureEntry
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -397,7 +400,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 36"
   />
-  <!-- 出战报工 - 和城 -->
+  <!-- 出战报工 - 和城：根据工步类型为 38 时，渲染工序报工组件，并传递相关参数 -->
   <ExitReport
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -408,7 +411,7 @@ defineProps({
     v-if="step.type === 38"
   />
 
-  <!-- 设备点位信息 -->
+  <!-- 设备点位信息：根据工步类型为 999 时，渲染设备点位信息组件，并传递相关参数 -->
   <EquipmentLocationInformation
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -419,4 +422,6 @@ defineProps({
   />
 </template>
 
-<style scoped></style>
+<style scoped>
+/* 作用域样式，仅对当前组件生效 */
+</style>
