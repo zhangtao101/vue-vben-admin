@@ -232,15 +232,6 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 120,
     },
     {
-      field: 'personnelOperation',
-      title: '人员操作',
-      minWidth: 200,
-      slots: {
-        default: 'personnelOperation',
-      },
-      fixed: 'right',
-    },
-    {
       field: 'workOrderOperation',
       title: '工单操作',
       minWidth: 120,

@@ -79,5 +79,7 @@
   "scanCodePrompt": "请传入具体的元素对象!",
   "processEntryIntoTheStation": "工序进站",
   "processReporting": "工序报工",
-  "judgmentFailed": "当前校验结果失败, 请成功后再重试!"
+  "judgmentFailed": "当前校验结果失败, 请成功后再重试!",
+  "open": "打开",
+  "close": "关闭"
 }
