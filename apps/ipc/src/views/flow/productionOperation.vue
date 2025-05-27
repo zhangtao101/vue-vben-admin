@@ -1,15 +1,10 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import {
-  IconifyIcon,
-  MdiChevronDown,
-  MdiChevronUp,
-  MdiEyeOutline,
-} from '@vben/icons';
+import { IconifyIcon, MdiChevronDown, MdiChevronUp } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { DownOutlined } from '@ant-design/icons-vue';
@@ -17,7 +12,6 @@ import {
   Button,
   Card,
   Col,
-  Drawer,
   Dropdown,
   InputNumber,
   Menu,
@@ -28,30 +22,24 @@ import {
   RadioGroup,
   Row,
   Select,
-  Space,
   Spin,
-  Table,
   Tooltip,
-  Transfer,
 } from 'ant-design-vue';
 // eslint-disable-next-line n/no-extraneous-import
 import { Enum } from 'enum-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  allClientUserDown,
   getSheetProces,
-  getUserList,
-  listUserUpInfo,
   obtainTheListOfProcessEquipment,
   obtainTheWorkOrderList,
   sheetReady,
   sheetWorking,
-  userDown,
-  userUp,
   workstationListAcquisition,
 } from '#/api';
+import InterlockingConfiguration from '#/util/component/interlockingConfiguration.vue';
 import OperationalMatters from '#/util/component/operationalMatters.vue';
+import PersonnelOperation from '#/util/component/personnelOperation.vue';
 import StepExecution from '#/util/component/stepExecution.vue';
 // region 图标
 const iconEnum: any = Enum({
@@ -135,6 +123,19 @@ function queryProcessEquipment() {
     query(); // 触发工单数据重新加载
   });
 }
+// endregion
+
+// region 全局操作
+// 设备联锁配置ref对象
+const interlockingConfigurationRef = ref();
+
+/**
+ * 显示设备联锁配置
+ */
+function showInterlockingConfiguration() {
+  interlockingConfigurationRef.value.open();
+}
+
 // endregion
 
 // region 作业信息
@@ -401,183 +402,7 @@ function ready(row: any, type: number) {
 // endregion
 
 // region 人员操作
-// 人员操作是否显示
-const whetherPersonnelOperationsAreDisplayed = ref(false);
-// 当前编辑的人员操作信息
-const editedInformation = ref<any>();
-// 人员操作类型
-// 1: 上工 2: 下工
-const personnelOperationType = ref(0);
-// 用户列表
-const userList = ref<any>([]);
-// 已上工的工号列表
-const jobNumberThatHasAlreadyStartedWorking = ref<any>([]);
-// 过滤
-const filterOption = (inputValue: string, option: any) => {
-  return option.title.includes(inputValue);
-};
-/**
- * 查询全部用户
- */
-function queryAllUser() {
-  getUserList().then((data) => {
-    userList.value = [];
-    data.forEach((item: any) => {
-      userList.value.push({
-        title: `${item.userName}___${item.workNumber}`,
-        key: item.workNumber,
-      });
-    });
-  });
-}
-
-/**
- * 查询上工人员
- */
-function searchForStaffOnSite() {
-  listUserUpInfo({
-    clientCode: editedInformation.value.equipCode,
-  }).then((data) => {
-    data.forEach((item: any) => {
-      userList.value.push({
-        title: `${item.perName}___${item.workNumber}`,
-        key: item.workNumber,
-      });
-      jobNumberThatHasAlreadyStartedWorking.value.push(item.workNumber);
-    });
-  });
-}
-/**
- * 显示人员操作
- * @param row
- * @param type 1: 上工 2: 下工 3: 一键下工
- */
-function displayPersonnelOperation(row: any, type: number) {
-  editedInformation.value = row;
-  personnelOperationType.value = type;
-  switch (type) {
-    case 1: {
-      queryAllUser();
-      searchForStaffOnSite();
-      whetherPersonnelOperationsAreDisplayed.value = true;
-      break;
-    }
-    case 2: {
-      searchForStaffOnSite();
-      whetherPersonnelOperationsAreDisplayed.value = true;
-      break;
-    }
-    case 3: {
-      Modal.confirm({
-        cancelText: '取消',
-        okText: '确认',
-        okType: 'danger',
-        onCancel() {
-          message.warning('已取消操作!');
-        },
-        onOk() {
-          allClientUserDown({
-            id: row.id,
-          }).then(() => {
-            // 显示操作成功的提示信息
-            message.success($t('common.successfulOperation'));
-            gridApi.reload();
-          });
-        },
-        title: '是否确认一键下工?',
-      });
-      break;
-    }
-  }
-}
-
-/**
- * 关闭人员操作
- */
-function shutDownPersonnelOperations() {
-  whetherPersonnelOperationsAreDisplayed.value = false;
-  editedInformation.value = {};
-  jobNumberThatHasAlreadyStartedWorking.value = [];
-  userList.value = [];
-}
-
-/**
- * 获取下工人员
- */
-function getTheStaff() {
-  const difference = userList.value.filter(
-    (item1: any) =>
-      !jobNumberThatHasAlreadyStartedWorking.value.includes(item1.key),
-  );
-  const keys: any = [];
-  difference.forEach((item: any) => {
-    keys.push(item.key);
-  });
-  return keys;
-}
-
-/**
- * 人员操作提交
- */
-function personnelOperationSubmission() {
-  const params = {
-    id: editedInformation.value.id,
-    workNumbers:
-      personnelOperationType.value === 1
-        ? jobNumberThatHasAlreadyStartedWorking.value
-        : getTheStaff(),
-  };
-  const ob =
-    personnelOperationType.value === 1 ? userUp(params) : userDown(params);
-  ob.then(() => {
-    message.success($t('common.successfulOperation'));
-    shutDownPersonnelOperations();
-    gridApi.reload();
-  });
-}
-
-/**
- * 显示人员操作记录详情
- * @param row
- */
-function displayPersonnelDetails(row: any) {
-  listUserUpInfo({
-    clientCode: row.equipCode,
-  }).then((data) => {
-    const columns = [
-      {
-        title: '人员姓名',
-        dataIndex: 'perName',
-        key: 'perName',
-        width: 150,
-      },
-      {
-        title: '工号',
-        dataIndex: 'workNumber',
-        key: 'workNumber',
-        width: 150,
-      },
-      {
-        title: '上工时间',
-        dataIndex: 'opTime',
-        key: 'opTime',
-        width: 150,
-      },
-    ];
-    Modal.info({
-      content: h(Table, {
-        class: 'mr-8',
-        dataSource: data,
-        columns,
-        bordered: true,
-        pagination: false,
-      }),
-      okText: '关闭',
-      title: '当前上工人员信息',
-      width: '80%',
-    });
-  });
-}
+const personnelOperationRef = ref();
 // endregion
 
 // region 工单操作
@@ -585,7 +410,7 @@ function displayPersonnelDetails(row: any) {
 /**
  * 工单操作
  * @param row
- * @param type 1: 上工 2: 下工 3: 一键下工
+ * @param type 1: 开工 2: 完工 3: 暂停
  */
 function workOrderOperation(row: any, type: number) {
   Modal.confirm({
@@ -788,7 +613,7 @@ onBeforeUnmount(() => {
             {{ $t('productionOperation.homeworkStation') }}
           </span>
 
-          <div class="w-4/5 pl-4">
+          <div class="w-full pl-4">
             <Select
               v-model:value="selectedWorkstation"
               :options="listOfProductionLines"
@@ -810,16 +635,54 @@ onBeforeUnmount(() => {
               class="!w-64"
               allow-clear
             />
-
-            <!--          <RadioGroup
-              v-model:value="queryParams.test"
-              button-style="solid"
-              class="float-right"
-            >
-              <RadioButton value="a">Hangzhou</RadioButton>
-              <RadioButton value="1">1</RadioButton>
-              <RadioButton value="2">2</RadioButton>
-            </RadioGroup>-->
+            <Dropdown>
+              <template #overlay>
+                <Menu>
+                  <!-- 上工 -->
+                  <MenuItem @click="personnelOperationRef.open(1)">
+                    {{ $t('common.theUserGoesToWork') }}
+                  </MenuItem>
+                  <!-- 下工 -->
+                  <MenuItem @click="personnelOperationRef.open(2)">
+                    {{ $t('common.theUserIsOffWork') }}
+                  </MenuItem>
+                </Menu>
+              </template>
+              <Button type="primary" class="ml-3 mr-3">
+                {{ $t('productionOperation.personnelOperation') }}
+                <DownOutlined class="ml-4 inline-block" />
+              </Button>
+            </Dropdown>
+            <!-- 操作配置 -->
+            <Dropdown>
+              <template #overlay>
+                <Menu>
+                  <!-- 联锁配置 -->
+                  <MenuItem @click="showInterlockingConfiguration()">
+                    {{ $t('productionOperation.interlockConfiguration') }}
+                  </MenuItem>
+                </Menu>
+              </template>
+              <Button type="primary" class="ml-3 mr-3">
+                {{ $t('productionOperation.operationConfiguration') }}
+                <DownOutlined class="ml-4 inline-block" />
+              </Button>
+            </Dropdown>
+            <!-- 全体操作 -->
+            <Dropdown>
+              <template #overlay>
+                <Menu>
+                  <!-- 全局清洗 -->
+                  <MenuItem @click="showInterlockingConfiguration()">
+                    {{ $t('productionOperation.globalCleaning') }}
+                  </MenuItem>
+                </Menu>
+              </template>
+              <Button type="primary" class="ml-3 mr-3">
+                {{ $t('productionOperation.allOperations') }}
+                <DownOutlined class="ml-4 inline-block" />
+              </Button>
+            </Dropdown>
           </div>
         </Col>
       </Row>
@@ -849,43 +712,6 @@ onBeforeUnmount(() => {
       <Card class="mb-5" v-if="!jobInformationContraction">
         <Grid>
           <template #toolbar-tools> </template>
-          <template #personnelOperation="{ row }">
-            <!-- 查看按钮 -->
-            <Tooltip>
-              <template #title>{{ $t('common.view') }}</template>
-              <Button
-                :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
-                type="link"
-                @click="displayPersonnelDetails(row)"
-              />
-            </Tooltip>
-            <!-- 更多操作 -->
-            <Tooltip>
-              <template #title>{{ $t('common.more') }}</template>
-              <Dropdown>
-                <template #overlay>
-                  <Menu>
-                    <!-- 上工 -->
-                    <MenuItem @click="displayPersonnelOperation(row, 1)">
-                      {{ $t('common.theUserGoesToWork') }}
-                    </MenuItem>
-                    <!-- 下工 -->
-                    <MenuItem @click="displayPersonnelOperation(row, 2)">
-                      {{ $t('common.theUserIsOffWork') }}
-                    </MenuItem>
-                    <!-- 一键下工 -->
-                    <MenuItem @click="displayPersonnelOperation(row, 3)">
-                      {{ $t('common.oneClickWork') }}
-                    </MenuItem>
-                  </Menu>
-                </template>
-                <Button type="link">
-                  更多操作
-                  <DownOutlined class="ml-4 inline-block" />
-                </Button>
-              </Dropdown>
-            </Tooltip>
-          </template>
           <template #readyOperation="{ row }">
             <!-- 就绪按钮 -->
             <Tooltip v-if="row.readyState === 0">
@@ -1123,42 +949,14 @@ onBeforeUnmount(() => {
       <!-- endregion -->
     </div>
 
-    <!-- region 用户上工 -->
-    <Drawer
-      v-model:open="whetherPersonnelOperationsAreDisplayed"
-      :footer-style="{ textAlign: 'right' }"
-      height="80%"
-      placement="top"
-      title="人员上/下工"
-      @close="shutDownPersonnelOperations"
-    >
-      <Transfer
-        v-model:target-keys="jobNumberThatHasAlreadyStartedWorking"
-        :data-source="userList"
-        show-search
-        :filter-option="filterOption"
-        :render="(item: any) => item.title"
-        class="w-full justify-center"
-        :list-style="{
-          minWidth: '300px',
-          width: '40%',
-          height: '300px',
-        }"
-      />
-      <template #footer>
-        <Space>
-          <!-- 取消 -->
-          <Button @click="shutDownPersonnelOperations">
-            {{ $t('common.cancel') }}
-          </Button>
-          <!-- 确认 -->
-          <Button type="primary" @click="personnelOperationSubmission">
-            {{ $t('common.confirm') }}
-          </Button>
-        </Space>
-      </template>
-    </Drawer>
-    <!-- endregion -->
+    <!-- 人员操作 -->
+    <PersonnelOperation ref="personnelOperationRef" />
+
+    <!-- 联锁配置 -->
+    <InterlockingConfiguration
+      ref="interlockingConfigurationRef"
+      :workstation-code="selectedWorkstation"
+    />
   </Page>
 </template>
 

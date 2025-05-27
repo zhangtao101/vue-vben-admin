@@ -188,7 +188,8 @@ defineProps({
     :worksheet-code="worksheetCode"
     :binding-id="bindingId"
     :function-id="step.id"
-    v-if="step.type === 15"
+    :show-type-number="step.type"
+    v-if="[15, 30].includes(step.type)"
   />
   <!-- 首检 -->
   <FirstInspection
@@ -326,7 +327,7 @@ defineProps({
     :show-type-number="step.type"
     v-if="step.type === 29"
   />
-  <!-- 出站报工 - 和城 -->
+  <!-- 工序报工 - 和城 -->
   <ExitReport
     :workstation-code="workstationCode"
     :equip-code="equipCode"
@@ -395,6 +396,16 @@ defineProps({
     :function-id="step.id"
     :show-type-number="step.type"
     v-if="step.type === 36"
+  />
+  <!-- 出战报工 - 和城 -->
+  <ExitReport
+    :workstation-code="workstationCode"
+    :equip-code="equipCode"
+    :worksheet-code="worksheetCode"
+    :binding-id="bindingId"
+    :function-id="step.id"
+    :show-type-number="step.type"
+    v-if="step.type === 38"
   />
 
   <!-- 设备点位信息 -->

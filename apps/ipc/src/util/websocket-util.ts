@@ -114,5 +114,6 @@ export default function useWebSocket(fun: any, params: any = {}) {
     messages,
     sendMessage,
     close,
+    connect,
   };
 }

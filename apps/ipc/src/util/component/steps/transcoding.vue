@@ -19,7 +19,9 @@ import {
 
 import {
   checkCodeBinding,
+  handleMaulSncode,
   listByCodeScan,
+  listHCByCodeScan,
   snCodeBinding,
   snCodeBindingCallBack,
 } from '#/api';
@@ -51,6 +53,11 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  // 显示类型
+  showTypeNumber: {
+    type: Number,
+    default: 0,
+  },
 });
 
 /**
@@ -69,13 +76,38 @@ const sourceCodeRef = ref();
 const transcoding = ref('');
 // 转码元素对象
 const transcodingRef = ref();
+// 错误信息
+const errorMessage = ref('');
 
 /**
  * 源码改变
  */
 function sourceCodeChange() {
-  bindCode();
-  transcodingRef.value.focus();
+  if (props.showTypeNumber === 30) {
+    handleMaulSncode({
+      workstationCode: props.workstationCode,
+      equipCode: props.equipCode,
+      worksheetCode: props.worksheetCode,
+      bindingId: props.bindingId,
+      functionId: props.functionId,
+      snCode: sourceCode.value,
+    })
+      .then((data) => {
+        errorMessage.value = data.error === '通过' ? '' : data.error;
+        if (errorMessage.value) {
+          message.error(errorMessage.value);
+        } else {
+          bindCode();
+          transcodingRef.value.focus();
+        }
+      })
+      .finally(() => {
+        spinning.value = false;
+      });
+  } else {
+    bindCode();
+    transcodingRef.value.focus();
+  }
 }
 
 /**
@@ -99,16 +131,25 @@ function bindCode() {
  * 已转码列表
  */
 const transcodedList = ref<any>([]);
+/**
+ * 总产量
+ */
+const total = ref(0);
 
 function add() {
+  spinning.value = true;
   snCodeBinding({
     snCode: sourceCode.value,
     barcode: transcoding.value,
-  }).then(() => {
-    queryData();
-    sourceCode.value = '';
-    transcoding.value = '';
-  });
+  })
+    .then(() => {
+      queryData();
+      sourceCode.value = '';
+      transcoding.value = '';
+    })
+    .finally(() => {
+      spinning.value = false;
+    });
 }
 
 /**
@@ -140,7 +181,7 @@ function unbind(item: any) {
     },
     onOk() {
       snCodeBindingCallBack({
-        snCode: item.qrcode,
+        snCode: item.qrcode || item.qcCode,
         barcode: item.barcode,
       }).then(() => {
         message.success($t('common.successfulOperation'));
@@ -208,20 +249,36 @@ const spinning = ref<any>(false);
  */
 function queryData() {
   spinning.value = true;
-  listByCodeScan({
-    workstationCode: props.workstationCode,
-    equipCode: props.equipCode,
-    worksheetCode: props.worksheetCode,
-    bindingId: props.bindingId,
-    functionId: props.functionId,
-  })
-    .then(({ snCode, list }) => {
+  const ob =
+    props.showTypeNumber === 30
+      ? listHCByCodeScan({
+          workstationCode: props.workstationCode,
+          equipCode: props.equipCode,
+          worksheetCode: props.worksheetCode,
+          bindingId: props.bindingId,
+          functionId: props.functionId,
+        })
+      : listByCodeScan({
+          workstationCode: props.workstationCode,
+          equipCode: props.equipCode,
+          worksheetCode: props.worksheetCode,
+          bindingId: props.bindingId,
+          functionId: props.functionId,
+        });
+
+  ob.then((data: any) => {
+    if (props.showTypeNumber === 15) {
+      const { snCode, list } = data;
       transcodedList.value = list;
       sourceCode.value = snCode;
-    })
-    .finally(() => {
-      spinning.value = false;
-    });
+    } else if (props.showTypeNumber === 30) {
+      const { totalNumber, codeRecords } = data;
+      transcodedList.value = codeRecords;
+      total.value = totalNumber;
+    }
+  }).finally(() => {
+    spinning.value = false;
+  });
 }
 
 onMounted(() => {
@@ -236,7 +293,7 @@ onMounted(() => {
         <Row class="h-full flex-col justify-evenly">
           <!-- 源码 -->
           <Row class="mb-8">
-            <Col span="8" :class="getLabelClass()">
+            <Col span="8" :class="getLabelClass()" class="border-0">
               {{ $t('productionOperation.sourceCode') }}
             </Col>
             <Col span="16" class="flex">
@@ -257,7 +314,7 @@ onMounted(() => {
           </Row>
           <!-- 转码 -->
           <Row>
-            <Col span="8" :class="getLabelClass()">
+            <Col span="8" :class="getLabelClass()" class="border-0">
               {{ $t('productionOperation.transcoding') }}
             </Col>
             <Col span="16" class="flex">
@@ -276,6 +333,22 @@ onMounted(() => {
               />
             </Col>
           </Row>
+          <!-- 总产量 -->
+          <Row>
+            <Col
+              span="8"
+              :class="getLabelClass()"
+              class="h-10 border-0"
+              v-if="showTypeNumber === 30"
+            >
+              {{ $t('productionOperation.totalOutput') }}
+            </Col>
+            <Col span="16">
+              <span :class="getLabelClass()">
+                {{ total || 0 }}
+              </span>
+            </Col>
+          </Row>
         </Row>
       </Col>
       <Col :span="12" :offset="1">
@@ -289,7 +362,15 @@ onMounted(() => {
         >
           <template #renderItem="{ item }">
             <ListItem>
-              {{ item.qrcode }} ==> {{ item.barcode }}
+              <span v-if="showTypeNumber === 15">
+                {{ item.qrcode }} => {{ item.barcode }}
+              </span>
+              <span v-if="showTypeNumber === 30">
+                {{ item.qcCode }} => {{ item.barcode }}
+              </span>
+              <span v-if="showTypeNumber === 30">
+                {{ item.partName }}
+              </span>
               <template #actions>
                 <Tooltip :title="$t('productionOperation.unbind')">
                   <Button type="link" @click="unbind(item)">

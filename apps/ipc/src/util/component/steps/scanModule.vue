@@ -160,7 +160,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 120,
     },
     {
-      field: '4',
+      field: 'defectResultName',
       title: '测试结果',
       minWidth: 120,
       visible: props.showTypeNumber === 32,

@@ -198,31 +198,34 @@ const reportForWorkGridOptions: VxeGridProps<any> = {
       minWidth: 200,
     },
     {
-      field: 'productCode',
+      field: 'qualityNumber',
       title: '良品数量',
-      minWidth: 200,
+      minWidth: 100,
     },
     {
-      field: 'productName',
+      field: 'unqualityNumber',
       title: '不良数量',
-      minWidth: 200,
+      minWidth: 100,
     },
     {
-      field: 'equipName',
+      field: 'personTime',
       title: '人时',
-      minWidth: 120,
+      minWidth: 100,
     },
     {
-      field: 'planStartDate',
+      field: 'equipTime',
       title: '机时',
-      minWidth: 120,
+      minWidth: 100,
     },
   ],
   data: [],
-  height: 400,
+  height: 300,
   stripe: true,
   sortConfig: {
     multiple: true,
+  },
+  pagerConfig: {
+    enabled: false,
   },
   toolbarConfig: {
     custom: true,
@@ -265,7 +268,7 @@ function show(row: any, type: number) {
   editItem.value = row;
   downlineDrawer.value = true;
   setTimeout(() => {
-    reportForgridApi.grid.loadData([{}, {}, {}]);
+    reportForgridApi.grid.loadData(row.reports);
   }, 200);
   switch (type) {
     case 2: {
@@ -515,10 +518,16 @@ onMounted(() => {
         </DescriptionsItem>
       </Descriptions>
 
-      <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
+      <span
+        class="border-l-4 border-sky-500 pl-4 text-2xl font-black"
+        v-if="editItem.reports && editItem.reports.length > 0"
+      >
         {{ $t('workOrderEntry.detailsOfProcessReporting') }}
       </span>
-      <ReportForGrid />
+      <ReportForGrid
+        v-if="editItem.reports && editItem.reports.length > 0"
+        class="!h-auto"
+      />
       <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
         {{ $t('workOrderEntry.workReportingInformation') }}
       </span>

@@ -371,7 +371,35 @@ export function handleMaulSncode(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/handleMaulSncode?${qs.stringify(params)}`,
   );
 }
+/**
+ * 工序进站工单列表获取
+ * @param params 参数
+ */
+export function listByInReport(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByInReport?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 联锁配置查询
+ * @param params 参数
+ */
+export function listEquipControl(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipControl?${qs.stringify(params)}`,
+  );
+}
 
+/**
+ * 联锁配置保存
+ * @param params 参数
+ */
+export function updateEquipControl(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/updateEquipControl`,
+    params,
+  );
+}
 /**
  * 条码工位绑定接口
  * @param params 参数
@@ -379,6 +407,27 @@ export function handleMaulSncode(params: any) {
 export function snCodeHcBinding(params: any) {
   return requestClient.post(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snCodeHcBinding`,
+    params,
+  );
+}
+
+/**
+ * 工序进站
+ * @param params 参数
+ */
+export function inReport(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/inReport`,
+    params,
+  );
+}
+/**
+ * 数采锁定
+ * @param params 参数
+ */
+export function equipcatchLock(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/equipcatchLock`,
     params,
   );
 }

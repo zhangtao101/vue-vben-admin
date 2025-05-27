@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 
-import { message } from 'ant-design-vue';
+import { IconifyIcon } from '@vben/icons';
+import { $t } from '@vben/locales';
+
+import { Button, message, Modal, Tooltip } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { inReport, listByInReport } from '#/api';
 
-defineProps({
+const props = defineProps({
   // 工步id
   functionId: {
     type: Number,
@@ -52,29 +56,37 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     {
-      field: '1',
+      field: 'worksheetCode',
       title: '工单编号',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
-      field: '3',
+      field: 'productCode',
+      title: '产品编号',
+      minWidth: 120,
+    },
+    {
+      field: 'productName',
       title: '产品名称',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
-      field: '4',
+      field: 'planNumber',
       title: '计划数量',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
-      field: '2',
+      field: 'startTime',
       title: '开工时间',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
-      field: '5',
-      title: '进站操作',
-      minWidth: 200,
+      title: '操作',
+      minWidth: 120,
+      fixed: 'right',
+      slots: {
+        default: 'action',
+      },
     },
   ],
   height: 400,
@@ -84,11 +96,8 @@ const gridOptions: VxeGridProps<any> = {
   },
   proxyConfig: {
     ajax: {
-      query: async ({ page }) => {
-        return await queryData({
-          page: page.currentPage,
-          pageSize: page.pageSize,
-        });
+      query: async () => {
+        return await queryData();
       },
     },
   },
@@ -110,43 +119,30 @@ const gridEvents: any = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // region 查询数据
-// 查询参数
-const queryParams = ref<any>({
-  // 查询时间
-  searchTime: [] as any,
-  // 产品编码
-  productCode: '',
-  // 产品批号
-  lineName: '',
-});
 
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
-function queryData({ page, pageSize }: any) {
+function queryData() {
   return new Promise((resolve, _reject) => {
-    // const params: any = { ...queryParams.value };
-    resolve({
-      total: page * pageSize,
-      items: [{}, {}, {}],
-    });
-    /* queryYXStopDayMXStatistics({
+    const params: any = {
+      bindingId: props.bindingId,
+      workstationCode: props.workstationCode,
+    };
+    listByInReport({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
-        collect.value = p;
+      .then((data) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
-          total,
-          items: list,
+          total: data.length,
+          items: data,
         });
       })
       .catch((error) => {
-        reject(error);
-      });*/
+        _reject(error);
+      });
   });
 }
 
@@ -154,8 +150,35 @@ function queryData({ page, pageSize }: any) {
  * 重置查询条件
  */
 function reload() {
-  queryParams.value = {};
   gridApi.reload();
+}
+
+/**
+ * 进站
+ * @param row
+ */
+function pullIn(row: any) {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+
+    onCancel() {
+      message.warning('已取消!');
+    },
+
+    onOk() {
+      inReport({
+        workstationCode: props.workstationCode,
+        worksheetCode: row.worksheetCode,
+        bindingId: props.bindingId,
+      }).then(() => {
+        message.success($t('common.successfulOperation'));
+        reload();
+      });
+    },
+    title: '是否确认进站?',
+  });
 }
 
 // endregion
@@ -166,7 +189,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <Grid />
+  <Grid>
+    <template #action="{ row }">
+      <!-- 进站 -->
+      <Tooltip>
+        <template #title>{{ $t('workOrderEntry.pullIn') }}</template>
+        <Button type="link" @click="pullIn(row)">
+          <IconifyIcon
+            icon="mdi:login-variant"
+            class="inline-block align-middle text-2xl"
+          />
+        </Button>
+      </Tooltip>
+    </template>
+  </Grid>
 </template>
 
 <style scoped></style>
