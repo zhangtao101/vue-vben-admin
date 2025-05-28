@@ -8,6 +8,13 @@ import { $t } from '@vben/locales';
 import { BrowserMultiFormatReader } from '@zxing/library';
 import { Button, Drawer, message } from 'ant-design-vue';
 
+defineProps({
+  show: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 /**
  * 定义事件发射器，用于触发 'scanTheCode' 事件，将扫码结果传递给父组件
  */
@@ -104,30 +111,32 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- 点击此按钮触发 showQrcode 函数，显示扫码界面 -->
-  <Button type="link" @click="showQrcode">
-    <!-- 显示条码扫描图标 -->
-    <IconifyIcon
-      icon="mdi:barcode-scan"
-      class="inline-block align-middle text-xl"
-    />
-  </Button>
+  <template v-if="show">
+    <!-- 点击此按钮触发 showQrcode 函数，显示扫码界面 -->
+    <Button type="link" @click="showQrcode">
+      <!-- 显示条码扫描图标 -->
+      <IconifyIcon
+        icon="mdi:barcode-scan"
+        class="inline-block align-middle text-xl"
+      />
+    </Button>
 
-  <!-- 扫码抽屉组件，根据 displayScanCode 的值控制显示状态 -->
-  <Drawer
-    v-model:open="displayScanCode"
-    height="100%"
-    placement="top"
-    :title="$t('dispatchHomework.sentOut')"
-    @close="close()"
-  >
-    <!-- 若当前环境不安全，显示提示信息 -->
-    <p v-if="isHttp && !isLocalhost">
-      当前环境不安全，请切换到 HTTPS 环境以使用摄像头功能。
-    </p>
-    <!-- 若环境安全，显示 video 元素用于显示摄像头画面 -->
-    <video ref="videoInput" class="h-full w-full" v-else></video>
-  </Drawer>
+    <!-- 扫码抽屉组件，根据 displayScanCode 的值控制显示状态 -->
+    <Drawer
+      v-model:open="displayScanCode"
+      height="100%"
+      placement="top"
+      :title="$t('dispatchHomework.sentOut')"
+      @close="close()"
+    >
+      <!-- 若当前环境不安全，显示提示信息 -->
+      <p v-if="isHttp && !isLocalhost">
+        当前环境不安全，请切换到 HTTPS 环境以使用摄像头功能。
+      </p>
+      <!-- 若环境安全，显示 video 元素用于显示摄像头画面 -->
+      <video ref="videoInput" class="h-full w-full" v-else></video>
+    </Drawer>
+  </template>
 </template>
 
 <style scoped>

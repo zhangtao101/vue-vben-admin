@@ -41,6 +41,7 @@ import InterlockingConfiguration from '#/util/component/interlockingConfiguratio
 import OperationalMatters from '#/util/component/operationalMatters.vue';
 import PersonnelOperation from '#/util/component/personnelOperation.vue';
 import StepExecution from '#/util/component/stepExecution.vue';
+import useWebSocket from '#/util/websocket-util';
 // region 图标
 const iconEnum: any = Enum({
   SOP查看: {
@@ -357,6 +358,23 @@ function query() {
   gridApi.reload();
 }
 
+// region websocket
+/**
+ * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
+ */
+useWebSocket(readMessageTable, {
+  webSocketType: 2,
+});
+
+/**
+ * 处理 WebSocket 接收到的消息
+ * 当接收到消息时，调用 queryData 函数重新查询资源验证状态
+ */
+function readMessageTable() {
+  query();
+}
+// endregion
+
 // endregion
 
 // endregion
@@ -492,6 +510,26 @@ function workStepConversion(val: any) {
     ...val,
   };
 }
+
+// region websocket
+/**
+ * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
+ */
+useWebSocket(readMessage, {
+  webSocketType: 3,
+});
+
+/**
+ * 处理 WebSocket 接收到的消息
+ * 当接收到消息时，调用 queryData 函数重新查询资源验证状态
+ */
+function readMessage() {
+  queryProcess(
+    selectedWorkstation.value,
+    theSelectedWorkOrder.value.worksheetCode,
+  );
+}
+// endregion
 // endregion
 
 // region 操作事项
@@ -673,19 +711,6 @@ onBeforeUnmount(() => {
                   <MenuItem @click="showInterlockingConfiguration()">
                     {{ $t('productionOperation.interlockConfiguration') }}
                   </MenuItem>
-                </Menu>
-              </template>
-              <!-- 下拉菜单触发按钮 -->
-              <Button type="primary" class="ml-3 mr-3">
-                {{ $t('productionOperation.operationConfiguration') }}
-                <DownOutlined class="ml-4 inline-block" />
-              </Button>
-            </Dropdown>
-            <!-- 全体操作下拉菜单 -->
-            <Dropdown>
-              <!-- 下拉菜单内容 -->
-              <template #overlay>
-                <Menu>
                   <!-- 全局清洗菜单项 -->
                   <MenuItem @click="showInterlockingConfiguration()">
                     {{ $t('productionOperation.globalCleaning') }}
@@ -1028,17 +1053,17 @@ onBeforeUnmount(() => {
 }
 
 .anomaly {
-  @keyframes alarm {
-    0%,
-    100% {
-      border-color: transparent;
-    }
+  animation: alarm 1s infinite;
+}
 
-    50% {
-      border-color: red;
-    }
+@keyframes alarm {
+  0%,
+  100% {
+    border-color: transparent;
   }
 
-  animation: alarm 1s infinite;
+  50% {
+    border-color: red;
+  }
 }
 </style>

@@ -6,6 +6,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Spin } from 'ant-design-vue';
 
 import { getOpFunctions } from '#/api';
+import useWebSocket from '#/util/websocket-util';
 
 /**
  * 定义组件的 props，用于接收父组件传递的数据
@@ -118,6 +119,24 @@ function querySteps() {
       loading.value = false;
     });
 }
+
+// region websocket
+/**
+ * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
+ */
+useWebSocket(readMessage, {
+  worksheetCode: props.worksheetCode,
+  webSocketType: 4,
+});
+
+/**
+ * 处理 WebSocket 接收到的消息
+ * 当接收到消息时，调用 queryData 函数重新查询资源验证状态
+ */
+function readMessage() {
+  querySteps();
+}
+// endregion
 
 /**
  * 监听详情Id的变化，当详情Id变化时，重置当前步骤并重新查询步骤数据

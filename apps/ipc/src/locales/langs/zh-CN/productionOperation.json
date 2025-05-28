@@ -114,8 +114,9 @@
   "globalCleaning": "全局清洗",
   "personnelOperation": "人员操作",
   "operationConfiguration": "操作配置",
-  "allOperations": "全体操作",
+  "allOperations": "全体操作&&配置",
   "personnelTitle": "人员上/下工",
   "workCenter": "工作中心",
-  "equipment": "设备"
+  "equipment": "设备",
+  "realTimeDataAcquisition": "实时数采"
 }

@@ -10,6 +10,7 @@ import { Button, message, Modal, Tooltip } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { inReport, listByInReport } from '#/api';
+import useWebSocket from '#/util/websocket-util';
 
 const props = defineProps({
   // 工步id
@@ -181,6 +182,28 @@ function pullIn(row: any) {
   });
 }
 
+// endregion
+
+// region websocket
+/**
+ * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
+ */
+useWebSocket(readMessage, {
+  workstationCode: props.workstationCode,
+  equipCode: props.equipCode,
+  worksheetCode: props.worksheetCode,
+  bindingId: props.bindingId,
+  functionId: props.functionId,
+  webSocketType: 5,
+});
+
+/**
+ * 处理 WebSocket 接收到的消息
+ * 当接收到消息时，调用 queryData 函数重新查询资源验证状态
+ */
+function readMessage() {
+  reload();
+}
 // endregion
 
 onMounted(() => {

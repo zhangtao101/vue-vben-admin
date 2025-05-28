@@ -168,7 +168,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  // 报表管理
+  /*  // 报表管理
   {
     meta: {
       icon: 'lucide:layout-dashboard',
@@ -188,7 +188,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
+  },*/
 ];
 
 export default routes;
