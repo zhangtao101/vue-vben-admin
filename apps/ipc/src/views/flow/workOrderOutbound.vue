@@ -193,7 +193,7 @@ const reportForWorkGridOptions: VxeGridProps<any> = {
       width: 50,
     },
     {
-      field: 'worksheetCode',
+      field: 'processName',
       title: '工序名称',
       minWidth: 200,
     },
