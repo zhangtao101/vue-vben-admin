@@ -210,7 +210,7 @@ function reload() {
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-right';
 }
 
 /**
@@ -230,7 +230,7 @@ onMounted(() => {
     <div class="mb-4 mr-8 inline-block">
       <!-- 任务状态 -->
       <span :class="getLabelClass()">
-        {{ $t('productionOperation.taskStatus') }}
+        {{ $t('productionOperation.taskStatus') }}：
       </span>
       <span :class="getValueClass()">
         <!--        {{ obtainTheDeviceCleanStatus(3) }}-->
@@ -240,7 +240,7 @@ onMounted(() => {
     <div class="mb-4 mr-8 inline-block">
       <!-- 任务类型 -->
       <span :class="getLabelClass()">
-        {{ $t('productionOperation.taskType') }}
+        {{ $t('productionOperation.taskType') }}：
       </span>
       <!-- 手动 -->
       <span :class="getValueClass()">

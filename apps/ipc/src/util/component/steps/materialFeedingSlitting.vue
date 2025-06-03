@@ -40,7 +40,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-right';
 }
 
 /**
@@ -189,6 +189,26 @@ onMounted(() => {
     <template v-if="details">
       <div>
         <div class="mb-4 mr-8 inline-block">
+          <!-- 当前工单 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.currentWorkOrder') }}：
+          </span>
+          <span :class="getValueClass()">
+            {{ details.currentJobId || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.currentProductName') }}：
+          </span>
+          <span :class="getValueClass()">
+            {{ details.productName || $t('productionOperation.none') }}
+          </span>
+        </div>
+      </div>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.implementationStatus') }}
@@ -203,7 +223,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 当前模式 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.currentMode') }}
+            {{ $t('productionOperation.currentMode') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.feedModelName || $t('productionOperation.none') }}
@@ -212,7 +232,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 模式切换次数 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.modeSwitchingTimes') }}
+            {{ $t('productionOperation.modeSwitchingTimes') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.feedModelChangeCount || $t('productionOperation.none') }}
@@ -224,7 +244,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 前设备投料 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.preEquipmentFeeding') }}
+            {{ $t('productionOperation.preEquipmentFeeding') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.lastFeedFlagName || $t('productionOperation.none') }}
@@ -233,7 +253,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 前设备堵料设置 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.frontDevicePlugSetting') }}
+            {{ $t('productionOperation.frontDevicePlugSetting') }}：
           </span>
           <span :class="getValueClass()">
             {{
@@ -247,7 +267,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 后级设备入料允许 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.feedIsAllowedForPostStageEquipment') }}
+            {{ $t('productionOperation.feedIsAllowedForPostStageEquipment') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.nextFeedFlagName || $t('productionOperation.none') }}
@@ -256,7 +276,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 后级设备工单 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.postEquipmentWorkOrder') }}
+            {{ $t('productionOperation.postEquipmentWorkOrder') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.nextWorksheetCode || $t('productionOperation.none') }}
@@ -265,7 +285,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 后级设备状态 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.statusOfTheLastDevice') }}
+            {{ $t('productionOperation.statusOfTheLastDevice') }}：
           </span>
           <span :class="getValueClass()">
             {{
@@ -279,7 +299,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 当前设备投料状态 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.currentDeviceFeedingStatus') }}
+            {{ $t('productionOperation.currentDeviceFeedingStatus') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.machineStatusName || $t('productionOperation.none') }}

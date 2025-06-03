@@ -556,6 +556,12 @@ importers:
       '@types/sortablejs':
         specifier: ^1.15.8
         version: 1.15.8
+      '@univerjs/core':
+        specifier: ^0.7.0
+        version: 0.7.0(@grpc/grpc-js@1.13.3)(@wendellhu/redi@0.17.1)(rxjs@7.8.2)
+      '@univerjs/presets':
+        specifier: ^0.6.10
+        version: 0.6.10(@grpc/grpc-js@1.13.3)(@types/react@19.1.3)(@wendellhu/redi@0.17.1)(date-fns@4.1.0)(luxon@3.6.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rxjs@7.8.2)(typescript@5.8.3)
       '@vxe-ui/plugin-export-xlsx':
         specifier: ^4.2.0
         version: 4.2.1(vxe-table@4.13.16(vue@3.5.13(typescript@5.8.3)))
@@ -1282,7 +1288,7 @@ importers:
     devDependencies:
       '@nolebase/vitepress-plugin-git-changelog':
         specifier: 'catalog:'
-        version: 2.17.0(typescript@5.8.3)(vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3))
+        version: 2.17.0(typescript@5.8.3)(vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(@types/react@19.1.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3))
       '@vben/vite-config':
         specifier: workspace:*
         version: link:../internal/vite-config
@@ -1291,7 +1297,7 @@ importers:
         version: 1.0.0(vite-plugin-pwa@1.0.0(vite@5.4.18(@types/node@22.15.3)(less@4.3.0)(sass@1.87.0)(terser@5.39.0))(workbox-build@7.3.0)(workbox-window@7.3.0))
       vitepress:
         specifier: 'catalog:'
-        version: 1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3)
+        version: 1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(@types/react@19.1.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3)
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.3)
@@ -5707,6 +5713,12 @@ packages:
       '@wendellhu/redi': 0.17.1
       rxjs: '>=7.0.0'
 
+  '@univerjs/core@0.7.0':
+    resolution: {integrity: sha512-nji//vo098Jt+Da7ilmVhqfuzAzEPvfaqf117xYBqTg/NSWuLWcXfcvpfHSeIdnaCr+ui8s0WkmXkaqHGC47wg==}
+    peerDependencies:
+      '@wendellhu/redi': 0.18.0
+      rxjs: '>=7.0.0'
+
   '@univerjs/data-validation@0.6.10':
     resolution: {integrity: sha512-3Kc6OHMS3UGUoobz9YaP5ZUz38VFmiQYD9WvE8AWlJUwmQ29G4w5ER9mSAk99Y5643wblOZuw3jX1GpyHINUxg==}
     peerDependencies:
@@ -5925,6 +5937,13 @@ packages:
       '@grpc/grpc-js': '>=1'
       rxjs: '>=7.8'
 
+  '@univerjs/protocol@0.1.46':
+    resolution: {integrity: sha512-nTkNocMt1XItBierjz7J4bz0Ye+SlUz7SDOyfqJB4FPpvDnBVGQH9NXbZbTrKrvskUzOayb7hGOkKNZyHaSQOw==}
+    engines: {node: '>=18.0.0', pnpm: '>=10.0.0'}
+    peerDependencies:
+      '@grpc/grpc-js': '>=1'
+      rxjs: '>=7.8'
+
   '@univerjs/protocol@0.1.46-alpha.3':
     resolution: {integrity: sha512-ZF9jr8LQCMthH22soj7aV88MCFMAAzizgFlg3+Cf5Dezb6DHIVTjqr93h+EAoXoqNMMs8G2PtpjwUhhKVkQd4g==}
     engines: {node: '>=18.0.0', pnpm: '>=10.0.0'}
@@ -6059,6 +6078,9 @@ packages:
 
   '@univerjs/telemetry@0.6.10':
     resolution: {integrity: sha512-6l8IyTsv23KKgsXx2m+tgf6deLt4xXmb9/Iob1skUAgMD27ngKgopOslKsJhtTNfYgiDpJNYLZ8jwWxIf4pT4g==}
+
+  '@univerjs/themes@0.7.0':
+    resolution: {integrity: sha512-iVO0VL0rFPfbKlcDKzO6QwpzcDOT0E52xrR9HWOjh0wozZQdgX7mex4VXRTEHs8hJocyAIJL45JLw1H135AziQ==}
 
   '@univerjs/thread-comment-ui@0.6.10':
     resolution: {integrity: sha512-riXShwRArEqglQD8JLKAJRBe6WczHk99wJCEjW975qeD022y6pMgc1qME5t8fKE3IvfuCyH3zNLop8DKWSalWg==}
@@ -15729,9 +15751,9 @@ snapshots:
 
   '@docsearch/css@3.8.2': {}
 
-  '@docsearch/js@3.8.2(@algolia/client-search@5.23.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)':
+  '@docsearch/js@3.8.2(@algolia/client-search@5.23.4)(@types/react@19.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)':
     dependencies:
-      '@docsearch/react': 3.8.2(@algolia/client-search@5.23.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)
+      '@docsearch/react': 3.8.2(@algolia/client-search@5.23.4)(@types/react@19.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)
       preact: 10.26.5
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -15740,13 +15762,14 @@ snapshots:
       - react-dom
       - search-insights
 
-  '@docsearch/react@3.8.2(@algolia/client-search@5.23.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)':
+  '@docsearch/react@3.8.2(@algolia/client-search@5.23.4)(@types/react@19.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)':
     dependencies:
       '@algolia/autocomplete-core': 1.17.7(@algolia/client-search@5.23.4)(algoliasearch@5.23.4)(search-insights@2.17.3)
       '@algolia/autocomplete-preset-algolia': 1.17.7(@algolia/client-search@5.23.4)(algoliasearch@5.23.4)
       '@docsearch/css': 3.8.2
       algoliasearch: 5.23.4
     optionalDependencies:
+      '@types/react': 19.1.3
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       search-insights: 2.17.3
@@ -16433,19 +16456,19 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@nolebase/ui@2.17.0(typescript@5.8.3)(vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3))':
+  '@nolebase/ui@2.17.0(typescript@5.8.3)(vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(@types/react@19.1.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3))':
     dependencies:
       '@iconify-json/octicon': 1.2.5
       less: 4.3.0
-      vitepress: 1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3)
+      vitepress: 1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(@types/react@19.1.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3)
       vue: 3.5.13(typescript@5.8.3)
     transitivePeerDependencies:
       - typescript
 
-  '@nolebase/vitepress-plugin-git-changelog@2.17.0(typescript@5.8.3)(vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3))':
+  '@nolebase/vitepress-plugin-git-changelog@2.17.0(typescript@5.8.3)(vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(@types/react@19.1.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3))':
     dependencies:
       '@iconify-json/octicon': 1.2.5
-      '@nolebase/ui': 2.17.0(typescript@5.8.3)(vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3))
+      '@nolebase/ui': 2.17.0(typescript@5.8.3)(vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(@types/react@19.1.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3))
       colorette: 2.0.20
       date-fns: 4.1.0
       defu: 6.1.4
@@ -16455,7 +16478,7 @@ snapshots:
       gray-matter: 4.0.3
       less: 4.3.0
       uncrypto: 0.1.3
-      vitepress: 1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3)
+      vitepress: 1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(@types/react@19.1.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3)
     transitivePeerDependencies:
       - typescript
 
@@ -18084,6 +18107,25 @@ snapshots:
     transitivePeerDependencies:
       - '@grpc/grpc-js'
 
+  '@univerjs/core@0.7.0(@grpc/grpc-js@1.13.3)(@wendellhu/redi@0.17.1)(rxjs@7.8.2)':
+    dependencies:
+      '@univerjs/protocol': 0.1.46(@grpc/grpc-js@1.13.3)(rxjs@7.8.2)
+      '@univerjs/themes': 0.7.0
+      '@wendellhu/redi': 0.17.1
+      async-lock: 1.4.1
+      dayjs: 1.11.13
+      fast-diff: 1.3.0
+      kdbush: 4.0.2
+      lodash-es: 4.17.21
+      nanoid: 5.1.5
+      numeral: 2.0.6
+      numfmt: 2.5.2
+      ot-json1: 1.0.2
+      rbush: 4.0.1
+      rxjs: 7.8.2
+    transitivePeerDependencies:
+      - '@grpc/grpc-js'
+
   '@univerjs/data-validation@0.6.10(@grpc/grpc-js@1.13.3)(@wendellhu/redi@0.17.1)(rxjs@7.8.2)':
     dependencies:
       '@univerjs/core': 0.6.10(@grpc/grpc-js@1.13.3)(@wendellhu/redi@0.17.1)(rxjs@7.8.2)
@@ -18710,6 +18752,11 @@ snapshots:
       '@grpc/grpc-js': 1.13.3
       rxjs: 7.8.2
 
+  '@univerjs/protocol@0.1.46(@grpc/grpc-js@1.13.3)(rxjs@7.8.2)':
+    dependencies:
+      '@grpc/grpc-js': 1.13.3
+      rxjs: 7.8.2
+
   '@univerjs/protocol@0.1.46-alpha.3(@grpc/grpc-js@1.13.3)(rxjs@7.8.2)':
     dependencies:
       '@grpc/grpc-js': 1.13.3
@@ -19148,6 +19195,8 @@ snapshots:
       - '@grpc/grpc-js'
       - '@wendellhu/redi'
       - rxjs
+
+  '@univerjs/themes@0.7.0': {}
 
   '@univerjs/thread-comment-ui@0.6.10(@grpc/grpc-js@1.13.3)(@types/react@19.1.3)(@wendellhu/redi@0.17.1)(date-fns@4.1.0)(luxon@3.6.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rxjs@7.8.2)(typescript@5.8.3)':
     dependencies:
@@ -27232,10 +27281,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3):
+  vitepress@1.6.3(@algolia/client-search@5.23.4)(@types/node@22.15.3)(@types/react@19.1.3)(async-validator@4.2.5)(axios@1.9.0)(jwt-decode@4.0.0)(less@4.3.0)(nprogress@0.2.0)(postcss@8.5.3)(qrcode@1.5.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.87.0)(search-insights@2.17.3)(sortablejs@1.15.6)(terser@5.39.0)(typescript@5.8.3):
     dependencies:
       '@docsearch/css': 3.8.2
-      '@docsearch/js': 3.8.2(@algolia/client-search@5.23.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)
+      '@docsearch/js': 3.8.2(@algolia/client-search@5.23.4)(@types/react@19.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)
       '@iconify-json/simple-icons': 1.2.33
       '@shikijs/core': 2.5.0
       '@shikijs/transformers': 2.5.0

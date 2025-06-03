@@ -76,5 +76,10 @@
   "scanTheCode": "Scan Code",
   "beInOrder": "Ready",
   "readyToWithdraw": "Ready to Withdraw",
-  "scanCodePrompt": "Please provide a specific element object!"
+  "scanCodePrompt": "Please provide a specific element object!",
+  "processEntryIntoTheStation": "Process Entry into Station",
+  "processReporting": "Process Reporting",
+  "judgmentFailed": "Current verification result failed, please try again after success!",
+  "open": "Open",
+  "close": "Close"
 }

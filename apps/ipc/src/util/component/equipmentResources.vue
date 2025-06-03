@@ -24,51 +24,66 @@ import {
   sendProduct,
 } from '#/api';
 
+/**
+ * 定义组件的 props，用于接收父组件传递的数据
+ */
 const props = defineProps({
-  // 工作站信息
+  // 工作站信息，包含工作站的各种属性
   workstationInfo: {
     type: Object,
     default: () => ({}),
   },
-  // 工单ID
+  // 工单ID，用于唯一标识工单
   workOrderId: {
     type: String,
     default: '',
   },
-  // 改派ID
+  // 改派ID，用于工单改派操作时的标识
   sendId: {
     type: String,
     default: '',
   },
-  // 是否显示操作页面
+  // 是否显示操作页面，控制组件的显示状态
   show: {
     type: Boolean,
     default: true,
   },
-  // 是否活跃
+  // 是否活跃，用于控制组件的交互状态
   isActive: {
     type: Boolean,
     default: false,
   },
 });
+// 定义事件发射器，用于触发 'close' 事件通知父组件
 const emit = defineEmits(['close']);
 // region 已派工单列表
 
 // 已派工单表格配置
 
+/**
+ * 已派工单表格的配置选项，用于定义表格的列、样式、分页等信息
+ */
 const gridOptions: VxeGridProps<any> = {
+  // 表格内容居中对齐
   align: 'center',
+  // 显示表格边框
   border: true,
+  // 表格列配置
   columns: [
     {
+      // 列标题为序号
       title: '序号',
+      // 列类型为序号列，自动生成序号
       type: 'seq',
+      // 列对应的字段名
       field: 'seq',
+      // 列宽度
       width: 50,
     },
     {
       field: 'workSheetCode',
       title: '工单编号',
+      // 列最小宽度
       minWidth: 200,
     },
     {
@@ -102,14 +117,19 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 200,
     },
   ],
+  // 表格高度
   height: 370,
+  // 显示斑马纹
   stripe: true,
+  // 排序配置，支持多列排序
   sortConfig: {
     multiple: true,
   },
+  // 分页配置，禁用分页
   pagerConfig: {
     enabled: false,
   },
+  // 代理配置，用于异步查询数据
   proxyConfig: {
     ajax: {
       query: async () => {
@@ -117,89 +137,89 @@ const gridOptions: VxeGridProps<any> = {
       },
     },
   },
+  // 工具栏配置
   toolbarConfig: {
+    // 显示自定义按钮
     custom: true,
+    // 不显示导入按钮
     // import: true,
+    // 不显示导出按钮
     // export: true,
+    // 显示刷新按钮
     refresh: true,
+    // 显示缩放按钮
     zoom: true,
   },
 };
 
+// 初始化 VxeGrid 组件和 API
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 /**
  * 查询工作站已派工单列表
- * 功能：根据工作站编码获取已派发的工单数据
- * 流程：
- * 1. 从父组件属性中获取工作站设备编码
- * 2. 调用工作站工单列表接口获取数据
- * 3. 转换接口数据结构适配前端表格
- *
- * 接口说明：
- * getWorksheetListByWorkstationCode - 工作站工单查询接口，接收参数：
- *   - workstationCode: 工作站设备编码（来自父组件 workstationInfo.equipCode）
- *
- * 数据结构：
- * - workSheetCode: 工单编号
- * - productName: 产品名称
- * - productCode: 产品编号
- * - customerName: 客户名称
- * - planDateStart: 预计开始时间
+ * 该函数会发起异步请求获取工作站的已派工单数据，并将数据适配到表格所需的格式
+ * @returns {Promise<{ total: number, items: any[] }>} 包含总数据量和当前页数据的 Promise
  */
 function queryData() {
   return new Promise((resolve, reject) => {
+    // 调用 API 接口获取工作站的已派工单列表
     getWorksheetListByWorkstationCode({
       workstationCode: props.workstationInfo.equipCode, // 从父组件获取工作站编码
     })
       .then((data) => {
+        // 将接口返回的数据适配到表格所需的格式
         resolve({
-          total: data.length, // 总记录数（未分页）
-          items: data, // 工单列表数据
+          total: data.length, // 总数据量
+          items: data, // 当前页数据
         });
       })
       .catch((error) => {
-        reject(error); // 异常传递
+        // 捕获接口调用错误并拒绝 Promise
+        reject(error);
       });
   });
 }
-// 显示工单列表抽屉
+// 控制已派工单列表抽屉的显示状态
 const showWorkOrderListDrawer = ref(false);
 
 /**
  * 打开已派工单列表面板
- * 功能：显示当前工作站已派发的工单列表
- * 流程：
- * 1. 刷新工单列表数据
- * 2. 打开抽屉组件显示列表
- *
- * @param _row - 预留参数，当前未使用（保持与事件触发参数的兼容性）
+ * 该函数会刷新已派工单列表数据，并显示已派工单列表抽屉
+ * @param {any} _row 预留参数，当前未使用
  */
 function displaysTheWorkOrderColumnTable(_row: any) {
-  gridApi.reload(); // 重新加载工单列表数据
-  showWorkOrderListDrawer.value = true; // 控制工单列表抽屉显示状态
+  // 刷新已派工单列表数据
+  gridApi.reload();
+  // 显示已派工单列表抽屉
+  showWorkOrderListDrawer.value = true;
 }
 
 /**
  * 关闭已派工单列表面板
- * 功能：隐藏当前工作站工单列表的抽屉组件
- * 操作：
- * 1. 更新抽屉显示状态为隐藏
+ * 该函数会隐藏已派工单列表抽屉
  */
 function closeTheWorkOrderList() {
-  showWorkOrderListDrawer.value = false; // 控制工单列表抽屉的显示状态
+  // 隐藏已派工单列表抽屉
+  showWorkOrderListDrawer.value = false;
 }
 // endregion
 
 // region 作业站分配
 // 作业站分配表格配置
+/**
+ * 作业站分配表格的配置选项，用于定义表格的列、样式、分页等信息
+ */
 const jobStationAssignmentGridOptions: VxeGridProps<any> = {
+  // 表格内容居中对齐
   align: 'center',
+  // 显示表格边框
   border: true,
+  // 表格列配置
   columns: [
     {
       field: 'assignment',
       title: '指派',
+      // 列类型为复选框列
       type: 'checkbox',
       minWidth: 50,
     },
@@ -207,6 +227,7 @@ const jobStationAssignmentGridOptions: VxeGridProps<any> = {
       field: 'allowForAdjustment',
       title: '允许调整',
       minWidth: 120,
+      // 使用自定义插槽渲染该列内容
       slots: { default: 'allowForAdjustment' },
     },
     {
@@ -228,6 +249,7 @@ const jobStationAssignmentGridOptions: VxeGridProps<any> = {
       field: 'affiliatedProcess',
       title: '所属工序',
       minWidth: 120,
+      // 使用自定义插槽渲染该列内容
       slots: { default: 'affiliatedProcess' },
     },
     {
@@ -241,11 +263,15 @@ const jobStationAssignmentGridOptions: VxeGridProps<any> = {
       minWidth: 120,
     },
   ],
+  // 表格高度
   height: 350,
+  // 显示斑马纹
   stripe: true,
+  // 排序配置，支持多列排序
   sortConfig: {
     multiple: true,
   },
+  // 代理配置，用于异步查询数据
   proxyConfig: {
     ajax: {
       query: async () => {
@@ -253,138 +279,126 @@ const jobStationAssignmentGridOptions: VxeGridProps<any> = {
       },
     },
   },
+  // 分页配置，禁用分页
   pagerConfig: {
     enabled: false,
   },
+  // 工具栏配置
   toolbarConfig: {
+    // 显示自定义按钮
     custom: true,
+    // 不显示导入按钮
     // import: true,
+    // 不显示导出按钮
     // export: true,
+    // 显示刷新按钮
     refresh: true,
+    // 显示缩放按钮
     zoom: true,
   },
 };
 
+// 初始化作业站分配表格的 VxeGrid 组件和 API
 const [JobGrid, jobGridApi] = useVbenVxeGrid({
   gridOptions: jobStationAssignmentGridOptions,
 });
 
 /**
  * 查询作业站设备列表数据
- * 功能：根据工作站编码获取关联设备资源信息
- * 流程：
- * 1. 从父组件属性中获取工作站设备编码
- * 2. 调用设备列表接口获取数据
- * 3. 转换接口数据结构适配前端表格
- *
- * 接口说明：
- * getAllEquipList - 设备资源查询接口，接收参数：
- *   - workstationCode: 工作站设备编码（来自父组件 workstationInfo.equipCode）
- *
- * 数据结构：
- * - equipmentName: 设备名称
- * - model: 设备型号
- * - worksheetNumber: 已派工单数量
- * - capacityRate: 设备负荷率
- * - location: 设备位置
+ * 该函数会发起异步请求获取作业站的设备列表数据，并将数据适配到表格所需的格式
+ * @returns {Promise<{ total: number, items: any[] }>} 包含总数据量和当前页数据的 Promise
  */
 function queryJobData() {
   return new Promise((resolve, reject) => {
+    // 调用 API 接口获取作业站的设备列表
     getAllEquipList({
       workstationCode: props.workstationInfo.equipCode, // 从父组件获取工作站编码
     })
       .then((data) => {
+        // 将接口返回的数据适配到表格所需的格式
         resolve({
-          total: data.length, // 总设备数量（未分页）
-          items: data, // 设备列表数据
+          total: data.length, // 总数据量
+          items: data, // 当前页数据
         });
       })
       .catch((error) => {
-        reject(error); // 异常传递
+        // 捕获接口调用错误并拒绝 Promise
+        reject(error);
       });
   });
 }
-// 显示工单列表抽屉
+// 控制作业站分配抽屉的显示状态
 const showJobDrawer = ref(false);
 
 /**
  * 打开作业站分配面板
- * 功能：显示设备资源分配界面
- * 流程：
- * 1. 重新加载作业站设备列表数据
- * 2. 打开作业站分配抽屉组件
- *
- * 使用场景：当用户需要查看或分配工作站设备资源时触发
+ * 该函数会刷新作业站设备列表数据，并显示作业站分配抽屉
  */
 function showJobDrawerFun() {
-  jobGridApi.reload(); // 刷新设备列表数据
-  showJobDrawer.value = true; // 打开作业站分配抽屉
+  // 刷新作业站设备列表数据
+  jobGridApi.reload();
+  // 显示作业站分配抽屉
+  showJobDrawer.value = true;
 }
 
 /**
- * 关闭已派工单列表面板
+ * 关闭作业站分配面板
+ * 该函数会隐藏作业站分配抽屉
  */
 function closeJobDrawer() {
+  // 隐藏作业站分配抽屉
   showJobDrawer.value = false;
 }
-// 提交加载状态
+// 控制提交按钮的加载状态
 const submitLoading = ref(false);
 
 /**
  * 提交设备资源分配
- * 功能：执行设备资源的批量派发操作
- * 流程：
- * 1. 弹出确认对话框进行二次确认
- * 2. 确认后组装提交参数：
- *   - 工单ID
- *   - 改派ID（如果存在）
- *   - 选中的设备列表（包含设备编码和调整标志）
- * 3. 调用批量派发接口提交数据
- * 4. 成功时：
- *   - 显示操作成功提示
- *   - 关闭分配抽屉
- *   - 通知父组件更新
- * 5. 无论成功失败都重置提交状态
- *
- * 接口说明：
- * sendListProduct - 批量设备派发接口，接收参数：
- *   - id: 当前工单ID
- *   - sendId: 改派ID（可选）
- *   - equipCodeList: 设备编码列表（包含equipCode和isUpdateFlag）
+ * 该函数会弹出确认对话框，确认后将选中的设备资源分配信息提交到后端
  */
 function submit() {
+  // 弹出确认对话框
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
     okType: 'danger',
     onCancel() {
+      // 点击取消按钮，显示警告消息
       message.warning('已取消操作!');
     },
     onOk() {
+      // 构建提交参数
       const params: any = {
         id: props.workOrderId,
         equipCodeList: [],
       };
-      // 处理改派场景参数
+      // 如果存在改派ID，将其添加到参数中
       if (props.sendId) {
         params.sendId = props.sendId;
       }
-      // 遍历选中的设备记录
+      // 遍历选中的设备记录，将设备编码和调整标志添加到参数中
       jobGridApi.grid.getCheckboxRecords().forEach((item: any) => {
         params.equipCodeList.push({
           equipCode: item.equipmentCode,
-          isUpdateFlag: item.allowForAdjustment ? 1 : 2, // 转换开关状态为接口标识
+          // 根据是否允许调整转换为接口所需的标志
+          isUpdateFlag: item.allowForAdjustment ? 1 : 2,
         });
       });
+      // 设置提交按钮为加载状态
       submitLoading.value = true;
+      // 调用 API 接口提交设备资源分配信息
       sendListProduct(params)
         .then(() => {
+          // 显示成功消息
           message.success($t('common.successfulOperation'));
+          // 关闭作业站分配抽屉
           closeJobDrawer();
-          emit('close'); // 通知父组件关闭弹窗
+          // 触发 'close' 事件通知父组件
+          emit('close');
         })
         .finally(() => {
-          submitLoading.value = false; // 重置加载状态
+          // 无论提交结果如何，取消提交按钮的加载状态
+          submitLoading.value = false;
         });
     },
     title: '是否确认派发?',
@@ -393,38 +407,30 @@ function submit() {
 
 /**
  * 执行工单群发操作
- * 功能：将当前工单派发给整个工作站的所有设备
- * 流程：
- * 1. 弹出确认对话框进行风险提示
- * 2. 确认后调用群发接口提交参数：
- *   - equipCode: 工作站设备编码
- *   - id: 当前工单ID
- * 3. 成功时：
- *   - 显示国际化成功提示
- *   - 关闭作业站分配抽屉
- *   - 通知父组件更新界面
- *
- * 接口说明：
- * sendProduct - 工单群发接口，接收参数：
- *   - equipCode: 工作站设备编码（来自父组件 workstationInfo）
- *   - id: 当前处理的工单ID
+ * 该函数会弹出确认对话框，确认后将工单派发给整个工作站的所有设备
  */
 function massSending() {
+  // 弹出确认对话框
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
     okType: 'danger',
     onCancel() {
+      // 点击取消按钮，显示警告消息
       message.warning('已取消操作!');
     },
     onOk() {
+      // 调用 API 接口执行工单群发操作
       sendProduct({
         equipCode: props.workstationInfo.equipCode, // 当前工作站编码
         id: props.workOrderId, // 父组件传递的工单ID
       }).then(() => {
+        // 显示成功消息
         message.success($t('common.successfulOperation'));
-        closeJobDrawer(); // 关闭资源分配抽屉
-        emit('close'); // 触发父组件关闭弹窗
+        // 关闭作业站分配抽屉
+        closeJobDrawer();
+        // 触发 'close' 事件通知父组件
+        emit('close');
       });
     },
     title: '是否确认派发?',
@@ -432,6 +438,7 @@ function massSending() {
 }
 // endregion
 
+// 暴露 showJobDrawerFun 方法，供父组件调用
 defineExpose({
   showJobDrawerFun,
 });
@@ -439,44 +446,55 @@ defineExpose({
 
 <template>
   <!-- region 工位 -->
+  <!-- 当工作站信息存在且 show 为 true 时显示工位组件 -->
   <div
     class="m-4 inline-block h-32 w-64 rounded-lg border border-gray-200"
     v-if="workstationInfo && show"
   >
+    <!-- 点击该区域可打开已派工单列表抽屉 -->
     <div
       class="cursor-pointer rounded-t-lg bg-cyan-500 pb-1 pt-1 text-center text-xl text-white hover:bg-amber-200"
       :class="isActive ? 'bg-cyan-500' : 'cursor-not-allowed bg-gray-300'"
       @click="displaysTheWorkOrderColumnTable({})"
     >
+      <!-- 显示工作站图标 -->
       <IconifyIcon
         icon="mdi:account-box-multiple"
         class="inline-block align-middle text-xl"
       />
+      <!-- 显示工作站名称 -->
       {{ workstationInfo.equipName }}
     </div>
+    <!-- 显示工单群发和作业站分配的相关信息 -->
     <Row class="h-[92px]">
+      <!-- 点击该区域可执行工单群发操作 -->
       <Col
         span="12"
         class="cursor-pointer border-r-2 text-center hover:bg-amber-200"
         @click="massSending"
       >
         <div class="mb-2 mt-3 text-base font-black">
+          <!-- 显示作业组标签 -->
           {{ $t('dispatchHomework.jobGroup') }}
         </div>
         <div>
+          <!-- 显示已派工单数量 -->
           {{ $t('dispatchHomework.aWorkOrderHasBeenSent') }}:
           {{ workstationInfo.worksheetNumber }}
         </div>
       </Col>
+      <!-- 点击该区域可打开作业站分配面板 -->
       <Col
         span="12"
         class="cursor-pointer border-r-2 text-center hover:bg-amber-200"
         @click="showJobDrawerFun()"
       >
         <div class="mb-2 mt-3 text-base font-black">
+          <!-- 显示作业站标签 -->
           {{ $t('dispatchHomework.operatingStation') }}
         </div>
         <div>
+          <!-- 显示已派工单数量 -->
           {{ $t('dispatchHomework.aWorkOrderHasBeenSent') }}:
           {{ workstationInfo.equipsheetNumber }}
         </div>
@@ -486,6 +504,7 @@ defineExpose({
   <!-- endregion -->
 
   <!-- region 已派工列表 -->
+  <!-- 已派工单列表抽屉组件 -->
   <Drawer
     v-model:open="showWorkOrderListDrawer"
     height="80%"
@@ -493,11 +512,13 @@ defineExpose({
     :title="$t('dispatchHomework.sentOut')"
     @close="closeTheWorkOrderList"
   >
+    <!-- 渲染已派工单表格组件 -->
     <Grid />
   </Drawer>
   <!-- endregion -->
 
   <!-- region 作业站分配 -->
+  <!-- 作业站分配抽屉组件 -->
   <Drawer
     v-model:open="showJobDrawer"
     :footer-style="{ textAlign: 'right' }"
@@ -506,18 +527,26 @@ defineExpose({
     :title="$t('dispatchHomework.resourceAssignment')"
     @close="closeJobDrawer"
   >
+    <!-- 渲染作业站分配表格组件 -->
     <JobGrid>
+      <!-- 自定义所属工序列的渲染内容 -->
       <template #affiliatedProcess>
+        <!-- 显示工作站名称 -->
         {{ workstationInfo.equipName }}
       </template>
+      <!-- 自定义允许调整列的渲染内容 -->
       <template #allowForAdjustment="{ row }">
+        <!-- 显示开关组件，用于控制是否允许调整 -->
         <Switch v-model:checked="row.allowForAdjustment" />
       </template>
     </JobGrid>
+    <!-- 定义抽屉的底部按钮 -->
     <template #footer>
+      <!-- 取消按钮，点击后关闭作业站分配抽屉 -->
       <Button danger type="primary" @click="closeJobDrawer" class="mr-4">
         {{ $t('common.cancel') }}
       </Button>
+      <!-- 确认分配按钮，点击后调用 submit 方法提交设备资源分配信息 -->
       <Button type="primary" @click="submit" :loading="submitLoading">
         {{ $t('common.confirmedDistribution') }}
       </Button>
@@ -526,4 +555,6 @@ defineExpose({
   <!-- endregion -->
 </template>
 
-<style scoped></style>
+<style scoped>
+/* 作用域样式，仅对当前组件生效 */
+</style>

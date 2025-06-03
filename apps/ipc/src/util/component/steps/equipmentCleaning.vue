@@ -44,7 +44,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-right';
 }
 
 /**
@@ -194,9 +194,29 @@ onMounted(() => {
     <template v-if="details">
       <div>
         <div class="mb-4 mr-8 inline-block">
+          <!-- 当前工单 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.currentWorkOrder') }}：
+          </span>
+          <span :class="getValueClass()">
+            {{ details.currentJobId || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.currentProductName') }}：
+          </span>
+          <span :class="getValueClass()">
+            {{ details.productName || $t('productionOperation.none') }}
+          </span>
+        </div>
+      </div>
+      <div>
+        <div class="mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.implementationStatus') }}
+            {{ $t('productionOperation.implementationStatus') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.lastFlagName || $t('productionOperation.none') }}
@@ -208,7 +228,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 清洁模式 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.cleaningMode') }}
+            {{ $t('productionOperation.cleaningMode') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.cleanModel === 1 ? '自动' : '手动' }}
@@ -228,7 +248,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 清洁计时 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.cleaningTimer') }}
+            {{ $t('productionOperation.cleaningTimer') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.setMinute || 0 }}分钟
@@ -237,7 +257,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 清洁设置时长 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.cleaningSettingDuration') }}
+            {{ $t('productionOperation.cleaningSettingDuration') }}：
           </span>
           <span :class="getValueClass()">
             {{ details.cleanMinute || 0 }}分钟
@@ -246,7 +266,7 @@ onMounted(() => {
         <div class="mb-4 mr-8 inline-block">
           <!-- 清洁超时 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.cleaningTimeout') }}
+            {{ $t('productionOperation.cleaningTimeout') }}：
           </span>
           <span :class="getValueClass()">
             {{

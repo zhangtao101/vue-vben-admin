@@ -28,7 +28,11 @@ import {
 } from '#/api';
 import EquipmentResources from '#/util/component/equipmentResources.vue';
 
+/**
+ * 定义组件的 props，接收父组件传递的查询参数
+ */
 const props = defineProps({
+  // 查询参数对象，用于过滤工单管理列表数据
   queryParams: {
     type: Object,
     default: () => ({}),
@@ -36,52 +40,66 @@ const props = defineProps({
 });
 
 // region 作业信息
+/**
+ * 定义 VxeGrid 表格的配置选项
+ */
 const gridOptions: VxeGridProps<any> = {
+  // 表格内容居中对齐
   align: 'center',
+  // 显示表格边框
   border: true,
+  // 表格列配置
   columns: [
+    // 序号列
     {
       title: '序号',
       type: 'seq',
       field: 'seq',
       width: 50,
     },
+    // 工单编号列
     {
       field: 'worksheetCode',
       title: '工单编号',
       minWidth: 200,
     },
+    // 产品编码列
     {
       field: 'productCode',
       title: '产品编码',
       minWidth: 200,
     },
+    // 作业资源列
     {
       field: 'equipCode',
       title: '作业资源',
       minWidth: 200,
     },
+    // 工单状态列
     {
-      field: 'sendState',
+      field: 'sendStateName',
       title: '工单状态',
       minWidth: 150,
-      slots: { default: 'sendState' },
     },
+    // 工单模式列
     {
       field: 'modelTypeName',
       title: '工单模式',
       minWidth: 200,
     },
+    // 预计开始时间列
     {
       field: 'planStartDate',
       title: '预计开始时间',
       minWidth: 150,
     },
+    // 预计结束时间列
     {
       field: 'planEndDate',
       title: '预计结束时间',
       minWidth: 150,
     },
+    // 操作列，固定在右侧
     {
       title: '操作',
       minWidth: 180,
@@ -91,19 +109,25 @@ const gridOptions: VxeGridProps<any> = {
       fixed: 'right',
     },
   ],
+  // 表格高度
   height: 400,
+  // 显示条纹样式
   stripe: true,
+  // 排序配置，支持多列排序
   sortConfig: {
     multiple: true,
   },
+  // 代理配置，用于异步查询数据
   proxyConfig: {
     ajax: {
+      // 分页查询数据
       query: async ({ page }) => {
         return await queryData({
           page: page.currentPage,
           pageSize: page.pageSize,
         });
       },
+      // 查询所有数据
       queryAll: async () => {
         return await queryData({
           page: 1,
@@ -112,66 +136,91 @@ const gridOptions: VxeGridProps<any> = {
       },
     },
   },
+  // 工具栏配置
   toolbarConfig: {
+    // 自定义工具栏
     custom: true,
+    // 注释掉导入功能
     // import: true,
+    // 注释掉导出功能
     // export: true,
+    // 显示刷新按钮
     refresh: true,
+    // 显示缩放按钮
     zoom: true,
   },
 };
 
+/**
+ * 定义 VxeGrid 表格的事件处理函数
+ */
 const gridEvents: any = {
+  /**
+   * 单选框改变事件处理函数
+   * @param param0 - 包含当前选中行数据的对象
+   */
   radioChange: ({ row }: any) => {
     message.info(`radioChange: ${row}`);
   },
 };
 
+/**
+ * 初始化 VxeGrid 组件和 API
+ */
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // endregion
 
 // region 查询数据
-// 工单列表类型
+/**
+ * 工单列表类型，1 表示待执行列表，2 表示工单总列表
+ */
 const workOrderType = ref('2');
-// 数据长度
+/**
+ * 当前页数据长度
+ */
 const dataLength = ref(-1);
+/**
+ * 历史进站最后一次的下标
+ */
+const historicalEntryIndex = ref(-1);
 
 /**
  * 查询工单管理列表数据
- * 功能：获取分页工单数据并处理不同模型类型参数
- * 流程：
- * 1. 合并父组件传递的查询参数
- * 2. 处理自动模式下的分页类型参数
- * 3. 调用工单管理列表接口获取数据
- * 4. 更新全局数据长度状态
- * 5. 返回表格组件需要的分页数据结构
- *
- * 接口说明：
- * obtainTheWorkOrderManagementList - 工单管理列表接口，接收参数：
- *   - ...props.queryParams: 父组件传递的查询条件
- *   - pageNum: 当前页码
- *   - pageSize: 每页数据量
- *   - pagetype: 当modelType=2时附加的分页类型参数
- *
- * 数据结构处理：
- * - 自动模式(modelType=2)下添加pagetype参数区分自动/工单总列表
- * - dataLength: 存储当前页数据量用于控制上下移按钮状态
+ * @param param0 - 包含分页信息的对象
+ * @param param0.page - 当前页码
+ * @param param0.pageSize - 每页数据量
+ * @returns 包含总数据量和当前页数据的对象
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
+    // 合并查询参数
     const params: any = {
       ...props.queryParams,
       pagetype: workOrderType.value,
     };
 
+    // 调用接口获取工单管理列表数据
     obtainTheWorkOrderManagementList({
       ...params, // 合并所有查询条件
       pageNum: page, // 接口当前页码
       pageSize, // 接口每页数据量
     })
       .then(({ total, list }) => {
-        dataLength.value = list.length; // 更新当前页数据量
+        // 重置历史进站下标
+        historicalEntryIndex.value = -1;
+        if (list && list.length > 0) {
+          // 查找历史进站最后一次的下标
+          for (const [i, element] of list.entries()) {
+            if (element.historyId) {
+              historicalEntryIndex.value = i;
+            } else {
+              break; // 中断循环
+            }
+          }
+        }
+        // 更新当前页数据长度
+        dataLength.value = list.length;
         resolve({
           total, // 总数据量
           items: list, // 当前页数据集合
@@ -186,82 +235,38 @@ function queryData({ page, pageSize }: any) {
   });
 }
 
-/**
- * 获取工单状态文本描述
- * 功能：将状态码转换为可读的工单状态文本
- * 流程：
- * 1. 接收数字类型的状态码
- * 2. 通过switch-case匹配预定义状态
- * 3. 返回对应的中文状态描述
- *
- * @param status - 工单状态码（0:未开工 1:已开工 3:暂停下线）
- * @returns 状态文本描述
- *
- * 状态说明：
- * - 0: 工单创建后尚未开始执行
- * - 1: 工单已开始生产作业
- * - 3: 工单被主动暂停或异常中断
- *
- * 注意：
- * - 状态码2在业务逻辑中未使用（可能为预留或弃用状态）
- * - 返回文本直接使用中文，如需国际化需改用$t()方法
- */
-function getStatusText(status: number) {
-  switch (status) {
-    case 0: {
-      return '未开工';
-    }
-    case 1: {
-      return '已开工';
-    }
-    case 3: {
-      return '暂停下线';
-    }
-  }
-}
-
 // endregion
 
 // region 进站
 
 /**
- * 处理工单进站操作
- * 功能：执行工单进站操作并进行二次确认
- * 流程：
- * 1. 弹出确认对话框提示用户确认进站
- * 2. 确认后调用进站接口提交工单ID
- * 3. 操作成功时刷新表格数据并显示成功提示
- *
- * 接口说明：
- * inputSheet - 工单进站接口，接收参数：
- *   - id: 当前工单唯一标识（来自行数据row.id）
- *
- * 注意事项：
- * - 使用ant-design的Modal组件实现操作确认
- * - 成功提示使用国际化处理的多语言文本
- * - 标题及取消提示暂为中文硬编码，需根据需求国际化
+ * 处理工单批量进站操作
  */
 function inputSheetCode() {
+  // 弹出确认对话框
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
     okType: 'danger',
+    // 取消操作回调
     onCancel() {
       message.warning('已取消进站!');
     },
+    // 确认操作回调
     onOk() {
       const ids: string[] = [];
+      // 筛选出没有历史进站记录的工单 ID
       gridApi.grid.getTableData().tableData.forEach((item: any) => {
-        if (workOrderType.value === '1') {
+        if (!item.historyId) {
           ids.push(item.sendId);
-        } else {
-          ids.push(item.id);
         }
       });
+      // 调用批量进站接口
       inputSheetBatch({
         ids,
       }).then(() => {
         message.success($t('common.successfulOperation'));
+        // 刷新表格数据
         gridApi.reload();
       });
     },
@@ -274,33 +279,24 @@ function inputSheetCode() {
 
 /**
  * 处理工单删除操作
- * 功能：执行工单删除操作并进行二次确认
- * 流程：
- * 1. 弹出确认对话框提示用户确认删除
- * 2. 确认后调用删除接口提交工单ID
- * 3. 操作成功时刷新表格数据并显示提示
- *
- * 接口说明：
- * deleteWorksheet - 工单删除接口，接收参数：
- *   - id: 当前工单唯一标识（来自行数据row.id）
- *
- * 注意事项：
- * - 使用ant-design的Modal组件实现操作确认
- * - 成功提示使用国际化处理的多语言文本
- * - 删除操作不可逆，需确保二次确认的必要性
- * - 标题及取消提示暂为中文硬编码，需根据需求国际化
+ * @param row - 当前要删除的工单行数据
  */
 function delSheetCode(row: any) {
+  // 弹出确认对话框
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
     okType: 'danger',
+    // 取消操作回调
     onCancel() {
       message.warning('已取消删除!');
     },
+    // 确认操作回调
     onOk() {
+      // 调用删除工单接口
       deleteWorksheet(row.id).then(() => {
         message.success($t('common.successfulOperation'));
+        // 刷新表格数据
         gridApi.reload();
       });
     },
@@ -310,97 +306,59 @@ function delSheetCode(row: any) {
 // endregion
 // region 移入&移出&上下移
 /**
- * 工单模式
+ * 工单模式，1 表示手动，2 表示自动
  */
 const modelType = ref(1);
 /**
- * 显示移入对话框
+ * 控制移入对话框是否显示
  */
 const showIn = ref(false);
 /**
- * 移入数据
+ * 移入的工单数据
  */
 const inItem = ref<any>({});
+
 /**
- * 处理工单移入操作
- *
- * 功能：执行工单移入操作并进行二次确认，支持选择手动/自动模式
- *
- * 流程：
- * 1. 初始化模式类型为手动（modelType.value = 1）
- * 2. 弹出带模式选择框的确认对话框
- * 3. 用户可选择手动或自动模式
- * 4. 确认后调用移入接口提交工单ID和模式类型
- * 5. 操作成功时刷新表格数据并显示国际化成功提示
- * 6. 取消操作时显示取消提示
- *
- *
- * @throws {Error} 当接口调用失败时抛出异常
- *
- * 接口说明：
- * moveIn - 工单移入接口
- * @param {object} params 接口参数
- * @param {string} params.id - 工单ID（来自row.id）
- * @param {number} params.modelType - 模式类型（1:手动 2:自动）
- *
- * 组件配置：
- * - 使用ant-design的Modal.confirm创建确认对话框
- * - 对话框内容包含RadioGroup单选组件：
- *   - Radio选项1: value=1 显示"手动"
- *   - Radio选项2: value=2 显示"自动"
- * - 对话框标题固定为中文"是否确认移入?"
- *
- * 注意事项：
- * - 模式选择值通过v-model绑定到modelType响应式变量
- * - 成功提示使用$t('common.successfulOperation')实现国际化
- * - 操作完成后通过gridApi.reload()刷新表格数据
- * - 对话框取消文本和确认文本使用中文硬编码
+ * 执行工单移入操作
  */
 function moveInFun() {
+  // 调用工单移入接口
   moveIn({
     id: inItem.value.id,
     modelType: modelType.value,
   }).then(() => {
     message.success($t('common.successfulOperation'));
+    // 刷新表格数据
     gridApi.reload();
+    // 关闭移入对话框
     showIn.value = false;
   });
 }
+
 /**
  * 处理工单移出操作
- * 功能：执行工单移出操作并进行二次确认
- * 流程：
- * 1. 弹出确认对话框提示用户确认移出
- * 2. 确认后调用移出接口提交工单信息
- * 3. 操作成功时刷新表格数据并显示提示
- *
- * 接口说明：
- * moveOut - 工单移出接口，接收参数：
- *   - id: 当前工单唯一标识（来自行数据row.id）
- *   - worksheetCode: 工单编号（来自行数据row.worksheetCode）
- *
- * 注意事项：
- * - 使用ant-design的Modal组件实现操作确认
- * - 成功提示使用国际化处理的多语言文本
- * - 移出操作通常用于将工单从当前列表中移除
- * - 需同时提交工单ID和编号确保接口准确性
- * - 标题及取消提示暂为中文硬编码，需根据需求国际化
+ * @param row - 当前要移出的工单行数据
  */
 function moveOutFun(row: any) {
+  // 弹出确认对话框
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
     okType: 'danger',
+    // 取消操作回调
     onCancel() {
       message.warning('已取消移出!');
     },
+    // 确认操作回调
     onOk() {
+      // 调用工单移出接口
       moveOut({
         id: row.id,
         worksheetCode: row.worksheetCode,
         equipCode: row.equipCode,
       }).then(() => {
         message.success($t('common.successfulOperation'));
+        // 刷新表格数据
         gridApi.reload();
       });
     },
@@ -410,32 +368,14 @@ function moveOutFun(row: any) {
 
 /**
  * 处理工单顺序调整
- * 功能：实现工单在列表中的上下位置交换
- * 流程：
- * 1. 获取当前表格完整数据
- * 2. 根据方向计算目标位置索引
- * 3. 构建交换顺序的接口参数
- * 4. 调用顺序调整接口提交数据
- * 5. 操作成功后刷新表格数据
- *
  * @param index - 当前操作行索引
- * @param direction - 移动方向 ('up'上移/'down'下移)
- *
- * 接口说明：
- * moveUpAndDown - 顺序调整接口，接收参数：
- *   - Array<{id:工单ID, orderNo:新序号}>
- *   需要同时提交交换位置的两个工单信息：
- *   - 当前工单ID + 目标位置工单的orderNo
- *   - 目标工单ID + 当前工单的orderNo
- *
- * 注意事项：
- * - 移动范围已在模板中校验(rowIndex > 0 和 rowIndex < dataLength -1)
- * - 使用$t实现操作成功的国际化提示
- * - 接口需要成对提交两个工单的新序号才能实现位置交换
+ * @param direction - 移动方向，'down' 表示下移，'up' 表示上移
  */
 function sorting(index: number, direction: 'down' | 'up') {
+  // 获取表格数据
   const data = gridApi.grid.getTableData();
   let targetIndex = 0;
+  // 根据移动方向计算目标索引
   switch (direction) {
     case 'down': {
       targetIndex = index + 1;
@@ -447,6 +387,7 @@ function sorting(index: number, direction: 'down' | 'up') {
     }
   }
 
+  // 调用顺序调整接口
   moveUpAndDown([
     {
       id: data.tableData[index].id,
@@ -458,54 +399,57 @@ function sorting(index: number, direction: 'down' | 'up') {
     },
   ]).then(() => {
     message.success($t('common.successfulOperation'));
+    // 刷新表格数据
     gridApi.reload();
   });
 }
 // endregion
 
 // region 改派
-// 当前改派的工单
+/**
+ * 当前改派的工单数据
+ */
 const reassignmentItem = ref<any>({});
-// 改派子组件对象
+/**
+ * 设备资源子组件引用
+ */
 const equipmentResourcesRef = ref<any>();
+
 /**
  * 处理工单改派操作
- * 功能：初始化改派数据并触发改派界面
- * 流程：
- * 1. 缓存当前行工单数据至响应式对象
- * 2. 调用设备资源子组件的抽屉展示方法
- *
- * @param row - 当前操作行数据，包含工单完整信息
- *
- * 组件说明：
- * equipmentResourcesRef - 设备资源子组件引用，提供改派界面交互能力
- *
- * 注意事项：
- * - 改派操作需要设备资源子组件协同完成
- * - 改派完成后会触发@close事件并刷新表格数据
- * - 使用对象展开运算符(...)实现数据解构传递
+ * @param row - 当前要改派的工单行数据
  */
 function reassignment(row: any) {
+  // 缓存当前工单数据
   reassignmentItem.value = {
     ...row,
   };
+  // 调用设备资源子组件的展示方法
   equipmentResourcesRef.value.showJobDrawerFun();
 }
 
 /**
- * 关闭改派
+ * 关闭改派对话框并刷新表格数据
  */
 function reassignmentClose() {
+  // 清空改派工单数据
   reassignmentItem.value = {};
+  // 刷新表格数据
   gridApi.reload();
 }
 
 // region 暴露方法
 
+/**
+ * 刷新表格数据
+ */
 const query = () => {
   gridApi.reload();
 };
 
+/**
+ * 暴露 query 方法供父组件调用
+ */
 defineExpose({
   query,
 });
@@ -515,14 +459,24 @@ defineExpose({
 
 <template>
   <!-- region 表格内容 -->
+  <!-- 卡片组件，用于包裹表格 -->
   <Card class="mb-5">
+    <!-- 渲染 VxeGrid 表格 -->
     <Grid class="mt-4">
+      <!-- 自定义工具栏工具 -->
       <template #toolbar-tools>
-        <Button type="primary" @click="inputSheetCode()">
+        <!-- 当工单列表类型为待执行列表时，显示进站按钮 -->
+        <Button
+          type="primary"
+          @click="inputSheetCode()"
+          v-if="workOrderType === '1'"
+        >
           {{ $t('workOrderEntry.pullIn') }}
         </Button>
       </template>
+      <!-- 自定义工具栏操作 -->
       <template #toolbar-actions>
+        <!-- 单选按钮组，用于切换工单列表类型 -->
         <RadioGroup
           v-model:value="workOrderType"
           button-style="solid"
@@ -532,11 +486,9 @@ defineExpose({
           <RadioButton value="2">工单总列表</RadioButton>
         </RadioGroup>
       </template>
-      <template #sendState="{ row }">
-        {{ getStatusText(row.sendState) }}
-      </template>
+      <!-- 操作列自定义插槽 -->
       <template #action="{ row, rowIndex }">
-        <!-- 进站 ="{ row }"-->
+        <!-- 注释掉的进站按钮 -->
         <!--        <Tooltip v-if="row.sendState !== 3">
           <template #title>{{ $t('workOrderEntry.pullIn') }}</template>
           <Button
@@ -550,7 +502,7 @@ defineExpose({
             @click="inputSheetCode(row)"
           />
         </Tooltip>-->
-        <!-- 恢复 -->
+        <!-- 恢复按钮 -->
         <Tooltip v-if="row.sendState === 3">
           <template #title>{{ $t('workOrderEntry.recover') }}</template>
           <Button
@@ -563,7 +515,7 @@ defineExpose({
             "
           />
         </Tooltip>
-        <!-- 暂停 -->
+        <!-- 注释掉的暂停按钮 -->
         <!--        <Tooltip>
           <template #title>{{ $t('workOrderEntry.pause') }}</template>
           <Button
@@ -576,7 +528,7 @@ defineExpose({
             "
           />
         </Tooltip>-->
-        <!-- 改派 -->
+        <!-- 改派按钮，当工单列表类型为工单总列表时显示 -->
         <Tooltip v-if="workOrderType === '2'">
           <template #title>{{ $t('workOrderEntry.reassignment') }}</template>
           <Button
@@ -590,7 +542,7 @@ defineExpose({
             @click="reassignment(row)"
           />
         </Tooltip>
-        <!-- 移入 -->
+        <!-- 移入按钮，当工单列表类型为工单总列表时显示 -->
         <Tooltip v-if="workOrderType === '2'">
           <template #title>{{ $t('workOrderEntry.moveIn') }}</template>
           <Button
@@ -610,8 +562,10 @@ defineExpose({
             "
           />
         </Tooltip>
-        <!-- 移出 -->
-        <Tooltip v-if="workOrderType === '1'">
+        <!-- 移出按钮，当工单列表类型为待执行列表且行索引大于历史进站下标时显示 -->
+        <Tooltip
+          v-if="workOrderType === '1' && rowIndex > historicalEntryIndex"
+        >
           <template #title>{{ $t('workOrderEntry.moveOut') }}</template>
           <Button
             type="link"
@@ -624,8 +578,10 @@ defineExpose({
             @click="moveOutFun(row)"
           />
         </Tooltip>
-        <!-- 上移 -->
-        <Tooltip v-if="workOrderType === '1' && rowIndex > 0">
+        <!-- 上移按钮，当工单列表类型为待执行列表且行索引大于历史进站下标加 1 时显示 -->
+        <Tooltip
+          v-if="workOrderType === '1' && rowIndex > historicalEntryIndex + 1"
+        >
           <template #title>{{ $t('workOrderEntry.moveUp') }}</template>
           <Button
             type="link"
@@ -638,8 +594,14 @@ defineExpose({
             @click="sorting(rowIndex, 'up')"
           />
         </Tooltip>
-        <!-- 下移 -->
-        <Tooltip v-if="workOrderType === '1' && rowIndex < dataLength - 1">
+        <!-- 下移按钮，当工单列表类型为待执行列表且行索引小于数据长度减 1 且大于历史进站下标时显示 -->
+        <Tooltip
+          v-if="
+            workOrderType === '1' &&
+            rowIndex < dataLength - 1 &&
+            rowIndex > historicalEntryIndex
+          "
+        >
           <template #title>
             {{ $t('workOrderEntry.moveDown') }}
           </template>
@@ -654,7 +616,7 @@ defineExpose({
             @click="sorting(rowIndex, 'down')"
           />
         </Tooltip>
-        <!-- 删除 -->
+        <!-- 删除按钮，当工单列表类型为工单总列表时显示 -->
         <Tooltip v-if="workOrderType === '2'">
           <template #title>{{ $t('common.delete') }}</template>
           <Button
@@ -673,6 +635,7 @@ defineExpose({
   </Card>
   <!-- endregion -->
 
+  <!-- 设备资源子组件，用于工单改派 -->
   <EquipmentResources
     ref="equipmentResourcesRef"
     :workstation-info="{ equipCode: queryParams.workstationCode }"
@@ -682,7 +645,9 @@ defineExpose({
     @close="reassignmentClose"
   />
 
+  <!-- 移入确认对话框 -->
   <Modal v-model:open="showIn" title="是否确认移入?" @ok="moveInFun">
+    <!-- 单选按钮组，用于选择工单移入模式 -->
     <RadioGroup v-model:value="modelType">
       <Radio :value="1">手动</Radio>
       <Radio :value="2">自动</Radio>
@@ -690,4 +655,6 @@ defineExpose({
   </Modal>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* 作用域样式，仅对当前组件生效 */
+</style>

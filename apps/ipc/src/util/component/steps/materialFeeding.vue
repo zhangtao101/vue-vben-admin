@@ -60,7 +60,7 @@ const props = defineProps({
  * 获取标签的class
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 border p-2 text-center';
+  return 'mr-4 inline-block w-48 p-2 text-right';
 }
 
 /**
@@ -464,9 +464,29 @@ function readMessage(message: string) {
   <template v-if="details">
     <div>
       <div class="mb-4 mr-8 inline-block">
+        <!-- 当前工单 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.currentWorkOrder') }}：
+        </span>
+        <span :class="getValueClass()">
+          {{ details.currentJobId || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <div class="mb-4 mr-8 inline-block">
+        <!-- 产品名称 -->
+        <span :class="getLabelClass()">
+          {{ $t('productionOperation.currentProductName') }}：
+        </span>
+        <span :class="getValueClass()">
+          {{ details.productName || $t('productionOperation.none') }}
+        </span>
+      </div>
+    </div>
+    <div>
+      <div class="mb-4 mr-8 inline-block">
         <!-- 前工步执行状况 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.implementationStatus') }}
+          {{ $t('productionOperation.implementationStatus') }}：
         </span>
         <span :class="getValueClass()">
           <!--        {{ obtainTheDeviceCleanStatus(3) }}-->
@@ -476,7 +496,7 @@ function readMessage(message: string) {
       <div class="mb-4 mr-8 inline-block">
         <!-- 当前设备投料模式 -->
         <span :class="getLabelClass()">
-          {{ $t('productionOperation.currentDeviceFeedingMode') }}
+          {{ $t('productionOperation.currentDeviceFeedingMode') }}：
         </span>
         <!-- 手动 -->
         <span :class="getValueClass()">
