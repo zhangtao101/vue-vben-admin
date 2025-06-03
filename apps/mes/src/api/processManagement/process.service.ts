@@ -25,3 +25,12 @@ export async function getProceByParentId(parentId: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/produce/process/getProceByParentId?parentId=${parentId}`,
   );
 }
+
+/**
+ * 呼气全部工序
+ */
+export async function queryProcessAll() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/produce/process/list/all`,
+  );
+}

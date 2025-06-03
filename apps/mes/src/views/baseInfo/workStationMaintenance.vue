@@ -42,6 +42,7 @@ import {
   editWorkstation,
   getProceByParentId,
   getProceByType,
+  queryProcessAll,
   queryWorkstation,
   workstationAudit,
   workstationUpdate,
@@ -284,9 +285,8 @@ function queryProcessByType() {
 
   /**
    * 查询插叙工序列表。
-   * 这里硬编码了工作站类型为 2。
    */
-  getProceByType(2)
+  queryProcessAll()
     .then((data) => {
       /**
        * 如果响应数据存在，则处理数据。
@@ -1080,8 +1080,8 @@ onMounted(async () => {
             v-model:value="checkedRow.workstationType"
             :disabled="isShowStatus"
             :options="workStationType"
-            @change="queryProcessByType"
           />
+          <!--          @change="queryProcessByType"-->
         </FormItem>
         <!-- 对应工序 -->
         <FormItem
@@ -1120,12 +1120,15 @@ onMounted(async () => {
             <span>{{ index + 1 }}</span>
           </template>
 
+          <!-- 工序编号 -->
           <template v-if="column.dataIndex === 'processCode'">
             <div class="editable-cell">
               <div v-if="record.isProcessCodeEdit && !isShowStatus">
                 <Select
                   v-model:value="record.selectedProcessCode"
                   :options="procedureList"
+                  show-search
+                  :filter-option="filterOption"
                   class="w-3/4"
                 />
                 <Tooltip>

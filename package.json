@@ -29,6 +29,7 @@
     "build:analyze": "turbo build:analyze",
     "build:antd": "pnpm run build --filter=@vben/web-antd",
     "build:ipc": "pnpm run build --filter=@vben/ipc",
+    "build:mes": "pnpm run build --filter=@vben/mes",
     "build:docker": "./scripts/deploy/build-local-docker-image.sh",
     "build:docs": "pnpm run build --filter=@vben/docs",
     "build:ele": "pnpm run build --filter=@vben/web-ele",
