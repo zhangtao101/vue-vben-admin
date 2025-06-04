@@ -60,6 +60,7 @@ function createRequestClient(baseURL: string) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+      config.headers.From = 'web';
       return config;
     },
   });
@@ -69,9 +70,22 @@ function createRequestClient(baseURL: string) {
     fulfilled: (response) => {
       const { data: responseData, status } = response;
 
-      const { code, data } = responseData;
-      if (status >= 200 && status < 400 && code === 0) {
+      const { code, data, msg }: any = responseData;
+      if (status >= 200 && status < 400 && code === 200) {
         return data;
+      }
+      // 如果业务状态码不为200，显示错误消息
+      else if (code !== 200) {
+        // message.error(msg); // 显示错误消息
+        // 如果业务状态码为401，处理未授权情况
+        if (code === 401) {
+          const accessStore = useAccessStore(); // 使用Vuex的useAccessStore来获取访问存储的状态
+          const authStore = useAuthStore(); // 使用Vuex的useAuthStore来获取认证存储的状态
+          accessStore.setAccessToken(null); // 清除访问令牌
+          // 执行退出登录的操作
+          authStore.logout().then();
+        }
+        throw new Error(msg); // 抛出异常，包含错误消息
       }
 
       throw Object.assign({}, response, { response });
@@ -91,13 +105,13 @@ function createRequestClient(baseURL: string) {
 
   // 通用的错误处理,如果没有进入上面的错误处理逻辑，就会进入这里
   client.addResponseInterceptor(
-    errorMessageResponseInterceptor((msg: string, error) => {
+    errorMessageResponseInterceptor((_msg: string, error) => {
       // 这里可以根据业务进行定制,你可以拿到 error 内的信息进行定制化处理，根据不同的 code 做不同的提示，而不是直接使用 message.error 提示 msg
       // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};
       const errorMessage = responseData?.error ?? responseData?.message ?? '';
       // 如果没有错误信息，则会根据状态码进行提示
-      message.error(errorMessage || msg);
+      message.error(errorMessage || error);
     }),
   );
 

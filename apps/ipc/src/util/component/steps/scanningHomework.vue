@@ -49,7 +49,7 @@ const props = defineProps({
  * @returns {string} 标签的 class 字符串
  */
 function getLabelClass() {
-  return 'mr-4 inline-block w-48 p-2 text-right';
+  return 'mr-4 inline-block w-32 p-2 text-right';
 }
 
 /**
@@ -57,7 +57,7 @@ function getLabelClass() {
  * @returns {string} 值显示区域的 class 字符串
  */
 function getValueClass() {
-  return 'inline-block w-64 border p-2 text-center';
+  return 'inline-block w-48 border p-2 text-center';
 }
 
 /**
@@ -323,11 +323,11 @@ onMounted(() => {
         <!-- endregion-->
       </Col>
       <!-- 当展示类型在 20 到 23 之间时显示第二列 -->
-      <Col :span="12" v-if="showTypeNumber >= 20 && showTypeNumber <= 23">
+      <Col :span="12" v-if="showTypeNumber >= 23">
         <!-- region 资源校验 -->
         <!-- 根据展示类型决定是否显示资源校验区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="mb-4"
           v-if="showType[showTypeNumber].includes('resourceVerification')"
         >
           <!-- 显示资源校验标签 -->
@@ -335,15 +335,29 @@ onMounted(() => {
             {{ $t('productionOperation.resourceVerification') }}：
           </span>
           <!-- 显示资源校验的值，无值时显示默认提示 -->
-          <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+          <span class="inline-bloc align-middle text-xl">
+            <IconifyIcon
+              v-if="details.equipCheckFlag || details.equipCheckFlag === 0"
+              :icon="
+                details.equipCheckFlag === -1
+                  ? 'mdi:error-outline'
+                  : 'mdi:success-circle-outline'
+              "
+              :class="{
+                'text-red-500': details.equipCheckFlag === -1,
+                'text-green-500': details.equipCheckFlag === 1,
+                'text-yellow-300': details.equipCheckFlag === 0,
+              }"
+              class="inline-block align-text-bottom text-2xl"
+            />
+            {{ details.equipCheckFlagName }}
           </span>
         </div>
         <!-- endregion-->
         <!-- region 工序校验 -->
         <!-- 根据展示类型决定是否显示工序校验区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="mb-4"
           v-if="showType[showTypeNumber].includes('processVerification')"
         >
           <!-- 显示工序校验标签 -->
@@ -351,15 +365,29 @@ onMounted(() => {
             {{ $t('productionOperation.processVerification') }}：
           </span>
           <!-- 显示工序校验的值，无值时显示默认提示 -->
-          <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+          <span class="inline-bloc align-middle text-xl">
+            <IconifyIcon
+              v-if="details.processCheck || details.processCheck === 0"
+              :icon="
+                details.processCheck === -1
+                  ? 'mdi:error-outline'
+                  : 'mdi:success-circle-outline'
+              "
+              :class="{
+                'text-red-500': details.processCheck === -1,
+                'text-green-500': details.processCheck === 1,
+                'text-yellow-300': details.processCheck === 0,
+              }"
+              class="inline-block align-text-bottom text-2xl"
+            />
+            {{ details.processCheckName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
         <!-- region 工单绑定 -->
         <!-- 根据展示类型决定是否显示工单绑定区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="mb-4"
           v-if="showType[showTypeNumber].includes('workOrderBinding')"
         >
           <!-- 显示工单绑定标签 -->
@@ -367,7 +395,21 @@ onMounted(() => {
             {{ $t('productionOperation.workOrderBinding') }}：
           </span>
           <!-- 显示工单绑定的值，无值时显示默认提示 -->
-          <span :class="getValueClass()">
+          <span class="inline-bloc align-middle text-xl">
+            <IconifyIcon
+              v-if="details.readyFlag || details.readyFlag === 0"
+              :icon="
+                details.readyFlag === -1
+                  ? 'mdi:error-outline'
+                  : 'mdi:success-circle-outline'
+              "
+              :class="{
+                'text-red-500': details.readyFlag === -1,
+                'text-green-500': details.readyFlag === 1,
+                'text-yellow-300': details.readyFlag === 0,
+              }"
+              class="inline-block align-text-bottom text-2xl"
+            />
             {{ details.readyFlagName || $t('productionOperation.none') }}
           </span>
         </div>
@@ -375,7 +417,7 @@ onMounted(() => {
         <!-- region 参数判异 -->
         <!-- 根据展示类型决定是否显示参数判异区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="mb-4"
           v-if="showType[showTypeNumber].includes('parameterDiscrimination')"
         >
           <!-- 显示参数判异标签 -->
@@ -383,15 +425,29 @@ onMounted(() => {
             {{ $t('productionOperation.parameterDiscrimination') }}：
           </span>
           <!-- 显示参数判异的值，无值时显示默认提示 -->
-          <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+          <span class="inline-bloc align-middle text-xl">
+            <IconifyIcon
+              v-if="details.paramCheckFlag || details.paramCheckFlag === 0"
+              :icon="
+                details.paramCheckFlag === -1
+                  ? 'mdi:error-outline'
+                  : 'mdi:success-circle-outline'
+              "
+              :class="{
+                'text-red-500': details.paramCheckFlag === -1,
+                'text-green-500': details.paramCheckFlag === 1,
+                'text-yellow-300': details.paramCheckFlag === 0,
+              }"
+              class="inline-block align-text-bottom text-2xl"
+            />
+            {{ details.paramCheckFlagName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
         <!-- region 参数绑定 -->
         <!-- 根据展示类型决定是否显示参数绑定区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="mb-4"
           v-if="showType[showTypeNumber].includes('parameterBinding')"
         >
           <!-- 显示参数绑定标签 -->
@@ -399,24 +455,52 @@ onMounted(() => {
             {{ $t('productionOperation.parameterBinding') }}：
           </span>
           <!-- 显示参数绑定的值，无值时显示默认提示 -->
-          <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+          <span class="inline-bloc align-middle text-xl">
+            <IconifyIcon
+              v-if="details.paramBinding || details.paramBinding === 0"
+              :icon="
+                details.paramBinding === -1
+                  ? 'mdi:error-outline'
+                  : 'mdi:success-circle-outline'
+              "
+              :class="{
+                'text-red-500': details.paramBinding === -1,
+                'text-green-500': details.paramBinding === 1,
+                'text-yellow-300': details.paramBinding === 0,
+              }"
+              class="inline-block align-text-bottom text-2xl"
+            />
+            {{ details.paramBindingName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->
         <!-- region 设备联锁 -->
         <!-- 根据展示类型决定是否显示设备联锁区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="mb-4"
           v-if="showType[showTypeNumber].includes('equipmentInterlockingR')"
         >
           <!-- 显示设备联锁标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.equipmentInterlocking') }}：
           </span>
-          <!-- 显示设备联锁的值，无值时显示默认提示 -->
-          <span :class="getValueClass()">
-            {{ details.readyFlagName || $t('productionOperation.none') }}
+          <!-- 显示设备联锁标签 -->
+          <span class="inline-bloc align-middle text-xl">
+            <IconifyIcon
+              v-if="details.errorFlag || details.errorFlag === 0"
+              :icon="
+                details.errorFlag === -1
+                  ? 'mdi:error-outline'
+                  : 'mdi:success-circle-outline'
+              "
+              :class="{
+                'text-red-500': details.errorFlag === -1,
+                'text-green-500': details.errorFlag === 1,
+                'text-yellow-300': details.errorFlag === 0,
+              }"
+              class="inline-block align-text-bottom text-2xl"
+            />
+            {{ details.errorFlagName || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion-->

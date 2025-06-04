@@ -374,14 +374,9 @@ onMounted(() => {
           <!-- endregion -->
           <!-- region 总产量 -->
           <!-- 仅在显示类型为 30 时显示总产量的容器 -->
-          <Row>
+          <Row v-if="showTypeNumber === 30">
             <!-- 显示总产量标签的列 -->
-            <Col
-              span="8"
-              :class="getLabelClass()"
-              class="h-10 border-0"
-              v-if="showTypeNumber === 30"
-            >
+            <Col span="8" :class="getLabelClass()" class="h-10 border-0">
               {{ $t('productionOperation.totalOutput') }}
             </Col>
             <!-- 显示总产量值的列 -->

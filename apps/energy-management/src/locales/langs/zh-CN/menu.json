@@ -1,0 +1,14 @@
+{
+  "energyManagement": "能源管理",
+  "energyFlowDirection": "能源流向",
+  "energyLoss": "能源损耗",
+  "energyConsumptionOfTheProduct": "产品用能",
+  "energyConsumptionOfSubSystems": "分项系统用能",
+  "teamEnergyUtilization": "班组用能",
+  "electricityConsumptionFee": "电度电费",
+  "powerRegulationCharge": "力调电费",
+  "combinedWaterCharge": "综合水费",
+  "electricityConsumptionData": "用电数据",
+  "waterUsageData": "用水数据",
+  "configurationEditing": "组态编辑"
+}

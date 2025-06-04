@@ -650,9 +650,9 @@ onBeforeUnmount(() => {
       <!-- 行容器，用于布局工作站查询相关元素 -->
       <Row class="mb-4">
         <!-- 列容器，占据 23 格宽度 -->
-        <Col :span="23" class="flex">
+        <Col :span="24" class="flex">
           <!-- 显示工作站标题，带有蓝色边框 -->
-          <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
+          <span class="w-24 border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.homeworkStation') }}
           </span>
 

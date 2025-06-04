@@ -46,8 +46,8 @@ const routes: RouteRecordRaw[] = [
     path: '/reportManager',
     children: [
       {
-        name: 'reportManager',
-        path: 'reportManager',
+        name: 'reportManagerView',
+        path: 'reportManagerView',
         component: () => import('#/views/reportManager/reportManager.vue'),
         meta: {
           ignoreAccess: true,
