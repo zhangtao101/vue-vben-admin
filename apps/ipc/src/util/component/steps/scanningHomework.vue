@@ -7,6 +7,7 @@ import { $t } from '@vben/locales';
 import { Button, Col, Empty, Row, Spin } from 'ant-design-vue';
 
 import { listByCodeScan } from '#/api';
+import useWebSocket from '#/util/websocket-util';
 
 /**
  * 定义组件的 props，用于接收父组件传递的数据
@@ -166,6 +167,26 @@ function queryData() {
       spinning.value = false;
     });
 }
+
+// region websocket
+// 初始化 WebSocket 连接，并传入消息处理函数和配置参数
+useWebSocket(readMessage, {
+  workstationCode: props.workstationCode,
+  equipCode: props.equipCode,
+  worksheetCode: props.worksheetCode,
+  bindingId: props.bindingId,
+  functionId: props.functionId,
+  webSocketType: 5,
+});
+
+/**
+ * 处理 WebSocket 接收到的消息
+ */
+function readMessage() {
+  // 当接收到消息时，重新加载表格数据
+  queryData();
+}
+// endregion
 
 /**
  * 组件挂载后执行的钩子函数，会在组件挂载完成后调用 queryData 函数获取数据
