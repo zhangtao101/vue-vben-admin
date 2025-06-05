@@ -1,0 +1,9 @@
+{
+  "workStepName": "工步名称",
+  "affiliatedProcess": "所属工序",
+  "workStepType": "工步类型",
+  "workingStepVersion": "工步版本",
+  "jobType": "作业类型",
+  "functionName": "功能名称",
+  "detailsAndRemarks": "详情备注"
+}

@@ -34,27 +34,23 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
       // 后台返回的菜单列表
       const routesBlack = await getAllMenusApi();
       // 转换后的菜单列表
-      const routes: RouteRecordStringComponent[] = mapRouterTree(
-        routesBlack.menu,
-        (node: any) => {
-          const item: RouteRecordStringComponent = {
-            component: '',
-            meta: {
-              code: node.code,
-              // TODO 暂无图标, 意思意思
-              icon: 'hugeicons:folder-management',
-              title: node.title,
-            },
-            name: node.name,
-            path: node.name,
-            children: node.children,
-          };
-          return item;
-        },
-      );
+      const routes: any[] = mapRouterTree(routesBlack.menu, (node: any) => {
+        const item: RouteRecordStringComponent = {
+          component: '',
+          meta: {
+            code: node.code,
+            // TODO 暂无图标, 意思意思
+            icon: 'hugeicons:folder-management',
+            title: node.title,
+          },
+          name: node.name,
+          path: node.name,
+          children: node.children,
+        };
+        return item;
+      });
       // 添加首页及个人信息页
       routes.push({
-        component: 'BasicLayout',
         meta: {
           icon: 'lucide:layout-dashboard',
           order: -1,
