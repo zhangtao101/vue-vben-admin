@@ -652,7 +652,9 @@ onBeforeUnmount(() => {
         <!-- 列容器，占据 23 格宽度 -->
         <Col :span="24" class="flex">
           <!-- 显示工作站标题，带有蓝色边框 -->
-          <span class="w-24 border-l-4 border-sky-500 pl-4 text-xl font-black">
+          <span
+            class="h-8 w-36 border-l-4 border-sky-500 pl-4 text-xl font-black"
+          >
             {{ $t('productionOperation.homeworkStation') }}
           </span>
 
@@ -712,7 +714,10 @@ onBeforeUnmount(() => {
                     {{ $t('productionOperation.interlockConfiguration') }}
                   </MenuItem>
                   <!-- 全局清洗菜单项 -->
-                  <MenuItem @click="showInterlockingConfiguration()">
+                  <MenuItem
+                    @click="showInterlockingConfiguration()"
+                    v-if="false"
+                  >
                     {{ $t('productionOperation.globalCleaning') }}
                   </MenuItem>
                 </Menu>
