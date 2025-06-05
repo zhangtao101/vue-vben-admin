@@ -3,7 +3,7 @@ import { Page } from '@vben/common-ui';
 </script>
 
 <template>
-  <Page>1999999999999999999999999999999999999999999999923</Page>
+  <Page>123</Page>
 </template>
 
 <style scoped></style>

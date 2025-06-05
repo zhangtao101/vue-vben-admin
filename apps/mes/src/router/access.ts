@@ -38,7 +38,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
         routesBlack.menu,
         (node: any) => {
           const item: RouteRecordStringComponent = {
-            component: node.name,
+            component: '',
             meta: {
               code: node.code,
               // TODO 暂无图标, 意思意思

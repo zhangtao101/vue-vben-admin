@@ -16,13 +16,15 @@ function mapRouterTree<T, V extends Record<string, any>>(
   return tree.map((node) => {
     const mapperNode: Record<string, any> = mapper(node);
     mapperNode.path = basicUrl + mapperNode.path;
-    mapperNode.component =
-      basicUrl === '/' ? 'BasicLayout' : basicUrl + mapperNode.component;
-    if (mapperNode[childProps]) {
+    if (mapperNode[childProps] && mapperNode[childProps].length > 0) {
+      mapperNode.component = '';
       mapperNode[childProps] = mapRouterTree(mapperNode[childProps], mapper, {
         basicUrl: `${mapperNode.path}/`,
         childProps,
       });
+    } else {
+      mapperNode.component = basicUrl + mapperNode.name;
+      mapperNode[childProps] = [];
     }
     return mapperNode as V;
   });
