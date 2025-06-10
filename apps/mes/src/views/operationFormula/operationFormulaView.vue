@@ -35,6 +35,7 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import FormulaEditing from '#/util/component/formulaEditing.vue';
 
 // 路由信息
 const route = useRoute();
@@ -298,6 +299,16 @@ const author = ref<string[]>([]);
 
 // endregion
 
+// region 配方编辑
+
+const formulaEditingRef = ref<any>();
+
+function showFormulaEditing() {
+  formulaEditingRef.value.open();
+}
+
+// endregion
+
 // region 初始化
 
 onMounted(() => {
@@ -368,7 +379,7 @@ onMounted(() => {
           <!-- 路线修改 -->
           <Tooltip v-if="author.includes('编辑')">
             <template #title>{{ $t('common.view') }}</template>
-            <Button type="link" size="small">
+            <Button type="link" size="small" @click="showFormulaEditing">
               <IconifyIcon
                 icon="mdi:source-branch-sync"
                 class="inline-block size-6"
@@ -541,6 +552,8 @@ onMounted(() => {
       </template>
     </Drawer>
     <!-- endregion -->
+
+    <FormulaEditing ref="formulaEditingRef" />
   </Page>
 </template>
 
