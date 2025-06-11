@@ -4,10 +4,10 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Card, Form, FormItem, Input, Tooltip } from 'ant-design-vue';
+import { Button, Card, Form, FormItem, Input } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
@@ -29,21 +29,36 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'productCode',
-      title: '所属工序',
+      title: '产品编号',
       minWidth: 200,
     },
     {
       field: 'productName',
-      title: '设备名称',
+      title: '产品名称',
       minWidth: 200,
     },
     {
       field: 'opInTime',
-      title: '设备编号',
+      title: '工艺路线',
       minWidth: 200,
     },
     {
       field: 'processName',
+      title: '工序名称',
+      minWidth: 200,
+    },
+    {
+      field: 'processName2',
+      title: '设备名称',
+      minWidth: 200,
+    },
+    {
+      field: 'processName3',
+      title: '设备编号',
+      minWidth: 200,
+    },
+    {
+      field: 'finis3hRate',
       title: '配方名称',
       minWidth: 200,
     },
@@ -139,44 +154,28 @@ const formulaGridOptions: VxeGridProps<any> = {
     { title: '序号', type: 'seq', minWidth: 50 },
     {
       field: 'productCode',
-      title: '产品编号',
+      title: '参数编号',
       minWidth: 200,
     },
     {
       field: 'productName',
-      title: '产品名称',
+      title: '参数名称',
       minWidth: 200,
     },
     {
       field: 'opInTime',
-      title: '工艺路线',
+      title: '数据类型',
       minWidth: 200,
     },
     {
       field: 'processName',
-      title: '工序名称',
+      title: '参数单位',
       minWidth: 200,
     },
     {
       field: 'finishRate',
-      title: '配方名称',
+      title: '参数值',
       minWidth: 200,
-    },
-    {
-      field: '111',
-      title: '配方编号',
-      minWidth: 200,
-    },
-    {
-      field: 'version',
-      title: '版本',
-      minWidth: 120,
-    },
-    {
-      slots: { default: 'action' },
-      title: '操作',
-      minWidth: 180,
-      fixed: 'right',
     },
   ],
   height: 200,
@@ -205,12 +204,10 @@ const formulaGridOptions: VxeGridProps<any> = {
     },
   },
 };
-// gridApi
-const [FormulaGrid, formulaGridApi] = useVbenVxeGrid({
+// gridApi _formulaGridApi
+const [FormulaGrid] = useVbenVxeGrid({
   gridOptions: formulaGridOptions,
 });
-
-const formulaQueryParams = ref<any>({});
 
 /**
  * 查询数据
@@ -272,6 +269,27 @@ function queryFormulaData({ page, pageSize }: any) {
         >
           <Input v-model:value="queryParams.perName" />
         </FormItem>
+        <!-- 产品名称 -->
+        <FormItem
+          :label="$t('processFormula.productName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.perName" />
+        </FormItem>
+        <!-- 设备名称 -->
+        <FormItem
+          :label="$t('processFormula.equipmentName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.perName" />
+        </FormItem>
+        <!-- 工艺路线 -->
+        <FormItem
+          :label="$t('processFormula.processRoute')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.perName" />
+        </FormItem>
 
         <FormItem style="margin-bottom: 1em">
           <Button
@@ -292,75 +310,7 @@ function queryFormulaData({ page, pageSize }: any) {
     <!-- endregion -->
     <!-- region 表格主体 -->
     <Card class="mb-8">
-      <Form :model="formulaQueryParams" layout="inline">
-        <!-- 配方名称 -->
-        <FormItem
-          :label="$t('processFormula.productName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="formulaQueryParams.username" />
-        </FormItem>
-
-        <!-- 所属工序 -->
-        <FormItem
-          :label="$t('processFormula.processRoute')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="formulaQueryParams.perName" />
-        </FormItem>
-        <!-- 配方编号 -->
-        <FormItem
-          :label="$t('processFormula.processName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="formulaQueryParams.perName" />
-        </FormItem>
-
-        <FormItem style="margin-bottom: 1em">
-          <Button
-            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
-            type="primary"
-            @click="() => formulaGridApi.reload()"
-          >
-            {{ $t('common.search') }}
-          </Button>
-        </FormItem>
-      </Form>
-      <FormulaGrid>
-        <!-- ="{ row }" -->
-        <template #action>
-          <!-- 启用 -->
-          <Tooltip>
-            <template #title>{{ $t('common.enable') }}</template>
-            <Button type="link">
-              <IconifyIcon
-                icon="mdi:play"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-          <!-- 停用 -->
-          <Tooltip>
-            <template #title>{{ $t('common.stopUsing') }}</template>
-            <Button type="link">
-              <IconifyIcon
-                icon="mdi:pause"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-          <!-- 解绑 -->
-          <Tooltip>
-            <template #title>{{ $t('common.unbind') }}</template>
-            <Button type="link">
-              <IconifyIcon
-                icon="carbon:unlink"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-        </template>
-      </FormulaGrid>
+      <FormulaGrid />
     </Card>
     <!-- endregion -->
   </Page>

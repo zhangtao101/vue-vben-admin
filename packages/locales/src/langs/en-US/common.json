@@ -81,5 +81,8 @@
   "processReporting": "Process Reporting",
   "judgmentFailed": "Current verification result failed, please try again after success!",
   "open": "Open",
-  "close": "Close"
+  "close": "Close",
+  "enable": "Enable",
+  "stopUsing": "StopUsing",
+  "unbind": "Unbind"
 }

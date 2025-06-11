@@ -1,0 +1,9 @@
+{
+  "formulaName": "配方名称",
+  "affiliatedProcess": "所属工序",
+  "formulaNumber": "配方编号",
+  "productName": "产品名称",
+  "equipmentName": "设备名称",
+  "processRoute": "工艺路线",
+  "processName": "工序名称"
+}

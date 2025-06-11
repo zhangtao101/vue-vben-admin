@@ -1,4 +1,9 @@
 {
   "formulaName": "配方名称",
-  "affiliatedProcess": "所属工序"
+  "affiliatedProcess": "所属工序",
+  "formulaEditing": "配方编辑",
+  "trigger": "触发器",
+  "triggerCondition": "触发条件",
+  "delayedMatching": "延迟匹配",
+  "performTheAction": "执行动作"
 }
