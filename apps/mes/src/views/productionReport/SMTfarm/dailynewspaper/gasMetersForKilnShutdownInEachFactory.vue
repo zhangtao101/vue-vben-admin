@@ -48,7 +48,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'sumValue',
-      title: '窑线天然气用量M3',
+      title: '总天然气用量M3',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

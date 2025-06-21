@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { excelPathBHZInOutApproval, queryBHZInOutApproval } from '#/api';
+import { excelPathBHZInOutApproval, queryBHZMXStatistics } from '#/api';
 import { $t } from '#/locales';
 
 const props = defineProps({
@@ -32,139 +32,121 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'worksheetCode',
-      title: '工厂代码',
+      title: '工单号',
       minWidth: 200,
     },
     {
       field: 'lineName',
-      title: '工厂名称',
+      title: '生产批号',
       minWidth: 200,
     },
     {
       field: 'productCode',
-      title: '工作中心代码',
-      minWidth: 200,
-    },
-    {
-      field: '1',
-      title: '工作中心名称',
-      minWidth: 200,
-    },
-    {
-      field: '2',
-      title: '开工日期',
-      minWidth: 200,
-    },
-    {
-      field: '3',
-      title: '完工日期',
-      minWidth: 200,
-    },
-    {
-      field: '4',
-      title: '产皮批号',
-      minWidth: 200,
-    },
-    {
-      field: '4',
-      title: '产品代码',
-      minWidth: 200,
-    },
-    {
-      field: '31',
-      title: '产品名称',
-      minWidth: 200,
-    },
-    {
-      field: '11',
-      title: '工单单别',
-      minWidth: 200,
-    },
-    {
-      field: '12',
-      title: '工单单号',
+      title: '产品编码',
       minWidth: 200,
     },
     {
       field: 'flMaterialNumber',
-      title: '粉料用量',
+      title: '粉料用量(T)',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: 'flMaterialNumber1',
-      title: '压制量',
+      field: 'pressQuantity',
+      title: '压制量(M2)',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: '装载量',
-      title: '装载量',
+      field: 'pressTon',
+      title: '压制量(干坯重量)(T)',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: '进窑量',
-      title: '进窑量',
+      field: 'inYLQuantity',
+      title: '进窑量 (M2)',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: '出窑量',
-      title: '出窑量',
+      field: 'inStorageQuantity',
+      title: '入库量 (M2)',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: '报废量',
-      title: '报废量',
+      field: 'bf',
+      title: '报废',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: '成型时间',
+      field: 'cxTime',
       title: '成型时间',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: '烧成时间',
-      title: '烧成时间',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: '窑炉燃气',
-      title: '窑炉燃气',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: '卧干器燃气',
+      field: 'wgTrq',
       title: '卧干器燃气',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: '电耗',
+      field: 'dlValue',
       title: '电耗',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: '期末数',
-      title: '期末数',
+      field: 'injp',
+      title: '入待抛砖库 JP',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      field: '期初数',
-      title: '期初数',
+      field: 'qps',
+      title: '上砖前破碎',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      title: '入待抛砖库JP（M2）',
+      field: 'actualTon',
+      title: '实际坯重',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'wgName',
+      title: '卧干器名称',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'wf',
+      title: '废粉',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'wgsmj',
+      title: '卧干器水煤气',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'ylsmj',
+      title: '窑炉水煤气',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'stopTime',
+      title: '停机时间',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'sczc',
+      title: '转产',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      title: '工艺停产',
       children: [
         {
           field: 'P',
@@ -583,11 +565,11 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
+  // footerData: [{ seq: '合计' }],
+  // mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
   height: 500,
   stripe: true,
-  showFooter: true,
+  // showFooter: true,
   sortConfig: {
     multiple: true,
   },
@@ -639,9 +621,6 @@ function getMaterialTypeText(state: number) {
 // endregion
 
 // region 查询数据
-
-// 汇总数据
-const collect = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -654,13 +633,12 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryBHZInOutApproval({
+    queryBHZMXStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
-        collect.value = p;
+      .then(({ total, list }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
@@ -723,9 +701,9 @@ onMounted(() => {});
       <template #materialType="{ row }">
         <span> {{ getMaterialTypeText(row.materialType) }} </span>
       </template>
-      <template #footerData="{ column }">
+      <!--      <template #footerData="{ column }">
         <span> {{ collect[column.field] }} </span>
-      </template>
+      </template>-->
     </Grid>
     <!-- endregion -->
   </Page>

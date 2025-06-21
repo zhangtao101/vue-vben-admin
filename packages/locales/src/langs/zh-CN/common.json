@@ -84,5 +84,6 @@
   "close": "关闭",
   "enable": "启用",
   "stopUsing": "停用",
-  "unbind": "解绑"
+  "unbind": "解绑",
+  "clear": "清除"
 }

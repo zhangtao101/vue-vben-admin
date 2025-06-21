@@ -6,10 +6,15 @@ import { onMounted, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Col, Input, message, Row } from 'ant-design-vue';
+import { Button, Col, Input, message, Modal, Row } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { handleMaulSncode, listHCByCodeScan, snCodeHcBinding } from '#/api';
+import {
+  handleMaulSncode,
+  hCHqCheckClear,
+  listHCByCodeScan,
+  snCodeHcBinding,
+} from '#/api';
 import ScanTheCode from '#/util/component/scanTheCode.vue';
 import useWebSocket from '#/util/websocket-util';
 
@@ -147,7 +152,7 @@ function bind() {
   } else {
     // 校验结果不为 1 时，显示判断失败提示信息
     if (details.value.checkResult !== 1) {
-      message.success($t('common.judgmentFailed'));
+      message.error($t('common.judgmentFailed'));
     }
     // 工位号为空时，聚焦到工位号输入框
     else if (!stationNumber.value) {
@@ -181,14 +186,14 @@ const gridOptions: VxeGridProps<any> = {
       // 列宽度
       width: 50,
       // 根据展示类型决定是否显示该列
-      visible: props.showTypeNumber === 35,
+      visible: [33, 35].includes(props.showTypeNumber),
     },
     {
       title: '工位编号',
       field: 'produceWorkshopCode',
       width: 100,
       // 根据展示类型决定是否显示该列
-      visible: [32, 33].includes(props.showTypeNumber),
+      visible: [32].includes(props.showTypeNumber),
     },
     {
       field: 'qcCode',
@@ -298,6 +303,35 @@ function queryTableData() {
 
 // endregion
 
+// region 清空
+
+function clear() {
+  // 弹出确认对话框
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      // 点击取消按钮，显示警告消息
+      message.warning('已取消操作!');
+    },
+    onOk() {
+      hCHqCheckClear({
+        workstationCode: props.workstationCode,
+        equipCode: props.equipCode,
+        worksheetCode: props.worksheetCode,
+        bindingId: props.bindingId,
+        functionId: props.functionId,
+      }).then(() => {
+        gridApi.reload();
+      });
+    },
+    title: '是否确认派发?',
+  });
+}
+
+// endregion
+
 // region websocket
 // 初始化 WebSocket 连接，并传入消息处理函数和配置参数
 useWebSocket(readMessage, {
@@ -337,7 +371,7 @@ onMounted(() => {});
           <Input
             ref="snCodeRef"
             v-model:value="snCode"
-            class="w-[70%]"
+            class="w-[80%]"
             @keydown.enter="queryCode()"
             @focus="
               () => {
@@ -356,7 +390,11 @@ onMounted(() => {});
           />
         </span>
         <!-- 根据校验结果显示不同的图标 -->
-        <Button type="link" :danger="details.checkResult === -1" v-if="details">
+        <Button
+          type="link"
+          :danger="details.checkResult === -1"
+          v-if="details && details.checkResult"
+        >
           <IconifyIcon
             :icon="
               details.checkResult === -1
@@ -383,17 +421,16 @@ onMounted(() => {});
       <!-- endregion -->
       <!-- region 工位编号 -->
       <!-- 根据展示类型显示工位编号输入框和扫码组件 -->
-      <div class="mb-4 mr-8 flex" v-if="[32, 33].includes(showTypeNumber)">
+      <div class="mb-4 mr-8 flex" v-if="[32].includes(showTypeNumber)">
         <!-- 显示工位编号标签 -->
         <span :class="getLabelClass()">
           {{ $t('productionOperation.workstationNumber') }}：
         </span>
         <span :class="getValueClass()" class="border-0">
-          <!-- 工位编号输入框，支持回车键绑定，聚焦时清空输入 -->
+          <!-- 工位编号输入框，支持回车键绑定，聚焦时清空输入  class="w-[70%]" -->
           <Input
             ref="stationNumberRef"
             v-model:value="stationNumber"
-            class="w-[70%]"
             @keydown.enter="bind()"
             @focus="
               () => {
@@ -415,7 +452,7 @@ onMounted(() => {});
       <!-- endregion -->
       <!-- region 测试结果 -->
       <!-- 根据展示类型显示测试结果 -->
-      <div class="mb-4 mr-8 flex" v-if="showTypeNumber === 35">
+      <div class="mb-4 mr-8 flex" v-if="[35, 33].includes(showTypeNumber)">
         <!-- 显示测试结果标签 -->
         <span :class="getLabelClass()">
           {{ $t('productionOperation.testResult') }}：
@@ -436,6 +473,19 @@ onMounted(() => {});
         <!-- 显示已生产数量值，无结果时显示默认提示 -->
         <span :class="getValueClass()">
           {{ details?.total || $t('productionOperation.none') }}
+        </span>
+      </div>
+      <!-- endregion -->
+      <!-- region 已生产数量 -->
+      <!-- 显示已生产数量 -->
+      <div class="mb-4 mr-8 flex" v-if="[33].includes(showTypeNumber)">
+        <!-- 显示已生产数量标签 -->
+        <span :class="getLabelClass()"></span>
+        <!-- 显示已生产数量值，无结果时显示默认提示 -->
+        <span :class="getValueClass()" class="border-0">
+          <Button type="primary" danger class="w-full" @click="clear()">
+            {{ $t('common.clear') }}
+          </Button>
         </span>
       </div>
       <!-- endregion -->

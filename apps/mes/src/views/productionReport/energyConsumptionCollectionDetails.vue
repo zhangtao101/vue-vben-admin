@@ -13,14 +13,13 @@ import {
   Form,
   FormItem,
   Input,
+  Radio,
+  RadioGroup,
   RangePicker,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  excelPathBHZPressureDetailStatistics,
-  queryBHZPressureDetailStatistics,
-} from '#/api';
+import { viewTheDetailsOfEnergyConsumptionCollection } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -39,44 +38,58 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'lineName', title: '生产批号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'workSheetCode', title: '工单号', minWidth: 200 },
+    { field: 'catchCode', title: '任务采集编号', minWidth: 250 },
+    { field: 'type', title: '采集模式', minWidth: 200 },
+    { field: 'energyEquipCode', title: '采集仪表编号', minWidth: 200 },
     {
-      field: 'flMaterialNumber',
-      title: '粉料用量',
+      field: 'energyEquipName',
+      title: '采集仪表名称',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: 'pressQuantity',
-      title: '压制量（M2)',
+      field: 'startTime',
+      title: '采集开始时间',
       minWidth: 200,
-      slots: { footer: 'footerData' },
     },
     {
-      field: 'wasteQuantity',
-      title: '废粉',
+      field: 'startValue',
+      title: '采集开始读数',
       minWidth: 200,
-      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'endTime',
+      title: '采集结束时间',
+      minWidth: 200,
+    },
+    {
+      field: 'endValue',
+      title: '采集结束读数',
+      minWidth: 200,
+    },
+    {
+      field: 'energyValue',
+      title: '采集总能耗',
+      minWidth: 200,
+    },
+    {
+      field: 'catchUser',
+      title: '采集人',
+      minWidth: 200,
+    },
+    {
+      field: 'reason',
+      title: '原因',
+      minWidth: 200,
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 200,
     },
   ],
-  footerData: [
-    { seq: '合计' },
-    { seq: '废粉用量' },
-    { seq: '移交量＝压制量+废粉*60%' },
-  ],
-  footerSpanMethod: ({ $columnIndex }) => {
-    // 自定义表尾合并单元格
-    if ($columnIndex === 0) {
-      return { rowspan: 1, colspan: 4 };
-    } else if ($columnIndex <= 3) {
-      return { rowspan: 1, colspan: 0 };
-    }
-  },
   height: 500,
   stripe: true,
-  showFooter: true,
   sortConfig: {
     multiple: true,
   },
@@ -132,14 +145,12 @@ function getMaterialTypeText(state: number) {
 const queryParams = ref({
   // 查询时间
   searchTime: [] as any,
-  // 产品编码
-  productCode: '',
-  // 产品批号
-  lineName: '',
+  // 工单号
+  worksheetCode: '',
+  // 产品名称
+  collectionType: '',
 });
 
-// 汇总数据
-const collect = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -152,13 +163,12 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryBHZPressureDetailStatistics({
+    viewTheDetailsOfEnergyConsumptionCollection({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
-        collect.value = p;
+      .then(({ total, list }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
@@ -168,22 +178,6 @@ function queryData({ page, pageSize }: any) {
       .catch((error) => {
         reject(error);
       });
-  });
-}
-
-// endregion
-
-// region 文件下载
-
-function downloadTemplate() {
-  const params: any = { ...queryParams.value };
-  if (params.searchTime && params.searchTime.length === 2) {
-    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
-    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
-    params.searchTime = undefined;
-  }
-  excelPathBHZPressureDetailStatistics(params).then((data) => {
-    window.open(data);
   });
 }
 
@@ -220,20 +214,32 @@ onMounted(() => {
           <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 产品编号 -->
+        <!-- 工单号 -->
         <FormItem
-          :label="$t('productionDaily.productCode')"
+          :label="$t('productionDaily.worksheetCode')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.productCode" />
+          <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 产品批号 -->
+        <!-- 产品名称 -->
         <FormItem
-          :label="$t('productionDaily.productLotNumber')"
+          :label="$t('productionDaily.productName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.lineName" />
+          <RadioGroup v-model:value="queryParams.collectionType">
+            <Radio value="">
+              {{ $t('energyConsumptionCollectionDetails.all') }}
+            </Radio>
+            <Radio :value="1">
+              {{ $t('energyConsumptionCollectionDetails.productionReport') }}
+            </Radio>
+            <Radio :value="2">
+              {{
+                $t('energyConsumptionCollectionDetails.nonProductionReporting')
+              }}
+            </Radio>
+          </RadioGroup>
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -252,24 +258,8 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
-        <template #toolbar-tools>
-          <!-- 导出按钮 -->
-          <Button type="primary" @click="downloadTemplate()">
-            {{ $t('common.export') }}
-          </Button>
-        </template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
-        </template>
-        <template #footerData="{ column, rowIndex }">
-          <div v-if="column.field === 'flMaterialNumber'">
-            <span v-if="rowIndex === 0">{{ collect.flMaterialNumber }}</span>
-            <span v-if="rowIndex === 1">{{ collect.wasteMaterialNumber }}</span>
-            <span v-if="rowIndex === 2">{{ collect.transferQuantity }}</span>
-          </div>
-          <div v-if="column.field === 'pressQuantity'">
-            <span v-if="rowIndex === 0">{{ collect.pressQuantity }}</span>
-          </div>
         </template>
       </Grid>
     </Card>

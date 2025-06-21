@@ -36,3 +36,12 @@ export async function updateProduct(params: any) {
     params,
   );
 }
+
+/**
+ * 模板下载
+ */
+export async function downloadErpProductArchivesTemplate() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/base/erpProductArchives/downloadTemplate`,
+  );
+}

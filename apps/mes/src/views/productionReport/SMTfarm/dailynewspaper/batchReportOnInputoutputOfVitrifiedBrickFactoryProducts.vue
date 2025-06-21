@@ -11,13 +11,10 @@ import {
   FormItem,
   Input,
   RangePicker,
-  TabPane,
-  Tabs,
 } from 'ant-design-vue';
 
 import { $t } from '#/locales';
 import BatchReport from '#/util/component/vitrifiedBrickFactory/batchReport.vue';
-import DetailedList from '#/util/component/vitrifiedBrickFactory/detailedList.vue';
 
 // region 查询数据
 // 查询参数
@@ -110,14 +107,15 @@ onMounted(() => {});
 
     <!-- region 表格主体 -->
     <Card>
-      <Tabs v-model:active-key="activeKey" type="card">
+      <!--      <Tabs v-model:active-key="activeKey" type="card">
         <TabPane key="1" tab="批报">
           <BatchReport ref="batchReport" :query-params="queryParams" />
         </TabPane>
         <TabPane key="2" tab="明细表">
           <DetailedList ref="detailedList" :query-params="queryParams" />
         </TabPane>
-      </Tabs>
+      </Tabs>-->
+      <BatchReport ref="batchReport" :query-params="queryParams" />
     </Card>
     <!-- endregion -->
   </Page>

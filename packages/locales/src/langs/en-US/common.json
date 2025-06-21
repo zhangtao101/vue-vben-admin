@@ -84,5 +84,6 @@
   "close": "Close",
   "enable": "Enable",
   "stopUsing": "StopUsing",
-  "unbind": "Unbind"
+  "unbind": "Unbind",
+  "clear": "Clear"
 }

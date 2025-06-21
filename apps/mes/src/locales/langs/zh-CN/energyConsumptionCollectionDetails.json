@@ -1,0 +1,17 @@
+{
+  "all": "全部",
+  "equipmentNumber": "设备编号",
+  "productionReport": "生产上报",
+  "nonProductionReporting": "非生产上报",
+  "taskNumber": "任务号",
+  "collectTheInstrumentNumber": "采集仪表编号",
+  "collectionMode": "采集模式",
+  "collectionTime": "采集时间",
+  "startReadingCollection": "采集开始读数",
+  "readingAtTheEndOfCollection": "采集结束读数",
+  "collectTheTotalEnergyConsumption": "采集总能耗",
+  "naturalGas": "天然气",
+  "electricity": "电",
+  "waterCoalSlurry": "水煤浆",
+  "cokeOvenGas": "焦炉气"
+}

@@ -431,3 +431,14 @@ export function equipcatchLock(params: any) {
     params,
   );
 }
+
+/**
+ * 清空
+ * @param params 参数
+ */
+export function hCHqCheckClear(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/HCHqCheckClear`,
+    params,
+  );
+}

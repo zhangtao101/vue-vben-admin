@@ -682,6 +682,32 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'packagingAndInventoryReversal',
         path: 'packagingAndInventoryReversal',
       },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/energyConsumptionCollectionDetails.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '能耗采集',
+          code: 'WM_473',
+        },
+        name: 'energyConsumptionCollectionDetails',
+        path: 'energyConsumptionCollectionDetails',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/nonProductionEnergyConsumptionDetails.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '非生产能耗',
+          code: 'WM_473',
+        },
+        name: 'nonProductionEnergyConsumptionDetails',
+        path: 'nonProductionEnergyConsumptionDetails',
+      },
     ],
   },
 ];

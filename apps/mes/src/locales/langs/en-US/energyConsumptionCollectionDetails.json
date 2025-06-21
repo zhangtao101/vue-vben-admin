@@ -1,0 +1,17 @@
+{
+  "all": "All",
+  "equipmentNumber": "Equipment Number",
+  "productionReport": "Production Reporting",
+  "nonProductionReporting": "Non-production Reporting",
+  "taskNumber": "Task Number",
+  "collectTheInstrumentNumber": "Collecting Instrument Number",
+  "collectionMode": "Collection Mode",
+  "collectionTime": "Collection Time",
+  "startReadingCollection": "Start Reading of Collection",
+  "readingAtTheEndOfCollection": "End Reading of Collection",
+  "collectTheTotalEnergyConsumption": "Collected Total Energy Consumption",
+  "naturalGas": "Natural Gas",
+  "electricity": "Electricity",
+  "waterCoalSlurry": "Water Coal Slurry",
+  "cokeOvenGas": "Coke Oven Gas"
+}
