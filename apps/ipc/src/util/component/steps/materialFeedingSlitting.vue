@@ -305,7 +305,7 @@ onMounted(() => {
             {{ details.machineStatusName || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="mb-4 mr-8 inline-block" v-if="details.feedBottonFlag === 1">
           <Button type="primary" @click="submit">
             {{ $t('productionOperation.endOfFeeding') }}
           </Button>

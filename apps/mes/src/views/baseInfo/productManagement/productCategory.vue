@@ -38,13 +38,13 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'typeCode', title: '类别编号', minWidth: 80 },
     { field: 'typeName', title: '类别名称', minWidth: 80 },
     { field: 'typeLevel', title: '类别等级', minWidth: 100 },
-    {
+    /* {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
       minWidth: 120,
-    },
+    },*/
   ],
   height: 500,
   stripe: true,
