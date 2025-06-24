@@ -66,9 +66,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Grid>
-    <slot name="tableTemplate"></slot>
-  </Grid>
+  <div>
+    <Grid>
+      <slot name="tableTemplate"></slot>
+    </Grid>
+  </div>
 </template>
 
 <style scoped></style>

@@ -3,6 +3,7 @@ import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
+import { $t } from '@vben/locales';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Chart } from '@antv/g2';
