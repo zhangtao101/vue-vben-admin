@@ -1,0 +1,8 @@
+{
+  "workOrderNumber": "工单号",
+  "plannedTime": "计划时间",
+  "planNumber": "计划号",
+  "productNumber": "产品编号",
+  "productName": "产品名称",
+  "taskLine": "任务线别"
+}
