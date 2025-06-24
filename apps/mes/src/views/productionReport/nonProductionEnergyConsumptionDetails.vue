@@ -94,7 +94,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'action',
       title: '操作',
-      minWidth: 200,
+      minWidth: 100,
       fixed: 'right',
       slots: {
         default: 'action',
@@ -335,13 +335,12 @@ onMounted(() => {
         </template>
         <template #action="{ row }">
           <!-- 编辑按钮 ="{ row }" -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('编辑')">
             <template #title>
               {{ $t('common.edit') }}
             </template>
             <Button
               :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
-              class="mr-4"
               type="link"
               @click="showDrawer(row)"
             />
