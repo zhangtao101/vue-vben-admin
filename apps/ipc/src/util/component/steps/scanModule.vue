@@ -334,7 +334,7 @@ function clear() {
 
 // region websocket
 // 初始化 WebSocket 连接，并传入消息处理函数和配置参数
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   workstationCode: props.workstationCode,
   equipCode: props.equipCode,
   worksheetCode: props.worksheetCode,
@@ -354,6 +354,9 @@ function readMessage() {
 
 // 组件挂载后执行的钩子函数
 onMounted(() => {});
+onBeforeUnmount(() => {
+  websocketClose();
+});
 </script>
 
 <template>

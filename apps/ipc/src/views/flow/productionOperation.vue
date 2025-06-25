@@ -515,7 +515,7 @@ function workStepConversion(val: any) {
 /**
  * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
  */
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   webSocketType: 3,
 });
 
@@ -626,6 +626,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   // 将页面缩放比例重置为 100%，确保组件卸载后页面恢复默认缩放比例
   zoom(100);
+  websocketClose();
 });
 </script>
 

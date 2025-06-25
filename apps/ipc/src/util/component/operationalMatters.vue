@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -124,7 +124,7 @@ function querySteps() {
 /**
  * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
  */
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   worksheetCode: props.worksheetCode,
   webSocketType: 4,
 });
@@ -172,6 +172,9 @@ watch(current, () => {
  */
 onMounted(() => {
   querySteps();
+});
+onBeforeUnmount(() => {
+  websocketClose();
 });
 </script>
 

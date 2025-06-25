@@ -105,7 +105,7 @@ function queryData() {
 
 // region websocket
 
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   workstationCode: props.workstationCode,
   equipCode: props.equipCode,
   worksheetCode: props.worksheetCode,
@@ -140,6 +140,9 @@ function readMessage(message: string) {
 
 onMounted(() => {
   queryData();
+});
+onBeforeUnmount(() => {
+  websocketClose();
 });
 </script>
 

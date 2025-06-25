@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
@@ -150,7 +150,7 @@ function submit(bol: boolean) {
 
 // region websocket
 
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   workstationCode: props.workstationCode,
   equipCode: props.equipCode,
   worksheetCode: props.worksheetCode,
@@ -185,6 +185,9 @@ function readMessage(message: string) {
 
 onMounted(() => {
   queryData();
+});
+onBeforeUnmount(() => {
+  websocketClose();
 });
 </script>
 

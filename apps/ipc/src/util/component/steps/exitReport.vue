@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
@@ -353,6 +353,9 @@ function lock() {
 // endregion
 
 onMounted(() => {});
+onBeforeUnmount(() => {
+  close();
+});
 </script>
 
 <template>

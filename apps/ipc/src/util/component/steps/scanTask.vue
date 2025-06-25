@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -97,6 +97,7 @@ function queryData() {
         ...details.value,
         ...data,
       };
+      snCode.value = data.snCode;
     })
     .finally(() => {
       // 无论请求成功或失败，都结束加载，隐藏加载动画
@@ -144,7 +145,7 @@ function queryCode() {
 /**
  * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
  */
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   workstationCode: props.workstationCode,
   equipCode: props.equipCode,
   worksheetCode: props.worksheetCode,
@@ -168,6 +169,9 @@ function readMessage() {
 onMounted(() => {
   queryData();
 });
+onBeforeUnmount(() => {
+  websocketClose();
+});
 </script>
 
 <template>
@@ -185,7 +189,7 @@ onMounted(() => {
             {{ $t('productionOperation.singlePieceSNCode') }}：
           </span>
           <!-- 显示单件 SN 码输入框和扫码组件的区域 -->
-          <span :class="getValueClass()" class="border-0">
+          <span :class="getValueClass()" class="border-0 text-left">
             <!-- SN 码输入框，支持回车键查询，根据展示类型决定是否禁用 -->
             <Input
               v-model:value="snCode"

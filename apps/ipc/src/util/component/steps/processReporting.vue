@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, ref } from 'vue';
+import { h, onBeforeUnmount, ref } from 'vue';
 
 import { MdiEditOutline, MdiEyeOutline } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -292,7 +292,7 @@ function submit() {
 
 // region websocket
 
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   workstationCode: props.workstationCode,
   equipCode: props.equipCode,
   worksheetCode: props.worksheetCode,
@@ -326,6 +326,9 @@ function readMessage(message: string) {
 // endregion
 
 // endregion
+onBeforeUnmount(() => {
+  websocketClose();
+});
 </script>
 
 <template>

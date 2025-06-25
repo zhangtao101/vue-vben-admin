@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, ref } from 'vue';
+import { h, onBeforeUnmount, ref } from 'vue';
 
 import { CarbonTaskComplete, MdQrcodeScan } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -426,7 +426,7 @@ function feedingCompleteFun(row: any) {
 
 // region websocket
 
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   workstationCode: props.workstationCode,
   equipCode: props.equipCode,
   worksheetCode: props.worksheetCode,
@@ -458,6 +458,9 @@ function readMessage(message: string) {
   }
 }
 // endregion
+onBeforeUnmount(() => {
+  websocketClose();
+});
 </script>
 
 <template>

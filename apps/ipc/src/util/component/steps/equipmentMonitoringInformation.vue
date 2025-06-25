@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { message } from 'ant-design-vue';
 
@@ -210,7 +210,7 @@ function reload() {
 
 // region websocket
 
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   workstationCode: props.workstationCode,
   equipCode: props.equipCode,
   worksheetCode: props.worksheetCode,
@@ -245,6 +245,9 @@ function readMessage(message: string) {
 
 onMounted(() => {
   reload();
+});
+onBeforeUnmount(() => {
+  websocketClose();
 });
 </script>
 

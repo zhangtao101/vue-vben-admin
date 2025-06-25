@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -188,7 +188,7 @@ function pullIn(row: any) {
 /**
  * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
  */
-useWebSocket(readMessage, {
+const { close: websocketClose } = useWebSocket(readMessage, {
   workstationCode: props.workstationCode,
   equipCode: props.equipCode,
   worksheetCode: props.worksheetCode,
@@ -208,6 +208,9 @@ function readMessage() {
 
 onMounted(() => {
   reload();
+});
+onBeforeUnmount(() => {
+  websocketClose();
 });
 </script>
 
