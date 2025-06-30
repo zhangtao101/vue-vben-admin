@@ -532,7 +532,7 @@ onBeforeUnmount(() => {
           @click="submit()"
           v-if="showTypeNumber === 31 && details.outFlag === 1"
         >
-          {{ $t('workOrderEntry.outbound') }}
+          {{ $t('productionOperation.outbound') }}
         </Button>
         <!-- 暂停出站 -->
         <Button
@@ -541,7 +541,7 @@ onBeforeUnmount(() => {
           @click="submit()"
           v-if="showTypeNumber === 31 && details.outFlag === 2"
         >
-          {{ $t('workOrderEntry.suspendExit') }}
+          {{ $t('productionOperation.suspendExit') }}
         </Button>
       </Col>
     </Row>

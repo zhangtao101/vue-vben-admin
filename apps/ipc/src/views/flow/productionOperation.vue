@@ -362,7 +362,7 @@ function query() {
 /**
  * 初始化 WebSocket 连接，并传入消息处理函数和配置参数
  */
-useWebSocket(readMessageTable, {
+const { close: websocketClose2 } = useWebSocket(readMessageTable, {
   webSocketType: 2,
 });
 
@@ -627,6 +627,7 @@ onBeforeUnmount(() => {
   // 将页面缩放比例重置为 100%，确保组件卸载后页面恢复默认缩放比例
   zoom(100);
   websocketClose();
+  websocketClose2();
 });
 </script>
 
@@ -906,14 +907,14 @@ onBeforeUnmount(() => {
                   class="mb-2 cursor-pointer rounded-xl border p-2 pl-4 pr-4 hover:bg-pink-200 hover:text-black"
                   :class="{
                     // 'bg-sky-500 text-white': item.workingState === 1,
-                    'bg-green-500 text-white':
+                    'bg-green-500 text-[#444]':
                       item.workingState === 2 || item.workingState === 1,
                     'bg-gray-200': item.workingState === -1,
                     'bg-amber-500 text-white': item.workingState === 3,
                     'anomaly border-4':
                       item.errorFlag === 1 &&
                       item.processCode !== checkedProcess,
-                    'border-4 border-sky-300 shadow-xl':
+                    'border-4 border-sky-500 shadow-lg shadow-sky-600':
                       item.processCode === checkedProcess,
                   }"
                   @click="processChange(item)"
@@ -1070,6 +1071,59 @@ onBeforeUnmount(() => {
 
   50% {
     border-color: red;
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.rainbow {
+  position: relative;
+  z-index: 0;
+  width: 400px;
+  height: 300px;
+  padding: 2rem;
+  overflow: hidden;
+  border-radius: 10px;
+
+  &::before {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    z-index: -2;
+    width: 200%;
+    height: 200%;
+    content: '';
+    background-color: #399953;
+    background-image:
+      linear-gradient(#399953, #399953), linear-gradient(#fbb300, #fbb300),
+      linear-gradient(#d53e33, #d53e33), linear-gradient(#377af5, #377af5);
+    background-repeat: no-repeat;
+    background-position:
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%;
+    background-size:
+      50% 50%,
+      50% 50%;
+    animation: rotate 4s linear infinite;
+  }
+
+  &::after {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: -1;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    content: '';
+    background: white;
+    border-radius: 5px;
+    opacity: 1;
   }
 }
 </style>

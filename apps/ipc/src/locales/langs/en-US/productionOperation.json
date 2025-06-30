@@ -117,5 +117,7 @@
   "allOperations": "All Operations",
   "personnelTitle": "Personnel On/Off Work",
   "workCenter": "Work Center",
-  "equipment": "Equipment"
+  "equipment": "Equipment",
+  "outbound": "Outbound",
+  "suspendExit": "Suspend Exit"
 }

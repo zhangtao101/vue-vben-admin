@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
@@ -45,6 +45,11 @@ const props = defineProps({
 });
 
 /**
+ * 存储从接口获取的详情数据，初始化为空数组
+ */
+const details = ref<any>([]);
+
+/**
  * 获取标签的 class，用于统一标签的样式
  * @returns {string} 标签的 class 字符串
  */
@@ -56,14 +61,24 @@ function getLabelClass() {
  * 获取值的 class，用于统一值显示区域的样式
  * @returns {string} 值显示区域的 class 字符串
  */
-function getValueClass() {
+function getValueClass(isResult: boolean = false) {
+  if (isResult) {
+    let css = '';
+    switch (details.value.defectFlag) {
+      case -1: {
+        css = 'bg-red-500 text-white';
+        break;
+      }
+      case 1: {
+        css = 'bg-green-500 text-white';
+        break;
+      }
+    }
+    return `inline-block border p-2 text-center w-72 ${css}`;
+  }
   return 'inline-block border p-2 text-center w-72';
 }
 
-/**
- * 存储从接口获取的详情数据，初始化为空数组
- */
-const details = ref<any>([]);
 /**
  * 控制加载状态的响应式变量，为 true 时显示加载动画
  */
@@ -159,7 +174,7 @@ onBeforeUnmount(() => {
         </div>
       </Col>
       <!-- 定义一个列，占 24 格，顶部有 10px 的内边距 -->
-      <Col :span="24" class="pt-10">
+      <Col :span="24" class="pt-4">
         <!-- region 单件SN码 -->
         <!-- 显示单件 SN 码的容器 -->
         <div class="mb-4 mr-8 inline-block">
@@ -180,13 +195,13 @@ onBeforeUnmount(() => {
             {{ $t('productionOperation.testResult') }}：
           </span>
           <!-- 显示测试结果的值，无值时显示默认提示 -->
-          <span :class="getValueClass()">
+          <span :class="getValueClass(true)">
             {{ details.defectFlagName || $t('productionOperation.none') }}
           </span>
         </div>
       </Col>
       <!-- 定义一个列，占 24 格，顶部有 10px 的内边距 -->
-      <Col :span="24" class="pt-10">
+      <Col :span="24" class="pt-4">
         <!-- region 已生产数量 -->
         <!-- 显示已生产数量的容器 -->
         <div class="mb-4 mr-8 inline-block">

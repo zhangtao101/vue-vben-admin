@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Col, Input, message, Modal, Row } from 'ant-design-vue';
+import { Button, Col, Input, message, Modal, Row, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -66,8 +66,21 @@ function getLabelClass() {
  * 获取值的 class
  * @returns 值的 class 字符串
  */
-function getValueClass() {
-  return 'inline-block border p-2 text-center flex-1';
+function getValueClass(isResult: boolean = false) {
+  let css = '';
+  if (isResult && details.value.error) {
+    switch (details.value.error) {
+      case '通过': {
+        css = 'bg-green-500 text-white';
+        break;
+      }
+      default: {
+        css = 'bg-red-500 text-white';
+        break;
+      }
+    }
+  }
+  return `inline-block border p-2 text-center w-72 ${css}`;
 }
 
 /**
@@ -122,6 +135,7 @@ function queryCode() {
     .finally(() => {
       // 无论请求成功或失败，都将加载状态设置为 false，隐藏加载动画
       spinning.value = false;
+      snCodeRef.value.blur();
     });
 }
 
@@ -146,8 +160,10 @@ function bind() {
       stationNumber.value = '';
       // 重新加载表格数据
       reload();
-      // 聚焦到工位号输入框
-      stationNumberRef.value.focus();
+      setTimeout(() => {
+        // 聚焦到工位号输入框
+        snCodeRef.value.focus();
+      }, 200);
     });
   } else {
     // 校验结果不为 1 时，显示判断失败提示信息
@@ -156,7 +172,14 @@ function bind() {
     }
     // 工位号为空时，聚焦到工位号输入框
     else if (!stationNumber.value) {
-      stationNumberRef.value.focus();
+      if ([32, 33].includes(props.showTypeNumber)) {
+        stationNumberRef.value.focus();
+      } else {
+        setTimeout(() => {
+          details.value = {};
+          snCode.value = '';
+        }, 1000);
+      }
     }
     // SN 码为空时，聚焦到 SN 码输入框
     else if (!snCode.value) {
@@ -186,14 +209,14 @@ const gridOptions: VxeGridProps<any> = {
       // 列宽度
       width: 50,
       // 根据展示类型决定是否显示该列
-      visible: [33, 35].includes(props.showTypeNumber),
+      visible: [35].includes(props.showTypeNumber),
     },
     {
       title: '工位编号',
       field: 'produceWorkshopCode',
       width: 100,
       // 根据展示类型决定是否显示该列
-      visible: [32].includes(props.showTypeNumber),
+      visible: [32, 33, 39].includes(props.showTypeNumber),
     },
     {
       field: 'qcCode',
@@ -216,7 +239,7 @@ const gridOptions: VxeGridProps<any> = {
       title: '测试结果',
       minWidth: 120,
       // 根据展示类型决定是否显示该列
-      visible: props.showTypeNumber === 32,
+      visible: [32, 33, 39].includes(props.showTypeNumber),
     },
   ],
   // 表格高度
@@ -283,11 +306,8 @@ function queryTableData() {
           details.value.total = totalNumber;
           // 根据展示类型返回不同的数据和总数
           resolve({
-            total:
-              props.showTypeNumber === 33
-                ? codeRecords.length
-                : stationList.length,
-            items: props.showTypeNumber === 33 ? codeRecords : stationList,
+            total: stationList.length,
+            items: stationList,
           });
         } else {
           // 没有数据时，返回总数为 0 和空数组
@@ -326,7 +346,7 @@ function clear() {
         gridApi.reload();
       });
     },
-    title: '是否确认派发?',
+    title: '是否确认操作?',
   });
 }
 
@@ -354,150 +374,157 @@ function readMessage() {
 
 // 组件挂载后执行的钩子函数
 onMounted(() => {});
+
 onBeforeUnmount(() => {
   websocketClose();
 });
 </script>
 
 <template>
-  <Row>
-    <Col :span="12" class="pt-10">
-      <!-- region 单件SN码 -->
-      <!-- 显示单件 SN 码输入框和扫码组件 -->
-      <div class="mb-4 mr-8 flex items-center">
-        <!-- 显示单件 SN 码标签 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.singlePieceSNCode') }}：
-        </span>
-        <span :class="getValueClass()" class="border-0">
-          <!-- SN 码输入框，支持回车键查询，聚焦时清空输入 -->
-          <Input
-            ref="snCodeRef"
-            v-model:value="snCode"
-            class="w-[80%]"
-            @keydown.enter="queryCode()"
-            @focus="
-              () => {
-                snCode = '';
-              }
-            "
-          />
-          <!-- 扫码组件，扫码成功后将结果赋值给 SN 码并查询 -->
-          <ScanTheCode
-            @scan-the-code="
-              (val) => {
-                snCode = val;
-                queryCode();
-              }
-            "
-          />
-        </span>
-        <!-- 根据校验结果显示不同的图标 -->
-        <Button
-          type="link"
-          :danger="details.checkResult === -1"
-          v-if="details && details.checkResult"
-        >
-          <IconifyIcon
-            :icon="
-              details.checkResult === -1
-                ? 'mdi:error-outline'
-                : 'mdi:success-circle-outline'
-            "
-            class="inline-block align-middle text-2xl"
-          />
-        </Button>
-      </div>
-      <!-- endregion -->
-      <!-- region 校验结果 -->
-      <!-- 显示校验结果 -->
-      <div class="mb-4 mr-8 flex">
-        <!-- 显示校验结果标签 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.verificationResult') }}：
-        </span>
-        <!-- 显示校验结果值，无结果时显示默认提示 -->
-        <span :class="getValueClass()">
-          {{ details?.error || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <!-- endregion -->
-      <!-- region 工位编号 -->
-      <!-- 根据展示类型显示工位编号输入框和扫码组件 -->
-      <div class="mb-4 mr-8 flex" v-if="[32].includes(showTypeNumber)">
-        <!-- 显示工位编号标签 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.workstationNumber') }}：
-        </span>
-        <span :class="getValueClass()" class="border-0">
-          <!-- 工位编号输入框，支持回车键绑定，聚焦时清空输入  class="w-[70%]" -->
-          <Input
-            ref="stationNumberRef"
-            v-model:value="stationNumber"
-            @keydown.enter="bind()"
-            @focus="
-              () => {
-                stationNumber = '';
-              }
-            "
-          />
-          <!-- 扫码组件，扫码成功后将结果赋值给工位编号并绑定 -->
-          <ScanTheCode
-            @scan-the-code="
-              (val) => {
-                stationNumber = val;
-                bind();
-              }
-            "
-          />
-        </span>
-      </div>
-      <!-- endregion -->
-      <!-- region 测试结果 -->
-      <!-- 根据展示类型显示测试结果 -->
-      <div class="mb-4 mr-8 flex" v-if="[35, 33].includes(showTypeNumber)">
-        <!-- 显示测试结果标签 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.testResult') }}：
-        </span>
-        <!-- 显示测试结果值，无结果时显示默认提示 -->
-        <span :class="getValueClass()">
-          {{ details?.productName || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <!-- endregion -->
-      <!-- region 已生产数量 -->
-      <!-- 显示已生产数量 -->
-      <div class="mb-4 mr-8 flex">
-        <!-- 显示已生产数量标签 -->
-        <span :class="getLabelClass()">
-          {{ $t('productionOperation.producedQuantity') }}：
-        </span>
-        <!-- 显示已生产数量值，无结果时显示默认提示 -->
-        <span :class="getValueClass()">
-          {{ details?.total || $t('productionOperation.none') }}
-        </span>
-      </div>
-      <!-- endregion -->
-      <!-- region 已生产数量 -->
-      <!-- 显示已生产数量 -->
-      <div class="mb-4 mr-8 flex" v-if="[33].includes(showTypeNumber)">
-        <!-- 显示已生产数量标签 -->
-        <span :class="getLabelClass()"></span>
-        <!-- 显示已生产数量值，无结果时显示默认提示 -->
-        <span :class="getValueClass()" class="border-0">
-          <Button type="primary" danger class="w-full" @click="clear()">
-            {{ $t('common.clear') }}
+  <Spin :spinning="spinning">
+    <Row>
+      <Col :span="12" class="pt-10">
+        <!-- region 单件SN码 -->
+        <!-- 显示单件 SN 码输入框和扫码组件 -->
+        <div class="mb-4 mr-8 flex items-center">
+          <!-- 显示单件 SN 码标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.singlePieceSNCode') }}：
+          </span>
+          <span :class="getValueClass()" class="border-0">
+            <!-- SN 码输入框，支持回车键查询，聚焦时清空输入 -->
+            <Input
+              ref="snCodeRef"
+              v-model:value="snCode"
+              class="w-[80%]"
+              :disabled="showTypeNumber === 39"
+              @keydown.enter="queryCode()"
+              @focus="
+                () => {
+                  snCode = '';
+                }
+              "
+            />
+            <!-- 扫码组件，扫码成功后将结果赋值给 SN 码并查询 -->
+            <ScanTheCode
+              @scan-the-code="
+                (val) => {
+                  snCode = val;
+                  queryCode();
+                }
+              "
+            />
+          </span>
+          <!-- 根据校验结果显示不同的图标 -->
+          <Button
+            type="link"
+            :danger="details.checkResult === -1"
+            v-if="details && details.checkResult"
+          >
+            <IconifyIcon
+              :icon="
+                details.checkResult === -1
+                  ? 'mdi:error-outline'
+                  : 'mdi:success-circle-outline'
+              "
+              class="inline-block align-middle text-2xl"
+            />
           </Button>
-        </span>
-      </div>
-      <!-- endregion -->
-    </Col>
-    <Col :span="12">
-      <!-- 显示表格组件 -->
-      <Grid />
-    </Col>
-  </Row>
+        </div>
+        <!-- endregion -->
+        <!-- region 校验结果 -->
+        <!-- 显示校验结果 -->
+        <div class="mb-4 mr-8 flex">
+          <!-- 显示校验结果标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.verificationResult') }}：
+          </span>
+          <!-- 显示校验结果值，无结果时显示默认提示 -->
+          <span :class="getValueClass(true)">
+            {{ details?.error || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- endregion -->
+        <!-- region 工位编号 -->
+        <!-- 根据展示类型显示工位编号输入框和扫码组件 -->
+        <div
+          class="mb-4 mr-8 flex"
+          v-if="[32, 33, 39].includes(showTypeNumber)"
+        >
+          <!-- 显示工位编号标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.workstationNumber') }}：
+          </span>
+          <span :class="getValueClass()" class="border-0">
+            <!-- 工位编号输入框，支持回车键绑定，聚焦时清空输入  class="w-[70%]" -->
+            <Input
+              ref="stationNumberRef"
+              v-model:value="stationNumber"
+              :disabled="showTypeNumber === 39"
+              @keydown.enter="bind()"
+              @focus="
+                () => {
+                  stationNumber = '';
+                }
+              "
+            />
+            <!-- 扫码组件，扫码成功后将结果赋值给工位编号并绑定 -->
+            <ScanTheCode
+              @scan-the-code="
+                (val) => {
+                  stationNumber = val;
+                  bind();
+                }
+              "
+            />
+          </span>
+        </div>
+        <!-- endregion -->
+        <!-- region 测试结果 -->
+        <!-- 根据展示类型显示测试结果 -->
+        <div class="mb-4 mr-8 flex" v-if="[35].includes(showTypeNumber)">
+          <!-- 显示测试结果标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.testResult') }}：
+          </span>
+          <!-- 显示测试结果值，无结果时显示默认提示 -->
+          <span :class="getValueClass()">
+            {{ details?.productName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- endregion -->
+        <!-- region 已生产数量 -->
+        <!-- 显示已生产数量 -->
+        <div class="mb-4 mr-8 flex">
+          <!-- 显示已生产数量标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.producedQuantity') }}：
+          </span>
+          <!-- 显示已生产数量值，无结果时显示默认提示 -->
+          <span :class="getValueClass()">
+            {{ details?.total || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- endregion -->
+        <!-- region 清空 -->
+        <!-- 显示清空按钮 -->
+        <div class="mb-4 mr-8 flex" v-if="[32, 33].includes(showTypeNumber)">
+          <span :class="getLabelClass()"></span>
+          <!-- 显示清空按钮 -->
+          <span :class="getValueClass()" class="border-0">
+            <Button type="primary" danger class="w-full" @click="clear()">
+              {{ $t('common.clear') }}
+            </Button>
+          </span>
+        </div>
+        <!-- endregion -->
+      </Col>
+      <Col :span="12">
+        <!-- 显示表格组件 -->
+        <Grid />
+      </Col>
+    </Row>
+  </Spin>
 </template>
 
 <style scoped></style>

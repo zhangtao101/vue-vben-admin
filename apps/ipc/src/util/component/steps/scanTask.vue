@@ -58,7 +58,21 @@ function getLabelClass() {
  * 获取值的 class，用于统一值显示区域的样式
  * @returns {string} 值显示区域的 class 字符串
  */
-function getValueClass() {
+function getValueClass(isResult: boolean = false) {
+  if (isResult) {
+    let css = '';
+    switch (details.value.defectFlag) {
+      case -1: {
+        css = 'bg-red-500 text-white';
+        break;
+      }
+      case 1: {
+        css = 'bg-green-500 text-white';
+        break;
+      }
+    }
+    return `inline-block border p-2 text-center w-72 ${css}`;
+  }
   return 'inline-block border p-2 text-center w-72';
 }
 
@@ -105,6 +119,7 @@ function queryData() {
     });
 }
 
+const snCodeRef = ref();
 /**
  * 查询 SN 码信息
  * 该函数会发起异步请求处理手动输入的 SN 码，并更新详情数据和加载状态
@@ -138,6 +153,7 @@ function queryCode() {
     .finally(() => {
       // 无论请求成功或失败，都结束加载，隐藏加载动画
       spinning.value = false;
+      snCodeRef.value.blur();
     });
 }
 
@@ -192,10 +208,16 @@ onBeforeUnmount(() => {
           <span :class="getValueClass()" class="border-0 text-left">
             <!-- SN 码输入框，支持回车键查询，根据展示类型决定是否禁用 -->
             <Input
+              ref="snCodeRef"
               v-model:value="snCode"
               class="w-[80%]"
               :disabled="showTypeNumber === 37"
               @keydown.enter="queryCode()"
+              @focus="
+                () => {
+                  snCode = '';
+                }
+              "
             />
             <!-- 扫码组件，仅在展示类型为 35 时显示，扫码成功后将结果赋值给 SN 码并查询 -->
             <ScanTheCode
@@ -285,7 +307,7 @@ onBeforeUnmount(() => {
             {{ $t('productionOperation.testResult') }}：
           </span>
           <!-- 显示测试结果的值，无结果时显示默认提示 -->
-          <span :class="getValueClass()">
+          <span :class="getValueClass(true)">
             {{ details.defectFlagName || $t('productionOperation.none') }}
           </span>
         </div>

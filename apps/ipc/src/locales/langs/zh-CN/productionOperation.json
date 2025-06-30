@@ -118,5 +118,7 @@
   "personnelTitle": "人员上/下工",
   "workCenter": "工作中心",
   "equipment": "设备",
-  "realTimeDataAcquisition": "实时数采"
+  "realTimeDataAcquisition": "实时数采",
+  "outbound": "完工出站",
+  "suspendExit": "暂停出站"
 }

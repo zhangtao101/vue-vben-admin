@@ -42,6 +42,13 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'processName', title: '工序名称' },
     // 二维码校验列，使用自定义插槽渲染
     {
+      title: '投料校验',
+      slots: {
+        default: 'feedCheck',
+      },
+    },
+    // 二维码校验列，使用自定义插槽渲染
+    {
       title: '二维码校验',
       slots: {
         default: 'qrCodeVerification',
@@ -148,6 +155,18 @@ defineExpose({
       <template #qrCodeVerification="{ row }">
         <!-- 单选框组，绑定到行数据的 snCodeControlFlag 字段 -->
         <RadioGroup v-model:value="row.snCodeControlFlag">
+          <!-- 开启选项，值为 1 -->
+          <Radio :value="1">{{ $t('common.open') }}</Radio>
+          <!-- 关闭选项，值为 -1 -->
+          <Radio :value="-1">
+            {{ $t('common.close') }}
+          </Radio>
+        </RadioGroup>
+      </template>
+      <!-- 二维码校验列的自定义插槽，显示单选框组用于控制二维码校验开关 -->
+      <template #feedCheck="{ row }">
+        <!-- 单选框组，绑定到行数据的 snCodeControlFlag 字段 -->
+        <RadioGroup v-model:value="row.feedCheck">
           <!-- 开启选项，值为 1 -->
           <Radio :value="1">{{ $t('common.open') }}</Radio>
           <!-- 关闭选项，值为 -1 -->

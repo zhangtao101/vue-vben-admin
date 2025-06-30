@@ -168,7 +168,6 @@ const transcodedList = ref<any>([]);
  * 存储总产量的响应式变量，初始值为 0
  */
 const total = ref(0);
-
 /**
  * 添加绑码记录的函数
  * 功能：调用 API 进行绑码操作，成功后刷新数据并清空输入框
@@ -190,13 +189,13 @@ function add() {
     .then(() => {
       // 绑码成功，刷新数据
       queryData();
-      // 清空源码和转码输入框
-      sourceCode.value = '';
-      transcoding.value = '';
     })
     .finally(() => {
       // 无论绑码结果如何，结束加载状态
       spinning.value = false;
+      // 清空源码和转码输入框
+      sourceCode.value = '';
+      transcoding.value = '';
     });
 }
 
@@ -332,6 +331,11 @@ onMounted(() => {
                 ref="sourceCodeRef"
                 v-model:value="sourceCode"
                 @keydown.enter="sourceCodeChange"
+                @focus="
+                  () => {
+                    sourceCode = '';
+                  }
+                "
               />
               <!-- 扫码组件，扫码成功后将结果赋值给源码并进行条码验证 -->
               <ScanTheCode
@@ -359,6 +363,11 @@ onMounted(() => {
                 ref="transcodingRef"
                 v-model:value="transcoding"
                 @keydown.enter="transcodingChange"
+                @focus="
+                  () => {
+                    transcoding = '';
+                  }
+                "
               />
               <!-- 扫码组件，扫码成功后将结果赋值给转码并进行条码验证 -->
               <ScanTheCode
@@ -405,10 +414,10 @@ onMounted(() => {
           <template #renderItem="{ item }">
             <ListItem>
               <!-- 根据显示类型显示不同的条码信息 -->
-              <span v-if="showTypeNumber === 15">
+              <span v-if="showTypeNumber === 15" class="flex-1">
                 {{ item.qrcode }} => {{ item.barcode }}
               </span>
-              <span v-if="showTypeNumber === 30">
+              <span v-if="showTypeNumber === 30" class="flex-1">
                 {{ item.qcCode }} => {{ item.barcode }}
               </span>
               <!-- 显示产品名称 -->

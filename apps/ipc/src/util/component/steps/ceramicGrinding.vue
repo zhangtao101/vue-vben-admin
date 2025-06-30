@@ -43,16 +43,31 @@ function getLabelClass() {
 }
 
 /**
- * 获取值的class
- */
-function getValueClass() {
-  return 'inline-block w-48 border p-2 text-center';
-}
-
-/**
  * 详情
  */
 const details = ref<any>(undefined);
+/**
+ * 获取值的 class，用于统一值显示区域的样式
+ * @returns {string} 值显示区域的 class 字符串
+ */
+function getValueClass(isResult: boolean = false) {
+  if (isResult) {
+    let css = '';
+    switch (details.value.defectFlag) {
+      case -1: {
+        css = 'bg-red-500 text-white';
+        break;
+      }
+      case 1: {
+        css = 'bg-green-500 text-white';
+        break;
+      }
+    }
+    return `inline-block border p-2 text-center w-72 ${css}`;
+  }
+  return 'inline-block border p-2 text-center w-72';
+}
+
 /**
  * 加载中
  */

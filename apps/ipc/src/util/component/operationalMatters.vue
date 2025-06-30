@@ -214,7 +214,7 @@ onBeforeUnmount(() => {
               // 当步骤有错误标识且不是当前步骤时，显示异常动画边框
               'anomaly border-4': item.errorFlag === 1 && current !== index,
               // 当步骤为当前步骤时，显示蓝色边框和阴影
-              'border-4 border-sky-300 shadow-xl': current === index,
+              'border-4 border-sky-500 shadow-xl': current === index,
             }"
             @click="current = index"
           >
