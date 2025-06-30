@@ -120,5 +120,6 @@
   "equipment": "设备",
   "realTimeDataAcquisition": "实时数采",
   "outbound": "完工出站",
-  "suspendExit": "暂停出站"
+  "suspendExit": "暂停出站",
+  "realTimeScanningCode": "实时扫码"
 }

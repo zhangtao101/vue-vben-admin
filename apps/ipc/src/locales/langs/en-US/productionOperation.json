@@ -119,5 +119,6 @@
   "workCenter": "Work Center",
   "equipment": "Equipment",
   "outbound": "Outbound",
-  "suspendExit": "Suspend Exit"
+  "suspendExit": "Suspend Exit",
+  "realTimeScanningCode": "Real Time Scanning Code"
 }

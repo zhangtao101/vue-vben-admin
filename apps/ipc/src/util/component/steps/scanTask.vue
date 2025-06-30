@@ -108,10 +108,8 @@ function queryData() {
     .then((data) => {
       // 将获取到的数据合并到详情数据中
       details.value = {
-        ...details.value,
         ...data,
       };
-      snCode.value = data.snCode;
     })
     .finally(() => {
       // 无论请求成功或失败，都结束加载，隐藏加载动画
@@ -120,11 +118,14 @@ function queryData() {
 }
 
 const snCodeRef = ref();
+// 扫码错误状态
+const snCodeError = ref(false);
 /**
  * 查询 SN 码信息
  * 该函数会发起异步请求处理手动输入的 SN 码，并更新详情数据和加载状态
  */
 function queryCode() {
+  spinning.value = true;
   // 调用 API 处理手动输入的 SN 码
   handleMaulSncode({
     workstationCode: props.workstationCode,
@@ -134,26 +135,17 @@ function queryCode() {
     functionId: props.functionId,
     snCode: snCode.value,
   })
-    .then((data) => {
-      // 定义需要更新的字段数组
-      const keys = [
-        'checkResult',
-        'checkResultName',
-        'snCode',
-        'worksheetCode',
-        'productCode',
-        'productName',
-        'error',
-      ];
-      // 遍历字段数组，将 API 返回的数据更新到详情数据中
-      keys.forEach((key) => {
-        details.value[key] = data[key];
-      });
+    .then(() => {
+      queryData();
+      snCode.value = '';
+      snCodeError.value = false;
+    })
+    .catch(() => {
+      snCodeError.value = true;
     })
     .finally(() => {
       // 无论请求成功或失败，都结束加载，隐藏加载动画
       spinning.value = false;
-      snCodeRef.value.blur();
     });
 }
 
@@ -197,12 +189,12 @@ onBeforeUnmount(() => {
     <Row>
       <!-- 定义一个列，占 24 格，顶部有 10px 的内边距 -->
       <Col :span="24" class="pt-10">
-        <!-- region 单件SN码 -->
-        <!-- 显示单件 SN 码输入框和扫码组件的容器 -->
-        <div class="mb-4 mr-8 flex items-center">
-          <!-- 显示单件 SN 码标签 -->
+        <!-- region 实时扫码 -->
+        <!-- 显示单件 实时扫码输入框和扫码组件的容器 -->
+        <div class="mb-4 mr-8 flex items-center" v-if="showTypeNumber !== 37">
+          <!-- 显示单件 实时扫码 码标签 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.singlePieceSNCode') }}：
+            {{ $t('productionOperation.realTimeScanningCode') }}：
           </span>
           <!-- 显示单件 SN 码输入框和扫码组件的区域 -->
           <span :class="getValueClass()" class="border-0 text-left">
@@ -210,8 +202,7 @@ onBeforeUnmount(() => {
             <Input
               ref="snCodeRef"
               v-model:value="snCode"
-              class="w-[80%]"
-              :disabled="showTypeNumber === 37"
+              :status="snCodeError ? 'error' : ''"
               @keydown.enter="queryCode()"
               @focus="
                 () => {
@@ -230,26 +221,41 @@ onBeforeUnmount(() => {
               "
             />
           </span>
-          <!-- 根据校验结果显示不同的图标按钮 -->
-          <Button
-            type="link"
-            :danger="details.checkResult === -1"
-            v-if="details.checkResult"
-          >
-            <IconifyIcon
-              :icon="
-                details.checkResult === -1
-                  ? 'mdi:error-outline'
-                  : 'mdi:success-circle-outline'
-              "
-              class="inline-block align-middle text-2xl"
-            />
-          </Button>
         </div>
         <!-- endregion -->
       </Col>
       <!-- 定义一个列，占 24 格 -->
       <Col :span="24">
+        <!-- region 单件SN码 -->
+        <!-- 显示单件 SN 码输入框和扫码组件的容器 -->
+        <div class="mb-4 mr-8 flex items-center">
+          <!-- 显示单件 SN 码标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.singlePieceSNCode') }}：
+          </span>
+          <!-- 显示单件 SN 码输入框和扫码组件的区域 -->
+          <span :class="getValueClass()">
+            <!-- SN 码输入框，支持回车键查询，根据展示类型决定是否禁用 -->
+            {{ details.snCode || $t('productionOperation.none') }}
+            <!-- 根据校验结果显示不同的图标按钮 -->
+            <Button
+              type="link"
+              :danger="details.checkResult === -1"
+              v-if="details.checkResult"
+            >
+              <IconifyIcon
+                :icon="
+                  details.checkResult === -1
+                    ? 'mdi:error-outline'
+                    : 'mdi:success-circle-outline'
+                "
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </span>
+        </div>
+        <!-- endregion -->
+
         <!-- region 校验结果 -->
         <!-- 显示校验结果的容器 -->
         <div class="mb-4 mr-8 inline-block">
