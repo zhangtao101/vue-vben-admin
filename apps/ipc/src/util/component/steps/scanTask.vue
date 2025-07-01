@@ -4,7 +4,7 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Col, Input, Row, Spin } from 'ant-design-vue';
+import { Button, Col, Input, message, Row, Spin } from 'ant-design-vue';
 
 import { handleMaulSncode, listHCByCodeScan } from '#/api';
 import ScanTheCode from '#/util/component/scanTheCode.vue';
@@ -136,6 +136,7 @@ function queryCode() {
     snCode: snCode.value,
   })
     .then(() => {
+      message.success($t('common.successfulOperation'));
       queryData();
       snCode.value = '';
       snCodeError.value = false;
