@@ -1,4 +1,6 @@
 // eslint-disable-next-line n/no-extraneous-import
+import ep from '@iconify/json/json/ep.json';
+// eslint-disable-next-line n/no-extraneous-import
 import iconParkSolid from '@iconify/json/json/icon-park-solid.json';
 // eslint-disable-next-line n/no-extraneous-import
 import mdiLight from '@iconify/json/json/mdi-light.json';
@@ -13,5 +15,6 @@ export default function loadIconCollection() {
   addCollection(mdi);
   addCollection(iconParkSolid);
   addCollection(oui);
+  addCollection(ep);
   addCollection(mdiLight);
 }

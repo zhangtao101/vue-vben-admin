@@ -708,6 +708,19 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'nonProductionEnergyConsumptionDetails',
         path: 'nonProductionEnergyConsumptionDetails',
       },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/crossSystemInteractionWorkOrderLockList.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '跨系统交互工单锁定列表',
+          code: 'WM_502',
+        },
+        name: 'crossSystemInteractionWorkOrderLockList',
+        path: 'crossSystemInteractionWorkOrderLockList',
+      },
     ],
   },
 ];

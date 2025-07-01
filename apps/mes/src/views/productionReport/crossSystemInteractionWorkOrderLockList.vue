@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, reactive, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -10,22 +10,17 @@ import { IconifyIcon, MdiSearch } from '@vben/icons';
 import {
   Button,
   Card,
-  Drawer,
   Form,
   FormItem,
   Input,
-  InputSearch,
   message,
-  Radio,
-  RadioGroup,
+  Modal,
   RangePicker,
-  Select,
-  Space,
   Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { bindingRoute, getRouteList, queryWorksheetState } from '#/api';
+import { listByParam, unLockByWorksheetCode } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -81,11 +76,8 @@ const gridOptions: VxeGridProps<any> = {
   },
   proxyConfig: {
     ajax: {
-      query: async ({ page }) => {
-        return await queryData({
-          page: page.currentPage,
-          pageSize: page.pageSize,
-        });
+      query: async () => {
+        return await queryData();
       },
     },
   },
@@ -160,81 +152,13 @@ const queryParams = ref({
   productName: '',
   // 工单号
   worksheetCode: '',
-  // 类型
-  workstationType: 1,
-  // 工单状态
-  state: '',
-  // 工单报工状态
-  reportState: '',
 });
-
-// 工作站类别
-const workstationTypes = ref([
-  {
-    label: '制浆/制粉/制色',
-    value: 1,
-  },
-  {
-    label: '成型',
-    value: 2,
-  },
-  {
-    label: '窑炉（卧干、烧成）',
-    value: 3,
-  },
-  {
-    label: '制釉',
-    value: 4,
-  },
-  {
-    label: '施釉',
-    value: 5,
-  },
-  {
-    label: '抛光（抛光、打包、复选）',
-    value: 6,
-  },
-]);
-/**
- * 状态类型
- */
-const statusTypes = ref([
-  {
-    label: '未生产',
-    value: -1,
-  },
-  {
-    label: '生产中',
-    value: 1,
-  },
-  {
-    label: '完工下线',
-    value: 2,
-  },
-  {
-    label: '暂停下线',
-    value: 3,
-  },
-]);
-/**
- * 报工状态类型
- */
-const reportStatusTypes = ref([
-  {
-    label: '未报工',
-    value: 1,
-  },
-  {
-    label: '已报工',
-    value: 2,
-  },
-]);
 
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
-function queryData({ page, pageSize }: any) {
+function queryData() {
   return new Promise((resolve, reject) => {
     const params: any = { ...queryParams.value };
     if (params.searchTime && params.searchTime.length === 2) {
@@ -242,16 +166,14 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryWorksheetState({
+    listByParam({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
     })
-      .then(({ total, list }) => {
+      .then((data) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
-          total,
-          items: list,
+          total: data.length,
+          items: data,
         });
       })
       .catch((error) => {
@@ -260,83 +182,31 @@ function queryData({ page, pageSize }: any) {
   });
 }
 
-// endregion
-
-// region 工艺路线绑定
-// 工艺路线名称
-const routeName = ref('');
-// 工艺路线列表
-const routeList = ref<any>([]);
-// 当前选中的工艺路线
-const selectedRoute = ref<any>();
-// 查询状态
-const searchLoading = ref(false);
-// 单选样式
-const radioStyle = reactive({
-  display: 'flex',
-  lineHeight: '30px',
-});
-
 /**
- * 查询工艺路线
+ * 解除绑定
+ * @param row
  */
-function queryProcessRoute() {
-  searchLoading.value = true;
-  getRouteList({
-    pageNum: 1,
-    pageSize: 500,
-    routeName: routeName.value,
-  })
-    .then(({ list }) => {
-      routeList.value = list;
-    })
-    .finally(() => {
-      searchLoading.value = false;
-    });
-}
-
-// 当前选中的行
-const editItem = ref<any>({});
-// 提交状态
-const pullInLoading = ref<boolean>(false);
-/**
- * 选择工艺路线
- */
-function bindingProcessRoute() {
-  pullInLoading.value = true;
-  bindingRoute({
-    worksheetCode: editItem.value.worksheetCode,
-    routeCode: selectedRoute.value,
-    workstationCode: editItem.value.workstationCode,
-  })
-    .then(() => {
-      message.success($t('common.successfulOperation'));
-      gridApi.reload();
-      close();
-    })
-    .finally(() => {
-      pullInLoading.value = false;
-    });
-}
-
-const isOpen = ref(false);
-
-/**
- * 打开抽屉
- * @param row 选中的行
- */
-function showDrawer(row: any) {
-  editItem.value = row;
-  isOpen.value = true;
-  queryProcessRoute();
-}
-
-/**
- * 关闭抽屉
- */
-function close() {
-  editItem.value = {};
-  isOpen.value = false;
+function unlock(row: any) {
+  // 弹出确认对话框
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      // 点击取消按钮，显示警告消息
+      message.warning('已取消!');
+    },
+    onOk() {
+      unLockByWorksheetCode({
+        worksheetCode: row.worksheetCode,
+      }).then(() => {
+        // 显示操作成功消息
+        message.success($t('common.successfulOperation'));
+        gridApi.reload();
+      });
+    },
+    title: '是否确认解除绑定?',
+  });
 }
 
 // endregion
@@ -364,18 +234,7 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 类别 -->
-        <FormItem
-          :label="$t('workOrderStatusQuery.workstationType')"
-          style="margin-bottom: 1em"
-        >
-          <Select
-            v-model:value="queryParams.workstationType"
-            :options="workstationTypes"
-            class="!w-64"
-          />
-        </FormItem>
-        <!-- 产品编号 -->
+        <!-- 查询时间 -->
         <FormItem
           :label="$t('workOrderStatusQuery.queryTime')"
           style="margin-bottom: 1em"
@@ -406,31 +265,6 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 工单状态 -->
-        <FormItem
-          :label="$t('workOrderStatusQuery.workOrderStatus')"
-          style="margin-bottom: 1em"
-        >
-          <Select
-            v-model:value="queryParams.state"
-            :options="statusTypes"
-            class="!w-64"
-            allow-clear
-          />
-        </FormItem>
-        <!-- 工单报工状态 -->
-        <FormItem
-          :label="$t('workOrderStatusQuery.reportTheWorkStatus')"
-          style="margin-bottom: 1em"
-        >
-          <Select
-            v-model:value="queryParams.reportState"
-            :options="reportStatusTypes"
-            class="!w-64"
-            allow-clear
-          />
-        </FormItem>
-
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
@@ -454,14 +288,14 @@ onMounted(() => {
           <span>{{ getReportStateText(row.reportState) }}</span>
         </template>
         <template #action="{ row }">
-          <!-- 工艺路线选择 -->
-          <Tooltip>
+          <!-- 解除锁定 -->
+          <Tooltip v-if="author.includes('解除锁定')">
             <template #title>
-              {{ $t('selectionOfRDProcessRoute.selectionOfProcessRoute') }}
+              {{ $t('crossSystemInteractionWorkOrderLockList.unlock') }}
             </template>
-            <Button type="link" @click="showDrawer(row)">
+            <Button type="link" @click="unlock(row)">
               <IconifyIcon
-                icon="mdi:source-branch-sync"
+                icon="ep:unlock"
                 class="inline-block align-middle text-2xl"
               />
             </Button>
@@ -470,51 +304,6 @@ onMounted(() => {
       </Grid>
     </Card>
     <!-- endregion -->
-
-    <!-- 工艺路线选择 -->
-    <Drawer
-      v-model:open="isOpen"
-      :footer-style="{ textAlign: 'right' }"
-      :title="$t('selectionOfRDProcessRoute.selectionOfProcessRoute')"
-      placement="right"
-      @close="close"
-    >
-      <InputSearch
-        v-model:value="routeName"
-        placeholder="输入关键字进行查询"
-        enter-button="查询"
-        :loading="searchLoading"
-        @search="queryProcessRoute"
-      />
-      <div class="mt-4 max-h-[80%] overflow-y-auto">
-        <RadioGroup v-model:value="selectedRoute">
-          <Radio
-            v-for="(item, index) of routeList"
-            :style="radioStyle"
-            :value="item.routeCode"
-            :key="index"
-          >
-            {{ item.routeName }}
-          </Radio>
-        </RadioGroup>
-      </div>
-      <template #footer>
-        <Space>
-          <!-- 取消 -->
-          <Button @click="close">
-            {{ $t('common.cancel') }}
-          </Button>
-          <!-- 确认 -->
-          <Button
-            type="primary"
-            @click="bindingProcessRoute()"
-            :loading="pullInLoading"
-          >
-            {{ $t('common.confirm') }}
-          </Button>
-        </Space>
-      </template>
-    </Drawer>
   </Page>
 </template>
 

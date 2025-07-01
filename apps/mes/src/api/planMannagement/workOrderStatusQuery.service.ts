@@ -39,3 +39,22 @@ export async function queryWorksheetState(params: queryWorksheetStateType) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/op/listWorksheetState?${qs.stringify(params)}`,
   );
 }
+
+/**
+ *查询工单列表
+ */
+export async function listByParam(params: queryWorksheetStateType) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/log/listByParam?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 解除锁定
+ */
+export async function unLockByWorksheetCode(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/log/unLockByWorksheetCode`,
+    params,
+  );
+}

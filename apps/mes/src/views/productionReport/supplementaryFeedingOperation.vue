@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, reactive, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -10,22 +10,16 @@ import { IconifyIcon, MdiSearch } from '@vben/icons';
 import {
   Button,
   Card,
-  Drawer,
   Form,
   FormItem,
   Input,
-  InputSearch,
-  message,
-  Radio,
-  RadioGroup,
   RangePicker,
   Select,
-  Space,
   Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { bindingRoute, getRouteList, queryWorksheetState } from '#/api';
+import { queryWorksheetState } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -260,83 +254,13 @@ function queryData({ page, pageSize }: any) {
   });
 }
 
-// endregion
-
-// region 工艺路线绑定
-// 工艺路线名称
-const routeName = ref('');
-// 工艺路线列表
-const routeList = ref<any>([]);
-// 当前选中的工艺路线
-const selectedRoute = ref<any>();
-// 查询状态
-const searchLoading = ref(false);
-// 单选样式
-const radioStyle = reactive({
-  display: 'flex',
-  lineHeight: '30px',
-});
-
 /**
- * 查询工艺路线
+ * 解除绑定
+ * @param row
  */
-function queryProcessRoute() {
-  searchLoading.value = true;
-  getRouteList({
-    pageNum: 1,
-    pageSize: 500,
-    routeName: routeName.value,
-  })
-    .then(({ list }) => {
-      routeList.value = list;
-    })
-    .finally(() => {
-      searchLoading.value = false;
-    });
-}
-
-// 当前选中的行
-const editItem = ref<any>({});
-// 提交状态
-const pullInLoading = ref<boolean>(false);
-/**
- * 选择工艺路线
- */
-function bindingProcessRoute() {
-  pullInLoading.value = true;
-  bindingRoute({
-    worksheetCode: editItem.value.worksheetCode,
-    routeCode: selectedRoute.value,
-    workstationCode: editItem.value.workstationCode,
-  })
-    .then(() => {
-      message.success($t('common.successfulOperation'));
-      gridApi.reload();
-      close();
-    })
-    .finally(() => {
-      pullInLoading.value = false;
-    });
-}
-
-const isOpen = ref(false);
-
-/**
- * 打开抽屉
- * @param row 选中的行
- */
-function showDrawer(row: any) {
-  editItem.value = row;
-  isOpen.value = true;
-  queryProcessRoute();
-}
-
-/**
- * 关闭抽屉
- */
-function close() {
-  editItem.value = {};
-  isOpen.value = false;
+function unlock(row: any) {
+  // eslint-disable-next-line no-alert
+  alert(row);
 }
 
 // endregion
@@ -454,14 +378,14 @@ onMounted(() => {
           <span>{{ getReportStateText(row.reportState) }}</span>
         </template>
         <template #action="{ row }">
-          <!-- 工艺路线选择 -->
-          <Tooltip>
+          <!-- 补投料 -->
+          <Tooltip v-if="author.includes('补投料')">
             <template #title>
-              {{ $t('selectionOfRDProcessRoute.selectionOfProcessRoute') }}
+              {{ $t('supplementaryFeedingOperation.supplementaryFeeding') }}
             </template>
-            <Button type="link" @click="showDrawer(row)">
+            <Button type="link" @click="unlock(row)">
               <IconifyIcon
-                icon="mdi:source-branch-sync"
+                icon="mdi:add-circle-outline"
                 class="inline-block align-middle text-2xl"
               />
             </Button>
@@ -470,51 +394,6 @@ onMounted(() => {
       </Grid>
     </Card>
     <!-- endregion -->
-
-    <!-- 工艺路线选择 -->
-    <Drawer
-      v-model:open="isOpen"
-      :footer-style="{ textAlign: 'right' }"
-      :title="$t('selectionOfRDProcessRoute.selectionOfProcessRoute')"
-      placement="right"
-      @close="close"
-    >
-      <InputSearch
-        v-model:value="routeName"
-        placeholder="输入关键字进行查询"
-        enter-button="查询"
-        :loading="searchLoading"
-        @search="queryProcessRoute"
-      />
-      <div class="mt-4 max-h-[80%] overflow-y-auto">
-        <RadioGroup v-model:value="selectedRoute">
-          <Radio
-            v-for="(item, index) of routeList"
-            :style="radioStyle"
-            :value="item.routeCode"
-            :key="index"
-          >
-            {{ item.routeName }}
-          </Radio>
-        </RadioGroup>
-      </div>
-      <template #footer>
-        <Space>
-          <!-- 取消 -->
-          <Button @click="close">
-            {{ $t('common.cancel') }}
-          </Button>
-          <!-- 确认 -->
-          <Button
-            type="primary"
-            @click="bindingProcessRoute()"
-            :loading="pullInLoading"
-          >
-            {{ $t('common.confirm') }}
-          </Button>
-        </Space>
-      </template>
-    </Drawer>
   </Page>
 </template>
 
