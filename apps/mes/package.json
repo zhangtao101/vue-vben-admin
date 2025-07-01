@@ -26,6 +26,7 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@dagrejs/dagre": "^1.1.5",
     "@types/jquery": "^3.5.32",
     "@vben-core/shared": "workspace:*",
     "@vben/access": "workspace:*",
@@ -42,6 +43,11 @@
     "@vben/styles": "workspace:*",
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
+    "@vue-flow/background": "^1.3.2",
+    "@vue-flow/controls": "^1.1.2",
+    "@vue-flow/core": "^1.45.0",
+    "@vue-flow/minimap": "^1.5.3",
+    "@vue-flow/node-toolbar": "^1.1.1",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
