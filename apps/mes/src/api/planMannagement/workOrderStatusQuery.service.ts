@@ -39,6 +39,14 @@ export async function queryWorksheetState(params: queryWorksheetStateType) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/op/listWorksheetState?${qs.stringify(params)}`,
   );
 }
+/**
+ *查询研发工艺路线
+ */
+export async function listYfWorksheetState(params: queryWorksheetStateType) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/op/listYfWorksheetState?${qs.stringify(params)}`,
+  );
+}
 
 /**
  *查询工单列表

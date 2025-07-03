@@ -25,7 +25,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { bindingRoute, getRouteList, queryWorksheetState } from '#/api';
+import { bindingRoute, getRouteList, listYfWorksheetState } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -190,10 +190,10 @@ const workstationTypes = ref([
     label: '施釉',
     value: 5,
   },
-  {
+  /*  {
     label: '抛光（抛光、打包、复选）',
     value: 6,
-  },
+  },*/
 ]);
 /**
  * 状态类型
@@ -242,7 +242,7 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryWorksheetState({
+    listYfWorksheetState({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -455,7 +455,7 @@ onMounted(() => {
         </template>
         <template #action="{ row }">
           <!-- 工艺路线选择 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('路线选择')">
             <template #title>
               {{ $t('selectionOfRDProcessRoute.selectionOfProcessRoute') }}
             </template>

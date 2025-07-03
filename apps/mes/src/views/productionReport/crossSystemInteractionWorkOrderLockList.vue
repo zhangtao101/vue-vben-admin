@@ -205,7 +205,7 @@ function unlock(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认解除绑定?',
+    title: '是否确认解除锁定?',
   });
 }
 

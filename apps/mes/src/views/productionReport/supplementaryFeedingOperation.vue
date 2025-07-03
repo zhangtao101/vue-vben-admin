@@ -22,6 +22,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { queryWorksheetState } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import Feeding from '#/util/component/feeding.vue';
 
 // 路由信息
 const route = useRoute();
@@ -254,13 +255,16 @@ function queryData({ page, pageSize }: any) {
   });
 }
 
+// endregion
+
+// region 补投料
+const feedRef = ref<any>();
 /**
- * 解除绑定
+ * 打开补投料
  * @param row
  */
-function unlock(row: any) {
-  // eslint-disable-next-line no-alert
-  alert(row);
+function showDrawer(row: any) {
+  feedRef.value.show(row);
 }
 
 // endregion
@@ -383,7 +387,7 @@ onMounted(() => {
             <template #title>
               {{ $t('supplementaryFeedingOperation.supplementaryFeeding') }}
             </template>
-            <Button type="link" @click="unlock(row)">
+            <Button type="link" @click="showDrawer(row)">
               <IconifyIcon
                 icon="mdi:add-circle-outline"
                 class="inline-block align-middle text-2xl"
@@ -394,6 +398,8 @@ onMounted(() => {
       </Grid>
     </Card>
     <!-- endregion -->
+    <!-- 投料 -->
+    <Feeding ref="feedRef" />
   </Page>
 </template>
 

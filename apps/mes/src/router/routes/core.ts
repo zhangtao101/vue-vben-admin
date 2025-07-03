@@ -721,6 +721,17 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'crossSystemInteractionWorkOrderLockList',
         path: 'crossSystemInteractionWorkOrderLockList',
       },
+      {
+        component: () =>
+          import('#/views/processManagement/selectionOfRDProcessRoute.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '研发工艺路线选择',
+          code: 'WM_503',
+        },
+        name: 'selectionOfRDProcessRoute',
+        path: 'selectionOfRDProcessRoute',
+      },
     ],
   },
 ];
