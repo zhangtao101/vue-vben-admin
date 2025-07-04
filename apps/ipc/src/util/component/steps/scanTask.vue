@@ -1,13 +1,30 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
+import { onBeforeUnmount, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
+import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
-import { Button, Col, Input, message, Row, Spin } from 'ant-design-vue';
+import {
+  Button,
+  Col,
+  Input,
+  message,
+  Modal,
+  Row,
+  Spin,
+  Tooltip,
+} from 'ant-design-vue';
 
-import { handleMaulSncode, listHCByCodeScan } from '#/api';
-import ScanTheCode from '#/util/component/scanTheCode.vue';
+import {
+  handleMaulSncode,
+  hCHqCheckClear,
+  listHCByCodeScan,
+  snCodeHcBinding,
+  snCodeHcBindingCallBack,
+} from '#/api';
 import useWebSocket from '#/util/websocket-util';
 
 /**
@@ -45,6 +62,12 @@ const props = defineProps({
     default: 0,
   },
 });
+// 单工位列表
+const singleStationList = ref<any>([34, 35, 37]);
+// 禁用扫码的工位列表
+const disableScanningCodes = ref<any>([34, 37]);
+// 多工位列表
+const multiStationList = ref([32, 33]);
 
 /**
  * 获取标签的 class，用于统一标签的样式
@@ -55,77 +78,99 @@ function getLabelClass() {
 }
 
 /**
- * 获取值的 class，用于统一值显示区域的样式
- * @returns {string} 值显示区域的 class 字符串
+ * 获取值的 class
+ * @returns 值的 class 字符串
  */
-function getValueClass(isResult: boolean = false) {
-  if (isResult) {
-    let css = '';
-    switch (details.value.defectFlag) {
-      case -1: {
-        css = 'bg-red-500 text-white';
-        break;
-      }
-      case 1: {
-        css = 'bg-green-500 text-white';
-        break;
-      }
+function getValueClass(isResult?: number) {
+  let css = '';
+  switch (isResult) {
+    case -1: {
+      css = 'bg-red-500 text-white';
+      break;
     }
-    return `inline-block border p-2 text-center w-72 ${css}`;
+    case 1: {
+      css = 'bg-green-500 text-[#444]';
+      break;
+    }
   }
-  return 'inline-block border p-2 text-center w-72';
+  return `align-middle inline-block border rounded-xl p-2 text-center w-72 ${css}`;
 }
+
+// region 工位
+
+/**
+ * 工位号输入框的引用
+ */
+const stationNumberRef = ref();
 
 /**
  * 存储从接口获取的详情数据，初始化为空对象
  */
 const details = ref<any>({});
 /**
+ * SN 码输入框的引用
+ */
+const snCodeRef = ref();
+// sn码
+const snCode = ref('');
+// 工位号
+const stationNumber = ref('');
+/**
+ * 绑定 SN 码和工位号
+ */
+function bind() {
+  // 当校验结果为 1 且工位号和 SN 码都存在时，进行绑定操作
+  if (snCode.value && stationNumber.value) {
+    // 调用 API 进行 SN 码和工位号的绑定
+    snCodeHcBinding({
+      bindingId: props.bindingId,
+      worksheetCode: props.worksheetCode,
+      snCode: snCode.value,
+      stationNo: stationNumber.value,
+    }).then(() => {
+      // 绑定成功后，显示成功提示信息
+      message.success($t('common.successfulOperation'));
+      // 清空详情数据、SN 码和工位号
+      details.value = {};
+      // 重新加载表格数据
+      reload();
+    });
+    setTimeout(() => {
+      snCode.value = '';
+      stationNumber.value = '';
+      setTimeout(() => {
+        // 聚焦到工位号输入框
+        snCodeRef.value.focus();
+      }, 200);
+    }, 300);
+  } else {
+    // 工位号为空时，聚焦到工位号输入框
+    if (!details.value.stationNumber) {
+      stationNumberRef.value.focus();
+    }
+    // SN 码为空时，聚焦到 SN 码输入框
+    else if (!details.value.snCode) {
+      snCodeRef.value.focus();
+    }
+  }
+}
+// endregion
+
+/**
  * 控制加载状态的响应式变量，为 true 时显示加载动画
  */
 const spinning = ref<any>(false);
-/**
- * 存储输入的 SN 码，初始值为空字符串
- */
-const snCode = ref<any>('');
 
-/**
- * 查询资源验证状态
- * 该函数会发起异步请求获取数据，并更新详情数据和加载状态
- */
-function queryData() {
-  // 开始加载，显示加载动画
-  spinning.value = true;
-  // 调用 API 接口获取数据
-  listHCByCodeScan({
-    workstationCode: props.workstationCode,
-    equipCode: props.equipCode,
-    worksheetCode: props.worksheetCode,
-    bindingId: props.bindingId,
-    functionId: props.functionId,
-    snCode: snCode.value,
-  })
-    .then((data) => {
-      // 将获取到的数据合并到详情数据中
-      details.value = {
-        ...data,
-      };
-    })
-    .finally(() => {
-      // 无论请求成功或失败，都结束加载，隐藏加载动画
-      spinning.value = false;
-    });
-}
-
-const snCodeRef = ref();
-// 扫码错误状态
-const snCodeError = ref(false);
 /**
  * 查询 SN 码信息
  * 该函数会发起异步请求处理手动输入的 SN 码，并更新详情数据和加载状态
  */
 function queryCode() {
-  spinning.value = true;
+  snCodeRef.value.blur();
+  if (multiStationList.value.includes(props.showTypeNumber)) {
+    // 聚焦到工位号输入框
+    stationNumberRef.value.focus();
+  }
   // 调用 API 处理手动输入的 SN 码
   handleMaulSncode({
     workstationCode: props.workstationCode,
@@ -134,21 +179,231 @@ function queryCode() {
     bindingId: props.bindingId,
     functionId: props.functionId,
     snCode: snCode.value,
-  })
-    .then(() => {
-      message.success($t('common.successfulOperation'));
-      queryData();
-      snCode.value = '';
-      snCodeError.value = false;
-    })
-    .catch(() => {
-      snCodeError.value = true;
-    })
-    .finally(() => {
-      // 无论请求成功或失败，都结束加载，隐藏加载动画
-      spinning.value = false;
-    });
+  }).then(() => {
+    message.success($t('common.successfulOperation'));
+    if (!multiStationList.value.includes(props.showTypeNumber)) {
+      // 聚焦到 SN 码输入框
+      snCodeRef.value.focus();
+    }
+  });
 }
+
+// region 表格信息
+/**
+ * 表格配置选项
+ */
+const gridOptions: VxeGridProps<any> = {
+  // 表格内容居中对齐
+  align: 'center',
+  // 显示表格边框
+  border: true,
+  // 表格列配置
+  columns: [
+    {
+      // 列标题
+      title: '序号',
+      // 列类型为序号列
+      type: 'seq',
+      // 列字段名
+      field: 'seq',
+      // 列宽度
+      width: 50,
+    },
+    {
+      title: '工位编号',
+      field: 'produceWorkshopCode',
+      width: 100,
+    },
+    {
+      field: 'qcCode',
+      title: '单件SN',
+      // 列最小宽度
+      minWidth: 200,
+    },
+    {
+      field: 'partPlanCode',
+      title: '工单编号',
+      minWidth: 200,
+    },
+    {
+      field: 'partCode',
+      title: '产品编号',
+      minWidth: 200,
+    },
+    {
+      field: 'partName',
+      title: '产品名称',
+      minWidth: 200,
+    },
+    {
+      field: 'defectResultName',
+      title: '测试结果',
+      minWidth: 120,
+    },
+    {
+      field: 'action',
+      title: '操作',
+      fixed: 'right',
+      minWidth: 120,
+      visible: multiStationList.value.includes(props.showTypeNumber),
+      slots: {
+        default: 'action',
+      },
+    },
+  ],
+  // 表格高度
+  height: 400,
+  // 显示斑马纹
+  stripe: true,
+  // 排序配置，支持多列排序
+  sortConfig: {
+    multiple: true,
+  },
+  // 代理配置，用于异步查询数据
+  proxyConfig: {
+    ajax: {
+      query: async () => {
+        return await queryTableData();
+      },
+    },
+  },
+  rowStyle: ({ row }) => {
+    if (row.errorFlag === -1) {
+      return {
+        backgroundColor: '#f5222d',
+        color: '#fff',
+      };
+    }
+  },
+  // 工具栏配置
+  toolbarConfig: {
+    // 不显示自定义按钮
+    custom: false,
+    // 不显示导入按钮
+    // import: true,
+    // 不显示导出按钮
+    // export: true,
+    // 显示刷新按钮
+    refresh: true,
+    // 显示缩放按钮
+    zoom: true,
+  },
+};
+// 初始化 VxeGrid 组件和 API
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
+
+/**
+ * 重新加载表格数据
+ */
+function reload() {
+  gridApi.reload();
+}
+
+/**
+ * 解绑
+ * @param row
+ */
+function unlink(row: any) {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      message.warning('已取消解绑!');
+    },
+    onOk() {
+      snCodeHcBindingCallBack({
+        snCode: row.qcCode,
+        bindingId: props.bindingId,
+        worksheetCode: row.partPlanCode,
+        stationNo: row.produceWorkshopCode,
+      }).then(() => {
+        message.success($t('common.successfulOperation'));
+        reload();
+      });
+    },
+    title: '是否确认解绑?',
+  });
+}
+// region 查询数据
+
+/**
+ * 查询数据
+ * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ */
+function queryTableData() {
+  return new Promise((resolve, _reject) => {
+    // 定义请求参数
+    const params: any = {
+      workstationCode: props.workstationCode,
+      equipCode: props.equipCode,
+      worksheetCode: props.worksheetCode,
+      bindingId: props.bindingId,
+      functionId: props.functionId,
+    };
+    // 调用 API 查询数据
+    listHCByCodeScan(params)
+      .then(({ stationList, ...d }) => {
+        details.value = d;
+        // 当有代码记录或工位列表时
+        if (stationList) {
+          // 根据展示类型返回不同的数据和总数
+          resolve({
+            total: stationList.length,
+            items: stationList,
+          });
+        } else {
+          // 没有数据时，返回总数为 0 和空数组
+          resolve({
+            total: 0,
+            items: [],
+          });
+        }
+      })
+      .catch(() => {
+        resolve({
+          total: 0,
+          items: [],
+        });
+      });
+  });
+}
+
+// endregion
+
+// region 清空
+
+function clear() {
+  // 弹出确认对话框
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      // 点击取消按钮，显示警告消息
+      message.warning('已取消操作!');
+    },
+    onOk() {
+      spinning.value = true;
+      hCHqCheckClear({
+        workstationCode: props.workstationCode,
+        equipCode: props.equipCode,
+        worksheetCode: props.worksheetCode,
+        bindingId: props.bindingId,
+        functionId: props.functionId,
+      })
+        .then(() => {
+          gridApi.reload();
+        })
+        .finally(() => {
+          spinning.value = false;
+        });
+    },
+    title: '是否确认操作?',
+  });
+}
+
+// endregion
 
 // region websocket
 /**
@@ -168,16 +423,10 @@ const { close: websocketClose } = useWebSocket(readMessage, {
  * 当接收到消息时，调用 queryData 函数重新查询资源验证状态
  */
 function readMessage() {
-  queryData();
+  reload();
 }
 // endregion
 
-/**
- * 组件挂载后执行的钩子函数，会在组件挂载完成后调用 queryData 函数获取数据
- */
-onMounted(() => {
-  queryData();
-});
 onBeforeUnmount(() => {
   websocketClose();
 });
@@ -188,93 +437,61 @@ onBeforeUnmount(() => {
   <Spin :spinning="spinning">
     <!-- 定义一个行布局 -->
     <Row>
-      <!-- 定义一个列，占 24 格，顶部有 10px 的内边距 -->
-      <Col :span="24" class="pt-10">
-        <!-- region 实时扫码 -->
-        <!-- 显示单件 实时扫码输入框和扫码组件的容器 -->
-        <div class="mb-4 mr-8 flex items-center" v-if="showTypeNumber !== 37">
-          <!-- 显示单件 实时扫码 码标签 -->
+      <!-- 定义一个列，占 24 格 -->
+      <Col :span="24">
+        <!-- region SN扫码 -->
+        <!-- 显示工单编号的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 显示工SN码标签 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.realTimeScanningCode') }}：
+            {{ $t('productionOperation.snCode') }}：
           </span>
-          <!-- 显示单件 SN 码输入框和扫码组件的区域 -->
-          <span :class="getValueClass()" class="border-0 text-left">
+          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
             <!-- SN 码输入框，支持回车键查询，根据展示类型决定是否禁用 -->
             <Input
               ref="snCodeRef"
               v-model:value="snCode"
-              :status="snCodeError ? 'error' : ''"
-              @keydown.enter="queryCode()"
+              :disabled="disableScanningCodes.includes(showTypeNumber)"
+              @keydown.enter="
+                () => {
+                  queryCode();
+                }
+              "
               @focus="
                 () => {
                   snCode = '';
                 }
               "
             />
-            <!-- 扫码组件，仅在展示类型为 35 时显示，扫码成功后将结果赋值给 SN 码并查询 -->
-            <ScanTheCode
-              v-if="showTypeNumber === 35"
-              @scan-the-code="
-                (val) => {
-                  snCode = val;
-                  queryCode();
+          </span>
+        </div>
+        <!-- endregion -->
+        <!-- region 工位扫码 -->
+        <!-- 显示工位扫码的容器 -->
+        <div
+          class="mb-4 mr-8 inline-block"
+          v-if="multiStationList.includes(showTypeNumber)"
+        >
+          <!-- 显示工SN码标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.workstationNumber') }}：
+          </span>
+          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            <!-- 工位编号输入框，支持回车键绑定，聚焦时清空输入  多工位时显示 -->
+            <Input
+              ref="stationNumberRef"
+              v-model:value="stationNumber"
+              :disabled="showTypeNumber === 39"
+              @keydown.enter="bind()"
+              @focus="
+                () => {
+                  stationNumber = '';
                 }
               "
             />
           </span>
-        </div>
-        <!-- endregion -->
-      </Col>
-      <!-- 定义一个列，占 24 格 -->
-      <Col :span="24">
-        <!-- region 单件SN码 -->
-        <!-- 显示单件 SN 码输入框和扫码组件的容器 -->
-        <div class="mb-4 mr-8 flex items-center">
-          <!-- 显示单件 SN 码标签 -->
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.singlePieceSNCode') }}：
-          </span>
-          <!-- 显示单件 SN 码输入框和扫码组件的区域 -->
-          <span :class="getValueClass()">
-            <!-- SN 码输入框，支持回车键查询，根据展示类型决定是否禁用 -->
-            {{ details.snCode || $t('productionOperation.none') }}
-            <!-- 根据校验结果显示不同的图标按钮 -->
-            <Button
-              type="link"
-              :danger="details.checkResult === -1"
-              v-if="details.checkResult"
-            >
-              <IconifyIcon
-                :icon="
-                  details.checkResult === -1
-                    ? 'mdi:error-outline'
-                    : 'mdi:success-circle-outline'
-                "
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </span>
-        </div>
-        <!-- endregion -->
-
-        <!-- region 校验结果 -->
-        <!-- 显示校验结果的容器 -->
-        <div class="mb-4 mr-8 inline-block">
-          <!-- 显示校验结果标签 -->
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.verificationResult') }}：
-          </span>
-          <!-- 显示校验结果的值，无结果时显示默认提示 -->
-          <span :class="getValueClass()">
-            {{ details.error || $t('productionOperation.none') }}
-          </span>
-          <!-- 当校验结果不为 '通过' 时显示锁定图标按钮 -->
-          <Button type="link" v-if="details.error !== '通过'" danger>
-            <IconifyIcon
-              icon="mdi:lock-outline"
-              class="inline-block align-middle text-2xl"
-            />
-          </Button>
         </div>
         <!-- endregion -->
       </Col>
@@ -306,21 +523,120 @@ onBeforeUnmount(() => {
           </span>
         </div>
         <!-- endregion -->
-        <!-- region 测试结果 -->
-        <!-- 显示测试结果的容器 -->
+
+        <!-- region 已生产数量 -->
+        <!-- 显示已生产数量 -->
         <div class="mb-4 mr-8 inline-block">
-          <!-- 显示测试结果标签 -->
+          <!-- 显示已生产数量标签 -->
           <span :class="getLabelClass()">
-            {{ $t('productionOperation.testResult') }}：
+            {{ $t('productionOperation.producedQuantity') }}：
           </span>
-          <!-- 显示测试结果的值，无结果时显示默认提示 -->
-          <span :class="getValueClass(true)">
-            {{ details.defectFlagName || $t('productionOperation.none') }}
+          <!-- 显示已生产数量值，无结果时显示默认提示 -->
+          <span :class="getValueClass()">
+            {{ details?.totalNumber || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion -->
       </Col>
+
+      <!-- 定义一个列，占 24 格 -->
+      <Col :span="24">
+        <!-- region SN扫码 -->
+        <!-- 显示工单编号的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 显示工SN码标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.snCode') }}：
+          </span>
+          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()">
+            {{ details.snCode || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- endregion -->
+        <!-- region 工位扫码 -->
+        <!-- 显示工位扫码的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 显示工SN码标签 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.workstationNumber') }}：
+          </span>
+          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()">
+            <!-- 多工位时显示 -->
+            <span v-if="multiStationList.includes(showTypeNumber)">
+              {{ details.stationNo || $t('productionOperation.none') }}
+            </span>
+            <!-- 单工位时显示 -->
+            <span v-if="singleStationList.includes(showTypeNumber)"> 1# </span>
+          </span>
+        </div>
+        <!-- endregion -->
+
+        <!-- 定义一个列，占 24 格 -->
+        <Col :span="24">
+          <!-- region  SN校验 -->
+          <!-- 显示 SN校验的容器 -->
+          <div class="mb-4 mr-8 inline-block">
+            <!-- 显示 SN校验 标签 -->
+            <span :class="getLabelClass()">
+              {{ $t('productionOperation.snVerification') }}：
+            </span>
+            <!-- 显示SN校验的值，无结果时显示默认提示 -->
+            <span :class="getValueClass(details.checkResult)">
+              {{ details.error || $t('productionOperation.none') }}
+            </span>
+          </div>
+          <!-- endregion -->
+          <!-- region 产品名称 -->
+          <!-- 显示 工位校验 的容器 -->
+          <div class="mb-4 mr-8 inline-block">
+            <!-- 显示工位校验标签 -->
+            <span :class="getLabelClass()">
+              {{ $t('productionOperation.workstationVerification') }}：
+            </span>
+            <!-- 显示工位校验的值，无结果时显示默认提示 -->
+            <span :class="getValueClass(details.stationCheckResult)">
+              {{ details.stationError || $t('productionOperation.none') }}
+            </span>
+          </div>
+          <!-- endregion -->
+
+          <!-- region 设备联锁 -->
+          <!-- 显示设备联锁 -->
+          <div class="mb-4 mr-8 inline-block">
+            <!-- 显示设备联锁标签 -->
+            <span :class="getLabelClass()">
+              {{ $t('productionOperation.equipmentInterlocking') }}：
+            </span>
+            <!-- 显示设备联锁，无结果时显示默认提示 -->
+            <span :class="getValueClass(details.errorType)">
+              {{ details?.errorFlagName || $t('productionOperation.none') }}
+            </span>
+          </div>
+          <!-- endregion -->
+        </Col>
+      </Col>
     </Row>
+    <Grid>
+      <template #toolbar-actions>
+        <Button type="primary" @click="clear()">
+          {{ $t('common.clear') }}
+        </Button>
+      </template>
+      <template #action="{ row }">
+        <!-- 解绑 -->
+        <Tooltip>
+          <template #title>{{ $t('productionOperation.unbind') }}</template>
+          <Button type="link" @click="unlink(row)">
+            <IconifyIcon
+              icon="carbon:unlink"
+              class="inline-block align-middle text-2xl"
+            />
+          </Button>
+        </Tooltip>
+      </template>
+    </Grid>
   </Spin>
 </template>
 

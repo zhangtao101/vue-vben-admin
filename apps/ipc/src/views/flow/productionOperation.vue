@@ -149,7 +149,7 @@ function showInterlockingConfiguration() {
 
 // region 收缩
 // 作业信息是否收缩
-const jobInformationContraction = ref(false);
+const jobInformationContraction = ref(true);
 
 /**
  * 作业信息收缩展开
@@ -763,7 +763,7 @@ onBeforeUnmount(() => {
         </Col>
       </Row>
       <!-- 卡片容器，当作业信息未收缩时显示 -->
-      <Card class="mb-5" v-if="!jobInformationContraction">
+      <Card class="mb-5" v-if="jobInformationContraction">
         <!-- 表格组件 -->
         <Grid>
           <!-- 表格工具栏插槽，留空 -->

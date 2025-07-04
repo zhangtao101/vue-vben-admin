@@ -25,10 +25,8 @@ import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
 import ResourceAssignment from '#/util/component/steps/resourceAssignment.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
-import ScanModule from '#/util/component/steps/scanModule.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import ScanTask from '#/util/component/steps/scanTask.vue';
-import ScanWorkflow from '#/util/component/steps/scanWorkflow.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
 
@@ -386,7 +384,7 @@ function fullScreen() {
       v-if="step.type === 31"
     />
     <!-- 扫码作业--- 成品、半成品老练检：根据工步类型为 32 时，渲染扫码作业组件，并传递相关参数 -->
-    <ScanModule
+    <ScanTask
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
@@ -406,7 +404,7 @@ function fullScreen() {
       v-if="step.type === 39"
     />
     <!-- 扫码作业--- 氦气：根据工步类型为 33 时，渲染扫码作业组件，并传递相关参数 -->
-    <ScanModule
+    <ScanTask
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
@@ -416,7 +414,7 @@ function fullScreen() {
       v-if="step.type === 33"
     />
     <!-- 扫码作业--- 陶瓷：根据工步类型为 34 时，渲染扫码作业组件，并传递相关参数 -->
-    <ScanWorkflow
+    <ScanTask
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
