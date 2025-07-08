@@ -54,6 +54,7 @@
   "erpDocument": "ERP Document",
   "scanTheCodeAndFeedTheMaterial": "Scan Code to Feed Material",
   "feedingComplete": "Feeding Complete",
+  "feeding": "Feeding",
   "abnormalFilling": "Abnormal Filling",
   "drafts": "Drafts",
   "callOut": "Call Out",

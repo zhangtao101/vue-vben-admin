@@ -54,6 +54,7 @@
   "erpDocument": "ERP单据",
   "scanTheCodeAndFeedTheMaterial": "扫码上料",
   "feedingComplete": "投料完成",
+  "feeding": "投料",
   "abnormalFilling": "异常填报",
   "drafts": "草稿箱",
   "callOut": "呼叫",
@@ -85,5 +86,8 @@
   "enable": "启用",
   "stopUsing": "停用",
   "unbind": "解绑",
-  "clear": "清除"
+  "clear": "清除",
+  "saveTheCurrentOperation": "保存当前操作",
+  "clearTheSavedContent": "清除已保存内容",
+  "miscellaneousCollection": "杂收(SAP)"
 }

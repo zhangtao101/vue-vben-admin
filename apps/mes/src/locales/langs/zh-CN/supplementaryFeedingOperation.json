@@ -1,3 +1,17 @@
 {
-  "supplementaryFeeding": "补投料"
+  "supplementaryFeeding": "补投料",
+  "feedingMaterials": "投料",
+  "addMaterials": "加料",
+  "standardDryMaterialQuantity": "标准干料量",
+  "standardInputQuantity": "标准投入量",
+  "theCurrentAmountOfWetMaterialInput": "当前投入湿料量",
+  "theAmountOfDryMaterialHasBeenInput": "已投入干料量",
+  "batchOfMaterials": "物料批次",
+  "moistureContent": "含水率",
+  "sapStorageLocation": "SAP储位",
+  "sapWarehouseLocation": "SAP库位",
+  "actualStorageLocation": "实际库位",
+  "inventory": "库存",
+  "storageLocation": "库位",
+  "standardInputAmountOfWetMaterial": "湿料标准投入量"
 }
