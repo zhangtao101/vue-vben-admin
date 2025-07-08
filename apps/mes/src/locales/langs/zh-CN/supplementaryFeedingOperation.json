@@ -13,5 +13,13 @@
   "actualStorageLocation": "实际库位",
   "inventory": "库存",
   "storageLocation": "库位",
-  "standardInputAmountOfWetMaterial": "湿料标准投入量"
+  "standardInputAmountOfWetMaterial": "湿料标准投入量",
+  "actualInputVolume": "实际投入量",
+  "actualDryMaterialQuantity": "实际干料量",
+  "surplusQuantity": "盘盈数量",
+  "inventoryLevel": "库存量",
+  "areaCode": "储位",
+  "batchNumber": "批次号",
+  "materialNumber": "物料编号",
+  "materialName": "物料名称"
 }

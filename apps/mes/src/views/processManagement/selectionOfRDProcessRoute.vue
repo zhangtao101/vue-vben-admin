@@ -41,6 +41,8 @@ const gridOptions: VxeGridProps<any> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'worksheetCode', title: '工单号', minWidth: 190 },
     { field: 'workstationCode', title: '工作站编号', minWidth: 150 },
+    { field: 'routeName', title: '路线名称', minWidth: 150 },
+    { field: 'routeCode', title: '路线编号', minWidth: 150 },
     { field: 'productCode', title: '产品编号', minWidth: 150 },
     { field: 'productName', title: '产品名称', minWidth: 150 },
     { field: 'planDateStart', title: '计划开始时间', minWidth: 150 },
@@ -327,6 +329,7 @@ const isOpen = ref(false);
  */
 function showDrawer(row: any) {
   editItem.value = row;
+  selectedRoute.value = editItem.value.routeCode;
   isOpen.value = true;
   queryProcessRoute();
 }
@@ -337,6 +340,7 @@ function showDrawer(row: any) {
 function close() {
   editItem.value = {};
   isOpen.value = false;
+  selectedRoute.value = undefined;
 }
 
 // endregion
@@ -494,7 +498,8 @@ onMounted(() => {
             :value="item.routeCode"
             :key="index"
           >
-            {{ item.routeName }}
+            {{ item.routeName }}__
+            {{ item.routeCode }}
           </Radio>
         </RadioGroup>
       </div>
