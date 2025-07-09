@@ -124,5 +124,8 @@
   "realTimeScanningCode": "实时扫码",
   "snVerification": "SN校验",
   "workstationVerification": "工位校验",
-  "equipmentInterlocking": "设备联锁"
+  "equipmentInterlocking": "设备联锁",
+  "manualInspection": "人工检验",
+  "qualified": "合格",
+  "unqualified": "不合格"
 }

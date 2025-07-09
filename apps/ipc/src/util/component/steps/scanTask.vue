@@ -67,7 +67,7 @@ const singleStationList = ref<any>([34, 35, 37]);
 // 禁用扫码的工位列表
 const disableScanningCodes = ref<any>([34, 37]);
 // 多工位列表
-const multiStationList = ref([32, 33]);
+const multiStationList = ref([27, 32, 33]);
 
 /**
  * 获取标签的 class，用于统一标签的样式
@@ -569,6 +569,7 @@ onBeforeUnmount(() => {
             </span>
             <!-- 单工位时显示 -->
             <span v-if="singleStationList.includes(showTypeNumber)"> 1# </span>
+            <span v-else> {{ $t('productionOperation.none') }} </span>
           </span>
         </div>
         <!-- endregion -->
@@ -615,6 +616,24 @@ onBeforeUnmount(() => {
             </span>
           </div>
           <!-- endregion -->
+
+          <!-- region 人工检验 -->
+          <!-- 显示人工检验 -->
+          <div class="mb-4 mr-8 inline-block" v-if="showTypeNumber === 27">
+            <!-- 显示人工检验 -->
+            <span :class="getLabelClass()">
+              {{ $t('productionOperation.manualInspection') }}：
+            </span>
+            <!-- 合格 -->
+            <Button type="primary" class="mr-4">
+              {{ $t('productionOperation.qualified') }}
+            </Button>
+            <!-- 不合格 -->
+            <Button type="primary" danger>
+              {{ $t('productionOperation.unqualified') }}
+            </Button>
+          </div>
+          <!-- endregion -->
         </Col>
       </Col>
     </Row>
@@ -626,7 +645,7 @@ onBeforeUnmount(() => {
       </template>
       <template #action="{ row }">
         <!-- 解绑 -->
-        <Tooltip>
+        <Tooltip v-if="[32, 33].includes(showTypeNumber)">
           <template #title>{{ $t('productionOperation.unbind') }}</template>
           <Button type="link" @click="unlink(row)">
             <IconifyIcon

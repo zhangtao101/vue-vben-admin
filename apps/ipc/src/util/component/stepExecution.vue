@@ -23,7 +23,6 @@ import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue'
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
 import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
-import ResourceAssignment from '#/util/component/steps/resourceAssignment.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import ScanTask from '#/util/component/steps/scanTask.vue';
@@ -324,7 +323,7 @@ function fullScreen() {
       v-if="step.type === 24"
     />
     <!-- 转向节压装 - 扫码作业 -- 马瑞利：根据工步类型为 25 时，渲染扫码作业组件，并传递相关参数 -->
-    <ScanningHomework
+    <ScanTask
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
@@ -333,8 +332,8 @@ function fullScreen() {
       :show-type-number="step.type"
       v-if="step.type === 25"
     />
-    <!-- 焊接底座 - 扫码作业 -- 马瑞利：根据工步类型为 26 时，渲染扫码作业组件，并传递相关参数 -->
-    <ScanningHomework
+    <!--支耳加强焊 - 扫码作业 -- 马瑞利：根据工步类型为 26 时，渲染扫码作业组件，并传递相关参数 -->
+    <ScanTask
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
@@ -344,7 +343,7 @@ function fullScreen() {
       v-if="step.type === 26"
     />
     <!-- 人工检验 - 扫码作业 -- 马瑞利：根据工步类型为 27 时，渲染扫码作业组件，并传递相关参数 -->
-    <ScanningHomework
+    <ScanTask
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
@@ -352,26 +351,6 @@ function fullScreen() {
       :function-id="step.id"
       :show-type-number="step.type"
       v-if="step.type === 27"
-    />
-    <!-- 弹簧压装 - 扫码作业 -- 马瑞利：根据工步类型为 28 时，渲染扫码作业组件，并传递相关参数 -->
-    <ScanningHomework
-      :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
-      :function-id="step.id"
-      :show-type-number="step.type"
-      v-if="step.type === 28"
-    />
-    <!-- 资源指派：根据工步类型为 29 时，渲染资源指派组件，并传递相关参数 -->
-    <ResourceAssignment
-      :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
-      :function-id="step.id"
-      :show-type-number="step.type"
-      v-if="step.type === 29"
     />
     <!-- 工序报工 - 和城：根据工步类型为 31 时，渲染工序报工组件，并传递相关参数 -->
     <ExitReport
