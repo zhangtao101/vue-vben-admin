@@ -33,10 +33,18 @@ import {
   smkFeedCheck,
 } from '#/api';
 
+/**
+ * 是否显示抽屉
+ */
 const showDrawer = ref(false);
-
+/**
+ * 编辑的项
+ */
 const editItem = ref<any>({});
-
+/**
+ * 是否是辅助料
+ */
+const isAuxiliaryMaterials = ref(false);
 /**
  * 显示抽屉
  * @param row
@@ -44,6 +52,10 @@ const editItem = ref<any>({});
 function show(row: any) {
   editItem.value = row;
   showDrawer.value = true;
+  isAuxiliaryMaterials.value = !isSpecialWorkstation(
+    ['ZJ', 'BC1'],
+    editItem.value.workstationCode,
+  );
   setTimeout(() => {
     reload();
   }, 200);
@@ -189,8 +201,8 @@ const utils = {
  * 工位判断
  * @param keywords 工位列表
  */
-function isSpecialWorkstation(keywords: string[]) {
-  return utils.isWorkstation(editItem.value.workstationName, keywords);
+function isSpecialWorkstation(keywords: string[], key?: string) {
+  return utils.isWorkstation(key ?? editItem.value.workstationName, keywords);
 }
 
 /**
@@ -247,6 +259,9 @@ const materialCodeList = ref<any>([]);
 function displayFeeding(row?: any) {
   showFeed.value = true;
   editFeed.value = row || {};
+  if (!row) {
+    isCreate.value = true;
+  }
 
   // 判断是否处于审核状态
   formState.value = editFeed.value.overtakingApproval
@@ -332,6 +347,8 @@ function queryLibraryLocation() {
     });
   }
 }
+
+// endregion
 
 /**
  * 获取干料总量
@@ -541,13 +558,17 @@ function queryAuditByRecord() {
       <template #toolbar-actions>
         <Space>
           <!-- 新增 -->
-          <Button type="primary" v-if="editItem.otherFeedFlag === 2">
+          <Button
+            type="primary"
+            v-if="isAuxiliaryMaterials"
+            @click="displayFeeding()"
+          >
             {{ $t('common.add') }}
           </Button>
           <!-- 投料 -->
           <Button type="primary">{{ $t('common.feeding') }}</Button>
           <!-- 杂收 -->
-          <Button type="primary" v-if="editItem.otherFeedFlag === 2">
+          <Button type="primary" v-if="!isAuxiliaryMaterials">
             {{ $t('common.miscellaneousCollection') }}
           </Button>
           <!-- 保存当前操作 -->
@@ -628,7 +649,7 @@ function queryAuditByRecord() {
                   queryLibraryLocation();
                 }
               "
-              v-if="editItem.created"
+              v-if="isCreate"
             />
             <span class="inline-block w-full" v-else>
               {{ editFeed.materialCode }}
@@ -692,222 +713,9 @@ function queryAuditByRecord() {
         </Col>
       </Row>
       <template v-for="(item, index) of formState" :key="index">
-        <Space direction="vertical" class="border-1 mb-4 border-red-600 p-2">
-          <Row
-            v-if="
-              !isSpecialWorkstation(['制釉', '施釉', '效果釉', '打包', '制粉'])
-            "
-          >
-            <!-- 物料批次 -->
-            <Col :span="8">
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.batchOfMaterials')"
-                :name="[index, 'batchCode']"
-                :rules="[{ required: true, message: '该项为必填项!' }]"
-              >
-                <Input
-                  v-model:value="item.batchCode"
-                  placeholder="物料批次"
-                  v-if="isCreate"
-                />
-                <Select
-                  v-model:value="item.batchCode"
-                  show-search
-                  placeholder="请选择"
-                  style="width: 160px"
-                  disabled
-                  :options="editItem.batchCodes"
-                  :field-names="{ label: 'batchCode', value: 'batchCode' }"
-                  @change="
-                    (_v: any, _i: any) => {
-                      item.waterNumber = _i.waterNumber;
-                      item.areaCode = _i.areaCode;
-                      item.warehouseCode = _i.warehouseCode;
-                    }
-                  "
-                  v-else
-                />
-              </FormItem>
-            </Col>
-            <!-- 含水率 -->
-            <Col :span="8">
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.moistureContent')"
-              >
-                <InputNumber
-                  v-model:value="item.waterNumber"
-                  :min="0"
-                  :placeholder="
-                    $t('supplementaryFeedingOperation.moistureContent')
-                  "
-                  v-if="isCreate"
-                />
-                <span class="inline-block w-full" v-else-if="item.waterNumber">
-                  {{ (item.waterNumber * 100).toFixed(2) }}%
-                </span>
-                <span class="inline-block w-full" v-else>0</span>
-              </FormItem>
-            </Col>
-            <!-- SAP储位 -->
-            <Col :span="8">
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.sapStorageLocation')"
-              >
-                <Input
-                  v-model:value="item.areaCode"
-                  :placeholder="
-                    $t('supplementaryFeedingOperation.sapStorageLocation')
-                  "
-                  v-if="isCreate"
-                />
-                <span class="inline-block w-full" v-else>
-                  {{ item.areaCode }}
-                </span>
-              </FormItem>
-            </Col>
-            <!-- SAP库位 -->
-            <Col :span="8">
-              <FormItem
-                :label="
-                  $t('supplementaryFeedingOperation.sapWarehouseLocation')
-                "
-              >
-                <Input
-                  v-model:value="item.warehouseCode"
-                  :placeholder="
-                    $t('supplementaryFeedingOperation.sapWarehouseLocation')
-                  "
-                  v-if="isCreate"
-                />
-                <span class="inline-block w-full" v-else>
-                  {{ item.warehouseCode }}
-                </span>
-              </FormItem>
-            </Col>
-            <!-- SAP库位 -->
-            <Col :span="8" v-if="isSpecialWorkstation(['制浆'])">
-              <FormItem
-                :label="
-                  $t('supplementaryFeedingOperation.actualStorageLocation')
-                "
-              >
-                <Input
-                  v-model:value="item.sjWarehouseCode"
-                  :placeholder="
-                    $t('supplementaryFeedingOperation.actualStorageLocation')
-                  "
-                  v-if="isCreate"
-                />
-                <span class="inline-block w-full" v-else>
-                  {{ item.sjWarehouseCode }}
-                </span>
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row
-            v-if="
-              isSpecialWorkstation(['制釉', '施釉', '效果釉', '打包', '制粉'])
-            "
-          >
-            <!-- 物料批次 -->
-            <Col :span="8">
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.batchOfMaterials')"
-                :name="[index, 'labelFormmat']"
-                :rules="[{ required: true, message: '该项为必填项!' }]"
-              >
-                <Select
-                  v-model:value="item.labelFormmat"
-                  show-search
-                  placeholder="请选择"
-                  style="width: 160px"
-                  disabled
-                  :options="editItem.batchCodes"
-                  :field-names="{
-                    label: 'labelFormmat',
-                    value: 'valueFormmat',
-                  }"
-                  @change="
-                    (_v: any) => {
-                      handleCombinedStringChange(_v, item);
-                    }
-                  "
-                />
-              </FormItem>
-            </Col>
-            <!-- 库位 -->
-            <Col :span="8">
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.storageLocation')"
-                :name="[index, 'warehouseCode']"
-                :rules="[{ required: true, message: '该项为必填项!' }]"
-              >
-                <Select
-                  v-model:value="item.warehouseCodeAndNumber"
-                  show-search
-                  placeholder="请选择"
-                  class="w-full"
-                  :disabled="editFeed.materialTypeFlag"
-                  :options="warehouseCodeList"
-                  @change="
-                    (_v: any) => {
-                      handleCombinedStringChange(_v, item);
-                    }
-                  "
-                />
-              </FormItem>
-            </Col>
-            <!-- 库存 -->
-            <Col :span="8">
-              <FormItem :label="$t('supplementaryFeedingOperation.inventory')">
-                <InputNumber
-                  v-model="item.stockQuality"
-                  :addon-after="editFeed.unit"
-                  :min="0"
-                  readonly
-                />
-              </FormItem>
-            </Col>
-          </Row>
-
-          <Row>
-            <!-- 湿料标准投入量 -->
-            <Col :span="8" v-if="isSpecialWorkstation(['制浆'])">
-              <FormItem
-                :label="
-                  $t(
-                    'supplementaryFeedingOperation.standardInputAmountOfWetMaterial',
-                  )
-                "
-              >
-                <InputNumber
-                  v-model="item.stockQuality"
-                  :addon-after="editFeed.unit"
-                  :min="0"
-                  readonly
-                />
-              </FormItem>
-            </Col>
-            <!-- 实际投入量 -->
-            <Col :span="8">
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.actualInputVolume')"
-                :name="[index, 'feedNumber']"
-                :rules="[{ required: true, message: '该项为必填项!' }]"
-              >
-                <InputNumber
-                  v-model="item.feedNumber"
-                  :addon-after="editFeed.unit"
-                  :disabled="editItem.overtakingApproval"
-                  :min="0"
-                />
-              </FormItem>
-            </Col>
-
-            <!-- 实际干料量 -->
-            <Col
-              :span="8"
+        <div class="mb-4 rounded-lg border-2 border-red-600 p-2">
+          <Space direction="vertical">
+            <Row
               v-if="
                 !isSpecialWorkstation([
                   '制釉',
@@ -918,75 +726,305 @@ function queryAuditByRecord() {
                 ])
               "
             >
-              <FormItem
-                :label="
-                  $t('supplementaryFeedingOperation.actualDryMaterialQuantity')
+              <!-- 物料批次 -->
+              <Col :span="8">
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.batchOfMaterials')"
+                  :name="[index, 'batchCode']"
+                  :rules="[{ required: true, message: '该项为必填项!' }]"
+                >
+                  <Input
+                    v-model:value="item.batchCode"
+                    placeholder="物料批次"
+                    v-if="isCreate"
+                  />
+                  <Select
+                    v-model:value="item.batchCode"
+                    show-search
+                    placeholder="请选择"
+                    style="width: 160px"
+                    disabled
+                    :options="editItem.batchCodes"
+                    :field-names="{ label: 'batchCode', value: 'batchCode' }"
+                    @change="
+                      (_v: any, _i: any) => {
+                        item.waterNumber = _i.waterNumber;
+                        item.areaCode = _i.areaCode;
+                        item.warehouseCode = _i.warehouseCode;
+                      }
+                    "
+                    v-else
+                  />
+                </FormItem>
+              </Col>
+              <!-- 含水率 -->
+              <Col :span="8">
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.moistureContent')"
+                >
+                  <InputNumber
+                    v-model:value="item.waterNumber"
+                    :min="0"
+                    :placeholder="
+                      $t('supplementaryFeedingOperation.moistureContent')
+                    "
+                    v-if="isCreate"
+                  />
+                  <span
+                    class="inline-block w-full"
+                    v-else-if="item.waterNumber"
+                  >
+                    {{ (item.waterNumber * 100).toFixed(2) }}%
+                  </span>
+                  <span class="inline-block w-full" v-else>0</span>
+                </FormItem>
+              </Col>
+              <!-- SAP储位 -->
+              <Col :span="8">
+                <FormItem
+                  :label="
+                    $t('supplementaryFeedingOperation.sapStorageLocation')
+                  "
+                >
+                  <Input
+                    v-model:value="item.areaCode"
+                    :placeholder="
+                      $t('supplementaryFeedingOperation.sapStorageLocation')
+                    "
+                    v-if="isCreate"
+                  />
+                  <span class="inline-block w-full" v-else>
+                    {{ item.areaCode }}
+                  </span>
+                </FormItem>
+              </Col>
+              <!-- SAP库位 -->
+              <Col :span="8">
+                <FormItem
+                  :label="
+                    $t('supplementaryFeedingOperation.sapWarehouseLocation')
+                  "
+                >
+                  <Input
+                    v-model:value="item.warehouseCode"
+                    :placeholder="
+                      $t('supplementaryFeedingOperation.sapWarehouseLocation')
+                    "
+                    v-if="isCreate"
+                  />
+                  <span class="inline-block w-full" v-else>
+                    {{ item.warehouseCode }}
+                  </span>
+                </FormItem>
+              </Col>
+              <!-- SAP库位 -->
+              <Col :span="8" v-if="isSpecialWorkstation(['制浆'])">
+                <FormItem
+                  :label="
+                    $t('supplementaryFeedingOperation.actualStorageLocation')
+                  "
+                >
+                  <Input
+                    v-model:value="item.sjWarehouseCode"
+                    :placeholder="
+                      $t('supplementaryFeedingOperation.actualStorageLocation')
+                    "
+                    v-if="isCreate"
+                  />
+                  <span class="inline-block w-full" v-else>
+                    {{ item.sjWarehouseCode }}
+                  </span>
+                </FormItem>
+              </Col>
+            </Row>
+
+            <Row
+              v-if="
+                isSpecialWorkstation(['制釉', '施釉', '效果釉', '打包', '制粉'])
+              "
+            >
+              <!-- 物料批次 -->
+              <Col :span="12">
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.batchOfMaterials')"
+                  :name="[index, 'labelFormmat']"
+                  :rules="[{ required: true, message: '该项为必填项!' }]"
+                >
+                  <Select
+                    v-model:value="item.labelFormmat"
+                    show-search
+                    placeholder="请选择"
+                    style="width: 160px"
+                    disabled
+                    :options="editItem.batchCodes"
+                    :field-names="{
+                      label: 'labelFormmat',
+                      value: 'valueFormmat',
+                    }"
+                    @change="
+                      (_v: any) => {
+                        handleCombinedStringChange(_v, item);
+                      }
+                    "
+                  />
+                </FormItem>
+              </Col>
+              <!-- 库位 -->
+              <Col :span="16">
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.storageLocation')"
+                  :name="[index, 'warehouseCode']"
+                  :rules="[{ required: true, message: '该项为必填项!' }]"
+                >
+                  <Select
+                    v-model:value="item.warehouseCodeAndNumber"
+                    show-search
+                    placeholder="请选择"
+                    class="w-full"
+                    :disabled="editFeed.materialTypeFlag"
+                    :options="warehouseCodeList"
+                    @change="
+                      (_v: any) => {
+                        handleCombinedStringChange(_v, item);
+                      }
+                    "
+                  />
+                </FormItem>
+              </Col>
+              <!-- 库存 -->
+              <Col :span="8">
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.inventory')"
+                >
+                  <InputNumber
+                    v-model="item.stockQuality"
+                    :addon-after="editFeed.unit"
+                    :min="0"
+                    readonly
+                  />
+                </FormItem>
+              </Col>
+            </Row>
+
+            <Row>
+              <!-- 湿料标准投入量 -->
+              <Col :span="8" v-if="isSpecialWorkstation(['制浆'])">
+                <FormItem
+                  :label="
+                    $t(
+                      'supplementaryFeedingOperation.standardInputAmountOfWetMaterial',
+                    )
+                  "
+                >
+                  <InputNumber
+                    v-model:value="item.stockQuality"
+                    :addon-after="editFeed.unit"
+                    :min="0"
+                    readonly
+                  />
+                </FormItem>
+              </Col>
+              <!-- 实际投入量 -->
+              <Col :span="8">
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.actualInputVolume')"
+                  :name="[index, 'feedNumber']"
+                  :rules="[{ required: true, message: '该项为必填项!' }]"
+                >
+                  <InputNumber
+                    v-model:value="item.feedNumber"
+                    :addon-after="editFeed.unit"
+                    :disabled="editItem.overtakingApproval"
+                    :min="0"
+                  />
+                </FormItem>
+              </Col>
+
+              <!-- 实际干料量 -->
+              <Col
+                :span="8"
+                v-if="
+                  !isSpecialWorkstation([
+                    '制釉',
+                    '施釉',
+                    '效果釉',
+                    '打包',
+                    '制粉',
+                  ])
                 "
               >
-                {{ getDryCharge(item) }}
-              </FormItem>
-            </Col>
+                <FormItem
+                  :label="
+                    $t(
+                      'supplementaryFeedingOperation.actualDryMaterialQuantity',
+                    )
+                  "
+                >
+                  {{ getDryCharge(item) }}
+                </FormItem>
+              </Col>
 
-            <!-- 盘盈数量 -->
-            <Col :span="8">
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.surplusQuantity')"
-                :name="[index, 'unFeedNumber']"
-                :rules="[{ required: true, message: '该项为必填项!' }]"
-              >
-                <InputNumber
-                  v-model="item.unFeedNumber"
-                  :addon-after="editFeed.unit"
-                  :disabled="editItem.overtakingApproval"
-                  :min="0"
-                />
-              </FormItem>
-            </Col>
+              <!-- 盘盈数量 -->
+              <Col :span="8">
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.surplusQuantity')"
+                  :name="[index, 'unFeedNumber']"
+                  :rules="[{ required: true, message: '该项为必填项!' }]"
+                >
+                  <InputNumber
+                    v-model:value="item.unFeedNumber"
+                    :addon-after="editFeed.unit"
+                    :disabled="editItem.overtakingApproval"
+                    :min="0"
+                  />
+                </FormItem>
+              </Col>
 
-            <!-- 库存量 -->
-            <Col :span="8">
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.inventoryLevel')"
-              >
-                {{ item.stockQuality ?? '' }}
-              </FormItem>
-            </Col>
+              <!-- 库存量 -->
+              <Col :span="8">
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.inventoryLevel')"
+                >
+                  {{ item.stockQuality ?? 0 }}
+                </FormItem>
+              </Col>
 
-            <!-- 批次号 -->
-            <Col
-              :span="8"
-              v-if="!isSpecialWorkstation(['制釉', '效果釉', '制粉'])"
-            >
-              <FormItem
-                :label="$t('supplementaryFeedingOperation.batchNumber')"
+              <!-- 批次号 -->
+              <Col
+                :span="8"
+                v-if="!isSpecialWorkstation(['制釉', '效果釉', '制粉'])"
               >
-                {{ item.batchCode }}
-              </FormItem>
-            </Col>
+                <FormItem
+                  :label="$t('supplementaryFeedingOperation.batchNumber')"
+                >
+                  {{ item.batchCode }}
+                </FormItem>
+              </Col>
 
-            <!-- 储位 -->
-            <Col
-              :span="8"
-              v-if="!isSpecialWorkstation(['制釉', '效果釉', '制粉'])"
-            >
-              <FormItem :label="$t('supplementaryFeedingOperation.areaCode')">
-                {{ item.areaCode }}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col :offset="8" :span="8">
-              <Button
-                type="primary"
-                class="w-full"
-                danger
-                @click="delFeedLine(index)"
+              <!-- 储位 -->
+              <Col
+                :span="8"
+                v-if="!isSpecialWorkstation(['制釉', '效果釉', '制粉'])"
               >
-                {{ $t('common.delete') }}
-              </Button>
-            </Col>
-          </Row>
-        </Space>
+                <FormItem :label="$t('supplementaryFeedingOperation.areaCode')">
+                  {{ item.areaCode }}
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col :offset="8" :span="8">
+                <Button
+                  type="primary"
+                  class="w-full"
+                  danger
+                  @click="delFeedLine(index)"
+                >
+                  {{ $t('common.delete') }}
+                </Button>
+              </Col>
+            </Row>
+          </Space>
+        </div>
       </template>
     </Form>
     <Button
