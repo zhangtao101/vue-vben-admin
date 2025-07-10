@@ -453,3 +453,14 @@ export function snCodeHcBindingCallBack(params: any) {
     params,
   );
 }
+
+/**
+ * 解绑
+ * @param params 参数
+ */
+export function mrlCheckResult(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/mrlCheckResult`,
+    params,
+  );
+}

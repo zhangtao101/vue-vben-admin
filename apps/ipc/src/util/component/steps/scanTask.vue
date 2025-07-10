@@ -22,6 +22,7 @@ import {
   handleMaulSncode,
   hCHqCheckClear,
   listHCByCodeScan,
+  mrlCheckResult,
   snCodeHcBinding,
   snCodeHcBindingCallBack,
 } from '#/api';
@@ -244,7 +245,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       title: '操作',
       fixed: 'right',
-      minWidth: 120,
+      minWidth: 150,
       visible: multiStationList.value.includes(props.showTypeNumber),
       slots: {
         default: 'action',
@@ -356,7 +357,7 @@ function queryTableData() {
           // 没有数据时，返回总数为 0 和空数组
           resolve({
             total: 0,
-            items: [],
+            items: [{}],
           });
         }
       })
@@ -425,6 +426,45 @@ const { close: websocketClose } = useWebSocket(readMessage, {
 function readMessage() {
   reload();
 }
+// endregion
+
+// region 判定
+// 判定加载状态
+const judgementLoading = ref(false);
+/**
+ * 判定
+ * @param row
+ * @param result
+ */
+function judgement(row: any, result: -1 | 1 = -1) {
+  // 弹出确认对话框
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      // 点击取消按钮，显示警告消息
+      message.warning('已取消操作!');
+    },
+    onOk() {
+      judgementLoading.value = true;
+      mrlCheckResult({
+        ...row,
+        checkResult: result,
+        ...props,
+      })
+        .then(() => {
+          message.success($t('common.successfulOperation'));
+          reload();
+        })
+        .finally(() => {
+          judgementLoading.value = false;
+        });
+    },
+    title: '是否确认该操作?',
+  });
+}
+
 // endregion
 
 onBeforeUnmount(() => {
@@ -616,24 +656,6 @@ onBeforeUnmount(() => {
             </span>
           </div>
           <!-- endregion -->
-
-          <!-- region 人工检验 -->
-          <!-- 显示人工检验 -->
-          <div class="mb-4 mr-8 inline-block" v-if="showTypeNumber === 27">
-            <!-- 显示人工检验 -->
-            <span :class="getLabelClass()">
-              {{ $t('productionOperation.manualInspection') }}：
-            </span>
-            <!-- 合格 -->
-            <Button type="primary" class="mr-4">
-              {{ $t('productionOperation.qualified') }}
-            </Button>
-            <!-- 不合格 -->
-            <Button type="primary" danger>
-              {{ $t('productionOperation.unqualified') }}
-            </Button>
-          </div>
-          <!-- endregion -->
         </Col>
       </Col>
     </Row>
@@ -650,6 +672,37 @@ onBeforeUnmount(() => {
           <Button type="link" @click="unlink(row)">
             <IconifyIcon
               icon="carbon:unlink"
+              class="inline-block align-middle text-2xl"
+            />
+          </Button>
+        </Tooltip>
+        <!-- 合格 -->
+        <Tooltip v-if="[27].includes(showTypeNumber)">
+          <template #title>{{ $t('productionOperation.qualified') }}</template>
+          <Button
+            type="link"
+            @click="judgement(row, 1)"
+            :loading="judgementLoading"
+          >
+            <IconifyIcon
+              icon="mdi:check"
+              class="inline-block align-middle text-2xl"
+            />
+          </Button>
+        </Tooltip>
+        <!-- 不合格 -->
+        <Tooltip v-if="[27].includes(showTypeNumber)">
+          <template #title>
+            {{ $t('productionOperation.unqualified') }}
+          </template>
+          <Button
+            type="link"
+            @click="judgement(row)"
+            :loading="judgementLoading"
+            :disabled="row.errorFlag !== 1 && row.defectResult !== 0"
+          >
+            <IconifyIcon
+              icon="mdi:times"
               class="inline-block align-middle text-2xl"
             />
           </Button>
