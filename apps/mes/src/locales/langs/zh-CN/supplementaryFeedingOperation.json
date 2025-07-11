@@ -21,5 +21,6 @@
   "areaCode": "储位",
   "batchNumber": "批次号",
   "materialNumber": "物料编号",
-  "materialName": "物料名称"
+  "materialName": "物料名称",
+  "reasonsForReplenishingMaterials": "补料原因"
 }

@@ -732,6 +732,17 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'selectionOfRDProcessRoute',
         path: 'selectionOfRDProcessRoute',
       },
+      {
+        component: () =>
+          import('#/views/productionReport/supplementaryFeedingOperation.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '补投料作业',
+          code: 'WM_504',
+        },
+        name: 'supplementaryFeedingOperation',
+        path: 'supplementaryFeedingOperation',
+      },
     ],
   },
 ];
