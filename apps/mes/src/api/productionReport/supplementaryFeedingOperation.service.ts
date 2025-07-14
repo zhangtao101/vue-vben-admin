@@ -129,6 +129,16 @@ export function smkFeedFXSave(params: any) {
   );
 }
 /**
+ * 投料-成型
+ * @param params 参数
+ */
+export function smkCXFeedSave(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/human/feed/smkCXFeedSave`,
+    params,
+  );
+}
+/**
  * 投料-施釉
  * @param params 参数
  */

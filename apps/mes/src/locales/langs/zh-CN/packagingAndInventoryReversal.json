@@ -1,0 +1,9 @@
+{
+  "currentInventory": "当前库存",
+  "quantityOfGoodsEnteringTheWarehouse": "入库数量",
+  "batchOfInboundGoods": "入库批次",
+  "warehousingTime": "入库时间",
+  "personEnteringTheWarehouse": "入库人",
+  "storageLocation": "入库库位",
+  "writeOffTime": "冲销时间"
+}

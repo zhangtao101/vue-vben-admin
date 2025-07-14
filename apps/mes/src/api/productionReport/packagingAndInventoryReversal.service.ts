@@ -11,6 +11,14 @@ export async function getInWarehouseHistoryList(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/op/getInWarehouseHistoryList?${qs.stringify(params)}`,
   );
 }
+/**
+ * 获取工单入库记录
+ */
+export async function getAllInWarehouseList(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/op/getAllInWarehouseList?${qs.stringify(params)}`,
+  );
+}
 
 /**
  * 入库冲销

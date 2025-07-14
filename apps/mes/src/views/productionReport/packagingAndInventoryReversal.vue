@@ -13,17 +13,16 @@ import {
   Form,
   FormItem,
   Input,
-  message,
+  RangePicker,
+  Select,
   Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  callbackInout,
-  getInWarehouseHistoryList,
-} from '#/api/productionReport/packagingAndInventoryReversal.service';
+import { queryWorksheetState } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import Reverse from '#/util/component/reverse.vue';
 
 // 路由信息
 const route = useRoute();
@@ -34,19 +33,34 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'worksheetCode', title: '工单号', minWidth: 190 },
+    { field: 'workstationCode', title: '工作站编号', minWidth: 150 },
+    { field: 'productCode', title: '产品编号', minWidth: 150 },
+    { field: 'productName', title: '产品名称', minWidth: 150 },
+    { field: 'planDateStart', title: '计划开始时间', minWidth: 150 },
+    { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 150 },
     {
-      title: '序号',
-      type: 'seq',
-      field: 'seq',
-      width: 50,
+      field: 'workSheetFinishNumber',
+      title: '工单完成数（入库数量）',
+      minWidth: 180,
     },
-    { field: 'code', title: '入库单号', minWidth: 200 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'batchCode', title: '入库批次号', minWidth: 200 },
-    { field: 'warehouseCode', title: '库位', minWidth: 200 },
-    { field: 'number', title: '入库数量', minWidth: 200 },
-    { field: 'packageNumber', title: '包装箱数', minWidth: 200 },
-    { field: 'opTime', title: '入库时间', minWidth: 200 },
+    { field: 'planDateEnd', title: '预计完成时间', minWidth: 150 },
+    { field: 'unit', title: '单位', minWidth: 150 },
+    {
+      field: 'state',
+      fixed: 'right',
+      slots: { default: 'workOrderStatus' },
+      title: '工单状态',
+      minWidth: 150,
+    },
+    {
+      field: 'reportState',
+      fixed: 'right',
+      slots: { default: 'reportTheWorkStatus' },
+      title: '工单报工状态',
+      minWidth: 150,
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -88,27 +102,136 @@ const gridEvents: VxeGridListeners<any> = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
- * 冲销
- * @param row
+ * 获取状态的中文描述
+ * @param state 状态编码
  */
-function chargeAgainst(row: any) {
-  row.loading = true;
-  callbackInout({
-    recordId: row.id,
-  }).then(() => {
-    message.success('冲销成功');
-    gridApi.reload();
-  });
+function getStatusText(state: number) {
+  switch (state) {
+    case -1: {
+      return '未生产';
+    }
+    case 1: {
+      return '生产中';
+    }
+    case 2: {
+      return '完工下线';
+    }
+    case 3: {
+      return '暂停下线';
+    }
+    default: {
+      return '未定义的状态';
+    }
+  }
+}
+/**
+ * 获取报工状态的中文描述
+ * @param state 状态编码
+ */
+function getReportStateText(state: number) {
+  switch (state) {
+    case 1: {
+      return '未报工';
+    }
+    case 2: {
+      return '已报工';
+    }
+    default: {
+      return '未定义的状态';
+    }
+  }
 }
 
+// endregion
+
+// region 冲销
+const reverseRef = ref();
+
+function showEdit(row: any) {
+  reverseRef.value.open(row);
+}
 // endregion
 
 // region 查询数据
 // 查询参数
 const queryParams = ref({
+  // 查询时间
+  searchTime: [] as any,
+  // 产品编号
+  productCode: '',
+  // 产品名称
+  productName: '',
   // 工单号
   worksheetCode: '',
+  // 类型
+  workstationType: 1,
+  // 工单状态
+  state: '',
+  // 工单报工状态
+  reportState: '',
 });
+
+// 工作站类别
+const workstationTypes = ref([
+  {
+    label: '制浆/制粉/制色',
+    value: 1,
+  },
+  {
+    label: '成型',
+    value: 2,
+  },
+  {
+    label: '窑炉（卧干、烧成）',
+    value: 3,
+  },
+  {
+    label: '制釉',
+    value: 4,
+  },
+  {
+    label: '施釉',
+    value: 5,
+  },
+  {
+    label: '抛光（抛光、打包、复选）',
+    value: 6,
+  },
+]);
+/**
+ * 状态类型
+ */
+const statusTypes = ref([
+  {
+    label: '未生产',
+    value: -1,
+  },
+  {
+    label: '生产中',
+    value: 1,
+  },
+  {
+    label: '完工下线',
+    value: 2,
+  },
+  {
+    label: '暂停下线',
+    value: 3,
+  },
+]);
+/**
+ * 报工状态类型
+ */
+const reportStatusTypes = ref([
+  {
+    label: '未报工',
+    value: 1,
+  },
+  {
+    label: '已报工',
+    value: 2,
+  },
+]);
 
 /**
  * 查询数据
@@ -116,15 +239,22 @@ const queryParams = ref({
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
-    getInWarehouseHistoryList({
-      ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
+    const params: any = { ...queryParams.value };
+    if (params.searchTime && params.searchTime.length === 2) {
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+      params.searchTime = undefined;
+    }
+    queryWorksheetState({
+      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then((data) => {
+      .then(({ total, list }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
-          total: data.length,
-          items: data,
+          total,
+          items: list,
         });
       })
       .catch((error) => {
@@ -158,12 +288,71 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
+        <!-- 类别 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.workstationType')"
+          style="margin-bottom: 1em"
+        >
+          <Select
+            v-model:value="queryParams.workstationType"
+            :options="workstationTypes"
+            class="!w-64"
+          />
+        </FormItem>
+        <!-- 产品编号 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.queryTime')"
+          style="margin-bottom: 1em"
+        >
+          <RangePicker v-model:value="queryParams.searchTime" />
+        </FormItem>
+        <!-- 产品编号 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.productNumber')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.productCode" />
+        </FormItem>
+
+        <!-- 产品名称 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.productName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.productName" />
+        </FormItem>
+
         <!-- 工单号 -->
         <FormItem
-          :label="$t('productionDaily.worksheetCode')"
+          :label="$t('workOrderStatusQuery.workOrderNumber')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.worksheetCode" />
+        </FormItem>
+
+        <!-- 工单状态 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.workOrderStatus')"
+          style="margin-bottom: 1em"
+        >
+          <Select
+            v-model:value="queryParams.state"
+            :options="statusTypes"
+            class="!w-64"
+            allow-clear
+          />
+        </FormItem>
+        <!-- 工单报工状态 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.reportTheWorkStatus')"
+          style="margin-bottom: 1em"
+        >
+          <Select
+            v-model:value="queryParams.reportState"
+            :options="reportStatusTypes"
+            class="!w-64"
+            allow-clear
+          />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -182,6 +371,13 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #workOrderStatus="{ row }">
+          <span> {{ getStatusText(row.state) }} </span>
+        </template>
+        <template #reportTheWorkStatus="{ row }">
+          <span>{{ getReportStateText(row.reportState) }}</span>
+        </template>
+
         <template #action="{ row }">
           <!-- 冲红 -->
           <Tooltip>
@@ -193,7 +389,7 @@ onMounted(() => {
               :loading="row.loading"
               class="mr-4"
               type="link"
-              @click="chargeAgainst(row)"
+              @click="showEdit(row)"
               v-if="author.includes('冲销')"
             />
           </Tooltip>
@@ -201,6 +397,7 @@ onMounted(() => {
       </Grid>
     </Card>
     <!-- endregion -->
+    <Reverse ref="reverseRef" />
   </Page>
 </template>
 
