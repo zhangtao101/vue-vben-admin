@@ -1,0 +1,9 @@
+{
+  "currentInventory": "Current Inventory",
+  "quantityOfGoodsEnteringTheWarehouse": "Inbound Quantity",
+  "batchOfInboundGoods": "Inbound Batch",
+  "warehousingTime": "Warehousing Time",
+  "personEnteringTheWarehouse": "Entered By",
+  "storageLocation": "Storage Location",
+  "writeOffTime": "Write-off Time"
+}

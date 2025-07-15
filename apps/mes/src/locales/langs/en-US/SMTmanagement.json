@@ -1,0 +1,8 @@
+{
+  "workOrderNumber": "Work Order Number",
+  "plannedTime": "Planned Time",
+  "planNumber": "Plan Number",
+  "productNumber": "Product Number",
+  "productName": "Product Name",
+  "taskLine": "Task Line"
+}
