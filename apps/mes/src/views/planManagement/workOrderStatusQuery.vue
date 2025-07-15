@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref, watch } from 'vue';
+import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -18,7 +18,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryWorksheetState } from '#/api';
+import { listWorkstationType, queryWorksheetState } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -155,32 +155,15 @@ const queryParams = ref({
 });
 
 // 工作站类别
-const workstationTypes = ref([
-  {
-    label: '制浆/制粉/制色',
-    value: 1,
-  },
-  {
-    label: '成型',
-    value: 2,
-  },
-  {
-    label: '窑炉（卧干、烧成）',
-    value: 3,
-  },
-  {
-    label: '制釉',
-    value: 4,
-  },
-  {
-    label: '施釉',
-    value: 5,
-  },
-  {
-    label: '抛光（抛光、打包、复选）',
-    value: 6,
-  },
-]);
+const workstationTypes = ref<any>([]);
+// 查询工作站类别
+function queryType() {
+  listWorkstationType().then((data) => {
+    workstationTypes.value = data;
+    queryParams.value.workstationType = data[0].value;
+    gridApi.reload();
+  });
+}
 /**
  * 状态类型
  */
@@ -251,25 +234,6 @@ function queryData({ page, pageSize }: any) {
 // region 权限查询
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
-// 新增按钮是否显示
-const addButton = ref(false);
-// 编辑按钮是否显示
-const editButton = ref(false);
-// 删除按钮是否显示
-const delButton = ref(false);
-
-// 监听权限变化, 变更按钮的显示情况
-watch(
-  () => author.value,
-  () => {
-    // 当 author.value 包含 '新增' 时，设置 addButton.value 为 true，表示允许新增
-    addButton.value = author.value.includes('新增');
-    // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
-    editButton.value = author.value.includes('编辑');
-    // 当 author.value 包含 '删除' 时，设置 delButton.value 为 true，表示允许删除
-    delButton.value = author.value.includes('删除');
-  },
-);
 
 // endregion
 
@@ -280,6 +244,7 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  queryType();
 });
 
 // endregion

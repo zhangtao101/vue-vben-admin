@@ -66,3 +66,12 @@ export async function unLockByWorksheetCode(params: any) {
     params,
   );
 }
+
+/**
+ * 获取对应的工作站类别列表
+ */
+export async function listWorkstationType() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/listWorkstationType`,
+  );
+}

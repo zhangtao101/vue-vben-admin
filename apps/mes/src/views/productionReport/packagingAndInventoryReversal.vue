@@ -19,7 +19,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryWorksheetState } from '#/api';
+import { listWorkstationType, queryWorksheetState } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 import Reverse from '#/util/component/reverse.vue';
@@ -172,32 +172,15 @@ const queryParams = ref({
 });
 
 // 工作站类别
-const workstationTypes = ref([
-  {
-    label: '制浆/制粉/制色',
-    value: 1,
-  },
-  {
-    label: '成型',
-    value: 2,
-  },
-  {
-    label: '窑炉（卧干、烧成）',
-    value: 3,
-  },
-  {
-    label: '制釉',
-    value: 4,
-  },
-  {
-    label: '施釉',
-    value: 5,
-  },
-  {
-    label: '抛光（抛光、打包、复选）',
-    value: 6,
-  },
-]);
+const workstationTypes = ref<any>([]);
+// 查询工作站类别
+function queryType() {
+  listWorkstationType().then((data) => {
+    workstationTypes.value = data;
+    queryParams.value.workstationType = data[0].value;
+    gridApi.reload();
+  });
+}
 /**
  * 状态类型
  */
@@ -278,6 +261,8 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+
+  queryType();
 });
 
 // endregion

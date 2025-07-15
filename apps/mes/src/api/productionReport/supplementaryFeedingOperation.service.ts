@@ -77,6 +77,19 @@ export async function getBomMaterialListByCode(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/human/patch/getBomMaterialListByCode?equipCode=${equipCode}&worksheetCode=${worksheetCode}`,
   );
 }
+/**
+ * 加料内容获取(粉料新增)
+ * @param equipCode 参数
+ * @param worksheetCode 参数
+ */
+export async function getBtlBomMaterialListByCode(
+  equipCode: string,
+  worksheetCode: string,
+) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/human/patch/getBtlBomMaterialListByCode?equipCode=${equipCode}&worksheetCode=${worksheetCode}`,
+  );
+}
 
 /**
  * 投料-制浆
@@ -135,6 +148,16 @@ export function smkFeedFXSave(params: any) {
 export function smkCXFeedSave(params: any) {
   return requestClient.post<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/human/feed/smkCXFeedSave`,
+    params,
+  );
+}
+/**
+ * 投料-抛光
+ * @param params 参数
+ */
+export function smkFeedPGSave(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/human/feed/smkFeedPGSave`,
     params,
   );
 }

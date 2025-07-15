@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -26,15 +26,14 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getAuditByRecord,
-  getBomMaterialListByCode,
+  getBtlBomMaterialListByCode,
   getMaterialCodeByJjcl,
   getWarehouseByMaterialCode,
   getZFBomMaterialListByCode,
-  pushAuditRecord,
   smkCXFeedSave,
-  smkFeedCheck,
   smkFeedDBSave,
   smkFeedFXSave,
+  smkFeedPGSave,
   smkFeedSave,
   smkFeedSYSave,
   smkFeedZFSave,
@@ -101,10 +100,9 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'materialUseNumber', title: '已投入量', minWidth: 150 },
     {
       field: '',
-      title: '加料量',
+      title: '补投入量',
       minWidth: 150,
       slots: { default: 'feedingAmount' },
-      visible: isSpecialWorkstation(['制釉', '施釉', '效果釉', '制粉', '成型']),
     },
     {
       field: 'action',
@@ -157,7 +155,7 @@ function queryData(_data: any) {
           editItem.value.workstationCode,
           editItem.value.worksheetCode,
         )
-      : getBomMaterialListByCode(
+      : getBtlBomMaterialListByCode(
           editItem.value.workstationCode,
           editItem.value.worksheetCode,
         );
@@ -184,7 +182,7 @@ function calculateDryWeight(wetWeight: number, waterRate: number) {
   // 处理边界情况：含水率为0或未提供时，干料量等于湿料量
   if (!waterRate || waterRate === 0) return wetWeight;
   // 计算公式：干料量 = 湿料量 × (1 - 含水率)
-  return (wetWeight * (1 - waterRate / 100)).toFixed(2);
+  return (wetWeight * (1 - waterRate)).toFixed(3);
 }
 
 // 字符串解析工具函数（用于解析库位/批次字符串）
@@ -235,7 +233,8 @@ function handleCombinedStringChange(
  * @param item
  */
 function getDryCharge(item: any) {
-  if (!item.feedNumber || !item.waterNumber) return '0';
+  if (!item.feedNumber || !(item.waterNumber === 0 || item.waterNumber))
+    return '0';
   return calculateDryWeight(item.feedNumber, item.waterNumber);
 }
 // endregion
@@ -271,7 +270,15 @@ function displayFeeding(row?: any) {
 
     if (formState.value.length === 0) {
       if (
-        isSpecialWorkstation(['制釉', '施釉', '效果釉', '打包', '制粉', '成型'])
+        isSpecialWorkstation([
+          '制釉',
+          '施釉',
+          '效果釉',
+          '打包',
+          '制粉',
+          '成型',
+          '抛光',
+        ])
       ) {
         formState.value.push({
           unFeedNumber: 0,
@@ -393,7 +400,7 @@ function deleteFeed(rowIndex: number) {
 // 提交状态
 const checkLoading = ref(false);
 // 备注
-const remark = ref('');
+// const remark = ref('');
 /**
  * 提交
  */
@@ -407,7 +414,9 @@ function feedingCheck() {
       gridApi.grid.loadData(tableData);
       feedClose();
     } else {
-      if (isSpecialWorkstation(['成型'])) {
+      editFeed.value.details = getRawMaterialData();
+      feedClose();
+      /* if (isSpecialWorkstation(['成型'])) {
         editFeed.value.details = getRawMaterialData();
         feedClose();
         return;
@@ -471,7 +480,7 @@ function feedingCheck() {
               },
             });
           }
-        });
+        });*/
     }
   });
 }
@@ -479,6 +488,7 @@ function feedingCheck() {
 /**
  * 提交异常审批
  */
+/*
 function submitOverclaim(params: any) {
   pushAuditRecord(params).then((_data: any) => {
     // 设置超领详情, 备份不干扰源数据
@@ -487,6 +497,7 @@ function submitOverclaim(params: any) {
     feedClose();
   });
 }
+*/
 
 /**
  * 关闭抽屉
@@ -575,6 +586,7 @@ function submit(type: 0 | 1) {
   let ob: any;
   if (type === 1) {
     params.btlRemark = btlRemark.value;
+    params.feedBindingId = editItem.value.feedBindingId;
     if (isSpecialWorkstation(['制浆'])) {
       ob = smkFeedSave(params);
     } else if (isSpecialWorkstation(['制粉'])) {
@@ -591,6 +603,8 @@ function submit(type: 0 | 1) {
       ob = smkFeedFXSave(params);
     } else if (isSpecialWorkstation(['成型'])) {
       ob = smkCXFeedSave(params);
+    } else if (isSpecialWorkstation(['抛光'])) {
+      ob = smkFeedPGSave(params);
     } else {
       message.warning('当前没有具体的接口, 请联系相关人员!');
       return;
@@ -712,6 +726,9 @@ function queryAuditByRecord() {
       <template #feedingAmount="{ row }">
         {{ getDryChargeSum(row)(1) }}
       </template>
+      <template #supplementaryInputVolume="{ row }">
+        {{ getDryChargeSum(row)(1) }}
+      </template>
       <template #action="{ row, rowIndex }">
         <Space>
           <!-- 加料 -->
@@ -808,6 +825,7 @@ function queryAuditByRecord() {
                 '打包',
                 '制粉',
                 '成型',
+                '抛光',
               ])
                 ? $t(
                     'supplementaryFeedingOperation.standardDryMaterialQuantity',
@@ -831,6 +849,7 @@ function queryAuditByRecord() {
               '打包',
               '制粉',
               '成型',
+              '抛光',
             ])
           "
         >
@@ -856,7 +875,7 @@ function queryAuditByRecord() {
             "
           >
             <span class="inline-block w-full">
-              {{ getDryChargeSum()() }}
+              {{ editFeed.materialUseNumber }}
             </span>
           </FormItem>
         </Col>
@@ -873,6 +892,7 @@ function queryAuditByRecord() {
                   '打包',
                   '制粉',
                   '成型',
+                  '抛光',
                 ])
               "
             >
@@ -932,6 +952,11 @@ function queryAuditByRecord() {
                     v-if="
                       isCreate ||
                       isSpecialWorkstation(['ZJ'], editItem.workstationCode)
+                    "
+                    @change="
+                      () => {
+                        item.waterNumber = item.waterNumber_black / 100;
+                      }
                     "
                   />
                   <span
@@ -1020,6 +1045,7 @@ function queryAuditByRecord() {
                   '打包',
                   '制粉',
                   '成型',
+                  '抛光',
                 ])
               "
             >
@@ -1133,6 +1159,7 @@ function queryAuditByRecord() {
                     '打包',
                     '制粉',
                     '成型',
+                    '抛光',
                   ])
                 "
               >
@@ -1216,7 +1243,7 @@ function queryAuditByRecord() {
       @click="addFeedLine()"
       v-if="
         isCreate ||
-        isSpecialWorkstation(['制釉', '效果釉', '制粉', '施釉', '成型'])
+        isSpecialWorkstation(['制釉', '效果釉', '制粉', '施釉', '成型', '抛光'])
       "
     >
       {{ $t('common.add') }}
