@@ -5,5 +5,10 @@
   "warehousingTime": "入库时间",
   "personEnteringTheWarehouse": "入库人",
   "storageLocation": "入库库位",
-  "writeOffTime": "冲销时间"
+  "writeOffTime": "冲销时间",
+  "feedingQuantity": "投料数量",
+  "feedingBatch": "投料批次",
+  "feedingTime": "投料时间",
+  "feeder": "投料人",
+  "feedingStorageLocation": "投料库位"
 }

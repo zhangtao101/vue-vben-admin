@@ -150,7 +150,7 @@ const reverseRef = ref();
 function showEdit(row: any) {
   reverseRef.value.open({
     row,
-    type: 1,
+    type: 2,
   });
 }
 // endregion
