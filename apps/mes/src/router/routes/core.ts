@@ -743,6 +743,17 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'supplementaryFeedingOperation',
         path: 'supplementaryFeedingOperation',
       },
+      {
+        component: () =>
+          import('#/views/planManagement/temporaryWorkOrderManagement.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '工单临时作业管理',
+          code: 'WM_505',
+        },
+        name: 'temporaryWorkOrderManagement',
+        path: 'temporaryWorkOrderManagement',
+      },
     ],
   },
 ];

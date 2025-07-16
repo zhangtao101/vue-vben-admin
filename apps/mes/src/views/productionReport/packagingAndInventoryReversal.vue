@@ -228,21 +228,28 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryWorksheetState({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
-    })
-      .then(({ total, list }) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-        resolve({
-          total,
-          items: list,
-        });
+    if (params.workstationType) {
+      queryWorksheetState({
+        ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+        pageNum: page, // 当前页码。
+        pageSize, // 每页显示的数据条数。
       })
-      .catch((error) => {
-        reject(error);
+        .then(({ total, list }) => {
+          // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+          resolve({
+            total,
+            items: list,
+          });
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    } else {
+      resolve({
+        total: 0,
+        items: [],
       });
+    }
   });
 }
 

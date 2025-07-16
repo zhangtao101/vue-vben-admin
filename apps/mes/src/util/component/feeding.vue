@@ -96,7 +96,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'materialCode', title: '物料编号', minWidth: 120 },
     { field: 'materialName', title: '原料名称', minWidth: 200 },
     { field: 'materialDosage', title: '干料标准量', minWidth: 150 },
-    { field: 'unit', title: '单位', minWidth: 150 },
+    { field: 'unit', title: '投入单位', minWidth: 150 },
     { field: 'materialUseNumber', title: '已投入量', minWidth: 150 },
     {
       field: '',
