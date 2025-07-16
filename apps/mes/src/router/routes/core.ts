@@ -754,6 +754,16 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'temporaryWorkOrderManagement',
         path: 'temporaryWorkOrderManagement',
       },
+      {
+        component: () => import('#/views/productionReport/materialOffset.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '工单临时作业管理',
+          code: 'WM_506',
+        },
+        name: 'materialOffset',
+        path: 'materialOffset',
+      },
     ],
   },
 ];
