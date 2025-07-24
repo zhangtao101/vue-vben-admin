@@ -46,6 +46,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'batchCode', title: `批次号`, minWidth: 200 },
     { field: 'warehouseCode', title: '库位', minWidth: 200 },
     { field: 'number', title: `数量`, minWidth: 200 },
+    { field: 'unit', title: `单位`, minWidth: 120 },
     { field: 'packageNumber', title: '包装箱数', minWidth: 200 },
     { field: 'opTime', title: `时间`, minWidth: 200 },
     {

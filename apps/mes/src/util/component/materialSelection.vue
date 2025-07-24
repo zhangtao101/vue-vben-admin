@@ -28,6 +28,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  applyMaterialType: {
+    type: Number,
+    required: true,
+  },
 });
 // 事件定义
 const defaultEmits = defineEmits(['changed']);
@@ -127,6 +131,7 @@ function queryData({ page, pageSize }: any) {
   return new Promise((resolve) => {
     materialTypeGetByMaterialCodeAndName({
       ...queryParams.value,
+      applyMaterialType: props.applyMaterialType,
       orgCode: props.applyOrgCode,
       pageNum: page,
       pageSize,

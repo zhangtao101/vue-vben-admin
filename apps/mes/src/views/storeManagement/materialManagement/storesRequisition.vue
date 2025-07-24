@@ -1254,6 +1254,7 @@ onMounted(async () => {
     >
       <MaterialSelection
         :apply-org-code="editMessage.applyOrgCode"
+        :apply-material-type="selectMaterialMessage.applyType"
         v-if="selectMaterialDrawer"
         @changed="materialChange"
       />

@@ -222,9 +222,9 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 产品名称 -->
+        <!-- 产品名称 碧海欢歌  踏浪逐光 -->
         <FormItem
-          :label="$t('productionDaily.productName')"
+          :label="$t('productionDaily.collectionType')"
           style="margin-bottom: 1em"
         >
           <RadioGroup v-model:value="queryParams.collectionType">
@@ -234,7 +234,7 @@ onMounted(() => {
             <Radio :value="1">
               {{ $t('energyConsumptionCollectionDetails.productionReport') }}
             </Radio>
-            <Radio :value="2">
+            <Radio :value="-1">
               {{
                 $t('energyConsumptionCollectionDetails.nonProductionReporting')
               }}

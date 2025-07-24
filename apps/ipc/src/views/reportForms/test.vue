@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+/* import { onMounted } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -82,7 +82,7 @@ function createWorkbook(data: any) {
 }
 onMounted(() => {
   queryData();
-});
+});*/
 </script>
 
 <template>
