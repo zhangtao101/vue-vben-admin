@@ -703,7 +703,7 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '非生产能耗',
-          code: 'WM_473',
+          code: 'WM_503',
         },
         name: 'nonProductionEnergyConsumptionDetails',
         path: 'nonProductionEnergyConsumptionDetails',
