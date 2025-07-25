@@ -34,6 +34,43 @@ export async function viewNonProductionEnergyConsumptionDetails(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/energy/detail/getFSCEnergyConsumption?${qs.stringify(params)}`,
   );
 }
+
+/**
+ * 工作站名称
+ */
+export async function getWorkstationName() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/energy/detail/getWorkstationName`,
+  );
+}
+
+/**
+ *  异常类型
+ */
+export async function getErrorName() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/energy/detail/getErrorName`,
+  );
+}
+
+/**
+ * 工作站名称
+ */
+export async function getFSCEnergyConsumption() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/energy/detail/getFSCWorkStation`,
+  );
+}
+
+/**
+ *  生产异常类型
+ */
+export async function getFSCErrorName() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/energy/detail/getFSCErrorName`,
+  );
+}
+
 /**
  * 非生产能耗采集明细页面修改
  */

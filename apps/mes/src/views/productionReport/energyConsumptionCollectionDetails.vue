@@ -16,11 +16,14 @@ import {
   Radio,
   RadioGroup,
   RangePicker,
+  Select,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  getErrorName,
   getExcelPathEnergyConsumption,
+  getWorkstationName,
   viewTheDetailsOfEnergyConsumptionCollection,
 } from '#/api';
 import { $t } from '#/locales';
@@ -201,6 +204,46 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
+// region 工作站列表
+const listOfWorkstations = ref<any>([]);
+
+/**
+ * 查询工作站列表
+ */
+function queryTheWorkstationList() {
+  getWorkstationName().then((list) => {
+    listOfWorkstations.value = [];
+    list.forEach((item: string) => {
+      listOfWorkstations.value.push({
+        label: item,
+        value: item,
+      });
+    });
+  });
+}
+
+// endregion
+
+// region 异常类型列表
+const listOfExceptionTypes = ref<any>([]);
+
+/**
+ * 查询异常类型列表
+ */
+function queryTheExceptionTypeList() {
+  getErrorName().then((list) => {
+    listOfExceptionTypes.value = [];
+    list.forEach((item: string) => {
+      listOfExceptionTypes.value.push({
+        label: item,
+        value: item,
+      });
+    });
+  });
+}
+
+// endregion
+
 // region 文件下载
 
 function downloadTemplate() {
@@ -230,6 +273,9 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+
+  queryTheWorkstationList();
+  queryTheExceptionTypeList();
 });
 
 // endregion
@@ -296,7 +342,13 @@ onMounted(() => {
           :label="$t('energyConsumptionCollectionDetails.exceptionType')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.errorName" />
+          <Select
+            v-model:value="queryParams.errorName"
+            show-search
+            allow-clear
+            :options="listOfExceptionTypes"
+            class="!w-48"
+          />
         </FormItem>
 
         <!-- 工作站名称 -->
@@ -304,7 +356,13 @@ onMounted(() => {
           :label="$t('productionDaily.workstationName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.workstationName" />
+          <Select
+            v-model:value="queryParams.workstationName"
+            show-search
+            allow-clear
+            :options="listOfWorkstations"
+            class="!w-48"
+          />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

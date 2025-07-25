@@ -19,6 +19,7 @@ import {
   Radio,
   RadioGroup,
   RangePicker,
+  Select,
   Tooltip,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
@@ -26,6 +27,8 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getExcelPathFSCEnergyConsumption,
+  getFSCEnergyConsumption,
+  getFSCErrorName,
   updateFSCEnergyConsumption,
   viewNonProductionEnergyConsumptionDetails,
 } from '#/api';
@@ -235,6 +238,7 @@ function downloadTemplate() {
 // endregion
 
 // region 编辑
+
 // 是否显示抽屉
 const show = ref(false);
 // 当前编辑行
@@ -305,7 +309,47 @@ function submit() {
   });
 }
 
-// endregino
+// endregion
+
+// region 工作站列表
+const listOfWorkstations = ref<any>([]);
+
+/**
+ * 查询工作站列表
+ */
+function queryTheWorkstationList() {
+  getFSCEnergyConsumption().then((list) => {
+    listOfWorkstations.value = [];
+    list.forEach((item: string) => {
+      listOfWorkstations.value.push({
+        label: item,
+        value: item,
+      });
+    });
+  });
+}
+
+// endregion
+
+// region 生产异常类型列表
+const listOfProductionExceptionTypes = ref<any>([]);
+
+/**
+ * 查询生产异常类型列表
+ */
+function queryTheListOfProductionExceptionTypes() {
+  getFSCErrorName().then((list) => {
+    listOfProductionExceptionTypes.value = [];
+    list.forEach((item: string) => {
+      listOfProductionExceptionTypes.value.push({
+        label: item,
+        value: item,
+      });
+    });
+  });
+}
+
+// endregion
 
 // region 权限查询
 // 当前页面按钮权限列表
@@ -320,6 +364,8 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  queryTheWorkstationList();
+  queryTheListOfProductionExceptionTypes();
 });
 
 // endregion
@@ -351,7 +397,13 @@ onMounted(() => {
           :label="$t('energyConsumptionCollectionDetails.exceptionType')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.errorName" />
+          <Select
+            v-model:value="queryParams.errorName"
+            :options="listOfProductionExceptionTypes"
+            show-search
+            allow-clear
+            class="!w-48"
+          />
         </FormItem>
 
         <!-- 工作站名称 -->
@@ -359,7 +411,13 @@ onMounted(() => {
           :label="$t('productionDaily.workstationName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.workstationName" />
+          <Select
+            v-model:value="queryParams.workstationName"
+            :options="listOfWorkstations"
+            show-search
+            allow-clear
+            class="!w-48"
+          />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
