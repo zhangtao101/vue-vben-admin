@@ -2,5 +2,11 @@
   "parameterBinding": "参数绑定",
   "equipmentNumber": "设备编号",
   "theTimeElapsedForTheWorkOrder": "工单经过时间",
-  "remark": "备注"
+  "remark": "备注",
+  "equipmentName": "设备名称",
+  "equipmentCode": "设备编号",
+  "worksheetCode": "工单编号",
+  "workstationCode": "工作站编号",
+  "productCode": "产品编号",
+  "productName": "产品名称"
 }

@@ -1,0 +1,12 @@
+{
+  "parameterBinding": "Parameter Binding",
+  "equipmentNumber": "Equipment Number",
+  "theTimeElapsedForTheWorkOrder": "Work Order Elapsed Time",
+  "remark": "Remark",
+  "equipmentName": "Equipment Name",
+  "equipmentCode": "Equipment Code",
+  "worksheetCode": "Worksheet Code",
+  "workstationCode": "Workstation Code",
+  "productCode": "Product Code",
+  "productName": "Product Name"
+}

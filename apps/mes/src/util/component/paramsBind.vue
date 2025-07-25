@@ -8,6 +8,8 @@ import { $t } from '@vben/locales';
 
 import {
   Button,
+  Descriptions,
+  DescriptionsItem,
   Drawer,
   Form,
   FormItem,
@@ -361,6 +363,26 @@ function detailsClose() {
     :title="`${$t('workOrderParams.parameterBinding')}___${equipMessage.equipName}(${equipMessage.equipCode})`"
     @close="detailsClose"
   >
+    <Descriptions bordered class="mb-4">
+      <DescriptionsItem :label="$t('workOrderParams.equipmentName')">
+        {{ equipMessage.equipName }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('workOrderParams.equipmentCode')">
+        {{ equipMessage.equipCode }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('workOrderParams.worksheetCode')">
+        {{ editItem.worksheetCode }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('workOrderParams.workstationCode')">
+        {{ editItem.workstationCode }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('workOrderParams.productCode')">
+        {{ editItem.productCode }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('workOrderParams.productName')">
+        {{ editItem.productName }}
+      </DescriptionsItem>
+    </Descriptions>
     <Details />
   </Drawer>
 </template>
