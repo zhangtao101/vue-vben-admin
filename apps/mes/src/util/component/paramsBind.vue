@@ -210,12 +210,47 @@ function queryDevices() {
 
 // region 显示参数绑定
 
+const showDetails = ref(false);
+const equipMessage = ref<any>({});
+
+let Details: any = null;
+
 function displayParameterBinding(row: any) {
   listEquipCatchData({
     bindingDetailId: row.id,
-  }).then((_data: any) => {
-    // console.log(data);
+  }).then(({ paramNames, dataList, ...equip }: any) => {
+    showDetails.value = true;
+    equipMessage.value = equip;
+    const columns: any = [{ title: '序号', type: 'seq', width: 50 }];
+    paramNames.forEach((paramName: string) => {
+      columns.push({
+        field: paramName,
+        title: paramName,
+        minWidth: 100,
+      });
+    });
+    // gridApi 为表格的方法
+    [Details] = useVbenVxeGrid({
+      gridOptions: {
+        align: 'center',
+        border: true,
+        columns,
+        height: 500,
+        stripe: true,
+        sortConfig: {
+          multiple: true,
+        },
+        data: dataList,
+        pagerConfig: {
+          enabled: false,
+        },
+      },
+    });
   });
+}
+
+function detailsClose() {
+  showDetails.value = false;
 }
 
 // endregion
@@ -316,6 +351,17 @@ function displayParameterBinding(row: any) {
         </Tooltip>
       </template>
     </Grid>
+  </Drawer>
+
+  <Drawer
+    v-model:open="showDetails"
+    :footer-style="{ textAlign: 'right' }"
+    height="70%"
+    placement="top"
+    :title="`${$t('workOrderParams.parameterBinding')}___${equipMessage.equipName}(${equipMessage.equipCode})`"
+    @close="detailsClose"
+  >
+    <Details />
   </Drawer>
 </template>
 

@@ -390,7 +390,7 @@ onMounted(() => {
       </Grid>
     </Card>
     <!-- endregion -->
-    <!-- 投料 -->
+    <!-- 参数绑定 -->
     <ParamsBind ref="paramsBindRef" />
   </Page>
 </template>
