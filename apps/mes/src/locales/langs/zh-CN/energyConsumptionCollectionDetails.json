@@ -1,6 +1,7 @@
 {
   "all": "全部",
   "equipmentNumber": "设备编号",
+  "operationType": "操作类型",
   "productionReport": "生产上报",
   "nonProductionReporting": "非生产上报",
   "taskNumber": "任务号",
@@ -13,5 +14,8 @@
   "naturalGas": "天然气",
   "electricity": "电",
   "waterCoalSlurry": "水煤浆",
-  "cokeOvenGas": "焦炉气"
+  "cokeOvenGas": "焦炉气",
+  "normalCollection": "正常采集",
+  "abnormalCollection": "异常采集",
+  "exceptionType": "异常类型"
 }

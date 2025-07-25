@@ -19,7 +19,10 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { viewTheDetailsOfEnergyConsumptionCollection } from '#/api';
+import {
+  getExcelPathEnergyConsumption,
+  viewTheDetailsOfEnergyConsumptionCollection,
+} from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -40,6 +43,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     { field: 'workSheetCode', title: '工单号', minWidth: 200 },
     { field: 'catchCode', title: '任务采集编号', minWidth: 250 },
+    { field: 'workstationName', title: '工作站名称', minWidth: 250 },
     { field: 'type', title: '采集模式', minWidth: 200 },
     { field: 'energyEquipCode', title: '采集仪表编号', minWidth: 200 },
     {
@@ -76,6 +80,19 @@ const gridOptions: VxeGridProps<any> = {
       field: 'catchUser',
       title: '采集人',
       minWidth: 200,
+    },
+    {
+      field: 'errorName',
+      title: '异常类型',
+      minWidth: 200,
+    },
+    {
+      field: 'opType',
+      title: '操作类型',
+      minWidth: 200,
+      slots: {
+        default: 'opType',
+      },
     },
     {
       field: 'reason',
@@ -143,12 +160,13 @@ function getMaterialTypeText(state: number) {
 // region 查询数据
 // 查询参数
 const queryParams = ref({
-  // 查询时间
   searchTime: [] as any,
-  // 工单号
   worksheetCode: '',
-  // 产品名称
   collectionType: '',
+  errorName: '',
+  opType: '',
+  // 工作站名称
+  workstationName: '',
 });
 
 /**
@@ -178,6 +196,22 @@ function queryData({ page, pageSize }: any) {
       .catch((error) => {
         reject(error);
       });
+  });
+}
+
+// endregion
+
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  getExcelPathEnergyConsumption(params).then((data) => {
+    window.open(data);
   });
 }
 
@@ -222,17 +256,14 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
-        <!-- 产品名称 碧海欢歌  踏浪逐光 -->
+        <!-- 操作类型 -->
         <FormItem
-          :label="$t('productionDaily.collectionType')"
+          :label="$t('energyConsumptionCollectionDetails.operationType')"
           style="margin-bottom: 1em"
         >
           <RadioGroup v-model:value="queryParams.collectionType">
             <Radio value="">
               {{ $t('energyConsumptionCollectionDetails.all') }}
-            </Radio>
-            <Radio :value="1">
-              {{ $t('energyConsumptionCollectionDetails.productionReport') }}
             </Radio>
             <Radio :value="-1">
               {{
@@ -240,6 +271,40 @@ onMounted(() => {
               }}
             </Radio>
           </RadioGroup>
+        </FormItem>
+
+        <!-- 操作类型 -->
+        <FormItem
+          :label="$t('energyConsumptionCollectionDetails.operationType')"
+          style="margin-bottom: 1em"
+        >
+          <RadioGroup v-model:value="queryParams.opType">
+            <Radio value="">
+              {{ $t('energyConsumptionCollectionDetails.all') }}
+            </Radio>
+            <Radio :value="1">
+              {{ $t('energyConsumptionCollectionDetails.normalCollection') }}
+            </Radio>
+            <Radio :value="-1">
+              {{ $t('energyConsumptionCollectionDetails.abnormalCollection') }}
+            </Radio>
+          </RadioGroup>
+        </FormItem>
+
+        <!-- 异常类型 -->
+        <FormItem
+          :label="$t('energyConsumptionCollectionDetails.exceptionType')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.errorName" />
+        </FormItem>
+
+        <!-- 工作站名称 -->
+        <FormItem
+          :label="$t('productionDaily.workstationName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.workstationName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -258,8 +323,23 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
+        </template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
+        </template>
+        <template #opType="{ row }">
+          <span>
+            {{
+              row.opType === '1'
+                ? $t('energyConsumptionCollectionDetails.normalCollection')
+                : $t('energyConsumptionCollectionDetails.abnormalCollection')
+            }}
+          </span>
         </template>
       </Grid>
     </Card>

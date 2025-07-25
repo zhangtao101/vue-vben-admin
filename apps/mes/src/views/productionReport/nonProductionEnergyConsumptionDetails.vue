@@ -25,6 +25,7 @@ import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  getExcelPathFSCEnergyConsumption,
   updateFSCEnergyConsumption,
   viewNonProductionEnergyConsumptionDetails,
 } from '#/api';
@@ -55,6 +56,7 @@ const gridOptions: VxeGridProps<any> = {
         default: 'type',
       },
     },
+    { field: 'workstationName', title: '工作站名称', minWidth: 250 },
     { field: 'energyEquipCode', title: '采集仪表编号', minWidth: 200 },
     {
       field: 'energyEquipName',
@@ -89,6 +91,16 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'catchUser',
       title: '采集人',
+      minWidth: 200,
+    },
+    {
+      field: 'errorName',
+      title: '异常类型',
+      minWidth: 200,
+    },
+    {
+      field: 'remark',
+      title: '备注',
       minWidth: 200,
     },
     {
@@ -168,6 +180,10 @@ const queryParams = ref({
   worksheetCode: '',
   // 产品名称
   collectionType: '',
+  // 异常类型
+  errorName: '',
+  // 工作站名称
+  workstationName: '',
 });
 
 /**
@@ -197,6 +213,22 @@ function queryData({ page, pageSize }: any) {
       .catch((error) => {
         reject(error);
       });
+  });
+}
+
+// endregion
+
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  getExcelPathFSCEnergyConsumption(params).then((data) => {
+    window.open(data);
   });
 }
 
@@ -314,6 +346,22 @@ onMounted(() => {
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
+        <!-- 异常类型 -->
+        <FormItem
+          :label="$t('energyConsumptionCollectionDetails.exceptionType')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.errorName" />
+        </FormItem>
+
+        <!-- 工作站名称 -->
+        <FormItem
+          :label="$t('productionDaily.workstationName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.workstationName" />
+        </FormItem>
+
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
@@ -330,6 +378,12 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
+        </template>
         <template #type="{ row }">
           <span> {{ getTypeText(row.type) }} </span>
         </template>

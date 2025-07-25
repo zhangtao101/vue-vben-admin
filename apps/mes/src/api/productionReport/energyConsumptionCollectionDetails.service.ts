@@ -11,6 +11,22 @@ export async function viewTheDetailsOfEnergyConsumptionCollection(params: any) {
   );
 }
 /**
+ * 能耗采集明细查看页面导出
+ */
+export async function getExcelPathEnergyConsumption(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/energy/detail/getExcelPathEnergyConsumption?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 非生产能耗明细查看页面导出
+ */
+export async function getExcelPathFSCEnergyConsumption(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/energy/detail/getExcelPathFSCEnergyConsumption?${qs.stringify(params)}`,
+  );
+}
+/**
  * 非生产能耗明细查看
  */
 export async function viewNonProductionEnergyConsumptionDetails(params: any) {
