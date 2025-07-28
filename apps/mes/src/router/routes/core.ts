@@ -758,11 +758,21 @@ const coreRoutes: RouteRecordRaw[] = [
         component: () => import('#/views/productionReport/materialOffset.vue'),
         meta: {
           ignoreAccess: true,
-          title: '工单临时作业管理',
+          title: '冲红',
           code: 'WM_506',
         },
         name: 'materialOffset',
         path: 'materialOffset',
+      },
+      {
+        component: () => import('#/views/productionReport/workOrderParams.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '工单参数绑定',
+          code: 'VM_511',
+        },
+        name: 'workOrderParams',
+        path: 'workOrderParams',
       },
     ],
   },

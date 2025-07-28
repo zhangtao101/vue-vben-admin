@@ -43,7 +43,11 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
             icon: 'hugeicons:folder-management',
             title: node.title,
           },
-          name: node.name,
+          // 防止name出现重复的(父级name 与 子级name重复)
+          name:
+            node.children && node.children.length > 0
+              ? `${node.name}_${node.code}`
+              : node.name,
           path: node.name,
           children: node.children,
         };

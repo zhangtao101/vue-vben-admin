@@ -1,0 +1,15 @@
+{
+  "injuredEmployee": "受伤员工",
+  "employeeID": "工号",
+  "department": "部门",
+  "position": "岗位",
+  "occurrenceTime": "发生时间",
+  "eventDescription": "事件描述",
+  "injuredPart": "受伤部位",
+  "descriptionOfInjuryCondition": "受伤情况描述",
+  "injuryType": "伤害类型",
+  "relatedAttachments": "相关附件",
+  "departmentSupervisor": "责任部门主管",
+  "uploadAttachments": "单击或拖动文件到此区域进行上传",
+  "uploadAttachmentsHint": "支持单个或批量上传。"
+}
