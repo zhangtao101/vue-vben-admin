@@ -11,5 +11,9 @@
   "relatedAttachments": "相关附件",
   "departmentSupervisor": "责任部门主管",
   "uploadAttachments": "单击或拖动文件到此区域进行上传",
-  "uploadAttachmentsHint": "支持单个或批量上传。"
+  "uploadAttachmentsHint": "支持单个或批量上传。",
+  "accidentReason": "事故原因",
+  "rectificationMeasure": "整改措施",
+  "employeeChoice": "员工选择",
+  "year": "年份"
 }

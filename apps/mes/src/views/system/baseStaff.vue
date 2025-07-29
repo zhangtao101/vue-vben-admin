@@ -3,7 +3,7 @@ import type { Rule } from 'ant-design-vue/es/form';
 
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, reactive, ref, watch } from 'vue';
+import { h, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -182,22 +182,29 @@ function queryData({ page, pageSize }: any) {
     if (selectedKey.value && selectedKey.value.orgCode) {
       params.orgCode = selectedKey.value.orgCode;
     }
-    // 调用 listStations API函数，传递查询参数和分页信息
-    listSysPerson({
-      ...params, // 展开queryParams.value中的所有查询参数
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
-    })
-      .then(({ total, list }) => {
-        // 成功获取数据后，更新数据列表和总条数
-        resolve({
-          total,
-          items: list,
-        });
+    if (params.orgCode) {
+      // 调用 listStations API函数，传递查询参数和分页信息
+      listSysPerson({
+        ...params, // 展开queryParams.value中的所有查询参数
+        pageNum: page, // 当前页码。
+        pageSize, // 每页显示的数据条数。
       })
-      .catch((error) => {
-        reject(error);
+        .then(({ total, list }) => {
+          // 成功获取数据后，更新数据列表和总条数
+          resolve({
+            total,
+            items: list,
+          });
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    } else {
+      resolve({
+        total: 0,
+        items: [],
       });
+    }
   });
 }
 
@@ -223,6 +230,10 @@ function queryAllOrganizations() {
     if (data) {
       // 如果数据有效，更新treeData
       treeData.value = [data];
+      selectedTree(data.orgName, {
+        node: data,
+        selected: true,
+      });
     }
   });
 }
@@ -244,25 +255,6 @@ function selectedTree(_selectedKeys: any, { node, selected }: any) {
 // region 权限查询
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
-// 新增按钮是否显示
-const addButton = ref(false);
-// 编辑按钮是否显示
-const editButton = ref(false);
-// 删除按钮是否显示
-const delButton = ref(false);
-
-// 监听权限变化, 变更按钮的显示情况
-watch(
-  () => author.value,
-  () => {
-    // 当 author.value 包含 '新增' 时，设置 addButton.value 为 true，表示允许新增
-    addButton.value = author.value.includes('新增');
-    // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
-    editButton.value = author.value.includes('编辑');
-    // 当 author.value 包含 '删除' 时，设置 delButton.value 为 true，表示允许删除
-    delButton.value = author.value.includes('删除');
-  },
-);
 
 // endregion
 
@@ -599,7 +591,7 @@ onMounted(() => {
               <template #toolbar-tools>
                 <!-- 新增按钮 -->
                 <Button
-                  v-if="addButton"
+                  v-if="author.includes('新增')"
                   :disabled="!selectedKey"
                   type="primary"
                   @click="showAdd"
@@ -621,7 +613,7 @@ onMounted(() => {
                 <Tooltip>
                   <template #title>{{ $t('common.edit') }}</template>
                   <Button
-                    v-if="editButton"
+                    v-if="author.includes('编辑')"
                     :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
                     type="link"
                     @click="showEdit(row)"
@@ -632,7 +624,7 @@ onMounted(() => {
                 <Tooltip>
                   <template #title>{{ $t('common.delete') }}</template>
                   <Button
-                    v-if="delButton"
+                    v-if="author.includes('删除')"
                     :icon="
                       h(MdiLightDelete, {
                         class: 'inline-block size-6',

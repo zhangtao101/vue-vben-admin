@@ -769,7 +769,7 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '工单参数绑定',
-          code: 'VM_511',
+          code: 'WM_511',
         },
         name: 'workOrderParams',
         path: 'workOrderParams',

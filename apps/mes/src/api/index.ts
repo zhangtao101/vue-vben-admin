@@ -1,3 +1,4 @@
+export * from './accidentManagement';
 export * from './author';
 export * from './baseInfo';
 export * from './core';

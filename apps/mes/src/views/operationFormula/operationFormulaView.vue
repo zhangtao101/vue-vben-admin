@@ -264,7 +264,7 @@ const queryParams = ref({
   // 关联人员
   perName: '',
   // 用户名
-  username: '',
+  userName: '',
 });
 
 /**
@@ -331,7 +331,7 @@ onMounted(() => {
           :label="$t('operationFormulaView.formulaName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.username" />
+          <Input v-model:value="queryParams.userName" />
         </FormItem>
 
         <!-- 所属工序 -->
