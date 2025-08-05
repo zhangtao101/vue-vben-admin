@@ -315,7 +315,7 @@ onMounted(() => {
             class="!w-64"
           />
         </FormItem>
-        <!-- 产品编号 -->
+        <!-- 查询时间 -->
         <FormItem
           :label="$t('workOrderStatusQuery.queryTime')"
           style="margin-bottom: 1em"

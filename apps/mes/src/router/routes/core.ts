@@ -697,6 +697,17 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
+          import('#/views/productionReport/completedWorkOrderDetails.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '完工工单明细',
+          code: 'WM_473',
+        },
+        name: 'completedWorkOrderDetails',
+        path: 'completedWorkOrderDetails',
+      },
+      {
+        component: () =>
           import(
             '#/views/productionReport/nonProductionEnergyConsumptionDetails.vue'
           ),
