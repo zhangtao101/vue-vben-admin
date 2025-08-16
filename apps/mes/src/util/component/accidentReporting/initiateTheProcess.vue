@@ -168,12 +168,13 @@ function userChange(_val: any, item: any) {
 }
 
 // endregion
+
 const accessStore = useAccessStore();
 // 文件上传列表
 const uploadFile = ref<any>([]);
 
 function getUploadUrl() {
-  return `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/accident/register/fileUpload`;
+  return `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/accident/register/upload`;
 }
 
 // endregion
@@ -197,6 +198,14 @@ function formValidate(callback: Function) {
       ...formState.value,
     };
     params.time = params.time.format('YYYY-MM-DD HH:mm:ss');
+    if (params.managerChecked && params.managerChecked.length === 2) {
+      params.manager = params.managerChecked[1];
+    }
+    params.file = [];
+
+    uploadFile.value.forEach((item: any) => {
+      params.file.push(item.response.data);
+    });
     callback(params);
   });
 }
@@ -298,9 +307,9 @@ onMounted(() => {
         <FormItem
           :label="$t('accidentManagement.injuredPart')"
           :rules="[{ required: true, message: $t('ui.formRules.required') }]"
-          name="injuredPart"
+          name="injuredPartList"
         >
-          <CheckboxGroup v-model:value="formState.injuredPart">
+          <CheckboxGroup v-model:value="formState.injuredPartList">
             <Checkbox
               v-for="(item, index) of injuredPart"
               :key="index"
@@ -315,7 +324,7 @@ onMounted(() => {
       <Col :span="12">
         <!-- 伤害类型-->
         <FormItem :label="$t('accidentManagement.injuryType')">
-          <CheckboxGroup v-model:value="formState.injuredType">
+          <CheckboxGroup v-model:value="formState.injuredTypeList">
             <Checkbox
               v-for="(item, index) of injuryTypes"
               :key="index"

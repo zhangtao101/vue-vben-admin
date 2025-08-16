@@ -38,7 +38,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'workstationName', title: '工作站名称', minWidth: 150 },
     { field: 'productCode', title: '产品编号', minWidth: 150 },
     { field: 'productName', title: '产品名称', minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 150 },
+    { field: 'planNumber', title: '工单计划数', minWidth: 150 },
     {
       field: 'inNumber',
       title: '工单入库数量',

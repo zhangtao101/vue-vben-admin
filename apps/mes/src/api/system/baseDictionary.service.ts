@@ -12,6 +12,14 @@ export async function queryDictionaryTree() {
   );
 }
 /**
+ * 通过父类编号查询子类字典
+ */
+export async function listWordListByParentCode(code: string) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/word/listWordListByParentCode/${code}`,
+  );
+}
+/**
  * 根据编号查询字典数据
  */
 export async function queryDictionaryByCode(params: any) {

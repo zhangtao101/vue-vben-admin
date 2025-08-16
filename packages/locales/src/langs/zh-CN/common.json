@@ -89,5 +89,7 @@
   "clear": "清除",
   "saveTheCurrentOperation": "保存当前操作",
   "clearTheSavedContent": "清除已保存内容",
-  "miscellaneousCollection": "杂收(SAP)"
+  "miscellaneousCollection": "杂收(SAP)",
+  "assign": "指派",
+  "receive": "领取"
 }

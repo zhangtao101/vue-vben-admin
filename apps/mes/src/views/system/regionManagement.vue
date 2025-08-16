@@ -34,10 +34,11 @@ import {
   areaList,
   deleteArea,
   listSysPerson,
+  queryOrganizationTree,
   updateArea,
 } from '#/api';
 import { $t } from '#/locales';
-import { queryAuth } from '#/util';
+import { flattenTree, queryAuth } from '#/util';
 
 // 路由信息
 const route = useRoute();
@@ -49,6 +50,7 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
+    { field: 'depart', title: '部门', minWidth: 150 },
     { field: 'areaCode', title: '区域编号', minWidth: 150 },
     { field: 'areaName', title: '区域名称', minWidth: 150 },
     { field: 'areaSize', title: '区域大小', minWidth: 150 },
@@ -132,7 +134,7 @@ function editRow(row?: any) {
   checkedRow.value = row
     ? {
         ...row,
-        perName_workNumber: `${row.perName}-${row.workNumber}`,
+        perName_workNumber: `${row.areaManger}`,
       }
     : {};
   showEditDrawer.value = true;
@@ -213,6 +215,7 @@ let personnelTimeout: any = null;
  * @param {string} value - 用户输入的搜索值
  */
 function handleSearch(value: string) {
+  if (!value) return;
   // 如果之前有延迟搜索操作未完成，先清除
   if (personnelTimeout) {
     clearTimeout(personnelTimeout);
@@ -264,9 +267,7 @@ function handleChange(value: any, _option: any) {
     // 检查拆分后的数组是否有足够的元素
     if (params.length >= 2) {
       // 将拆分后的第一个元素（姓名）赋值给checkedRow对象的preName属性
-      checkedRow.value.preName = params[0];
-      // 将拆分后的第二个元素（工号）赋值给checkedRow对象的workNumber属性
-      checkedRow.value.workNumber = params[1];
+      checkedRow.value.areaManger = params[0];
     }
   }
 }
@@ -314,6 +315,37 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
+// region 组织查询
+// 组织数据
+const treeData = ref<any>([]);
+/**
+ * 查询全部的组织树
+ * 这个函数用于从服务器获取所有组织数据，并更新前端的树形数据结构。
+ */
+function queryAllOrganizations() {
+  // 调用queryDictionaryTree API函数，获取菜单列表
+  queryOrganizationTree().then((data) => {
+    // 检查返回的数据是否存在且长度大于0
+    if (data) {
+      const arr = flattenTree(
+        {
+          children: [data],
+        },
+        'children',
+      );
+      treeData.value = [];
+      arr.forEach((item: any) => {
+        treeData.value.push({
+          label: item.orgFullName,
+          value: item.orgFullName,
+        });
+      });
+    }
+  });
+}
+
+// endregion
+
 // region 权限查询
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
@@ -327,6 +359,7 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  queryAllOrganizations();
 });
 
 // endregion
@@ -432,22 +465,25 @@ onMounted(() => {
       :title="$t('common.view')"
     >
       <Descriptions :column="2" bordered title="用户详情">
-        <DescriptionsItem label="区域编号">
+        <DescriptionsItem :label="$t('regionManagement.department')">
+          {{ checkedRow.depart }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('regionManagement.regionalCode')">
           {{ checkedRow.areaCode }}
         </DescriptionsItem>
-        <DescriptionsItem label="区域名称">
+        <DescriptionsItem :label="$t('regionManagement.regionalName')">
           {{ checkedRow.areaName }}
         </DescriptionsItem>
-        <DescriptionsItem label="区域大小">
+        <DescriptionsItem :label="$t('regionManagement.regionalSize')">
           {{ checkedRow.areaSize }}
         </DescriptionsItem>
-        <DescriptionsItem label="区域负责人">
+        <DescriptionsItem :label="$t('regionManagement.regionalManager')">
           {{ checkedRow.areaManger }}
         </DescriptionsItem>
-        <DescriptionsItem label="区域创建人">
+        <DescriptionsItem :label="$t('regionManagement.areaCreator')">
           {{ checkedRow.createUser }}
         </DescriptionsItem>
-        <DescriptionsItem label="创建时间">
+        <DescriptionsItem :label="$t('regionManagement.creationTime')">
           {{ checkedRow.createTime }}
         </DescriptionsItem>
       </Descriptions>
@@ -472,6 +508,19 @@ onMounted(() => {
         autocomplete="off"
         name="editMessageForm"
       >
+        <!-- 部门 -->
+        <FormItem :label="$t('regionManagement.department')" name="depart">
+          <Select
+            v-model:value="checkedRow.depart"
+            :default-active-first-option="false"
+            :filter-option="false"
+            :not-found-content="null"
+            :options="treeData"
+            :show-arrow="false"
+            placement="bottomRight"
+            show-search
+          />
+        </FormItem>
         <!-- 区域编号 -->
         <FormItem :label="$t('regionManagement.regionalCode')" name="areaCode">
           <Input v-model:value="checkedRow.areaCode" />

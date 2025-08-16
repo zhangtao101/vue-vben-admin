@@ -8,7 +8,7 @@ import { requestClient } from '#/api/request';
  */
 export async function areaList(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_USER}/basic/area/list?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/basic/area/list?${qs.stringify(params)}`,
   );
 }
 
@@ -16,8 +16,8 @@ export async function areaList(params: any) {
  * 新增区域
  */
 export async function addArea(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_USER}/basic/position/insert`,
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/basic/area/insert`,
     params,
   );
 }
@@ -26,8 +26,8 @@ export async function addArea(params: any) {
  * 编辑区域
  */
 export async function updateArea(params: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_USER}/basic/area/update`,
+  return requestClient.put<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/basic/area/update`,
     params,
   );
 }
@@ -36,7 +36,7 @@ export async function updateArea(params: any) {
  */
 export async function deleteArea(params: any) {
   return requestClient.delete<any>(
-    `${import.meta.env.VITE_GLOB_MES_USER}/basic/area/delete/${params.id}`,
-    params,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/basic/area/delete/${params}`,
+    {},
   );
 }

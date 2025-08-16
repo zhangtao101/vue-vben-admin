@@ -86,7 +86,6 @@ defineExpose({
     :footer-style="{ textAlign: 'right' }"
     height="80%"
     placement="top"
-    :title="$t('supplementaryFeedingOperation.supplementaryFeeding')"
     @close="close"
   >
     <Tabs

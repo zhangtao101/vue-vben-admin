@@ -701,7 +701,7 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           ignoreAccess: true,
           title: '完工工单明细',
-          code: 'WM_473',
+          code: 'WM_516',
         },
         name: 'completedWorkOrderDetails',
         path: 'completedWorkOrderDetails',

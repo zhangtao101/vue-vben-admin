@@ -17,8 +17,9 @@ export async function queryTheListOfAccidents(params: any) {
  * @param params
  */
 export async function updateAccidents(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/accident/register/update?${qs.stringify(params)}`,
+  return requestClient.put<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/accident/register/update`,
+    params,
   );
 }
 /**
@@ -26,7 +27,8 @@ export async function updateAccidents(params: any) {
  * @param params
  */
 export async function createAccidents(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/accident/register/insert?${qs.stringify(params)}`,
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/accident/register/insert`,
+    params,
   );
 }

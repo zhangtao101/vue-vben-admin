@@ -89,6 +89,7 @@
     "checkUpdatesTitle": "New Version Available",
     "checkUpdatesDescription": "Click to refresh and get the latest version",
     "deletionConfirmation": "Are you sure you want to delete this data?",
+    "pickUpTips": "Are you sure you want to accept this task?",
     "search": {
       "title": "Search",
       "searchNavigate": "Search Navigation",

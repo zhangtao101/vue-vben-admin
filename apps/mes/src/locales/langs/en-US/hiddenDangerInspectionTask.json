@@ -1,0 +1,19 @@
+{
+  "Inspector": "Inspector",
+  "Result": "Result",
+  "InspectionTime": "Inspection Time",
+  "ReturnParameters": "Return Parameters",
+  "InspectionCategory": "Inspection Category",
+  "InspectionStandard": "Inspection Standard",
+  "InspectionArea": "Inspection Area",
+  "InspectionItem": "Inspection Item",
+  "InspectionContent": "Inspection Content",
+  "PlannedInspectionDate": "Planned Inspection Date",
+  "InspectorName": "Inspector Name",
+  "InspectionResult": "Inspection Result",
+  "Remarks": "Remarks",
+  "Photograph": "Photograph",
+  "Scan": "Scan",
+  "Status": "Status",
+  "ReportHiddenDanger": "Report Hidden Danger"
+}

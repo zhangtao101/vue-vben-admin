@@ -28,6 +28,15 @@ export async function queryStationType() {
   );
 }
 /**
+ * 根据名称模糊查询
+ */
+export async function likeName(name: string) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/station/likeName/${name}
+`,
+  );
+}
+/**
  * 查询岗位等级
  */
 export async function queryStationStage() {

@@ -99,7 +99,7 @@ const cloumns: any = {
     { field: 'processName', title: '工序名称', minWidth: 150 },
     { field: 'productCode', title: '产品编号', minWidth: 150 },
     { field: 'productName', title: '产品名称', minWidth: 150 },
-    { field: 'dIVValue', title: '电能耗', minWidth: 150 },
+    { field: 'dlValue', title: '电能耗', minWidth: 150 },
     { field: 'trqValue', title: '天然气能耗', minWidth: 150 },
     { field: 'jlqValue', title: '焦炉气能耗', minWidth: 150 },
     { field: 'smjValue', title: '水煤浆能耗', minWidth: 150 },
@@ -126,6 +126,7 @@ const cloumns: any = {
     { field: 'workstationName', title: '工作站名称', minWidth: 150 },
     { field: 'feedUser', title: '投料人', minWidth: 150 },
     { field: 'feedTime', title: '投料记录时间', minWidth: 150 },
+    { field: 'btlRemark', title: '补投科原因', minWidth: 150 },
   ],
   '4': [
     { title: '序号', type: 'seq', width: 50 },

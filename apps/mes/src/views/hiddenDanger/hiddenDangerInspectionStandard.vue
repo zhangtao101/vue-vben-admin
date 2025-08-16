@@ -10,30 +10,25 @@ import { IconifyIcon, MdiSearch } from '@vben/icons';
 import {
   Button,
   Card,
-  DatePicker,
   Drawer,
   Form,
   FormItem,
   Input,
   message,
-  Select,
+  Popconfirm,
   Space,
-  Spin,
   Tooltip,
 } from 'ant-design-vue';
-// eslint-disable-next-line n/no-extraneous-import
-import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  createAccidents,
-  likeName,
-  queryTheListOfAccidents,
-  updateAccidents,
+  addHiddenDangerInspectionType,
+  deleteHiddenDangerInspectionType,
+  queryHiddenDangerInspectionType,
+  updateHiddenDangerInspectionType,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
-import InitiateTheProcess from '#/util/component/accidentReporting/initiateTheProcess.vue';
 
 // region 表格操作
 
@@ -42,20 +37,11 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'accidentCode', title: '事故编号', minWidth: 190 },
-    { field: 'injuredUser', title: '受伤员工', minWidth: 150 },
-    { field: 'worknumber', title: '工号', minWidth: 150 },
-    { field: 'depatment', title: '部门', minWidth: 150 },
-    { field: 'position', title: '岗位', minWidth: 150 },
-    { field: 'time', title: '发生时间', minWidth: 150 },
-    { field: 'description', title: '事故描述', minWidth: 150 },
-    { field: 'injuredPartList', title: '受伤部位', minWidth: 150 },
-    { field: 'injuredDescription', title: '受伤情况描述', minWidth: 150 },
-    { field: 'injuredTypeList', title: '受伤类型', minWidth: 150 },
-    { field: 'file', title: '相关附件', minWidth: 150 },
-    { field: 'manager', title: '责任部门主管', minWidth: 150 },
-    { field: 'reason', title: '事故原因', minWidth: 150 },
-    { field: 'measures', title: '整改措施', minWidth: 150 },
+    { field: 'checkType', title: '检查类别', minWidth: 190 },
+    { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
+    { field: 'createUser', title: '提交人', minWidth: 150 },
+    { field: 'createTime', title: '提交时间', minWidth: 150 },
+    { field: 'updateTime', title: '更新时间', minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
@@ -105,10 +91,7 @@ const queryParams = ref<any>({});
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = { ...queryParams.value };
-    if (params.createTime) {
-      params.createTime = params.createTime.format('YYYY');
-    }
-    queryTheListOfAccidents({
+    queryHiddenDangerInspectionType({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -126,45 +109,38 @@ function queryData({ page, pageSize }: any) {
   });
 }
 
-// endregion
-
-// region 岗位
-
-// 岗位列表
-const positionList = ref<any>([]);
-// 岗位查询loading
-const positionLoading = ref(false);
-
-/**
- * 岗位查询
- */
-const searchPosition = debounce((val: string) => {
-  if (val) {
-    likeName(val).then((res: any) => {
-      positionList.value = res.data;
-    });
-  }
-}, 500);
-
-// endregion
+// endregion\
 
 // region 新增 / 编辑
 // 是否显示编辑
 const showEdit = ref(false);
-// 新增/编辑组件引用
-const initiateTheProcessRef = ref<any>();
-
+/**
+ * 新增/编辑表单引用
+ */
+const formRef = ref<any>();
+/**
+ * 编辑对象
+ */
+const editItem = ref<any>({});
+/**
+ * 提交加载中
+ */
+const submitLoading = ref(false);
 /**
  * 提交
  */
 function submit() {
-  initiateTheProcessRef.value.formValidate((val: any) => {
-    // 验证通过，执行提交操作
-    const ob = val.id ? updateAccidents(val) : createAccidents(val);
+  formRef.value.validate().then(() => {
+    const ob = editItem.value.id
+      ? updateHiddenDangerInspectionType(editItem.value)
+      : addHiddenDangerInspectionType(editItem.value);
+    submitLoading.value = true;
     ob.then(() => {
       message.success($t('common.successfulOperation'));
       gridApi.reload();
       editClose();
+    }).finally(() => {
+      submitLoading.value = false;
     });
   });
 }
@@ -175,7 +151,7 @@ function submit() {
  */
 function showEditFun(row?: any) {
   showEdit.value = true;
-  initiateTheProcessRef.value.formInit(row || {});
+  editItem.value = row || {};
 }
 
 /**
@@ -183,6 +159,18 @@ function showEditFun(row?: any) {
  */
 function editClose() {
   showEdit.value = false;
+  editItem.value = {};
+}
+
+/**
+ * 删除
+ * @param row
+ */
+function delItem(row: any) {
+  deleteHiddenDangerInspectionType(row.id).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
 }
 
 // endregion
@@ -213,38 +201,19 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 岗位 -->
+        <!-- 检查类别 -->
         <FormItem
-          :label="$t('accidentManagement.position')"
+          :label="$t('hiddenDangerInspectionStandard.checkType')"
           style="margin-bottom: 1em"
         >
-          <Select
-            v-model:value="queryParams.position"
-            show-search
-            :filter-option="false"
-            :not-found-content="positionLoading ? undefined : null"
-            :options="positionList"
-            @search="searchPosition"
-            class="!w-48"
-          >
-            <template v-if="positionLoading" #notFoundContent>
-              <Spin size="small" />
-            </template>
-          </Select>
+          <Input v-model:value="queryParams.checkType" />
         </FormItem>
-        <!-- 年份 -->
+        <!-- 检查标准 -->
         <FormItem
-          :label="$t('accidentManagement.year')"
+          :label="$t('hiddenDangerInspectionStandard.checkCriteria')"
           style="margin-bottom: 1em"
         >
-          <DatePicker v-model:value="queryParams.createTime" picker="year" />
-        </FormItem>
-        <!-- 受伤人员 -->
-        <FormItem
-          :label="$t('accidentManagement.injuredEmployee')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.injuredUser" />
+          <Input v-model:value="queryParams.checkCriteria" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -264,23 +233,28 @@ onMounted(() => {
     <Card>
       <Grid>
         <template #toolbar-actions>
-          <Button type="primary" @click="showEditFun">
+          <Button type="primary" @click="showEditFun()">
             {{ $t('common.create') }}
           </Button>
         </template>
 
         <template #action="{ row }">
-          <!-- 参数绑定 -->
-          <Tooltip v-if="author.includes('参数绑定')">
-            <template #title>
-              {{ $t('workOrderParams.parameterBinding') }}
-            </template>
-            <Button type="link" @click="showEditFun(row)">
-              <IconifyIcon
-                icon="mdi:link-variant"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
+          <!-- 删除 -->
+          <Tooltip>
+            <template #title>{{ $t('common.delete') }}</template>
+            <Popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.confirm')"
+              :title="$t('ui.widgets.deletionConfirmation')"
+              @confirm="delItem(row)"
+            >
+              <Button danger type="link">
+                <IconifyIcon
+                  icon="mdi-light:delete"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Popconfirm>
           </Tooltip>
         </template>
       </Grid>
@@ -290,12 +264,34 @@ onMounted(() => {
     <Drawer
       v-model:open="showEdit"
       :footer-style="{ textAlign: 'right' }"
-      width="900"
+      width="500"
       placement="right"
-      :title="$t('workOrderParams.parameterBinding')"
+      :title="$t('common.edit')"
       @close="editClose"
     >
-      <InitiateTheProcess ref="initiateTheProcessRef" />
+      <Form
+        ref="formRef"
+        :model="editItem"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 18 }"
+      >
+        <!-- 工作站选择表单项，验证是否选择 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionStandard.checkType')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="checkType"
+        >
+          <Input v-model:value="editItem.checkType" />
+        </FormItem>
+        <!-- 工作站选择表单项，验证是否选择 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionStandard.checkCriteria')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="checkCriteria"
+        >
+          <Input v-model:value="editItem.checkCriteria" />
+        </FormItem>
+      </Form>
       <!-- 抽屉底部操作按钮 -->
       <template #footer>
         <!-- 按钮组，包含取消和确认按钮 -->
@@ -305,7 +301,7 @@ onMounted(() => {
             {{ $t('common.cancel') }}
           </Button>
           <!-- 确认按钮，点击后提交人员操作信息 -->
-          <Button type="primary" @click="submit">
+          <Button type="primary" @click="submit" :loading="submitLoading">
             {{ $t('common.confirm') }}
           </Button>
         </Space>

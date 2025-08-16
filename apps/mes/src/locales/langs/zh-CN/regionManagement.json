@@ -3,5 +3,8 @@
   "regionalName": "区域名称",
   "regionalSize": "区域大小(㎡)",
   "regionalManager": "区域管理者",
-  "forMoreDetails": "查看详情"
+  "areaCreator": "区域创建人",
+  "creationTime": "创建时间",
+  "forMoreDetails": "查看详情",
+  "department": "部门"
 }

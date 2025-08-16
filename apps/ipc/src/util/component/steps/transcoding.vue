@@ -250,6 +250,10 @@ function judgementOfWeight(val: string) {
  * 控制加载状态的响应式变量，为 true 时显示加载动画
  */
 const spinning = ref<any>(false);
+/**
+ * 详情
+ */
+const details = ref<any>({});
 
 /**
  * 查询资源验证状态的函数
@@ -285,7 +289,8 @@ function queryData() {
   ob.then((data: any) => {
     if (props.showTypeNumber === 15) {
       // 显示类型为 15 时，更新已转码列表和源码
-      const { snCode, list } = data;
+      const { snCode, list, ...d } = data;
+      details.value = d;
       transcodedList.value = list;
       sourceCode.value = snCode;
     } else if (props.showTypeNumber === 30) {
@@ -301,6 +306,25 @@ function queryData() {
 }
 
 /**
+ * 获取值的 class
+ * @returns 值的 class 字符串
+ */
+function getValueClass(isResult?: number) {
+  let css = '';
+  switch (isResult) {
+    case -1: {
+      css = 'bg-red-500 text-white';
+      break;
+    }
+    case 1: {
+      css = 'bg-green-500 text-[#444]';
+      break;
+    }
+  }
+  return `align-middle inline-block border rounded-xl p-2 text-center w-72 ${css}`;
+}
+
+/**
  * 组件挂载后执行的钩子函数，会在组件挂载完成后调用 queryData 函数获取数据
  */
 onMounted(() => {
@@ -311,6 +335,55 @@ onMounted(() => {
 <template>
   <!-- 根据 spinning 的值显示加载动画 -->
   <Spin :spinning="spinning">
+    <!-- 定义一个行布局 -->
+    <Row v-if="showTypeNumber === 30">
+      <Col span="24">
+        <!-- 显示工单编号的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 工单编号 -->
+          <span class="mr-4 inline-block w-36 p-2 text-right">
+            {{ $t('productionOperation.workOrderNumber') }}：
+          </span>
+          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            {{ details.proceWorksheetCode || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- 显示产品编号的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品编号 -->
+          <span class="mr-4 inline-block w-36 p-2 text-right">
+            {{ $t('productionOperation.productNumber') }}：
+          </span>
+          <!-- 显示产品编号的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            {{ details.procePorductCode || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- 显示产品名称的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span class="mr-4 inline-block w-36 p-2 text-right">
+            {{ $t('productionOperation.productName') }}：
+          </span>
+          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            {{ details.proceProdutName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- 显示产品名称的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span class="mr-4 inline-block w-36 p-2 text-right">
+            {{ $t('productionOperation.productName') }}：
+          </span>
+          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            {{ details.proceProductModel || $t('productionOperation.none') }}
+          </span>
+        </div>
+      </Col>
+    </Row>
     <!-- 定义一个行布局 -->
     <Row>
       <!-- 定义一个列，占 11 格 -->

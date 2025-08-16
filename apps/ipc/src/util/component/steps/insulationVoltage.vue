@@ -129,6 +129,54 @@ onBeforeUnmount(() => {
 
 <template>
   <Spin :spinning="spinning">
+    <Row v-if="[39].includes(showTypeNumber)">
+      <Col span="24">
+        <!-- 显示工单编号的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 工单编号 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.workOrderNumber') }}：
+          </span>
+          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            {{ details.proceWorksheetCode || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- 显示产品编号的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品编号 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productNumber') }}：
+          </span>
+          <!-- 显示产品编号的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            {{ details.procePorductCode || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- 显示产品名称的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productName') }}：
+          </span>
+          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            {{ details.proceProdutName || $t('productionOperation.none') }}
+          </span>
+        </div>
+        <!-- 显示产品名称的容器 -->
+        <div class="mb-4 mr-8 inline-block">
+          <!-- 产品名称 -->
+          <span :class="getLabelClass()">
+            {{ $t('productionOperation.productName') }}：
+          </span>
+          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          <span :class="getValueClass()" class="border-0">
+            {{ details.proceProductModel || $t('productionOperation.none') }}
+          </span>
+        </div>
+      </Col>
+    </Row>
     <Row>
       <Col
         :span="12"
