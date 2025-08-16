@@ -45,14 +45,13 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'accidentCode', title: '事故编号', minWidth: 190 },
     { field: 'injuredUser', title: '受伤员工', minWidth: 150 },
     { field: 'worknumber', title: '工号', minWidth: 150 },
-    { field: 'depatment', title: '部门', minWidth: 150 },
+    // { field: 'depatment', title: '部门', minWidth: 150 },
     { field: 'position', title: '岗位', minWidth: 150 },
     { field: 'time', title: '发生时间', minWidth: 150 },
-    { field: 'description', title: '事故描述', minWidth: 150 },
+    { field: 'eventDescription', title: '事故描述', minWidth: 150 },
     { field: 'injuredPartList', title: '受伤部位', minWidth: 150 },
     { field: 'injuredDescription', title: '受伤情况描述', minWidth: 150 },
     { field: 'injuredTypeList', title: '受伤类型', minWidth: 150 },
-    { field: 'file', title: '相关附件', minWidth: 150 },
     { field: 'manager', title: '责任部门主管', minWidth: 150 },
     { field: 'reason', title: '事故原因', minWidth: 150 },
     { field: 'measures', title: '整改措施', minWidth: 150 },
@@ -175,7 +174,9 @@ function submit() {
  */
 function showEditFun(row?: any) {
   showEdit.value = true;
-  initiateTheProcessRef.value.formInit(row || {});
+  setTimeout(() => {
+    initiateTheProcessRef.value.formInit(row || {});
+  }, 200);
 }
 
 /**
@@ -264,20 +265,22 @@ onMounted(() => {
     <Card>
       <Grid>
         <template #toolbar-actions>
-          <Button type="primary" @click="showEditFun">
+          <Button
+            type="primary"
+            @click="showEditFun()"
+            v-if="author.includes('新增')"
+          >
             {{ $t('common.create') }}
           </Button>
         </template>
 
         <template #action="{ row }">
-          <!-- 参数绑定 -->
-          <Tooltip v-if="author.includes('参数绑定')">
-            <template #title>
-              {{ $t('workOrderParams.parameterBinding') }}
-            </template>
+          <!-- 编辑 -->
+          <Tooltip v-if="author.includes('编辑')">
+            <template #title>{{ $t('common.edit') }}</template>
             <Button type="link" @click="showEditFun(row)">
               <IconifyIcon
-                icon="mdi:link-variant"
+                icon="mdi:edit-outline"
                 class="inline-block align-middle text-2xl"
               />
             </Button>
@@ -292,7 +295,7 @@ onMounted(() => {
       :footer-style="{ textAlign: 'right' }"
       width="900"
       placement="right"
-      :title="$t('workOrderParams.parameterBinding')"
+      :title="$t('common.edit')"
       @close="editClose"
     >
       <InitiateTheProcess ref="initiateTheProcessRef" />

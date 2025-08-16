@@ -151,7 +151,7 @@ function submit() {
  */
 function showEditFun(row?: any) {
   showEdit.value = true;
-  editItem.value = row || {};
+  editItem.value = row ? { ...row } : {};
 }
 
 /**
@@ -233,14 +233,28 @@ onMounted(() => {
     <Card>
       <Grid>
         <template #toolbar-actions>
-          <Button type="primary" @click="showEditFun()">
+          <Button
+            type="primary"
+            @click="showEditFun()"
+            v-if="author.includes('新增')"
+          >
             {{ $t('common.create') }}
           </Button>
         </template>
 
         <template #action="{ row }">
+          <!-- 编辑 -->
+          <Tooltip v-if="author.includes('编辑')">
+            <template #title>{{ $t('common.edit') }}</template>
+            <Button type="link" @click="showEditFun(row)">
+              <IconifyIcon
+                icon="mdi:edit-outline"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
           <!-- 删除 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('删除')">
             <template #title>{{ $t('common.delete') }}</template>
             <Popconfirm
               :cancel-text="$t('common.cancel')"

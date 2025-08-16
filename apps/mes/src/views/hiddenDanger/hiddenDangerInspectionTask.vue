@@ -571,7 +571,7 @@ onMounted(() => {
           </Tooltip>
           <template v-if="[3].includes(queryType)">
             <!-- 完成任务 -->
-            <Tooltip>
+            <Tooltip v-if="author.includes('完成任务')">
               <template #title>{{ $t('common.taskCompleted') }}</template>
               <Button type="link" @click="showDetails(row.id, false)">
                 <IconifyIcon
@@ -584,7 +584,7 @@ onMounted(() => {
 
           <template v-if="[1, 4].includes(queryType)">
             <!-- 指派 -->
-            <Tooltip v-if="!row.checkUser">
+            <Tooltip v-if="!row.checkUser && author.includes('指派')">
               <template #title>{{ $t('common.assign') }}</template>
               <Button type="link" @click="openAssigned(row)">
                 <IconifyIcon
@@ -594,7 +594,7 @@ onMounted(() => {
               </Button>
             </Tooltip>
             <!-- 领取 -->
-            <Tooltip v-if="!row.checkUser">
+            <Tooltip v-if="!row.checkUser && author.includes('领取')">
               <template #title>{{ $t('common.receive') }}</template>
               <Popconfirm
                 :cancel-text="$t('common.cancel')"
@@ -611,7 +611,7 @@ onMounted(() => {
               </Popconfirm>
             </Tooltip>
             <!-- 删除 -->
-            <Tooltip v-if="row.state === 0">
+            <Tooltip v-if="row.state === 0 && author.includes('删除')">
               <template #title>{{ $t('common.delete') }}</template>
               <Popconfirm
                 :cancel-text="$t('common.cancel')"

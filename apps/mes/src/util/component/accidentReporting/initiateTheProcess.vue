@@ -17,6 +17,7 @@ import {
   Textarea,
   UploadDragger,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { listSysPerson, queryOrganizationTree } from '#/api';
 import { flattenTree } from '#/util';
@@ -161,10 +162,11 @@ function userChange(_val: any, item: any) {
     const user = item[1];
     formState.value.injuredUser = user.perName;
     formState.value.worknumber = user.workNumber;
-    formState.value.depatment = user.orgName;
+    // formState.value.depatment = user.orgName;
     formState.value.position = user.stationName;
+  } else {
+    formState.value.userChenked = [];
   }
-  formState.value.userChenked = [];
 }
 
 // endregion
@@ -185,7 +187,30 @@ function getUploadUrl() {
  * @param row
  */
 function formInit(row: any) {
-  formState.value = row || {};
+  if (row.time) {
+    row.time = dayjs(row.time);
+  }
+  if (row.fileList) {
+    uploadFile.value = [];
+    row.fileList.forEach((item: any) => {
+      if (!item) return;
+      const regex = /[^/]+$/;
+      const fileName = item.match(regex)[0];
+      uploadFile.value.push({
+        url: item,
+        status: 'done',
+        name: fileName,
+      });
+    });
+  }
+
+  if (row.manager) {
+    row.managerChecked = ['', row.manager];
+  }
+
+  formState.value = {
+    ...row,
+  };
 }
 
 /**
@@ -201,10 +226,11 @@ function formValidate(callback: Function) {
     if (params.managerChecked && params.managerChecked.length === 2) {
       params.manager = params.managerChecked[1];
     }
-    params.file = [];
+    params.fileList = [];
 
     uploadFile.value.forEach((item: any) => {
-      params.file.push(item.response.data);
+      const url = item.response ? item.response.data : item.url;
+      params.fileList.push(url);
     });
     callback(params);
   });
@@ -266,12 +292,12 @@ onMounted(() => {
       </Col>
     </Row>
     <Row>
-      <Col :span="12">
-        <!-- 部门-->
+      <!--      <Col :span="12">
+        &lt;!&ndash; 部门&ndash;&gt;
         <FormItem :label="$t('accidentManagement.department')">
           {{ formState.depatment }}
         </FormItem>
-      </Col>
+      </Col>-->
       <Col :span="12">
         <!-- 岗位-->
         <FormItem :label="$t('accidentManagement.position')">
@@ -295,9 +321,9 @@ onMounted(() => {
         <FormItem
           :label="$t('accidentManagement.eventDescription')"
           :rules="[{ required: true, message: $t('ui.formRules.required') }]"
-          name="description"
+          name="eventDescription"
         >
-          <Textarea allow-clear v-model:value="formState.description" />
+          <Textarea allow-clear v-model:value="formState.eventDescription" />
         </FormItem>
       </Col>
     </Row>

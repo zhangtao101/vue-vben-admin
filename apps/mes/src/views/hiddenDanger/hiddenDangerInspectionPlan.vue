@@ -492,13 +492,21 @@ onMounted(() => {
     <Card>
       <Grid>
         <template #toolbar-actions>
-          <Button type="primary" @click="showEditFun()">
+          <Button
+            type="primary"
+            @click="showEditFun()"
+            v-if="author.includes('新增')"
+          >
             {{ $t('common.create') }}
           </Button>
         </template>
 
         <template #isUse="{ row }">
-          <RadioGroup v-model:value="row.isUse" @change="updateStatus(row)">
+          <RadioGroup
+            v-model:value="row.isUse"
+            @change="updateStatus(row)"
+            :disabled="!author.includes('状态变更')"
+          >
             <RadioButton :value="1">
               {{ $t('status.enable') }}
             </RadioButton>
@@ -509,7 +517,7 @@ onMounted(() => {
         </template>
         <template #action="{ row }">
           <!-- 编辑按钮 ="{ row }" -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('编辑')">
             <template #title>
               {{ $t('common.edit') }}
             </template>
