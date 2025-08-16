@@ -3,7 +3,6 @@
   "productionOrderNumber": "生产订单号",
   "workOrderNumber": "工单编号",
   "productName": "产品名称",
-  "产品型号": "产品型号",
   "currentProductName": "当前产品名称",
   "productNumber": "产品编号",
   "processRoute": "工艺路线",
@@ -127,5 +126,9 @@
   "workstationVerification": "工位校验",
   "manualInspection": "人工检验",
   "qualified": "合格",
-  "unqualified": "不合格"
+  "unqualified": "不合格",
+  "workOrderNumberInExecution": "正在执行的工单编号",
+  "productNumberInExecution": "正在执行的产品编号",
+  "productNameInExecution": "正在执行的产品名称",
+  "productModelInExecution": "正在执行的产品型号"
 }

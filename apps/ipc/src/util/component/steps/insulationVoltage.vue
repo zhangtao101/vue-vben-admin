@@ -134,8 +134,8 @@ onBeforeUnmount(() => {
         <!-- 显示工单编号的容器 -->
         <div class="mb-4 mr-8 inline-block">
           <!-- 工单编号 -->
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.workOrderNumber') }}：
+          <span :class="getLabelClass()" class="w-48">
+            {{ $t('productionOperation.workOrderNumberInExecution') }}：
           </span>
           <!-- 显示工单编号的值，无结果时显示默认提示 -->
           <span :class="getValueClass()" class="border-0">
@@ -145,8 +145,8 @@ onBeforeUnmount(() => {
         <!-- 显示产品编号的容器 -->
         <div class="mb-4 mr-8 inline-block">
           <!-- 产品编号 -->
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.productNumber') }}：
+          <span :class="getLabelClass()" class="w-48">
+            {{ $t('productionOperation.productNumberInExecution') }}：
           </span>
           <!-- 显示产品编号的值，无结果时显示默认提示 -->
           <span :class="getValueClass()" class="border-0">
@@ -156,8 +156,8 @@ onBeforeUnmount(() => {
         <!-- 显示产品名称的容器 -->
         <div class="mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.productName') }}：
+          <span :class="getLabelClass()" class="w-48">
+            {{ $t('productionOperation.productNameInExecution') }}：
           </span>
           <!-- 显示产品名称的值，无结果时显示默认提示 -->
           <span :class="getValueClass()" class="border-0">
@@ -167,8 +167,8 @@ onBeforeUnmount(() => {
         <!-- 显示产品名称的容器 -->
         <div class="mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
-          <span :class="getLabelClass()">
-            {{ $t('productionOperation.productName') }}：
+          <span :class="getLabelClass()" class="w-48">
+            {{ $t('productionOperation.productModelInExecution') }}：
           </span>
           <!-- 显示产品名称的值，无结果时显示默认提示 -->
           <span :class="getValueClass()" class="border-0">
