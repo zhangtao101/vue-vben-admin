@@ -424,10 +424,9 @@ onMounted(() => {
             />
           </Tooltip>
           <!-- 编辑按钮 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('编辑')">
             <template #title>{{ $t('common.edit') }}</template>
             <Button
-              v-if="author.includes('编辑')"
               :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
@@ -436,10 +435,9 @@ onMounted(() => {
           </Tooltip>
 
           <!-- 删除数据 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('删除')">
             <template #title>{{ $t('common.delete') }}</template>
             <Button
-              v-if="author.includes('删除')"
               :icon="
                 h(MdiLightDelete, {
                   class: 'inline-block size-6',

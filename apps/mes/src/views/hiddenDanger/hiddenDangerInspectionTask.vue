@@ -376,6 +376,9 @@ function showDetails(rowID: any, isDetails = true) {
           uploadFile.value.push({
             url: item,
             status: 'done',
+            response: {
+              data: item,
+            },
           });
         });
       }

@@ -8,5 +8,6 @@ export * from './planMannagement';
 export * from './processManagement';
 export * from './productionReport';
 export * from './risk';
+export * from './riskManagement';
 export * from './storeManagement';
 export * from './system';

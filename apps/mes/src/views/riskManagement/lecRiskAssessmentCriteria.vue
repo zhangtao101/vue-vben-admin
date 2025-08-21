@@ -1,0 +1,361 @@
+<script lang="ts" setup>
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { h, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+import { Page } from '@vben/common-ui';
+import { IconifyIcon, MdiSearch } from '@vben/icons';
+
+import {
+  Button,
+  Card,
+  Drawer,
+  Form,
+  FormItem,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+  Select,
+  Space,
+  Tooltip,
+} from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { lecDelete, lecInsert, lecList, lecUpdate } from '#/api';
+import { $t } from '#/locales';
+import { queryAuth } from '#/util';
+
+// region 表格操作
+
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'dimension', title: '维度', minWidth: 150 },
+    { field: 'level', title: '等级', minWidth: 120 },
+    { field: 'score', title: '分值', minWidth: 120 },
+    /* { field: 'createUser', title: '提交人', minWidth: 120 },
+    { field: 'createTime', title: '提交时间', minWidth: 150 },
+    { field: 'updateTime', title: '更新时间', minWidth: 150 },*/
+    {
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: '操作',
+      minWidth: 150,
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
+  },
+};
+
+const gridEvents: VxeGridListeners<any> = {
+  /* cellClick: ({ row }) => {
+    message.info(`cell-click: ${row.name}`);
+  },*/
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+// 查询参数
+const queryParams = ref<any>({});
+/**
+ * 查询数据
+ * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ */
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve, reject) => {
+    const params: any = { ...queryParams.value };
+    lecList({
+      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+      pageNum: page, // 当前页码。
+      pageSize, // 每页显示的数据条数。
+    })
+      .then(({ total, list }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+// endregion
+
+// region 新增 / 编辑
+/**
+ * 维度列表
+ */
+const listOfDimensions = ref<any>([
+  {
+    label: '事故发生的可能性(L)',
+    value: '事故发生的可能性(L)',
+  },
+  {
+    label: '暴露于危险环境的频繁程度(E)',
+    value: '暴露于危险环境的频繁程度(E)',
+  },
+  {
+    label: '发生事故产生的后果(C)',
+    value: '发生事故产生的后果(C)',
+  },
+]);
+
+// 是否显示编辑
+const showEdit = ref(false);
+/**
+ * 新增/编辑表单引用
+ */
+const formRef = ref<any>();
+/**
+ * 编辑对象
+ */
+const editItem = ref<any>({});
+/**
+ * 提交加载中
+ */
+const submitLoading = ref(false);
+/**
+ * 提交
+ */
+function submit() {
+  formRef.value.validate().then(() => {
+    const ob = editItem.value.id
+      ? lecUpdate(editItem.value)
+      : lecInsert(editItem.value);
+    submitLoading.value = true;
+    ob.then(() => {
+      message.success($t('common.successfulOperation'));
+      gridApi.reload();
+      editClose();
+    }).finally(() => {
+      submitLoading.value = false;
+    });
+  });
+}
+
+/**
+ * 显示编辑
+ * @param row 编辑对象 为空值表示新增
+ */
+function showEditFun(row?: any) {
+  showEdit.value = true;
+  editItem.value = row ? { ...row } : {};
+}
+
+/**
+ * 关闭抽屉
+ */
+function editClose() {
+  showEdit.value = false;
+  editItem.value = {};
+}
+
+/**
+ * 删除
+ * @param row
+ */
+function delItem(row: any) {
+  lecDelete(row.id).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
+}
+
+// endregion
+
+// region 权限查询
+
+// 路由信息
+const route = useRoute();
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
+
+// endregion
+
+// region 初始化
+
+onMounted(() => {
+  // 查询权限
+  queryAuth(route.meta.code as string).then((data) => {
+    author.value = data;
+  });
+});
+
+// endregion
+</script>
+
+<template>
+  <Page>
+    <!-- region 搜索 -->
+    <Card class="mb-8">
+      <Form :model="queryParams" layout="inline">
+        <!-- 维度 -->
+        <FormItem
+          :label="$t('riskManagement.Dimension')"
+          style="margin-bottom: 1em"
+        >
+          <Select
+            v-model:value="queryParams.dimension"
+            :options="listOfDimensions"
+            allow-clear
+            class="!w-56"
+          />
+        </FormItem>
+        <!-- 等级 -->
+        <FormItem
+          :label="$t('riskManagement.Level')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.level" />
+        </FormItem>
+
+        <FormItem style="margin-bottom: 1em">
+          <Button
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
+            type="primary"
+            @click="() => gridApi.reload()"
+          >
+            {{ $t('common.search') }}
+          </Button>
+        </FormItem>
+      </Form>
+    </Card>
+    <!-- endregion -->
+
+    <!-- region 表格主体 -->
+    <Card>
+      <Grid>
+        <template #toolbar-actions>
+          <Button
+            type="primary"
+            @click="showEditFun()"
+            v-if="author.includes('新增')"
+          >
+            {{ $t('common.create') }}
+          </Button>
+        </template>
+
+        <template #action="{ row }">
+          <!-- 编辑 -->
+          <Tooltip v-if="author.includes('编辑')">
+            <template #title>{{ $t('common.edit') }}</template>
+            <Button type="link" @click="showEditFun(row)">
+              <IconifyIcon
+                icon="mdi:edit-outline"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
+          <!-- 删除 -->
+          <Tooltip v-if="author.includes('删除')">
+            <template #title>{{ $t('common.delete') }}</template>
+            <Popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.confirm')"
+              :title="$t('ui.widgets.deletionConfirmation')"
+              @confirm="delItem(row)"
+            >
+              <Button danger type="link">
+                <IconifyIcon
+                  icon="mdi-light:delete"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Popconfirm>
+          </Tooltip>
+        </template>
+      </Grid>
+    </Card>
+    <!-- endregion -->
+
+    <Drawer
+      v-model:open="showEdit"
+      :footer-style="{ textAlign: 'right' }"
+      width="500"
+      placement="right"
+      :title="$t('common.edit')"
+      @close="editClose"
+    >
+      <Form
+        ref="formRef"
+        :model="editItem"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 18 }"
+      >
+        <!-- 维度 -->
+        <FormItem
+          :label="$t('riskManagement.Dimension')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="dimension"
+        >
+          <Select
+            v-model:value="editItem.dimension"
+            :options="listOfDimensions"
+            allow-clear
+            class="!w-full"
+          />
+        </FormItem>
+        <!-- 等级 -->
+        <FormItem
+          :label="$t('riskManagement.Level')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="level"
+        >
+          <Input v-model:value="editItem.level" />
+        </FormItem>
+        <!-- 分值 -->
+        <FormItem
+          :label="$t('riskManagement.Score')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="score"
+        >
+          <InputNumber v-model:value="editItem.score" :min="0" />
+        </FormItem>
+      </Form>
+      <!-- 抽屉底部操作按钮 -->
+      <template #footer>
+        <!-- 按钮组，包含取消和确认按钮 -->
+        <Space>
+          <!-- 取消按钮，点击后关闭人员操作抽屉 -->
+          <Button @click="editClose">
+            {{ $t('common.cancel') }}
+          </Button>
+          <!-- 确认按钮，点击后提交人员操作信息 -->
+          <Button type="primary" @click="submit" :loading="submitLoading">
+            {{ $t('common.confirm') }}
+          </Button>
+        </Space>
+      </template>
+    </Drawer>
+  </Page>
+</template>
+
+<style scoped></style>

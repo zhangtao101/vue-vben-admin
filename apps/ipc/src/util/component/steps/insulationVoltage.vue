@@ -138,7 +138,7 @@ onBeforeUnmount(() => {
             {{ $t('productionOperation.workOrderNumberInExecution') }}：
           </span>
           <!-- 显示工单编号的值，无结果时显示默认提示 -->
-          <span :class="getValueClass()" class="border-0">
+          <span :class="getValueClass()">
             {{ details.proceWorksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
@@ -149,7 +149,7 @@ onBeforeUnmount(() => {
             {{ $t('productionOperation.productNumberInExecution') }}：
           </span>
           <!-- 显示产品编号的值，无结果时显示默认提示 -->
-          <span :class="getValueClass()" class="border-0">
+          <span :class="getValueClass()">
             {{ details.procePorductCode || $t('productionOperation.none') }}
           </span>
         </div>
@@ -160,7 +160,7 @@ onBeforeUnmount(() => {
             {{ $t('productionOperation.productNameInExecution') }}：
           </span>
           <!-- 显示产品名称的值，无结果时显示默认提示 -->
-          <span :class="getValueClass()" class="border-0">
+          <span :class="getValueClass()">
             {{ details.proceProdutName || $t('productionOperation.none') }}
           </span>
         </div>
@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
             {{ $t('productionOperation.productModelInExecution') }}：
           </span>
           <!-- 显示产品名称的值，无结果时显示默认提示 -->
-          <span :class="getValueClass()" class="border-0">
+          <span :class="getValueClass()">
             {{ details.proceProductModel || $t('productionOperation.none') }}
           </span>
         </div>

@@ -267,7 +267,7 @@ function queryAllWord() {
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
   // 如果节点被选中且该节点有子节点
-  if (selected && node.children.length > 0) {
+  if (selected) {
     // 更新选中的菜单代码
     selectedKey.value = node;
     // 显示表格加载状态

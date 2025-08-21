@@ -85,6 +85,17 @@ const gridOptions: VxeGridProps<any> = {
     },
   ],
   height: 500,
+  showOverflow: true,
+  showHeaderOverflow: true,
+  showFooterOverflow: true,
+  virtualYConfig: {
+    enabled: true,
+    gt: 0,
+  },
+  virtualXConfig: {
+    enabled: true,
+    gt: 0,
+  },
   stripe: true,
   sortConfig: {
     multiple: true,
@@ -220,7 +231,9 @@ let Details: any = null;
 function displayParameterBinding(row: any) {
   listEquipCatchData({
     bindingDetailId: row.id,
-  }).then(({ paramNames, dataList, ...equip }: any) => {
+    pageNum: 1,
+    pageSize: 20,
+  }).then(({ paramNames, ...equip }: any) => {
     showDetails.value = true;
     equipMessage.value = equip;
     const columns: any = [{ title: '序号', type: 'seq', width: 50 }];
@@ -228,7 +241,7 @@ function displayParameterBinding(row: any) {
       columns.push({
         field: paramName,
         title: paramName,
-        minWidth: 100,
+        minWidth: 120,
       });
     });
     // gridApi 为表格的方法
@@ -242,12 +255,50 @@ function displayParameterBinding(row: any) {
         sortConfig: {
           multiple: true,
         },
-        data: dataList,
         pagerConfig: {
-          enabled: false,
+          enabled: true,
+        },
+        proxyConfig: {
+          ajax: {
+            query: async ({ page }: any) => {
+              return await queryDetailsTableData(
+                {
+                  page: page.currentPage,
+                  pageSize: page.pageSize,
+                },
+                row.id,
+              );
+            },
+          },
         },
       },
     });
+  });
+}
+
+/**
+ * 查询参数绑定详情
+ * @param page
+ * @param pageSize
+ */
+function queryDetailsTableData({ page, pageSize }: any, rowId: any) {
+  return new Promise((resolve, reject) => {
+    listEquipCatchData({
+      bindingDetailId: rowId,
+      pageSize,
+      pageNum: page,
+    })
+      .then(({ dataList, total }: any) => {
+        // 将接口返回的数据适配到表格所需的格式
+        resolve({
+          total, // 总数据量
+          items: dataList, // 当前页数据
+        });
+      })
+      .catch((error: any) => {
+        // 捕获接口调用错误并拒绝 Promise
+        reject(error);
+      });
   });
 }
 

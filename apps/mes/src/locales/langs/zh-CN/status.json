@@ -15,5 +15,7 @@
   "member": "团员",
   "partyMember": "党员",
   "yes": "是",
-  "no": "否"
+  "no": "否",
+  "effective": "有效",
+  "invalid": "无效"
 }
