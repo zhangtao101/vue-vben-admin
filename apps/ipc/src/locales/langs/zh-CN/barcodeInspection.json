@@ -1,0 +1,10 @@
+{
+  "barCode": "条码",
+  "deviceNumber": "设备编号",
+  "workOrderNumber": "工单号",
+  "processNumber": "工序编号",
+  "abnormal": "异常",
+  "normal": "正常",
+  "inAction": "执行中",
+  "executionCompleted": "执行完成"
+}

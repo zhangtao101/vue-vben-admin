@@ -900,6 +900,9 @@ importers:
       ant-design-vue:
         specifier: 'catalog:'
         version: 4.2.6(vue@3.5.13(typescript@5.8.3))
+      clipboard:
+        specifier: ^2.0.11
+        version: 2.0.11
       dayjs:
         specifier: 'catalog:'
         version: 1.11.13
@@ -915,6 +918,9 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.5.1(vue@3.5.13(typescript@5.8.3))
+      vue3-json-viewer:
+        specifier: ^2.4.1
+        version: 2.4.1(vue@3.5.13(typescript@5.8.3))
 
   apps/mes:
     dependencies:
@@ -5432,9 +5438,6 @@ packages:
 
   '@vue/devtools-kit@7.7.6':
     resolution: {integrity: sha512-geu7ds7tem2Y7Wz+WgbnbZ6T5eadOvozHZ23Atk/8tksHMFOFylKi1xgGlQlVn0wlkEf4hu+vd5ctj1G4kFtwA==}
-
-  '@vue/devtools-shared@7.7.5':
-    resolution: {integrity: sha512-QBjG72RfpM0DKtpns2RZOxBltO226kOAls9e4Lri6YxS2gWTgL0H+wj1R2K76lxxIeOrqo4+2Ty6RQnzv+WSTQ==}
 
   '@vue/devtools-shared@7.7.6':
     resolution: {integrity: sha512-yFEgJZ/WblEsojQQceuyK6FzpFDx4kqrz2ohInxNj5/DnhoX023upTv4OD6lNPLAA5LLkbwPVb10o/7b+Y4FVA==}
@@ -12291,6 +12294,11 @@ packages:
       ace-builds: '*'
       vue: ^3.5.13
 
+  vue3-json-viewer@2.4.1:
+    resolution: {integrity: sha512-Z1sunvS58lJ3ZcpNhl3jYQapBVw2wjnXbemigfMWm3QnjCeg3CPMq8R6pxHUYahxMfPKLvrbGve6mUXqhWyLaQ==}
+    peerDependencies:
+      vue: ^3.5.13
+
   vue@3.5.13:
     resolution: {integrity: sha512-wmeiSMxkZCSc+PM2w2VRsOYAZC8GdipNFRTsLSfodVqI9mbejKeXEGr8SckuLnrQPGe3oJN5c3K0vpoU9q/wCQ==}
     peerDependencies:
@@ -16378,7 +16386,7 @@ snapshots:
 
   '@vue/devtools-kit@7.7.5':
     dependencies:
-      '@vue/devtools-shared': 7.7.5
+      '@vue/devtools-shared': 7.7.6
       birpc: 2.3.0
       hookable: 5.5.3
       mitt: 3.0.1
@@ -16395,10 +16403,6 @@ snapshots:
       perfect-debounce: 1.0.0
       speakingurl: 14.0.1
       superjson: 2.2.2
-
-  '@vue/devtools-shared@7.7.5':
-    dependencies:
-      rfdc: 1.4.1
 
   '@vue/devtools-shared@7.7.6':
     dependencies:
@@ -24000,6 +24004,11 @@ snapshots:
     dependencies:
       ace-builds: 1.32.0
       resize-observer-polyfill: 1.5.1
+      vue: 3.5.13(typescript@5.8.3)
+
+  vue3-json-viewer@2.4.1(vue@3.5.13(typescript@5.8.3)):
+    dependencies:
+      clipboard: 2.0.11
       vue: 3.5.13(typescript@5.8.3)
 
   vue@3.5.13(typescript@5.8.3):

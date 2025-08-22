@@ -11,5 +11,6 @@
   "badJudgment": "不良处理",
   "rework": "不良返工",
   "poorHandling": "质量管理",
-  "reportManagement": "报表管理"
+  "reportManagement": "报表管理",
+  "barcodeInspection": "条码排查"
 }

@@ -289,13 +289,13 @@ function queryData() {
   ob.then((data: any) => {
     if (props.showTypeNumber === 15) {
       // 显示类型为 15 时，更新已转码列表和源码
-      const { snCode, list, ...d } = data;
-      details.value = d;
+      const { snCode, list } = data;
       transcodedList.value = list;
       sourceCode.value = snCode;
     } else if (props.showTypeNumber === 30) {
       // 显示类型为 30 时，更新已转码列表和总产量
-      const { totalNumber, codeRecords } = data;
+      const { totalNumber, codeRecords, ...d } = data;
+      details.value = d;
       transcodedList.value = codeRecords;
       total.value = totalNumber;
     }

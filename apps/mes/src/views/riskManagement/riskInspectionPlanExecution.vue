@@ -35,17 +35,17 @@ import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  assigned,
-  collect,
-  deleteTask,
-  list,
+  assignedRisk,
+  collectRisk,
+  deleteTaskRisk,
+  listRisk,
   listSysPerson,
-  queryDetails,
+  queryDetailsRisk,
   queryOrganizationTree,
-  taskList,
-  taskListEd,
-  taskListWill,
-  update,
+  taskListEdRisk,
+  taskListRisk,
+  taskListWillRisk,
+  updateRisk,
 } from '#/api';
 import { $t } from '#/locales';
 import { flattenTree, queryAuth } from '#/util';
@@ -57,11 +57,10 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'checkCode', title: '检查编号', minWidth: 150 },
+    { field: 'riskCode', title: '检查编号', minWidth: 150 },
     { field: 'planCheckTime', title: '计划检查时间', minWidth: 150 },
     { field: 'checkType', title: '检查类别', minWidth: 150 },
     { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
-    { field: 'checkName', title: '专项检查名称', minWidth: 150 },
     { field: 'checkUser', title: '检查人', minWidth: 150 },
     { field: 'area', title: '检查区域', minWidth: 150 },
     { field: 'areaCode', title: '检查项目', minWidth: 150 },
@@ -177,19 +176,19 @@ function queryData({ page, pageSize }: any) {
     let ob: any;
     switch (queryType.value) {
       case 1: {
-        ob = list(params);
+        ob = listRisk(params);
         break;
       }
       case 2: {
-        ob = taskListEd(params);
+        ob = taskListEdRisk(params);
         break;
       }
       case 3: {
-        ob = taskList(params);
+        ob = taskListRisk(params);
         break;
       }
       case 4: {
-        ob = taskListWill(params);
+        ob = taskListWillRisk(params);
         break;
       }
     }
@@ -214,7 +213,7 @@ function queryData({ page, pageSize }: any) {
 // region 删除任务
 
 function delItem(row: any) {
-  deleteTask(row.id).then(() => {
+  deleteTaskRisk(row.id).then(() => {
     message.success($t('common.successfulOperation'));
     gridApi.reload();
   });
@@ -229,7 +228,7 @@ function delItem(row: any) {
  * @param row 任务详情
  */
 function claimTheTask(row: any) {
-  collect({
+  collectRisk({
     id: row.id,
   }).then(() => {
     message.success($t('common.successfulOperation'));
@@ -251,7 +250,7 @@ const showAssigned = ref(false);
  * 指派任务提交
  */
 function assignedSubmit() {
-  assigned(assignedParams.value).then(() => {
+  assignedRisk(assignedParams.value).then(() => {
     message.success($t('common.successfulOperation'));
     gridApi.reload();
     assignedCancel();
@@ -364,7 +363,7 @@ function showDetails(rowID: any, isDetails = true) {
   openDetails.value = true;
   isShowDetails.value = isDetails;
   detailsLoading.value = true;
-  queryDetails(rowID)
+  queryDetailsRisk(rowID)
     .then((data) => {
       details.value = data;
       if (data.checkTime && !isShowDetails.value) {
@@ -394,8 +393,8 @@ function showDetails(rowID: any, isDetails = true) {
 function detailsClose() {
   openDetails.value = false;
   isShowDetails.value = false;
-  uploadFile.value = [];
   details.value = {};
+  uploadFile.value = [];
 }
 
 // endregion
@@ -456,6 +455,10 @@ function submit() {
     message.error('请选择检查结果!');
     return;
   }
+  if (!params.sign) {
+    message.error('请输入区域条码!');
+    return;
+  }
   params.photoList = [];
   params.checkTime = params.checkTime.format('YYYY-MM-DD HH:mm:ss');
   uploadFile.value.forEach((item: any) => {
@@ -463,7 +466,7 @@ function submit() {
   });
   params.executionId = params.id;
 
-  update(params).then(() => {
+  updateRisk(params).then(() => {
     message.success($t('common.successfulOperation'));
     gridApi.reload();
     detailsClose();
@@ -651,7 +654,7 @@ onMounted(() => {
           :label="$t('hiddenDangerInspectionTask.checkTheNumber')"
         >
           {{
-            details.checkCode || $t('hiddenDangerInspectionTask.notAtTheMoment')
+            details.riskCode || $t('hiddenDangerInspectionTask.notAtTheMoment')
           }}
         </DescriptionsItem>
         <!-- 计划检查时间 -->
@@ -678,14 +681,6 @@ onMounted(() => {
           {{
             details.checkCriteria ||
             $t('hiddenDangerInspectionTask.notAtTheMoment')
-          }}
-        </DescriptionsItem>
-        <!-- 专项检查名称 -->
-        <DescriptionsItem
-          :label="$t('hiddenDangerInspectionTask.specialInspectionName')"
-        >
-          {{
-            details.checkName || $t('hiddenDangerInspectionTask.notAtTheMoment')
           }}
         </DescriptionsItem>
         <!-- 检查人 -->
@@ -816,7 +811,7 @@ onMounted(() => {
           :label="$t('hiddenDangerInspectionTask.inspectionStatus')"
         >
           {{
-            details.isReport === 1
+            details.state === 1
               ? $t('hiddenDangerInspectionTask.wasDone')
               : $t('hiddenDangerInspectionTask.toBeContinued')
           }}

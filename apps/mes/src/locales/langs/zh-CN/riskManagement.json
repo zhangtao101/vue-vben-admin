@@ -20,5 +20,18 @@
   "ResponsiblePerson": "责任人",
   "lLabel": "事故发生的可能性(L)",
   "eLabel": "暴露于危险环境的频繁程度(E)",
-  "cLabel": "发生事故产生的后果(C)"
+  "cLabel": "发生事故产生的后果(C)",
+  "cycle": "周期",
+  "daily": "日常",
+  "checkTheCategory": "检查类别",
+  "inspectionStandards": "检查标准",
+  "planType": "计划类型",
+  "planCheckStartTime": "计划检查开始日期",
+  "planCheckEndTime": "计划检查结束日期",
+  "planTaskResponsiblePerson": "计划任务负责人",
+  "inspectionArea": "巡检区域",
+  "inspectionItem": "巡检项目",
+  "inspectionContent": "巡检内容",
+  "status": "状态",
+  "AreaScan": "区域条码"
 }

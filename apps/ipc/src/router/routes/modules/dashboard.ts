@@ -84,6 +84,16 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.workOrderOutbound'),
         },
       },
+      {
+        name: 'barcodeInspection',
+        path: 'barcodeInspection',
+        component: () => import('#/views/flow/barcodeInspection.vue'),
+        meta: {
+          icon: 'mdi:qrcode',
+          ignoreAccess: true,
+          title: $t('menu.barcodeInspection'),
+        },
+      },
     ],
   },
   /* {

@@ -20,6 +20,7 @@ import {
   Input,
   InputNumber,
   message,
+  Popconfirm,
   RadioButton,
   RadioGroup,
   Select,
@@ -31,14 +32,15 @@ import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  addHiddenDangerInspectionPlan,
   areaList,
   listSysPerson,
-  queryHiddenDangerInspectionPlan,
+  planDelete,
+  planInsert,
+  planList,
+  planUpdate,
+  planUpdateStatus,
   queryHiddenDangerInspectionType,
   queryOrganizationTree,
-  switchPlanStatus,
-  updateHiddenDangerInspectionPlan,
 } from '#/api';
 import { $t } from '#/locales';
 import { flattenTree, queryAuth } from '#/util';
@@ -51,18 +53,22 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'checkName', title: '专项检查名称', minWidth: 190 },
-    { field: 'manager', title: '负责人', minWidth: 150 },
-    { field: 'startTime', title: '开始时间', minWidth: 150 },
-    { field: 'endTime', title: '结束时间', minWidth: 150 },
-    { field: 'cycle', title: '间隔周期', minWidth: 150 },
-    { field: 'checkType', title: '检查类别', minWidth: 150 },
+    { field: 'manager', title: '计划任务负责人', minWidth: 150 },
+    { field: 'startTime', title: '计划检查开始日期', minWidth: 180 },
+    { field: 'endTime', title: '计划检查结束日期', minWidth: 180 },
     { field: 'calendarName', title: '日历名称', minWidth: 150 },
+    { field: 'cycle', title: '巡检周期', minWidth: 150 },
+    { field: 'checkType', title: '检查类别', minWidth: 150 },
     { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
     { field: 'areaCode', title: '巡检区域', minWidth: 150 },
     { field: 'area', title: '巡检项目', minWidth: 150 },
     { field: 'content', title: '巡检内容', minWidth: 150 },
-    { field: 'timeType', title: '检查类别', minWidth: 150 },
+    {
+      field: 'timeType',
+      title: '计划类型',
+      minWidth: 150,
+      slots: { default: 'timeType' },
+    },
     {
       field: 'isUse',
       fixed: 'right',
@@ -119,7 +125,7 @@ const queryParams = ref<any>({});
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = { ...queryParams.value };
-    queryHiddenDangerInspectionPlan({
+    planList({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -153,10 +159,6 @@ const timeTypeOptions = [
     value: 1,
   },
   {
-    label: '专项巡检',
-    value: 2,
-  },
-  {
     label: '日常巡检',
     value: 0,
   },
@@ -184,9 +186,16 @@ const submitLoading = ref(false);
  */
 function submit() {
   formRef.value.validate().then(() => {
-    const ob = editItem.value.id
-      ? updateHiddenDangerInspectionPlan(editItem.value)
-      : addHiddenDangerInspectionPlan(editItem.value);
+    const params = {
+      ...editItem.value,
+    };
+    if (params.startTime) {
+      params.startTime = params.startTime.format('YYYY-MM-DD HH:mm:ss');
+    }
+    if (params.endTime) {
+      params.endTime = params.endTime.format('YYYY-MM-DD HH:mm:ss');
+    }
+    const ob = params.id ? planUpdate(params) : planInsert(params);
     submitLoading.value = true;
     ob.then(() => {
       message.success($t('common.successfulOperation'));
@@ -244,6 +253,21 @@ const disabledDateEnd = (current: Dayjs) => {
       (editItem.value.startTime && current < editItem.value.startTime))
   );
 };
+
+// endregion
+
+// region 删除
+
+/**
+ * 删除
+ * @param row
+ */
+function delItem(row: any) {
+  planDelete(row.id).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
+}
 
 // endregion
 
@@ -420,7 +444,7 @@ function setCalendar() {
 // region 更新状态
 
 function updateStatus(row: any) {
-  switchPlanStatus(row.id).then(() => {
+  planUpdateStatus(row.id).then(() => {
     message.success($t('common.successfulOperation'));
     gridApi.reload();
   });
@@ -506,6 +530,14 @@ onMounted(() => {
           </Button>
         </template>
 
+        <template #timeType="{ row }">
+          <span v-if="row.timeType === 1">
+            {{ $t('riskManagement.cycle') }}
+          </span>
+          <span v-else-if="row.timeType === 0">
+            {{ $t('riskManagement.daily') }}
+          </span>
+        </template>
         <template #isUse="{ row }">
           <RadioGroup
             v-model:value="row.isUse"
@@ -532,6 +564,23 @@ onMounted(() => {
                 class="inline-block align-middle text-2xl"
               />
             </Button>
+          </Tooltip>
+          <!-- 删除 -->
+          <Tooltip v-if="author.includes('删除')">
+            <template #title>{{ $t('common.delete') }}</template>
+            <Popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.confirm')"
+              :title="$t('ui.widgets.deletionConfirmation')"
+              @confirm="delItem(row)"
+            >
+              <Button danger type="link">
+                <IconifyIcon
+                  icon="mdi-light:delete"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Popconfirm>
           </Tooltip>
         </template>
       </Grid>
@@ -655,6 +704,8 @@ onMounted(() => {
           <DatePicker
             v-model:value="editItem.startTime"
             :disabled-date="disabledDate"
+            show-time
+            format="YYYY-MM-DD HH:mm:ss"
           />
         </FormItem>
 
@@ -668,6 +719,8 @@ onMounted(() => {
           <DatePicker
             v-model:value="editItem.endTime"
             :disabled-date="disabledDateEnd"
+            show-time
+            format="YYYY-MM-DD HH:mm:ss"
           />
         </FormItem>
 
@@ -683,16 +736,6 @@ onMounted(() => {
             :min="0"
             :addon-after="$t('hiddenDangerInspectionPlan.day')"
           />
-        </FormItem>
-
-        <!-- 专项检查名称 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.specialInspectionName')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
-          name="checkName"
-          v-if="[2].includes(editItem.timeType)"
-        >
-          <Input v-model:value="editItem.checkName" />
         </FormItem>
 
         <!-- 日历名称 -->

@@ -8,6 +8,7 @@ import '@vben/styles';
 import '@vben/styles/antd';
 
 import { useTitle } from '@vueuse/core';
+import JsonViewer from 'vue3-json-viewer';
 
 import { $t, setupI18n } from '#/locales';
 
@@ -32,6 +33,9 @@ async function bootstrap(namespace: string) {
 
   // 初始化 tippy
   initTippy(app);
+
+  // 第三方工具
+  app.use(JsonViewer);
 
   // 配置路由及路由守卫
   app.use(router);
