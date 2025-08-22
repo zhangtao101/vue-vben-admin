@@ -27,8 +27,7 @@ export async function operationByReportCode(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/hazard/report/operationByReportCode/${params}`,
   );
 }
-// /hazard/report/getByReportCode/{reportCode}
-// /hazard/report/getByReportCode/{reportCode}
+
 /**
  * 更新数据
  */
@@ -36,6 +35,16 @@ export async function updateData(params: any) {
   return requestClient.put<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/hazard/report/updateAll`,
     params,
+  );
+}
+
+/**
+ * 更新数据
+ */
+export async function retracementData(reportCode: any) {
+  return requestClient.put<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hazard/report/updateState/${reportCode}`,
+    {},
   );
 }
 

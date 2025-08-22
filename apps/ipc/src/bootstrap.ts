@@ -16,6 +16,8 @@ import { initComponentAdapter } from './adapter/component';
 import App from './app.vue';
 import { router } from './router';
 
+import 'vue3-json-viewer/dist/vue3-json-viewer.css';
+
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
   await initComponentAdapter();

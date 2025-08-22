@@ -24,6 +24,8 @@ import { JsonViewer } from 'vue3-json-viewer';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { listSnCodeHistory, listSnCodeOpLog } from '#/api';
 
+import 'vue3-json-viewer/dist/vue3-json-viewer.css';
+
 // region 作业信息
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
@@ -59,7 +61,6 @@ const gridOptions: VxeGridProps<any> = {
     },
     { field: 'checkResultName', title: '检验结果', minWidth: 150 },
     { field: 'pushFlagName', title: '推送标记', minWidth: 150 },
-    { field: 'paramDetail', title: '参数绑定明细', minWidth: 150 },
     {
       title: '操作',
       minWidth: 200,
@@ -233,14 +234,14 @@ function queryLog(row: any) {
         <template #toolbar-tools> </template>
         <template #taskLine="{ row }">
           {{
-            row.taskLine === -1
+            row.taskLine * 1 === -1
               ? $t('barcodeInspection.abnormal')
               : $t('barcodeInspection.normal')
           }}
         </template>
         <template #circulationState="{ row }">
           {{
-            row.circulationState === 1
+            row.circulationState * 1 === 1
               ? $t('barcodeInspection.inAction')
               : $t('barcodeInspection.executionCompleted')
           }}

@@ -19,6 +19,7 @@ import {
   Input,
   message,
   Modal,
+  Popconfirm,
   Radio,
   RadioButton,
   RadioGroup,
@@ -32,6 +33,7 @@ import {
   displayHiddenDangerHandlingDetails,
   operationByReportCode,
   queryOrganizationTree,
+  retracementData,
   updateData,
 } from '#/api';
 import { $t } from '#/locales';
@@ -81,7 +83,7 @@ const gridOptions: VxeGridProps<any> = {
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      width: 400,
+      width: 270,
     },
   ],
   height: 500,
@@ -212,6 +214,23 @@ function updateStatus(row: any) {
     message.success($t('common.successfulOperation'));
     gridApi.reload();
   });
+}
+
+// endregion
+
+// region 回退
+const retracementLoading = ref(false);
+
+function retracement(row: any) {
+  retracementLoading.value = true;
+  retracementData(row.reportCode)
+    .then(() => {
+      message.success($t('common.successfulOperation'));
+      gridApi.reload();
+    })
+    .finally(() => {
+      retracementLoading.value = false;
+    });
 }
 
 // endregion
@@ -532,7 +551,7 @@ onMounted(() => {
           <!-- 隐患确认 -->
           <Tooltip
             :title="$t('hiddenDangerRectification.hiddenDangerIdentification')"
-            v-if="[1, 2, 3, 4].includes(row.state)"
+            v-if="[1].includes(row.state)"
           >
             <Button
               type="link"
@@ -551,7 +570,7 @@ onMounted(() => {
             :title="
               $t('hiddenDangerRectification.rectificationOfHiddenDangers')
             "
-            v-if="[2, 3, 4].includes(row.state)"
+            v-if="[2].includes(row.state)"
           >
             <Button
               type="link"
@@ -572,7 +591,7 @@ onMounted(() => {
                 'hiddenDangerRectification.implementationOfHiddenDangerRectification',
               )
             "
-            v-if="[3, 4].includes(row.state)"
+            v-if="[3].includes(row.state)"
           >
             <Button
               type="link"
@@ -606,6 +625,31 @@ onMounted(() => {
                 class="inline-block align-middle text-2xl"
               />
             </Button>
+          </Tooltip>
+          <!-- 回退 -->
+          <Tooltip
+            :title="$t('hiddenDangerRectification.retracement')"
+            v-if="row.state !== 1"
+          >
+            <template #title>{{ $t('common.delete') }}</template>
+            <Popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.confirm')"
+              :title="$t('ui.widgets.retracement')"
+              @confirm="retracement(row)"
+              :disabled="!row.valid"
+            >
+              <Button
+                type="link"
+                :disabled="!row.valid"
+                :loading="retracementLoading"
+              >
+                <IconifyIcon
+                  icon="fluent-mdl2:return-to-session"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Popconfirm>
           </Tooltip>
         </template>
       </Grid>
