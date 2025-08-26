@@ -91,6 +91,7 @@
     "deletionConfirmation": "是否确认删除该条数据？",
     "retracement": "是否确认回退该条数据？",
     "pickUpTips": "是否确认领取该任务？",
+    "confirmTheInformation": "是否确认该操作？",
     "search": {
       "title": "搜索",
       "searchNavigate": "搜索导航菜单",

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { TabPane, Tabs } from 'ant-design-vue';
 
+import { $t } from '#/locales';
 import RectificationLogDetails from '#/util/component/rectificationLog-details.vue';
 
 defineProps({
   logs: {
-    type: Array,
+    type: Array<any>,
     default: () => [],
   },
 });

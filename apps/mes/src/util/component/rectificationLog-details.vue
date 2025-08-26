@@ -16,7 +16,7 @@ defineProps({
  */
 function getFileName(filePath: string) {
   const regex = /[^/]+$/;
-  return filePath ? filePath.match(regex)[0] : '';
+  return filePath ? filePath.match(regex)![0] : '';
 }
 
 function getResultText(type: number) {
