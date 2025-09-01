@@ -491,18 +491,36 @@ function queryProcess(workstationCode: string, worksheetCode: string) {
   })
     .then((data) => {
       processRouteList.value = data;
-      checkedProcess.value = processRouteList.value[0].processCode;
-      processChange(processRouteList.value[0]);
+      // checkedProcess.value = processRouteList.value[0].processCode;
+      // processChange(processRouteList.value[0]);
+      const current = getCurrentWorkingStep();
+      if (current) {
+        processChange(current);
+        checkedProcess.value = current.processCode;
+      }
     })
     .finally(() => {
       processRouteListLoading.value = false;
     });
 }
 
+/**
+ * 获取当前第一个可以执行的工步
+ * @returns
+ */
+function getCurrentWorkingStep() {
+  for (const item of processRouteList.value) {
+    if (item.controlFlag === 1) {
+      return item;
+    }
+  }
+  return null;
+}
+
 // 当前工步
 const currentWorkingStep = ref<any>();
 /**
- * 工艺路线切换
+ * 工步切换
  * @param val
  */
 function workStepConversion(val: any) {
@@ -906,6 +924,8 @@ onBeforeUnmount(() => {
                 <div
                   class="mb-2 cursor-pointer rounded-xl border p-2 pl-4 pr-4 hover:bg-pink-200 hover:text-black"
                   :class="{
+                    '!cursor-not-allowed bg-gray-500 text-white hover:bg-gray-500 hover:text-white':
+                      item.controlFlag === -1,
                     // 'bg-sky-500 text-white': item.workingState === 1,
                     'bg-green-500 text-[#444]':
                       item.workingState === 2 || item.workingState === 1,
@@ -917,7 +937,7 @@ onBeforeUnmount(() => {
                     'border-4 border-sky-500 shadow-lg shadow-sky-600':
                       item.processCode === checkedProcess,
                   }"
-                  @click="processChange(item)"
+                  @click="item.controlFlag === -1 || processChange(item)"
                 >
                   <!-- 显示工艺路线名称 -->
                   <div class="font-black">{{ item.processName }}</div>
