@@ -1,9 +1,14 @@
 {
   "currentInventory": "Current Inventory",
-  "quantityOfGoodsEnteringTheWarehouse": "Inbound Quantity",
-  "batchOfInboundGoods": "Inbound Batch",
+  "quantityOfGoodsEnteringTheWarehouse": "Quantity of Goods Entering the Warehouse",
+  "batchOfInboundGoods": "Batch of Inbound Goods",
   "warehousingTime": "Warehousing Time",
-  "personEnteringTheWarehouse": "Entered By",
+  "personEnteringTheWarehouse": "Person Entering the Warehouse",
   "storageLocation": "Storage Location",
-  "writeOffTime": "Write-off Time"
+  "writeOffTime": "Write-Off Time",
+  "feedingQuantity": "Feeding Quantity",
+  "feedingBatch": "Feeding Batch",
+  "feedingTime": "Feeding Time",
+  "feeder": "Feeder",
+  "feedingStorageLocation": "Feeding Storage Location"
 }

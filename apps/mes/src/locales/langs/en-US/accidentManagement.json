@@ -1,0 +1,20 @@
+{
+  "injuredEmployee": "Injured Employee",
+  "employeeID": "Employee ID",
+  "department": "Department",
+  "position": "Position",
+  "occurrenceTime": "Occurrence Time",
+  "eventDescription": "Event Description",
+  "injuredPart": "Injured Part",
+  "descriptionOfInjuryCondition": "Description of Injury Condition",
+  "injuryType": "Injury Type",
+  "relatedAttachments": "Related Attachments",
+  "departmentSupervisor": "Department Supervisor",
+  "uploadAttachments": "Upload Attachments",
+  "uploadAttachmentsHint": "Upload Attachments Hint",
+  "accidentReason": "Accident Reason",
+  "rectificationMeasure": "Rectification Measure",
+  "employeeChoice": "Employee Choice",
+  "accidentType": "Accident Type",
+  "year": "Year"
+}

@@ -1,7 +1,9 @@
 {
-  "queryTime": "Query Time",
-  "productNumber": "Product Number",
-  "productName": "Product Name",
-  "workOrderNumber": "Work Order Number",
-  "workstationType": "Workstation Type"
+  "queryTime": "queryTime",
+  "productNumber": "productNumber",
+  "productName": "productName",
+  "workOrderNumber": "workOrderNumber",
+  "workstationType": "workstationType",
+  "workOrderStatus": "workOrderStatus",
+  "reportTheWorkStatus": "reportTheWorkStatus"
 }

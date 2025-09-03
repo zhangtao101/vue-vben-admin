@@ -1,7 +1,9 @@
 {
-  "username": "用户名",
-  "perName": "关联人员",
+  "Username": "用户名",
+  "associatedPersonnel": "关联人员",
   "workNumber": "工号",
-  "isEnable": "状态",
-  "description": "用户描述"
+  "status": "状态",
+  "description": "描述",
+  "webRolePermissions": "网页角色权限",
+  "pdaRolePermissions": "PDA角色权限"
 }

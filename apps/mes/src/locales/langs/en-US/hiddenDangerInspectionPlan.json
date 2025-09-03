@@ -22,5 +22,7 @@
   "saturday": "Saturday",
   "sunday": "Sunday",
   "workday": "Workday",
-  "restDays": "Rest Days"
+  "restDays": "Rest Days",
+  "riskType": "Risk Type",
+  "riskName": "Risk Name"
 }

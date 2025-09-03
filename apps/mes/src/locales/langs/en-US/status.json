@@ -1,7 +1,7 @@
 {
-  "enable": "Enabled",
-  "forbidden": "Disabled",
-  "onTheJob": "On the Job",
+  "enable": "Enable",
+  "forbidden": "Forbidden",
+  "onTheJob": "On The Job",
   "leavingJob": "Leaving Job",
   "male": "Male",
   "female": "Female",
@@ -11,9 +11,11 @@
   "beMarried": "Married",
   "good": "Good",
   "illness": "Illness",
-  "mob": "Crowd",
-  "member": "Youth League Member",
+  "mob": "Mob",
+  "member": "Member",
   "partyMember": "Party Member",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "effective": "Effective",
+  "invalid": "Invalid"
 }

@@ -1,14 +1,19 @@
 {
-  "timeFrame": "Reporting Time Frame",
+  "timeFrame": "Time Frame",
   "processCode": "Process Code",
   "workstationCode": "Workstation Code",
   "workstationName": "Workstation Name",
   "worksheetCode": "Worksheet Code",
+  "inputNumber": "Input Number",
   "productCode": "Product Code",
   "productName": "Product Name",
   "wireNumber": "Wire Number",
   "batchNumber": "Batch Number",
   "basicFormula": "Basic Formula",
   "productionLine": "Production Line",
-  "productLotNumber": "Product Lot Number"
+  "productLotNumber": "Product Lot Number",
+  "dailyDetails": "Daily Details",
+  "kilnLine": "Kiln Line",
+  "kilnNumber": "Kiln Number",
+  "collectionType": "Collection Type"
 }

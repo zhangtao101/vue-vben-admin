@@ -1,0 +1,10 @@
+{
+  "powerQuality": "Power Quality",
+  "loadCurve": "Load Curve",
+  "dataType": "Data Type",
+  "timeGranularity": "Time Granularity",
+  "hourS": "Hour",
+  "day": "Day",
+  "month": "Month",
+  "years": "Year"
+}

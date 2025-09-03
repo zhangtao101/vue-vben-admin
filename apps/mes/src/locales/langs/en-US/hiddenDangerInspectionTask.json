@@ -1,5 +1,5 @@
 {
-  "Inspector": "Inspector",
+  "inspector": "Inspector",
   "Result": "Result",
   "InspectionTime": "Inspection Time",
   "ReturnParameters": "Return Parameters",
@@ -13,7 +13,23 @@
   "InspectionResult": "Inspection Result",
   "Remarks": "Remarks",
   "Photograph": "Photograph",
+  "Photo": "Photo",
   "Scan": "Scan",
   "Status": "Status",
-  "ReportHiddenDanger": "Report Hidden Danger"
+  "ReportHiddenDanger": "Report Hidden Danger",
+  "inspectionStatus": "Inspection Status",
+  "unspecified": "Unspecified",
+  "completedToday": "Completed Today",
+  "itIsNotFinishedToday": "Not Finished Today",
+  "historicalMission": "Historical Mission",
+  "all": "All",
+  "status": "Status",
+  "toBeContinued": "To Be Continued",
+  "wasDone": "Was Done",
+  "thereAreHiddenDangers": "There Are Hidden Dangers",
+  "thereAreNoHiddenDangers": "There Are No Hidden Dangers",
+  "checkTheNumber": "Check The Number",
+  "notAtTheMoment": "Not At The Moment",
+  "specialInspectionName": "Special Inspection Name",
+  "checkUser": "Check User"
 }
