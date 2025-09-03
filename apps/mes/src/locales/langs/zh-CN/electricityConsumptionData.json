@@ -1,0 +1,10 @@
+{
+  "powerQuality": "电能质量",
+  "loadCurve": "负荷曲线",
+  "dataType": "数据类型",
+  "timeGranularity": "时间粒度",
+  "hourS": "小时",
+  "day": "日",
+  "month": "月",
+  "years": "年"
+}

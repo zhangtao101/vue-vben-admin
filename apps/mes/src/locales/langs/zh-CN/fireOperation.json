@@ -30,5 +30,12 @@
   "CompanyLeadershipApprovalTime": "公司分管领导审批时间",
   "thePersonInChargeReviews": "负责人审核",
   "safetyDepartmentReview": "安全部门审核",
-  "theCompanyIsInChargeOfTheLeadershipReview": "公司分管领导审核"
+  "theCompanyIsInChargeOfTheLeadershipReview": "公司分管领导审核",
+  "statusChange": "状态变更",
+  "targetStatus": "目标状态",
+  "wasDone": "已完成",
+  "toBeContinued": "未完成",
+  "unfinishedReason": "未完成原因",
+  "currentStatus": "当前状态",
+  "reviewResults": "审核结果"
 }

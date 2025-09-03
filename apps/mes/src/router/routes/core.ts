@@ -208,6 +208,19 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
+          import(
+            '#/views/storeManagement/materialManagement/lineSideWarehouseAllocation.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '线边仓调拨',
+          code: 'WM_521',
+        },
+        name: 'lineSideWarehouseAllocation',
+        path: 'lineSideWarehouseAllocation',
+      },
+      {
+        component: () =>
           import('#/views/productionReport/SMTfarm/productionDaily.vue'),
         meta: {
           ignoreAccess: true,

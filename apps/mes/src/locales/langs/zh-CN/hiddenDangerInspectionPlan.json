@@ -22,5 +22,7 @@
   "saturday": "星期六",
   "sunday": "星期日",
   "workday": "工作日",
-  "restDays": "休息日"
+  "restDays": "休息日",
+  "riskType": "风险种类",
+  "riskName": "风险名称"
 }

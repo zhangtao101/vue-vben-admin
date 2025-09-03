@@ -32,7 +32,6 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addHiddenDangerInspectionPlan,
-  areaList,
   listSysPerson,
   queryHiddenDangerInspectionPlan,
   queryHiddenDangerInspectionType,
@@ -265,6 +264,8 @@ function queryInspectionType() {
         label: item.checkType,
         value: item.checkType,
         checkCriteria: item.checkCriteria,
+        areaCode: item.areaCode,
+        area: item.area,
       });
     });
   });
@@ -272,6 +273,8 @@ function queryInspectionType() {
 
 function inspectionTypeChange(_val: any, item: any) {
   editItem.value.checkCriteria = item.checkCriteria;
+  editItem.value.area = item.area;
+  editItem.value.areaCode = item.areaCode;
 }
 
 const filterOption = (input: string, option: any) => {
@@ -279,45 +282,6 @@ const filterOption = (input: string, option: any) => {
     input.toLowerCase(),
   );
 };
-
-// endregion
-
-// region 区域类型
-
-const areaOptions = ref<any[]>([
-  {
-    label: '1',
-    value: 2,
-  },
-]);
-
-/**
- * 查询巡检类型
- */
-function queryArea() {
-  areaList({
-    pageNum: 1, // 当前页码。
-    pageSize: 99_999, // 每页显示的数据条数。
-  }).then(({ list }) => {
-    areaOptions.value = [];
-    list.forEach((item: any) => {
-      areaOptions.value.push({
-        label: item.areaName,
-        value: item.areaCode,
-      });
-    });
-  });
-}
-
-/**
- * 地区变更
- * @param _v
- * @param item
- */
-function areaChange(_v: any, item: any) {
-  editItem.value.areaCode = item.value;
-  editItem.value.area = item.label;
-}
 
 // endregion
 
@@ -446,7 +410,6 @@ onMounted(() => {
   });
 
   queryInspectionType();
-  queryArea();
   queryAllOrganizations();
 });
 
@@ -587,6 +550,8 @@ onMounted(() => {
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
           style="margin-bottom: 1em"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="checkType"
         >
           <Select
             v-model:value="editItem.checkType"
@@ -599,11 +564,7 @@ onMounted(() => {
         </FormItem>
 
         <!-- 检查标准 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.inspectionStandard')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
-          name="checkCriteria"
-        >
+        <FormItem :label="$t('hiddenDangerInspectionPlan.inspectionStandard')">
           <Input v-model:value="editItem.checkCriteria" readonly />
         </FormItem>
 
@@ -611,17 +572,8 @@ onMounted(() => {
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
           style="margin-bottom: 1em"
-          :rules="[{ required: true, message: '该项为必填项' }]"
-          name="areaCode"
         >
-          <Select
-            v-model:value="editItem.areaCode"
-            :options="areaOptions"
-            show-search
-            class="!w-56"
-            :filter-option="filterOption"
-            @change="areaChange"
-          />
+          <Input v-model:value="editItem.area" readonly />
         </FormItem>
 
         <!-- 巡检内容 -->

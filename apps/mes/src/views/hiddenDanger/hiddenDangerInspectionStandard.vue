@@ -16,6 +16,7 @@ import {
   Input,
   message,
   Popconfirm,
+  Select,
   Space,
   Tooltip,
 } from 'ant-design-vue';
@@ -23,6 +24,7 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addHiddenDangerInspectionType,
+  areaList,
   deleteHiddenDangerInspectionType,
   queryHiddenDangerInspectionType,
   updateHiddenDangerInspectionType,
@@ -39,6 +41,8 @@ const gridOptions: VxeGridProps<any> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'checkType', title: '检查类别', minWidth: 190 },
     { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
+    { field: 'area', title: '检查区域', minWidth: 150 },
+    { field: 'areaCode', title: '区域编码', minWidth: 150 },
     { field: 'createUser', title: '提交人', minWidth: 150 },
     { field: 'createTime', title: '提交时间', minWidth: 150 },
     { field: 'updateTime', title: '更新时间', minWidth: 150 },
@@ -175,6 +179,46 @@ function delItem(row: any) {
 
 // endregion
 
+// region 区域类型
+
+const areaOptions = ref<any[]>([]);
+
+/**
+ * 查询区域
+ */
+function queryArea() {
+  areaList({
+    pageNum: 1, // 当前页码。
+    pageSize: 99_999, // 每页显示的数据条数。
+  }).then(({ list }) => {
+    areaOptions.value = [];
+    list.forEach((item: any) => {
+      areaOptions.value.push({
+        label: item.areaName,
+        value: item.areaCode,
+      });
+    });
+  });
+}
+
+/**
+ * 地区变更
+ * @param _v
+ * @param item
+ */
+function areaChange(_v: any, item: any) {
+  editItem.value.areaCode = item.value;
+  editItem.value.area = item.label;
+}
+
+// 过滤
+const filterOption = (input: string, option: any) => {
+  return [option.label.toLowerCase(), option.value.toLowerCase()].includes(
+    input.toLowerCase(),
+  );
+};
+// endregion
+
 // region 权限查询
 
 // 路由信息
@@ -191,6 +235,7 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  queryArea();
 });
 
 // endregion
@@ -304,6 +349,23 @@ onMounted(() => {
           name="checkCriteria"
         >
           <Input v-model:value="editItem.checkCriteria" />
+        </FormItem>
+
+        <!-- 巡检区域 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
+          style="margin-bottom: 1em"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="areaCode"
+        >
+          <Select
+            v-model:value="editItem.areaCode"
+            :options="areaOptions"
+            show-search
+            class="w-full"
+            :filter-option="filterOption"
+            @change="areaChange"
+          />
         </FormItem>
       </Form>
       <!-- 抽屉底部操作按钮 -->

@@ -12,3 +12,4 @@ export * from './risk';
 export * from './riskManagement';
 export * from './storeManagement';
 export * from './system';
+export * from './unitAreaManagement';

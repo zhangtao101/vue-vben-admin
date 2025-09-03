@@ -5,7 +5,7 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { IconifyIcon, MdiLightDelete, MdiSearch } from '@vben/icons';
 
 import {
   Button,
@@ -19,6 +19,7 @@ import {
   Input,
   message,
   Modal,
+  Popconfirm,
   Radio,
   RadioGroup,
   Tag,
@@ -26,7 +27,14 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { applyList, applyUpdate, leaderUpdate, safeUpdate } from '#/api';
+import {
+  applyDelete,
+  applyList,
+  applyUpdate,
+  leaderUpdate,
+  safeUpdate,
+  updateApply,
+} from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -63,13 +71,8 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 150,
     },
     {
-      field: 'workshop',
-      title: '动火部位车间',
-      minWidth: 150,
-    },
-    {
       field: 'location',
-      title: '区域',
+      title: '动火部位',
       minWidth: 150,
     },
     {
@@ -157,6 +160,12 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 150,
     },
     {
+      field: 'state',
+      title: '状态',
+      minWidth: 80,
+      slots: { default: 'state' },
+    },
+    {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
@@ -196,6 +205,10 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
+const stateText = ref<any>({
+  1: $t('fireOperation.wasDone'),
+  0: $t('fireOperation.toBeContinued'),
+});
 // 查询参数
 const queryParams = ref<any>({});
 /**
@@ -277,15 +290,17 @@ function showModal(id: any, t: number = 1) {
   results.value = 1;
   switch (type.value) {
     case 1: {
-      drawerTitle.value = '申请部门负责人审核';
+      drawerTitle.value = $t('fireOperation.thePersonInChargeReviews');
       break;
     }
     case 2: {
-      drawerTitle.value = '安全部门审核';
+      drawerTitle.value = $t('fireOperation.safetyDepartmentReview');
       break;
     }
     case 3: {
-      drawerTitle.value = '公司分管领导审核';
+      drawerTitle.value = $t(
+        'fireOperation.theCompanyIsInChargeOfTheLeadershipReview',
+      );
       break;
     }
   }
@@ -329,6 +344,43 @@ function getStatusText(status: number) {
       return $t('common.pass');
     }
   }
+}
+
+// endregion
+
+// region 删除
+
+function delRow(row: any) {
+  applyDelete(row.id).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
+}
+
+// endregion
+
+// region 状态变更
+// 是否显示状态变更抽屉
+const statusModal = ref(false);
+// 状态变更的对象
+const statusItem = ref<any>({});
+
+/**
+ * 显示状态变更抽屉
+ * @param row
+ */
+function showStatusChangeModal(row: any) {
+  statusItem.value = row;
+  statusModal.value = true;
+}
+
+function statusChange() {
+  updateApply(statusItem.value).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+    statusModal.value = false;
+    statusItem.value = {};
+  });
 }
 
 // endregion
@@ -406,6 +458,9 @@ onMounted(() => {
         <template #status="{ row, column }">
           {{ getStatusText(row[column.field]) }}
         </template>
+        <template #state="{ row }">
+          {{ stateText[row.state] }}
+        </template>
         <template #action="{ row }">
           <!-- 查看详情 -->
           <Tooltip>
@@ -418,7 +473,7 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 负责人审核 -->
-          <Tooltip v-if="author.includes('负责人审核')">
+          <Tooltip v-if="author.includes('负责人审核') && row.pass !== 1">
             <template #title>
               {{ $t('fireOperation.thePersonInChargeReviews') }}
             </template>
@@ -430,7 +485,7 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 安全部门审核 -->
-          <Tooltip v-if="author.includes('安全部门审核')">
+          <Tooltip v-if="author.includes('安全部门审核') && row.pass !== 1">
             <template #title>
               {{ $t('fireOperation.safetyDepartmentReview') }}
             </template>
@@ -442,7 +497,7 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 分管领导审核 -->
-          <Tooltip v-if="author.includes('分管领导审核')">
+          <Tooltip v-if="author.includes('分管领导审核') && row.pass !== 1">
             <template #title>
               {{
                 $t('fireOperation.theCompanyIsInChargeOfTheLeadershipReview')
@@ -454,6 +509,45 @@ onMounted(() => {
                 class="inline-block align-middle text-2xl"
               />
             </Button>
+          </Tooltip>
+          <!-- 状态变更 -->
+          <Tooltip
+            v-if="
+              author.includes('状态变更') &&
+              row.pass === 1 &&
+              ![0, 1].includes(row.state)
+            "
+          >
+            <template #title>
+              {{ $t('fireOperation.statusChange') }}
+            </template>
+            <Button type="link" @click="showStatusChangeModal(row)">
+              <IconifyIcon
+                icon="mdi:update"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
+
+          <!-- 删除 -->
+          <Tooltip v-if="author.includes('删除') && row.pass !== 1">
+            <template #title>{{ $t('common.delete') }}</template>
+            <Popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.confirm')"
+              :title="$t('ui.widgets.deletionConfirmation')"
+              @confirm="delRow(row)"
+            >
+              <Button
+                :icon="
+                  h(MdiLightDelete, {
+                    class: 'inline-block size-6',
+                  })
+                "
+                danger
+                type="link"
+              />
+            </Popconfirm>
           </Tooltip>
         </template>
       </Grid>
@@ -698,18 +792,60 @@ onMounted(() => {
             $t('hiddenDangerInspectionTask.notAtTheMoment')
           }}
         </DescriptionsItem>
+        <!-- 当前状态 -->
+        <DescriptionsItem :label="$t('fireOperation.currentStatus')">
+          {{
+            stateText[details.state] ||
+            $t('hiddenDangerInspectionTask.notAtTheMoment')
+          }}
+        </DescriptionsItem>
+        <!-- 当前状态 -->
+        <DescriptionsItem
+          :label="$t('fireOperation.unfinishedReason')"
+          v-if="details.state === 0"
+        >
+          {{
+            details.reason || $t('hiddenDangerInspectionTask.notAtTheMoment')
+          }}
+        </DescriptionsItem>
       </Descriptions>
     </Drawer>
 
+    <!-- region 审核 -->
     <Modal v-model:open="isOpen" :title="drawerTitle" @ok="theReviewIsComplete">
       <div>
-        <span>审核结果：</span>
+        <span>{{ $t('fireOperation.reviewResults') }}：</span>
         <RadioGroup v-model:value="results" class="inline-block">
-          <Radio :value="1">通过</Radio>
-          <Radio :value="0">不通过</Radio>
+          <Radio :value="1">{{ $t('common.pass') }}</Radio>
+          <Radio :value="0">{{ $t('common.noPass') }}</Radio>
         </RadioGroup>
       </div>
     </Modal>
+    <!-- endregion -->
+
+    <!-- region 状态变更 -->
+    <Modal
+      v-model:open="statusModal"
+      :title="$t('fireOperation.statusChange')"
+      @ok="statusChange"
+    >
+      <div>
+        <span class="mb-4 inline-block w-24">
+          {{ $t('fireOperation.targetStatus') }}：
+        </span>
+        <RadioGroup v-model:value="statusItem.state" class="inline-block">
+          <Radio :value="1">{{ $t('fireOperation.wasDone') }}</Radio>
+          <Radio :value="0">{{ $t('fireOperation.toBeContinued') }}</Radio>
+        </RadioGroup>
+      </div>
+      <div v-if="statusItem.state === 0">
+        <span class="mb-4 inline-block w-24">
+          {{ $t('fireOperation.unfinishedReason') }}：
+        </span>
+        <Input v-model:value="statusItem.reason" class="w-48" />
+      </div>
+    </Modal>
+    <!-- endregion -->
   </Page>
 </template>
 

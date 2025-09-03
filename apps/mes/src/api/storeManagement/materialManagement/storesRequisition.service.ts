@@ -28,6 +28,14 @@ export function queryStoreRequisitionDetail(id: string) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/detail/${id}`,
   );
 }
+/**
+ * 根据申请部门获取对应的线边仓库位
+ */
+export function listWarehouseCodeByOrgCode(orgCode: string) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/listWarehouseCodeByOrgCode/${orgCode}`,
+  );
+}
 
 /**
  * 锁定
@@ -45,6 +53,18 @@ export function storeRequisitionLock(params: any, bol = false) {
 export function storeRequisitionSign(params: any, bol = false) {
   return requestClient.put(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/sign/${bol}`,
+    params,
+  );
+}
+/**
+ * 线边仓调拨签发
+ */
+export function offlineSideWarehouseTransferAndIssuance(
+  params: any,
+  bol = false,
+) {
+  return requestClient.put(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/xbcDbsign/${bol}`,
     params,
   );
 }

@@ -14,6 +14,7 @@ import {
   Form,
   FormItem,
   Row,
+  Select,
   Textarea,
   UploadDragger,
 } from 'ant-design-vue';
@@ -26,7 +27,11 @@ import { flattenTree } from '#/util';
 const formRef = ref();
 // 表单数据
 const formState = ref<any>({});
-
+// 时间禁用
+const disabledDate = (current: any) => {
+  // Can not select days before today and today
+  return current && current > dayjs().endOf('day');
+};
 // 受伤部位
 const injuredPart = ref([
   {
@@ -171,6 +176,7 @@ function userChange(_val: any, item: any) {
 
 // endregion
 
+// region 文件上传
 const accessStore = useAccessStore();
 // 文件上传列表
 const uploadFile = ref<any>([]);
@@ -178,6 +184,29 @@ const uploadFile = ref<any>([]);
 function getUploadUrl() {
   return `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/accident/register/upload`;
 }
+
+// endregion
+
+// region 事故类型
+
+const accidentType = ref([
+  {
+    label: '特别重大事故',
+    value: 1,
+  },
+  {
+    label: '重大事故',
+    value: 2,
+  },
+  {
+    label: '较大事故',
+    value: 3,
+  },
+  {
+    label: '一般事故',
+    value: 4,
+  },
+]);
 
 // endregion
 
@@ -267,7 +296,7 @@ onMounted(() => {
             :options="treeData"
             :load-data="userSearch"
             @change="userChange"
-            placeholder="Please select"
+            placeholder="选择受伤的员工"
             change-on-select
           />
         </FormItem>
@@ -313,7 +342,11 @@ onMounted(() => {
           :rules="[{ required: true, message: $t('ui.formRules.required') }]"
           name="time"
         >
-          <DatePicker show-time v-model:value="formState.time" />
+          <DatePicker
+            show-time
+            v-model:value="formState.time"
+            :disabled-date="disabledDate"
+          />
         </FormItem>
       </Col>
       <Col :span="12">
@@ -324,6 +357,16 @@ onMounted(() => {
           name="eventDescription"
         >
           <Textarea allow-clear v-model:value="formState.eventDescription" />
+        </FormItem>
+      </Col>
+      <Col :span="12">
+        <!-- 事故类型-->
+        <FormItem
+          :label="$t('accidentManagement.accidentType')"
+          :rules="[{ required: true, message: $t('ui.formRules.required') }]"
+          name="type"
+        >
+          <Select v-model:value="formState.type" :options="accidentType" />
         </FormItem>
       </Col>
     </Row>

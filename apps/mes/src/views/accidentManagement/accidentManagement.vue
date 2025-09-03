@@ -16,18 +16,13 @@ import {
   FormItem,
   Input,
   message,
-  Select,
   Space,
-  Spin,
   Tooltip,
 } from 'ant-design-vue';
-// eslint-disable-next-line n/no-extraneous-import
-import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createAccidents,
-  likeName,
   queryTheListOfAccidents,
   updateAccidents,
 } from '#/api';
@@ -43,9 +38,14 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'accidentCode', title: '事故编号', minWidth: 190 },
+    {
+      field: 'type',
+      title: '事故类型',
+      minWidth: 150,
+      slots: { default: 'type' },
+    },
     { field: 'injuredUser', title: '受伤员工', minWidth: 150 },
     { field: 'worknumber', title: '工号', minWidth: 150 },
-    // { field: 'depatment', title: '部门', minWidth: 150 },
     { field: 'position', title: '岗位', minWidth: 150 },
     { field: 'time', title: '发生时间', minWidth: 150 },
     { field: 'eventDescription', title: '事故描述', minWidth: 150 },
@@ -127,26 +127,6 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
-// region 岗位
-
-// 岗位列表
-const positionList = ref<any>([]);
-// 岗位查询loading
-const positionLoading = ref(false);
-
-/**
- * 岗位查询
- */
-const searchPosition = debounce((val: string) => {
-  if (val) {
-    likeName(val).then((res: any) => {
-      positionList.value = res.data;
-    });
-  }
-}, 500);
-
-// endregion
-
 // region 新增 / 编辑
 // 是否显示编辑
 const showEdit = ref(false);
@@ -188,6 +168,17 @@ function editClose() {
 
 // endregion
 
+// region 事故类型
+
+const accidentType = ref({
+  1: '特别重大事故',
+  2: '重大事故',
+  3: '较大事故',
+  4: '一般事故',
+});
+
+// endregion
+
 // region 权限查询
 
 // 路由信息
@@ -219,19 +210,7 @@ onMounted(() => {
           :label="$t('accidentManagement.position')"
           style="margin-bottom: 1em"
         >
-          <Select
-            v-model:value="queryParams.position"
-            show-search
-            :filter-option="false"
-            :not-found-content="positionLoading ? undefined : null"
-            :options="positionList"
-            @search="searchPosition"
-            class="!w-48"
-          >
-            <template v-if="positionLoading" #notFoundContent>
-              <Spin size="small" />
-            </template>
-          </Select>
+          <Input v-model:value="queryParams.position" />
         </FormItem>
         <!-- 年份 -->
         <FormItem
@@ -274,6 +253,9 @@ onMounted(() => {
           </Button>
         </template>
 
+        <template #type="{ row }">
+          {{ row.type ? accidentType[row.type] : '' }}
+        </template>
         <template #action="{ row }">
           <!-- 编辑 -->
           <Tooltip v-if="author.includes('编辑')">

@@ -69,6 +69,7 @@ function getValueClass(isResult: boolean = false, errorMessage?: number) {
  * 详情数据，用于存储查询结果
  */
 const details = ref<any>([{}, {}]);
+const detailInfo = ref<any>({});
 const totalNumber = ref<any>(0);
 
 /**
@@ -90,8 +91,11 @@ function queryData() {
     functionId: props.functionId,
   };
   // 调用 API 查询数据
-  listHCByCodeScan(params).then(({ stationList, totalNumber: n }) => {
+  listHCByCodeScan(params).then(({ stationList, totalNumber: n, ...d }) => {
     details.value = stationList || [{}, {}];
+    detailInfo.value = {
+      ...d,
+    };
     totalNumber.value = n;
   });
 }
@@ -131,48 +135,50 @@ onBeforeUnmount(() => {
   <Spin :spinning="spinning">
     <Row v-if="[39].includes(showTypeNumber)">
       <Col span="24">
-        <!-- 显示工单编号的容器 -->
+        <!-- 正在执行的工单编号 -->
         <div class="mb-4 mr-8 inline-block">
-          <!-- 工单编号 -->
+          <!-- 正在执行的工单编号 -->
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.workOrderNumberInExecution') }}：
           </span>
-          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          <!-- 正在执行的工单编号，无结果时显示默认提示 -->
           <span :class="getValueClass()">
-            {{ details.proceWorksheetCode || $t('productionOperation.none') }}
+            {{
+              detailInfo.proceWorksheetCode || $t('productionOperation.none')
+            }}
           </span>
         </div>
-        <!-- 显示产品编号的容器 -->
+        <!-- 正在执行的产品编号 -->
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品编号 -->
+          <!-- 正在执行的产品编号 -->
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNumberInExecution') }}：
           </span>
-          <!-- 显示产品编号的值，无结果时显示默认提示 -->
+          <!-- 正在执行的产品编号，无结果时显示默认提示 -->
           <span :class="getValueClass()">
-            {{ details.procePorductCode || $t('productionOperation.none') }}
+            {{ detailInfo.procePorductCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 显示产品名称的容器 -->
+        <!-- 正在执行的产品名称 -->
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品名称 -->
+          <!-- 正在执行的产品名称 -->
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNameInExecution') }}：
           </span>
-          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          <!-- 正在执行的产品名称，无结果时显示默认提示 -->
           <span :class="getValueClass()">
-            {{ details.proceProdutName || $t('productionOperation.none') }}
+            {{ detailInfo.proceProdutName || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 显示产品名称的容器 -->
+        <!-- 正在执行的产品型号 -->
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品名称 -->
+          <!-- 正在执行的产品型号 -->
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productModelInExecution') }}：
           </span>
-          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          <!-- 正在执行的产品型号 -->
           <span :class="getValueClass()">
-            {{ details.proceProductModel || $t('productionOperation.none') }}
+            {{ detailInfo.proceProductModel || $t('productionOperation.none') }}
           </span>
         </div>
       </Col>

@@ -12,6 +12,16 @@ export function applyList(params: any) {
   );
 }
 /**
+ * 更新
+ * @param params 参数
+ */
+export function updateApply(params: any) {
+  return requestClient.put(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hotwork/apply/update`,
+    params,
+  );
+}
+/**
  * 申请部门负责人审批
  * @param params 参数
  */
@@ -39,5 +49,15 @@ export function leaderUpdate(params: any) {
   return requestClient.put(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/hotwork/apply/leaderUpdate`,
     params,
+  );
+}
+
+/**
+ * 删除动火信息
+ * @param params 参数
+ */
+export function applyDelete(params: any) {
+  return requestClient.delete(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hotwork/apply/delete/${params}`,
   );
 }

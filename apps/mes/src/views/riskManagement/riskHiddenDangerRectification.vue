@@ -23,7 +23,7 @@ const iframeUrl = ref('');
  * }
  */
 function query() {
-  queryIframeUrl('YHZG').then((url: string) => {
+  queryIframeUrl('YHZG_FXXJ').then((url: string) => {
     iframeUrl.value = url;
   });
 }
