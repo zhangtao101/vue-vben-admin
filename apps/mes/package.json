@@ -52,6 +52,7 @@
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
     "pinia": "catalog:",
+    "uuid": "^12.0.0",
     "vue": "catalog:",
     "vue-plugin-hiprint": "0.0.58-fix",
     "vue-router": "catalog:"

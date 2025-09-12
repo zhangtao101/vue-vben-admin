@@ -1,0 +1,18 @@
+{
+  "meterType": "电表类型",
+  "Total": "设备总数",
+  "NotEnabled": "未启用设备",
+  "Enabled": "启用设备",
+  "InstrumentNumber": "仪表编号",
+  "InstrumentName": "仪表名称",
+  "Status": "状态",
+  "unitPartitioning": "单元分区",
+  "brandModel": "品牌型号",
+  "magnification": "倍率",
+  "installationAddress": "安装地址",
+  "systemNumber": "系统编号",
+  "systemName": "系统名称",
+  "systemType": "系统类型",
+  "operationalStatus": "运行状态",
+  "configuration": "配置分项仪表"
+}

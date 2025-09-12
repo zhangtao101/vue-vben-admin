@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { computed, h, onMounted, ref, watch } from 'vue';
+import type { VxeGridProps } from '@vben/plugins/src/vxe-table/types';
+
+import { h, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import {
+  IconifyIcon,
   IconParkSolidError,
   MdiEditOutline,
   MdiEyeOutline,
@@ -22,11 +25,14 @@ import {
   Form,
   FormItem,
   Input,
+  List,
+  ListItem,
   message,
   Modal,
   Select,
   SelectOption,
   Space,
+  Spin,
   Switch,
   Table,
   Tooltip,
@@ -35,9 +41,12 @@ import {
 // eslint-disable-next-line n/no-extraneous-import
 import { debounce } from 'lodash-es';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addProcessParam,
   deleteProcessParam,
+  getCSDetail,
+  getMBDetail,
   getProceByName,
   processParamAudit,
   processParamTempChange,
@@ -49,86 +58,101 @@ import { queryAuth } from '#/util';
 // 路由信息
 const route = useRoute();
 
-// region 表格操作
+// region 表格
 
-// 表格列名
-const columns = ref([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    title: '#',
-    width: 60,
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'tempCode', title: '模板编号', minWidth: 150 },
+    { field: 'tempName', title: '模板名称', minWidth: 220 },
+    {
+      field: 'tempType',
+      title: '模板类型',
+      minWidth: 150,
+      slots: { default: 'tempType' },
+    },
+    { field: 'proceCode', title: '工序', minWidth: 200 },
+    {
+      field: 'state',
+      title: '状态',
+      minWidth: 150,
+      slots: { default: 'state' },
+    },
+    { field: 'auditStateName', title: '审核状态', minWidth: 150 },
+    {
+      field: 'operation',
+      fixed: 'right',
+      slots: { default: 'operation' },
+      title: '操作',
+      minWidth: 350,
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
   },
-  {
-    dataIndex: 'tempCode',
-    ellipsis: true,
-    title: '模板编号',
-    width: 120,
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }: any) => {
+        return await queryData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
   },
-  {
-    dataIndex: 'tempName',
-    ellipsis: true,
-    title: '模板名称',
-    width: 120,
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
   },
-  {
-    dataIndex: 'tempType',
-    ellipsis: true,
-    title: '模板类型',
-    width: 120,
-  },
-  {
-    dataIndex: 'proceCode',
-    ellipsis: true,
-    title: '工序',
-    width: 120,
-  },
-  {
-    dataIndex: 'state',
-    ellipsis: true,
-    title: '状态',
-    width: 120,
-  },
-  {
-    dataIndex: 'auditStateName',
-    ellipsis: true,
-    title: '审核状态',
-    width: 120,
-  },
-  {
-    dataIndex: 'operation',
-    ellipsis: true,
-    fixed: 'right',
-    title: '操作',
-    width: 180,
-  },
-] as any[]);
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 1500,
-  y: 350,
-});
+};
 
-// 表格数据
-const data = ref();
+const gridEvents: any = {
+  /* cellClick: ({ row }) => {
+    message.info(`cell-click: ${row.name}`);
+  },*/
+};
 
-// 分页信息
-const paging = ref({
-  current: 1,
-  pageSize: 20,
-  total: 200,
-});
-// 表格分页信息
-const pagination = computed<any>(() => paging);
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+// 查询参数
+const queryParams = ref<any>({});
 
 /**
- * 分页信息改变事件
+ * queryData - 负责根据当前的查询参数、分页信息和日期范围，从后端服务查询数据。
+ * 该函数会更新表格的加载状态，并在查询完成后更新数据列表和总条数。
  */
-function paginationChange(page: any) {
-  paging.value.current = page.current;
-  paging.value.pageSize = page.pageSize;
-  queryData();
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve, reject) => {
+    // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数。
+    const params = {
+      // 展开 queryParams.value 对象，包含所有查询参数。
+      ...queryParams.value,
+      // 设置当前页码。
+      pageNum: page,
+      // 设置每页显示的数据条数。
+      pageSize,
+    };
+
+    // 调用 searchWorksheetNoWater 函数查询数据。
+    queryProcessParam(params)
+      .then(({ total, results }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: results,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
 
 // endregion
@@ -167,6 +191,7 @@ const detailHeader = ref<any>([
     ellipsis: true,
     title: '参数类型',
     width: 120,
+    slots: { default: 'paramType' },
   },
   {
     dataIndex: 'paramInitValue',
@@ -204,6 +229,8 @@ const detailList = ref<any>([]);
 const isAlter = ref(false);
 // 是否处于查看状态
 const isShowStatus = ref(false);
+// 是否处于日志查看状态
+const isLog = ref(false);
 
 /**
  * 编辑表格中的一行数据。
@@ -211,16 +238,25 @@ const isShowStatus = ref(false);
  * @param alter 可选参数，表示要编辑的行是否处于变更状态。
  */
 function editRow(row?: any, alter?: boolean) {
-  // 如果提供了row参数，则将row对象的浅拷贝赋值给editItem，否则设置为空对象。
-  editItem.value = row ? { ...row } : {};
+  if (isLog.value) {
+    getCSDetail({
+      tempCodeVersion: `${row.tempCode}${row.version}`,
+    }).then(({ list }: any) => {
+      detailList.value = list;
+      showEditDrawer.value = true;
+    });
+  } else {
+    // 如果提供了row参数，则将row对象的浅拷贝赋值给editItem，否则设置为空对象。
+    editItem.value = row ? { ...row } : {};
 
-  // 如果提供了row参数，则将row.params数组的深拷贝赋值给detailList，否则设置为空数组。
-  detailList.value = row ? [...row.params] : [];
-  // 设置 isAlter.value 为 alter 参数的值，或者默认为 false。
-  isAlter.value = alter || false;
+    // 如果提供了row参数，则将row.params数组的深拷贝赋值给detailList，否则设置为空数组。
+    detailList.value = row ? [...row.params] : [];
+    // 设置 isAlter.value 为 alter 参数的值，或者默认为 false。
+    isAlter.value = alter || false;
 
-  // 显示编辑抽屉（或编辑面板）。
-  showEditDrawer.value = true;
+    // 显示编辑抽屉（或编辑面板）。
+    showEditDrawer.value = true;
+  }
 }
 
 /**
@@ -313,7 +349,7 @@ function delProcess(row: any) {
     onOk() {
       deleteProcessParam(row.id).then(() => {
         message.success($t('common.successfulOperation'));
-        queryData();
+        gridApi.reload();
       });
     },
     /**
@@ -331,6 +367,7 @@ function onClose() {
   editItem.value = {};
   showEditDrawer.value = false;
   isShowStatus.value = false;
+  isLog.value = false;
 }
 
 /**
@@ -382,7 +419,7 @@ function submit() {
       /**
        * 如果提交成功，首先重新查询数据以更新列表。
        */
-      queryData();
+      gridApi.reload();
       /**
        * 显示操作成功的提示信息。
        * 使用 $t 函数获取本地化的文本。
@@ -440,6 +477,51 @@ function handleSearch(val: string) {
 
 // endregion
 
+// region 日志查询
+// 是否显示日志抽屉
+const showLogDrawer = ref(false);
+// 日志加载状态
+const logLoading = ref(false);
+const queryParamsLog = ref<any>({
+  tempCode: '',
+  startTime: '',
+  endTime: '',
+  searchTime: [],
+});
+// 日志列表
+const logs = ref<any>([]);
+
+/**
+ * 显示日志抽屉
+ */
+function showLog(tempCode: string) {
+  showLogDrawer.value = true;
+  queryParamsLog.value.tempCode = tempCode;
+  queryLog();
+}
+
+/**
+ * 查询日志
+ */
+function queryLog() {
+  const params = {
+    ...queryParamsLog.value,
+  };
+  if (params.searchTime && params.searchTime.length > 0) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD HH:mm:ss');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD HH:mm:ss');
+  }
+  logLoading.value = true;
+  getMBDetail(params)
+    .then(({ list }: any) => {
+      logs.value = list;
+    })
+    .finally(() => {
+      logLoading.value = false;
+    });
+}
+// endregion
+
 // region 状态变更
 /**
  * 更改配置的状态，可以启用或停用配置。
@@ -485,49 +567,13 @@ function changeState(row: any) {
         // 请求成功后，显示成功消息提示
         message.success($t('common.successfulOperation'));
         // 重新查询数据，以更新界面上的信息
-        queryData();
+        gridApi.reload();
       });
     },
     // 使用前面定义的 title 作为对话框的标题
     title,
   });
 }
-// endregion
-
-// region 查询数据
-// 查询参数
-const queryParams = ref({
-  // 工序名称
-  proceName: '',
-  // 模板名称
-  tempName: '',
-});
-
-// 表格加载状态
-const tableLoading = ref(false);
-
-/**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
- */
-function queryData() {
-  tableLoading.value = true;
-  // 调用 listStations API函数，传递查询参数和分页信息
-  queryProcessParam({
-    ...queryParams.value, // 展开queryParams.value中的所有查询参数
-    pageNum: paging.value.current, // 当前页码。
-    pageSize: paging.value.pageSize, // 每页显示的数据条数。
-  })
-    .then(({ results, total }) => {
-      // 成功获取数据后，更新数据列表和总条数
-      data.value = results; // 更新数据列表
-      paging.value.total = total; // 更新总条数
-    })
-    .finally(() => {
-      tableLoading.value = false;
-    });
-}
-
 // endregion
 
 // region 权限查询
@@ -624,10 +670,7 @@ function audioFun(id: number, status: number) {
      * 使用 $t 函数获取国际化的 'common.successfulOperation' 消息。
      */
     message.success($t('common.successfulOperation'));
-    /**
-     * 重新查询数据，以更新界面上的信息。
-     */
-    queryData();
+    gridApi.reload();
   });
 }
 
@@ -648,7 +691,7 @@ const fileList = ref<any>([]);
 
 function handleChange(info: any) {
   if (info.file.status === 'done') {
-    queryData();
+    gridApi.reload();
     message.success(`文件上传成功!`);
   } else if (info.file.status === 'error') {
     message.error(`文件上传失败`);
@@ -660,8 +703,6 @@ function handleChange(info: any) {
 // region 初始化
 
 onMounted(() => {
-  // 查询用户数据
-  queryData();
   // 查询权限
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
@@ -696,7 +737,11 @@ onMounted(() => {
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="queryData()"
+            @click="
+              () => {
+                gridApi.reload();
+              }
+            "
           >
             {{ $t('common.search') }}
           </Button>
@@ -733,143 +778,128 @@ onMounted(() => {
           </Upload>
         </Space>
       </div>
-      <Table
-        :columns="columns"
-        :data-source="data"
-        :loading="tableLoading"
-        :pagination="pagination"
-        :scroll="scroll"
-        bordered
-        @change="paginationChange"
-      >
-        <template #bodyCell="{ column, index, record }">
-          <template v-if="column.dataIndex === 'step'">
-            <span>{{ index + 1 }}</span>
-          </template>
-          <template v-if="column.dataIndex === 'paramType'">
-            <span>{{
-              record.paramType === 1
-                ? '数值型'
-                : record.paramType === 2
-                  ? '判断型'
-                  : '未定义'
-            }}</span>
-          </template>
-          <template v-if="column.dataIndex === 'tempType'">
-            <span>{{
-              record.tempType === 1
-                ? '参数设置模板'
-                : record.tempType === 2
-                  ? '参数采集模板'
-                  : '参数阈值模板'
-            }}</span>
-          </template>
-          <template v-if="column.dataIndex === 'auditState'">
-            <span>{{
-              record.auditState === 1
-                ? '待审核'
-                : record.auditState === 2
-                  ? '审核通过'
-                  : '审核不通过'
-            }}</span>
-          </template>
-          <template v-if="column.dataIndex === 'state'">
-            <div v-if="record.state === 3">已弃用</div>
-            <div v-else>
-              <Switch
-                v-model:checked="record.state"
-                :checked-value="1"
-                :disabled="record.auditState !== 2 && editButton"
-                :un-checked-value="2"
-                checked-children="启用"
-                un-checked-children="停用"
-                @change="changeState(record)"
-              />
-            </div>
-          </template>
-
-          <template v-else-if="column.dataIndex === 'operation'">
-            <!-- 查看按钮 -->
-            <Tooltip>
-              <template #title>{{ $t('common.view') }}</template>
-              <Button
-                :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="
-                  isShowStatus = true;
-                  editRow(record);
-                "
-              />
-            </Tooltip>
-            <!-- 编辑按钮 -->
-            <Tooltip v-if="record.auditState !== 2 && editButton">
-              <template #title>{{ $t('common.edit') }}</template>
-              <Button
-                :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="editRow(record)"
-              />
-            </Tooltip>
-            <!-- 变更 -->
-            <Tooltip
-              v-if="
-                record.auditState === 2 && record.state !== 1 && alterButton
-              "
-            >
-              <template #title>{{ $t('common.alter') }}</template>
-              <Button
-                :icon="h(MdiImportExport, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="editRow(record, true)"
-              />
-            </Tooltip>
-
-            <!-- 审核通过 -->
-            <Tooltip v-if="record.auditState === 1 && examineButton">
-              <template #title>{{ $t('common.pass') }}</template>
-              <Button
-                :icon="h(MdiSuccess, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="handleAudit(record, true)"
-              />
-            </Tooltip>
-
-            <!-- 审核不通过 -->
-            <Tooltip v-if="record.auditState === 1 && examineButton">
-              <template #title>{{ $t('common.noPass') }}</template>
-              <Button
-                :icon="
-                  h(IconParkSolidError, {
-                    class: 'inline-block size-6 text-red-600',
-                  })
-                "
-                class="mr-4"
-                type="link"
-                @click="handleAudit(record, false)"
-              />
-            </Tooltip>
-
-            <!-- 删除数据 -->
-            <Tooltip v-if="record.auditState !== 2 && delButton">
-              <template #title>{{ $t('common.delete') }}</template>
-              <Button
-                :icon="
-                  h(MdiLightDelete, {
-                    class: 'inline-block size-6',
-                  })
-                "
-                danger
-                type="link"
-                @click="delProcess(record)"
-              />
-            </Tooltip>
-          </template>
+      <Grid>
+        <template #paramType="{ row }">
+          <span>{{
+            row.paramType === 1
+              ? '数值型'
+              : row.paramType === 2
+                ? '判断型'
+                : '未定义'
+          }}</span>
         </template>
-      </Table>
+        <template #tempType="{ row }">
+          {{
+            row.tempType === 1
+              ? '参数设置模板'
+              : row.tempType === 2
+                ? '参数采集模板'
+                : '参数阈值模板'
+          }}
+        </template>
+        <template #state="{ row }">
+          <div v-if="row.state === 3">已弃用</div>
+          <div v-else>
+            <Switch
+              v-model:checked="row.state"
+              :checked-value="1"
+              :disabled="row.auditState !== 2 && editButton"
+              :un-checked-value="2"
+              checked-children="启用"
+              un-checked-children="停用"
+              @change="changeState(row)"
+            />
+          </div>
+        </template>
+        <template #operation="{ row }">
+          <!-- 查看按钮 -->
+          <Tooltip>
+            <template #title>{{ $t('common.view') }}</template>
+            <Button
+              :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="
+                isShowStatus = true;
+                editRow(row);
+              "
+            />
+          </Tooltip>
+          <!-- 查看日志按钮 -->
+          <Tooltip>
+            <template #title>{{ $t('common.viewLog') }}</template>
+            <Button class="mr-4" type="link" @click="showLog(row.tempCode)">
+              <IconifyIcon
+                icon="mdi:file-eye-outline"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
+          <!-- 编辑按钮 -->
+          <Tooltip v-if="row.auditState !== 2 && editButton">
+            <template #title>{{ $t('common.edit') }}</template>
+            <Button
+              :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="editRow(row)"
+            />
+          </Tooltip>
+          <!-- 变更 -->
+          <Tooltip
+            v-if="row.auditState === 2 && row.state !== 1 && alterButton"
+          >
+            <template #title>{{ $t('common.alter') }}</template>
+            <Button
+              :icon="h(MdiImportExport, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="editRow(row, true)"
+            />
+          </Tooltip>
+
+          <!-- 审核通过 -->
+          <Tooltip v-if="row.auditState === 1 && examineButton">
+            <template #title>{{ $t('common.pass') }}</template>
+            <Button
+              :icon="h(MdiSuccess, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="handleAudit(row, true)"
+            />
+          </Tooltip>
+
+          <!-- 审核不通过 -->
+          <Tooltip v-if="row.auditState === 1 && examineButton">
+            <template #title>{{ $t('common.noPass') }}</template>
+            <Button
+              :icon="
+                h(IconParkSolidError, {
+                  class: 'inline-block size-6 text-red-600',
+                })
+              "
+              class="mr-4"
+              type="link"
+              @click="handleAudit(row, false)"
+            />
+          </Tooltip>
+
+          <!-- 删除数据 -->
+          <Tooltip v-if="row.auditState !== 2 && delButton">
+            <template #title>{{ $t('common.delete') }}</template>
+            <Button
+              :icon="
+                h(MdiLightDelete, {
+                  class: 'inline-block size-6',
+                })
+              "
+              danger
+              type="link"
+              @click="delProcess(row)"
+            />
+          </Tooltip>
+        </template>
+      </Grid>
     </Card>
     <!-- endregion -->
 
@@ -877,10 +907,11 @@ onMounted(() => {
     <Drawer
       v-model:open="showEditDrawer"
       :footer-style="{ textAlign: 'right' }"
-      :height="500"
+      :height="600"
       placement="top"
       title="信息编辑"
       @close="onClose()"
+      class="z-auto"
     >
       <Form
         ref="editForm"
@@ -1008,6 +1039,42 @@ onMounted(() => {
           </Button>
         </Space>
       </template>
+    </Drawer>
+
+    <!-- region 新增/编辑 抽屉 -->
+    <Drawer
+      v-model:open="showLogDrawer"
+      :footer-style="{ textAlign: 'right' }"
+      :height="500"
+      placement="top"
+      title="信息编辑"
+      @close="onClose()"
+    >
+      <Spin :spinning="logLoading">
+        <List :data-source="logs">
+          <template #renderItem="{ item }">
+            <ListItem>
+              <template #actions>
+                <Button
+                  type="link"
+                  @click="
+                    () => {
+                      isShowStatus = true;
+                      isLog = true;
+                      editRow(item);
+                    }
+                  "
+                >
+                  {{ $t('common.view') }}
+                </Button>
+              </template>
+              {{ item.tempName }}({{ item.tempCode }})__{{ item.version }}
+              ---
+              {{ item.opUser }}({{ item.opTime }})
+            </ListItem>
+          </template>
+        </List>
+      </Spin>
     </Drawer>
   </Page>
 </template>

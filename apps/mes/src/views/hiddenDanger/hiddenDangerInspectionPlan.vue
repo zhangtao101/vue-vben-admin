@@ -579,7 +579,7 @@ onMounted(() => {
         <!-- 巡检内容 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionContent')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: false, message: '该项为必填项' }]"
           name="content"
         >
           <Textarea v-model:value="editItem.content" />

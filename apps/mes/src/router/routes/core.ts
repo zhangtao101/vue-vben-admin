@@ -686,6 +686,19 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/productionOrderScheduledActualReport.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '生产工单应发实发报表',
+          code: 'WM_322',
+        },
+        name: 'productionOrderScheduledActualReport',
+        path: 'productionOrderScheduledActualReport',
+      },
+      {
+        component: () =>
           import('#/views/productionReport/packagingAndInventoryReversal.vue'),
         meta: {
           ignoreAccess: true,

@@ -20,7 +20,6 @@ import {
   Popconfirm,
   Select,
   Space,
-  Textarea,
   Tooltip,
 } from 'ant-design-vue';
 
@@ -663,13 +662,13 @@ onMounted(() => {
           <Input v-model:value="editItem.escalationLevel" />
         </FormItem>
         <!-- 操作修改详情 -->
-        <FormItem
+        <!--        <FormItem
           :label="$t('riskManagement.OperationDetails')"
           :rules="[{ required: true, message: '该项为必填项' }]"
           name="details"
         >
           <Textarea v-model:value="editItem.details" />
-        </FormItem>
+        </FormItem>-->
         <!-- 现有控制措施 -->
         <FormItem
           :label="$t('riskManagement.ExistingControls')"

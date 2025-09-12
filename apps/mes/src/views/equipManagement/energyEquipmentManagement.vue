@@ -15,25 +15,29 @@ import {
   Form,
   FormItem,
   Input,
+  InputNumber,
   message,
   Modal,
+  RadioButton,
+  RadioGroup,
+  Select,
   Space,
+  Statistic,
   Tooltip,
   Upload,
 } from 'ant-design-vue';
-// eslint-disable-next-line n/no-extraneous-import
-import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  addEnergyZoningList,
-  deleteEnergyZoning,
-  getEnergyZoningList,
-  getEnergyZoningPartitionID,
-  getEnergyZoningPartitionName,
-  getExcelPathEnergyZoningList,
-  getTemplate,
-  updateEnergyZoning,
+  addTheMeter,
+  batchOut,
+  deleteTheMeter,
+  editTheMeter,
+  getTheMeterTemplate,
+  selectFQList,
+  selectYB,
+  selectZXList,
+  updateStat,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -49,24 +53,46 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     {
-      field: 'partitionID',
-      title: '分区 ID',
+      field: 'equipmentCode',
+      title: '仪表编号',
       minWidth: 150,
     },
     {
-      field: 'partitionName',
-      title: '分区名称',
+      field: 'equipmentName',
+      title: '仪表名称',
       minWidth: 150,
     },
     {
-      field: 'partitionJC',
-      title: '分区简称',
+      field: 'type',
+      title: '仪表类型',
       minWidth: 150,
     },
     {
-      field: 'parentPartitionName',
-      title: '上级分区',
+      field: 'model',
+      title: '仪表型号',
       minWidth: 150,
+    },
+    {
+      field: 'useDepartmentName',
+      title: '所属单元分区',
+      minWidth: 150,
+    },
+    {
+      field: 'location',
+      title: '安装位置',
+      minWidth: 150,
+    },
+    {
+      field: 'bl',
+      title: '倍率（电表专属）',
+      minWidth: 150,
+      visible: true,
+    },
+    {
+      title: '启用状态',
+      fixed: 'right',
+      minWidth: 150,
+      slots: { default: 'isUse' },
     },
     {
       field: 'action',
@@ -121,70 +147,18 @@ const showEditDrawer = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  partitionID: [
+  equipmentCode: [
     {
       message: '此项为必填项',
       required: true,
       trigger: 'change',
     },
-    {
-      trigger: 'change',
-      validator: (_rule: any, value: any) => {
-        return new Promise((resolve, reject) => {
-          partitionIDAntiShake(value, resolve, reject);
-        });
-      },
-    },
   ],
-  partitionName: [
+  equipmentName: [
     { message: '此项为必填项', required: true, trigger: 'change' },
-    {
-      trigger: 'change',
-      validator: (_rule: any, value: any) => {
-        return new Promise((resolve, reject) => {
-          partitionNameAntiShake(value, resolve, reject);
-        });
-      },
-    },
   ],
-  partitionJC: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  zoningId: [{ message: '此项为必填项', required: true, trigger: 'change' }],
 });
-/**
- * 用能分区ID防抖
- */
-const partitionIDAntiShake = debounce(
-  (value: string, resolve: any, reject: any) => {
-    getEnergyZoningPartitionID({
-      id: checkedRow.value?.id,
-      partitionID: value,
-    }).then((res) => {
-      if (res) {
-        resolve();
-      } else {
-        reject(new Error('该用能分区ID已存在'));
-      }
-    });
-  },
-  500,
-);
-/**
- * 用能分区名称防抖
- */
-const partitionNameAntiShake = debounce(
-  (value: string, resolve: any, reject: any) => {
-    getEnergyZoningPartitionName({
-      id: checkedRow.value?.id,
-      partitionName: value,
-    }).then((res) => {
-      if (res) {
-        resolve();
-      } else {
-        reject(new Error('该用能分区名称已存在'));
-      }
-    });
-  },
-  500,
-);
 /**
  * 显示是编辑抽屉
  * @param row 表格行数据
@@ -211,7 +185,7 @@ function delRow(row: any) {
       message.warning('已取消删除!');
     },
     onOk() {
-      deleteEnergyZoning(row.id).then(() => {
+      deleteTheMeter(row.id).then(() => {
         // 显示操作成功的提示信息
         message.success($t('common.successfulOperation'));
         gridApi.query();
@@ -236,8 +210,8 @@ function onClose() {
 function submit() {
   editForm.value.validate().then(() => {
     const ob = checkedRow.value.id
-      ? updateEnergyZoning(checkedRow.value)
-      : addEnergyZoningList(checkedRow.value);
+      ? editTheMeter(checkedRow.value)
+      : addTheMeter(checkedRow.value);
     ob.then(() => {
       // 查询数据
       gridApi.query();
@@ -251,9 +225,83 @@ function submit() {
 
 // endregion
 
+// region 更新状态
+
+function updateStatus(row: any) {
+  updateStat({
+    ids: [row.id],
+    stat: row.stat,
+  }).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
+}
+
+// endregion
+
+// region 单元分区
+
+// 分区列表
+const listOfUnitPartitions = ref<any>([]);
+
+/**
+ * 分区查询
+ */
+function queryUnitPartitions() {
+  selectFQList().then((data) => {
+    listOfUnitPartitions.value = [];
+    data.forEach((item: any) => {
+      listOfUnitPartitions.value.push({
+        label: item.name,
+        value: item.id,
+      });
+    });
+  });
+}
+
+function partitionChange(_val: any, item: any) {
+  checkedRow.value.zoningName = item.label;
+}
+
+// endregion
+
 // region 查询数据
 // 查询参数
-const queryParams = ref<any>({});
+const queryParams = ref<any>({
+  equipType: 1,
+  stat: -1,
+});
+
+// 电表类型
+const equipTypeOptions = ref([
+  {
+    label: '电表',
+    value: 1,
+  },
+  {
+    label: '水表',
+    value: 2,
+  },
+  {
+    label: '气表',
+    value: 3,
+  },
+]);
+// 状态列表
+const statusOptions = ref([
+  {
+    label: '全部',
+    value: -1,
+  },
+  {
+    label: '启用',
+    value: 1,
+  },
+  {
+    label: '禁用',
+    value: 0,
+  },
+]);
 
 /**
  * 查询数据
@@ -261,21 +309,23 @@ const queryParams = ref<any>({});
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
-    /**
-     * 调用 getEnergyZoningList 函数，传入查询参数和分页信息。
-     * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
-     */
-    getEnergyZoningList({
+    const params = {
       ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
-    }).then(({ total, list }) => {
+    };
+    if (params.stat === -1) {
+      delete params.stat;
+    }
+    selectYB(params).then(({ total, list }) => {
       // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
       resolve({
         total,
         items: list,
       });
     });
+
+    querySum();
   });
 }
 
@@ -284,7 +334,7 @@ function queryData({ page, pageSize }: any) {
 // region 模板下载
 
 function downloadTemplate() {
-  getTemplate().then((data: string) => {
+  getTheMeterTemplate().then((data: string) => {
     window.open(data, '_blank');
   });
 }
@@ -295,7 +345,7 @@ function downloadTemplate() {
  * 导出
  */
 function exportFile() {
-  getExcelPathEnergyZoningList().then((data: any) => {
+  batchOut(queryParams.value).then((data: any) => {
     window.open(data, '_blank');
   });
 }
@@ -309,7 +359,7 @@ const headers = ref<any>({
 });
 // 上传路径
 const action = ref<string>(
-  `/ht/${import.meta.env.VITE_GLOB_MES_ENERGY}/energyZoning/upload`,
+  `/ht/${import.meta.env.VITE_GLOB_MES_ENERGY}/Zoning/equipment/batchInsert`,
 );
 // 文件列表
 const fileList = ref<any>([]);
@@ -342,12 +392,23 @@ const author = ref<string[]>([]);
 // endregion
 
 // region 初始化
+const sum = ref<any>({
+  off: 0,
+  on: 0,
+  zx: 0,
+});
+function querySum() {
+  selectZXList().then((data) => {
+    sum.value = data;
+  });
+}
 
 onMounted(() => {
   // 查询权限
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  queryUnitPartitions();
 });
 
 // endregion
@@ -355,23 +416,80 @@ onMounted(() => {
 
 <template>
   <Page>
+    <!-- region 设备数量信息 -->
+    <Card class="mb-4">
+      <!-- 设备总数 -->
+      <Statistic
+        :title="$t('equip.Total')"
+        :value="sum.zx"
+        class="ml-4 mr-4 inline-block"
+      >
+        <template #prefix>
+          <IconifyIcon
+            icon="mdi:dots-grid"
+            class="inline-block align-top text-4xl"
+          />
+        </template>
+      </Statistic>
+      <!-- 启用设备 -->
+      <Statistic
+        :title="$t('equip.Enabled')"
+        :value="sum.on"
+        class="ml-4 mr-4 inline-block"
+      >
+        <template #prefix>
+          <IconifyIcon
+            icon="mdi:play"
+            class="inline-block align-top text-4xl"
+          />
+        </template>
+      </Statistic>
+      <!-- 未启用设备 -->
+      <Statistic
+        :title="$t('equip.NotEnabled')"
+        :value="sum.off"
+        class="ml-4 mr-4 inline-block"
+      >
+        <template #prefix>
+          <IconifyIcon
+            icon="mdi:pause"
+            class="inline-block align-top text-4xl"
+          />
+        </template>
+      </Statistic>
+    </Card>
+    <!-- endregion -->
     <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="mb-4">
       <Form :model="queryParams" layout="inline">
-        <!-- 分区ID -->
+        <!-- 电表类型 -->
+        <FormItem :label="$t('equip.meterType')" style="margin-bottom: 1em">
+          <RadioGroup
+            v-model:value="queryParams.equipType"
+            :options="equipTypeOptions"
+          />
+        </FormItem>
+        <!-- 仪表编号 -->
         <FormItem
-          :label="$t('unitAreaManagement.partitionID')"
+          :label="$t('equip.InstrumentNumber')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.partitionID" />
+          <Input v-model:value="queryParams.equipmentCode" />
         </FormItem>
 
-        <!-- 分区名称 -->
+        <!-- 仪表名称 -->
         <FormItem
-          :label="$t('unitAreaManagement.partitionName')"
+          :label="$t('equip.InstrumentName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.partitionName" />
+          <Input v-model:value="queryParams.equipmentName" />
+        </FormItem>
+        <!-- 设备状态 -->
+        <FormItem :label="$t('equip.Status')" style="margin-bottom: 1em">
+          <RadioGroup
+            v-model:value="queryParams.stat"
+            :options="statusOptions"
+          />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -399,7 +517,7 @@ onMounted(() => {
           >
             {{ $t('common.add') }}
           </Button>
-          <!-- 模板下载按钮 -->
+          <!-- 导出按钮 -->
           <Button
             v-if="author.includes('导出')"
             type="primary"
@@ -433,6 +551,20 @@ onMounted(() => {
             </Button>
           </Upload>
         </template>
+        <template #isUse="{ row }">
+          <RadioGroup
+            v-model:value="row.stat"
+            @change="updateStatus(row)"
+            :disabled="!author.includes('状态变更')"
+          >
+            <RadioButton :value="1">
+              {{ $t('status.enable') }}
+            </RadioButton>
+            <RadioButton :value="0">
+              {{ $t('status.forbidden') }}
+            </RadioButton>
+          </RadioGroup>
+        </template>
         <template #action="{ row }">
           <!-- 编辑按钮 -->
           <Tooltip>
@@ -444,25 +576,6 @@ onMounted(() => {
             >
               <IconifyIcon
                 icon="mdi:edit-outline"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-          <!-- 新增子分区 -->
-          <Tooltip>
-            <template #title>{{ $t('unitAreaManagement.add') }}</template>
-            <Button
-              type="link"
-              @click="
-                editRow({
-                  parentId: row.id,
-                  parentPartitionName: row.partitionName,
-                })
-              "
-              v-if="author.includes('编辑')"
-            >
-              <IconifyIcon
-                icon="mdi:add-circle-outline"
                 class="inline-block align-middle text-2xl"
               />
             </Button>
@@ -504,33 +617,51 @@ onMounted(() => {
         :rules="editRules"
         :wrapper-col="{ span: 16 }"
       >
-        <!-- 分区ID -->
-        <FormItem
-          :label="$t('unitAreaManagement.partitionID')"
-          name="partitionID"
-        >
-          <Input v-model:value="checkedRow.partitionID" />
+        <!-- 仪表名称 -->
+        <FormItem :label="$t('equip.InstrumentName')" name="equipmentName">
+          <Input
+            v-model:value="checkedRow.equipmentName"
+            :disabled="checkedRow.id"
+          />
         </FormItem>
-        <!-- 分区名称 -->
-        <FormItem
-          :label="$t('unitAreaManagement.partitionName')"
-          name="partitionName"
-        >
-          <Input v-model:value="checkedRow.partitionName" />
+        <!-- 仪表编号 -->
+        <FormItem :label="$t('equip.InstrumentNumber')" name="equipmentCode">
+          <Input
+            v-model:value="checkedRow.equipmentCode"
+            :disabled="checkedRow.id"
+          />
         </FormItem>
-        <!-- 分区简称 -->
-        <FormItem
-          :label="$t('unitAreaManagement.partitionAbbreviation')"
-          name="partitionJC"
-        >
-          <Input v-model:value="checkedRow.partitionJC" />
+        <!-- 单元分区 -->
+        <FormItem :label="$t('equip.unitPartitioning')" name="zoningId">
+          <Select
+            v-model:value="checkedRow.zoningId"
+            :options="listOfUnitPartitions"
+            @change="partitionChange"
+            :disabled="checkedRow.id"
+          />
         </FormItem>
-        <!-- 父级名称 -->
+        <!-- 品牌型号 -->
+        <FormItem :label="$t('equip.brandModel')" name="model">
+          <Input v-model:value="checkedRow.model" />
+        </FormItem>
+        <!-- 安装地址 -->
+        <FormItem :label="$t('equip.installationAddress')" name="location">
+          <Input v-model:value="checkedRow.location" />
+        </FormItem>
+        <!-- 电表类型 -->
+        <FormItem :label="$t('equip.meterType')" name="equiptype">
+          <RadioGroup
+            v-model:value="checkedRow.equipType"
+            :options="equipTypeOptions"
+          />
+        </FormItem>
+        <!-- 倍率 -->
         <FormItem
-          :label="$t('unitAreaManagement.parentName')"
-          name="parentPartitionName"
+          :label="$t('equip.magnification')"
+          name="bl"
+          v-if="checkedRow.equipType === 1"
         >
-          {{ checkedRow.parentPartitionName }}
+          <InputNumber v-model:value="checkedRow.bl" :min="0" />
         </FormItem>
       </Form>
 

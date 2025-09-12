@@ -1,0 +1,10 @@
+{
+  "teamName": "班组名称",
+  "teamNumber": "班组编号",
+  "productionLine": "所属产线",
+  "timeFrame": "时间范围",
+  "remarks": "备注",
+  "deviceNumber": "设备编号",
+  "collectTime": "采集时间",
+  "energyConsumption": "能耗"
+}

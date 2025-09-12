@@ -377,10 +377,8 @@ function onClose() {
 // region 查询数据
 // 查询参数
 const queryParams = ref({
-  // 关联人员
-  perName: '',
-  // 用户名
-  username: '',
+  name: '',
+  code: '',
 });
 
 // 表格加载状态
@@ -460,14 +458,14 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 用户名 -->
-        <FormItem :label="$t('sysUser.username')" style="margin-bottom: 1em">
-          <Input v-model:value="queryParams.username" />
+        <!-- 角色名称 -->
+        <FormItem :label="$t('sysRole.roleName')" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.name" />
         </FormItem>
 
-        <!-- 关联人员 -->
-        <FormItem :label="$t('sysUser.perName')" style="margin-bottom: 1em">
-          <Input v-model:value="queryParams.perName" />
+        <!-- 角色编码 -->
+        <FormItem :label="$t('sysRole.roleCode')" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.code" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

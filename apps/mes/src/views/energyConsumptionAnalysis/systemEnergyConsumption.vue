@@ -1,51 +1,22 @@
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Chart } from '@antv/g2';
-import { Card, Col, RadioGroup, Row, Select } from 'ant-design-vue';
+import { Card, Col, Row, Select } from 'ant-design-vue';
 
-// region 类型选择
-// 当前选中查看的类型
-const type = ref('1');
-// 类型列表
-const typeOptions = [
-  {
-    label: '用能概览',
-    value: '1',
-  },
-  {
-    label: '统计分析',
-    value: '2',
-  },
-];
-
-// endregion
+import {
+  getFXEnergy,
+  getFXEnergyDB,
+  getFXEnergyQS,
+  getFXEnergyTB,
+  getItemizedList,
+} from '#/api';
 
 // region 分项用能分析
 
-// 分项用能分析图表数据（示例数据）
-// type: 能源类型，month: 月份标识，data: 用能数据值
-const itemizedEnergyUseData = ref<any>([
-  { type: '电能', month: '1.', data: 18.9 },
-  { type: '电能', month: '2.', data: 28.8 },
-  { type: '电能', month: '3.', data: 39.3 },
-  { type: '电能', month: '4.', data: 81.4 },
-  { type: '电能', month: '5', data: 47 },
-  { type: '电能', month: '6.', data: 20.3 },
-  { type: '电能', month: '7.', data: 24 },
-  { type: '电能', month: '8.', data: 35.6 },
-  { type: '煤气', month: '1.', data: 12.4 },
-  { type: '煤气', month: '2.', data: 23.2 },
-  { type: '煤气', month: '3.', data: 34.5 },
-  { type: '煤气', month: '4.', data: 99.7 },
-  { type: '煤气', month: '5', data: 52.6 },
-  { type: '煤气', month: '6.', data: 35.5 },
-  { type: '煤气', month: '7.', data: 37.4 },
-  { type: '煤气', month: '8.', data: 42.4 },
-]);
 // 分项用能分析图表
 let itemizedEnergyAnalysisChart: any;
 
@@ -58,110 +29,70 @@ let itemizedEnergyAnalysisChart: any;
  * 5. 使用转置坐标系（横向柱状图）
  * 6. 绑定数据并渲染
  */
-function itemizedEnergyAnalysisChartCreation() {
+function itemizedEnergyAnalysisChartCreation(chartData: any) {
   if (itemizedEnergyAnalysisChart) {
     // 绑定数据并渲染图表
-    itemizedEnergyAnalysisChart.data(itemizedEnergyUseData.value);
+    itemizedEnergyAnalysisChart.data(chartData);
   } else {
     itemizedEnergyAnalysisChart = new Chart({ container: 'energyContrast' });
     itemizedEnergyAnalysisChart.options({
       type: 'interval',
       height: 400,
       autoFit: true,
-      data: itemizedEnergyUseData.value,
-      encode: { x: 'month', y: 'data', color: 'type' },
+      data: chartData,
+      encode: { x: 'type', y: 'data', color: 'name' },
       transform: [{ type: 'dodgeX' }],
       interaction: { elementHighlight: { background: true } },
       coordinate: { transform: [{ type: 'transpose' }] },
+      axis: {
+        x: {
+          title: false,
+        },
+        y: {
+          title: false,
+        },
+      },
     });
   }
   itemizedEnergyAnalysisChart.render();
 }
-// endregion
-
-// region 同比分析
-// 对比项目
-const contrastItem = ref([
-  {
-    label: '电能',
-    value: '1',
-  },
-  {
-    label: '天然气',
-    value: '2',
-  },
-  {
-    label: 'XXXXXXXXXXXXX',
-    value: '3',
-  },
-]);
-
-// 同比分析图表数据（示例数据）
-const analyzeTheChartDataYearOnYear = ref<any>([
-  { type: '今年', month: '1月', data: 18.9 },
-  { type: '今年', month: '2月', data: 28.8 },
-  { type: '今年', month: '3月', data: 39.3 },
-  { type: '今年', month: '4月', data: 81.4 },
-  { type: '今年', month: '5月', data: 47 },
-  { type: '今年', month: '6月', data: 20.3 },
-  { type: '今年', month: '7月', data: 24 },
-  { type: '今年', month: '8月', data: 35.6 },
-  { type: '去年', month: '1月', data: 12.4 },
-  { type: '去年', month: '2月', data: 23.2 },
-  { type: '去年', month: '3月', data: 34.5 },
-  { type: '去年', month: '4月', data: 99.7 },
-  { type: '去年', month: '5月', data: 52.6 },
-  { type: '去年', month: '6月', data: 35.5 },
-  { type: '去年', month: '7月', data: 37.4 },
-  { type: '去年', month: '8月', data: 42.4 },
-]);
-
-// 同比分析图表实例
-let yearOnYearAnalysisChart: any;
 
 /**
- * 创建同比分析图表
+ * 查询用能占比
  */
-function createYearOverYearAnalysisCharts() {
-  if (yearOnYearAnalysisChart) {
-    // 绑定数据并渲染图表
-    yearOnYearAnalysisChart.data(analyzeTheChartDataYearOnYear.value);
-  } else {
-    yearOnYearAnalysisChart = new Chart({ container: 'yearOnYearAnalysis' });
-    yearOnYearAnalysisChart.options({
-      type: 'interval',
-      height: 400,
-      autoFit: true,
-      data: analyzeTheChartDataYearOnYear.value,
-      encode: { x: 'month', y: 'data', color: 'type' },
-      transform: [{ type: 'dodgeX' }],
-      interaction: { elementHighlight: { background: true } },
+function queryItemizedEnergyAnalysisChart() {
+  getFXEnergyDB().then((data) => {
+    const chartData: any = [];
+    data.forEach((item: any) => {
+      chartData.push(
+        {
+          type: item.systemName,
+          data: item.lastValue,
+          name: '去年',
+        },
+        {
+          type: item.systemName,
+          data: item.currentValue,
+          name: '今年',
+        },
+      );
     });
-  }
-  yearOnYearAnalysisChart.render();
+    itemizedEnergyAnalysisChartCreation(chartData);
+  });
 }
-
 // endregion
 
 // region 分析用能占比
 // 用于存储能耗占比图表实例
 let analysisEnergyRatioChart: any;
-// 能耗占比图表数据
-const analyzeTheEnergyConsumptionChartData = ref<any>([
-  { item: '事例一', count: 40, percent: 0.4 },
-  { item: '事例二', count: 21, percent: 0.21 },
-  { item: '事例三', count: 17, percent: 0.17 },
-  { item: '事例四', count: 13, percent: 0.13 },
-  { item: '事例五', count: 9, percent: 0.09 },
-]);
 
 /**
  * 创建能耗占比分析图表
  */
-function createAnAnalyticalEnergyShareChart() {
+function createAnAnalyticalEnergyShareChart(chartData: any) {
   if (analysisEnergyRatioChart) {
     // 绑定数据并渲染图表
-    analysisEnergyRatioChart.data(analysisEnergyRatioChart.value);
+    analysisEnergyRatioChart.data(chartData);
   } else {
     analysisEnergyRatioChart = new Chart({ container: 'energyUseRatio' });
 
@@ -169,8 +100,8 @@ function createAnAnalyticalEnergyShareChart() {
       type: 'interval',
       autoFit: true,
       height: 400,
-      data: analyzeTheEnergyConsumptionChartData.value,
-      encode: { x: 'item', y: 'count', color: 'item' },
+      data: chartData,
+      encode: { x: 'systemName', y: 'energyValue', color: 'systemName' },
       scale: { x: { padding: 0 } },
       coordinate: { type: 'polar', innerRadius: 0.2 },
       style: { lineWidth: 1, stroke: '#fff' },
@@ -186,18 +117,90 @@ function createAnAnalyticalEnergyShareChart() {
         title: (d: any) => d.year,
         items: [
           (d: any, _i: any, _data: any, _column: any) => ({
-            name: d.item,
-            value: d.count,
+            name: d.systemName,
+            value: d.energyValue,
             channel: 'y',
           }),
         ],
       },
       interaction: { elementHighlight: true },
-      labels: [{ text: 'count', position: 'outside', fontWeight: 'bold' }],
+      labels: [{ text: 'systemName', position: 'outside', fontWeight: 'bold' }],
     });
   }
 
   analysisEnergyRatioChart.render();
+}
+
+/**
+ * 查询用能占比
+ */
+function queryEnergyConsumptionRatio() {
+  getFXEnergy().then((data) => {
+    createAnAnalyticalEnergyShareChart(data);
+  });
+}
+
+// endregion
+
+// region 同比分析
+
+// 同比分析图表实例
+let yearOnYearAnalysisChart: any;
+
+/**
+ * 创建同比分析图表
+ */
+function createYearOverYearAnalysisCharts(chartData: any) {
+  if (yearOnYearAnalysisChart) {
+    // 绑定数据并渲染图表
+    yearOnYearAnalysisChart.data(chartData);
+  } else {
+    yearOnYearAnalysisChart = new Chart({ container: 'yearOnYearAnalysis' });
+    yearOnYearAnalysisChart.options({
+      type: 'interval',
+      height: 400,
+      autoFit: true,
+      data: chartData,
+      encode: { x: 'type', y: 'data', color: 'name' },
+      transform: [{ type: 'dodgeX' }],
+      interaction: { elementHighlight: { background: true } },
+      axis: {
+        x: {
+          title: false,
+        },
+        y: {
+          title: false,
+        },
+      },
+    });
+  }
+  yearOnYearAnalysisChart.render();
+}
+
+/**
+ * 查询同比数据
+ */
+function queryYearOverYearAnalysisChartsData() {
+  getFXEnergyTB({
+    systemName: contrast.value,
+  }).then((data) => {
+    const chartData: any = [];
+    data.forEach((item: any) => {
+      chartData.push(
+        {
+          type: item.systemName,
+          data: item.lastValue,
+          name: '去年',
+        },
+        {
+          type: item.systemName,
+          data: item.currentValue,
+          name: '今年',
+        },
+      );
+    });
+    createYearOverYearAnalysisCharts(chartData);
+  });
 }
 
 // endregion
@@ -206,45 +209,13 @@ function createAnAnalyticalEnergyShareChart() {
 // 用于存储能耗趋势图表实例
 let trendChartOfItemizedEnergyUse: any;
 
-// 能耗趋势图表数据
-const itemizedEnergyUseTrendChartData = shallowRef<any>([
-  { country: 'Asia', year: '1750', value: 502 },
-  { country: 'Asia', year: '1800', value: 635 },
-  { country: 'Asia', year: '1850', value: 809 },
-  { country: 'Asia', year: '1900', value: 5268 },
-  { country: 'Asia', year: '1950', value: 4400 },
-  { country: 'Asia', year: '1999', value: 3634 },
-  { country: 'Asia', year: '2050', value: 947 },
-  { country: 'Africa', year: '1750', value: 106 },
-  { country: 'Africa', year: '1800', value: 107 },
-  { country: 'Africa', year: '1850', value: 111 },
-  { country: 'Africa', year: '1900', value: 1766 },
-  { country: 'Africa', year: '1950', value: 221 },
-  { country: 'Africa', year: '1999', value: 767 },
-  { country: 'Africa', year: '2050', value: 133 },
-  { country: 'Europe', year: '1750', value: 163 },
-  { country: 'Europe', year: '1800', value: 203 },
-  { country: 'Europe', year: '1850', value: 276 },
-  { country: 'Europe', year: '1900', value: 628 },
-  { country: 'Europe', year: '1950', value: 547 },
-  { country: 'Europe', year: '1999', value: 729 },
-  { country: 'Europe', year: '2050', value: 408 },
-  { country: 'Oceania', year: '1750', value: 200 },
-  { country: 'Oceania', year: '1800', value: 200 },
-  { country: 'Oceania', year: '1850', value: 200 },
-  { country: 'Oceania', year: '1900', value: 460 },
-  { country: 'Oceania', year: '1950', value: 230 },
-  { country: 'Oceania', year: '1999', value: 300 },
-  { country: 'Oceania', year: '2050', value: 300 },
-]);
-
 /**
  * 创建能耗趋势分析图表
  */
-function createATrendChartForItemizedEnergyUse() {
+function createATrendChartForItemizedEnergyUse(chartData: any) {
   if (trendChartOfItemizedEnergyUse) {
     // 绑定数据并渲染图表
-    trendChartOfItemizedEnergyUse.data(analysisEnergyRatioChart.value);
+    trendChartOfItemizedEnergyUse.data(chartData);
   } else {
     trendChartOfItemizedEnergyUse = new Chart({ container: 'energyUseTrend' });
 
@@ -252,8 +223,8 @@ function createATrendChartForItemizedEnergyUse() {
       type: 'view',
       autoFit: true,
       height: 400,
-      data: itemizedEnergyUseTrendChartData.value,
-      encode: { x: 'year', y: 'value', color: 'country' },
+      data: chartData,
+      encode: { x: 'time', y: 'value', color: 'systemName' },
       axis: { x: { title: false }, y: { title: false } },
       children: [
         { type: 'area', style: { fillOpacity: 0.3 } },
@@ -265,24 +236,59 @@ function createATrendChartForItemizedEnergyUse() {
   trendChartOfItemizedEnergyUse.render();
 }
 
+/**
+ * 查询分项用能趋势数据
+ */
+function queryATrendChartForItemizedEnergyUseData() {
+  getFXEnergyQS({
+    systemName: contrast.value,
+  }).then((data) => {
+    createATrendChartForItemizedEnergyUse(data);
+  });
+}
+
+// endregion
+
+// region 对比项目
+
+// 对比项目
+const contrastItem = ref<any>([]);
+
+const contrast = ref('');
+
+/**
+ * 查询分项名称
+ */
+function queryContrastType() {
+  getItemizedList().then((data) => {
+    contrastItem.value = [];
+    data.forEach((item: string) => {
+      contrastItem.value.push({
+        label: item,
+        value: item,
+      });
+    });
+    contrast.value = data[0];
+    query();
+  });
+}
+
+function query() {
+  queryYearOverYearAnalysisChartsData();
+  queryATrendChartForItemizedEnergyUseData();
+}
+
 // endregion
 
 onMounted(() => {
-  itemizedEnergyAnalysisChartCreation();
-  createYearOverYearAnalysisCharts();
-  createAnAnalyticalEnergyShareChart();
-  createATrendChartForItemizedEnergyUse();
+  queryEnergyConsumptionRatio();
+  queryItemizedEnergyAnalysisChart();
+  queryContrastType();
 });
 </script>
 
 <template>
   <Page>
-    <RadioGroup
-      v-model:value="type"
-      option-type="button"
-      :options="typeOptions"
-    />
-
     <Row :gutter="20" class="mb-4 mt-4">
       <Col :span="12">
         <Card title="分项用能对比">
@@ -296,8 +302,9 @@ onMounted(() => {
               分项名称:
               <Select
                 class="w-48"
-                v-model:value="type"
+                v-model:value="contrast"
                 :options="contrastItem"
+                @change="query()"
               />
             </label>
           </template>

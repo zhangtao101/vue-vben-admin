@@ -10,20 +10,20 @@ import { Chart } from '@antv/g2';
 import {
   Button,
   Card,
-  DatePicker,
   Form,
   FormItem,
   RadioButton,
   RadioGroup,
+  RangePicker,
   Select,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import {
-  getDayItemizedEnergy,
+  getDayClassEnergy,
   getItemizedList,
-  getMonthItemizedEnergy,
-  getYearItemizedEnergy,
+  getMonthClassEnergy,
+  getYearClassEnergy,
 } from '#/api';
 import BasicTblae from '#/util/component/basicTblae.vue';
 
@@ -95,74 +95,81 @@ function chartInit(chartData: any = []) {
   } else {
     chart = new Chart({ container: 'container' });
     chart.options({
-      type: 'interval',
+      type: 'view',
       autoFit: true,
       data: chartData,
-      encode: { x: '时间', y: '能耗(kWh)', color: 'name' },
-      transform: [{ type: 'stackY' }],
-      interaction: { elementHighlight: { background: true } },
+      children: [
+        {
+          type: 'line',
+          encode: {
+            x: 'time',
+            y: 'dlValue',
+            shape: 'smooth',
+          },
+          scale: { y: { independent: true } },
+          axis: {
+            y: { title: '用电量', grid: null },
+          },
+        },
+      ],
     });
   }
 
   chart.render();
 }
 
+const formMat: any = {
+  1: 'YYYY-MM-DD',
+  2: 'YYYY-MM',
+  3: 'YYYY',
+};
+/**
+ * 查询图表数据
+ */
 function queryChartData() {
   const params: any = {
     itemizedName: queryParams.value.itemizedName,
   };
+  if (queryParams.value.searchTime) {
+    params.startTime = queryParams.value.searchTime[0].format(
+      formMat[queryParams.value.timeType],
+    );
+    params.endTime = queryParams.value.searchTime[1].format(
+      formMat[queryParams.value.timeType],
+    );
+  }
   let ob: any;
   switch (queryParams.value.timeType) {
     case 1: {
-      params.day = queryParams.value.searchTime.format('YYYY-MM-DD');
-      ob = getDayItemizedEnergy(params);
+      ob = getDayClassEnergy(params);
       break;
     }
     case 2: {
-      params.month = queryParams.value.searchTime.format('YYYY-MM');
-      ob = getMonthItemizedEnergy(params);
+      ob = getMonthClassEnergy(params);
       break;
     }
     case 3: {
-      params.year = queryParams.value.searchTime.format('YYYY');
-      ob = getYearItemizedEnergy(params);
+      ob = getYearClassEnergy(params);
       break;
     }
   }
-  ob.then((data: any) => {
+  ob.then(({ list }: any) => {
     const chartData: any[] = [];
     if (queryParams.value.timeType === 1) {
-      data.forEach((item: any) => {
+      list.forEach((item: any) => {
         chartData.push({
-          时间: item.time,
-          '能耗(kWh)': item.value,
-          name: item.systemName,
+          time: item.time,
+          dlValue: item.dlValue,
+          slValue: 0,
         });
       });
     } else {
-      data.forEach((item: any) => {
-        chartData.push(
-          {
-            时间: item.time,
-            '能耗(kWh)': item.peakValue,
-            name: '尖时段电量',
-          },
-          {
-            时间: item.time,
-            '能耗(kWh)': item.spikeValue,
-            name: '峰时段电量',
-          },
-          {
-            时间: item.time,
-            '能耗(kWh)': item.flatValue,
-            name: '平时段电量',
-          },
-          {
-            时间: item.time,
-            '能耗(kWh)': item.valleyValue,
-            name: '谷时段电量',
-          },
-        );
+      list.forEach((item: any) => {
+        chartData.push({
+          time: item.time,
+          dlValue: item.dlValue,
+          slValue: item.slValue,
+        });
       });
     }
     if (chartData && chartData.length > 0) {
@@ -173,22 +180,27 @@ function queryChartData() {
 
 // endregion
 
-// region 表格-日
-// 表格列配置项
+// region 表格
+// 表格列配置项-日
 const columnsDay: any = [
   {
-    field: 'subarea',
-    title: '单元分区',
+    field: 'classNumber',
+    title: '班组编号',
+    minWidth: 150,
+  },
+  {
+    field: 'className',
+    title: '班组名称',
     minWidth: 150,
   },
   {
     field: 'systemName',
-    title: '分项系统名称',
+    title: '用能单元分区',
     minWidth: 150,
   },
   {
-    field: 'value',
-    title: '用电量（kWh）',
+    field: 'dlValue',
+    title: '用电量',
     minWidth: 150,
   },
   {
@@ -197,93 +209,89 @@ const columnsDay: any = [
     minWidth: 150,
   },
 ];
+// 表格列配置项-月/年
+const columnsOuther: any = [
+  {
+    field: 'classNumber',
+    title: '班组编号',
+    minWidth: 150,
+  },
+  {
+    field: 'className',
+    title: '班组名称',
+    minWidth: 150,
+  },
+  {
+    field: 'systemName',
+    title: '用能单元分区',
+    minWidth: 150,
+  },
+  {
+    field: 'dValue',
+    title: '用电量',
+    minWidth: 150,
+  },
+  {
+    field: 'slValue',
+    title: '用水能',
+    minWidth: 150,
+  },
+  {
+    field: 'time',
+    title: '时间',
+    minWidth: 150,
+  },
+];
+// 表格api
+let gridApi: any;
 /**
  * 从服务器查询工作站数据的函数。
  * 这个函数用于发送查询请求，并在成功获取数据后更新组件的状态。
  */
-function queryData() {
+function queryData(_params: any) {
   return new Promise((resolve, _reject) => {
     const params: any = {
-      itemizedName: queryParams.value.itemizedName,
+      className: queryParams.value.className,
     };
+    if (queryParams.value.searchTime) {
+      params.startTime = queryParams.value.searchTime[0].format(
+        formMat[queryParams.value.timeType],
+      );
+      params.endTime = queryParams.value.searchTime[1].format(
+        formMat[queryParams.value.timeType],
+      );
+    }
     let ob: any;
     switch (queryParams.value.timeType) {
       case 1: {
-        params.day = queryParams.value.searchTime.format('YYYY-MM-DD');
-        ob = getDayItemizedEnergy(params);
+        ob = getDayClassEnergy(params);
         break;
       }
       case 2: {
-        params.month = queryParams.value.searchTime.format('YYYY-MM');
-        ob = getMonthItemizedEnergy(params);
+        ob = getMonthClassEnergy(params);
         break;
       }
       case 3: {
-        params.year = queryParams.value.searchTime.format('YYYY');
-        ob = getYearItemizedEnergy(params);
+        ob = getYearClassEnergy(params);
         break;
       }
     }
-    ob.then((data: any) => {
+    ob.then(({ list }: any) => {
       resolve({
-        total: data.length,
-        items: data,
+        total: list.length,
+        items: list,
       });
     });
   });
 }
 
 // endregion
-// region 表格-月/年
-// 表格列配置项
-const columnsOther: any = [
-  {
-    field: 'subarea',
-    title: '单元分区',
-    minWidth: 150,
-  },
-  {
-    field: 'systemName',
-    title: '分项系统名称',
-    minWidth: 150,
-  },
-  {
-    field: 'peakValue',
-    title: '尖时段电量',
-    minWidth: 150,
-  },
-  {
-    field: 'spikeValue',
-    title: '峰时段电量（kwh）',
-    minWidth: 150,
-  },
-  {
-    field: 'flatValue',
-    title: '平时段电量（kwh）',
-    minWidth: 150,
-  },
-  {
-    field: 'valleyValue',
-    title: '谷时段电量（kwh）',
-    minWidth: 150,
-  },
-  {
-    field: 'value',
-    title: '总电量',
-    minWidth: 150,
-  },
-  {
-    field: 'time',
-    title: '时间',
-    minWidth: 150,
-  },
-];
-
-// endregion
 
 // region 生命周期
 onMounted(() => {
-  queryParams.value.searchTime = dayjs();
+  // 获取当前时间
+  const now = dayjs();
+  queryParams.value.searchTime = [now.subtract(1, 'month'), now];
   queryDataTypeList();
   queryChartData();
 });
@@ -296,11 +304,11 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 数据类型 -->
         <FormItem
-          :label="$t('electricityConsumptionData.sectionName')"
+          :label="$t('energyConsumptionAnalysis.teamName')"
           style="margin-bottom: 1em"
         >
           <Select
-            v-model:value="queryParams.itemizedName"
+            v-model:value="queryParams.className"
             :options="dataTypeList"
             class="!w-36"
           />
@@ -332,7 +340,7 @@ onMounted(() => {
           :label="$t('useEnergyThroughoutTheEntireSection.timeFrame')"
           style="margin-bottom: 1em"
         >
-          <DatePicker
+          <RangePicker
             v-model:value="queryParams.searchTime"
             :picker="timeType[queryParams.timeType]"
           />
@@ -345,6 +353,7 @@ onMounted(() => {
             @click="
               () => {
                 queryChartData();
+                gridApi.reload();
               }
             "
           >
@@ -372,14 +381,16 @@ onMounted(() => {
           :query-data="queryData"
           :is-pages="false"
           v-if="queryParams.timeType === 1"
+          @initialization-complete="(grid) => (gridApi = grid)"
         />
         <!-- endregion -->
         <!-- region 表格-月/年 -->
         <BasicTblae
-          :columns="columnsOther"
+          :columns="columnsOuther"
           :query-data="queryData"
           :is-pages="false"
-          v-else
+          v-if="queryParams.timeType !== 1"
+          @initialization-complete="(grid) => (gridApi = grid)"
         />
         <!-- endregion -->
       </template>

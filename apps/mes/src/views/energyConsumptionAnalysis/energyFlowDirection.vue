@@ -16,88 +16,51 @@ import {
   RadioGroup,
   RangePicker,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
+
+import { getEnergyFlowDL, getEnergyFlowWL } from '#/api';
 
 // region 图表初始化
 
-const initChart = () => {
-  const chart = new Chart({
-    container: 'chart',
-    autoFit: true,
-    height: 500,
-  });
+let chart: any;
 
-  chart
-    .sankey()
-    .data({
-      type: 'inline',
-      value: {
-        links: [
-          {
-            source: 'A',
-            target: 'B',
-            value: 1000,
-          },
-          {
-            source: 'A',
-            target: 'C',
-            value: 1000,
-          },
-          {
-            source: 'B',
-            target: 'D',
-            value: 1000,
-          },
-          {
-            source: 'C',
-            target: 'D',
-            value: 1000,
-          },
-        ],
-      },
-    })
-    .layout({
-      nodeAlign: 'center',
-      nodePadding: 0.03,
-    })
-    .style('labelSpacing', 3)
-    .style('labelFontWeight', 'bold')
-    .style('nodeStrokeWidth', 1.2)
-    .style('linkFillOpacity', 0.4);
-
-  chart.render();
-
-  setTimeout(() => {
+function initChart(chartData: any) {
+  if (chart) {
     chart.clear();
     chart.sankey().data({
       type: 'inline',
       value: {
-        links: [
-          {
-            source: 'A',
-            target: 'B',
-            value: 500,
-          },
-          {
-            source: 'A',
-            target: 'C',
-            value: 600,
-          },
-          {
-            source: 'B',
-            target: 'D',
-            value: 500,
-          },
-          {
-            source: 'C',
-            target: 'D',
-            value: 500,
-          },
-        ],
+        links: chartData,
       },
     });
     chart.render();
-  }, 1000 * 5);
-};
+  } else {
+    chart = new Chart({
+      container: 'chart',
+      autoFit: true,
+      height: 500,
+    });
+
+    chart
+      .sankey()
+      .data({
+        type: 'inline',
+        value: {
+          links: chartData,
+        },
+      })
+      .layout({
+        nodeAlign: 'center',
+        nodePadding: 0.03,
+      })
+      .style('labelSpacing', 3)
+      .style('labelFontWeight', 'bold')
+      .style('nodeStrokeWidth', 1.2)
+      .style('linkFillOpacity', 0.4);
+
+    chart.render();
+  }
+}
 
 // endregion
 
@@ -106,12 +69,6 @@ const initChart = () => {
 // 查询参数
 const queryParams = ref({
   searchTime: [] as any, // 查询时间范围
-  processCode: '', // 工序编号
-  workstationCode: '', // 工作站编号
-  workstationName: '', // 工作站名称
-  worksheetCode: '', // 工单号
-  productCode: '', // 产品料号
-  productName: '', // 产品名称
 });
 // 资源类型
 const resourceType = ref(1);
@@ -121,42 +78,38 @@ const resourceType = ref(1);
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  * { page, pageSize }: any
  */
-function queryData(): Promise<any> {
-  return new Promise((resolve) => {
-    const params: any = { ...queryParams.value };
-    if (params.searchTime && params.searchTime.length === 2) {
-      // 格式化时间范围
-      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
-      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
-      params.searchTime = undefined;
-    }
-    // 返回模拟数据
-    resolve({
-      total: 0,
-      items: [],
-    });
-    /* queryProductionDaily({
-      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
-    })
-      .then(({ total, list }) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-        resolve({
-          total,
-          items: list,
+function queryData() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    // 格式化时间范围
+    params.startTime = params.searchTime[0].format(
+      resourceType.value === 1 ? 'YYYY-MM-DD' : 'YYYY-MM',
+    );
+    params.endTime = params.searchTime[1].format(
+      resourceType.value === 1 ? 'YYYY-MM-DD' : 'YYYY-MM',
+    );
+    params.searchTime = undefined;
+  }
+  const ob =
+    resourceType.value === 1
+      ? getEnergyFlowDL({
+          ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+        })
+      : getEnergyFlowWL({
+          ...params, // 展开 queryParams.value 对象，包含所有查询参数。
         });
-      })
-      .catch((error) => {
-        reject(error);
-      });*/
+
+  ob.then((data) => {
+    initChart(data);
   });
 }
 
 // endregion
 
 onMounted(() => {
-  initChart();
+  // 获取当前时间
+  const now = dayjs();
+  queryParams.value.searchTime = [now.subtract(1, 'month'), now];
   queryData();
 });
 </script>
@@ -171,7 +124,10 @@ onMounted(() => {
           :label="$t('useEnergyThroughoutTheEntireSection.timeFrame')"
           style="margin-bottom: 1em"
         >
-          <RangePicker v-model:value="queryParams.searchTime" />
+          <RangePicker
+            v-model:value="queryParams.searchTime"
+            :picker="resourceType === 1 ? 'date' : 'month'"
+          />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -188,7 +144,11 @@ onMounted(() => {
     <!-- endregion -->
 
     <Card>
-      <RadioGroup v-model:value="resourceType" button-style="solid">
+      <RadioGroup
+        v-model:value="resourceType"
+        button-style="solid"
+        @change="queryData()"
+      >
         <RadioButton :value="1">电能流向分析</RadioButton>
         <RadioButton :value="2">水流向分析</RadioButton>
       </RadioGroup>

@@ -661,7 +661,7 @@ onMounted(() => {
       v-model:open="showViewDrawer"
       :footer-style="{ textAlign: 'right' }"
       :width="700"
-      class="custom-class"
+      class="custom-class z-auto"
       placement="right"
       :title="$t('common.view')"
     >

@@ -336,6 +336,14 @@ export async function queryBHZMXStatistics(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getBHZMXStatistics?${qs.stringify(params)}`,
   );
 }
+/**
+ * 157、生产工单应发实发报表
+ */
+export async function queryWorksheetActuallyOcurredDetails(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheetActuallyOcurred/getDetail?${qs.stringify(params)}`,
+  );
+}
 
 // region 报表导出
 /**

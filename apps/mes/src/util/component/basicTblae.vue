@@ -12,13 +12,18 @@ const props = defineProps({
   queryData: {
     type: Function as PropType<(...arg: any) => Promise<any>>,
     default: () => () => Promise.resolve({}),
-    required: true,
+    required: false,
   },
   // 表格列配置项
   columns: {
     type: Array as PropType<any[]>,
     default: () => [],
-    required: true,
+    required: false,
+  },
+  // 是否分页
+  isPages: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -33,6 +38,9 @@ const gridOptions: VxeGridProps<any> = {
   stripe: true, // 启用斑马纹
   sortConfig: {
     multiple: true, // 允许多列排序
+  },
+  pagerConfig: {
+    enabled: props.isPages,
   },
   proxyConfig: {
     ajax: {
@@ -68,7 +76,9 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <Grid>
-      <slot name="tableTemplate"></slot>
+      <template #toolbar-tools>
+        <slot name="toolbar-tools"></slot>
+      </template>
     </Grid>
   </div>
 </template>

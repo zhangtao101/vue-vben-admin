@@ -1,0 +1,14 @@
+{
+  "partitionID": "分区ID",
+  "partitionName": "分区名称",
+  "partitionAbbreviation": "分区简称",
+  "parentID": "父级id",
+  "parentName": "父级分区",
+  "add": "添加子分区",
+  "lineLossObjectNumber": "线损对象编号",
+  "lineLossObjectName": "线损对象名称",
+  "describe": "描述",
+  "lineLossConfiguration": "线损配置",
+  "meterNumber": "电表编号",
+  "addSublevel": "添加子级"
+}

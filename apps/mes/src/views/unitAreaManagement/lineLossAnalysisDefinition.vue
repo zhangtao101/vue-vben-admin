@@ -6,7 +6,6 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { IconifyIcon, MdiSearch } from '@vben/icons';
-import { useAccessStore } from '@vben/stores';
 
 import {
   Button,
@@ -19,24 +18,25 @@ import {
   Modal,
   Space,
   Tooltip,
-  Upload,
 } from 'ant-design-vue';
 // eslint-disable-next-line n/no-extraneous-import
 import { debounce } from 'lodash-es';
+import { v4 as uuidv4 } from 'uuid';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  addEnergyZoningList,
-  deleteEnergyZoning,
-  getEnergyZoningList,
-  getEnergyZoningPartitionID,
-  getEnergyZoningPartitionName,
-  getExcelPathEnergyZoningList,
-  getTemplate,
-  updateEnergyZoning,
+  AddLineLossAnalysis,
+  addLineLossAnalysisConfiguration,
+  checkLineLossName,
+  checkLineLossNumber,
+  deleteLineLossAnalysis,
+  getLineLossAnalysisList,
+  selectLossEquipment,
+  updateLineLoss,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import MeterSelection from '#/util/component/MeterSelection.vue';
 
 // 路由信息
 const route = useRoute();
@@ -49,23 +49,28 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     {
-      field: 'partitionID',
-      title: '分区 ID',
+      field: 'lossNumber',
+      title: '线损对象编号',
       minWidth: 150,
     },
     {
-      field: 'partitionName',
-      title: '分区名称',
+      field: 'lossName',
+      title: '线损对象名称',
       minWidth: 150,
     },
     {
-      field: 'partitionJC',
-      title: '分区简称',
+      field: 'remark',
+      title: '描述',
       minWidth: 150,
     },
     {
-      field: 'parentPartitionName',
-      title: '上级分区',
+      field: 'createUser',
+      title: '创建人',
+      minWidth: 150,
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
       minWidth: 150,
     },
     {
@@ -121,7 +126,7 @@ const showEditDrawer = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  partitionID: [
+  lossNumber: [
     {
       message: '此项为必填项',
       required: true,
@@ -136,7 +141,7 @@ const editRules = ref<any>({
       },
     },
   ],
-  partitionName: [
+  lossName: [
     { message: '此项为必填项', required: true, trigger: 'change' },
     {
       trigger: 'change',
@@ -154,9 +159,9 @@ const editRules = ref<any>({
  */
 const partitionIDAntiShake = debounce(
   (value: string, resolve: any, reject: any) => {
-    getEnergyZoningPartitionID({
+    checkLineLossNumber({
       id: checkedRow.value?.id,
-      partitionID: value,
+      lossNumber: value,
     }).then((res) => {
       if (res) {
         resolve();
@@ -172,9 +177,9 @@ const partitionIDAntiShake = debounce(
  */
 const partitionNameAntiShake = debounce(
   (value: string, resolve: any, reject: any) => {
-    getEnergyZoningPartitionName({
+    checkLineLossName({
       id: checkedRow.value?.id,
-      partitionName: value,
+      lossName: value,
     }).then((res) => {
       if (res) {
         resolve();
@@ -211,7 +216,7 @@ function delRow(row: any) {
       message.warning('已取消删除!');
     },
     onOk() {
-      deleteEnergyZoning(row.id).then(() => {
+      deleteLineLossAnalysis(row.id).then(() => {
         // 显示操作成功的提示信息
         message.success($t('common.successfulOperation'));
         gridApi.query();
@@ -236,8 +241,8 @@ function onClose() {
 function submit() {
   editForm.value.validate().then(() => {
     const ob = checkedRow.value.id
-      ? updateEnergyZoning(checkedRow.value)
-      : addEnergyZoningList(checkedRow.value);
+      ? updateLineLoss(checkedRow.value)
+      : AddLineLossAnalysis(checkedRow.value);
     ob.then(() => {
       // 查询数据
       gridApi.query();
@@ -262,10 +267,10 @@ const queryParams = ref<any>({});
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
     /**
-     * 调用 getEnergyZoningList 函数，传入查询参数和分页信息。
+     * 调用 getLineLossAnalysisList 函数，传入查询参数和分页信息。
      * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
      */
-    getEnergyZoningList({
+    getLineLossAnalysisList({
       ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -281,56 +286,128 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
-// region 模板下载
+// region 线损配置
+// 线损配置抽屉是否显示
+const lineLossConfigurationDrawer = ref(false);
+// 线损配置对象
+const lineLossObject = ref<any>({});
+const lineLossObjectForm = ref<any>();
 
-function downloadTemplate() {
-  getTemplate().then((data: string) => {
-    window.open(data, '_blank');
+/**
+ * 线损配置抽屉显示
+ * @param row
+ */
+function showLineLossConfigurationDrawer(row: any) {
+  lineLossConfigurationDrawer.value = true;
+  const arr = row.equipment
+    ? JSON.parse(row.equipment)
+    : {
+        level: 1,
+        key: uuidv4(),
+        child: [],
+      };
+  lineLossObject.value = {
+    id: row.id,
+    lineLossEquipmentVM: arr,
+  };
+  queryEquipment();
+}
+
+/**
+ * 电表待选项
+ */
+const equipmentOptions = ref<any>([]);
+
+/**
+ * 查询电表
+ */
+function queryEquipment() {
+  selectLossEquipment().then((res) => {
+    equipmentOptions.value = [];
+    res.forEach((item: any) => {
+      equipmentOptions.value.push({
+        label: item.equipmentName,
+        value: item.equipmentCode,
+      });
+    });
   });
 }
 
-// endregion
-// region 导出
 /**
- * 导出
+ * 电表变更
  */
-function exportFile() {
-  getExcelPathEnergyZoningList().then((data: any) => {
-    window.open(data, '_blank');
-  });
+function equipmentChange(parent: any) {
+  return (_val: any, item: any) => {
+    parent.equipmentName = item.label;
+    parent.equipmentCode = item.value;
+  };
 }
-// endregion
-
-// region 文件上传
-const accessStore = useAccessStore();
-// 文件上传头信息
-const headers = ref<any>({
-  Authorization: accessStore.accessToken,
-});
-// 上传路径
-const action = ref<string>(
-  `/ht/${import.meta.env.VITE_GLOB_MES_ENERGY}/energyZoning/upload`,
-);
-// 文件列表
-const fileList = ref<any>([]);
 
 /**
- * 处理文件上传状态变化的函数。
- * @param info - 包含文件上传信息的对象。
+ * 添加子级电表
+ * @param item
  */
-function handleChange(info: any) {
-  // 检查文件是否上传成功
-  if (info.file.status === 'done') {
-    // 重新查询数据，更新列表
-    gridApi.reload();
-    // 显示成功消息
-    message.success('文件上传成功!');
-  } else if (info.file.status === 'error') {
-    // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || '文件上传失败';
-    // 显示错误消息
-    message.error(errorMessage);
+function addAChild(item: any) {
+  if (!item.child) {
+    item.child = [];
   }
+  item.child.push({
+    equipmentCode: '',
+    equipmentName: '',
+    level: (item.level || 0) + 1,
+    key: uuidv4(),
+  });
+}
+
+/**
+ * 根据key删除电表
+ * @param targetKey 目标key
+ * @param targetValue 目标value
+ * @param obj 对象列表
+ */
+function removeByKeyValue(targetKey: string, targetValue: string, obj?: any) {
+  if (!obj) {
+    obj = lineLossObject.value.lineLossEquipmentVM;
+  }
+  if (Array.isArray(obj)) {
+    // 如果是数组，遍历数组中的每个元素
+    for (let i = obj.length - 1; i >= 0; i--) {
+      const item = obj[i];
+      if (item[targetKey] === targetValue) {
+        // 如果当前元素的 key 等于目标值，删除该元素
+        obj.splice(i, 1);
+      } else {
+        // 如果当前元素有 child 属性，递归处理 child
+        if (item.child) {
+          removeByKeyValue(targetKey, targetValue, item.child);
+        }
+      }
+    }
+  } else if (typeof obj === 'object' && obj !== null && obj.child) {
+    // 如果是对象，检查是否有 child 属性
+    removeByKeyValue(targetKey, targetValue, obj.child);
+  }
+}
+
+/**
+ *线损配置提交
+ */
+function lineLossConfiguration() {
+  lineLossObjectForm.value.validate().then(() => {
+    addLineLossAnalysisConfiguration(lineLossObject.value).then(() => {
+      message.success($t('common.successfulOperation'));
+      lineLossConfigurationIsTurnedOff();
+      gridApi.reload();
+    });
+  });
+}
+
+/**
+ * 线损配置抽屉关闭
+ */
+function lineLossConfigurationIsTurnedOff() {
+  lineLossConfigurationDrawer.value = false;
+  lineLossObject.value = {};
 }
 
 // endregion
@@ -399,39 +476,6 @@ onMounted(() => {
           >
             {{ $t('common.add') }}
           </Button>
-          <!-- 模板下载按钮 -->
-          <Button
-            v-if="author.includes('导出')"
-            type="primary"
-            @click="exportFile()"
-            class="ml-4"
-          >
-            {{ $t('common.export') }}
-          </Button>
-          <!-- 模板下载按钮 -->
-          <Button
-            v-if="author.includes('导入')"
-            type="primary"
-            @click="downloadTemplate()"
-            class="ml-4"
-          >
-            {{ $t('common.templateDownload') }}
-          </Button>
-          <!-- 导入按钮 -->
-          <Upload
-            v-if="author.includes('导入')"
-            v-model:file-list="fileList"
-            :action="action"
-            :headers="headers"
-            :show-upload-list="false"
-            name="file"
-            @change="handleChange"
-            class="ml-4"
-          >
-            <Button type="primary">
-              {{ $t('common.import') }}
-            </Button>
-          </Upload>
         </template>
         <template #action="{ row }">
           <!-- 编辑按钮 -->
@@ -448,21 +492,18 @@ onMounted(() => {
               />
             </Button>
           </Tooltip>
-          <!-- 新增子分区 -->
+          <!-- 线损配置 -->
           <Tooltip>
-            <template #title>{{ $t('unitAreaManagement.add') }}</template>
+            <template #title>
+              {{ $t('unitAreaManagement.lineLossConfiguration') }}
+            </template>
             <Button
               type="link"
-              @click="
-                editRow({
-                  parentId: row.id,
-                  parentPartitionName: row.partitionName,
-                })
-              "
-              v-if="author.includes('编辑')"
+              @click="showLineLossConfigurationDrawer(row)"
+              v-if="author.includes('线损配置')"
             >
               <IconifyIcon
-                icon="mdi:add-circle-outline"
+                icon="mdi-light:settings"
                 class="inline-block align-middle text-2xl"
               />
             </Button>
@@ -504,33 +545,23 @@ onMounted(() => {
         :rules="editRules"
         :wrapper-col="{ span: 16 }"
       >
-        <!-- 分区ID -->
+        <!-- 线损对象编号 -->
         <FormItem
-          :label="$t('unitAreaManagement.partitionID')"
-          name="partitionID"
+          :label="$t('unitAreaManagement.lineLossObjectNumber')"
+          name="lossNumber"
         >
-          <Input v-model:value="checkedRow.partitionID" />
+          <Input v-model:value="checkedRow.lossNumber" />
         </FormItem>
-        <!-- 分区名称 -->
+        <!-- 线损对象名称 -->
         <FormItem
-          :label="$t('unitAreaManagement.partitionName')"
-          name="partitionName"
+          :label="$t('unitAreaManagement.lineLossObjectName')"
+          name="lossName"
         >
-          <Input v-model:value="checkedRow.partitionName" />
+          <Input v-model:value="checkedRow.lossName" />
         </FormItem>
-        <!-- 分区简称 -->
-        <FormItem
-          :label="$t('unitAreaManagement.partitionAbbreviation')"
-          name="partitionJC"
-        >
-          <Input v-model:value="checkedRow.partitionJC" />
-        </FormItem>
-        <!-- 父级名称 -->
-        <FormItem
-          :label="$t('unitAreaManagement.parentName')"
-          name="parentPartitionName"
-        >
-          {{ checkedRow.parentPartitionName }}
+        <!-- 描述 -->
+        <FormItem :label="$t('unitAreaManagement.describe')" name="remark">
+          <Input v-model:value="checkedRow.remark" />
         </FormItem>
       </Form>
 
@@ -542,6 +573,60 @@ onMounted(() => {
           </Button>
           <!-- 确认 -->
           <Button type="primary" @click="submit">
+            {{ $t('common.confirm') }}
+          </Button>
+        </Space>
+      </template>
+    </Drawer>
+    <!-- endregion -->
+
+    <!-- region 线损配置 抽屉 -->
+    <Drawer
+      v-model:open="lineLossConfigurationDrawer"
+      :footer-style="{ textAlign: 'right' }"
+      :width="600"
+      class="custom-class"
+      placement="right"
+      :title="$t('unitAreaManagement.lineLossConfiguration')"
+    >
+      <Form
+        ref="lineLossObjectForm"
+        :model="lineLossObject.lineLossEquipmentVM"
+      >
+        <!-- 电表编号 -->
+        <!--        <FormItem
+          :label="$t('unitAreaManagement.meterNumber')"
+          name="equipmentCode"
+          class="pl-4"
+          :rules="{ required: true, message: '请选择电表编号' }"
+        >
+          <Select
+            v-model:value="lineLossObject.lineLossEquipmentVM.equipmentCode"
+            :options="equipmentOptions"
+            @change="(val, item) => equipmentChange(-1)(val, item)"
+            class="w-full"
+          />
+          <Button @click="addAChild(lineLossObject.lineLossEquipmentVM)">
+            添加子级
+          </Button>
+        </FormItem>-->
+        <MeterSelection
+          :parent="lineLossObject.lineLossEquipmentVM"
+          :equipment-options="equipmentOptions"
+          :equipment-change="equipmentChange"
+          :add-a-meter="addAChild"
+          :remove-fun="removeByKeyValue"
+        />
+      </Form>
+
+      <template #footer>
+        <Space>
+          <!-- 取消 -->
+          <Button @click="lineLossConfigurationIsTurnedOff">
+            {{ $t('common.cancel') }}
+          </Button>
+          <!-- 确认 -->
+          <Button type="primary" @click="lineLossConfiguration">
             {{ $t('common.confirm') }}
           </Button>
         </Space>

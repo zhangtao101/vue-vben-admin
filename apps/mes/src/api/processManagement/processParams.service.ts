@@ -14,6 +14,26 @@ export async function queryProcessParam(params: any) {
   );
 }
 /**
+ * 工艺参数模板历史记录
+ */
+export async function getMBDetail(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/processingHistoryController/getMBDetail?${qs.stringify(
+      params,
+    )}`,
+  );
+}
+/**
+ * 159、工艺参数模板参数历史记录
+ */
+export async function getCSDetail(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/processingHistoryController/getCSDetail?${qs.stringify(
+      params,
+    )}`,
+  );
+}
+/**
  * 查询工艺参数详情
  */
 export async function queryProcessParamDetail(id: any) {

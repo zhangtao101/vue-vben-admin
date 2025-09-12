@@ -2,6 +2,7 @@ export * from './accidentManagement';
 export * from './author';
 export * from './baseInfo';
 export * from './core';
+export * from './energyConsumptionAnalysis';
 export * from './equipManagement';
 export * from './fireOperationManagement';
 export * from './hiddenDanger';

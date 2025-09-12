@@ -79,6 +79,9 @@ const gridOptions: VxeGridProps<any> = {
       field: 'level',
       title: '动火级别',
       minWidth: 150,
+      slots: {
+        default: 'level',
+      },
     },
     {
       field: 'startTime',
@@ -235,6 +238,14 @@ function queryData({ page, pageSize }: any) {
       });
   });
 }
+
+const levels: any = {
+  1: '一级',
+  2: '二级',
+  3: '三级',
+  4: '四级',
+  5: '五级',
+};
 
 // endregion
 
@@ -460,6 +471,9 @@ onMounted(() => {
         </template>
         <template #state="{ row }">
           {{ stateText[row.state] }}
+        </template>
+        <template #level="{ row }">
+          {{ levels[row.level * 1] }}
         </template>
         <template #action="{ row }">
           <!-- 查看详情 -->
