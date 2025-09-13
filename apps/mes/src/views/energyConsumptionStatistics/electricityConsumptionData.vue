@@ -11,7 +11,6 @@ import {
   Button,
   Card,
   Col,
-  DirectoryTree,
   Form,
   FormItem,
   RadioButton,
@@ -20,182 +19,231 @@ import {
   Row,
   Select,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
+import {
+  gaugeDropDownBox,
+  getDayYBList,
+  getHourYBList,
+  getMonthYBList,
+  getYearYBList,
+} from '#/api';
 import BasicTblae from '#/util/component/basicTblae.vue';
-
-/**
- * 显示类型
- */
-const showType = ref(1);
-
-// region 查询数据
-
-// 查询参数
-const queryParams = ref<any>({});
-const dataTypeList = [
-  {
-    label: '有功功率',
-    value: 1,
-  },
-  {
-    label: '无功功率',
-    value: 2,
-  },
-  {
-    label: '视在功率',
-    value: 3,
-  },
-  {
-    label: '有功电量',
-    value: 4,
-  },
-  {
-    label: '无功电量',
-    value: 5,
-  },
-  {
-    label: '功率因数',
-    value: 6,
-  },
-  {
-    label: '电压/频率',
-    value: 7,
-  },
-  {
-    label: '电流频率',
-    value: 8,
-  },
-  {
-    label: '总用电曲线',
-    value: 9,
-  },
-];
-// endregion
-
-// region 树形数据
-
-// 树形数据
-const treeData = ref<any>([
-  {
-    title: 'parent 0',
-    key: '0-0',
-    children: [
-      {
-        title: 'leaf 0-0',
-        key: '0-0-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 0-1',
-        key: '0-0-1',
-        isLeaf: true,
-      },
-    ],
-  },
-  {
-    title: 'parent 1',
-    key: '0-1',
-    children: [
-      {
-        title: 'leaf 1-0',
-        key: '0-1-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 1-1',
-        key: '0-1-1',
-        isLeaf: true,
-      },
-    ],
-  },
-]);
-// 展开的节点
-const expandedKeys = ref<string[]>([]);
-// 选中的节点
-const selectedKeys = ref<string[]>([]);
-
-// endregion
 
 // region 图表
 // 图表
 let lineChart: any;
-const data = [
-  { month: 'Jan', city: 'Tokyo', temperature: 7 },
-  { month: 'Jan', city: 'London', temperature: 3.9 },
-  { month: 'Feb', city: 'Tokyo', temperature: 6.9 },
-  { month: 'Feb', city: 'London', temperature: 4.2 },
-  { month: 'Mar', city: 'Tokyo', temperature: 9.5 },
-  { month: 'Mar', city: 'London', temperature: 5.7 },
-  { month: 'Apr', city: 'Tokyo', temperature: 14.5 },
-  { month: 'Apr', city: 'London', temperature: 8.5 },
-  { month: 'May', city: 'Tokyo', temperature: 18.4 },
-  { month: 'May', city: 'London', temperature: 11.9 },
-  { month: 'Jun', city: 'Tokyo', temperature: 21.5 },
-  { month: 'Jun', city: 'London', temperature: 15.2 },
-  { month: 'Jul', city: 'Tokyo', temperature: 25.2 },
-  { month: 'Jul', city: 'London', temperature: 17 },
-  { month: 'Aug', city: 'Tokyo', temperature: 26.5 },
-  { month: 'Aug', city: 'London', temperature: 16.6 },
-  { month: 'Sep', city: 'Tokyo', temperature: 23.3 },
-  { month: 'Sep', city: 'London', temperature: 14.2 },
-  { month: 'Oct', city: 'Tokyo', temperature: 18.3 },
-  { month: 'Oct', city: 'London', temperature: 10.3 },
-  { month: 'Nov', city: 'Tokyo', temperature: 13.9 },
-  { month: 'Nov', city: 'London', temperature: 6.6 },
-  { month: 'Dec', city: 'Tokyo', temperature: 9.6 },
-  { month: 'Dec', city: 'London', temperature: 4.8 },
-];
 
-function chartInit() {
-  lineChart = new Chart({
-    container: 'lineChart',
-    autoFit: true,
-    height: 500,
-  });
-  lineChart
-    .data(data)
-    .encode('x', 'month')
-    .encode('y', 'temperature')
-    .encode('color', 'city')
-    .scale('x', {
-      range: [0, 1],
-    })
-    .scale('y', {
-      nice: true,
-    })
-    .axis('y', { labelFormatter: (d: any) => `${d}°C` });
-
-  lineChart.line().encode('shape', 'smooth');
-
-  lineChart.point().encode('shape', 'point').tooltip(false);
+function chartInit(chartData: any) {
+  if (lineChart) {
+    lineChart.options({
+      data: chartData,
+    });
+  } else {
+    lineChart = new Chart({ container: 'lineChart' });
+    lineChart.options({
+      type: 'view',
+      autoFit: true,
+      inset: 20,
+      data: chartData,
+      encode: { x: 'time', y: 'value', color: 'type' },
+      scale: { x: { range: [0, 1] }, y: { domainMin: 0, nice: true } },
+      children: [
+        {
+          type: 'line',
+          labels: [{ text: 'value', style: { dx: -10, dy: -12 } }],
+          encode: { shape: 'smooth' },
+        },
+        { type: 'point', style: { fill: 'white' }, tooltip: false },
+      ],
+      axis: {
+        y: {
+          title: '电量（kWh）',
+          grid: null,
+          labelFormatter: (d: any) => `${d}`,
+        },
+      },
+    });
+  }
 
   lineChart.render();
 }
 
+function queryChartData() {
+  getRequest().then(({ list }: any) => {
+    const chartData: any = [];
+    list.forEach((item: any) => {
+      chartData.push(
+        {
+          time: item.time,
+          value: item.value,
+          type: '用电量',
+        },
+        {
+          time: item.time,
+          value: item.activePower,
+          type: '有功电量',
+        },
+        {
+          time: item.time,
+          value: item.reactivePower,
+          type: '无功电量',
+        },
+      );
+    });
+    chartInit(chartData);
+  });
+}
 // endregion
 
 // region 表格
 // 表格列配置项
 const columns: any = [
   { title: '序号', type: 'seq', width: 50 }, // 自动生成序号列
-  { field: 'worksheetCode1', title: '字段A', minWidth: 200 },
-  { field: 'worksheetCode2', title: '字段B', minWidth: 200 },
-  { field: 'worksheetCode3', title: '字段C', minWidth: 200 },
-  { field: 'worksheetCode4', title: '字段D', minWidth: 200 },
-  { field: 'worksheetCode5', title: '字段E', minWidth: 200 },
-  { field: 'worksheetCode6', title: '字段F', minWidth: 200 },
-  { field: 'worksheetCode7', title: '字段G', minWidth: 200 },
+  {
+    field: 'equipmentCode',
+    title: '仪表编号',
+    minWidth: 150,
+  },
+  {
+    field: 'equipmentName',
+    title: '仪表名称',
+    minWidth: 150,
+  },
+  {
+    field: 'value',
+    title: '用电量（kWh）',
+    minWidth: 150,
+  },
+  {
+    field: 'activePower',
+    title: '有功电量（kWh）',
+    minWidth: 150,
+  },
+  {
+    field: 'reactivePower',
+    title: '无功电量（kWh）',
+    minWidth: 150,
+  },
+  {
+    field: 'powerFactor',
+    title: '实际功率因数',
+    minWidth: 150,
+  },
+  {
+    field: 'time',
+    title: '日期',
+    minWidth: 150,
+  },
 ];
+let gridApi: any;
 /**
  * 从服务器查询工作站数据的函数。
  * 这个函数用于发送查询请求，并在成功获取数据后更新组件的状态。
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
-    resolve({
-      total: page * pageSize,
-      items: [],
+    getRequest({ page, pageSize }).then(({ list, total }: any) => {
+      resolve({
+        total,
+        items: list,
+      });
     });
+  });
+}
+
+// endregion
+
+// region 获取请求
+// 查询参数
+const queryParams = ref<any>({
+  timeType: 1,
+  equipmentCode: '',
+});
+// 类型列表
+const timeTypeList = ref<any>({
+  2: 'date',
+  3: 'month',
+  4: 'year',
+});
+// 格式化列表
+const timeFormatList = ref<any>({
+  1: 'YYYY-MM-DD HH',
+  2: 'YYYY-MM-DD',
+  3: 'YYYY-MM',
+  4: 'YYYY',
+});
+
+function getRequest(pageMessage?: any) {
+  const params = {
+    ...queryParams.value,
+  };
+  if (pageMessage) {
+    const { page, pageSize } = pageMessage;
+    params.pageSize = pageSize;
+    params.pageNum = page;
+  }
+  if (params.searchTime && params.searchTime.length > 0) {
+    params.startTime = params.searchTime[0].format(
+      timeFormatList.value[params.timeType],
+    );
+    params.endTime = params.searchTime[1].format(
+      timeFormatList.value[params.timeType],
+    );
+    delete params.searchTime;
+  }
+  let ob: any;
+  switch (queryParams.value.timeType) {
+    case 1: {
+      ob = getHourYBList(params);
+      break;
+    }
+    case 2: {
+      ob = getDayYBList(params);
+      break;
+    }
+    case 3: {
+      ob = getMonthYBList(params);
+      break;
+    }
+    case 4: {
+      ob = getYearYBList(params);
+      break;
+    }
+  }
+  return ob;
+}
+
+// endregion
+
+// region 电表查询
+
+// 过滤
+const filterOption = (input: string, option: any) => {
+  return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
+};
+// 电表列表
+const equipmentOptions = ref<any>([]);
+
+function queryMeterData() {
+  gaugeDropDownBox({
+    equipType: 1, // 电表 1, 水表 2, 气表 3
+    equipmentCode: '',
+  }).then((res: any) => {
+    equipmentOptions.value = [];
+    res.forEach((item: any) => {
+      equipmentOptions.value.push({
+        label: `${item.equipmentName}(${item.equipmentCode})`,
+        value: item.equipmentCode,
+      });
+    });
+    if (equipmentOptions.value && equipmentOptions.value.length > 0) {
+      queryParams.value.equipmentCode = equipmentOptions.value[0].value;
+      queryChartData();
+      gridApi.reload();
+    }
   });
 }
 
@@ -203,35 +251,29 @@ function queryData({ page, pageSize }: any) {
 
 // region 生命周期
 onMounted(() => {
-  chartInit();
+  const now = dayjs();
+  queryParams.value.searchTime = [now.subtract(6, 'month'), now];
+  queryMeterData();
 });
 </script>
 
 <template>
   <Page>
-    <RadioGroup v-model:value="showType" button-style="solid">
-      <!-- 电能质量 -->
-      <RadioButton :value="1">
-        {{ $t('electricityConsumptionData.powerQuality') }}
-      </RadioButton>
-
-      <!-- 负荷曲线 -->
-      <RadioButton :value="2">
-        {{ $t('electricityConsumptionData.loadCurve') }}
-      </RadioButton>
-    </RadioGroup>
     <!-- region 查询条件 -->
     <Card class="mb-4 mt-4">
       <Form :model="queryParams" layout="inline">
-        <!-- 数据类型 -->
+        <!-- 设备编号 -->
         <FormItem
-          :label="$t('electricityConsumptionData.dataType')"
+          :label="$t('energyConsumptionAnalysis.deviceNumber')"
           style="margin-bottom: 1em"
         >
           <Select
-            v-model:value="queryParams.searchTime"
-            :options="dataTypeList"
-            class="!w-36"
+            v-model:value="queryParams.equipmentCode"
+            :options="equipmentOptions"
+            show-search
+            allow-clear
+            :filter-option="filterOption"
+            class="!w-48"
           />
         </FormItem>
         <!-- 时间粒度 -->
@@ -244,17 +286,14 @@ onMounted(() => {
             <RadioButton :value="1">
               {{ $t('electricityConsumptionData.hourS') }}
             </RadioButton>
-
             <!-- 日 -->
             <RadioButton :value="2">
               {{ $t('electricityConsumptionData.day') }}
             </RadioButton>
-
             <!-- 月 -->
             <RadioButton :value="3">
               {{ $t('electricityConsumptionData.month') }}
             </RadioButton>
-
             <!-- 年 -->
             <RadioButton :value="4">
               {{ $t('electricityConsumptionData.years') }}
@@ -266,14 +305,24 @@ onMounted(() => {
           :label="$t('useEnergyThroughoutTheEntireSection.timeFrame')"
           style="margin-bottom: 1em"
         >
-          <RangePicker v-model:value="queryParams.searchTime" />
+          <RangePicker
+            v-model:value="queryParams.searchTime"
+            :picker="timeTypeList[queryParams.timeType]"
+            :show-time="queryParams.timeType === 1 ? { format: 'HH' } : false"
+            :format="queryParams.timeType === 1 ? 'YYYY-MM-DD HH' : ''"
+          />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="() => {}"
+            @click="
+              () => {
+                queryChartData();
+                gridApi.reload();
+              }
+            "
           >
             {{ $t('common.search') }}
           </Button>
@@ -285,17 +334,16 @@ onMounted(() => {
     <!-- region 主要内容 -->
     <Card class="mb-4 mt-4">
       <Row>
-        <Col span="8" class="h-full">
-          <DirectoryTree
-            v-model:expanded-keys="expandedKeys"
-            v-model:selected-keys="selectedKeys"
-            :tree-data="treeData"
-          />
-        </Col>
-        <Col span="16">
+        <Col span="12" class="h-full">
           <div id="lineChart"></div>
+        </Col>
+        <Col span="12">
           <!-- region 表格 -->
-          <BasicTblae :columns="columns" :query-data="queryData" />
+          <BasicTblae
+            :columns="columns"
+            :query-data="queryData"
+            @initialization-complete="(args) => (gridApi = args)"
+          />
           <!-- endregion -->
         </Col>
       </Row>

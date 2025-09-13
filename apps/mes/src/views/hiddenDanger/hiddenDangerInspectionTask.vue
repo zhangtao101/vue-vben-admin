@@ -66,7 +66,12 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'area', title: '检查区域', minWidth: 150 },
     { field: 'areaCode', title: '检查项目', minWidth: 150 },
     { field: 'content', title: '检查内容', minWidth: 150 },
-    { field: 'result', title: '结果', minWidth: 150 },
+    {
+      field: 'result',
+      title: '结果',
+      minWidth: 150,
+      slots: { default: 'result' },
+    },
     { field: 'remark', title: '备注', minWidth: 150 },
     { field: 'checkTime', title: '检查时间', minWidth: 150 },
     {
@@ -554,6 +559,13 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #result="{ row }">
+          {{
+            row.result === 0
+              ? $t('hiddenDangerInspectionTask.thereAreNoHiddenDangers')
+              : $t('hiddenDangerInspectionTask.thereAreHiddenDangers')
+          }}
+        </template>
         <template #status="{ row, column }">
           {{
             row[column.field] === 0

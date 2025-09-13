@@ -11,12 +11,12 @@ import {
   DatePicker,
   Form,
   FormItem,
-  Input,
   InputNumber,
   message,
+  Select,
 } from 'ant-design-vue';
 
-import { energyInsert } from '#/api';
+import { energyInsert, gaugeDropDownBox } from '#/api';
 
 const formsRef = ref();
 const formData = ref<any>({
@@ -38,6 +38,9 @@ function deleteLine(index: number) {
   formData.value.energyList.splice(index, 1);
 }
 
+/**
+ * 提交
+ */
 function submit() {
   formsRef.value.validate().then(() => {
     const params = {
@@ -52,6 +55,43 @@ function submit() {
     });
   });
 }
+
+/**
+ * 仪表类型
+ */
+const meterTypeOptions = ref<any>([
+  {
+    label: '水表',
+    value: 2,
+  },
+  {
+    label: '气表',
+    value: 3,
+  },
+]);
+// 过滤
+const filterOption = (input: string, option: any) => {
+  return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
+};
+
+function queryMeterData(row: any) {
+  return (_param: any) => {
+    gaugeDropDownBox({
+      equipType: row.meterType,
+      equipmentCode: '',
+    }).then((res: any) => {
+      row.equipmentOptions = [];
+      res.forEach((item: any) => {
+        row.equipmentOptions.push({
+          label: `${item.equipmentName}(${item.equipmentCode})`,
+          value: item.equipmentCode,
+        });
+      });
+    });
+  };
+}
 </script>
 
 <template>
@@ -65,6 +105,28 @@ function submit() {
       >
         <template v-for="(item, index) in formData.energyList" :key="index">
           <FormItem
+            :name="['energyList', index, 'meterType']"
+            :rules="{
+              required: true,
+              message: '该项为必填字段',
+              trigger: 'change',
+            }"
+            :label="$t('energyConsumptionAnalysis.meterType')"
+            class="mb-2"
+          >
+            <Select
+              v-model:value="item.meterType"
+              :options="meterTypeOptions"
+              @change="
+                () => {
+                  item.equipmentCode = '';
+                  queryMeterData(item)('');
+                }
+              "
+              class="w-full"
+            />
+          </FormItem>
+          <FormItem
             :name="['energyList', index, 'equipmentCode']"
             :rules="{
               required: true,
@@ -74,7 +136,14 @@ function submit() {
             :label="$t('energyConsumptionAnalysis.deviceNumber')"
             class="mb-2"
           >
-            <Input v-model:value="item.equipmentCode" />
+            <Select
+              v-model:value="item.equipmentCode"
+              :options="item.equipmentOptions"
+              show-search
+              :disabled="!item.meterType"
+              :filter-option="filterOption"
+              class="w-full"
+            />
           </FormItem>
           <FormItem
             :name="['energyList', index, 'updateTime']"
@@ -86,7 +155,11 @@ function submit() {
             :label="$t('energyConsumptionAnalysis.collectTime')"
             class="mb-2"
           >
-            <DatePicker v-model:value="item.updateTime" picker="month" />
+            <DatePicker
+              v-model:value="item.updateTime"
+              picker="month"
+              :disabled="!item.meterType"
+            />
           </FormItem>
           <FormItem
             :name="['energyList', index, 'value']"
@@ -98,7 +171,10 @@ function submit() {
             :label="$t('energyConsumptionAnalysis.energyConsumption')"
             class="mb-2"
           >
-            <InputNumber v-model:value="item.value" />
+            <InputNumber
+              v-model:value="item.value"
+              :disabled="!item.meterType"
+            />
           </FormItem>
           <FormItem :wrapper-col="{ span: 18, offset: 6 }">
             <Button class="w-48" danger @click="deleteLine(index)">

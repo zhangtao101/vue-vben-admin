@@ -23,8 +23,8 @@ import dayjs from 'dayjs';
 
 import {
   gaugeDropDownBox,
-  getMonthWaterUsageDataList,
-  getYearWaterUsageDataList,
+  getMonthGasUseDataList,
+  getYearGasUseDataList,
 } from '#/api';
 import BasicTblae from '#/util/component/basicTblae.vue';
 
@@ -51,21 +51,17 @@ function chartInit(chartData: any) {
       type: 'view',
       autoFit: true,
       data: chartData,
-      encode: { x: 'time', y: 'waterUse', color: 'meterName' },
+      encode: { x: 'time', y: 'gasUse', color: 'meterName' },
       scale: { x: { range: [0, 1] }, y: { domainMin: 0, nice: true } },
       children: [
         {
           type: 'line',
-          labels: [{ text: 'waterUse', style: { dx: -10, dy: -12 } }],
+          labels: [{ text: 'gasUse', style: { dx: -10, dy: -12 } }],
         },
         { type: 'point', style: { fill: 'white' }, tooltip: false },
       ],
       axis: {
-        y: { title: '用水量', grid: null, labelFormatter: (d: any) => `${d}T` },
-      },
-      tooltip: {
-        title: 'meterName', // 标题
-        items: [{ channel: 'waterUse', valueFormatter: '.0%' }],
+        y: { title: '用气量', grid: null, labelFormatter: (d: any) => `${d}` },
       },
     });
   }
@@ -90,11 +86,11 @@ function queryChartData() {
   let ob: any;
   switch (params.timeType) {
     case 1: {
-      ob = getMonthWaterUsageDataList(params);
+      ob = getMonthGasUseDataList(params);
       break;
     }
     case 2: {
-      ob = getYearWaterUsageDataList(params);
+      ob = getYearGasUseDataList(params);
       break;
     }
   }
@@ -110,7 +106,7 @@ const columns: any = [
   { title: '序号', type: 'seq', width: 50 }, // 自动生成序号列
   { field: 'meterCode', title: '设备编号', minWidth: 150 },
   { field: 'meterName', title: '设备名称', minWidth: 150 },
-  { field: 'waterUse', title: '用水量', minWidth: 150 },
+  { field: 'gasUse', title: '用气量', minWidth: 150 },
   { field: 'time', title: '日期', minWidth: 150 },
 ];
 let gridApi: any;
@@ -137,11 +133,11 @@ function queryData({ page, pageSize }: any) {
     let ob: any;
     switch (params.timeType) {
       case 1: {
-        ob = getMonthWaterUsageDataList(params);
+        ob = getMonthGasUseDataList(params);
         break;
       }
       case 2: {
-        ob = getYearWaterUsageDataList(params);
+        ob = getYearGasUseDataList(params);
         break;
       }
     }
@@ -169,7 +165,7 @@ const equipmentOptions = ref<any>([]);
 
 function queryMeterData() {
   gaugeDropDownBox({
-    equipType: 2, // 水表 2, 气表 3
+    equipType: 3, // 水表 2, 气表 3
     equipmentCode: '',
   }).then((res: any) => {
     equipmentOptions.value = [];

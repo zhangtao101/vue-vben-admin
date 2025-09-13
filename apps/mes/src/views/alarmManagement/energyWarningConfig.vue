@@ -33,12 +33,12 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addHiddenDangerInspectionPlan,
   listSysPerson,
-  queryHiddenDangerInspectionPlan,
   queryHiddenDangerInspectionType,
   queryOrganizationTree,
   switchPlanStatus,
   updateHiddenDangerInspectionPlan,
 } from '#/api';
+import { getAnEnergyWarning } from '#/api/alarmManagement';
 import { $t } from '#/locales';
 import { flattenTree, queryAuth } from '#/util';
 import CalendarSelection from '#/util/component/calendarSelection.vue';
@@ -50,30 +50,12 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'checkName', title: '专项检查名称', minWidth: 190 },
-    { field: 'manager', title: '负责人', minWidth: 150 },
-    { field: 'startTime', title: '开始时间', minWidth: 150 },
-    { field: 'endTime', title: '结束时间', minWidth: 150 },
-    { field: 'cycle', title: '间隔周期', minWidth: 150 },
-    { field: 'checkType', title: '检查类别', minWidth: 150 },
-    { field: 'calendarName', title: '日历名称', minWidth: 150 },
-    { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
-    { field: 'areaCode', title: '巡检区域', minWidth: 150 },
-    { field: 'area', title: '巡检项目', minWidth: 150 },
-    { field: 'content', title: '巡检内容', minWidth: 150 },
-    {
-      field: 'timeType',
-      title: '检查类别',
-      minWidth: 150,
-      slots: { default: 'timeType' },
-    },
-    {
-      field: 'isUse',
-      fixed: 'right',
-      slots: { default: 'isUse' },
-      title: '计划是否开启',
-      minWidth: 150,
-    },
+    { field: 'partitionName', title: '单元分区名称', minWidth: 190 },
+    { field: 'equipmentCode', title: '仪表编号', minWidth: 150 },
+    { field: 'equipmentName', title: '仪表名称', minWidth: 150 },
+    { field: 'equipmentType', title: '仪表类型', minWidth: 150 },
+    { field: 'waringDay', title: '日用量', minWidth: 150 },
+    { field: 'waringMonth', title: '月用量', minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
@@ -123,7 +105,7 @@ const queryParams = ref<any>({});
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = { ...queryParams.value };
-    queryHiddenDangerInspectionPlan({
+    getAnEnergyWarning({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -472,18 +454,6 @@ onMounted(() => {
           >
             {{ $t('common.create') }}
           </Button>
-        </template>
-
-        <template #timeType="{ row }">
-          <span v-if="row.timeType === 2">
-            {{ $t('riskManagement.special') }}
-          </span>
-          <span v-if="row.timeType === 1">
-            {{ $t('riskManagement.cycle') }}
-          </span>
-          <span v-else-if="row.timeType === 0">
-            {{ $t('riskManagement.daily') }}
-          </span>
         </template>
 
         <template #isUse="{ row }">

@@ -103,12 +103,15 @@ function chartInit(chartData: any = []) {
           type: 'line',
           encode: {
             x: 'time',
-            y: 'dlValue',
+            y: '用电量',
             shape: 'smooth',
           },
           scale: { y: { independent: true } },
           axis: {
-            y: { title: '用电量', grid: null },
+            y: {
+              title: '用电量',
+              grid: null,
+            },
           },
         },
       ],
@@ -159,16 +162,16 @@ function queryChartData() {
       list.forEach((item: any) => {
         chartData.push({
           time: item.time,
-          dlValue: item.dlValue,
-          slValue: 0,
+          用电量: item.dlValue,
+          用水量: 0,
         });
       });
     } else {
       list.forEach((item: any) => {
         chartData.push({
           time: item.time,
-          dlValue: item.dlValue,
-          slValue: item.slValue,
+          用电量: item.dlValue,
+          用水量: item.slValue,
         });
       });
     }

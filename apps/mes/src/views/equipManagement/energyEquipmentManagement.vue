@@ -345,7 +345,13 @@ function downloadTemplate() {
  * 导出
  */
 function exportFile() {
-  batchOut(queryParams.value).then((data: any) => {
+  const params = {
+    ...queryParams.value,
+  };
+  if (params.stat === -1) {
+    delete params.stat;
+  }
+  batchOut(params).then((data: any) => {
     window.open(data, '_blank');
   });
 }
