@@ -12,6 +12,14 @@ export async function getAnEnergyWarning(params: any) {
   );
 }
 /**
+ * 重置用能警告
+ */
+export async function resetConfig(params: any) {
+  return requestClient.delete<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/equipment/warning/delete?${qs.stringify(params)}`,
+  );
+}
+/**
  * 用能警告配置
  */
 export async function useTheEnergyWarningConfiguration(params: any) {

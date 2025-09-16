@@ -1,0 +1,37 @@
+{
+  "id": "5022455",
+  "name": "web",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "3629403",
+      "name": "待处理事项",
+      "font_class": "daichulishixiang",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "12155325",
+      "name": "已处理告警 (1)",
+      "font_class": "yichuligaojing",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "24732581",
+      "name": "预警",
+      "font_class": "yujing",
+      "unicode": "ecb3",
+      "unicode_decimal": 60595
+    },
+    {
+      "icon_id": "39746087",
+      "name": "危险警告",
+      "font_class": "Alert",
+      "unicode": "e7d7",
+      "unicode_decimal": 59351
+    }
+  ]
+}

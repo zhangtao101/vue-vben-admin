@@ -37,3 +37,13 @@ const tokenTheme = computed(() => {
     </App>
   </ConfigProvider>
 </template>
+
+<style lang="scss">
+.icon-web {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+</style>
