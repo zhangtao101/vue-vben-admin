@@ -1,6 +1,6 @@
 {
   "username": "Username",
-  "perName": "Associated personnel",
+  "associatedPersonnel": "Associated personnel",
   "workNumber": "Work number",
   "isEnable": "Status",
   "description": "Description",

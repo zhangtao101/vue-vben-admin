@@ -1,0 +1,18 @@
+{
+  "meterType": "meterType",
+  "Total": "Total",
+  "NotEnabled": "NotEnabled",
+  "Enabled": "Enabled",
+  "InstrumentNumber": "instrumentNumber",
+  "InstrumentName": "instrumentName",
+  "Status": "Status",
+  "unitPartitioning": "unitPartitioning",
+  "brandModel": "brandModel",
+  "magnification": "magnification",
+  "installationAddress": "installationAddress",
+  "systemNumber": "systemNumber",
+  "systemName": "systemName",
+  "systemType": "systemType",
+  "operationalStatus": "operationalStatus",
+  "configuration": "configuration"
+}

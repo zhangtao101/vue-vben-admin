@@ -382,7 +382,9 @@ function queryListOfProductionLines() {
   });
 }
 const filterOption = (input: string, option: any) => {
-  return option.label.toLowerCase().includes(input.toLowerCase());
+  return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
 };
 
 // endregion

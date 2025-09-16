@@ -143,23 +143,6 @@ function queryData({ page, pageSize }: any) {
 // endregion
 
 // region 新增 / 编辑
-/**
- * 维度列表
- */
-const listOfDimensions = ref<any>([
-  {
-    label: '事故发生的可能性(L)',
-    value: '事故发生的可能性(L)',
-  },
-  {
-    label: '暴露于危险环境的频繁程度(E)',
-    value: '暴露于危险环境的频繁程度(E)',
-  },
-  {
-    label: '发生事故产生的后果(C)',
-    value: '发生事故产生的后果(C)',
-  },
-]);
 
 // 是否显示编辑
 const showEdit = ref(false);
@@ -439,24 +422,26 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 维度 -->
+        <!-- 责任人 -->
         <FormItem
-          :label="$t('riskManagement.Dimension')"
+          :label="$t('riskManagement.ResponsiblePerson')"
           style="margin-bottom: 1em"
         >
-          <Select
-            v-model:value="queryParams.dimension"
-            :options="listOfDimensions"
-            allow-clear
-            class="!w-56"
-          />
+          <Input v-model:value="queryParams.responsiblePerson" />
         </FormItem>
-        <!-- 等级 -->
+        <!-- 区域 -->
         <FormItem
-          :label="$t('riskManagement.Level')"
+          :label="$t('riskManagement.RiskLocation')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.level" />
+          <Input v-model:value="queryParams.area" />
+        </FormItem>
+        <!-- 风险种类 -->
+        <FormItem
+          :label="$t('riskManagement.riskType')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.riskType" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

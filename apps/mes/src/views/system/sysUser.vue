@@ -377,7 +377,10 @@ onMounted(() => {
         </FormItem>
 
         <!-- 关联人员 -->
-        <FormItem :label="$t('sysUser.perName')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('sysUser.associatedPersonnel')"
+          style="margin-bottom: 1em"
+        >
           <Input v-model:value="queryParams.perName" />
         </FormItem>
 
@@ -510,7 +513,10 @@ onMounted(() => {
           <Input v-model:value="checkedRow.userName" />
         </FormItem>
         <!-- 关联人员 -->
-        <FormItem :label="$t('sysUser.perName')" name="perName_workNumber">
+        <FormItem
+          :label="$t('sysUser.associatedPersonnel')"
+          name="perName_workNumber"
+        >
           <Select
             v-model:value="checkedRow.perName_workNumber"
             :default-active-first-option="false"
@@ -530,7 +536,7 @@ onMounted(() => {
           <Input v-model:value="checkedRow.workNumber" readonly />
         </FormItem>
         <!-- 状态 -->
-        <FormItem :label="$t('sysUser.isEnable')" name="isEnable">
+        <FormItem :label="$t('sysUser.status')" name="isEnable">
           <RadioGroup v-model:value="checkedRow.isEnable">
             <Radio :value="1">启用</Radio>
             <Radio :value="0">禁用</Radio>

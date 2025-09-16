@@ -31,8 +31,10 @@
   "planCheckEndTime": "计划检查结束日期",
   "planTaskResponsiblePerson": "计划任务负责人",
   "inspectionArea": "巡检区域",
+  "regional": "区域",
   "inspectionItem": "巡检项目",
   "inspectionContent": "巡检内容",
   "status": "状态",
-  "AreaScan": "区域条码"
+  "AreaScan": "区域条码",
+  "riskType": "风险种类"
 }

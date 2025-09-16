@@ -20,6 +20,14 @@ export async function informationOnTheNumberOfTasksUsed() {
   );
 }
 /**
+ * 获取警告类型
+ */
+export async function getTheWarningType() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/simple/andon/alarmType`,
+  );
+}
+/**
  * 处理结果
  */
 export async function processingResults(andonCode: any) {

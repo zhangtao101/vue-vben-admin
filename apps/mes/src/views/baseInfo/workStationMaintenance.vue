@@ -324,7 +324,9 @@ function filterOption(input: string, option: any) {
    * 将选项的标签转换为小写，并检查是否包含用户输入的小写字符串。
    * 这个比较是大小写不敏感的，意味着它会匹配 "abc" 和 "ABC"。
    */
-  return option.label.toLowerCase().includes(input.toLowerCase());
+  return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
 }
 
 /**

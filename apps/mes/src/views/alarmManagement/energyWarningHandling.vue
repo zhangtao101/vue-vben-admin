@@ -22,7 +22,9 @@ import {
   message,
   Modal,
   RadioGroup,
+  RangePicker,
   Row,
+  Select,
   Space,
   Statistic,
   Tooltip,
@@ -32,6 +34,7 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getAWarningMessageFromTheUser,
+  getTheWarningType,
   handleWarningMessages,
   informationOnTheNumberOfTasksUsed,
   processingResults,
@@ -52,12 +55,12 @@ const gridOptions: VxeGridProps<any> = {
     { title: '序号', type: 'seq', width: 50 },
     {
       field: 'equipmentCode',
-      title: '设备编码',
+      title: '仪表编码',
       minWidth: 150,
     },
     {
       field: 'equipmentName',
-      title: '设备名称',
+      title: '仪表名称',
       minWidth: 150,
     },
     {
@@ -287,12 +290,16 @@ const statusOptions = ref([
     value: -1,
   },
   {
-    label: '启用',
+    label: '未处理',
     value: 1,
   },
   {
-    label: '禁用',
-    value: 0,
+    label: '处理中',
+    value: 2,
+  },
+  {
+    label: '已处理',
+    value: 3,
   },
 ]);
 
@@ -307,8 +314,13 @@ function queryData({ page, pageSize }: any) {
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     };
-    if (params.runningStatus === -1) {
-      delete params.runningStatus;
+    if (params.state === -1) {
+      delete params.state;
+    }
+    if (params.searchTime && params.searchTime.length === 2) {
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+      delete params.searchTime;
     }
     getAWarningMessageFromTheUser(params).then(({ total, list }) => {
       // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
@@ -393,6 +405,39 @@ const author = ref<string[]>([]);
 
 // endregion
 
+// region 警告类型
+
+// 警告类型列表
+const alarmTypeOptions = ref<any>([]);
+
+/**
+ * 查询警告类型
+ */
+function queryAlarmType() {
+  getTheWarningType().then((data) => {
+    alarmTypeOptions.value = [];
+    data.forEach((item: any) => {
+      alarmTypeOptions.value.push({
+        label: item,
+        value: item,
+      });
+    });
+  });
+}
+
+/**
+ * 筛选选项
+ * @param input 输入值
+ * @param option 选项
+ * @returns 是否匹配
+ */
+const filterOption = (input: string, option: any) => {
+  return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
+};
+// endregion
+
 // region 初始化
 
 onMounted(() => {
@@ -401,6 +446,7 @@ onMounted(() => {
     author.value = data;
   });
   querySum();
+  queryAlarmType();
 });
 
 // endregion
@@ -543,26 +589,36 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-4 mt-4">
       <Form :model="queryParams" layout="inline">
-        <!-- 系统编号 -->
-        <FormItem :label="$t('equip.systemNumber')" style="margin-bottom: 1em">
-          <Input v-model:value="queryParams.systemNumber" />
+        <!-- 仪表编号 -->
+        <FormItem
+          :label="$t('alarmManagement.meterNumber')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.equipCode" />
         </FormItem>
 
-        <!-- 系统名称 -->
-        <FormItem :label="$t('equip.systemName')" style="margin-bottom: 1em">
-          <Input v-model:value="queryParams.systemName" />
-        </FormItem>
-        <!-- 系统类型 -->
-        <FormItem :label="$t('equip.systemType')" style="margin-bottom: 1em">
-          <Input v-model:value="queryParams.systemType" />
-        </FormItem>
-        <!-- 设备状态 -->
+        <!-- 仪表名称 -->
         <FormItem
-          :label="$t('equip.operationalStatus')"
+          :label="$t('alarmManagement.meterName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.equipName" />
+        </FormItem>
+
+        <!-- 时间范围 -->
+        <FormItem
+          :label="$t('energyConsumptionStatistics.timeFrame')"
+          style="margin-bottom: 1em"
+        >
+          <RangePicker v-model:value="queryParams.searchTime" />
+        </FormItem>
+        <!-- 处理状态 -->
+        <FormItem
+          :label="$t('alarmManagement.processingStatus')"
           style="margin-bottom: 1em"
         >
           <RadioGroup
-            v-model:value="queryParams.runningStatus"
+            v-model:value="queryParams.state"
             :options="statusOptions"
           />
         </FormItem>
@@ -594,6 +650,7 @@ onMounted(() => {
               type="link"
               @click="showDetails(row)"
               :loading="row.loading"
+              v-if="row.status === 3"
             >
               <IconifyIcon
                 icon="mdi:eye"
@@ -642,7 +699,12 @@ onMounted(() => {
       >
         <!-- 警告类型 -->
         <FormItem :label="$t('alarmManagement.warningType')" name="waringType">
-          <Input v-model:value="checkedRow.waringType" />
+          <Select
+            v-model:value="checkedRow.waringType"
+            :options="alarmTypeOptions"
+            show-search
+            :filter-option="filterOption"
+          />
         </FormItem>
         <!-- 处理描述 -->
         <FormItem

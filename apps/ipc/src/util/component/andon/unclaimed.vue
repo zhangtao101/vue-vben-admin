@@ -757,7 +757,9 @@ function queryError() {
  * - 适用于ant-design-vue选择器的filter-option属性
  */
 const filterOption = (input: string, option: any) => {
-  return option.label.toLowerCase().includes(input.toLowerCase());
+  return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
 };
 // endregion
 

@@ -87,7 +87,9 @@ function queryListOfProductionLines() {
  * @returns 是否匹配
  */
 const filterOption = (input: string, option: any) => {
-  return option.label.toLowerCase().includes(input.toLowerCase());
+  return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
 };
 
 // 组件挂载时执行

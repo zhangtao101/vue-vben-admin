@@ -34,7 +34,9 @@ for (let i = 0; i < count; i++) {
       api: fetchOptions,
       class: 'w-full',
       filterOption: (input: string, option: Recordable<any>) => {
-        return option.label.toLowerCase().includes(input.toLowerCase());
+        return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
       },
       labelField: 'name',
       showSearch: true,

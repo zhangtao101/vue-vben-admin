@@ -2,6 +2,7 @@
   "meterNumber": "仪表编号",
   "meterName": "仪表名称",
   "meterType": "仪表类型",
+  "processingStatus": "处理状态",
   "dailyLimit": "日上限",
   "monthlyLimit": "月上限",
   "handlers": "处理人",
