@@ -6,7 +6,5 @@ import { requestClient } from '#/api/request';
  * 获取用户信息
  */
 export async function getUserInfoApi() {
-  return requestClient.get<UserInfo>(
-    `${import.meta.env.VITE_GLOB_MES_USER}/sys/user/getCurrentUser`,
-  );
+  return requestClient.get<UserInfo>('/user/info');
 }

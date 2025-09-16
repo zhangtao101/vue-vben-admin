@@ -118,9 +118,7 @@ The project comes with a default basic request configuration based on `axios`, p
 import { requestClient } from '#/api/request';
 
 export async function getUserInfoApi() {
-  return requestClient.get<UserInfo>(
-    `${import.meta.env.VITE_GLOB_MES_USER}/sys/user/getCurrentUser`,
-  );
+  return requestClient.get<UserInfo>('/user/info');
 }
 ```
 
@@ -152,8 +150,8 @@ export async function saveUserApi(user: UserInfo) {
 ```ts
 import { requestClient } from '#/api/request';
 
-export async function deleteUserApi(user: UserInfo) {
-  return requestClient.delete<boolean>(`/user/${user.id}`, user);
+export async function deleteUserApi(userId: number) {
+  return requestClient.delete<boolean>(`/user/${userId}`);
 }
 ```
 

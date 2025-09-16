@@ -190,9 +190,7 @@ export interface LoginResult {
 
 ```ts
 export async function getUserInfoApi() {
-  return requestClient.get<UserInfo>(
-    `${import.meta.env.VITE_GLOB_MES_USER}/sys/user/getCurrentUser`,
-  );
+  return requestClient.get<UserInfo>('/user/info');
 }
 
 /** 只需要保证登录接口返回值有以下字段即可，多的字段可以自行使用 */

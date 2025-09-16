@@ -1,6 +1,6 @@
 {
   "name": "vben-admin-monorepo",
-  "version": "5.5.6",
+  "version": "5.5.9",
   "private": true,
   "keywords": [
     "monorepo",
@@ -53,7 +53,6 @@
     "lint": "vsh lint",
     "postinstall": "pnpm -r run stub --if-present",
     "preinstall": "npx only-allow pnpm",
-    "prepare": "is-ci || husky",
     "preview": "turbo-run preview",
     "publint": "vsh publint",
     "reinstall": "pnpm clean --del-lock && pnpm install",
@@ -104,10 +103,8 @@
     "cspell": "catalog:",
     "cssnano": "^7.0.6",
     "happy-dom": "catalog:",
-    "husky": "catalog:",
     "is-ci": "catalog:",
     "lefthook": "catalog:",
-    "lint-staged": "catalog:",
     "playwright": "catalog:",
     "rimraf": "catalog:",
     "tailwindcss": "catalog:",
@@ -123,7 +120,7 @@
     "node": ">=20.10.0",
     "pnpm": ">=9.12.0"
   },
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.14.0",
   "pnpm": {
     "peerDependencyRules": {
       "allowedVersions": {

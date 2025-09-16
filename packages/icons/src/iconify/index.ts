@@ -56,3 +56,4 @@ export const MdiHome = createIconifyIcon('mdi:home');
 export const MdQrcodeScan = createIconifyIcon('mdi:qrcode-scan');
 // 完成
 export const CarbonTaskComplete = createIconifyIcon('carbon:task-complete');
+export const RiDingding = createIconifyIcon('ri:dingding-fill');
