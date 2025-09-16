@@ -35,8 +35,8 @@ for (let i = 0; i < count; i++) {
       class: 'w-full',
       filterOption: (input: string, option: Recordable<any>) => {
         return `${option.value}&&${option.label}`
-    .toLowerCase()
-    .includes(input.toLowerCase());
+          .toLowerCase()
+          .includes(input.toLowerCase());
       },
       labelField: 'name',
       showSearch: true,
