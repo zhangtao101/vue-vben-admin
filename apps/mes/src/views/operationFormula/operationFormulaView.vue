@@ -377,7 +377,7 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 路线修改 v-if="author.includes('编辑')"-->
-          <Tooltip >
+          <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" size="small" @click="showFormulaEditing">
               <IconifyIcon

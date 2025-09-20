@@ -22,9 +22,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  excelPathPGStopHZStatistics,
   excelPathSyYlMaterialStatistics,
-  getSyYlMaterialStatistics
+  getSyYlMaterialStatistics,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -256,7 +255,6 @@ function close() {
   details.value = [];
 }
 // endregion
-
 
 // region 文件下载
 
