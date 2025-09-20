@@ -78,7 +78,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'smjValue',
-      title: '能耗水煤浆',
+      title: '能耗水煤浆（KG）',
       // editRender: {},
       // slots: { edit: 'edit_smjValue' },
       minWidth: 150,

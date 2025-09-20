@@ -63,13 +63,19 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'stopTrqValue',
-      title: '卧干停机燃气',
+      title: '卧干停机燃气(M3)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopDlValue',
-      title: '压机停机电能',
+      title: '压机停机电能（KWH)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'stopWgDlValue',
+      title: '卧干停机电能（KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

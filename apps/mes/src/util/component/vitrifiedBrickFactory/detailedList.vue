@@ -82,7 +82,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'wgTrq',
-      title: '卧干器燃气',
+      title: '卧干器燃气(M3)',
       minWidth: 200,
     },
     {

@@ -376,8 +376,8 @@ onMounted(() => {
               <IconifyIcon icon="mdi:eye-outline" class="inline-block size-6" />
             </Button>
           </Tooltip>
-          <!-- 路线修改 -->
-          <Tooltip v-if="author.includes('编辑')">
+          <!-- 路线修改 v-if="author.includes('编辑')"-->
+          <Tooltip >
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" size="small" @click="showFormulaEditing">
               <IconifyIcon

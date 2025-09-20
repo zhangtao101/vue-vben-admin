@@ -87,17 +87,17 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'jlqValue',
-      title: '焦炉气',
+      title: '焦炉气(M3)',
       minWidth: 120,
     },
     {
       field: 'smjValue',
-      title: '水煤浆',
+      title: '水煤浆（KG）',
       minWidth: 120,
     },
     {
       field: 'dlValue',
-      title: '电能',
+      title: '电能(KWH)',
       minWidth: 120,
     },
     {

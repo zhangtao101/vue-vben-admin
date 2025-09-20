@@ -77,7 +77,7 @@ const gridOptions: VxeGridProps<any> = {
       children: [
         {
           field: 'dlValue',
-          title: '电能',
+          title: '电能(KWH)',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -94,7 +94,7 @@ const gridOptions: VxeGridProps<any> = {
       children: [
         {
           field: 'stopDlValue',
-          title: '电能',
+          title: '电能(KWH)',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },

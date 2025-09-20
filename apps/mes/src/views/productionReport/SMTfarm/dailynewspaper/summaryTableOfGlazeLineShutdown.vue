@@ -29,11 +29,41 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '日期', minWidth: 200 },
+    // { field: 'month', title: '日期', minWidth: 200 },
     { field: 'lineName', title: '线号', minWidth: 200 },
     { field: 'typeName', title: '类型', minWidth: 200 },
-    { field: 'stopTime', title: '停机时间合计', minWidth: 200 },
-    { field: 'stopValue', title: '停机燃气', minWidth: 200 },
+    { field: 'stopTime', title: '停机时间合计(H)', minWidth: 200 },
+    { field: 'stopValue', title: '停机燃气(M3)', minWidth: 200 },
+    {
+      title: '客定品新品',
+      children: [
+        {
+          field: 'KDPXPDY',
+          title: '对色打样',
+          minWidth: 150,
+        },
+        {
+          field: 'KDPXPDYNH',
+          title: '对色打样能耗',
+          minWidth: 150,
+        },
+      ],
+    },
+    {
+      title: '产前对样',
+      children: [
+        {
+          field: 'CQDY',
+          title: '产前对样',
+          minWidth: 150,
+        },
+        {
+          field: 'CQDYNH',
+          title: '产前对样能耗',
+          minWidth: 150,
+        },
+      ],
+    },
     {
       title: '工艺停产',
       children: [

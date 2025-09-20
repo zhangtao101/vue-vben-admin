@@ -99,7 +99,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'dlValue',
-      title: '电能',
+      title: '电能(KWH)',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },
@@ -117,7 +117,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'stopTrqValue',
-      title: '停机天然气能耗',
+      title: '停机天然气能耗(M3)',
       minWidth: 120,
       slots: { footer: 'footerData' },
     },

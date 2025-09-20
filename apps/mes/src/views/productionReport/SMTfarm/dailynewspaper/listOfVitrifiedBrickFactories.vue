@@ -78,13 +78,13 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'cxTime',
-      title: '成型时间',
+      title: '成型时间(H)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'wgTrq',
-      title: '卧干器燃气',
+      title: '卧干器燃气(M3)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

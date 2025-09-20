@@ -162,7 +162,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'trquseEnergyNumber',
-      title: '天然气使用量',
+      title: '天然气使用量(M3)',
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
@@ -180,7 +180,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'smjuseEnergyNumber',
-      title: '水煤浆使用量',
+      title: '水煤浆使用量（KG）',
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
@@ -234,7 +234,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'smjperUseNumber',
-      title: '水煤浆单位能耗',
+      title: '水煤浆单位能耗（KG）',
       minWidth: 150,
       slots: { footer: 'footerData' },
     },

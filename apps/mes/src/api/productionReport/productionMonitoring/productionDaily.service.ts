@@ -12,6 +12,14 @@ export async function queryProductionDaily(params: any) {
   );
 }
 /**
+ * 釉料实际损耗率
+ */
+export async function getSyYlMaterialStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getSyYlMaterialStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
  * 查询釉线日报
  */
 export async function queryEnamelDayStatistics(params: any) {
@@ -666,6 +674,14 @@ export async function excelPathPGStopDetailStatistics(params: any) {
 export async function excelPathPGStopHZStatistics(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathPGStopHZStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 163、釉料实际损耗率导出
+ */
+export async function excelPathSyYlMaterialStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathSyYlMaterialStatistics?${qs.stringify(params)}`,
   );
 }
 // endregion

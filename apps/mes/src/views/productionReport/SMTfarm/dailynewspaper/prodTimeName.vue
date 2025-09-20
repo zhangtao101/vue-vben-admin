@@ -43,7 +43,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productCode', title: '产品编码', minWidth: 200 },
     {
       field: 'sctime',
-      title: '烧成时间',
+      title: '烧成时间(H)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -214,7 +214,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'xj',
-      title: '停机时间小计',
+      title: '停机时间小计(H)',
       minWidth: 150,
       slots: { footer: 'footerData' },
     },

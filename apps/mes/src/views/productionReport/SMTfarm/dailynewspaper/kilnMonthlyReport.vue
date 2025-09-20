@@ -97,7 +97,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
-      title: '天然气用量',
+      title: '天然气用量(M3)',
       children: [
         {
           field: 'ylTrqValue',

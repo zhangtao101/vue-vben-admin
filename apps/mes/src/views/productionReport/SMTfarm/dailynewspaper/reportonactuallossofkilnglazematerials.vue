@@ -5,19 +5,27 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MdiSearch } from '@vben/icons';
+import { IconifyIcon, MdiSearch } from '@vben/icons';
 
 import {
   Button,
   Card,
+  Drawer,
   Form,
   FormItem,
   Input,
+  message,
   RangePicker,
+  Table,
+  Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryProductionDaily } from '#/api';
+import {
+  excelPathPGStopHZStatistics,
+  excelPathSyYlMaterialStatistics,
+  getSyYlMaterialStatistics
+} from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -36,216 +44,78 @@ const gridOptions: VxeGridProps<any> = {
       field: 'seq',
       width: 50,
     },
-    { field: 'worksheetCode', title: '产品编号', minWidth: 200 },
-    { field: 'batchCode', title: '产品批号', minWidth: 200 },
+    {
+      field: 'worksheetCode',
+      title: '工单号',
+      minWidth: 200,
+    },
     {
       field: 'productCode',
-      title: `装载产量(M2)`,
+      title: '产品编号',
       minWidth: 150,
     },
     {
       field: 'productName',
-      title: `出窑产量(M2)`,
-      minWidth: 150,
-    },
-    { field: 'workstationCode', title: '釉料理论总单耗(Kg/M2)', minWidth: 150 },
-    {
-      field: 'workstationName',
-      title: '釉料理论总用量（按装载量）(Kg)',
+      title: '产品名称',
       minWidth: 150,
     },
     {
-      field: 'workstationName',
-      title: '釉料理论总用量（按出窑量）(Kg)',
-      minWidth: 150,
-    },
-    { field: 'workstationName', title: '釉料实际总用量(Kg)', minWidth: 150 },
-    {
-      field: 'workstationName',
-      title: '实际损耗（按装载量）(%)',
+      field: 'batchCode',
+      title: '生产批号',
       minWidth: 150,
     },
     {
-      field: 'workstationName',
-      title: '实际损耗（按出窑量）(%)',
+      field: 'inNumber',
+      title: '装载量 M²',
       minWidth: 150,
     },
     {
-      title: '面釉',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
+      field: 'outNumber',
+      title: '出窑量 M²',
+      minWidth: 150,
     },
     {
-      title: '效果釉',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
+      field: 'perUseNumber',
+      title: '理论总单耗 KG/M²',
+      minWidth: 150,
     },
     {
-      title: '干粒',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
+      field: 'inTotalUseNumber',
+      title: '理论装载总用量 KG',
+      minWidth: 150,
     },
     {
-      title: '保护釉',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
+      field: 'outTotalUseNumber',
+      title: '理论出窑总用量 KG',
+      minWidth: 150,
     },
     {
-      title: '印刷釉1',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
+      field: 'totalUseNumber',
+      title: '实际总用量 KG',
+      minWidth: 150,
     },
     {
-      title: '印刷釉1',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
+      field: 'wasteInRate',
+      title: '实际损耗率（装载量）',
+      minWidth: 150,
     },
     {
-      title: '印刷釉2',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
+      field: 'wasteOutRate',
+      title: '实际损耗率（出窑量）',
+      minWidth: 150,
     },
     {
-      title: '印刷釉3',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102H2墨水（黑）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102H1墨水（棕）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102H0墨水（橘黄）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102G9墨水（蓝）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102G8墨水（白）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102H6墨水（深黄）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102H4墨水（剥开）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102H5墨水（包裹红）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
-    },
-    {
-      title: 'YA2102I3墨水（佛山明佳下陷墨水）',
-      children: [
-        { field: 'workstationName', title: '配方编号', minWidth: 150 },
-        { field: 'workstationName', title: '理论单耗(Kg/M2)', minWidth: 150 },
-        { field: 'workstationName', title: '理论用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际用量(Kg)', minWidth: 150 },
-        { field: 'workstationName', title: '实际损耗(%)', minWidth: 150 },
-      ],
+      field: 'action',
+      title: '操作',
+      minWidth: 150,
+      fixed: 'right',
+      slots: {
+        default: 'action',
+      },
     },
   ],
-  footerData: [{ seq: '合计' }],
-  mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 3 }],
   height: 500,
   stripe: true,
-  showFooter: true,
   sortConfig: {
     multiple: true,
   },
@@ -276,24 +146,6 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-/**
- * 获取物料类型的中文描述
- * @param state 物料类型编码编码
- */
-function getMaterialTypeText(state: number) {
-  switch (state) {
-    case 1: {
-      return '原料';
-    }
-    case 2: {
-      return '砖坯';
-    }
-    default: {
-      return '未定义的类型';
-    }
-  }
-}
-
 // endregion
 
 // region 查询数据
@@ -305,18 +157,11 @@ const queryParams = ref({
   processCode: '',
   // 工作站编号
   workstationCode: '',
-  // 工作站名称
-  workstationName: '',
   // 工单号
   worksheetCode: '',
   // 产品料号
   productCode: '',
-  // 产品名称
-  productName: '',
 });
-
-// 汇总数据
-const collect = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -329,13 +174,12 @@ function queryData({ page, pageSize }: any) {
       params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
-    queryProductionDaily({
+    getSyYlMaterialStatistics({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ statisticsDtos: { total, list }, ...p }) => {
-        collect.value = p;
+      .then(({ list, total }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
@@ -345,6 +189,86 @@ function queryData({ page, pageSize }: any) {
       .catch((error) => {
         reject(error);
       });
+  });
+}
+// endregion
+
+// region 查看详情
+const details = ref<any>({});
+// 是否显示抽屉
+const showDrawer = ref(false);
+const columns = [
+  {
+    title: '物料编号',
+    dataIndex: 'materialCode',
+    key: 'materialCode',
+  },
+  {
+    title: '物料名称',
+    dataIndex: 'materialName',
+    key: 'materialName',
+  },
+  {
+    title: '配方编号',
+    dataIndex: 'productCode',
+    key: 'productCode',
+  },
+  {
+    title: '理论单耗(KG/M2)',
+    dataIndex: 'perUseNumber',
+    key: 'perUseNumber',
+  },
+  {
+    title: '理论用量(KG)',
+    dataIndex: 'standardUseNumber',
+    key: 'standardUseNumber',
+  },
+  {
+    title: '实际用量(KG)',
+    dataIndex: 'useNumber',
+    key: 'useNumber',
+  },
+  {
+    title: '实际损耗',
+    dataIndex: 'wasteRate',
+    key: 'wasteRate',
+  },
+];
+
+/**
+ * 查看详情
+ * @param row 表格行数据
+ */
+function showDetails(row: any) {
+  if (row.mateiralDtos && row.mateiralDtos.length > 0) {
+    details.value = [...row.mateiralDtos];
+    showDrawer.value = true;
+  } else {
+    message.warning('暂无详情');
+  }
+}
+
+/**
+ * 关闭抽屉
+ */
+function close() {
+  showDrawer.value = false;
+  details.value = [];
+}
+// endregion
+
+
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  excelPathSyYlMaterialStatistics(params).then((data) => {
+    window.open(data);
   });
 }
 
@@ -395,13 +319,6 @@ onMounted(() => {
         >
           <Input v-model:value="queryParams.workstationCode" />
         </FormItem>
-        <!-- 工作站编号 -->
-        <FormItem
-          :label="$t('productionDaily.workstationName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.workstationName" />
-        </FormItem>
 
         <!-- 工单号 -->
         <FormItem
@@ -417,14 +334,6 @@ onMounted(() => {
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.productCode" />
-        </FormItem>
-
-        <!-- 产品名称 -->
-        <FormItem
-          :label="$t('productionDaily.productName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.productName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -443,15 +352,46 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
-        <template #materialType="{ row }">
-          <span> {{ getMaterialTypeText(row.materialType) }} </span>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
         </template>
-        <template #footerData="{ column }">
-          <span> {{ collect[column.field] }} </span>
+        <template #action="{ row }">
+          <!-- 查看 -->
+          <Tooltip>
+            <template #title>
+              {{ $t('common.view') }}
+            </template>
+            <Button type="link" @click="showDetails(row)">
+              <IconifyIcon
+                icon="mdi:eye"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
         </template>
       </Grid>
     </Card>
     <!-- endregion -->
+
+    <Drawer
+      v-model:open="showDrawer"
+      height="80%"
+      class="custom-class"
+      placement="top"
+      :title="$t('common.view')"
+      @close="close"
+    >
+      <Table
+        :columns="columns"
+        :data-source="details"
+        bordered
+        :pagination="false"
+        :scroll="{ y: 400 }"
+      />
+    </Drawer>
   </Page>
 </template>
 

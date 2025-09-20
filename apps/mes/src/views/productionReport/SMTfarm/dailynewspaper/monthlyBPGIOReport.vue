@@ -207,7 +207,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: '',
-      title: '停窑燃气',
+      title: '停窑燃气(M3)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

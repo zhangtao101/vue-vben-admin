@@ -57,7 +57,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'stopDlValue',
-      title: '停机电能',
+      title: '停机电能（KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

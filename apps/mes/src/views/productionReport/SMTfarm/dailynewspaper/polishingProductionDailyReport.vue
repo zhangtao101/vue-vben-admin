@@ -59,6 +59,12 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'inReportNumberP',
+      title: '领用量（片）',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       field: 'inReportNumberM2',
       title: '领用量（M2）',
       minWidth: 200,
@@ -67,12 +73,6 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'actualProductionP',
       title: '实际生产量(片)',
-      minWidth: 200,
-      slots: { footer: 'footerData' },
-    },
-    {
-      field: 'inReportNumberP',
-      title: '领用量（片）',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
