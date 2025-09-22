@@ -13,11 +13,13 @@ import {
   Card,
   Col,
   Dropdown,
+  FloatButton,
   InputNumber,
   Menu,
   MenuItem,
   message,
   Modal,
+  Popover,
   RadioButton,
   RadioGroup,
   Row,
@@ -591,25 +593,11 @@ function processChange(item: any) {
 
 // endregion
 
-// region 工步执行
-// region 收缩
-// 工步执行是否收缩（true: 折叠状态，false: 展开状态）
-const workStepExecutionContraction = ref(true);
-
-/**
- * 切换工步执行区域展开/折叠状态
- * 通过取反当前收缩状态值实现展开折叠切换
- */
-function workStepExecutionContractionChange() {
-  workStepExecutionContraction.value = !workStepExecutionContraction.value;
-}
-// endregion
-
-// endregion
-
 // region 页面缩放
 // 定义一个响应式变量，用于存储当前的缩放比例，默认值为 80（表示 80% 的缩放比例）
 const zoomSize = ref(100);
+// 是否显示输入框
+const isZoom = ref(false);
 
 // 定义一个响应式变量，用于存储需要缩放的页面对象（DOM 元素）
 const page = ref();
@@ -630,6 +618,54 @@ function zoom(size: any) {
 watch(theSelectedOperation, () => {
   currentWorkingStep.value = {};
 });
+// endregion
+
+// region 操作全屏
+// 是否全屏
+const isItFullScreen = ref(false);
+/**
+ * 全屏显示组件
+ */
+function fullScreen() {
+  const el: any = document.querySelector('#stepExecution');
+  if (el) {
+    if (el.requestFullscreen) {
+      // 检查并调用标准的退出全屏方法
+      if (isItFullScreen.value) (document as any).exitFullscreen();
+      else el.requestFullscreen();
+    } else if (el.mozRequestFullScreen) {
+      // Firefox特定方法
+      if (isItFullScreen.value) (document as any).mozCancelFullScreen();
+      else el.mozRequestFullScreen();
+    } else if (el.webkitRequestFullscreen) {
+      // Chrome、Safari等WebKit内核浏览器特定方法
+      if (isItFullScreen.value) (document as any).webkitExitFullscreen();
+      else el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) {
+      // IE/Edge特定方法
+      if (isItFullScreen.value) (document as any).msExitFullscreen();
+      else el.msRequestFullscreen();
+    }
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari/Chrome
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange); // Firefox
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange); // IE
+  }
+}
+
+// 监听全屏变化事件
+function handleFullscreenChange() {
+  isItFullScreen.value = !!document.fullscreenElement;
+  if (!isItFullScreen.value) {
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.removeEventListener(
+      'webkitfullscreenchange',
+      handleFullscreenChange,
+    );
+    document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+  }
+}
 // endregion
 
 // 在组件挂载完成后执行的操作
@@ -657,13 +693,34 @@ onBeforeUnmount(() => {
     <!-- 固定在页面右上角的缩放控件 -->
     <div class="fixed right-[20px] top-[110px] z-[999]">
       <!-- 输入数字组件，用于调整页面缩放比例 -->
-      <InputNumber
-        v-model:value="zoomSize"
-        :min="50"
-        :max="200"
-        addon-after="%"
-        @change="zoom"
-      />
+
+      <Popover
+        v-model:open="isZoom"
+        title="缩放比例"
+        trigger="click"
+        placement="topRight"
+      >
+        <template #content>
+          <InputNumber
+            v-model:value="zoomSize"
+            :min="50"
+            :max="200"
+            addon-after="%"
+            @change="zoom"
+          />
+        </template>
+
+        <FloatButton
+          type="primary"
+          shape="circle"
+          :style="{ right: '24px', bottom: '96px' }"
+          @click="isZoom = true"
+        >
+          <template #icon>
+            <IconifyIcon icon="mdi:image-size-select-small" class="text-xl" />
+          </template>
+        </FloatButton>
+      </Popover>
     </div>
     <!-- 页面主体内容容器，引用 page 用于缩放操作 -->
     <div ref="page" class="w-full">
@@ -760,25 +817,28 @@ onBeforeUnmount(() => {
       <!-- 行容器，用于布局作业信息标题和收缩按钮 -->
       <Row class="mb-4">
         <!-- 列容器，占据 23 格宽度，显示作业信息标题 -->
-        <Col :span="23" class="flex">
+        <Col :span="24">
           <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.jobInformation') }}
           </span>
-        </Col>
-        <!-- 列容器，占据 1 格宽度，显示收缩/展开按钮 -->
-        <Col :span="1">
-          <!-- 展开按钮 -->
-          <MdiChevronDown
-            class="float-right inline-block cursor-pointer text-xl"
-            v-if="!jobInformationContraction"
+
+          <Button
+            type="link"
             @click="jobInformationContractionChange"
-          />
-          <!-- 收缩按钮 -->
-          <MdiChevronUp
-            class="float-right inline-block cursor-pointer text-xl"
-            v-else
-            @click="jobInformationContractionChange"
-          />
+            class="float-right"
+          >
+            <!-- 展开按钮 -->
+            <MdiChevronDown
+              v-if="!jobInformationContraction"
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+
+            <!-- 收缩按钮 -->
+            <MdiChevronUp
+              v-else
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+          </Button>
         </Col>
       </Row>
       <!-- 卡片容器，当作业信息未收缩时显示 -->
@@ -890,25 +950,28 @@ onBeforeUnmount(() => {
       <!-- 行容器，用于布局工艺路线标题和收缩按钮 -->
       <Row class="mb-4">
         <!-- 列容器，占据 23 格宽度，显示工艺路线标题 -->
-        <Col :span="23" class="flex">
+        <Col :span="24">
           <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.processRoute') }}
           </span>
-        </Col>
-        <!-- 列容器，占据 1 格宽度，显示收缩/展开按钮 -->
-        <Col :span="1">
+
           <!-- 展开按钮 -->
-          <MdiChevronDown
-            class="float-right inline-block cursor-pointer text-xl"
-            v-if="!processShrinkage"
+          <Button
+            type="link"
             @click="processShrinkageChange"
-          />
-          <!-- 收缩按钮 -->
-          <MdiChevronUp
-            class="float-right inline-block cursor-pointer text-xl"
-            v-else
-            @click="processShrinkageChange"
-          />
+            class="float-right"
+          >
+            <!-- 展开按钮 -->
+            <MdiChevronDown
+              v-if="!processShrinkage"
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+            <!-- 收缩按钮 -->
+            <MdiChevronUp
+              v-else
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+          </Button>
         </Col>
       </Row>
       <!-- 加载状态组件，当工艺路线列表加载时显示加载动画 -->
@@ -965,18 +1028,14 @@ onBeforeUnmount(() => {
       <!-- 行容器，用于布局操作事项标题和操作事项选择器 -->
       <Row class="mb-4">
         <!-- 列容器，占据 23 格宽度，显示操作事项标题和选择器 -->
-        <Col :span="23" class="flex">
+        <Col :span="24">
           <!-- 显示操作事项标题，带有蓝色边框 -->
           <span class="mr-4 border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.operationalMatters') }}
           </span>
 
           <!-- 操作事项选择器，使用单选按钮组 -->
-          <RadioGroup
-            v-model:value="theSelectedOperation"
-            button-style="solid"
-            class="float-right"
-          >
+          <RadioGroup v-model:value="theSelectedOperation" button-style="solid">
             <!-- 循环渲染单选按钮 -->
             <RadioButton
               :value="item.id"
@@ -992,21 +1051,24 @@ onBeforeUnmount(() => {
               {{ item.opTypeName }}
             </RadioButton>
           </RadioGroup>
-        </Col>
-        <!-- 列容器，占据 1 格宽度，显示收缩/展开按钮 -->
-        <Col :span="1">
+
           <!-- 展开按钮 -->
-          <MdiChevronDown
-            class="float-right inline-block cursor-pointer text-xl"
-            v-if="!operationEventShrinkage"
+          <Button
+            type="link"
             @click="operationEventShrinkageChange"
-          />
-          <!-- 收缩按钮 -->
-          <MdiChevronUp
-            class="float-right inline-block cursor-pointer text-xl"
-            v-else
-            @click="operationEventShrinkageChange"
-          />
+            class="float-right"
+          >
+            <!-- 展开按钮 -->
+            <MdiChevronDown
+              v-if="!operationEventShrinkage"
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+            <!-- 收缩按钮 -->
+            <MdiChevronUp
+              v-else
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+          </Button>
         </Col>
       </Row>
       <!-- 卡片容器，当操作事项收缩时显示操作事项组件 -->
@@ -1026,46 +1088,59 @@ onBeforeUnmount(() => {
 
       <!--- region 工步执行  -->
       <!-- 行容器，用于布局工步执行标题和收缩按钮 -->
-      <Row class="mb-4">
-        <!-- 列容器，占据 4 格宽度，显示工步执行标题 -->
-        <Col :span="12">
-          <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
-            {{ $t('productionOperation.workStepExecution') }}
-            ___
-            {{ theCurrentlySelectedWorkOrderNumber || '' }}
-          </span>
-        </Col>
-        <!-- 列容器，占据 1 格宽度，向右偏移 19 格，显示收缩/展开按钮 -->
-        <Col :span="1" :offset="11">
-          <!-- 展开按钮 -->
-          <MdiChevronDown
-            class="float-right inline-block cursor-pointer text-xl"
-            v-if="!workStepExecutionContraction"
-            @click="workStepExecutionContractionChange"
+      <div
+        id="stepExecution"
+        class="bg-[#f1f3f6]"
+        :class="{
+          'h-full overflow-y-auto pb-8': isItFullScreen,
+        }"
+      >
+        <Row class="mb-4">
+          <!-- 列容器，占据 4 格宽度，显示工步执行标题 -->
+          <Col :span="24">
+            <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
+              {{ $t('productionOperation.workStepExecution') }}
+              ___
+              {{ theCurrentlySelectedWorkOrderNumber || '' }}
+            </span>
+
+            <!-- 全屏按钮 -->
+            <Button
+              type="link"
+              @click="fullScreen()"
+              class="absolute right-0 top-0"
+            >
+              <IconifyIcon
+                :icon="
+                  isItFullScreen ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'
+                "
+                class="inline-block align-middle text-4xl"
+              />
+            </Button>
+            <OperationalMatters
+              :details-id="theSelectedOperation"
+              :type="3"
+              :worksheet-code="theCurrentlySelectedWorkOrderNumber"
+              :current-index="currentWorkingStep.index"
+              @current-change="workStepConversion"
+              v-if="isItFullScreen"
+            />
+          </Col>
+        </Row>
+        <!-- 卡片容器，当工步执行收缩时显示工步执行组件 -->
+        <Card class="mb-5 min-h-72">
+          <StepExecution
+            :workstation-code="selectedWorkstation"
+            :equip-code="theSelectedProcessEquipment"
+            :worksheet-code="theCurrentlySelectedWorkOrderNumber"
+            :product-code="theSelectedWorkOrder.productCode"
+            :product-name="theSelectedWorkOrder.productName"
+            :binding-id="checkedProcessId"
+            :step="currentWorkingStep"
+            v-if="currentWorkingStep"
           />
-          <!-- 收缩按钮 -->
-          <MdiChevronUp
-            class="float-right inline-block cursor-pointer text-xl"
-            v-else
-            @click="workStepExecutionContractionChange"
-          />
-        </Col>
-      </Row>
-      <!-- 卡片容器，当工步执行收缩时显示工步执行组件 -->
-      <Card class="mb-5 min-h-72" v-if="workStepExecutionContraction">
-        <StepExecution
-          :workstation-code="selectedWorkstation"
-          :equip-code="theSelectedProcessEquipment"
-          :worksheet-code="theCurrentlySelectedWorkOrderNumber"
-          :product-code="theSelectedWorkOrder.productCode"
-          :product-name="theSelectedWorkOrder.productName"
-          :binding-id="checkedProcessId"
-          :step="currentWorkingStep"
-          :details-id="theSelectedOperation"
-          @current-change="workStepConversion"
-          v-if="currentWorkingStep"
-        />
-      </Card>
+        </Card>
+      </div>
       <!-- endregion -->
     </div>
 

@@ -295,12 +295,12 @@ onBeforeUnmount(() => {
         <div
           class="inline-block h-full w-56 overflow-y-auto border bg-white shadow-lg"
         >
-          <RadioGroup v-model:value="current">
+          <RadioGroup v-model:value="current" class="w-full">
             <Radio
               v-for="(item, index) of stepBar"
               :key="index"
               :value="index"
-              class="block w-full px-2 py-1"
+              class="block w-full px-2 py-1 text-xl font-black"
             >
               {{ item.title }}
             </Radio>
