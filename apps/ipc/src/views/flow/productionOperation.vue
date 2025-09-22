@@ -506,7 +506,6 @@ function queryProcess(workstationCode: string, worksheetCode: string) {
 
 /**
  * 获取当前第一个可以执行的工步
- * @returns
  */
 function getCurrentWorkingStep() {
   for (const item of processRouteList.value) {
@@ -625,6 +624,7 @@ const page = ref();
 function zoom(size: any) {
   // 将缩放比例值设置到页面对象的 `style.zoom` 属性中，格式为百分比字符串
   page.value.style.zoom = `${size}%`;
+  localStorage.setItem('zoomSize', size);
 }
 
 watch(theSelectedOperation, () => {
@@ -634,6 +634,8 @@ watch(theSelectedOperation, () => {
 
 // 在组件挂载完成后执行的操作
 onMounted(() => {
+  const zoomSizeStr = localStorage.getItem('zoomSize');
+  zoomSize.value = zoomSizeStr ? Number.parseInt(zoomSizeStr, 10) : 100;
   // 查询生产线列表
   queryListOfProductionLines();
   // 根据当前的缩放比例值（zoomSize.value）设置页面的缩放
@@ -659,8 +661,7 @@ onBeforeUnmount(() => {
         v-model:value="zoomSize"
         :min="50"
         :max="200"
-        :formatter="(value: any) => `${value}%`"
-        :parser="(value: any) => value.replace('%', '')"
+        addon-after="%"
         @change="zoom"
       />
     </div>
@@ -1014,6 +1015,7 @@ onBeforeUnmount(() => {
           :details-id="theSelectedOperation"
           :type="1"
           :worksheet-code="theCurrentlySelectedWorkOrderNumber"
+          :current-index="currentWorkingStep?.index"
           @current-change="workStepConversion"
           v-if="theSelectedOperation && theCurrentlySelectedWorkOrderNumber"
         />
@@ -1026,13 +1028,15 @@ onBeforeUnmount(() => {
       <!-- 行容器，用于布局工步执行标题和收缩按钮 -->
       <Row class="mb-4">
         <!-- 列容器，占据 4 格宽度，显示工步执行标题 -->
-        <Col :span="4">
+        <Col :span="12">
           <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
             {{ $t('productionOperation.workStepExecution') }}
+            ___
+            {{ theCurrentlySelectedWorkOrderNumber || '' }}
           </span>
         </Col>
         <!-- 列容器，占据 1 格宽度，向右偏移 19 格，显示收缩/展开按钮 -->
-        <Col :span="1" :offset="19">
+        <Col :span="1" :offset="11">
           <!-- 展开按钮 -->
           <MdiChevronDown
             class="float-right inline-block cursor-pointer text-xl"
@@ -1057,6 +1061,8 @@ onBeforeUnmount(() => {
           :product-name="theSelectedWorkOrder.productName"
           :binding-id="checkedProcessId"
           :step="currentWorkingStep"
+          :details-id="theSelectedOperation"
+          @current-change="workStepConversion"
           v-if="currentWorkingStep"
         />
       </Card>

@@ -306,25 +306,6 @@ function queryData() {
 }
 
 /**
- * 获取值的 class
- * @returns 值的 class 字符串
- */
-function getValueClass(isResult?: number) {
-  let css = '';
-  switch (isResult) {
-    case -1: {
-      css = 'bg-red-500 text-white';
-      break;
-    }
-    case 1: {
-      css = 'bg-green-500 text-[#444]';
-      break;
-    }
-  }
-  return `align-middle inline-block border rounded-xl p-2 text-center w-72 ${css}`;
-}
-
-/**
  * 组件挂载后执行的钩子函数，会在组件挂载完成后调用 queryData 函数获取数据
  */
 onMounted(() => {
@@ -336,54 +317,54 @@ onMounted(() => {
   <!-- 根据 spinning 的值显示加载动画 -->
   <Spin :spinning="spinning">
     <!-- 定义一个行布局 -->
-    <Row v-if="showTypeNumber === 30">
+    <!--    <Row v-if="showTypeNumber === 30">
       <Col span="24">
-        <!-- 显示工单编号的容器 -->
+        &lt;!&ndash; 显示工单编号的容器 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 工单编号 -->
+          &lt;!&ndash; 工单编号 &ndash;&gt;
           <span class="mr-4 inline-block w-48 p-2 text-right">
             {{ $t('productionOperation.workOrderNumberInExecution') }}：
           </span>
-          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          &lt;!&ndash; 显示工单编号的值，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ details.proceWorksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 显示产品编号的容器 -->
+        &lt;!&ndash; 显示产品编号的容器 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品编号 -->
+          &lt;!&ndash; 产品编号 &ndash;&gt;
           <span class="mr-4 inline-block w-48 p-2 text-right">
             {{ $t('productionOperation.productNumberInExecution') }}：
           </span>
-          <!-- 显示产品编号的值，无结果时显示默认提示 -->
+          &lt;!&ndash; 显示产品编号的值，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ details.procePorductCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 显示产品名称的容器 -->
+        &lt;!&ndash; 显示产品名称的容器 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品名称 -->
+          &lt;!&ndash; 产品名称 &ndash;&gt;
           <span class="mr-4 inline-block w-48 p-2 text-right">
             {{ $t('productionOperation.productNameInExecution') }}：
           </span>
-          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          &lt;!&ndash; 显示产品名称的值，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ details.proceProdutName || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 显示产品名称的容器 -->
+        &lt;!&ndash; 显示产品名称的容器 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品名称 -->
+          &lt;!&ndash; 产品名称 &ndash;&gt;
           <span class="mr-4 inline-block w-48 p-2 text-right">
             {{ $t('productionOperation.productModelInExecution') }}：
           </span>
-          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          &lt;!&ndash; 显示产品名称的值，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ details.proceProductModel || $t('productionOperation.none') }}
           </span>
         </div>
       </Col>
-    </Row>
+    </Row>-->
     <!-- 定义一个行布局 -->
     <Row>
       <!-- 定义一个列，占 11 格 -->

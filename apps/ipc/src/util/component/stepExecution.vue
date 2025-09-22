@@ -5,6 +5,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button } from 'ant-design-vue';
 
+import OperationalMatters from '#/util/component/operationalMatters.vue';
 import AndonCall from '#/util/component/steps/andonCall.vue';
 import DeviceClearing from '#/util/component/steps/deviceClearing.vue';
 import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
@@ -68,7 +69,17 @@ defineProps({
     type: String,
     default: '',
   },
+  // 选中的操作，用于标识当前选中的操作
+  detailsId: {
+    type: Number,
+    default: 0,
+  },
 });
+
+/**
+ * 定义事件发射器，用于触发 'currentChange' 事件通知父组件当前步骤的变化
+ */
+const emit = defineEmits(['currentChange']);
 
 // 是否全屏
 const isItFullScreen = ref(false);
@@ -98,18 +109,34 @@ function fullScreen() {
   }
   isItFullScreen.value = !isItFullScreen.value;
 }
+
+function workStepConversion(data: any) {
+  emit('currentChange', data);
+}
 </script>
 
 <template>
-  <div id="stepExecution" class="bg-white">
-    <div class="text-right" v-if="![3, 36].includes(step.type)">
-      <Button type="link" @click="fullScreen()">
-        <IconifyIcon
-          :icon="isItFullScreen ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'"
-          class="inline-block align-middle text-4xl"
-        />
-      </Button>
-    </div>
+  <div
+    id="stepExecution"
+    class="relative overflow-y-auto bg-white pt-6"
+    :class="{
+      'h-full pb-8': isItFullScreen,
+    }"
+  >
+    <Button type="link" @click="fullScreen()" class="absolute right-0 top-0">
+      <IconifyIcon
+        :icon="isItFullScreen ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'"
+        class="inline-block align-middle text-4xl"
+      />
+    </Button>
+    <OperationalMatters
+      :details-id="detailsId"
+      :type="3"
+      :worksheet-code="worksheetCode"
+      :current-index="step.index"
+      @current-change="workStepConversion"
+      v-if="isItFullScreen"
+    />
     <!-- 资源检验：根据工步类型为 1 时，渲染资源检验组件，并传递相关参数 -->
     <ResourceInspection
       :workstation-code="workstationCode"

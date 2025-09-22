@@ -65,7 +65,7 @@ function getLabelClass() {
  * 获取值的class
  */
 function getValueClass() {
-  return 'inline-block border p-2 text-center w-72';
+  return 'inline-block border p-2 text-center w-72 align-middle';
 }
 /**
  * 详情
@@ -434,46 +434,46 @@ onBeforeUnmount(() => {
           </span>
         </div>
       </Col>
-      <Row class="border">
-        <Col :span="24">
-          <!-- region 实时数采 -->
-          <div class="mb-4 inline-block">
-            <span :class="getLabelClass()" class="font-black">
-              {{ $t('productionOperation.realTimeDataAcquisition') }}：
+    </Row>
+    <Row class="border">
+      <Col :span="24">
+        <!-- region 实时数采 -->
+        <div class="mb-4 inline-block">
+          <span :class="getLabelClass()" class="font-black">
+            {{ $t('productionOperation.realTimeDataAcquisition') }}：
+          </span>
+        </div>
+      </Col>
+      <Col :span="24" class="pt-5">
+        <!-- endregion -->
+        <div class="inline-block">
+          <!-- region 期初数值 -->
+          <div class="mb-4 mr-8 inline-block">
+            <span :class="getLabelClass()">
+              {{ $t('productionOperation.initialValue') }}：
+            </span>
+            <span :class="getValueClass()">
+              {{ numericalValue.initNumber || 0 }}
             </span>
           </div>
-        </Col>
-        <Col :span="24" class="pt-5">
           <!-- endregion -->
-          <div class="inline-block">
-            <!-- region 期初数值 -->
-            <div class="mb-4 mr-8 inline-block">
-              <span :class="getLabelClass()">
-                {{ $t('productionOperation.initialValue') }}：
-              </span>
-              <span :class="getValueClass()">
-                {{ numericalValue.initNumber || 0 }}
-              </span>
-            </div>
-            <!-- endregion -->
-            <!-- region 期末数值 -->
-            <div class="mb-4 mr-8 inline-block">
-              <span :class="getLabelClass()">
-                {{ $t('productionOperation.endOfTermValue') }}：
-              </span>
-              <span :class="getValueClass()">
-                {{ numericalValue.endNumber || 0 }}
-              </span>
-            </div>
-            <!-- endregion -->
-            <!-- region 报工锁定 -->
-            <Button type="primary" @click="lock">
-              {{ $t('productionOperation.workReportingLock') }}
-            </Button>
-            <!-- endregion -->
+          <!-- region 期末数值 -->
+          <div class="mb-4 mr-8 inline-block">
+            <span :class="getLabelClass()">
+              {{ $t('productionOperation.endOfTermValue') }}：
+            </span>
+            <span :class="getValueClass()">
+              {{ numericalValue.endNumber || 0 }}
+            </span>
           </div>
-        </Col>
-      </Row>
+          <!-- endregion -->
+          <!-- region 报工锁定 -->
+          <Button type="primary" @click="lock">
+            {{ $t('productionOperation.workReportingLock') }}
+          </Button>
+          <!-- endregion -->
+        </div>
+      </Col>
     </Row>
     <Grid>
       <!-- 人工复核 -->

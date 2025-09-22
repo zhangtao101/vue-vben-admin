@@ -107,7 +107,7 @@ const gridOptions: VxeGridProps<any> = {
     // import: true,
     // export: true,
     refresh: true,
-    zoom: true,
+    zoom: false,
   },
 };
 
@@ -215,7 +215,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Grid>
+  <Grid class="mt-4">
     <template #action="{ row }">
       <!-- 进站 -->
       <Tooltip>

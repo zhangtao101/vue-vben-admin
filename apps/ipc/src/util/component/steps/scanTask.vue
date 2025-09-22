@@ -476,54 +476,54 @@ onBeforeUnmount(() => {
   <!-- 根据 spinning 的值显示加载动画 -->
   <Spin :spinning="spinning">
     <!-- 定义一个行布局 -->
-    <Row>
+    <!--    <Row>
       <Col span="24">
-        <!-- 显示工单编号的容器 -->
+        &lt;!&ndash; 显示工单编号的容器 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 工单编号 -->
+          &lt;!&ndash; 工单编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.workOrderNumberInExecution') }}：
           </span>
-          <!-- 显示工单编号的值，无结果时显示默认提示 -->
+          &lt;!&ndash; 显示工单编号的值，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ details.proceWorksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 显示产品编号的容器 -->
+        &lt;!&ndash; 显示产品编号的容器 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品编号 -->
+          &lt;!&ndash; 产品编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNumberInExecution') }}：
           </span>
-          <!-- 显示产品编号的值，无结果时显示默认提示 -->
+          &lt;!&ndash; 显示产品编号的值，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ details.procePorductCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 显示产品名称的容器 -->
+        &lt;!&ndash; 显示产品名称的容器 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品名称 -->
+          &lt;!&ndash; 产品名称 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNameInExecution') }}：
           </span>
-          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          &lt;!&ndash; 显示产品名称的值，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ details.proceProdutName || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 显示产品名称的容器 -->
+        &lt;!&ndash; 显示产品名称的容器 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 产品名称 -->
+          &lt;!&ndash; 产品名称 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productModelInExecution') }}：
           </span>
-          <!-- 显示产品名称的值，无结果时显示默认提示 -->
+          &lt;!&ndash; 显示产品名称的值，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ details.proceProductModel || $t('productionOperation.none') }}
           </span>
         </div>
       </Col>
-    </Row>
+    </Row>-->
     <Row>
       <!-- 定义一个列，占 24 格 -->
       <Col :span="24">

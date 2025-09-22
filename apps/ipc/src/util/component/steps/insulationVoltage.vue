@@ -133,56 +133,56 @@ onBeforeUnmount(() => {
 
 <template>
   <Spin :spinning="spinning">
-    <Row v-if="[39].includes(showTypeNumber)">
+    <!--    <Row v-if="[39].includes(showTypeNumber)">
       <Col span="24">
-        <!-- 正在执行的工单编号 -->
+        &lt;!&ndash; 正在执行的工单编号 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 正在执行的工单编号 -->
+          &lt;!&ndash; 正在执行的工单编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.workOrderNumberInExecution') }}：
           </span>
-          <!-- 正在执行的工单编号，无结果时显示默认提示 -->
+          &lt;!&ndash; 正在执行的工单编号，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{
               detailInfo.proceWorksheetCode || $t('productionOperation.none')
             }}
           </span>
         </div>
-        <!-- 正在执行的产品编号 -->
+        &lt;!&ndash; 正在执行的产品编号 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 正在执行的产品编号 -->
+          &lt;!&ndash; 正在执行的产品编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNumberInExecution') }}：
           </span>
-          <!-- 正在执行的产品编号，无结果时显示默认提示 -->
+          &lt;!&ndash; 正在执行的产品编号，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ detailInfo.procePorductCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 正在执行的产品名称 -->
+        &lt;!&ndash; 正在执行的产品名称 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 正在执行的产品名称 -->
+          &lt;!&ndash; 正在执行的产品名称 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNameInExecution') }}：
           </span>
-          <!-- 正在执行的产品名称，无结果时显示默认提示 -->
+          &lt;!&ndash; 正在执行的产品名称，无结果时显示默认提示 &ndash;&gt;
           <span :class="getValueClass()">
             {{ detailInfo.proceProdutName || $t('productionOperation.none') }}
           </span>
         </div>
-        <!-- 正在执行的产品型号 -->
+        &lt;!&ndash; 正在执行的产品型号 &ndash;&gt;
         <div class="mb-4 mr-8 inline-block">
-          <!-- 正在执行的产品型号 -->
+          &lt;!&ndash; 正在执行的产品型号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productModelInExecution') }}：
           </span>
-          <!-- 正在执行的产品型号 -->
+          &lt;!&ndash; 正在执行的产品型号 &ndash;&gt;
           <span :class="getValueClass()">
             {{ detailInfo.proceProductModel || $t('productionOperation.none') }}
           </span>
         </div>
       </Col>
-    </Row>
+    </Row>-->
     <Row>
       <Col
         :span="12"

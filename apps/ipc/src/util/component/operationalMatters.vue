@@ -3,7 +3,7 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Spin } from 'ant-design-vue';
+import { Radio, RadioGroup, Spin } from 'ant-design-vue';
 
 import { getOpFunctions } from '#/api';
 import useWebSocket from '#/util/websocket-util';
@@ -17,7 +17,7 @@ const props = defineProps({
     type: Number,
     default: -1,
   },
-  // 作业类型，1 表示有序作业，2 表示离散作业，默认为 1
+  // 作业类型，1 表示有序作业，2 表示离散作业， 3 侧边栏模式 ,  默认为 1
   type: {
     type: Number,
     default: 1,
@@ -26,6 +26,11 @@ const props = defineProps({
   worksheetCode: {
     type: String,
     default: '',
+  },
+  // 当前活跃的选项
+  currentIndex: {
+    type: Number,
+    default: 0,
   },
 });
 
@@ -111,7 +116,7 @@ function querySteps() {
         }
       });
       if (i === -1) {
-        current.value = 0;
+        current.value = props.currentIndex || 0;
       }
     })
     .finally(() => {
@@ -119,6 +124,18 @@ function querySteps() {
       loading.value = false;
     });
 }
+
+// region 侧边栏模式
+// 是否显示抽屉
+const isShow = ref(false);
+/**
+ * 显示步骤切换抽屉
+ */
+function toggle() {
+  isShow.value = !isShow.value;
+}
+
+// endregion
 
 // region websocket
 /**
@@ -162,10 +179,21 @@ watch(current, () => {
     params = {
       id: stepBar.value[current.value].id,
       type: stepBar.value[current.value].functionType,
+      index: current.value,
     };
   }
   emit('currentChange', params);
 });
+
+/**
+ * 监听当前步骤的变化，当当前步骤变化时，触发 'currentChange' 事件通知父组件
+ */
+watch(
+  () => props.currentIndex,
+  () => {
+    current.value = props.currentIndex || 0;
+  },
+);
 
 /**
  * 组件挂载时，调用 querySteps 函数查询步骤数据
@@ -224,7 +252,7 @@ onBeforeUnmount(() => {
         </template>
       </div>
       <!-- 当作业类型为离散作业时，显示垂直排列的步骤条 -->
-      <div v-else class="w-full whitespace-nowrap">
+      <div v-if="props.type === 2" class="w-full whitespace-nowrap">
         <!-- 遍历步骤条数据，渲染每个步骤 -->
         <template v-for="(item, index) of stepBar" :key="index">
           <!-- 步骤块，点击可切换当前步骤 -->
@@ -248,6 +276,36 @@ onBeforeUnmount(() => {
             <div class="font-black">{{ item.title }}</div>
           </div>
         </template>
+      </div>
+      <!-- 当作业类型为离散作业时，显示垂直排列的步骤条 -->
+      <div
+        v-if="props.type === 3"
+        class="fixed top-20 z-[1000] flex h-96"
+        :class="{
+          'right-4': isShow,
+          'right-[-14rem]': !isShow,
+        }"
+      >
+        <div class="flex h-full items-center" @click="toggle">
+          <IconifyIcon
+            :icon="isShow ? 'mdi:menu-right' : 'mdi:menu-left'"
+            class="translate-x-[35%] cursor-pointer text-6xl"
+          />
+        </div>
+        <div
+          class="inline-block h-full w-56 overflow-y-auto border bg-white shadow-lg"
+        >
+          <RadioGroup v-model:value="current">
+            <Radio
+              v-for="(item, index) of stepBar"
+              :key="index"
+              :value="index"
+              class="block w-full px-2 py-1"
+            >
+              {{ item.title }}
+            </Radio>
+          </RadioGroup>
+        </div>
       </div>
     </div>
   </Spin>
