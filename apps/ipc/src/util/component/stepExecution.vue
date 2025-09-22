@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
-import { IconifyIcon } from '@vben/icons';
-
-import { Button } from 'ant-design-vue';
-
-import OperationalMatters from '#/util/component/operationalMatters.vue';
 import AndonCall from '#/util/component/steps/andonCall.vue';
 import DeviceClearing from '#/util/component/steps/deviceClearing.vue';
 import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
