@@ -811,6 +811,19 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'workOrderParams',
         path: 'workOrderParams',
       },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/materialExceptionApprovalHistory.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '投料异常审批历史记录',
+          code: 'WM_511',
+        },
+        name: 'materialExceptionApprovalHistory',
+        path: 'materialExceptionApprovalHistory',
+      },
     ],
   },
 ];

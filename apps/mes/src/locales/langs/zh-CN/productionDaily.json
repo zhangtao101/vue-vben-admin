@@ -15,5 +15,7 @@
   "dailyDetails": "日报详情",
   "kilnLine": "窑炉线",
   "kilnNumber": "窑号",
-  "collectionType": "采集类型"
+  "collectionType": "采集类型",
+  "itemNumber": "物料编号",
+  "itemName": "物料名称"
 }

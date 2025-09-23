@@ -15,5 +15,7 @@
   "dailyDetails": "Daily Details",
   "kilnLine": "Kiln Line",
   "kilnNumber": "Kiln Number",
-  "collectionType": "Collection Type"
+  "collectionType": "Collection Type",
+  "itemNumber": "Item Number",
+  "itemName": "Item Name"
 }

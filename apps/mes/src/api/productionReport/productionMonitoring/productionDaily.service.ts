@@ -289,6 +289,14 @@ export async function queryYLStopHZStatistics(params: any) {
   );
 }
 /**
+ * 投料异常审批历史记录
+ */
+export async function abnormalFeedingApprovalHistory(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/tlyc/detail?${qs.stringify(params)}`,
+  );
+}
+/**
  * 各分厂停窑燃气
  */
 export async function queryShutdownGasStatistics(params: any) {
@@ -677,11 +685,19 @@ export async function excelPathPGStopHZStatistics(params: any) {
   );
 }
 /**
- * 163、釉料实际损耗率导出
+ * 釉料实际损耗率导出
  */
 export async function excelPathSyYlMaterialStatistics(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathSyYlMaterialStatistics?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 投料异常审批历史记录导出
+ */
+export async function excelPathAbnormalFeedingApprovalHistory(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/tlyc/excelDetail?${qs.stringify(params)}`,
   );
 }
 // endregion
