@@ -11,8 +11,8 @@ import { Button, Card, Form, FormItem, Input } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  abnormalFeedingApprovalHistory, excelPathAbnormalFeedingApprovalHistory,
-  excelPathYLStopHZStatistics,
+  abnormalFeedingApprovalHistory,
+  excelPathAbnormalFeedingApprovalHistory,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
