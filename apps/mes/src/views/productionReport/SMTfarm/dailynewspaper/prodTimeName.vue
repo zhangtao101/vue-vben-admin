@@ -48,6 +48,18 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'kdpxpdy',
+      title: '客定品新品对色打样',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'cqdy',
+      title: '产前对样',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       title: '工艺停产',
       children: [
         {
@@ -69,7 +81,7 @@ const gridOptions: VxeGridProps<any> = {
           slots: { footer: 'footerData' },
         },
         {
-          field: 'sctcsy',
+          field: 'gytcsy',
           title: '施釉',
           minWidth: 150,
           slots: { footer: 'footerData' },
@@ -216,6 +228,12 @@ const gridOptions: VxeGridProps<any> = {
       field: 'xj',
       title: '停机时间小计(H)',
       minWidth: 150,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'sczz',
+      title: '无异常',
+      minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],

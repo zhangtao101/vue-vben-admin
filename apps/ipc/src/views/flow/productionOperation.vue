@@ -297,18 +297,20 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function setRadioByKey(worksheetCode: string = '') {
   // 延迟 500 毫秒执行，确保表格数据已经加载完成
   setTimeout(() => {
-    // 获取表格数据
-    const { tableData } = gridApi.grid.getTableData();
-    // 根据工单号查找对应的行，如果未提供工单号，则默认选中第一行
-    const row = worksheetCode
-      ? tableData.find((item: any) => item.worksheetCode === worksheetCode) // 查找匹配工单号的行
-      : tableData[0]; // 如果未提供工单号，则选中第一行
-    // 设置表格的选中行
-    gridApi.grid.setRadioRow(row);
-    // 更新选中的工单信息
-    theSelectedWorkOrder.value = row;
-    // 根据选中的工单号查询工艺路线
-    queryProcess(selectedWorkstation.value, row.worksheetCode);
+    if (gridApi?.grid) {
+      // 获取表格数据
+      const { tableData } = gridApi.grid.getTableData();
+      // 根据工单号查找对应的行，如果未提供工单号，则默认选中第一行
+      const row = worksheetCode
+        ? tableData.find((item: any) => item.worksheetCode === worksheetCode) // 查找匹配工单号的行
+        : tableData[0]; // 如果未提供工单号，则选中第一行
+      // 设置表格的选中行
+      gridApi.grid.setRadioRow(row);
+      // 更新选中的工单信息
+      theSelectedWorkOrder.value = row;
+      // 根据选中的工单号查询工艺路线
+      queryProcess(selectedWorkstation.value, row.worksheetCode);
+    }
   }, 500);
 }
 

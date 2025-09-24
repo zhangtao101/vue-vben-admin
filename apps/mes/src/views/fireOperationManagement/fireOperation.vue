@@ -634,7 +634,7 @@ onMounted(() => {
         </DescriptionsItem>
         <!-- 动火级别 -->
         <DescriptionsItem :label="$t('fireOperation.FireLevel')">
-          {{ details.level || $t('hiddenDangerInspectionTask.notAtTheMoment') }}
+          {{ levels[details.level] || $t('hiddenDangerInspectionTask.notAtTheMoment') }}
         </DescriptionsItem>
         <!-- 动火设备 -->
         <DescriptionsItem :label="$t('fireOperation.FireEquipment')">

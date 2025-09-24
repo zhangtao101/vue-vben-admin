@@ -30,9 +30,10 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     // { field: 'month', title: '日期', minWidth: 200 },
+    { field: 'workstation', title: '工作站', minWidth: 200 },
     { field: 'typeName', title: '类型', minWidth: 200 },
     { field: 'stopTime', title: '停机时间合计(H)', minWidth: 200 },
-    { field: 'stopValue', title: '停机燃气(M3)', minWidth: 200 },
+    { field: 'stopValue', title: '停机能耗', minWidth: 200 },
     {
       title: '客定品新品',
       children: [
@@ -128,6 +129,8 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'zrzhnh', title: '自然灾害能耗', minWidth: 150 },
     { field: 'sbqx', title: '设备清洗', minWidth: 150 },
     { field: 'sbqxnh', title: '设备清洗能耗', minWidth: 150 },
+    { field: 'sczz', title: '无异常', minWidth: 200 },
+    { field: 'sczznh', title: '无异常能耗', minWidth: 200 },
   ],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 8 }],
   height: 500,
