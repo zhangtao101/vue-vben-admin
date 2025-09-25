@@ -89,5 +89,7 @@
   "unbind": "Unbind",
   "clear": "Clear",
   "assign": "Assign",
-  "receive": "Receive"
+  "receive": "Receive",
+  "previousStep": "Previous Step",
+  "nextStep": "Next Step"
 }

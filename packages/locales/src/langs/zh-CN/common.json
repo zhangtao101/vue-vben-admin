@@ -94,5 +94,7 @@
   "assign": "指派",
   "receive": "领取",
   "levelChanges": "等级变更",
-  "upload": "上传"
+  "upload": "上传",
+  "previousStep": "上一步",
+  "nextStep": "下一步"
 }

@@ -1,22 +1,25 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+import { IconifyIcon, MdiChevronDown, MdiChevronUp } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { DownOutlined } from '@ant-design/icons-vue';
 import {
   Button,
+  Card,
   Col,
   Dropdown,
   FloatButton,
+  InputNumber,
   Menu,
   MenuItem,
   message,
   Modal,
+  Popover,
   RadioButton,
   RadioGroup,
   Row,
@@ -38,8 +41,6 @@ import {
 } from '#/api';
 import InterlockingConfiguration from '#/util/component/interlockingConfiguration.vue';
 import OperationalMatters from '#/util/component/operationalMatters.vue';
-import NormalMode from '#/util/component/operationCenter/normalMode.vue';
-import SimpleMode from '#/util/component/operationCenter/simpleMode.vue';
 import PersonnelOperation from '#/util/component/personnelOperation.vue';
 import StepExecution from '#/util/component/stepExecution.vue';
 import useWebSocket from '#/util/websocket-util';
@@ -147,6 +148,18 @@ function showInterlockingConfiguration() {
 // endregion
 
 // region 作业信息
+
+// region 收缩
+// 作业信息是否收缩
+const jobInformationContraction = ref(true);
+
+/**
+ * 作业信息收缩展开
+ */
+function jobInformationContractionChange() {
+  jobInformationContraction.value = !jobInformationContraction.value;
+}
+// endregion
 
 // region 表格
 
@@ -346,13 +359,7 @@ function query() {
   theSelectedOperation.value = '';
   listOfOperationItems.value = [];
 
-  if (gridApi) {
-    try {
-      gridApi.reload();
-    } catch (error: any) {
-      console.error(error);
-    }
-  }
+  gridApi.reload();
 }
 
 // region websocket
@@ -449,6 +456,20 @@ function workOrderOperation(row: any, type: number) {
 
 // endregion
 
+// endregion
+
+// region 工艺路线 收缩
+// 工艺路线是否收缩
+const processShrinkage = ref(true);
+
+/**
+ * 作业信息收缩展开
+ */
+function processShrinkageChange() {
+  processShrinkage.value = !processShrinkage.value;
+}
+// endregion
+
 // region 工艺路线
 // 工艺路线列表
 const processRouteList = ref<any>([]);
@@ -534,6 +555,17 @@ function readMessage() {
 // endregion
 
 // region 操作事项
+// region 收缩
+// 操作事项是否收缩
+const operationEventShrinkage = ref(true);
+
+/**
+ * 作业信息收缩展开
+ */
+function operationEventShrinkageChange() {
+  operationEventShrinkage.value = !operationEventShrinkage.value;
+}
+// endregion
 // 选中的操作事项
 const theSelectedOperation = ref<any>('');
 // 操作事项列表
@@ -564,19 +596,95 @@ function processChange(item: any) {
 
 // endregion
 
-// region 简单模式
-const isSimple = ref(true);
-const simpleModeRef = ref();
+// region 页面缩放
+// 定义一个响应式变量，用于存储当前的缩放比例，默认值为 80（表示 80% 的缩放比例）
+const zoomSize = ref(100);
+// 是否显示输入框
+const isZoom = ref(false);
+
+// 定义一个响应式变量，用于存储需要缩放的页面对象（DOM 元素）
+const page = ref();
+
+/**
+ * 设置页面的缩放比例
+ * @param size - 缩放比例值（百分比形式，如 80 表示 80%）
+ * @description
+ * - 该函数通过修改页面对象的 `style.zoom` 属性来实现缩放效果。
+ * - `size` 参数是一个数字，表示缩放比例的百分比值。
+ */
+function zoom(size: any) {
+  // 将缩放比例值设置到页面对象的 `style.zoom` 属性中，格式为百分比字符串
+  page.value.style.zoom = `${size}%`;
+  localStorage.setItem('zoomSize', size);
+}
+
+watch(theSelectedOperation, () => {
+  currentWorkingStep.value = {};
+});
+// endregion
+
+// region 操作全屏
+// 是否全屏
+const isItFullScreen = ref(false);
+/**
+ * 全屏显示组件
+ */
+function fullScreen() {
+  const el: any = document.querySelector('#stepExecution');
+  if (el) {
+    if (el.requestFullscreen) {
+      // 检查并调用标准的退出全屏方法
+      if (isItFullScreen.value) (document as any).exitFullscreen();
+      else el.requestFullscreen();
+    } else if (el.mozRequestFullScreen) {
+      // Firefox特定方法
+      if (isItFullScreen.value) (document as any).mozCancelFullScreen();
+      else el.mozRequestFullScreen();
+    } else if (el.webkitRequestFullscreen) {
+      // Chrome、Safari等WebKit内核浏览器特定方法
+      if (isItFullScreen.value) (document as any).webkitExitFullscreen();
+      else el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) {
+      // IE/Edge特定方法
+      if (isItFullScreen.value) (document as any).msExitFullscreen();
+      else el.msRequestFullscreen();
+    }
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari/Chrome
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange); // Firefox
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange); // IE
+  }
+}
+
+// 监听全屏变化事件
+function handleFullscreenChange() {
+  isItFullScreen.value = !!document.fullscreenElement;
+  if (!isItFullScreen.value) {
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.removeEventListener(
+      'webkitfullscreenchange',
+      handleFullscreenChange,
+    );
+    document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+  }
+}
 // endregion
 
 // 在组件挂载完成后执行的操作
 onMounted(() => {
+  const zoomSizeStr = localStorage.getItem('zoomSize');
+  zoomSize.value = zoomSizeStr ? Number.parseInt(zoomSizeStr, 10) : 100;
   // 查询生产线列表
   queryListOfProductionLines();
+  // 根据当前的缩放比例值（zoomSize.value）设置页面的缩放
+  zoom(zoomSize.value);
 });
 
 // 在组件卸载前执行的操作
 onBeforeUnmount(() => {
+  // 将页面缩放比例重置为 100%，确保组件卸载后页面恢复默认缩放比例
+  zoom(100);
   websocketClose();
   websocketClose2();
 });
@@ -585,403 +693,159 @@ onBeforeUnmount(() => {
 <template>
   <!-- 页面容器组件 -->
   <Page>
-    <!-- region 简单模式 -->
-    <SimpleMode
-      :the-currently-selected-work-order-number="
-        theCurrentlySelectedWorkOrderNumber
-      "
-      ref="simpleModeRef"
-      v-if="isSimple"
-    >
-      <!-- 工作站选择插槽 -->
-      <template #workstation>
-        <!-- region 工作站查询信息 -->
-        <!-- 行容器，用于布局工作站查询相关元素 -->
-        <Row class="mb-4 mt-4">
-          <!-- 列容器，占据 23 格宽度 -->
-          <Col :span="24" class="flex">
-            <!-- 显示工作站标题，带有蓝色边框 -->
-            <span class="w-36 pl-4 text-right text-xl font-black">
-              {{ $t('productionOperation.homeworkStation') }}
-            </span>
+    <!-- 固定在页面右上角的缩放控件 -->
+    <div class="fixed right-[20px] top-[110px] z-[999]">
+      <!-- 输入数字组件，用于调整页面缩放比例 -->
 
-            <!-- 包含工作站选择、设备选择和操作按钮的容器 -->
-            <div class="w-full pl-4">
-              <!-- 工作站选择下拉框 -->
-              <Select
-                v-model:value="selectedWorkstation"
-                :options="listOfProductionLines"
-                :field-names="{
-                  label: 'workstationName',
-                  value: 'workstationCode',
-                }"
-                @change="selectedWorkstationChange"
-                class="mr-4 !w-64"
-              />
-            </div>
-          </Col>
-          <!-- 列容器，占据 23 格宽度 -->
-          <Col :span="24" class="mt-4 flex">
-            <!-- 显示工作站标题，带有蓝色边框 -->
-            <span class="w-36 pl-4 text-right text-xl font-black">
-              {{ $t('productionOperation.equipment') }}
-            </span>
+      <Popover
+        v-model:open="isZoom"
+        title="缩放比例"
+        trigger="click"
+        placement="topRight"
+      >
+        <template #content>
+          <InputNumber
+            v-model:value="zoomSize"
+            :min="50"
+            :max="200"
+            addon-after="%"
+            @change="zoom"
+          />
+        </template>
 
-            <!-- 包含工作站选择、设备选择和操作按钮的容器 -->
-            <div class="w-full pl-4">
-              <!-- 工艺设备选择下拉框，允许清空选择 -->
-              <Select
-                v-model:value="theSelectedProcessEquipment"
-                :options="listOfProcesses"
-                :field-names="{
-                  label: 'equipmentName',
-                  value: 'equipmentCode',
-                }"
-                @change="query()"
-                class="!w-64"
-                allow-clear
-              />
-              <!-- 人员操作下拉菜单 -->
-              <Dropdown>
-                <!-- 下拉菜单内容 -->
-                <template #overlay>
-                  <Menu>
-                    <!-- 上工菜单项 -->
-                    <MenuItem @click="personnelOperationRef.open(1)">
-                      {{ $t('common.theUserGoesToWork') }}
-                    </MenuItem>
-                    <!-- 下工菜单项 -->
-                    <MenuItem @click="personnelOperationRef.open(2)">
-                      {{ $t('common.theUserIsOffWork') }}
-                    </MenuItem>
-                  </Menu>
-                </template>
-                <!-- 下拉菜单触发按钮 -->
-                <Button type="primary" class="ml-3 mr-3">
-                  {{ $t('productionOperation.personnelOperation') }}
-                  <DownOutlined class="ml-4 inline-block" />
-                </Button>
-              </Dropdown>
-              <!-- 操作配置下拉菜单 -->
-              <Dropdown>
-                <!-- 下拉菜单内容 -->
-                <template #overlay>
-                  <Menu>
-                    <!-- 联锁配置菜单项 -->
-                    <MenuItem @click="showInterlockingConfiguration()">
-                      {{ $t('productionOperation.interlockConfiguration') }}
-                    </MenuItem>
-                    <!-- 全局清洗菜单项 -->
-                    <MenuItem
-                      @click="showInterlockingConfiguration()"
-                      v-if="false"
-                    >
-                      {{ $t('productionOperation.globalCleaning') }}
-                    </MenuItem>
-                  </Menu>
-                </template>
-                <!-- 下拉菜单触发按钮 -->
-                <Button type="primary" class="ml-3 mr-3">
-                  {{ $t('productionOperation.allOperations') }}
-                  <DownOutlined class="ml-4 inline-block" />
-                </Button>
-              </Dropdown>
-            </div>
-          </Col>
-        </Row>
-        <!-- endregion -->
-      </template>
-      <!-- 工单信息插槽 -->
-      <template #jobInformationC>
-        <!-- 表格组件 -->
-        <Grid>
-          <!-- 表格工具栏插槽，留空 -->
-          <template #toolbar-tools> </template>
-          <!-- 就绪操作插槽，根据工单就绪状态显示不同按钮 -->
-          <template #readyOperation="{ row }">
-            <!-- 就绪按钮，当工单未就绪时显示 -->
-            <Tooltip v-if="row.readyState === 0">
-              <template #title>{{ $t('common.beInOrder') }}</template>
-              <Button type="link" @click="ready(row, 1)">
-                <IconifyIcon
-                  icon="mdi:timer-sand-complete"
-                  class="inline-block size-6"
-                />
-              </Button>
-            </Tooltip>
-            <!-- 就绪撤回按钮，当工单已就绪时显示 -->
-            <Tooltip v-if="row.readyState === 1">
-              <template #title>{{ $t('common.readyToWithdraw') }}</template>
-              <Button type="link" @click="ready(row, 2)">
-                <IconifyIcon
-                  icon="fluent-mdl2:return-to-session"
-                  class="inline-block size-6"
-                />
-              </Button>
-            </Tooltip>
+        <FloatButton
+          type="primary"
+          shape="circle"
+          :style="{ right: '24px', bottom: '96px' }"
+          @click="isZoom = true"
+        >
+          <template #icon>
+            <IconifyIcon icon="mdi:image-size-select-small" class="text-xl" />
           </template>
-          <!-- 工单操作插槽，显示更多操作下拉菜单 -->
-          <template #workOrderOperation="{ row }">
-            <!-- 更多操作提示框 -->
-            <Tooltip>
-              <template #title>{{ $t('common.more') }}</template>
-              <!-- 下拉菜单 -->
-              <Dropdown>
-                <!-- 下拉菜单内容 -->
-                <template #overlay>
-                  <Menu>
-                    <!-- 开工菜单项，满足条件时可用 -->
-                    <MenuItem
-                      @click="workOrderOperation(row, 1)"
-                      :disabled="row.sendState === 4"
-                      v-if="
-                        row.reportType === 1 &&
-                        row.workButtonFlag === 1 &&
-                        row.sendState === 1
-                      "
-                    >
-                      {{ $t('common.startWork') }}
-                    </MenuItem>
-                    <!-- 就绪按钮菜单项，满足条件时显示 -->
-                    <MenuItem
-                      @click="ready(row, 1)"
-                      v-if="row.workButtonFlag === 2 && row.readyState === 0"
-                    >
-                      {{ $t('common.beInOrder') }}
-                    </MenuItem>
-                    <!-- 就绪撤回菜单项，满足条件时显示 -->
-                    <MenuItem
-                      @click="ready(row, 2)"
-                      v-if="row.workButtonFlag === 2 && row.readyState === 1"
-                    >
-                      {{ $t('common.readyToWithdraw') }}
-                    </MenuItem>
-                    <!-- 完工菜单项，满足条件时可用 -->
-                    <MenuItem
-                      @click="workOrderOperation(row, 2)"
-                      :disabled="row.sendState === 2"
-                      v-if="row.reportType === 1 && row.sendState !== 1"
-                    >
-                      {{ $t('common.completed') }}
-                    </MenuItem>
-                    <!-- 暂停菜单项，满足条件时可用 -->
-                    <MenuItem
-                      @click="workOrderOperation(row, 3)"
-                      :disabled="row.sendState === 3"
-                      v-if="row.sendState !== 1"
-                    >
-                      {{ $t('common.pause') }}
-                    </MenuItem>
-                    <!-- 强制下线菜单项，满足条件时可用 -->
-                    <MenuItem
-                      @click="workOrderOperation(row, 5)"
-                      :disabled="row.sendState === 5"
-                      v-if="row.sendState !== 1"
-                    >
-                      {{ $t('common.forcedOffline') }}
-                    </MenuItem>
-                  </Menu>
-                </template>
-                <!-- 下拉菜单触发按钮 -->
-                <Button type="link">
-                  更多操作
-                  <DownOutlined class="ml-4 inline-block" />
-                </Button>
-              </Dropdown>
-            </Tooltip>
-          </template>
-        </Grid>
-      </template>
-      <!-- 工艺路线插槽 -->
-      <template #processRouteC>
-        <!-- 加载状态组件，当工艺路线列表加载时显示加载动画 -->
-        <Spin :spinning="processRouteListLoading">
-          <!-- 横向滚动容器，用于显示工艺路线项 -->
-          <div class="mt-4 w-full">
-            <!-- 循环渲染工艺路线项 -->
-            <template v-for="item of processRouteList" :key="item.processCode">
-              <!-- 单个工艺路线项容器 -->
-              <div class="m-2 inline-block w-auto text-center">
-                <!-- 工艺路线项主体，根据状态显示不同样式 -->
-                <div
-                  class="mb-2 cursor-pointer rounded-xl border p-2 pl-4 pr-4 hover:bg-pink-200 hover:text-black"
-                  :class="{
-                    '!cursor-not-allowed bg-gray-500 text-white hover:bg-gray-500 hover:text-white':
-                      item.controlFlag === -1,
-                    // 'bg-sky-500 text-white': item.workingState === 1,
-                    'bg-green-500 text-[#444]':
-                      item.workingState === 2 || item.workingState === 1,
-                    'bg-gray-200': item.workingState === -1,
-                    'bg-amber-500 text-white': item.workingState === 3,
-                    'anomaly border-4':
-                      item.errorFlag === 1 &&
-                      item.processCode !== checkedProcess,
-                    'border-4 border-sky-500 shadow-lg shadow-sky-600':
-                      item.processCode === checkedProcess,
-                  }"
-                  @click="item.controlFlag === -1 || processChange(item)"
-                >
-                  <!-- 显示工艺路线名称 -->
-                  <div class="font-black">{{ item.processName }}</div>
-                </div>
-                <!-- 显示当前工单信息，带有提示框 -->
-                <div
-                  class="w-full cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap font-black"
-                  v-if="item.currentWorksheet"
-                >
-                  <Tooltip placement="topLeft" :title="item.currentWorksheet">
-                    {{ item.currentWorksheet }}
-                  </Tooltip>
-                </div>
-              </div>
-            </template>
-          </div>
-        </Spin>
-      </template>
-      <!-- 操作事项插槽 -->
-      <template #operationalMattersC>
-        <!-- 操作事项选择器，使用单选按钮组 -->
-        <RadioGroup v-model:value="theSelectedOperation" button-style="solid">
-          <!-- 循环渲染单选按钮 -->
-          <RadioButton
-            :value="item.id"
-            v-for="item of listOfOperationItems"
-            :key="item.id"
+        </FloatButton>
+      </Popover>
+    </div>
+    <!-- 页面主体内容容器，引用 page 用于缩放操作 -->
+    <div ref="page" class="w-full">
+      <!-- region 工作站查询信息 -->
+      <!-- 行容器，用于布局工作站查询相关元素 -->
+      <Row class="mb-4">
+        <!-- 列容器，占据 23 格宽度 -->
+        <Col :span="24" class="flex">
+          <!-- 显示工作站标题，带有蓝色边框 -->
+          <span
+            class="h-8 w-36 border-l-4 border-sky-500 pl-4 text-xl font-black"
           >
-            <!-- 显示操作事项图标 -->
-            <IconifyIcon
-              :icon="iconEnum[item.opTypeName]"
-              class="inline-block text-xl"
-            />
-            <!-- 显示操作事项名称 -->
-            {{ item.opTypeName }}
-          </RadioButton>
-        </RadioGroup>
-      </template>
-      <!-- 操作事件插槽 -->
-      <template #operationEventC>
-        <OperationalMatters
-          :details-id="theSelectedOperation"
-          :type="1"
-          :worksheet-code="theCurrentlySelectedWorkOrderNumber"
-          :current-index="currentWorkingStep?.index"
-          @current-change="workStepConversion"
-          v-if="theSelectedOperation && theCurrentlySelectedWorkOrderNumber"
-        />
-      </template>
-      <!-- 步骤执行插槽 -->
-      <template #stepExecutionC>
-        <StepExecution
-          :workstation-code="selectedWorkstation"
-          :equip-code="theSelectedProcessEquipment"
-          :worksheet-code="theCurrentlySelectedWorkOrderNumber"
-          :product-code="theSelectedWorkOrder.productCode"
-          :product-name="theSelectedWorkOrder.productName"
-          :binding-id="checkedProcessId"
-          :step="currentWorkingStep"
-          v-if="currentWorkingStep"
-        />
-      </template>
-    </SimpleMode>
-    <!-- endregion -->
-    <!-- region 正常模式 -->
-    <NormalMode
-      :the-currently-selected-work-order-number="
-        theCurrentlySelectedWorkOrderNumber
-      "
-      v-else
-    >
-      <template #workstation>
-        <!-- region 工作站查询信息 -->
-        <!-- 行容器，用于布局工作站查询相关元素 -->
-        <Row class="mb-4">
-          <!-- 列容器，占据 23 格宽度 -->
-          <Col :span="24" class="flex">
-            <!-- 显示工作站标题，带有蓝色边框 -->
-            <span
-              class="ml-4 h-8 w-36 border-l-4 border-sky-500 pl-4 text-xl font-black"
-            >
-              {{ $t('productionOperation.homeworkStation') }}
-            </span>
+            {{ $t('productionOperation.homeworkStation') }}
+          </span>
 
-            <!-- 包含工作站选择、设备选择和操作按钮的容器 -->
-            <div class="w-full pl-4">
-              <!-- 工作站选择下拉框 -->
-              <Select
-                v-model:value="selectedWorkstation"
-                :options="listOfProductionLines"
-                :field-names="{
-                  label: 'workstationName',
-                  value: 'workstationCode',
-                }"
-                @change="selectedWorkstationChange"
-                class="mr-4 !w-64"
-              />
-              <!-- 工艺设备选择下拉框，允许清空选择 -->
-              <Select
-                v-model:value="theSelectedProcessEquipment"
-                :options="listOfProcesses"
-                :field-names="{
-                  label: 'equipmentName',
-                  value: 'equipmentCode',
-                }"
-                @change="query()"
-                class="!w-64"
-                allow-clear
-              />
-              <!-- 人员操作下拉菜单 -->
-              <Dropdown>
-                <!-- 下拉菜单内容 -->
-                <template #overlay>
-                  <Menu>
-                    <!-- 上工菜单项 -->
-                    <MenuItem @click="personnelOperationRef.open(1)">
-                      {{ $t('common.theUserGoesToWork') }}
-                    </MenuItem>
-                    <!-- 下工菜单项 -->
-                    <MenuItem @click="personnelOperationRef.open(2)">
-                      {{ $t('common.theUserIsOffWork') }}
-                    </MenuItem>
-                  </Menu>
-                </template>
-                <!-- 下拉菜单触发按钮 -->
-                <Button type="primary" class="ml-3 mr-3">
-                  {{ $t('productionOperation.personnelOperation') }}
-                  <DownOutlined class="ml-4 inline-block" />
-                </Button>
-              </Dropdown>
-              <!-- 操作配置下拉菜单 -->
-              <Dropdown>
-                <!-- 下拉菜单内容 -->
-                <template #overlay>
-                  <Menu>
-                    <!-- 联锁配置菜单项 -->
-                    <MenuItem @click="showInterlockingConfiguration()">
-                      {{ $t('productionOperation.interlockConfiguration') }}
-                    </MenuItem>
-                    <!-- 全局清洗菜单项 -->
-                    <MenuItem
-                      @click="showInterlockingConfiguration()"
-                      v-if="false"
-                    >
-                      {{ $t('productionOperation.globalCleaning') }}
-                    </MenuItem>
-                  </Menu>
-                </template>
-                <!-- 下拉菜单触发按钮 -->
-                <Button type="primary" class="ml-3 mr-3">
-                  {{ $t('productionOperation.allOperations') }}
-                  <DownOutlined class="ml-4 inline-block" />
-                </Button>
-              </Dropdown>
-            </div>
-          </Col>
-        </Row>
-        <!-- 分割线 -->
-        <hr class="mb-4" />
-        <!-- endregion -->
-      </template>
-      <template #jobInformationC>
+          <!-- 包含工作站选择、设备选择和操作按钮的容器 -->
+          <div class="w-full pl-4">
+            <!-- 工作站选择下拉框 -->
+            <Select
+              v-model:value="selectedWorkstation"
+              :options="listOfProductionLines"
+              :field-names="{
+                label: 'workstationName',
+                value: 'workstationCode',
+              }"
+              @change="selectedWorkstationChange"
+              class="mr-4 !w-64"
+            />
+            <!-- 工艺设备选择下拉框，允许清空选择 -->
+            <Select
+              v-model:value="theSelectedProcessEquipment"
+              :options="listOfProcesses"
+              :field-names="{
+                label: 'equipmentName',
+                value: 'equipmentCode',
+              }"
+              @change="query()"
+              class="!w-64"
+              allow-clear
+            />
+            <!-- 人员操作下拉菜单 -->
+            <Dropdown>
+              <!-- 下拉菜单内容 -->
+              <template #overlay>
+                <Menu>
+                  <!-- 上工菜单项 -->
+                  <MenuItem @click="personnelOperationRef.open(1)">
+                    {{ $t('common.theUserGoesToWork') }}
+                  </MenuItem>
+                  <!-- 下工菜单项 -->
+                  <MenuItem @click="personnelOperationRef.open(2)">
+                    {{ $t('common.theUserIsOffWork') }}
+                  </MenuItem>
+                </Menu>
+              </template>
+              <!-- 下拉菜单触发按钮 -->
+              <Button type="primary" class="ml-3 mr-3">
+                {{ $t('productionOperation.personnelOperation') }}
+                <DownOutlined class="ml-4 inline-block" />
+              </Button>
+            </Dropdown>
+            <!-- 操作配置下拉菜单 -->
+            <Dropdown>
+              <!-- 下拉菜单内容 -->
+              <template #overlay>
+                <Menu>
+                  <!-- 联锁配置菜单项 -->
+                  <MenuItem @click="showInterlockingConfiguration()">
+                    {{ $t('productionOperation.interlockConfiguration') }}
+                  </MenuItem>
+                  <!-- 全局清洗菜单项 -->
+                  <MenuItem
+                    @click="showInterlockingConfiguration()"
+                    v-if="false"
+                  >
+                    {{ $t('productionOperation.globalCleaning') }}
+                  </MenuItem>
+                </Menu>
+              </template>
+              <!-- 下拉菜单触发按钮 -->
+              <Button type="primary" class="ml-3 mr-3">
+                {{ $t('productionOperation.allOperations') }}
+                <DownOutlined class="ml-4 inline-block" />
+              </Button>
+            </Dropdown>
+          </div>
+        </Col>
+      </Row>
+      <!-- 分割线 -->
+      <hr class="mb-4" />
+      <!-- endregion -->
+
+      <!--- region 作业信息 -->
+      <!-- 行容器，用于布局作业信息标题和收缩按钮 -->
+      <Row class="mb-4">
+        <!-- 列容器，占据 23 格宽度，显示作业信息标题 -->
+        <Col :span="24">
+          <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
+            {{ $t('productionOperation.jobInformation') }}
+          </span>
+
+          <Button
+            type="link"
+            @click="jobInformationContractionChange"
+            class="float-right"
+          >
+            <!-- 展开按钮 -->
+            <MdiChevronDown
+              v-if="!jobInformationContraction"
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+
+            <!-- 收缩按钮 -->
+            <MdiChevronUp
+              v-else
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+          </Button>
+        </Col>
+      </Row>
+      <!-- 卡片容器，当作业信息未收缩时显示 -->
+      <Card class="mb-5" v-if="jobInformationContraction">
         <!-- 表格组件 -->
         <Grid>
           <!-- 表格工具栏插槽，留空 -->
@@ -1080,10 +944,43 @@ onBeforeUnmount(() => {
             </Tooltip>
           </template>
         </Grid>
-      </template>
-      <template #processRouteC>
-        <!-- 加载状态组件，当工艺路线列表加载时显示加载动画 -->
-        <Spin :spinning="processRouteListLoading">
+      </Card>
+      <!-- 分割线 -->
+      <hr class="mb-4" />
+      <!--- endregion -->
+
+      <!--- region 工艺路线 -->
+      <!-- 行容器，用于布局工艺路线标题和收缩按钮 -->
+      <Row class="mb-4">
+        <!-- 列容器，占据 23 格宽度，显示工艺路线标题 -->
+        <Col :span="24">
+          <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
+            {{ $t('productionOperation.processRoute') }}
+          </span>
+
+          <!-- 展开按钮 -->
+          <Button
+            type="link"
+            @click="processShrinkageChange"
+            class="float-right"
+          >
+            <!-- 展开按钮 -->
+            <MdiChevronDown
+              v-if="!processShrinkage"
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+            <!-- 收缩按钮 -->
+            <MdiChevronUp
+              v-else
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+          </Button>
+        </Col>
+      </Row>
+      <!-- 加载状态组件，当工艺路线列表加载时显示加载动画 -->
+      <Spin :spinning="processRouteListLoading">
+        <!-- 卡片容器，当工艺路线收缩时显示 -->
+        <Card class="mb-5" v-if="processShrinkage">
           <!-- 横向滚动容器，用于显示工艺路线项 -->
           <div class="w-full overflow-x-auto whitespace-nowrap">
             <!-- 循环渲染工艺路线项 -->
@@ -1124,28 +1021,61 @@ onBeforeUnmount(() => {
               </div>
             </template>
           </div>
-        </Spin>
-      </template>
-      <template #operationalMattersC>
-        <!-- 操作事项选择器，使用单选按钮组 -->
-        <RadioGroup v-model:value="theSelectedOperation" button-style="solid">
-          <!-- 循环渲染单选按钮 -->
-          <RadioButton
-            :value="item.id"
-            v-for="item of listOfOperationItems"
-            :key="item.id"
+        </Card>
+      </Spin>
+      <!-- 分割线 -->
+      <hr class="mb-4" />
+      <!--- endregion -->
+
+      <!--- region 操作事项  -->
+      <!-- 行容器，用于布局操作事项标题和操作事项选择器 -->
+      <Row class="mb-4">
+        <!-- 列容器，占据 23 格宽度，显示操作事项标题和选择器 -->
+        <Col :span="24">
+          <!-- 显示操作事项标题，带有蓝色边框 -->
+          <span class="mr-4 border-l-4 border-sky-500 pl-4 text-xl font-black">
+            {{ $t('productionOperation.operationalMatters') }}
+          </span>
+
+          <!-- 操作事项选择器，使用单选按钮组 -->
+          <RadioGroup v-model:value="theSelectedOperation" button-style="solid">
+            <!-- 循环渲染单选按钮 -->
+            <RadioButton
+              :value="item.id"
+              v-for="item of listOfOperationItems"
+              :key="item.id"
+            >
+              <!-- 显示操作事项图标 -->
+              <IconifyIcon
+                :icon="iconEnum[item.opTypeName]"
+                class="inline-block text-xl"
+              />
+              <!-- 显示操作事项名称 -->
+              {{ item.opTypeName }}
+            </RadioButton>
+          </RadioGroup>
+
+          <!-- 展开按钮 -->
+          <Button
+            type="link"
+            @click="operationEventShrinkageChange"
+            class="float-right"
           >
-            <!-- 显示操作事项图标 -->
-            <IconifyIcon
-              :icon="iconEnum[item.opTypeName]"
-              class="inline-block text-xl"
+            <!-- 展开按钮 -->
+            <MdiChevronDown
+              v-if="!operationEventShrinkage"
+              class="float-right inline-block cursor-pointer text-4xl"
             />
-            <!-- 显示操作事项名称 -->
-            {{ item.opTypeName }}
-          </RadioButton>
-        </RadioGroup>
-      </template>
-      <template #operationEventC>
+            <!-- 收缩按钮 -->
+            <MdiChevronUp
+              v-else
+              class="float-right inline-block cursor-pointer text-4xl"
+            />
+          </Button>
+        </Col>
+      </Row>
+      <!-- 卡片容器，当操作事项收缩时显示操作事项组件 -->
+      <Card v-if="operationEventShrinkage" class="mb-5">
         <OperationalMatters
           :details-id="theSelectedOperation"
           :type="1"
@@ -1154,21 +1084,68 @@ onBeforeUnmount(() => {
           @current-change="workStepConversion"
           v-if="theSelectedOperation && theCurrentlySelectedWorkOrderNumber"
         />
-      </template>
-      <template #stepExecutionC>
-        <StepExecution
-          :workstation-code="selectedWorkstation"
-          :equip-code="theSelectedProcessEquipment"
-          :worksheet-code="theCurrentlySelectedWorkOrderNumber"
-          :product-code="theSelectedWorkOrder.productCode"
-          :product-name="theSelectedWorkOrder.productName"
-          :binding-id="checkedProcessId"
-          :step="currentWorkingStep"
-          v-if="currentWorkingStep"
-        />
-      </template>
-    </NormalMode>
-    <!-- endregion -->
+      </Card>
+      <!-- 分割线 -->
+      <hr class="mb-4" />
+      <!--- endregion -->
+
+      <!--- region 工步执行  -->
+      <!-- 行容器，用于布局工步执行标题和收缩按钮 -->
+      <div
+        id="stepExecution"
+        class="bg-[#f1f3f6]"
+        :class="{
+          'h-full overflow-y-auto pb-8': isItFullScreen,
+        }"
+      >
+        <Row class="mb-4">
+          <!-- 列容器，占据 4 格宽度，显示工步执行标题 -->
+          <Col :span="24">
+            <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
+              {{ $t('productionOperation.workStepExecution') }}
+              ___
+              {{ theCurrentlySelectedWorkOrderNumber || '' }}
+            </span>
+
+            <!-- 全屏按钮 -->
+            <Button
+              type="link"
+              @click="fullScreen()"
+              class="absolute right-0 top-0"
+            >
+              <IconifyIcon
+                :icon="
+                  isItFullScreen ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'
+                "
+                class="inline-block align-middle text-4xl"
+              />
+            </Button>
+            <OperationalMatters
+              :details-id="theSelectedOperation"
+              :type="3"
+              :worksheet-code="theCurrentlySelectedWorkOrderNumber"
+              :current-index="currentWorkingStep.index"
+              @current-change="workStepConversion"
+              v-if="isItFullScreen"
+            />
+          </Col>
+        </Row>
+        <!-- 卡片容器，当工步执行收缩时显示工步执行组件 -->
+        <Card class="mb-5 min-h-72">
+          <StepExecution
+            :workstation-code="selectedWorkstation"
+            :equip-code="theSelectedProcessEquipment"
+            :worksheet-code="theCurrentlySelectedWorkOrderNumber"
+            :product-code="theSelectedWorkOrder.productCode"
+            :product-name="theSelectedWorkOrder.productName"
+            :binding-id="checkedProcessId"
+            :step="currentWorkingStep"
+            v-if="currentWorkingStep"
+          />
+        </Card>
+      </div>
+      <!-- endregion -->
+    </div>
 
     <!-- 人员操作组件，通过 ref 引用 -->
     <PersonnelOperation ref="personnelOperationRef" />
@@ -1178,20 +1155,6 @@ onBeforeUnmount(() => {
       ref="interlockingConfigurationRef"
       :workstation-code="selectedWorkstation"
     />
-
-    <FloatButton
-      type="primary"
-      shape="circle"
-      :style="{ right: '24px', bottom: '70px' }"
-      @click="isSimple = !isSimple"
-    >
-      <template #icon>
-        <IconifyIcon icon="icon-park-solid:update-rotation" class="text-xl" />
-      </template>
-    </FloatButton>
-    <!--
-    ooui:update-ltr
-    -->
   </Page>
 </template>
 
