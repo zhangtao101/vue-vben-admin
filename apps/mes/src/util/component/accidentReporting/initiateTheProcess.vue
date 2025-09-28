@@ -191,19 +191,19 @@ function getUploadUrl() {
 
 const accidentType = ref([
   {
-    label: '特别重大事故',
+    label: '特别重大事故(I级)',
     value: 1,
   },
   {
-    label: '重大事故',
+    label: '重大事故(II级)',
     value: 2,
   },
   {
-    label: '较大事故',
+    label: '较大事故(III级)',
     value: 3,
   },
   {
-    label: '一般事故',
+    label: '一般事故(IV级)',
     value: 4,
   },
 ]);

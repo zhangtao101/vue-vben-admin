@@ -335,6 +335,9 @@ const editRules = ref<any>({
     {
       trigger: 'change',
       validator: (_rule: Rule, value: string) => {
+        if (!value) {
+          return Promise.resolve();
+        }
         const regex = /^[\w.-]+@[\d.a-z-]+\.[a-z]{2,6}$/i;
         return regex.test(value)
           ? Promise.resolve()
@@ -346,6 +349,9 @@ const editRules = ref<any>({
     {
       trigger: 'change',
       validator: (_rule: Rule, value: string) => {
+        if (!value) {
+          return Promise.resolve();
+        }
         const regex = /^0\d{2,3}-?\d{7,8}(?:-\d{1,4})?$/;
         return regex.test(value)
           ? Promise.resolve()
@@ -363,6 +369,9 @@ const editRules = ref<any>({
     {
       trigger: 'change',
       validator: (_rule: Rule, value: string) => {
+        if (!value) {
+          return Promise.resolve();
+        }
         const regex = /^(?:0\d{2,3}-?)?\d{7,8}(?:-\d{1,4})?$/;
         return regex.test(value)
           ? Promise.resolve()

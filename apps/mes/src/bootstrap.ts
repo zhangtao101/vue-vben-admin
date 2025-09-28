@@ -8,6 +8,8 @@ import '@vben/styles';
 import '@vben/styles/antd';
 
 import { useTitle } from '@vueuse/core';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 
 import { $t, setupI18n } from '#/locales';
 
@@ -16,6 +18,9 @@ import App from './app.vue';
 import { router } from './router';
 
 async function bootstrap(namespace: string) {
+  // dayjs插件
+  dayjs.extend(isBetween);
+
   // 初始化组件适配器
   await initComponentAdapter();
 

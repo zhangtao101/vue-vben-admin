@@ -171,10 +171,10 @@ function editClose() {
 // region 事故类型
 
 const accidentType = ref({
-  1: '特别重大事故',
-  2: '重大事故',
-  3: '较大事故',
-  4: '一般事故',
+  1: '特别重大事故(I级)',
+  2: '重大事故(II级)',
+  3: '较大事故(III级)',
+  4: '一般事故(IV级)',
 });
 
 // endregion
