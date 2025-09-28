@@ -11,15 +11,18 @@ import {
   Button,
   Calendar,
   Col,
-  Drawer, Form,
+  Drawer,
+  Form,
   FormItem,
   Input,
   message,
-  Modal, RadioGroup,
-  Row, Select, Space,
+  Modal,
+  RadioGroup,
+  RangePicker,
+  Row,
+  Space,
   Spin,
   Tooltip,
-  RangePicker,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
@@ -431,35 +434,20 @@ defineExpose({
       ref="form"
     >
       <!-- 规则编号 -->
-      <FormItem
-        :label="$t('factoryCalendar.ruleCode')"
-        name="ruleCode"
-      >
+      <FormItem :label="$t('factoryCalendar.ruleCode')" name="ruleCode">
         <Input v-model:value="editItem.ruleCode" disabled />
       </FormItem>
       <!-- 特殊规则名称 -->
-      <FormItem
-        :label="$t('factoryCalendar.ruleName')"
-        name="ruleName"
-      >
+      <FormItem :label="$t('factoryCalendar.ruleName')" name="ruleName">
         <Input v-model:value="editItem.ruleName" />
       </FormItem>
       <!-- 特殊规则日期 -->
-      <FormItem
-        :label="$t('factoryCalendar.time')"
-        name="time"
-      >
+      <FormItem :label="$t('factoryCalendar.time')" name="time">
         <RangePicker v-model:value="editItem.time" />
       </FormItem>
       <!-- 工作周设定 -->
-      <FormItem
-        :label="$t('factoryCalendar.workWeekSetting')"
-        name="startDay"
-      >
-        <RadioGroup
-          v-model:value="editItem.isWork"
-          :options="workDayOptions"
-        />
+      <FormItem :label="$t('factoryCalendar.workWeekSetting')" name="startDay">
+        <RadioGroup v-model:value="editItem.isWork" :options="workDayOptions" />
       </FormItem>
     </Form>
 
