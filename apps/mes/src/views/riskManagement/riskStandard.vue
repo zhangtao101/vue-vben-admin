@@ -370,7 +370,7 @@ onMounted(() => {
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 18 }"
       >
-        <!-- 工作站选择表单项，验证是否选择 -->
+        <!-- 风险分类 -->
         <FormItem
           :label="$t('hiddenDangerInspectionStandard.riskClassification')"
           :rules="[{ required: true, message: '该项为必填项' }]"

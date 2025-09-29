@@ -197,6 +197,13 @@ function submit() {
     const params = {
       ...editItem.value,
     };
+
+    if (params.startTime) {
+      params.startTime = params.startTime.format('YYYY-MM-DD HH:mm:ss');
+    }
+    if (params.endTime) {
+      params.endTime = params.endTime.format('YYYY-MM-DD HH:mm:ss');
+    }
     if (params.details) {
       params.idList = [];
       params.details.forEach((item: any) => {
@@ -224,11 +231,7 @@ function submit() {
  */
 function showEditFun(row?: any) {
   showEdit.value = true;
-  editItem.value = row
-    ? {
-        ...row,
-      }
-    : {};
+  editItem.value = {};
   isUserEdit.value = !row;
   // 格式化
   const formatData = () => {
@@ -242,21 +245,22 @@ function showEditFun(row?: any) {
       editItem.value.userChenked = ['', editItem.value.manager];
     }
   };
-  formatData();
-  queryHiddenDangerInspectionPlanDetails(row.id).then((data) => {
-    data.details = data.hazardCheckTypes;
-    delete data.hazardCheckTypes;
+  if (row) {
+    queryHiddenDangerInspectionPlanDetails(row.id).then((data) => {
+      data.details = data.hazardCheckTypes;
+      delete data.hazardCheckTypes;
 
-    editItem.value = {
-      ...data,
-    };
+      editItem.value = {
+        ...data,
+      };
 
-    editItem.value.details.forEach((item: any) => {
-      inspectionTypeChange(item, true);
-      checkItemChange(item, true);
+      editItem.value.details.forEach((item: any) => {
+        inspectionTypeChange(item, true);
+        checkItemChange(item, true);
+      });
+      formatData();
     });
-    formatData();
-  });
+  }
 }
 
 /**

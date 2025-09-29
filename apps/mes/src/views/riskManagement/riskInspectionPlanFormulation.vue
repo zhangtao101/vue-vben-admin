@@ -32,14 +32,17 @@ import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  getInspectionTypeNamelist,
   listSysPerson,
   planDelete,
   planInsert,
   planList,
   planUpdate,
   planUpdateStatus,
+  queryDictionaryByCode,
   queryHiddenDangerInspectionType,
   queryOrganizationTree,
+  queryPlanDetail,
   sourceList,
 } from '#/api';
 import { $t } from '#/locales';
@@ -53,6 +56,8 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
+    { field: 'planCode', title: '计划编号', minWidth: 150 },
+    { field: 'planName', title: '计划名称', minWidth: 150 },
     { field: 'manager', title: '计划任务负责人', minWidth: 150 },
     { field: 'riskName', title: '风险名称', minWidth: 150 },
     { field: 'riskType', title: '风险种类', minWidth: 150 },
@@ -197,6 +202,14 @@ function submit() {
     if (params.endTime) {
       params.endTime = params.endTime.format('YYYY-MM-DD HH:mm:ss');
     }
+
+    if (params.details) {
+      params.idList = [];
+      params.details.forEach((item: any) => {
+        params.idList.push(item.id);
+      });
+      delete params.details;
+    }
     const ob = params.id ? planUpdate(params) : planInsert(params);
     submitLoading.value = true;
     ob.then(() => {
@@ -215,21 +228,37 @@ function submit() {
  */
 function showEditFun(row?: any) {
   showEdit.value = true;
-  editItem.value = row
-    ? {
-        ...row,
-      }
-    : {};
-  if (editItem.value.startTime) {
-    editItem.value.startTime = dayjs(editItem.value.startTime);
-  }
-  if (editItem.value.endTime) {
-    editItem.value.endTime = dayjs(editItem.value.endTime);
-  }
-  if (editItem.value.manager) {
-    editItem.value.userChenked = ['', editItem.value.manager];
-  }
+  editItem.value = {};
   isUserEdit.value = !row;
+  // 格式化
+  const formatData = () => {
+    if (editItem.value.startTime) {
+      editItem.value.startTime = dayjs(editItem.value.startTime);
+    }
+    if (editItem.value.endTime) {
+      editItem.value.endTime = dayjs(editItem.value.endTime);
+    }
+    if (editItem.value.manager) {
+      editItem.value.userChenked = ['', editItem.value.manager];
+    }
+  };
+  if (row) {
+    queryPlanDetail(row.id).then((data) => {
+      data.details = data.hazardCheckTypes;
+      delete data.hazardCheckTypes;
+
+      editItem.value = {
+        ...data,
+        riskName_riskType: `${row.riskName}&&${row.riskType}`,
+      };
+
+      editItem.value.details.forEach((item: any) => {
+        queryInspectionType(item, true);
+        inspectionTypeChange(item, true);
+      });
+      formatData();
+    });
+  }
 }
 
 /**
@@ -256,6 +285,24 @@ const disabledDateEnd = (current: Dayjs) => {
   );
 };
 
+/**
+ * 添加计划详情
+ */
+function addDetail() {
+  if (!editItem.value.details) {
+    editItem.value.details = [];
+  }
+  editItem.value.details.push({});
+}
+
+/**
+ * 删除计划详情
+ * @param index 计划详情索引
+ */
+function removeDetail(index: number) {
+  editItem.value.details.splice(index, 1);
+}
+
 // endregion
 
 // region 删除
@@ -279,29 +326,62 @@ const inspectionTypeOptions = ref<any[]>([]);
 
 /**
  * 查询巡检类型
+ * @param item 计划详情对象
+ * @param isInit 是否初始化
  */
-function queryInspectionType() {
-  queryHiddenDangerInspectionType({
-    pageNum: 1, // 当前页码。
-    pageSize: 99_999, // 每页显示的数据条数。
-  }).then(({ list }) => {
+function queryInspectionType(item: any, isInit?: boolean) {
+  if (!isInit) {
+    item.checkItem = '';
+  }
+  getInspectionTypeNamelist({
+    checkType: item.checkType,
+    type: 2,
+  }).then((data) => {
     inspectionTypeOptions.value = [];
-    list.forEach((item: any) => {
+    data.forEach((i: any) => {
       inspectionTypeOptions.value.push({
-        label: item.checkType,
-        value: item.checkType,
-        checkCriteria: item.checkCriteria,
-        areaCode: item.areaCode,
-        area: item.area,
+        label: i,
+        value: i,
       });
     });
   });
 }
 
-function inspectionTypeChange(_val: any, item: any) {
-  editItem.value.checkCriteria = item.checkCriteria;
-  editItem.value.area = item.area;
-  editItem.value.areaCode = item.areaCode;
+/**
+ * 巡检类型改变
+ * @param item 计划详情对象
+ * @param isInit 是否初始化
+ */
+function inspectionTypeChange(item: any, isInit?: boolean) {
+  if (!isInit) {
+    item.checkCriteria = '';
+  }
+  queryHiddenDangerInspectionType({
+    checkType: item.checkType,
+    checkItem: item.checkItem,
+    type: 2, // 隐患1 ，风险2
+  }).then(({ list }) => {
+    item.checkCriteriaList = [];
+    item.choose = '';
+    list.forEach((i: any) => {
+      item.checkCriteriaList.push({
+        label: `${i.area}(${i.checkCriteria})`,
+        value: i.area,
+        checkCriteria: i.checkCriteria,
+        id: i.id,
+      });
+    });
+  });
+}
+/**
+ * 地区/检查标准改变时， 记录选中的id
+ * @param checkedItem
+ * @param item
+ */
+function checkCriteriaChange(checkedItem: any, item: any) {
+  item.checkCriteria = checkedItem.checkCriteria;
+  item.area = checkedItem.value;
+  item.id = checkedItem.id;
 }
 
 const filterOption = (input: string, option: any) => {
@@ -309,6 +389,33 @@ const filterOption = (input: string, option: any) => {
     input.toLowerCase(),
   );
 };
+
+// endregion
+
+// region 风险分类
+
+// 检查类别选项
+const checkTypeOptions = ref<any[]>([]);
+
+/**
+ * 根据父级字典编号查询数据
+ */
+function queryDataByParCode() {
+  // 根据选中的菜单代码查询字典数据
+  queryDictionaryByCode({
+    pageNum: 1, // 当前页码
+    pageSize: 9999, // 每页显示的条数
+    parCode: 'RISKTYPE', // 父级编码
+  }).then(({ list }: any) => {
+    checkTypeOptions.value = [];
+    list.forEach((item: any) => {
+      checkTypeOptions.value.push({
+        label: item.wordName,
+        value: item.wordName,
+      });
+    });
+  });
+}
 
 // endregion
 
@@ -468,10 +575,9 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
-
-  queryInspectionType();
   queryAllOrganizations();
   queryEvaluationCriteria();
+  queryDataByParCode();
 });
 
 // endregion
@@ -601,6 +707,22 @@ onMounted(() => {
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 18 }"
       >
+        <!-- 计划名称 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.planCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="editItem.planCode" disabled />
+        </FormItem>
+        <!-- 计划编号 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.planName')"
+          style="margin-bottom: 1em"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="planName"
+        >
+          <Input v-model:value="editItem.planName" />
+        </FormItem>
         <!-- 负责人 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.responsiblePerson')"
@@ -631,68 +753,6 @@ onMounted(() => {
             </Tooltip>
           </template>
         </FormItem>
-
-        <!--  风险名称 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.riskName')"
-          style="margin-bottom: 1em"
-        >
-          <Select
-            v-model:value="editItem.riskName_riskType"
-            :options="listOfEvaluationCriteria"
-            show-search
-            class="!w-56"
-            :filter-option="filterOption"
-            @change="evaluationCriteriaChange"
-          />
-        </FormItem>
-        <!-- 风险种类 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.riskType')"
-          style="margin-bottom: 1em"
-        >
-          {{ editItem.riskType }}
-        </FormItem>
-
-        <!-- 检查类别 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
-          style="margin-bottom: 1em"
-          :rules="[{ required: true, message: '该项为必填项' }]"
-          name="checkType"
-        >
-          <Select
-            v-model:value="editItem.checkType"
-            :options="inspectionTypeOptions"
-            show-search
-            class="!w-56"
-            :filter-option="filterOption"
-            @change="inspectionTypeChange"
-          />
-        </FormItem>
-
-        <!-- 检查标准 -->
-        <FormItem :label="$t('hiddenDangerInspectionPlan.inspectionStandard')">
-          <Input v-model:value="editItem.checkCriteria" readonly />
-        </FormItem>
-
-        <!-- 巡检区域 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="editItem.area" readonly />
-        </FormItem>
-
-        <!-- 巡检内容 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.inspectionContent')"
-          :rules="[{ required: false, message: '该项为必填项' }]"
-          name="content"
-        >
-          <Textarea v-model:value="editItem.content" />
-        </FormItem>
-
         <!-- 巡检类型 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionType')"
@@ -763,6 +823,115 @@ onMounted(() => {
               </Button>
             </template>
           </Input>
+        </FormItem>
+
+        <!--  风险名称 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.riskName')"
+          style="margin-bottom: 1em"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="riskName_riskType"
+        >
+          <Select
+            v-model:value="editItem.riskName_riskType"
+            :options="listOfEvaluationCriteria"
+            show-search
+            class="!w-56"
+            :filter-option="filterOption"
+            @change="evaluationCriteriaChange"
+          />
+        </FormItem>
+        <!-- 风险种类 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.riskType')"
+          style="margin-bottom: 1em"
+        >
+          {{ editItem.riskType }}
+        </FormItem>
+
+        <template v-for="(item, index) of editItem.details" :key="index">
+          <hr class="my-4" />
+          <FormItem
+            :label="$t('hiddenDangerInspectionStandard.riskClassification')"
+            :rules="[{ required: true, message: '该项为必填项' }]"
+            :name="['details', index, 'checkType']"
+          >
+            <Select
+              v-model:value="item.checkType"
+              :options="checkTypeOptions"
+              @change="queryInspectionType(item)"
+            />
+          </FormItem>
+
+          <!-- 检查类别 -->
+          <FormItem
+            :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
+            style="margin-bottom: 1em"
+            :rules="[{ required: true, message: '该项为必填项' }]"
+            :name="['details', index, 'checkItem']"
+          >
+            <Select
+              v-model:value="item.checkItem"
+              :options="inspectionTypeOptions"
+              show-search
+              class="!w-56"
+              :filter-option="filterOption"
+              @change="inspectionTypeChange(item)"
+            />
+          </FormItem>
+
+          <!-- 区域/标准选择 -->
+          <FormItem :label="$t('hiddenDangerInspectionPlan.choose')">
+            <Select
+              v-model:value="item.choose"
+              :options="item.checkCriteriaList"
+              show-search
+              class="!w-full"
+              :filter-option="filterOption"
+              @change="
+                (_value, checkedItem) => checkCriteriaChange(checkedItem, item)
+              "
+            />
+          </FormItem>
+
+          <!-- 检查标准 -->
+          <FormItem
+            :label="$t('hiddenDangerInspectionPlan.inspectionStandard')"
+            :rules="[{ required: true, message: '该项为必填项' }]"
+            :name="['details', index, 'checkCriteria']"
+          >
+            <Textarea v-model:value="item.checkCriteria" readonly />
+          </FormItem>
+
+          <!-- 巡检区域 -->
+          <FormItem
+            :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
+            style="margin-bottom: 1em"
+            :rules="[{ required: true, message: '该项为必填项' }]"
+            :name="['details', index, 'area']"
+          >
+            <Input v-model:value="item.area" readonly />
+          </FormItem>
+
+          <FormItem :wrapper-col="{ span: 18, offset: 6 }">
+            <Popconfirm
+              title="确认删除吗？"
+              @confirm="removeDetail(index)"
+              ok-text="确认"
+              cancel-text="取消"
+            >
+              <Button type="primary" class="w-full" danger>
+                {{ $t('common.delete') }}
+              </Button>
+            </Popconfirm>
+          </FormItem>
+          <hr class="my-4" />
+        </template>
+
+        <FormItem :wrapper-col="{ span: 18, offset: 6 }">
+          <Button type="primary" class="w-full" @click="addDetail">
+            {{ $t('common.add') }}
+          </Button>
         </FormItem>
       </Form>
       <!-- 抽屉底部操作按钮 -->

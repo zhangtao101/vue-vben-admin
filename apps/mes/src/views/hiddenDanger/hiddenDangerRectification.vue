@@ -718,7 +718,9 @@ onMounted(() => {
           :span="2"
         >
           {{
-            checkedRow.level || $t('hiddenDangerInspectionTask.notAtTheMoment')
+            checkedRow.level
+              ? getLevelText(checkedRow.level)
+              : $t('hiddenDangerInspectionTask.notAtTheMoment')
           }}
         </DescriptionsItem>
         <DescriptionsItem

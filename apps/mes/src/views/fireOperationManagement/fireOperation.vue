@@ -385,12 +385,28 @@ function showStatusChangeModal(row: any) {
   statusModal.value = true;
 }
 
+/**
+ * 变更
+ */
 function statusChange() {
   updateApply(statusItem.value).then(() => {
     message.success($t('common.successfulOperation'));
     gridApi.reload();
     statusModal.value = false;
     statusItem.value = {};
+  });
+}
+
+/**
+ * 任务关闭
+ * @param row
+ */
+function taskClose(row: any) {
+  const params = { ...row };
+  params.end = 1;
+  updateApply(params).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
   });
 }
 
@@ -541,6 +557,32 @@ onMounted(() => {
                 class="inline-block align-middle text-2xl"
               />
             </Button>
+          </Tooltip>
+          <!-- 关闭任务 -->
+          <Tooltip
+            v-if="
+              author.includes('关闭任务') &&
+              (row.state === 1 || row.state === 0) &&
+              row.end !== 1
+            "
+          >
+            <template #title>
+              {{ $t('common.close') }}
+            </template>
+
+            <Popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.confirm')"
+              :title="$t('ui.widgets.confirmTheInformation')"
+              @confirm="taskClose(row)"
+            >
+              <Button type="link">
+                <IconifyIcon
+                  icon="mdi:close-outline"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Popconfirm>
           </Tooltip>
 
           <!-- 删除 -->

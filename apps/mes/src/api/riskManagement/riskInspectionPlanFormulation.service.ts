@@ -46,3 +46,12 @@ export async function planUpdateStatus(id: any) {
     {},
   );
 }
+/**
+ * 查看风险检查计划详情
+ */
+export async function queryPlanDetail(id: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/riskcheck/plan/detail/${id}`,
+    {},
+  );
+}
