@@ -12,11 +12,27 @@ export async function queryHiddenDangerInspectionPlan(params: any) {
   );
 }
 /**
+ * 查询隐患检查计划详情
+ */
+export async function queryHiddenDangerInspectionPlanDetails(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hazardcheck/plan/detail/${params}`,
+  );
+}
+/**
  * 展示所有日历
  */
 export async function getWorkshopCalendars(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/calendar/workCalendar/getWorkshopCalendars?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 查询巡检项目
+ */
+export async function getInspectionTypeNamelist(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hazardcheck/type/namelist?${qs.stringify(params)}`,
   );
 }
 

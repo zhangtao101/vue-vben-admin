@@ -20,6 +20,7 @@ import {
   Input,
   InputNumber,
   message,
+  Popconfirm,
   RadioButton,
   RadioGroup,
   Select,
@@ -32,8 +33,10 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addHiddenDangerInspectionPlan,
+  getInspectionTypeNamelist,
   listSysPerson,
   queryHiddenDangerInspectionPlan,
+  queryHiddenDangerInspectionPlanDetails,
   queryHiddenDangerInspectionType,
   queryOrganizationTree,
   switchPlanStatus,
@@ -50,7 +53,9 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'checkName', title: '专项检查名称', minWidth: 190 },
+    { field: 'planCode', title: '计划名称', minWidth: 190 },
+    { field: 'planName', title: '计划编号', minWidth: 190 },
+    { field: 'checkName', title: '专项计划编号', minWidth: 190 },
     { field: 'manager', title: '负责人', minWidth: 150 },
     { field: 'startTime', title: '开始时间', minWidth: 150 },
     { field: 'endTime', title: '结束时间', minWidth: 150 },
@@ -165,6 +170,7 @@ const timeTypeOptions = [
     value: 0,
   },
 ];
+
 // 是否显示编辑
 const showEdit = ref(false);
 /**
@@ -188,9 +194,19 @@ const submitLoading = ref(false);
  */
 function submit() {
   formRef.value.validate().then(() => {
-    const ob = editItem.value.id
-      ? updateHiddenDangerInspectionPlan(editItem.value)
-      : addHiddenDangerInspectionPlan(editItem.value);
+    const params = {
+      ...editItem.value,
+    };
+    if (params.details) {
+      params.idList = [];
+      params.details.forEach((item: any) => {
+        params.idList.push(item.id);
+      });
+      delete params.details;
+    }
+    const ob = params.id
+      ? updateHiddenDangerInspectionPlan(params)
+      : addHiddenDangerInspectionPlan(params);
     submitLoading.value = true;
     ob.then(() => {
       message.success($t('common.successfulOperation'));
@@ -213,16 +229,34 @@ function showEditFun(row?: any) {
         ...row,
       }
     : {};
-  if (editItem.value.startTime) {
-    editItem.value.startTime = dayjs(editItem.value.startTime);
-  }
-  if (editItem.value.endTime) {
-    editItem.value.endTime = dayjs(editItem.value.endTime);
-  }
-  if (editItem.value.manager) {
-    editItem.value.userChenked = ['', editItem.value.manager];
-  }
   isUserEdit.value = !row;
+  // 格式化
+  const formatData = () => {
+    if (editItem.value.startTime) {
+      editItem.value.startTime = dayjs(editItem.value.startTime);
+    }
+    if (editItem.value.endTime) {
+      editItem.value.endTime = dayjs(editItem.value.endTime);
+    }
+    if (editItem.value.manager) {
+      editItem.value.userChenked = ['', editItem.value.manager];
+    }
+  };
+  formatData();
+  queryHiddenDangerInspectionPlanDetails(row.id).then((data) => {
+    data.details = data.hazardCheckTypes;
+    delete data.hazardCheckTypes;
+
+    editItem.value = {
+      ...data,
+    };
+
+    editItem.value.details.forEach((item: any) => {
+      inspectionTypeChange(item, true);
+      checkItemChange(item, true);
+    });
+    formatData();
+  });
 }
 
 /**
@@ -249,38 +283,45 @@ const disabledDateEnd = (current: Dayjs) => {
   );
 };
 
+/**
+ * 添加计划详情
+ */
+function addDetail() {
+  if (!editItem.value.details) {
+    editItem.value.details = [];
+  }
+  editItem.value.details.push({});
+}
+
+/**
+ * 删除计划详情
+ * @param index 计划详情索引
+ */
+function removeDetail(index: number) {
+  editItem.value.details.splice(index, 1);
+}
 // endregion
 
 // region 巡检类型
 
-const inspectionTypeOptions = ref<any[]>([]);
-
-/**
- * 查询巡检类型
- */
-function queryInspectionType() {
-  queryHiddenDangerInspectionType({
-    pageNum: 1, // 当前页码。
-    pageSize: 99_999, // 每页显示的数据条数。
-  }).then(({ list }) => {
-    inspectionTypeOptions.value = [];
-    list.forEach((item: any) => {
-      inspectionTypeOptions.value.push({
-        label: item.checkType,
-        value: item.checkType,
-        checkCriteria: item.checkCriteria,
-        areaCode: item.areaCode,
-        area: item.area,
-      });
-    });
-  });
-}
-
-function inspectionTypeChange(_val: any, item: any) {
-  editItem.value.checkCriteria = item.checkCriteria;
-  editItem.value.area = item.area;
-  editItem.value.areaCode = item.areaCode;
-}
+const inspectionTypeOptions = ref<any[]>([
+  {
+    label: '日常检查',
+    value: '日常检查',
+  },
+  {
+    label: '综合检查',
+    value: '综合检查',
+  },
+  {
+    label: '专项检查',
+    value: '专项检查',
+  },
+  {
+    label: '重大隐患排查',
+    value: '重大隐患排查',
+  },
+]);
 
 const filterOption = (input: string, option: any) => {
   return [option.label.toLowerCase(), option.value.toLowerCase()].includes(
@@ -288,6 +329,66 @@ const filterOption = (input: string, option: any) => {
   );
 };
 
+/**
+ * 巡检类型改变时，清空巡检项目, 查询项目列表
+ * @param item 计划详情对象
+ * @param isInit 是否初始化
+ */
+function inspectionTypeChange(item: any, isInit?: boolean) {
+  if (!isInit) {
+    item.checkItem = '';
+  }
+  getInspectionTypeNamelist({
+    checkType: item.checkType,
+    type: 1, // 隐患1 ，风险2
+  }).then((data) => {
+    item.checkItemOptions = [];
+    data.forEach((i: any) => {
+      item.checkItemOptions.push({
+        label: i,
+        value: i,
+      });
+    });
+  });
+}
+
+/**
+ * 巡检项目改变时， 查询信息
+ * @param item 计划详情对象
+ * @param isInit 是否初始化
+ */
+function checkItemChange(item: any, isInit?: boolean) {
+  if (!isInit) {
+    item.checkCriteria = '';
+  }
+  queryHiddenDangerInspectionType({
+    checkType: item.checkType,
+    checkItem: item.checkItem,
+    type: 1,
+  }).then(({ list }) => {
+    item.checkCriteriaList = [];
+    item.choose = '';
+    list.forEach((i: any) => {
+      item.checkCriteriaList.push({
+        label: `${i.area}(${i.checkCriteria})`,
+        value: i.area,
+        checkCriteria: i.checkCriteria,
+        id: i.id,
+      });
+    });
+  });
+}
+
+/**
+ * 地区/检查标准改变时， 记录选中的id
+ * @param checkedItem
+ * @param item
+ */
+function checkCriteriaChange(checkedItem: any, item: any) {
+  item.checkCriteria = checkedItem.checkCriteria;
+  item.area = checkedItem.value;
+  item.id = checkedItem.id;
+}
 // endregion
 
 // region 组织查询
@@ -414,7 +515,6 @@ onMounted(() => {
     author.value = data;
   });
 
-  queryInspectionType();
   queryAllOrganizations();
 });
 
@@ -532,6 +632,22 @@ onMounted(() => {
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 18 }"
       >
+        <!-- 计划名称 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.planCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="editItem.planCode" disabled />
+        </FormItem>
+        <!-- 计划编号 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.planName')"
+          style="margin-bottom: 1em"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="planName"
+        >
+          <Input v-model:value="editItem.planName" />
+        </FormItem>
         <!-- 负责人 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.responsiblePerson')"
@@ -561,45 +677,6 @@ onMounted(() => {
               </Button>
             </Tooltip>
           </template>
-        </FormItem>
-
-        <!-- 检查类别 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
-          style="margin-bottom: 1em"
-          :rules="[{ required: true, message: '该项为必填项' }]"
-          name="checkType"
-        >
-          <Select
-            v-model:value="editItem.checkType"
-            :options="inspectionTypeOptions"
-            show-search
-            class="!w-56"
-            :filter-option="filterOption"
-            @change="inspectionTypeChange"
-          />
-        </FormItem>
-
-        <!-- 检查标准 -->
-        <FormItem :label="$t('hiddenDangerInspectionPlan.inspectionStandard')">
-          <Input v-model:value="editItem.checkCriteria" readonly />
-        </FormItem>
-
-        <!-- 巡检区域 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="editItem.area" readonly />
-        </FormItem>
-
-        <!-- 巡检内容 -->
-        <FormItem
-          :label="$t('hiddenDangerInspectionPlan.inspectionContent')"
-          :rules="[{ required: false, message: '该项为必填项' }]"
-          name="content"
-        >
-          <Textarea v-model:value="editItem.content" />
         </FormItem>
 
         <!-- 巡检类型 -->
@@ -654,7 +731,7 @@ onMounted(() => {
           />
         </FormItem>
 
-        <!-- 专项检查名称 -->
+        <!-- 专项计划编号 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.specialInspectionName')"
           :rules="[{ required: true, message: '该项为必填项' }]"
@@ -678,6 +755,92 @@ onMounted(() => {
               </Button>
             </template>
           </Input>
+        </FormItem>
+        <template v-for="(item, index) of editItem.details" :key="index">
+          <hr class="my-4" />
+          <!-- 检查类别 -->
+          <FormItem
+            :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
+            style="margin-bottom: 1em"
+            :rules="[{ required: true, message: '该项为必填项' }]"
+            :name="['details', index, 'checkType']"
+          >
+            <Select
+              v-model:value="item.checkType"
+              :options="inspectionTypeOptions"
+              show-search
+              class="!w-full"
+              :filter-option="filterOption"
+              @change="inspectionTypeChange(item)"
+            />
+          </FormItem>
+          <!-- 巡检项目 -->
+          <FormItem
+            :label="$t('hiddenDangerInspectionStandard.checkItem')"
+            style="margin-bottom: 1em"
+            :rules="[{ required: true, message: '该项为必填项' }]"
+            :name="['details', index, 'checkItem']"
+          >
+            <Select
+              v-model:value="item.checkItem"
+              :options="item.checkItemOptions"
+              show-search
+              class="!w-56"
+              :filter-option="filterOption"
+              @change="checkItemChange(item)"
+            />
+          </FormItem>
+
+          <!-- 区域/标准选择 -->
+          <FormItem :label="$t('hiddenDangerInspectionPlan.choose')">
+            <Select
+              v-model:value="item.choose"
+              :options="item.checkCriteriaList"
+              show-search
+              class="!w-full"
+              :filter-option="filterOption"
+              @change="
+                (_value, checkedItem) => checkCriteriaChange(checkedItem, item)
+              "
+            />
+          </FormItem>
+
+          <!-- 检查标准 -->
+          <FormItem
+            :label="$t('hiddenDangerInspectionPlan.inspectionStandard')"
+            :rules="[{ required: true, message: '该项为必填项' }]"
+            :name="['details', index, 'checkCriteria']"
+          >
+            <Textarea v-model:value="item.checkCriteria" readonly />
+          </FormItem>
+
+          <!-- 巡检区域 -->
+          <FormItem
+            :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
+            style="margin-bottom: 1em"
+            :rules="[{ required: true, message: '该项为必填项' }]"
+            :name="['details', index, 'area']"
+          >
+            <Input v-model:value="item.area" readonly />
+          </FormItem>
+          <FormItem :wrapper-col="{ span: 18, offset: 6 }">
+            <Popconfirm
+              title="确认删除吗？"
+              @confirm="removeDetail(index)"
+              ok-text="确认"
+              cancel-text="取消"
+            >
+              <Button type="primary" class="w-full" danger>
+                {{ $t('common.delete') }}
+              </Button>
+            </Popconfirm>
+          </FormItem>
+          <hr class="my-4" />
+        </template>
+        <FormItem :wrapper-col="{ span: 18, offset: 6 }">
+          <Button type="primary" class="w-full" @click="addDetail">
+            {{ $t('common.add') }}
+          </Button>
         </FormItem>
       </Form>
       <!-- 抽屉底部操作按钮 -->

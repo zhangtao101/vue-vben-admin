@@ -27,6 +27,7 @@ import {
   addHiddenDangerInspectionType,
   areaList,
   deleteHiddenDangerInspectionType,
+  queryDictionaryByCode,
   queryHiddenDangerInspectionType,
   updateHiddenDangerInspectionType,
 } from '#/api';
@@ -40,7 +41,7 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'checkType', title: '检查类别', minWidth: 190 },
+    { field: 'checkType', title: '风险分类', minWidth: 190 },
     { field: 'checkItem', title: '巡检项目', minWidth: 190 },
     { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
     { field: 'area', title: '检查区域', minWidth: 150 },
@@ -101,7 +102,7 @@ function queryData({ page, pageSize }: any) {
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
-      type: 1, // 隐患页面type=1，风险页面type=2
+      type: 2, // 隐患页面type=1，风险页面type=2
     })
       .then(({ total, list }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
@@ -133,25 +134,6 @@ const editItem = ref<any>({});
  * 提交加载中
  */
 const submitLoading = ref(false);
-// 检查类别选项
-const checkTypeOptions = [
-  {
-    label: '日常检查',
-    value: '日常检查',
-  },
-  {
-    label: '综合检查',
-    value: '综合检查',
-  },
-  {
-    label: '专项检查',
-    value: '专项检查',
-  },
-  {
-    label: '重大隐患排查',
-    value: '重大隐患排查',
-  },
-];
 /**
  * 提交
  */
@@ -159,7 +141,7 @@ function submit() {
   formRef.value.validate().then(() => {
     const params = {
       ...editItem.value,
-      type: 1,
+      type: 2,
     };
     const ob = params.id
       ? updateHiddenDangerInspectionType(params)
@@ -245,6 +227,33 @@ const filterOption = (input: string, option: any) => {
 };
 // endregion
 
+// region 风险分类
+
+// 检查类别选项
+const checkTypeOptions = ref<any[]>([]);
+
+/**
+ * 根据父级字典编号查询数据
+ */
+function queryDataByParCode() {
+  // 根据选中的菜单代码查询字典数据
+  queryDictionaryByCode({
+    pageNum: 1, // 当前页码
+    pageSize: 9999, // 每页显示的条数
+    parCode: 'RISKTYPE', // 父级编码
+  }).then(({ list }: any) => {
+    checkTypeOptions.value = [];
+    list.forEach((item: any) => {
+      checkTypeOptions.value.push({
+        label: item.wordName,
+        value: item.wordName,
+      });
+    });
+  });
+}
+
+// endregion
+
 // region 权限查询
 
 // 路由信息
@@ -262,6 +271,7 @@ onMounted(() => {
     author.value = data;
   });
   queryArea();
+  queryDataByParCode();
 });
 
 // endregion
@@ -274,7 +284,7 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 检查类别 -->
         <FormItem
-          :label="$t('hiddenDangerInspectionStandard.checkType')"
+          :label="$t('hiddenDangerInspectionStandard.riskClassification')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.checkType" />
@@ -362,7 +372,7 @@ onMounted(() => {
       >
         <!-- 工作站选择表单项，验证是否选择 -->
         <FormItem
-          :label="$t('hiddenDangerInspectionStandard.checkType')"
+          :label="$t('hiddenDangerInspectionStandard.riskClassification')"
           :rules="[{ required: true, message: '该项为必填项' }]"
           name="checkType"
         >
