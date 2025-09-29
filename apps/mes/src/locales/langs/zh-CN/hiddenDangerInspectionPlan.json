@@ -24,5 +24,8 @@
   "workday": "工作日",
   "restDays": "休息日",
   "riskType": "风险种类",
-  "riskName": "风险名称"
+  "riskName": "风险名称",
+  "choose": "区域/标准选择",
+  "planCode": "计划编号",
+  "planName": "计划名称"
 }

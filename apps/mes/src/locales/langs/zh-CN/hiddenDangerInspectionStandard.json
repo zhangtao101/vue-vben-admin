@@ -1,4 +1,6 @@
 {
   "checkType": "检查类别",
-  "checkCriteria": "检查标准"
+  "riskClassification": "风险分类",
+  "checkCriteria": "检查标准",
+  "checkItem": "巡检项目"
 }

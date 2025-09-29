@@ -24,5 +24,8 @@
   "workday": "Workday",
   "restDays": "Rest Days",
   "riskType": "Risk Type",
-  "riskName": "Risk Name"
+  "riskName": "Risk Name",
+  "choose": "Area/Standard Selection",
+  "planCode": "Plan Code",
+  "planName": "Plan Name"
 }

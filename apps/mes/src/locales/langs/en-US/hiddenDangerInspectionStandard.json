@@ -1,4 +1,6 @@
 {
   "checkType": "Check Type",
-  "checkCriteria": "Check Criteria"
+  "checkCriteria": "Check Criteria",
+  "riskClassification": "Risk Classification",
+  "checkItem": "Check Item"
 }
