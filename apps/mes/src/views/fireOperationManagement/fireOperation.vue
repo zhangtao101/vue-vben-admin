@@ -503,7 +503,13 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 负责人审核 -->
-          <Tooltip v-if="author.includes('负责人审核') && row.pass !== 1 && row.applicantDeptReview !== 1">
+          <Tooltip
+            v-if="
+              author.includes('负责人审核') &&
+              row.pass !== 1 &&
+              row.applicantDeptReview !== 1
+            "
+          >
             <template #title>
               {{ $t('fireOperation.thePersonInChargeReviews') }}
             </template>
