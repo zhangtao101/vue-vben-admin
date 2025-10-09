@@ -503,7 +503,7 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 负责人审核 -->
-          <Tooltip v-if="author.includes('负责人审核') && row.pass !== 1">
+          <Tooltip v-if="author.includes('负责人审核') && row.pass !== 1 && row.applicantDeptReview !== 1">
             <template #title>
               {{ $t('fireOperation.thePersonInChargeReviews') }}
             </template>
@@ -515,7 +515,14 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 安全部门审核 -->
-          <Tooltip v-if="author.includes('安全部门审核') && row.pass !== 1">
+          <Tooltip
+            v-if="
+              author.includes('安全部门审核') &&
+              row.pass !== 1 &&
+              row.applicantDeptReview === 1 &&
+              row.securityDeptReview !== 1
+            "
+          >
             <template #title>
               {{ $t('fireOperation.safetyDepartmentReview') }}
             </template>
@@ -527,7 +534,13 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 分管领导审核 -->
-          <Tooltip v-if="author.includes('分管领导审核') && row.pass !== 1">
+          <Tooltip
+            v-if="
+              author.includes('分管领导审核') &&
+              row.pass !== 1 &&
+              row.securityDeptReview === 1
+            "
+          >
             <template #title>
               {{
                 $t('fireOperation.theCompanyIsInChargeOfTheLeadershipReview')

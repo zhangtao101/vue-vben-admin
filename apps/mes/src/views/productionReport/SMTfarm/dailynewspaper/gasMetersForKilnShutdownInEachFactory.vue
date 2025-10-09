@@ -54,7 +54,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'stopValue',
-      title: '停窑天然气用量M3\n',
+      title: '停窑天然气用量M3',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

@@ -64,7 +64,6 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'checkUser', title: '检查人', minWidth: 150 },
     { field: 'area', title: '检查区域', minWidth: 150 },
     { field: 'areaCode', title: '检查项目', minWidth: 150 },
-    { field: 'content', title: '检查内容', minWidth: 150 },
     {
       field: 'result',
       title: '结果',
@@ -713,14 +712,6 @@ onMounted(() => {
         >
           {{
             details.areaCode || $t('hiddenDangerInspectionTask.notAtTheMoment')
-          }}
-        </DescriptionsItem>
-        <!-- 检查内容 -->
-        <DescriptionsItem
-          :label="$t('hiddenDangerInspectionTask.InspectionContent')"
-        >
-          {{
-            details.content || $t('hiddenDangerInspectionTask.notAtTheMoment')
           }}
         </DescriptionsItem>
         <!-- 检查结果 -->

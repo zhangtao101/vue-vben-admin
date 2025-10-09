@@ -78,7 +78,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 150,
     },
     {
-      field: 'auditstateName',
+      field: 'auditStateName',
       title: '审核状态名称',
       minWidth: 150,
     },

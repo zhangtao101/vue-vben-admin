@@ -154,6 +154,19 @@ const coreRoutes: RouteRecordRaw[] = [
         path: 'productionFeedAudit',
       },
       {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/materialExceptionApprovalHistory.vue'
+          ),
+        meta: {
+          code: 'WM_458',
+          ignoreAccess: true,
+          title: '投料异常审批历史记录',
+        },
+        name: 'materialExceptionApprovalHistory',
+        path: 'materialExceptionApprovalHistory',
+      },
+      {
         component: () => import('#/views/asdie/printTemplate.vue'),
         meta: {
           ignoreAccess: true,

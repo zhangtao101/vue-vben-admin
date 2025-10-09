@@ -93,7 +93,7 @@ const columns = ref([
     ellipsis: true,
     fixed: 'right',
     title: '操作',
-    width: 120,
+    width: 170,
   },
 ] as any[]);
 // 表格滚动信息配置

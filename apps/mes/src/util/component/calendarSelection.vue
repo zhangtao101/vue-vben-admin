@@ -102,10 +102,10 @@ function change() {
 function getStatusText(code: number) {
   switch (code) {
     case 1: {
-      return $t('hiddenDangerInspectionPlan.workday');
+      return $t('hiddenDangerInspectionPlan.restDays');
     }
     case 2: {
-      return $t('hiddenDangerInspectionPlan.restDays');
+      return $t('hiddenDangerInspectionPlan.workday');
     }
   }
 }

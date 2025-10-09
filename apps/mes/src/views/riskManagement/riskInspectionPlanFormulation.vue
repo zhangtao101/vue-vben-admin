@@ -69,7 +69,6 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
     { field: 'areaCode', title: '巡检区域', minWidth: 150 },
     { field: 'area', title: '巡检项目', minWidth: 150 },
-    { field: 'content', title: '巡检内容', minWidth: 150 },
     {
       field: 'timeType',
       title: '计划类型',
