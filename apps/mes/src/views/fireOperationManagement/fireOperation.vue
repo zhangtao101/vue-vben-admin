@@ -507,7 +507,8 @@ onMounted(() => {
             v-if="
               author.includes('负责人审核') &&
               row.pass !== 1 &&
-              row.applicantDeptReview !== 1
+              row.applicantDeptReview !== 1 &&
+              row.end !== 1
             "
           >
             <template #title>
@@ -526,7 +527,8 @@ onMounted(() => {
               author.includes('安全部门审核') &&
               row.pass !== 1 &&
               row.applicantDeptReview === 1 &&
-              row.securityDeptReview !== 1
+              row.securityDeptReview !== 1 &&
+              row.end !== 1
             "
           >
             <template #title>
@@ -544,7 +546,8 @@ onMounted(() => {
             v-if="
               author.includes('分管领导审核') &&
               row.pass !== 1 &&
-              row.securityDeptReview === 1
+              row.securityDeptReview === 1 &&
+              row.end !== 1
             "
           >
             <template #title>
@@ -564,7 +567,8 @@ onMounted(() => {
             v-if="
               author.includes('状态变更') &&
               row.pass === 1 &&
-              ![0, 1].includes(row.state)
+              ![0, 1].includes(row.state) &&
+              row.end !== 1
             "
           >
             <template #title>
@@ -605,7 +609,9 @@ onMounted(() => {
           </Tooltip>
 
           <!-- 删除 -->
-          <Tooltip v-if="author.includes('删除') && row.pass !== 1">
+          <Tooltip
+            v-if="author.includes('删除') && row.pass !== 1 && row.end !== 1"
+          >
             <template #title>{{ $t('common.delete') }}</template>
             <Popconfirm
               :cancel-text="$t('common.cancel')"

@@ -64,3 +64,12 @@ export async function switchPlanStatus(id: any) {
     {},
   );
 }
+/**
+ * 删除计划
+ */
+export async function deletePlan(id: any) {
+  return requestClient.delete<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hazardcheck/plan/delete/${id}`,
+    {},
+  );
+}

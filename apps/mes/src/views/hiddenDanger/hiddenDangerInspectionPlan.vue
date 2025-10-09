@@ -19,7 +19,7 @@ import {
   FormItem,
   Input,
   InputNumber,
-  message,
+  message, Modal,
   Popconfirm,
   RadioButton,
   RadioGroup,
@@ -32,7 +32,7 @@ import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  addHiddenDangerInspectionPlan,
+  addHiddenDangerInspectionPlan, deletePlan,
   getInspectionTypeNamelist,
   listSysPerson,
   queryHiddenDangerInspectionPlan,
@@ -53,8 +53,8 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'planCode', title: '计划名称', minWidth: 190 },
-    { field: 'planName', title: '计划编号', minWidth: 190 },
+    { field: 'planCode', title: '计划编号', minWidth: 190 },
+    { field: 'planName', title: '计划名称', minWidth: 190 },
     { field: 'checkName', title: '专项计划编号', minWidth: 190 },
     { field: 'manager', title: '负责人', minWidth: 150 },
     { field: 'startTime', title: '开始时间', minWidth: 150 },
@@ -394,6 +394,33 @@ function checkCriteriaChange(checkedItem: any, item: any) {
 }
 // endregion
 
+// region 删除
+
+/**
+ * 删除数据
+ * @param row
+ */
+function delRow(row: any) {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      message.warning('已取消删除!');
+    },
+    onOk() {
+      deletePlan(row.id).then(() => {
+        // 显示操作成功的提示信息
+        message.success($t('common.successfulOperation'));
+        gridApi.query();
+      });
+    },
+    title: '是否确认删除该条数据?',
+  });
+}
+
+// endregion
+
 // region 组织查询
 // 组织数据
 const treeData = ref<any>([]);
@@ -612,6 +639,21 @@ onMounted(() => {
             <Button type="link" @click="showEditFun(row)">
               <IconifyIcon
                 icon="mdi:square-edit-outline"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
+
+          <!-- 删除数据 -->
+          <Tooltip v-if="author.includes('删除')">
+            <template #title>{{ $t('common.delete') }}</template>
+            <Button
+              type="link"
+              @click="delRow(row)"
+              danger
+            >
+              <IconifyIcon
+                icon="mdi-light:delete"
                 class="inline-block align-middle text-2xl"
               />
             </Button>

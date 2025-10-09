@@ -154,19 +154,6 @@ const coreRoutes: RouteRecordRaw[] = [
         path: 'productionFeedAudit',
       },
       {
-        component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/materialExceptionApprovalHistory.vue'
-          ),
-        meta: {
-          code: 'WM_458',
-          ignoreAccess: true,
-          title: '投料异常审批历史记录',
-        },
-        name: 'materialExceptionApprovalHistory',
-        path: 'materialExceptionApprovalHistory',
-      },
-      {
         component: () => import('#/views/asdie/printTemplate.vue'),
         meta: {
           ignoreAccess: true,
@@ -371,6 +358,110 @@ const coreRoutes: RouteRecordRaw[] = [
         },
         name: 'energyConsumptionReport',
         path: 'energyConsumptionReport',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfKilnShutdown.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '窑炉停机汇总',
+          code: 'WM_322',
+        },
+        name: 'summaryTableOfKilnShutdown',
+        path: 'summaryTableOfKilnShutdown',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfGlazeLineShutdown.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '釉线停机汇总',
+          code: 'WM_322',
+        },
+        name: 'summaryTableOfGlazeLineShutdown',
+        path: 'summaryTableOfGlazeLineShutdown',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfCompressorShutdown.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '压缩机停机汇总',
+          code: 'WM_322',
+        },
+        name: 'summaryTableOfCompressorShutdown',
+        path: 'summaryTableOfCompressorShutdown',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/summaryOfPowderPlantShutdown.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '粉料停机汇总',
+          code: 'WM_322',
+        },
+        name: 'summaryOfPowderPlantShutdown',
+        path: 'summaryOfPowderPlantShutdown',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/prodTimeName.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '生成产品名称',
+          code: 'WM_322',
+        },
+        name: 'prodTimeName',
+        path: 'prodTimeName',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/prodReportName.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '生产报告名称',
+          code: 'WM_322',
+        },
+        name: 'prodReportName',
+        path: 'prodReportName',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/powerConsumptionDetailsOfKilnFactory.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '窑炉耗电量详情',
+          code: 'WM_322',
+        },
+        name: 'powerConsumptionDetailsOfKilnFactory',
+        path: 'powerConsumptionDetailsOfKilnFactory',
+      },
+      {
+        component: () =>
+          import(
+            '#/views/productionReport/SMTfarm/dailynewspaper/gasMetersForKilnShutdownInEachFactory.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '窑炉停机用燃气表',
+          code: 'WM_322',
+        },
+        name: 'gasMetersForKilnShutdownInEachFactory',
+        path: 'gasMetersForKilnShutdownInEachFactory',
       },
       {
         component: () =>
