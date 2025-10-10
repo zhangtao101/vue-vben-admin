@@ -19,7 +19,8 @@ import {
   FormItem,
   Input,
   InputNumber,
-  message, Modal,
+  message,
+  Modal,
   Popconfirm,
   RadioButton,
   RadioGroup,
@@ -32,7 +33,8 @@ import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  addHiddenDangerInspectionPlan, deletePlan,
+  addHiddenDangerInspectionPlan,
+  deletePlan,
   getInspectionTypeNamelist,
   listSysPerson,
   queryHiddenDangerInspectionPlan,
@@ -647,11 +649,7 @@ onMounted(() => {
           <!-- 删除数据 -->
           <Tooltip v-if="author.includes('删除')">
             <template #title>{{ $t('common.delete') }}</template>
-            <Button
-              type="link"
-              @click="delRow(row)"
-              danger
-            >
+            <Button type="link" @click="delRow(row)" danger>
               <IconifyIcon
                 icon="mdi-light:delete"
                 class="inline-block align-middle text-2xl"
