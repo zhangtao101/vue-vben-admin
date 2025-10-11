@@ -169,7 +169,7 @@ onBeforeUnmount(() => {
         <FloatButton
           type="primary"
           shape="circle"
-          :style="{ right: '24px', bottom: '120px' }"
+          :style="{ right: '24px', bottom: '100px' }"
           @click="isZoom = true"
         >
           <template #icon>

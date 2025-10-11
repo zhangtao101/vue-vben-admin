@@ -62,11 +62,11 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'startTime', title: '开始时间', minWidth: 150 },
     { field: 'endTime', title: '结束时间', minWidth: 150 },
     { field: 'cycle', title: '间隔周期', minWidth: 150 },
-    { field: 'checkType', title: '检查类别', minWidth: 150 },
+    // { field: 'checkType', title: '检查类别', minWidth: 150 },
     { field: 'calendarName', title: '日历名称', minWidth: 150 },
-    { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
-    { field: 'areaCode', title: '巡检区域', minWidth: 150 },
-    { field: 'area', title: '巡检项目', minWidth: 150 },
+    // { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
+    // { field: 'areaCode', title: '巡检区域', minWidth: 150 },
+    // { field: 'area', title: '巡检项目', minWidth: 150 },
     {
       field: 'timeType',
       title: '检查类别',
@@ -559,7 +559,7 @@ onMounted(() => {
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 检查类别 -->
-        <FormItem
+<!--        <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
           style="margin-bottom: 1em"
         >
@@ -571,13 +571,27 @@ onMounted(() => {
             class="!w-56"
             :filter-option="filterOption"
           />
-        </FormItem>
-        <!-- 巡检项目 -->
+        </FormItem>-->
+        <!-- 计划编号 -->
         <FormItem
-          :label="$t('hiddenDangerInspectionPlan.inspectionItem')"
+          :label="$t('hiddenDangerInspectionPlan.planCode')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.area" />
+          <Input v-model:value="queryParams.planCode" />
+        </FormItem>
+        <!-- 计划名称 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.planName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.planName" />
+        </FormItem>
+        <!-- 负责人 -->
+        <FormItem
+          :label="$t('hiddenDangerInspectionPlan.responsiblePerson')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.manager" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

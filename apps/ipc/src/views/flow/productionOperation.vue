@@ -456,6 +456,8 @@ const processRouteList = ref<any>([]);
 const checkedProcess = ref(1);
 // 当前选中的工艺路线ID
 const checkedProcessId = ref(0);
+// 当前选中的工艺路线名称
+const checkedProcessName = ref('');
 // 当前选中的工单
 const theCurrentlySelectedWorkOrderNumber = ref('');
 // 工艺路线列表加载状态
@@ -548,6 +550,8 @@ const ruleType = ref<any>([]);
 function processChange(item: any) {
   // 更新当前选中的工艺路线代码
   checkedProcess.value = item.processCode;
+  // 更新当前选中的工艺路线名称
+  checkedProcessName.value = item.processName;
 
   // 更新当前选中的工艺路线绑定 ID
   checkedProcessId.value = item.bindingId;
@@ -567,12 +571,19 @@ function processChange(item: any) {
 // region 简单模式
 const isSimple = ref(true);
 const simpleModeRef = ref();
+
+function statusChange() {
+  isSimple.value = !isSimple.value;
+  localStorage.setItem('isSimple', isSimple.value ? '1' : '0');
+}
 // endregion
 
 // 在组件挂载完成后执行的操作
 onMounted(() => {
   // 查询生产线列表
   queryListOfProductionLines();
+  // 从本地存储中获取简单模式状态
+  isSimple.value = localStorage.getItem('isSimple') === '1';
 });
 
 // 在组件卸载前执行的操作
@@ -590,6 +601,7 @@ onBeforeUnmount(() => {
       :the-currently-selected-work-order-number="
         theCurrentlySelectedWorkOrderNumber
       "
+      :checked-process-name="checkedProcessName"
       ref="simpleModeRef"
       v-if="isSimple"
     >
@@ -862,7 +874,7 @@ onBeforeUnmount(() => {
       <template #operationEventC>
         <OperationalMatters
           :details-id="theSelectedOperation"
-          :type="1"
+          :type="4"
           :worksheet-code="theCurrentlySelectedWorkOrderNumber"
           :current-index="currentWorkingStep?.index"
           @current-change="workStepConversion"
@@ -1182,8 +1194,8 @@ onBeforeUnmount(() => {
     <FloatButton
       type="primary"
       shape="circle"
-      :style="{ right: '24px', bottom: '70px' }"
-      @click="isSimple = !isSimple"
+      :style="{ right: '24px', bottom: '150px' }"
+      @click="statusChange"
     >
       <template #icon>
         <IconifyIcon icon="icon-park-solid:update-rotation" class="text-xl" />

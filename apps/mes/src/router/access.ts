@@ -63,22 +63,32 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
         name: 'Dashboard',
         path: '/',
         children: [
+          // 暂时注销分析页及工作台, 因为没有相应的接口
+          // {
+          //   name: 'Analytics',
+          //   path: '/analytics',
+          //   component: '/dashboard/analytics/index',
+          //   meta: {
+          //     affixTab: false,
+          //     icon: 'lucide:area-chart',
+          //     title: $t('page.dashboard.analytics'),
+          //   },
+          // },
+          // {
+          //   name: 'Workspace',
+          //   path: '/workspace',
+          //   component: '/dashboard/workspace/index',
+          //   meta: {
+          //     title: $t('page.dashboard.workspace'),
+          //   },
+          // },
           {
-            name: 'Analytics',
-            path: '/analytics',
-            component: '/dashboard/analytics/index',
+            name: 'Welcome',
+            path: '/welcome',
+            component: '/dashboard/welcome/index',
             meta: {
               affixTab: true,
-              icon: 'lucide:area-chart',
-              title: $t('page.dashboard.analytics'),
-            },
-          },
-          {
-            name: 'Workspace',
-            path: '/workspace',
-            component: '/dashboard/workspace/index',
-            meta: {
-              title: $t('page.dashboard.workspace'),
+              title: $t('page.dashboard.welcome'),
             },
           },
         ],

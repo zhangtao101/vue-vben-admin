@@ -53,6 +53,7 @@
   "thirdPartyLogin": "Or continue with",
   "loginAgainTitle": "Please Log In Again",
   "loginAgainSubTitle": "Your login session has expired. Please log in again to continue.",
+  "welcomeTips": "Welcome Login!",
   "layout": {
     "center": "Align Center",
     "alignLeft": "Align Left",

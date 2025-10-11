@@ -7,9 +7,11 @@ import { $t } from '@vben/locales';
 import {
   Button,
   Card,
+  Col,
   Drawer,
   FloatButton,
   FloatButtonGroup,
+  Row,
   Space,
   Steps,
 } from 'ant-design-vue';
@@ -19,10 +21,22 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  checkedProcessName: {
+    type: String,
+    default: '',
+  },
 });
 
 // region 悬浮按钮
 const floatButtonOpen = ref(false);
+// endregion
+
+// region 基本样式
+const headStyle = {
+  backgroundColor: '#5093e2',
+  color: '#fff',
+};
+
 // endregion
 
 // region 工单选择及其后续选择
@@ -48,16 +62,16 @@ function closeWorkOrders() {
 // region 步骤
 const steps = ref([
   {
-    title: '工作站选择',
+    title: '前置作业',
   },
   {
-    title: '工单选择',
+    title: '工单操作',
   },
   {
-    title: '工艺路线选择',
+    title: '工步操作',
   },
   {
-    title: '操作事项选择',
+    title: '工序选择',
   },
 ]);
 const current = ref(0);
@@ -92,21 +106,30 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card>
+  <Card :head-style="headStyle">
     <template #title>
       <span class="text-xl font-black">
         {{ $t('productionOperation.workStepExecution') }}
         ___
         {{ theCurrentlySelectedWorkOrderNumber || '' }}
+        ___
+        {{ checkedProcessName || '' }}
       </span>
     </template>
-    <slot name="stepExecutionC"></slot>
+    <Row>
+      <Col :xs="24" :sm="8" :md="8" :lg="4">
+        <slot name="operationEventC"></slot>
+      </Col>
+      <Col :xs="24" :sm="16" :md="16" :lg="20" class="h-[70vh] overflow-y-auto">
+        <slot name="stepExecutionC"></slot>
+      </Col>
+    </Row>
   </Card>
 
   <FloatButtonGroup
     shape="circle"
     trigger="click"
-    :style="{ right: '24px', bottom: '120px' }"
+    :style="{ right: '24px', bottom: '200px' }"
     v-model:open="floatButtonOpen"
   >
     <template #icon>
@@ -123,6 +146,11 @@ onMounted(() => {
       </template>
     </FloatButton>
     <FloatButton @click="showWorkOrders(2)">
+      <template #icon>
+        <IconifyIcon icon="mdi:file-eye" class="text-xl" />
+      </template>
+    </FloatButton>
+    <FloatButton @click="showWorkOrders(3)">
       <template #icon>
         <IconifyIcon icon="mdi:file-eye" class="text-xl" />
       </template>
@@ -147,11 +175,13 @@ onMounted(() => {
     <template v-if="current === 2">
       <div>
         <slot name="processRouteC"></slot>
+        <hr class="my-4" />
       </div>
     </template>
     <template v-if="current === 3">
-      <slot name="operationalMattersC"></slot>
-      <slot name="operationEventC"></slot>
+      <div>
+        <slot name="operationalMattersC"></slot>
+      </div>
     </template>
 
     <!-- 抽屉底部操作按钮 -->

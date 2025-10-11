@@ -33,6 +33,15 @@ const routes: RouteRecordRaw[] = [
           title: $t('page.dashboard.workspace'),
         },
       },
+      {
+        name: 'Welcome',
+        path: '/welcome',
+        component: () => import('#/views/dashboard/welcome/index.vue'),
+        meta: {
+          icon: 'carbon:workspace',
+          title: $t('page.dashboard.welcome'),
+        },
+      },
     ],
   },
 ];

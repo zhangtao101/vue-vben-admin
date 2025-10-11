@@ -17,7 +17,7 @@ const props = defineProps({
     type: Number,
     default: -1,
   },
-  // 作业类型，1 表示有序作业，2 表示离散作业， 3 侧边栏模式 ,  默认为 1
+  // 作业类型，1 表示有序作业，2 表示离散作业， 3 侧边栏模式 , 4 垂直模式 默认为 1
   type: {
     type: Number,
     default: 1,
@@ -277,7 +277,7 @@ onBeforeUnmount(() => {
           </div>
         </template>
       </div>
-      <!-- 当作业类型为离散作业时，显示垂直排列的步骤条 -->
+      <!-- 侧边栏模式 -->
       <div
         v-if="props.type === 3"
         class="fixed top-20 z-[1000] flex h-96"
@@ -306,6 +306,25 @@ onBeforeUnmount(() => {
             </Radio>
           </RadioGroup>
         </div>
+      </div>
+      <!-- 垂直模式 -->
+      <div
+        v-if="props.type === 4"
+        :class="{
+          'right-4': isShow,
+          'right-[-14rem]': !isShow,
+        }"
+      >
+        <RadioGroup v-model:value="current" class="w-full">
+          <Radio
+            v-for="(item, index) of stepBar"
+            :key="index"
+            :value="index"
+            class="block w-full px-2 py-1 text-xl font-black"
+          >
+            {{ item.title }}
+          </Radio>
+        </RadioGroup>
       </div>
     </div>
   </Spin>

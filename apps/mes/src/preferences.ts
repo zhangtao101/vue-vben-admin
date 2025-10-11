@@ -11,6 +11,7 @@ export const overridesPreferences = defineOverridesPreferences({
     // backend  后端控制路由, frontend(默认,可不填) 由前端控制路由
     accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
+    defaultHomePath: '/welcome',
   },
   theme: {
     mode: 'light',

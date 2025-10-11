@@ -12,6 +12,7 @@ export const overridesPreferences = defineOverridesPreferences({
     name: import.meta.env.VITE_APP_TITLE,
     layout: 'mixed-nav',
     defaultHomePath: '/workFlow/productionOperation',
+    preferencesButtonPosition: 'header',
   },
   sidebar: {
     autoActivateChild: false,
