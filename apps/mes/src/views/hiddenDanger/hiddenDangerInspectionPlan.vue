@@ -559,7 +559,7 @@ onMounted(() => {
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 检查类别 -->
-<!--        <FormItem
+        <!--        <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
           style="margin-bottom: 1em"
         >
