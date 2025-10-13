@@ -22,6 +22,8 @@ import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import ScanTask from '#/util/component/steps/scanTask.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
+import SingleStationScan from "#/util/component/steps/singleStationScan.vue";
+import MultiStationScan from "#/util/component/steps/multiStationScan.vue";
 
 /**
  * 定义组件接收的 props，用于传递工步执行所需的相关信息
@@ -398,6 +400,26 @@ defineProps({
       :function-id="step.id"
       :show-type-number="step.type"
       v-if="step.type === 38"
+    />
+    <!-- 单工位扫码 - 和城：根据工步类型为 40 时，渲染工序报工组件，并传递相关参数 -->
+    <SingleStationScan
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      :show-type-number="step.type"
+      v-if="step.type === 40"
+    />
+    <!-- 多工位扫码 - 和城：根据工步类型为 41 时，渲染工序报工组件，并传递相关参数 -->
+    <MultiStationScan
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      :show-type-number="step.type"
+      v-if="step.type === 41"
     />
 
     <!-- 设备点位信息：根据工步类型为 999 时，渲染设备点位信息组件，并传递相关参数 -->

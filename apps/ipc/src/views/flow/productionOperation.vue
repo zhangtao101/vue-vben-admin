@@ -874,7 +874,7 @@ onBeforeUnmount(() => {
       <template #operationEventC>
         <OperationalMatters
           :details-id="theSelectedOperation"
-          :type="4"
+          :type="1"
           :worksheet-code="theCurrentlySelectedWorkOrderNumber"
           :current-index="currentWorkingStep?.index"
           @current-change="workStepConversion"

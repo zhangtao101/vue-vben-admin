@@ -286,7 +286,10 @@ const { close, connect } = useWebSocket(readMessage, {
   webSocketType: 5,
 });
 
-const numericalValue = ref<any>({});
+const numericalValue = ref<any>({
+  endNumber: 0,
+  initNumber: 0,
+});
 
 /**
  * WebSocket消息处理回调
@@ -340,9 +343,9 @@ function lock() {
     // 工步 ID
     functionId: props.functionId,
     // 期初数值
-    initNumber: numericalValue.value.initNumber,
+    initNumber: numericalValue.value.initNumber || 0,
     // 期末数值
-    endNumber: numericalValue.value.endNumber,
+    endNumber: numericalValue.value.endNumber || 0,
   }).then(() => {
     // 报工锁定操作成功后，关闭 WebSocket 连接
     close();

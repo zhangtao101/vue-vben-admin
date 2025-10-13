@@ -7,11 +7,8 @@ import { $t } from '@vben/locales';
 import {
   Button,
   Card,
-  Col,
   Drawer,
   FloatButton,
-  FloatButtonGroup,
-  Row,
   Space,
   Steps,
 } from 'ant-design-vue';
@@ -26,10 +23,6 @@ const props = defineProps({
     default: '',
   },
 });
-
-// region 悬浮按钮
-const floatButtonOpen = ref(false);
-// endregion
 
 // region 基本样式
 const headStyle = {
@@ -109,53 +102,25 @@ onMounted(() => {
   <Card :head-style="headStyle">
     <template #title>
       <span class="text-xl font-black">
-        {{ $t('productionOperation.workStepExecution') }}
-        ___
         {{ theCurrentlySelectedWorkOrderNumber || '' }}
         ___
         {{ checkedProcessName || '' }}
+        ___ 上工人员
       </span>
     </template>
-    <Row>
-      <Col :xs="24" :sm="8" :md="8" :lg="4">
-        <slot name="operationEventC"></slot>
-      </Col>
-      <Col :xs="24" :sm="16" :md="16" :lg="20" class="h-[70vh] overflow-y-auto">
-        <slot name="stepExecutionC"></slot>
-      </Col>
-    </Row>
+    <slot name="stepExecutionC"></slot>
   </Card>
 
-  <FloatButtonGroup
+  <FloatButton
+    type="primary"
     shape="circle"
-    trigger="click"
     :style="{ right: '24px', bottom: '200px' }"
-    v-model:open="floatButtonOpen"
+    @click="showWorkOrders()"
   >
     <template #icon>
       <IconifyIcon icon="mdi:settings" class="text-xl" />
     </template>
-    <FloatButton @click="showWorkOrders(0)">
-      <template #icon>
-        <IconifyIcon icon="mdi:file-outline" class="text-xl" />
-      </template>
-    </FloatButton>
-    <FloatButton @click="showWorkOrders(1)">
-      <template #icon>
-        <IconifyIcon icon="mdi:file-word-outline" class="text-xl" />
-      </template>
-    </FloatButton>
-    <FloatButton @click="showWorkOrders(2)">
-      <template #icon>
-        <IconifyIcon icon="mdi:file-eye" class="text-xl" />
-      </template>
-    </FloatButton>
-    <FloatButton @click="showWorkOrders(3)">
-      <template #icon>
-        <IconifyIcon icon="mdi:file-eye" class="text-xl" />
-      </template>
-    </FloatButton>
-  </FloatButtonGroup>
+  </FloatButton>
 
   <Drawer
     v-model:open="workOrdersDrawer"
@@ -181,6 +146,9 @@ onMounted(() => {
     <template v-if="current === 3">
       <div>
         <slot name="operationalMattersC"></slot>
+        <hr class="my-4" />
+
+        <slot name="operationEventC"></slot>
       </div>
     </template>
 

@@ -315,16 +315,24 @@ onBeforeUnmount(() => {
           'right-[-14rem]': !isShow,
         }"
       >
-        <RadioGroup v-model:value="current" class="w-full">
-          <Radio
-            v-for="(item, index) of stepBar"
-            :key="index"
-            :value="index"
-            class="block w-full px-2 py-1 text-xl font-black"
-          >
-            {{ item.title }}
-          </Radio>
-        </RadioGroup>
+        <div
+          v-for="(item, index) of stepBar"
+          :key="index"
+          class="m-4 block w-32 cursor-pointer rounded-lg border-2 bg-[#0abdba] py-2 text-center text-xl text-white"
+          :class="{
+            'bg-[#598ed1]': current === index,
+          }"
+          @click="
+            () => {
+              current = index;
+            }
+          "
+        >
+          <div class="inline-block h-8 w-8 rounded-full border-2">
+            {{ index + 1 }}
+          </div>
+          <div>{{ item.title }}</div>
+        </div>
       </div>
     </div>
   </Spin>

@@ -44,6 +44,7 @@
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:",
-    "vue3-json-viewer": "^2.4.1"
+    "vue3-json-viewer": "^2.4.1",
+    "vue3-marquee": "^4.2.2"
   }
 }
