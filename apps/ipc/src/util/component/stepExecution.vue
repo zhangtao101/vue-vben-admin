@@ -13,6 +13,7 @@ import LampInstallationRecord from '#/util/component/steps/lampInstallationRecor
 import ManufactureEntry from '#/util/component/steps/manufactureEntry.vue';
 import MaterialFeeding from '#/util/component/steps/materialFeeding.vue';
 import MaterialFeedingSlitting from '#/util/component/steps/materialFeedingSlitting.vue';
+import MultiStationScan from '#/util/component/steps/multiStationScan.vue';
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
@@ -21,9 +22,8 @@ import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import ScanTask from '#/util/component/steps/scanTask.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
+import SingleStationScan from '#/util/component/steps/singleStationScan.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
-import SingleStationScan from "#/util/component/steps/singleStationScan.vue";
-import MultiStationScan from "#/util/component/steps/multiStationScan.vue";
 
 /**
  * 定义组件接收的 props，用于传递工步执行所需的相关信息
