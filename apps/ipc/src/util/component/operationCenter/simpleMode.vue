@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -13,6 +13,8 @@ import {
   Steps,
 } from 'ant-design-vue';
 
+import { listUserList } from '#/api';
+
 const props = defineProps({
   theCurrentlySelectedWorkOrderNumber: {
     type: String,
@@ -21,6 +23,11 @@ const props = defineProps({
   checkedProcessName: {
     type: String,
     default: '',
+  },
+  // 工序ID，用于标识具体的工序，默认为 0
+  bindingId: {
+    type: Number,
+    default: 0,
   },
 });
 
@@ -91,10 +98,41 @@ defineExpose({
 
 // endregion
 
+// region 上工人员查询
+
+const userList = ref('');
+function queryUser() {
+  listUserList({
+    bindingId: props.bindingId,
+    worksheetCode: props.theCurrentlySelectedWorkOrderNumber,
+  }).then((data) => {
+    userList.value = data.join(',');
+  });
+}
+
+// endregion
+watch(
+  () => props.theCurrentlySelectedWorkOrderNumber,
+  (newVal) => {
+    if (newVal) {
+      queryUser();
+    }
+  },
+);
+watch(
+  () => props.bindingId,
+  (newVal) => {
+    if (newVal) {
+      queryUser();
+    }
+  },
+);
+
 onMounted(() => {
   if (props.theCurrentlySelectedWorkOrderNumber === '') {
     showWorkOrders();
   }
+  queryUser();
 });
 </script>
 
@@ -105,7 +143,7 @@ onMounted(() => {
         {{ theCurrentlySelectedWorkOrderNumber || '' }}
         ___
         {{ checkedProcessName || '' }}
-        ___ 上工人员
+        ___ {{ userList }}
       </span>
     </template>
     <slot name="stepExecutionC"></slot>

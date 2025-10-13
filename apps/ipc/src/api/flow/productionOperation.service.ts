@@ -363,6 +363,15 @@ export function listHCByCodeScan(params: any) {
   );
 }
 /**
+ * 上工人员查询
+ * @param params 参数
+ */
+export function listUserList(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listUserList?${qs.stringify(params)}`,
+  );
+}
+/**
  * 手动扫码接口调用
  * @param params 参数
  */

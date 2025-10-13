@@ -602,6 +602,7 @@ onBeforeUnmount(() => {
         theCurrentlySelectedWorkOrderNumber
       "
       :checked-process-name="checkedProcessName"
+      :binding-id="checkedProcessId"
       ref="simpleModeRef"
       v-if="isSimple"
     >
