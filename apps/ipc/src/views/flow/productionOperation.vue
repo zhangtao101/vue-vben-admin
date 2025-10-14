@@ -512,6 +512,9 @@ function workStepConversion(val: any) {
   currentWorkingStep.value = {
     ...val,
   };
+  if (simpleModeRef.value && isSimple.value) {
+    simpleModeRef.value.closeDrawer();
+  }
 }
 
 // region websocket

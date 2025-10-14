@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 // import type { NotificationItem } from '@vben/layouts';
 
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 // import { computed, ref, watch } from 'vue';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
+import { MdiUpdate } from '@vben/icons';
 import { BasicLayout, LockScreen, UserDropdown } from '@vben/layouts';
+import { $t } from '@vben/locales';
 // Notification,
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
 import { useAuthStore } from '#/store';
+import UpdatePassword from '#/util/component/updatePassword.vue';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
 // const notifications = ref<NotificationItem[]>([
@@ -52,35 +55,16 @@ const { destroyWatermark, updateWatermark } = useWatermark();
 // const showDot = computed(() =>
 //   notifications.value.some((item) => !item.isRead),
 // );
-
+// 修改密码对象
+const updatePasswordRef = ref();
 const menus = computed(() => [
-  /*  {
-    handler: () => {
-      openWindow(VBEN_DOC_URL, {
-        target: '_blank',
-      });
-    },
-    icon: BookOpenText,
-    text: $t('ui.widgets.document'),
-  },
   {
     handler: () => {
-      openWindow(VBEN_GITHUB_URL, {
-        target: '_blank',
-      });
+      updatePasswordRef.value.open();
     },
-    icon: MdiGithub,
-    text: 'GitHub',
+    icon: MdiUpdate,
+    text: $t('ui.widgets.updatePassWord'),
   },
-  {
-    handler: () => {
-      openWindow(`${VBEN_GITHUB_URL}/issues`, {
-        target: '_blank',
-      });
-    },
-    icon: CircleHelp,
-    text: $t('ui.widgets.qa'),
-  },*/
 ]);
 
 const avatar = computed(() => {
@@ -148,4 +132,5 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
+  <UpdatePassword ref="updatePasswordRef" />
 </template>

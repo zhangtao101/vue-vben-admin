@@ -5,5 +5,8 @@
   "status": "状态",
   "description": "描述",
   "webRolePermissions": "网页角色权限",
-  "pdaRolePermissions": "PDA角色权限"
+  "pdaRolePermissions": "PDA角色权限",
+  "oldPassword": "旧密码",
+  "newPassword": "新密码",
+  "confirmPassword": "确认密码"
 }

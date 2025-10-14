@@ -160,6 +160,17 @@ onMounted(() => {
     </template>
   </FloatButton>
 
+  <FloatButton
+    type="primary"
+    shape="circle"
+    :style="{ right: '24px', bottom: '250px' }"
+    @click="showWorkOrders(3)"
+  >
+    <template #icon>
+      <IconifyIcon icon="mdi:file-find-outline" class="text-xl" />
+    </template>
+  </FloatButton>
+
   <Drawer
     v-model:open="workOrdersDrawer"
     height="100%"

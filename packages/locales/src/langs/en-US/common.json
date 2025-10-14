@@ -29,6 +29,8 @@
   "configurationDetails": "Configuration Details",
   "delete": "Delete",
   "create": "Create",
+  "match": "Match",
+  "bind": "Bind",
   "yes": "Yes",
   "no": "No",
   "showSearchPanel": "Show search panel",

@@ -11,3 +11,13 @@ export async function queryEquipment(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/repair/queryList?${qs.stringify(params)}`,
   );
 }
+
+/**
+ * 设备编号模糊查询
+ * @param params
+ */
+export async function fuzzyQueryOfEquipmentNumber(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentLedger/fuzzyQueryByequipmentCode?${qs.stringify(params)}`,
+  );
+}

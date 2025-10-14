@@ -5,41 +5,38 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import {
-  MdiEditOutline,
-  MdiEyeOutline,
-  MdiLightDelete,
-  MdiSearch,
-} from '@vben/icons';
+import { IconifyIcon, MdiSearch } from '@vben/icons';
 
 import {
   Button,
   Card,
-  Descriptions,
-  DescriptionsItem,
   Drawer,
   Form,
   FormItem,
   Input,
   message,
   Modal,
+  RadioButton,
+  RadioGroup,
   Select,
   Space,
-  Switch,
-  Textarea,
+  Spin,
   Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  deleteUser,
-  insertUser,
+  deleteSteps,
+  fuzzyQueryOfEquipmentNumber,
+  getProceByName,
+  insertEquipOpFormula,
   listEquipOpFormula,
-  listSysPerson,
-  updateArticle,
+  stepStateSwitching,
+  updateEquipOpFormula,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import WorkstepRecipeManagementMatch from '#/util/component/workstepRecipeManagementMatch/workstepRecipeManagementMatch.vue';
 
 // 路由信息
 const route = useRoute();
@@ -57,6 +54,15 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'equipCode', title: '设备编号', minWidth: 150 },
     { field: 'equipName', title: '设备名称', minWidth: 150 },
     { field: 'version', title: '版本号', minWidth: 150 },
+    { field: 'createUser', title: '创建人', minWidth: 150 },
+    { field: 'createTime', title: '创建时间', minWidth: 150 },
+    {
+      field: 'isUse',
+      fixed: 'right',
+      title: '状态',
+      minWidth: 150,
+      slots: { default: 'isUse' },
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -97,12 +103,12 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
+// endregion
+
 // region 查看 / 编辑 / 新增 具体操作
 
 // 当前选中的表格行
 const checkedRow = ref<any>({});
-// 是否显示查看详情抽屉
-const showViewDrawer = ref(false);
 // 是否显示编辑抽屉
 const showEditDrawer = ref(false);
 
@@ -110,21 +116,12 @@ const showEditDrawer = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  isEnable: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  perName_workNumber: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
-  ],
-  userName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  formulaCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  formulaName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  equipCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  processCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  version: [{ message: '此项为必填项', required: true, trigger: 'change' }],
 });
-
-/**
- * 查看行详情
- * @param row 表格行数据
- */
-function viewRow(row: any) {
-  checkedRow.value = row;
-  showViewDrawer.value = true;
-}
 
 /**
  * 显示是编辑抽屉
@@ -134,9 +131,12 @@ function editRow(row?: any) {
   checkedRow.value = row
     ? {
         ...row,
-        perName_workNumber: `${row.perName}-${row.workNumber}`,
       }
     : {};
+  if (row) {
+    handleProcessSearch(row.processName);
+    handleSearch(row.equipCode);
+  }
   showEditDrawer.value = true;
 
   // 查询管理人员数据, 防止第一次点击时没有数据
@@ -156,7 +156,7 @@ function delRow(row: any) {
       message.warning('已取消删除!');
     },
     onOk() {
-      deleteUser(row.userCode).then(() => {
+      deleteSteps(row.id).then(() => {
         // 显示操作成功的提示信息
         message.success($t('common.successfulOperation'));
         gridApi.query();
@@ -171,7 +171,6 @@ function delRow(row: any) {
  */
 function onClose() {
   checkedRow.value = {};
-  showViewDrawer.value = false;
   showEditDrawer.value = false;
 }
 
@@ -181,8 +180,8 @@ function onClose() {
 function submit() {
   editForm.value.validate().then(() => {
     const ob = checkedRow.value.id
-      ? updateArticle(checkedRow.value)
-      : insertUser(checkedRow.value);
+      ? updateEquipOpFormula(checkedRow.value)
+      : insertEquipOpFormula(checkedRow.value);
     ob.then(() => {
       // 查询用户数据
       gridApi.query();
@@ -192,12 +191,14 @@ function submit() {
   });
 }
 
-// region 人员数据查询及绑定操作
-// 人员数据
-const personnelData = ref<any>([]);
-// 定时器id
-let personnelTimeout: any = null;
+// endregion
 
+// region 设备数据查询及绑定操作
+// 设备数据
+const equipData = ref<any>([]);
+// 定时器id
+let equipTimeout: any = null;
+const equipLoading = ref(false);
 /**
  * 处理搜索操作
  * 当用户输入搜索值时，延迟触发搜索请求，以减少频繁的网络请求。
@@ -205,58 +206,109 @@ let personnelTimeout: any = null;
  */
 function handleSearch(value: string) {
   // 如果之前有延迟搜索操作未完成，先清除
-  if (personnelTimeout) {
-    clearTimeout(personnelTimeout);
-    personnelTimeout = null;
+  if (equipTimeout) {
+    clearTimeout(equipTimeout);
+    equipTimeout = null;
   }
   // 定义一个立即执行的匿名函数，用于执行搜索请求
   const fake = () => {
+    equipLoading.value = true;
     // 调用listSysPerson API函数，传递搜索参数
-    listSysPerson({
-      pageNum: 1, // 设置请求的页码为第一页
-      pageSize: 200, // 设置每页请求的数据条数
-      perName: value, // 用户输入的搜索值，通常用于按姓名搜索
-    }).then(({ list }) => {
-      // 请求成功后，清空当前的搜索结果
-      personnelData.value = [];
-      // 遍历返回的搜索结果列表
-      for (const item of list) {
-        // 将每个搜索结果格式化后添加到personnelData数组中
-        personnelData.value.push({
-          label: `${item.orgName}-${item.perName}-${item.workNumber}`, // 显示的标签
-          value: `${item.perName}-${item.workNumber}`, // 实际的值
-        });
-      }
-    });
+    fuzzyQueryOfEquipmentNumber({
+      equipmentCode: value, // 用户输入的搜索值，通常用于按姓名搜索
+    })
+      .then((data) => {
+        // 请求成功后，清空当前的搜索结果
+        equipData.value = [];
+        // 遍历返回的搜索结果列表
+        for (const item of data) {
+          // 将每个搜索结果格式化后添加到personnelData数组中
+          equipData.value.push({
+            label: `${item.equipmentName}(${item.equipmentCode})`, // 显示的标签
+            value: `${item.equipmentCode}`, // 实际的值
+          });
+        }
+      })
+      .finally(() => {
+        equipLoading.value = false;
+      });
   };
   // 使用setTimeout延迟执行搜索请求，延迟时间为300毫秒
-  personnelTimeout = setTimeout(fake, 300);
+  equipTimeout = setTimeout(fake, 300);
 }
+// endregion
+
+// region 工序数据查询及绑定操作
+// 工序数据
+const processData = ref<any>([]);
+// 定时器id
+let processTimeout: any = null;
+const processLoading = ref(false);
 
 /**
- * 处理值改变事件
- * 当用户选择一个带有复合信息（如姓名-工号）的选项时，此函数会将该值拆分并更新相关数据。
- * @param {string} value - 用户选择的完整值，通常是一个由特定分隔符连接的字符串
- * @param {any} _option - 参数信息
+ * 处理搜索操作
+ * 当用户输入搜索值时，延迟触发搜索请求，以减少频繁的网络请求。
+ * @param {string} value - 用户输入的搜索值
  */
-function handleChange(value: any, _option: any) {
-  // 检查用户是否选择了一个值
-  if (value) {
-    // 使用'-'作为分隔符将字符串拆分成数组
-    const params = value.split('-');
-
-    // 检查拆分后的数组是否有足够的元素
-    if (params.length >= 2) {
-      // 将拆分后的第一个元素（姓名）赋值给checkedRow对象的preName属性
-      checkedRow.value.preName = params[0];
-      // 将拆分后的第二个元素（工号）赋值给checkedRow对象的workNumber属性
-      checkedRow.value.workNumber = params[1];
-    }
+function handleProcessSearch(value: string) {
+  // 如果之前有延迟搜索操作未完成，先清除
+  if (processTimeout) {
+    clearTimeout(processTimeout);
+    processTimeout = null;
   }
+  // 定义一个立即执行的匿名函数，用于执行搜索请求
+  const fake = () => {
+    if (!value) {
+      return;
+    }
+    processLoading.value = true;
+    // 调用listSysPerson API函数，传递搜索参数
+    getProceByName(value)
+      .then((data) => {
+        // 请求成功后，清空当前的搜索结果
+        processData.value = [];
+        // 遍历返回的搜索结果列表
+        for (const item of data) {
+          // 将每个搜索结果格式化后添加到personnelData数组中
+          processData.value.push({
+            label: `${item.processName}`, // 显示的标签
+            value: `${item.processCode}`, // 实际的值
+          });
+        }
+      })
+      .finally(() => {
+        processLoading.value = false;
+      });
+  };
+  // 使用setTimeout延迟执行搜索请求，延迟时间为300毫秒
+  processTimeout = setTimeout(fake, 300);
 }
 // endregion
 
+// region 匹配操作
+// 匹配抽屉
+const workstepRecipeManagementMatchRef = ref();
+
+/**
+ * 打开匹配抽屉
+ * @param row 点击行
+ */
+function showMatchDrawer(row: any) {
+  workstepRecipeManagementMatchRef.value.open(row);
+}
 // endregion
+
+// region 状态切换
+/**
+ * 切换状态
+ * @param row
+ */
+function updateStatus(row: any) {
+  stepStateSwitching(row).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
+}
 
 // endregion
 
@@ -369,26 +421,34 @@ onMounted(() => {
           </Button>
         </template>
         <template #action="{ row }">
-          <!-- 查看详情 -->
-          <Tooltip>
-            <template #title>{{ $t('common.view') }}</template>
-            <Button
-              :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
-              class="mr-4"
-              type="link"
-              @click="viewRow(row)"
-            />
-          </Tooltip>
           <!-- 编辑按钮 -->
           <Tooltip>
             <template #title>{{ $t('common.edit') }}</template>
             <Button
               v-if="author.includes('编辑')"
-              :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
-              class="mr-4"
               type="link"
               @click="editRow(row)"
-            />
+            >
+              <IconifyIcon
+                icon="mdi:edit-outline"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
+
+          <!-- 匹配 -->
+          <Tooltip>
+            <template #title>{{ $t('common.match') }}</template>
+            <Button
+              v-if="author.includes('匹配')"
+              type="link"
+              @click="showMatchDrawer(row)"
+            >
+              <IconifyIcon
+                icon="mdi:priority-low"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
           </Tooltip>
 
           <!-- 删除数据 -->
@@ -396,60 +456,33 @@ onMounted(() => {
             <template #title>{{ $t('common.delete') }}</template>
             <Button
               v-if="author.includes('删除')"
-              :icon="
-                h(MdiLightDelete, {
-                  class: 'inline-block size-6',
-                })
-              "
               danger
               type="link"
               @click="delRow(row)"
-            />
+            >
+              <IconifyIcon
+                icon="mdi-light:delete"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
           </Tooltip>
         </template>
-        <template #status="{ row }">
-          <Switch
-            v-model:checked="row.isEnable"
-            :checked-children="$t('status.enable')"
-            :checked-value="1"
-            :un-checked-children="$t('status.forbidden')"
-            disabled
-          />
-        </template>
-        <template #roleNames="{ row }">
-          <span>{{ row.roleNames.toString() }}</span>
+        <template #isUse="{ row }">
+          <RadioGroup
+            v-model:value="row.isUse"
+            @change="updateStatus(row)"
+            :disabled="!author.includes('状态变更')"
+          >
+            <RadioButton :value="1">
+              {{ $t('status.enable') }}
+            </RadioButton>
+            <RadioButton :value="-1">
+              {{ $t('status.forbidden') }}
+            </RadioButton>
+          </RadioGroup>
         </template>
       </Grid>
     </Card>
-    <!-- endregion -->
-
-    <!-- region 查看详情抽屉 -->
-    <Drawer
-      v-model:open="showViewDrawer"
-      :footer-style="{ textAlign: 'right' }"
-      :width="600"
-      class="custom-class"
-      placement="right"
-      title="查看详情"
-    >
-      <Descriptions :column="2" bordered title="用户详情">
-        <DescriptionsItem label="用户名">
-          {{ checkedRow.userName }}
-        </DescriptionsItem>
-        <DescriptionsItem label="关联人员">
-          {{ checkedRow.perName }}
-        </DescriptionsItem>
-        <DescriptionsItem label="工号">
-          {{ checkedRow.workNumber }}
-        </DescriptionsItem>
-        <DescriptionsItem label="状态">
-          {{ checkedRow.isEnable ? '启用' : '禁用' }}
-        </DescriptionsItem>
-        <DescriptionsItem label="用户描述">
-          {{ checkedRow.discription }}
-        </DescriptionsItem>
-      </Descriptions>
-    </Drawer>
     <!-- endregion -->
 
     <!-- region 新增/编辑 抽屉 -->
@@ -470,71 +503,67 @@ onMounted(() => {
         autocomplete="off"
         name="editMessageForm"
       >
-        <!-- 工步名称 -->
+        <!-- 配方编号 -->
         <FormItem
-          :label="$t('stepManagementView.workStepName')"
-          name="userName"
+          :label="$t('operationFormula.formulaNumber')"
+          name="formulaCode"
         >
-          <Input v-model:value="checkedRow.userName" />
+          <Input v-model:value="checkedRow.formulaCode" />
         </FormItem>
-        <!-- 工步版本 -->
+        <!-- 配方名称 -->
         <FormItem
-          :label="$t('stepManagementView.workingStepVersion')"
-          name="userName"
+          :label="$t('operationFormula.formulaName')"
+          name="formulaName"
         >
-          <Input v-model:value="checkedRow.userName" />
+          <Input v-model:value="checkedRow.formulaName" />
         </FormItem>
-        <!-- 所属工序 -->
+        <!-- 设备名称 -->
         <FormItem
-          :label="$t('stepManagementView.affiliatedProcess')"
-          name="perName_workNumber"
+          :label="$t('operationFormula.equipmentName')"
+          name="equipCode"
         >
           <Select
-            v-model:value="checkedRow.perName_workNumber"
+            v-model:value="checkedRow.equipCode"
             :default-active-first-option="false"
             :filter-option="false"
-            :not-found-content="null"
-            :options="personnelData"
+            :not-found-content="equipLoading ? undefined : null"
+            :options="equipData"
             :show-arrow="false"
             placeholder="输入用户名进行查询"
             placement="bottomRight"
             show-search
-            @change="handleChange"
             @search="handleSearch"
-          />
+          >
+            <template v-if="equipLoading" #notFoundContent>
+              <Spin size="small" />
+            </template>
+          </Select>
         </FormItem>
-        <!-- 作业类型 -->
+        <!-- 工序名称 -->
         <FormItem
-          :label="$t('stepManagementView.jobType')"
-          name="perName_workNumber"
+          :label="$t('operationFormula.processName')"
+          name="processCode"
         >
           <Select
-            v-model:value="checkedRow.perName_workNumber"
+            v-model:value="checkedRow.processCode"
             :default-active-first-option="false"
             :filter-option="false"
-            :not-found-content="null"
-            :options="personnelData"
+            :options="processData"
             :show-arrow="false"
-            placeholder="输入用户名进行查询"
+            :not-found-content="processLoading ? undefined : null"
+            placeholder="输入工序名进行查询"
             placement="bottomRight"
             show-search
-            @change="handleChange"
-            @search="handleSearch"
-          />
+            @search="handleProcessSearch"
+          >
+            <template v-if="processLoading" #notFoundContent>
+              <Spin size="small" />
+            </template>
+          </Select>
         </FormItem>
-        <!-- 功能名称 -->
-        <FormItem
-          :label="$t('stepManagementView.functionName')"
-          name="workNumber"
-        >
-          <Input v-model:value="checkedRow.workNumber" readonly />
-        </FormItem>
-        <!-- 详情备注 -->
-        <FormItem
-          :label="$t('stepManagementView.detailsAndRemarks')"
-          name="discription"
-        >
-          <Textarea v-model:value="checkedRow.discription" />
+        <!-- 版本号 -->
+        <FormItem :label="$t('operationFormula.versionNumber')" name="version">
+          <Input v-model:value="checkedRow.version" />
         </FormItem>
       </Form>
 
@@ -552,6 +581,8 @@ onMounted(() => {
       </template>
     </Drawer>
     <!-- endregion -->
+
+    <WorkstepRecipeManagementMatch ref="workstepRecipeManagementMatchRef" />
   </Page>
 </template>
 

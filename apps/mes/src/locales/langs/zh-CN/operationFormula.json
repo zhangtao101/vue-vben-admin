@@ -1,0 +1,9 @@
+{
+  "formulaNumber": "配方编号",
+  "formulaName": "配方名称",
+  "equipmentNumber": "设备编号",
+  "equipmentName": "设备名称",
+  "processNumber": "工序编号",
+  "processName": "工序名称",
+  "versionNumber": "版本号"
+}

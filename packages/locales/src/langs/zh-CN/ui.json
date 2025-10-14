@@ -7,7 +7,8 @@
     "length": "{0}长度必须为{1}个字符",
     "alreadyExists": "{0} `{1}` 已存在",
     "startWith": "{0}必须以 {1} 开头",
-    "invalidURL": "请输入有效的链接"
+    "invalidURL": "请输入有效的链接",
+    "passwordNotSame": "两次输入的密码不一致"
   },
   "actionTitle": {
     "edit": "修改{0}",
@@ -83,6 +84,7 @@
   "widgets": {
     "document": "文档",
     "qa": "问题 & 帮助",
+    "updatePassWord": "更新密码",
     "setting": "设置",
     "logoutTip": "是否退出登录？",
     "viewAll": "查看所有消息",

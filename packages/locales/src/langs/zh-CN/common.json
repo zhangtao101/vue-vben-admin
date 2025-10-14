@@ -29,6 +29,8 @@
   "configurationDetails": "配置详情",
   "delete": "删除",
   "create": "新增",
+  "match": "匹配",
+  "bind": "绑定",
   "yes": "是",
   "no": "否",
   "showSearchPanel": "显示搜索面板",
