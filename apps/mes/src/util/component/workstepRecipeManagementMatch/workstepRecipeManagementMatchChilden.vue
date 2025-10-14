@@ -105,7 +105,7 @@ defineExpose({
   <Drawer
     v-model:open="visible"
     height="80%"
-    placement="bottom"
+    placement="top"
     :title="$t('common.match')"
     @close="closeDrawer()"
   >

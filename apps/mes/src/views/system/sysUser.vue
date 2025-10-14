@@ -38,6 +38,7 @@ import {
   insertUser,
   listSysPerson,
   listUser,
+  quXeryRoleManagementDropDown,
   updateArticle,
 } from '#/api';
 import { $t } from '#/locales';
@@ -198,9 +199,11 @@ function onClose() {
  */
 function submit() {
   editForm.value.validate().then(() => {
-    const ob = checkedRow.value.id
-      ? updateArticle(checkedRow.value)
-      : insertUser(checkedRow.value);
+    const params = {
+      ...checkedRow.value,
+    };
+    params.roleCode = params.roles ? params.roles.join(',') : null;
+    const ob = params.id ? updateArticle(params) : insertUser(params);
     ob.then(() => {
       // 查询用户数据
       gridApi.query();
@@ -354,6 +357,21 @@ watch(
 
 // endregion
 
+// region 角色查询
+
+const roleList = ref<any[]>([]);
+
+/**
+ * 查询角色数据
+ */
+function queryRoleData() {
+  quXeryRoleManagementDropDown().then((data) => {
+    roleList.value = [...data];
+  });
+}
+
+// endregion
+
 // region 初始化
 
 onMounted(() => {
@@ -361,6 +379,7 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  queryRoleData();
 });
 
 // endregion
@@ -531,6 +550,17 @@ onMounted(() => {
             @search="handleSearch"
           />
         </FormItem>
+        <!-- 角色 -->
+        <FormItem :label="$t('sysUser.role')" name="roles">
+          <Select
+            v-model:value="checkedRow.roles"
+            mode="multiple"
+            :options="roleList"
+            :field-names="{ label: 'name', value: 'code' }"
+            placement="bottomRight"
+            @change="handleChange"
+          />
+        </FormItem>
         <!-- 工号 -->
         <FormItem :label="$t('sysUser.workNumber')" name="workNumber">
           <Input v-model:value="checkedRow.workNumber" readonly />
@@ -542,6 +572,7 @@ onMounted(() => {
             <Radio :value="0">禁用</Radio>
           </RadioGroup>
         </FormItem>
+
         <!-- 用户描述 -->
         <FormItem :label="$t('sysUser.description')" name="discription">
           <Textarea v-model:value="checkedRow.discription" />

@@ -20,6 +20,14 @@ export async function fetchWeb(params: any) {
     `${import.meta.env.VITE_GLOB_MES_USER}/sys/role/getWebPurview?${qs.stringify(params)}`,
   );
 }
+/**
+ * 查询角色管理下拉
+ */
+export async function quXeryRoleManagementDropDown() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/role/getSelectInfo`,
+  );
+}
 
 /**
  * 查询角色的web权限
