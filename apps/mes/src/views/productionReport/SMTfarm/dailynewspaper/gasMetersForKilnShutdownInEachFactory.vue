@@ -47,6 +47,12 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'yxValue',
+      title: '釉线天然气用量M3',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       field: 'sumValue',
       title: '总天然气用量M3',
       minWidth: 200,

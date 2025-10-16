@@ -35,6 +35,14 @@ export async function getInspectionTypeNamelist(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/hazardcheck/type/namelist?${qs.stringify(params)}`,
   );
 }
+/**
+ * 获取隐患检查计划项目列表
+ */
+export async function getItemListByType(type: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hazardcheck/type/itemlist/${type}?type=${type}`,
+  );
+}
 
 /**
  * 更新隐患检查计划

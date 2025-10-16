@@ -12,6 +12,16 @@ export async function displayAllHiddenDangerHandlingInformation(params: any) {
   );
 }
 /**
+ * 导出所有隐患处理信息
+ */
+export async function displayAllHiddenDangerHandlingInformationExport(
+  params: any,
+) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hazard/report/downloadExcel?${qs.stringify(params)}`,
+  );
+}
+/**
  * 展示隐患处理详情(历史)
  */
 export async function displayHiddenDangerHandlingDetails(params: any) {
@@ -52,7 +62,7 @@ export async function retracementData(reportCode: any) {
  * 隐患确认新增
  */
 export async function confirmInsert(params: any) {
-  return requestClient.post<any>(
+  return requestClient.put<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/hazard/confirm/insert`,
     params,
   );
@@ -124,6 +134,16 @@ export async function acceptanceInsert(params: any) {
 export async function acceptanceUpdate(params: any) {
   return requestClient.put<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/hazard/acceptance/update`,
+    params,
+  );
+}
+
+/**
+ * 隐患整改派发
+ */
+export async function distributed(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/hazard/confirm/updateConfrim`,
     params,
   );
 }

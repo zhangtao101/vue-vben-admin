@@ -111,7 +111,7 @@ const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
   perName_workNumber: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: '此项为必填项', required: false, trigger: 'change' },
   ],
   areaCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
   areaName: [{ message: '此项为必填项', required: true, trigger: 'change' }],

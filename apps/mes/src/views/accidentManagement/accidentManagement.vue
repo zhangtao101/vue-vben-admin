@@ -16,6 +16,7 @@ import {
   FormItem,
   Input,
   message,
+  Select,
   Space,
   Tooltip,
 } from 'ant-design-vue';
@@ -23,11 +24,12 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createAccidents,
+  queryOrganizationTree,
   queryTheListOfAccidents,
   updateAccidents,
 } from '#/api';
 import { $t } from '#/locales';
-import { queryAuth } from '#/util';
+import { flattenTree, queryAuth } from '#/util';
 import InitiateTheProcess from '#/util/component/accidentReporting/initiateTheProcess.vue';
 
 // region 表格操作
@@ -46,7 +48,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     { field: 'injuredUser', title: '受伤员工', minWidth: 150 },
     { field: 'worknumber', title: '工号', minWidth: 150 },
-    { field: 'position', title: '岗位', minWidth: 150 },
+    { field: 'position', title: '部门', minWidth: 150 },
     { field: 'time', title: '发生时间', minWidth: 150 },
     { field: 'eventDescription', title: '事故描述', minWidth: 150 },
     { field: 'injuredPartList', title: '受伤部位', minWidth: 150 },
@@ -170,12 +172,44 @@ function editClose() {
 
 // region 事故类型
 
-const accidentType = ref({
+const accidentType = ref<any>({
   1: '特别重大事故(I级)',
   2: '重大事故(II级)',
   3: '较大事故(III级)',
   4: '一般事故(IV级)',
 });
+
+// endregion
+
+// region 组织查询
+// 组织数据
+const treeData = ref<any>([]);
+/**
+ * 查询全部的组织树
+ * 这个函数用于从服务器获取所有组织数据，并更新前端的树形数据结构。
+ */
+function queryAllOrganizations() {
+  // 调用queryDictionaryTree API函数，获取菜单列表
+  queryOrganizationTree().then((data) => {
+    // 检查返回的数据是否存在且长度大于0
+    if (data) {
+      const arr = flattenTree(
+        {
+          children: [data],
+        },
+        'children',
+      );
+      treeData.value = [];
+      arr.forEach((item: any) => {
+        treeData.value.push({
+          label: item.orgFullName,
+          value: item.orgFullName,
+          isLeaf: false,
+        });
+      });
+    }
+  });
+}
 
 // endregion
 
@@ -195,6 +229,7 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  queryAllOrganizations();
 });
 
 // endregion
@@ -207,10 +242,15 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 岗位 -->
         <FormItem
-          :label="$t('accidentManagement.position')"
+          :label="$t('accidentManagement.department')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.position" />
+          <Select
+            v-model:value="queryParams.position"
+            :options="treeData"
+            allow-clear
+            class="!w-48"
+          />
         </FormItem>
         <!-- 年份 -->
         <FormItem
@@ -254,7 +294,7 @@ onMounted(() => {
         </template>
 
         <template #type="{ row }">
-          {{ row.type ? accidentType[row.type] : '' }}
+          {{ !row.type ? '' : accidentType[row.type] }}
         </template>
         <template #action="{ row }">
           <!-- 编辑 -->

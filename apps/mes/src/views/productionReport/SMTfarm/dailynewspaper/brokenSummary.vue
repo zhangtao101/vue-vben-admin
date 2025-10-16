@@ -51,6 +51,18 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
+    {
+      field: 'hpsm2',
+      title: '后破碎平方（M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'summ2',
+      title: '汇总（M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
   ],
   footerData: [{ seq: '合计' }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],

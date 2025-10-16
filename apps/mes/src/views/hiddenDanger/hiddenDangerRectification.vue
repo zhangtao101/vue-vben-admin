@@ -10,6 +10,7 @@ import { IconifyIcon, MdiSearch } from '@vben/icons';
 import {
   Button,
   Card,
+  Cascader,
   Descriptions,
   DescriptionsItem,
   Drawer,
@@ -23,6 +24,7 @@ import {
   Radio,
   RadioButton,
   RadioGroup,
+  RangePicker,
   Select,
   Tooltip,
 } from 'ant-design-vue';
@@ -30,7 +32,10 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   displayAllHiddenDangerHandlingInformation,
+  displayAllHiddenDangerHandlingInformationExport,
   displayHiddenDangerHandlingDetails,
+  distributed,
+  listSysPerson,
   operationByReportCode,
   queryOrganizationTree,
   retracementData,
@@ -262,15 +267,29 @@ function editLevelChange() {
 // region 查询数据
 
 // 查询参数
-const queryParams = ref({
+const queryParams = ref<any>({
   // 区域名称
   location: '',
   // 等级
   level: -1,
   // 状态
   state: -1,
+  // 查询时间
+  searchTime: [],
+  // 隐患 1，风险2
+  type: 1,
 });
-
+// 类型
+const typeList = [
+  {
+    label: '隐患',
+    value: 1,
+  },
+  {
+    label: '风险',
+    value: 2,
+  },
+];
 /**
  * 等级列表
  */
@@ -341,6 +360,12 @@ function queryData({ page, pageSize }: any) {
     }
     if (params.state === -1) {
       params.state = undefined;
+    }
+
+    if (params.searchTime && params.searchTime.length === 2) {
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD HH:mm:ss');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD HH:mm:ss');
+      params.searchTime = undefined;
     }
     /**
      * 调用 displayAllHiddenDangerHandlingInformation 函数，传入查询参数和分页信息。
@@ -421,10 +446,97 @@ function queryAllOrganizations() {
       arr.forEach((item: any) => {
         treeData.value.push({
           label: item.orgFullName,
-          value: item.orgFullName,
+          value: item.orgCode,
+          isLeaf: false,
         });
       });
     }
+  });
+}
+
+// endregion
+
+// region 用户查询
+const userChecked = ref<any>([]);
+function userSearch(selectedOptions: any) {
+  const targetOption = selectedOptions[selectedOptions.length - 1];
+  targetOption.loading = true;
+
+  listSysPerson({
+    orgCode: targetOption.value,
+    pageNum: 1, // 当前页码。
+    pageSize: 25, // 每页显示的数据条数。
+  })
+    .then(({ list }) => {
+      list.forEach((item: any) => {
+        item.label = item.perName;
+        item.value = item.perName;
+      });
+      targetOption.children = list;
+    })
+    .finally(() => {
+      targetOption.loading = false;
+    });
+}
+
+function userChange(_val: any, item: any) {
+  if (item.length === 2) {
+    const user = item[1];
+    distributeInformation.value.createUser = user.workNumber;
+  }
+}
+
+// endregion
+
+// region 派发
+
+const distributedDrawer = ref(false);
+// 派发信息
+const distributeInformation = ref<any>({});
+/**
+ * 显示派发弹窗
+ * @param row
+ */
+function showDistributedDrawer(row: any) {
+  distributedDrawer.value = true;
+  distributeInformation.value = {
+    reportCode: row.reportCode,
+    createUser: '',
+  };
+}
+
+function distributedClose() {
+  distributedDrawer.value = false;
+  distributeInformation.value = {};
+}
+
+function distributedSubmit() {
+  distributed(distributeInformation.value).then(() => {
+    distributedClose();
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
+}
+
+// endregion
+
+// region 文件下载
+
+function downloadTemplate() {
+  const params: any = { ...queryParams.value };
+  if (params.level === -1) {
+    params.level = undefined;
+  }
+  if (params.state === -1) {
+    params.state = undefined;
+  }
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD HH:mm:ss');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD HH:mm:ss');
+    params.searchTime = undefined;
+  }
+  displayAllHiddenDangerHandlingInformationExport(params).then((data) => {
+    window.open(data);
   });
 }
 
@@ -486,6 +598,21 @@ onMounted(() => {
           />
         </FormItem>
 
+        <!-- 查询时间 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.queryTime')"
+          style="margin-bottom: 1em"
+        >
+          <RangePicker v-model:value="queryParams.searchTime" />
+        </FormItem>
+        <!-- 类型 -->
+        <FormItem
+          :label="$t('hiddenDangerRectification.type')"
+          style="margin-bottom: 1em"
+        >
+          <RadioGroup v-model:value="queryParams.type" :options="typeList" />
+        </FormItem>
+
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
@@ -502,6 +629,12 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools>
+          <!-- 导出按钮 -->
+          <Button type="primary" @click="downloadTemplate()">
+            {{ $t('common.export') }}
+          </Button>
+        </template>
         <!-- 状态 -->
         <template #status="{ row }">
           {{ getStatusText(row.state) }}
@@ -535,122 +668,142 @@ onMounted(() => {
               />
             </Button>
           </Tooltip>
-          <!-- 等级变更 -->
-          <Tooltip :title="$t('common.levelChanges')" v-if="0 !== row.state">
-            <Button
-              type="link"
-              @click="showLevelChangeModal(row)"
-              :disabled="!row.valid"
-            >
-              <IconifyIcon
-                icon="mdi:repeat-once"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-          <!-- 隐患确认 -->
-          <Tooltip
-            :title="$t('hiddenDangerRectification.hiddenDangerIdentification')"
-            v-if="[1].includes(row.state)"
-          >
-            <Button
-              type="link"
-              @click="showRectificationDrawer(row, 1)"
-              :disabled="!row.valid"
-              :loading="showRectificationLoading"
-            >
-              <IconifyIcon
-                icon="carbon:checkmark-outline-warning"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-          <!-- 隐患整改 -->
-          <Tooltip
-            :title="
-              $t('hiddenDangerRectification.rectificationOfHiddenDangers')
-            "
-            v-if="[2].includes(row.state)"
-          >
-            <Button
-              type="link"
-              @click="showRectificationDrawer(row, 2)"
-              :disabled="!row.valid"
-              :loading="showRectificationLoading"
-            >
-              <IconifyIcon
-                icon="mdi:shield-sync-outline"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-          <!-- 隐患整改实施 -->
-          <Tooltip
-            :title="
-              $t(
-                'hiddenDangerRectification.implementationOfHiddenDangerRectification',
-              )
-            "
-            v-if="[3].includes(row.state)"
-          >
-            <Button
-              type="link"
-              @click="showRectificationDrawer(row, 3)"
-              :disabled="!row.valid"
-              :loading="showRectificationLoading"
-            >
-              <IconifyIcon
-                icon="mdi:shield-check-outline"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-          <!-- 隐患整改验收 -->
-          <Tooltip
-            :title="
-              $t(
-                'hiddenDangerRectification.hiddenDangerRectificationAndAcceptance',
-              )
-            "
-            v-if="[4].includes(row.state)"
-          >
-            <Button
-              type="link"
-              @click="showRectificationDrawer(row, 4)"
-              :disabled="!row.valid"
-              :loading="showRectificationLoading"
-            >
-              <IconifyIcon
-                icon="mdi:checkbox-multiple-marked-circle-outline"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-          <!-- 回退 -->
-          <Tooltip
-            :title="$t('hiddenDangerRectification.retracement')"
-            v-if="row.state !== 1"
-          >
-            <template #title>{{ $t('common.delete') }}</template>
-            <Popconfirm
-              :cancel-text="$t('common.cancel')"
-              :ok-text="$t('common.confirm')"
-              :title="$t('ui.widgets.retracement')"
-              @confirm="retracement(row)"
-              :disabled="!row.valid"
-            >
+          <template v-if="row.anniu === 1">
+            <!-- 等级变更 -->
+            <Tooltip :title="$t('common.levelChanges')" v-if="0 !== row.state">
               <Button
                 type="link"
+                @click="showLevelChangeModal(row)"
                 :disabled="!row.valid"
-                :loading="retracementLoading"
               >
                 <IconifyIcon
-                  icon="fluent-mdl2:return-to-session"
+                  icon="mdi:repeat-once"
                   class="inline-block align-middle text-2xl"
                 />
               </Button>
-            </Popconfirm>
-          </Tooltip>
+            </Tooltip>
+            <!-- 隐患确认 -->
+            <Tooltip
+              :title="
+                $t('hiddenDangerRectification.hiddenDangerIdentification')
+              "
+              v-if="[1].includes(row.state)"
+            >
+              <Button
+                type="link"
+                @click="showRectificationDrawer(row, 1)"
+                :disabled="!row.valid"
+                :loading="showRectificationLoading"
+              >
+                <IconifyIcon
+                  icon="carbon:checkmark-outline-warning"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Tooltip>
+            <!-- 隐患整改 -->
+            <Tooltip
+              :title="
+                $t('hiddenDangerRectification.rectificationOfHiddenDangers')
+              "
+              v-if="[2].includes(row.state)"
+            >
+              <Button
+                type="link"
+                @click="showRectificationDrawer(row, 2)"
+                :disabled="!row.valid"
+                :loading="showRectificationLoading"
+              >
+                <IconifyIcon
+                  icon="mdi:shield-sync-outline"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Tooltip>
+            <!-- 隐患整改实施 -->
+            <Tooltip
+              :title="
+                $t(
+                  'hiddenDangerRectification.implementationOfHiddenDangerRectification',
+                )
+              "
+              v-if="[3].includes(row.state)"
+            >
+              <Button
+                type="link"
+                @click="showRectificationDrawer(row, 3)"
+                :disabled="!row.valid"
+                :loading="showRectificationLoading"
+              >
+                <IconifyIcon
+                  icon="mdi:shield-check-outline"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Tooltip>
+            <!-- 隐患整改验收 -->
+            <Tooltip
+              :title="
+                $t(
+                  'hiddenDangerRectification.hiddenDangerRectificationAndAcceptance',
+                )
+              "
+              v-if="[4].includes(row.state)"
+            >
+              <Button
+                type="link"
+                @click="showRectificationDrawer(row, 4)"
+                :disabled="!row.valid"
+                :loading="showRectificationLoading"
+              >
+                <IconifyIcon
+                  icon="mdi:checkbox-multiple-marked-circle-outline"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Tooltip>
+            <!-- 回退 -->
+            <Tooltip
+              :title="$t('hiddenDangerRectification.retracement')"
+              v-if="row.state !== 1"
+            >
+              <template #title>{{ $t('common.delete') }}</template>
+              <Popconfirm
+                :cancel-text="$t('common.cancel')"
+                :ok-text="$t('common.confirm')"
+                :title="$t('ui.widgets.retracement')"
+                @confirm="retracement(row)"
+                :disabled="!row.valid"
+              >
+                <Button
+                  type="link"
+                  :disabled="!row.valid"
+                  :loading="retracementLoading"
+                >
+                  <IconifyIcon
+                    icon="fluent-mdl2:return-to-session"
+                    class="inline-block align-middle text-2xl"
+                  />
+                </Button>
+              </Popconfirm>
+            </Tooltip>
+          </template>
+          <template v-if="row.anniu === 2">
+            <!-- 派发 -->
+            <Tooltip>
+              <template #title>{{ $t('common.dispatch') }}</template>
+              <Button
+                type="link"
+                :disabled="!row.valid"
+                @click="showDistributedDrawer(row)"
+              >
+                <IconifyIcon
+                  icon="mdi:arrow-decision"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Tooltip>
+          </template>
         </template>
       </Grid>
     </Card>
@@ -790,6 +943,27 @@ onMounted(() => {
       <!-- endregion -->
       <RectificationLog :logs="logs" />
     </Drawer>
+    <!-- endregion -->
+
+    <!-- region 指派 -->
+    <Modal
+      v-model:open="distributedDrawer"
+      :title="$t('hiddenDangerRectification.title')"
+      @ok="distributedSubmit"
+      @cancel="distributedClose()"
+      :ok-button-props="{
+        disabled: !(userChecked && userChecked.length === 2),
+      }"
+    >
+      <Cascader
+        v-model:value="userChecked"
+        :options="treeData"
+        :load-data="userSearch"
+        @change="userChange"
+        change-on-select
+        class="w-full"
+      />
+    </Modal>
     <!-- endregion -->
 
     <!-- 移入确认对话框 -->

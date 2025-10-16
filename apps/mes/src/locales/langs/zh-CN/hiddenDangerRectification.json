@@ -39,6 +39,8 @@
   "log": "显示日志",
   "notRectified": "未整改",
   "notAccepted": "未验收",
-  "retracement": "回退"
+  "retracement": "回退",
+  "title": "选择派发人员",
+  "type": "类型"
 
 }

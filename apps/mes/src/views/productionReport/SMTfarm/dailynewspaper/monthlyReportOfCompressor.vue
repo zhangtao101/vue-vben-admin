@@ -94,7 +94,13 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'dlValue',
-      title: '电耗(KWH)',
+      title: '成型电耗(KWH)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'wgDlValue',
+      title: '卧干电耗(KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -105,8 +111,14 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'wgDlStopValue',
+      title: '停窑卧干能耗耗(KWH)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       field: 'dlStopValue',
-      title: '停机电耗(KWH)',
+      title: '成型停机电耗(KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

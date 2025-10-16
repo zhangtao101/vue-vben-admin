@@ -33,6 +33,7 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getInspectionTypeNamelist,
+  getItemListByType,
   listSysPerson,
   planDelete,
   planInsert,
@@ -292,6 +293,22 @@ function addDetail() {
     editItem.value.details = [];
   }
   editItem.value.details.push({});
+}
+
+/**
+ * 添加所有计划详情
+ */
+function addAll() {
+  getItemListByType(2).then((data) => {
+    delete editItem.value.details;
+    editItem.value.idList = [];
+    data.forEach((item: any) => {
+      editItem.value.idList.push(item);
+    });
+    setTimeout(() => {
+      submit();
+    }, 500);
+  });
 }
 
 /**
@@ -747,7 +764,7 @@ onMounted(() => {
         <!-- 负责人 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.responsiblePerson')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: false, message: '该项为必填项' }]"
           name="userChenked"
         >
           <Cascader
@@ -952,6 +969,10 @@ onMounted(() => {
         <FormItem :wrapper-col="{ span: 18, offset: 6 }">
           <Button type="primary" class="w-full" @click="addDetail">
             {{ $t('common.add') }}
+          </Button>
+          <Button type="primary" class="my-2 w-full" @click="addAll">
+            {{ $t('common.add') }}
+            {{ $t('hiddenDangerInspectionTask.all') }}
           </Button>
         </FormItem>
       </Form>

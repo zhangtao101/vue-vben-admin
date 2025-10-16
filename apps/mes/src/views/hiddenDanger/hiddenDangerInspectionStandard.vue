@@ -27,6 +27,7 @@ import {
   addHiddenDangerInspectionType,
   areaList,
   deleteHiddenDangerInspectionType,
+  getInspectionTypeNamelist,
   queryHiddenDangerInspectionType,
   updateHiddenDangerInspectionType,
 } from '#/api';
@@ -254,6 +255,24 @@ const author = ref<string[]>([]);
 
 // endregion
 
+// region 巡检项目查询
+const checkItemOptions = ref<any[]>([]);
+function queryCheckItem() {
+  getInspectionTypeNamelist({
+    type: 1, // 隐患1 ，风险2
+  }).then((data) => {
+    checkItemOptions.value = [];
+    data.forEach((i: any) => {
+      checkItemOptions.value.push({
+        label: i,
+        value: i,
+      });
+    });
+  });
+}
+
+// endregion
+
 // region 初始化
 
 onMounted(() => {
@@ -262,6 +281,7 @@ onMounted(() => {
     author.value = data;
   });
   queryArea();
+  queryCheckItem();
 });
 
 // endregion
@@ -277,14 +297,24 @@ onMounted(() => {
           :label="$t('hiddenDangerInspectionStandard.checkType')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.checkType" />
+          <Select
+            v-model:value="queryParams.checkType"
+            :options="checkTypeOptions"
+            allow-clear
+            class="!w-48"
+          />
         </FormItem>
         <!-- 巡检项目 -->
         <FormItem
           :label="$t('hiddenDangerInspectionStandard.checkItem')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.checkItem" />
+          <Select
+            v-model:value="queryParams.checkItem"
+            :options="checkItemOptions"
+            allow-clear
+            class="!w-48"
+          />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

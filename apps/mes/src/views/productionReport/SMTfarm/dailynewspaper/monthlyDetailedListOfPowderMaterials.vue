@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { MdiSearch } from '@vben/icons';
 
-import { Button, Card } from 'ant-design-vue';
+import { Button, Card, Form, FormItem, RangePicker } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -82,7 +83,7 @@ const gridEvents: VxeGridListeners<any> = {
   },*/
 };
 
-const [Grid] = useVbenVxeGrid({ gridEvents, gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
  * 获取物料类型的中文描述
@@ -105,14 +106,23 @@ function getMaterialTypeText(state: number) {
 // endregion
 
 // region 查询数据
-
+const queryParams = ref<any>({});
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
+    const params = {
+      ...queryParams.value,
+    };
+    if (params.searchTime && params.searchTime.length === 2) {
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD HH:mm:ss');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD HH:mm:ss');
+      params.searchTime = undefined;
+    }
     queryPowderMonthlyDetailsStatistics({
+      ...params,
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
@@ -161,6 +171,30 @@ onMounted(() => {
 
 <template>
   <Page>
+    <!-- region 搜索 -->
+    <Card class="mb-8">
+      <Form :model="queryParams" layout="inline">
+        <!-- 查询时间 -->
+        <FormItem
+          :label="$t('workOrderStatusQuery.queryTime')"
+          style="margin-bottom: 1em"
+        >
+          <RangePicker v-model:value="queryParams.searchTime" />
+        </FormItem>
+
+        <FormItem style="margin-bottom: 1em">
+          <Button
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
+            type="primary"
+            @click="() => gridApi.reload()"
+          >
+            {{ $t('common.search') }}
+          </Button>
+        </FormItem>
+      </Form>
+    </Card>
+    <!-- endregion -->
+
     <!-- region 表格主体 -->
     <Card>
       <Grid>

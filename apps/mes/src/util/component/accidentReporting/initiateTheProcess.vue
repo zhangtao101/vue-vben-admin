@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
 import {
+  Button,
   Cascader,
   Checkbox,
   CheckboxGroup,
@@ -13,10 +13,11 @@ import {
   DatePicker,
   Form,
   FormItem,
+  Modal,
   Row,
   Select,
   Textarea,
-  UploadDragger,
+  Upload,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
@@ -168,7 +169,7 @@ function userChange(_val: any, item: any) {
     formState.value.injuredUser = user.perName;
     formState.value.worknumber = user.workNumber;
     // formState.value.depatment = user.orgName;
-    formState.value.position = user.stationName;
+    formState.value.position = user.orgName;
   } else {
     formState.value.userChenked = [];
   }
@@ -183,6 +184,34 @@ const uploadFile = ref<any>([]);
 
 function getUploadUrl() {
   return `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/accident/register/upload`;
+}
+
+const previewVisible = ref(false);
+const previewImage = ref('');
+const previewTitle = ref('');
+
+async function handlePreview(file: any) {
+  if (!file.url && !file.preview) {
+    file.preview = (await getBase64(file.originFileObj)) as string;
+  }
+  previewImage.value = file.url || file.preview;
+  previewVisible.value = true;
+  previewTitle.value =
+    file.name || file.url.slice(Math.max(0, file.url.lastIndexOf('/') + 1));
+}
+
+function handleCancel() {
+  previewVisible.value = false;
+  previewTitle.value = '';
+}
+
+function getBase64(file: File) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.addEventListener('load', () => resolve(reader.result));
+    reader.addEventListener('error', (error: any) => reject(error));
+  });
 }
 
 // endregion
@@ -219,8 +248,8 @@ function formInit(row: any) {
   if (row.time) {
     row.time = dayjs(row.time);
   }
+  uploadFile.value = [];
   if (row.fileList) {
-    uploadFile.value = [];
     row.fileList.forEach((item: any) => {
       if (!item) return;
       const regex = /[^/]+$/;
@@ -329,7 +358,7 @@ onMounted(() => {
       </Col>-->
       <Col :span="12">
         <!-- 岗位-->
-        <FormItem :label="$t('accidentManagement.position')">
+        <FormItem :label="$t('accidentManagement.department')">
           {{ formState.position }}
         </FormItem>
       </Col>
@@ -418,26 +447,17 @@ onMounted(() => {
       <Col :span="12">
         <!-- 相关附件-->
         <FormItem :label="$t('accidentManagement.relatedAttachments')">
-          <UploadDragger
+          <Upload
             v-model:file-list="uploadFile"
-            name="file"
-            :multiple="true"
             :action="getUploadUrl()"
             :headers="{ Authorization: `${accessStore.accessToken}` }"
+            list-type="picture"
+            name="photo"
+            accept="image/*"
+            @preview="handlePreview"
           >
-            <p class="ant-upload-drag-icon">
-              <IconifyIcon
-                icon="mdi:cloud-upload"
-                class="inline-block align-middle text-4xl text-[#5085ff]"
-              />
-            </p>
-            <p class="ant-upload-text">
-              {{ $t('accidentManagement.uploadAttachments') }}
-            </p>
-            <p class="ant-upload-hint">
-              {{ $t('accidentManagement.uploadAttachmentsHint') }}
-            </p>
-          </UploadDragger>
+            <Button type="primary"> {{ $t('common.upload') }}</Button>
+          </Upload>
         </FormItem>
       </Col>
     </Row>
@@ -473,6 +493,17 @@ onMounted(() => {
       </Col>
     </Row>
   </Form>
+
+  <!-- region 图片预览 -->
+  <Modal
+    :open="previewVisible"
+    :title="previewTitle"
+    :footer="null"
+    @cancel="handleCancel"
+  >
+    <img alt="example" style="width: 100%" :src="previewImage" />
+  </Modal>
+  <!-- endregion -->
 </template>
 
 <style scoped></style>

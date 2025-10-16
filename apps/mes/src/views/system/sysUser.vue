@@ -147,7 +147,7 @@ function editRow(row?: any) {
   checkedRow.value = row
     ? {
         ...row,
-        perName_workNumber: `${row.perName}-${row.workNumber}`,
+        perName_workNumber: `${row.perName}&&${row.workNumber}`,
       }
     : {};
   showEditDrawer.value = true;
@@ -250,8 +250,8 @@ function handleSearch(value: string) {
         for (const item of list) {
           // 将每个搜索结果格式化后添加到personnelData数组中
           personnelData.value.push({
-            label: `${item.orgName}-${item.perName}-${item.workNumber}`, // 显示的标签
-            value: `${item.perName}-${item.workNumber}`, // 实际的值
+            label: `${item.orgName}_${item.perName}_${item.workNumber}`, // 显示的标签
+            value: `${item.perName}&&${item.workNumber}`, // 实际的值
           });
         }
       })
@@ -276,7 +276,7 @@ function handleChange(value: any, _option: any) {
   // 检查用户是否选择了一个值
   if (value) {
     // 使用'-'作为分隔符将字符串拆分成数组
-    const params = value.split('-');
+    const params = value.split('&&');
 
     // 检查拆分后的数组是否有足够的元素
     if (params.length >= 2) {
