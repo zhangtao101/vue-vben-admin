@@ -18,6 +18,8 @@ import {
   InputNumber,
   message,
   Popconfirm,
+  Radio,
+  RadioGroup,
   Select,
   Space,
   Tooltip,
@@ -25,10 +27,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  areaList,
   lecList,
   listSysPerson,
-  listWordListByParentCode,
   queryOrganizationTree,
   sourceDelete,
   sourceInsert,
@@ -45,9 +45,13 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'riskType', title: '风险分类', minWidth: 120 },
-    { field: 'area', title: '风险位置', minWidth: 120 },
     { field: 'riskName', title: '风险名称', minWidth: 120 },
+    { field: 'operationUnit', title: '作业单元', minWidth: 120 },
+    { field: 'checkItem', title: '检查项目', minWidth: 120 },
+    { field: 'checkContent', title: '检查内容', minWidth: 120 },
+    { field: 'checkStandard', title: '检查标准', minWidth: 120 },
+    { field: 'measuresRationality', title: '措施合理', minWidth: 120 },
+    { field: 'controlMeasures', title: '风险控制措施', minWidth: 120 },
     { field: 'description', title: '风险描述', minWidth: 120 },
     { field: 'hazardousFactors', title: '危险有害因素', minWidth: 120 },
     { field: 'potentialAccident', title: '可能导致事故', minWidth: 120 },
@@ -67,6 +71,15 @@ const gridOptions: VxeGridProps<any> = {
         { field: 'd', title: 'D', minWidth: 80 },
       ],
     },
+    {
+      title: '控制风险评估',
+      children: [
+        { field: 'll', title: 'L', minWidth: 80 },
+        { field: 's', title: 'S', minWidth: 80 },
+        { field: 'r', title: 'R', minWidth: 80 },
+      ],
+    },
+    { field: 'controlRisk', title: '控制风险', minWidth: 80 },
     { field: 'inherentRisk', title: '固有风险', minWidth: 80 },
     { field: 'escalationLevel', title: '升级', minWidth: 80 },
     { field: 'details', title: '操作修改详情', minWidth: 120 },
@@ -216,26 +229,6 @@ const author = ref<string[]>([]);
 
 // endregion
 
-// region 风险分类
-// 风险分类
-const riskTypeOptions = ref<any[]>([]);
-
-/**
- * 风险类别查询
- */
-function queryRiskType() {
-  listWordListByParentCode('RISKTYPE').then((res) => {
-    riskTypeOptions.value = [];
-    res.forEach((item: any) => {
-      riskTypeOptions.value.push({
-        label: item.wordName,
-        value: item.wordName,
-      });
-    });
-  });
-}
-// endregion
-
 // region 风险评估标准
 const riskAssessmentCriteriaOptions = ref<any>({
   l: [],
@@ -372,35 +365,6 @@ function userChange(_val: any, item: any) {
 
 // endregion
 
-// region 区域类型
-
-const areaOptions = ref<any[]>([
-  {
-    label: '1',
-    value: 2,
-  },
-]);
-
-/**
- * 查询巡检类型
- */
-function queryArea() {
-  areaList({
-    pageNum: 1, // 当前页码。
-    pageSize: 99_999, // 每页显示的数据条数。
-  }).then(({ list }) => {
-    areaOptions.value = [];
-    list.forEach((item: any) => {
-      areaOptions.value.push({
-        label: item.areaName,
-        value: item.areaName,
-      });
-    });
-  });
-}
-
-// endregion
-
 // region 初始化
 
 onMounted(() => {
@@ -408,10 +372,8 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
-  queryRiskType();
   riskAssessmentCriteriaQuery();
   queryAllOrganizations();
-  queryArea();
 });
 
 // endregion
@@ -429,19 +391,19 @@ onMounted(() => {
         >
           <Input v-model:value="queryParams.responsiblePerson" />
         </FormItem>
-        <!-- 区域 -->
+        <!-- 作业单元 -->
         <FormItem
-          :label="$t('riskManagement.RiskLocation')"
+          :label="$t('riskManagement.jobUnit')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.area" />
+          <Input v-model:value="queryParams.operationUnit" />
         </FormItem>
-        <!-- 风险种类 -->
+        <!-- 风险名称 -->
         <FormItem
-          :label="$t('riskManagement.riskType')"
+          :label="$t('riskManagement.RiskName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.riskType" />
+          <Input v-model:value="queryParams.riskName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -517,32 +479,6 @@ onMounted(() => {
         :label-col="{ span: 8 }"
         :wrapper-col="{ span: 16 }"
       >
-        <!-- 风险分类 -->
-        <FormItem
-          :label="$t('riskManagement.RiskCategory')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
-          name="riskType"
-        >
-          <Select
-            v-model:value="editItem.riskType"
-            :options="riskTypeOptions"
-            allow-clear
-            class="!w-full"
-          />
-        </FormItem>
-        <!-- 风险位置 -->
-        <FormItem
-          :label="$t('riskManagement.RiskLocation')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
-          name="area"
-        >
-          <Select
-            v-model:value="editItem.area"
-            :options="areaOptions"
-            allow-clear
-            class="!w-full"
-          />
-        </FormItem>
         <!-- 风险名称 -->
         <FormItem
           :label="$t('riskManagement.RiskName')"
@@ -550,6 +486,38 @@ onMounted(() => {
           name="riskName"
         >
           <Input v-model:value="editItem.riskName" />
+        </FormItem>
+        <!-- 作业单元 -->
+        <FormItem
+          :label="$t('riskManagement.jobUnit')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="operationUnit"
+        >
+          <Input v-model:value="editItem.operationUnit" />
+        </FormItem>
+        <!-- 巡检项目 -->
+        <FormItem
+          :label="$t('riskManagement.inspectionItem')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="checkItem"
+        >
+          <Input v-model:value="editItem.checkItem" />
+        </FormItem>
+        <!-- 巡检内容 -->
+        <FormItem
+          :label="$t('riskManagement.inspectionContent')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="checkContent"
+        >
+          <Input v-model:value="editItem.checkContent" />
+        </FormItem>
+        <!-- 检查标准 -->
+        <FormItem
+          :label="$t('riskManagement.inspectionStandards')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="checkStandard"
+        >
+          <Input v-model:value="editItem.checkStandard" />
         </FormItem>
         <!-- 风险描述 -->
         <FormItem
@@ -630,14 +598,6 @@ onMounted(() => {
         <FormItem :label="$t('riskManagement.Score')">
           <InputNumber v-model:value="editItem.c" :min="0" readonly />
         </FormItem>
-        <!-- 固有风险 -->
-        <FormItem
-          :label="$t('riskManagement.InherentRisk')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
-          name="inherentRisk"
-        >
-          <Input v-model:value="editItem.inherentRisk" />
-        </FormItem>
         <!-- 升级 -->
         <FormItem
           :label="$t('riskManagement.Upgrade')"
@@ -661,6 +621,54 @@ onMounted(() => {
           name="measures"
         >
           <Input v-model:value="editItem.measures" />
+        </FormItem>
+        <!-- 措施合理 -->
+        <FormItem
+          :label="$t('riskManagement.MeasuresReasonable')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="measuresRationality"
+        >
+          <Input v-model:value="editItem.measuresRationality" />
+        </FormItem>
+        <!-- 风险控制措施 -->
+        <FormItem
+          :label="$t('riskManagement.RiskControlMeasures')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="controlMeasures"
+        >
+          <Input v-model:value="editItem.controlMeasures" />
+        </FormItem>
+        <!-- 控制风险 -->
+        <FormItem
+          :label="$t('riskManagement.controlRisk')"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="controlRisk"
+        >
+          <Input v-model:value="editItem.controlRisk" />
+        </FormItem>
+        <!-- L -->
+        <FormItem
+          label="L"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="ll"
+        >
+          <RadioGroup v-model:value="editItem.ll">
+            <Radio :value="item" v-for="item in 5" :key="item">
+              {{ item }}
+            </Radio>
+          </RadioGroup>
+        </FormItem>
+        <!-- L -->
+        <FormItem
+          label="S"
+          :rules="[{ required: true, message: '该项为必填项' }]"
+          name="s"
+        >
+          <RadioGroup v-model:value="editItem.s">
+            <Radio :value="item" v-for="item in 5" :key="item">
+              {{ item }}
+            </Radio>
+          </RadioGroup>
         </FormItem>
         <!-- 责任人 -->
         <FormItem
