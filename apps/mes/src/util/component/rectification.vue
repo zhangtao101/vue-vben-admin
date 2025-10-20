@@ -29,7 +29,6 @@ import dayjs from 'dayjs';
 import {
   acceptanceInsert,
   acceptanceUpdate,
-  confirmInsert,
   confirmUpdate,
   implementationInsert,
   implementationUpdate,
@@ -260,7 +259,8 @@ function submit() {
 
     switch (itemState.value) {
       case 1: {
-        ob = formState.value.id ? confirmUpdate(params) : confirmInsert(params);
+        ob = confirmUpdate(params);
+        // ob = formState.value.id ? confirmUpdate(params) : confirmInsert(params);
         break;
       }
       case 2: {

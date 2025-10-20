@@ -669,19 +669,6 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <template v-if="row.anniu === 1">
-            <!-- 等级变更 -->
-            <Tooltip :title="$t('common.levelChanges')" v-if="0 !== row.state">
-              <Button
-                type="link"
-                @click="showLevelChangeModal(row)"
-                :disabled="!row.valid"
-              >
-                <IconifyIcon
-                  icon="mdi:repeat-once"
-                  class="inline-block align-middle text-2xl"
-                />
-              </Button>
-            </Tooltip>
             <!-- 隐患确认 -->
             <Tooltip
               :title="
@@ -701,6 +688,39 @@ onMounted(() => {
                 />
               </Button>
             </Tooltip>
+          </template>
+          <template v-if="row.anniu === 2">
+            <!-- 等级变更 -->
+            <Tooltip
+              :title="$t('common.levelChanges')"
+              v-if="0 !== row.state && row.anniu === 2"
+            >
+              <Button
+                type="link"
+                @click="showLevelChangeModal(row)"
+                :disabled="!row.valid"
+              >
+                <IconifyIcon
+                  icon="mdi:repeat-once"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Tooltip>
+            <!-- 派发 -->
+            <Tooltip v-if="[1].includes(row.state)">
+              <template #title>{{ $t('common.dispatch') }}</template>
+              <Button
+                type="link"
+                :disabled="!row.valid"
+                @click="showDistributedDrawer(row)"
+              >
+                <IconifyIcon
+                  icon="mdi:arrow-decision"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Tooltip>
+
             <!-- 隐患整改 -->
             <Tooltip
               :title="
@@ -786,22 +806,6 @@ onMounted(() => {
                   />
                 </Button>
               </Popconfirm>
-            </Tooltip>
-          </template>
-          <template v-if="row.anniu === 2">
-            <!-- 派发 -->
-            <Tooltip>
-              <template #title>{{ $t('common.dispatch') }}</template>
-              <Button
-                type="link"
-                :disabled="!row.valid"
-                @click="showDistributedDrawer(row)"
-              >
-                <IconifyIcon
-                  icon="mdi:arrow-decision"
-                  class="inline-block align-middle text-2xl"
-                />
-              </Button>
             </Tooltip>
           </template>
         </template>

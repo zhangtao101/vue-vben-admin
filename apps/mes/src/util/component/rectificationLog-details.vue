@@ -103,7 +103,7 @@ function getResultText(type: number) {
     <DescriptionsItem
       :label="$t('hiddenDangerRectification.rectificationSchemeAttachment')"
     >
-      <a
+      <!--      <a
         v-for="(item, index) of details?.fileList"
         :key="index"
         :href="item"
@@ -111,7 +111,15 @@ function getResultText(type: number) {
         class="inline text-blue-500"
       >
         {{ getFileName(item) }}
-      </a>
+      </a>-->
+
+      <Image
+        :src="item"
+        v-for="(item, index) of details?.fileList"
+        :key="index"
+        :width="120"
+        :height="120"
+      />
     </DescriptionsItem>
   </Descriptions>
   <!-- endregion -->

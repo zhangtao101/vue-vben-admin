@@ -36,5 +36,7 @@
   "inspectionContent": "inspectionContent",
   "status": "status",
   "AreaScan": "areaScan",
-  "riskType": "riskType"
+  "riskType": "riskType",
+  "jobUnit": "jobUnit",
+  "controlRisk": "controlRisk"
 }

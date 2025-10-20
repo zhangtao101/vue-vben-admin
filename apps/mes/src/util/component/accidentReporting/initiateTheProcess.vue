@@ -452,8 +452,7 @@ onMounted(() => {
             :action="getUploadUrl()"
             :headers="{ Authorization: `${accessStore.accessToken}` }"
             list-type="picture"
-            name="photo"
-            accept="image/*"
+            name="file"
             @preview="handlePreview"
           >
             <Button type="primary"> {{ $t('common.upload') }}</Button>

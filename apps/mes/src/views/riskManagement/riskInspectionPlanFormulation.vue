@@ -883,6 +883,7 @@ onMounted(() => {
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.riskType')"
           style="margin-bottom: 1em"
+          v-if="false"
         >
           {{ editItem.riskType }}
         </FormItem>

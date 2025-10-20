@@ -265,6 +265,7 @@ const pdaLoading = ref(false);
  * 显示PDA权限配置
  */
 function showPdaPermissionsConfiguration() {
+  test();
   // 检查是否没有任何选中的PDA权限代码
   if (selectedPdaPermissionCodes.value.length === 0) {
     let code = ''; // 初始化变量code用于存储角色代码
@@ -279,6 +280,9 @@ function showPdaPermissionsConfiguration() {
     // 如果已经有选中的PDA权限代码，则更新配置状态为true
     pdaPermissionConfiguration.value = true;
   }
+}
+function test() {
+  showPdaPermissionsConfiguration();
 }
 
 /**
@@ -650,8 +654,8 @@ onMounted(() => {
           </Button>
         </FormItem>
         <!-- pda权限角色配置 -->
-        <FormItem :label="$t('sysRole.pdaRolePermissions')">
-          <!-- 权限配置按钮 -->
+        <!--        <FormItem :label="$t('sysRole.pdaRolePermissions')">
+          &lt;!&ndash; 权限配置按钮 &ndash;&gt;
           <Button
             :icon="
               h(MdiLightSettings, {
@@ -664,7 +668,7 @@ onMounted(() => {
           >
             {{ $t('sysRole.permissionConfiguration') }}
           </Button>
-        </FormItem>
+        </FormItem>-->
       </Form>
 
       <template #footer>

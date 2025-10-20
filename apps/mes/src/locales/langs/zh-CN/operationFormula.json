@@ -23,5 +23,6 @@
   "scriptPurpose": "脚本用途",
   "processFormulation": "工序配方",
   "pointSetting": "点位设置",
-  "expression": "表达式"
+  "expression": "表达式",
+  "parameterValue": "参数数值"
 }

@@ -23,5 +23,6 @@
   "scriptPurpose": "scriptPurpose",
   "processFormulation": "processFormulation",
   "pointSetting": "pointSetting",
-  "expression": "expression"
+  "expression": "expression",
+  "parameterValue": "parameterValue"
 }

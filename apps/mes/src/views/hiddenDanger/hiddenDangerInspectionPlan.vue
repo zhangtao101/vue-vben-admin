@@ -256,10 +256,12 @@ function showEditFun(row?: any) {
         ...data,
       };
 
-      editItem.value.details.forEach((item: any) => {
-        inspectionTypeChange(item, true);
-        checkItemChange(item, true);
-      });
+      setTimeout(() => {
+        editItem.value.details.forEach((item: any) => {
+          inspectionTypeChange(item, true);
+          checkItemChange(item, true);
+        });
+      }, 500);
       formatData();
     });
   }
