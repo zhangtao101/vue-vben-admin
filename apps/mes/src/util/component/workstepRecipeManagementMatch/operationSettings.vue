@@ -240,6 +240,7 @@ function settingSubmit() {
       ? updateFunctionOpinfo(params)
       : insertFunctionOpinfo(params)
     ).then(() => {
+      message.success($t('common.successfulOperation'));
       queryTableData();
       // 关闭抽屉
       closeSettingDrawer();
@@ -513,7 +514,7 @@ defineExpose({
     v-model:open="visible"
     height="80%"
     placement="bottom"
-    :title="$t('common.match')"
+    :title="$t('operationFormula.runSetting')"
     @close="closeDrawer()"
   >
     <!-- 基本信息 -->
@@ -647,7 +648,7 @@ defineExpose({
     v-model:open="settingDrawer"
     :width="850"
     placement="right"
-    :title="$t('common.edit')"
+    :title="isEdit ? $t('common.edit') : $t('common.view')"
     :footer-style="{ textAlign: 'right' }"
     @close="closeSettingDrawer()"
   >

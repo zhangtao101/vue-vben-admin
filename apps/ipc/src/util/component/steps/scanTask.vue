@@ -69,6 +69,8 @@ const singleStationList = ref<any>([34, 35, 37]);
 const disableScanningCodes = ref<any>([34, 37]);
 // 多工位列表
 const multiStationList = ref([27, 32, 33]);
+// 和城工位列表
+const hcStationList = ref([32, 33, 34, 35, 37, 39]);
 
 /**
  * 获取标签的 class，用于统一标签的样式
@@ -701,6 +703,23 @@ onBeforeUnmount(() => {
             <!-- 显示设备联锁，无结果时显示默认提示 -->
             <span :class="getValueClass(details.errorType)">
               {{ details?.errorFlagName || $t('productionOperation.none') }}
+            </span>
+          </div>
+          <!-- endregion -->
+
+          <!-- region 设备联锁 -->
+          <!-- 控制 -->
+          <div
+            class="mb-4 mr-8 inline-block"
+            v-if="hcStationList.includes(showTypeNumber)"
+          >
+            <!-- 显示设备联锁标签 -->
+            <span :class="getLabelClass()">
+              {{ $t('productionOperation.equipmentControl') }}：
+            </span>
+            <!-- 显示设备联锁，无结果时显示默认提示 -->
+            <span :class="getValueClass(details.errorType)">
+              {{ details?.equipControlFlagName || $t('productionOperation.none') }}
             </span>
           </div>
           <!-- endregion -->

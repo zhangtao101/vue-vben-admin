@@ -80,6 +80,7 @@ function queryTableData() {
     functionType: formula.value.opType,
     workstationCode: formula.value.workstationCode,
     equipTypeCode: formula.value.formulaCode,
+    opType: matching.value.opType,
   }).then((data) => {
     gridApi.grid.reloadData(data);
   });
@@ -251,7 +252,7 @@ defineExpose({
     v-model:open="visible"
     height="80%"
     placement="top"
-    :title="$t('common.match')"
+    :title="$t('common.bind')"
     @close="closeDrawer()"
   >
     <!-- 基本信息 -->
@@ -308,7 +309,7 @@ defineExpose({
             />
           </Button>
         </Tooltip>
-        <!-- 绑定按钮 -->
+        <!-- 运行设置按钮 -->
         <Tooltip>
           <template #title>{{ $t('operationFormula.runSetting') }}</template>
           <Button type="link" @click="openOperationSettings(row)">

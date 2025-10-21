@@ -177,6 +177,7 @@ onMounted(() => {
     placement="top"
     :title="$t('dispatchHomework.sentOut')"
     :footer-style="{ textAlign: 'right' }"
+    :header-style="{ fontSize: '1.5em' }"
     @close="closeWorkOrders()"
   >
     <Steps v-model:current="current" type="navigation" :items="steps" />

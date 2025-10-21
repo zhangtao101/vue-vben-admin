@@ -81,6 +81,7 @@
   "producedQuantity": "产量",
   "processingStatus": "加工状态",
   "equipmentInterlocking": "设备联锁",
+  "equipmentControl": "设备控制",
   "appearanceInspection": "外观检验",
   "testConclusion": "检验结论",
   "resourceVerification": "资源校验",

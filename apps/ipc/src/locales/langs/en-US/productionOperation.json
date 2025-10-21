@@ -82,6 +82,7 @@
   "producedQuantity": "Produced Quantity",
   "processingStatus": "Processing Status",
   "equipmentInterlocking": "Equipment Interlocking",
+  "equipmentControl": "Equipment Control",
   "appearanceInspection": "Appearance Inspection",
   "testConclusion": "Test Conclusion",
   "resourceVerification": "Resource Verification",

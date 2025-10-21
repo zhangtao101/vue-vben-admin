@@ -59,17 +59,17 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'worksheetCode',
       title: '工单编号',
-      minWidth: 150,
+      minWidth: 190,
     },
     {
       field: 'productCode',
       title: '产品编号',
-      minWidth: 120,
+      minWidth: 240,
     },
     {
       field: 'productName',
       title: '产品名称',
-      minWidth: 120,
+      minWidth: 190,
     },
     {
       field: 'planNumber',
@@ -79,7 +79,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'startTime',
       title: '开工时间',
-      minWidth: 120,
+      minWidth: 200,
     },
     {
       title: '操作',
@@ -101,6 +101,20 @@ const gridOptions: VxeGridProps<any> = {
         return await queryData();
       },
     },
+  },
+  headerCellStyle: () => {
+    const res: any = {
+      fontSize: '16px',
+      fontWeight: 'bold',
+    };
+    return res;
+  },
+  rowStyle: () => {
+    const res: any = {
+      fontSize: '16px',
+      fontWeight: 'bold',
+    };
+    return res;
   },
   toolbarConfig: {
     custom: true,

@@ -65,6 +65,10 @@ const iconEnum: any = Enum({
     label: '资源指派',
     value: 'mdi:resize',
   },
+  设备参数: {
+    label: '设备参数',
+    value: 'mdi:checkerboard',
+  },
 });
 // endregion
 // region 工作站查询信息

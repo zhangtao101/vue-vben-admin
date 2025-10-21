@@ -928,6 +928,17 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'materialExceptionApprovalHistory',
         path: 'materialExceptionApprovalHistory',
       },
+      {
+        component: () =>
+          import('#/views/operationFormula/workstepRecipeManagement.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '工步配方',
+          code: 'WM_526',
+        },
+        name: 'workstepRecipeManagement',
+        path: 'workstepRecipeManagement',
+      },
     ],
   },
 ];

@@ -96,7 +96,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  /* {
+  {
     meta: {
       icon: 'mdi:alarm-light',
       order: -1,
@@ -136,8 +136,8 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },*/
-  /* {
+  },
+  {
     meta: {
       icon: 'mdi:quality-medium',
       order: -1,
@@ -177,7 +177,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },*/
+  },
   /*  // 报表管理
   {
     meta: {

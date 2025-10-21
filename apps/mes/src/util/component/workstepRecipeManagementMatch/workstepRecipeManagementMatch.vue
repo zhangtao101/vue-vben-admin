@@ -14,7 +14,7 @@ import WorkstepRecipeManagementMatchChilden from '#/util/component/workstepRecip
 
 // region 表格
 
-const gridOptions: VxeGridProps<RowType> = {
+const gridOptions: VxeGridProps<any> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'workstationCode', title: '工作站编号', minWidth: 150 },
@@ -104,7 +104,7 @@ defineExpose({
   >
     <Grid>
       <template #action="{ row }">
-        <!-- 编辑按钮 -->
+        <!-- 绑定按钮 -->
         <Tooltip>
           <template #title>{{ $t('common.bind') }}</template>
           <Button type="link" @click="openChildDrawer(row)">
