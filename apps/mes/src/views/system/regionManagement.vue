@@ -372,7 +372,7 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 区域编号 -->
         <FormItem
-          :label="$t('regionManagement.regionalCode')"
+          :label="$t('system.regionManagement.regionalCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.areaCode" />
@@ -380,7 +380,7 @@ onMounted(() => {
 
         <!-- 区域名称 -->
         <FormItem
-          :label="$t('regionManagement.regionalName')"
+          :label="$t('system.regionManagement.regionalName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.areaName" />
@@ -463,25 +463,25 @@ onMounted(() => {
       :title="$t('common.view')"
     >
       <Descriptions :column="2" bordered title="用户详情">
-        <DescriptionsItem :label="$t('regionManagement.department')">
+        <DescriptionsItem :label="$t('system.regionManagement.department')">
           {{ checkedRow.depart }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('regionManagement.regionalCode')">
+        <DescriptionsItem :label="$t('system.regionManagement.regionalCode')">
           {{ checkedRow.areaCode }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('regionManagement.regionalName')">
+        <DescriptionsItem :label="$t('system.regionManagement.regionalName')">
           {{ checkedRow.areaName }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('regionManagement.regionalSize')">
+        <DescriptionsItem :label="$t('system.regionManagement.regionalSize')">
           {{ checkedRow.areaSize }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('regionManagement.regionalManager')">
+        <DescriptionsItem :label="$t('system.regionManagement.regionalManager')">
           {{ checkedRow.areaManger }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('regionManagement.areaCreator')">
+        <DescriptionsItem :label="$t('system.regionManagement.areaCreator')">
           {{ checkedRow.createUser }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('regionManagement.creationTime')">
+        <DescriptionsItem :label="$t('system.regionManagement.creationTime')">
           {{ checkedRow.createTime }}
         </DescriptionsItem>
       </Descriptions>
@@ -507,7 +507,7 @@ onMounted(() => {
         name="editMessageForm"
       >
         <!-- 部门 -->
-        <FormItem :label="$t('regionManagement.department')" name="depart">
+        <FormItem :label="$t('system.regionManagement.department')" name="depart">
           <Select
             v-model:value="checkedRow.depart"
             :default-active-first-option="false"
@@ -520,20 +520,20 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 区域编号 -->
-        <FormItem :label="$t('regionManagement.regionalCode')" name="areaCode">
+        <FormItem :label="$t('system.regionManagement.regionalCode')" name="areaCode">
           <Input v-model:value="checkedRow.areaCode" />
         </FormItem>
         <!-- 区域名称 -->
-        <FormItem :label="$t('regionManagement.regionalName')" name="areaName">
+        <FormItem :label="$t('system.regionManagement.regionalName')" name="areaName">
           <Input v-model:value="checkedRow.areaName" />
         </FormItem>
         <!-- 区域大小 -->
-        <FormItem :label="$t('regionManagement.regionalSize')" name="areaSize">
+        <FormItem :label="$t('system.regionManagement.regionalSize')" name="areaSize">
           <Input v-model:value="checkedRow.areaSize" />
         </FormItem>
         <!-- 区域管理者 -->
         <FormItem
-          :label="$t('regionManagement.regionalManager')"
+          :label="$t('system.regionManagement.regionalManager')"
           name="perName_workNumber"
         >
           <Select

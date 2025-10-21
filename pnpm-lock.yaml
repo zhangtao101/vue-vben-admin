@@ -583,6 +583,9 @@ importers:
       vue-qrcode-reader:
         specifier: ^5.7.2
         version: 5.7.3
+      xe-utils:
+        specifier: ^3.7.9
+        version: 3.7.9
     devDependencies:
       '@changesets/changelog-github':
         specifier: 'catalog:'
@@ -12162,6 +12165,9 @@ packages:
   xe-utils@3.7.8:
     resolution: {integrity: sha512-V/k6B/ASYir6yLYhp62DnM17po9u1N9mou/rn4if5WoFCsAO49JpCiVpkDpwCv4zxGfWmhWgzmz4FytWF+pDVw==}
 
+  xe-utils@3.7.9:
+    resolution: {integrity: sha512-LWH6M7g+TKX8P2fqGxDPgJQygiULhbMtpmfxTMxJTUjuUv9y2+I45UCcVLh5AnmJSxDV1xTxsq7G5P9Eid06JQ==}
+
   xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
     engines: {node: '>=12'}
@@ -23605,6 +23611,8 @@ snapshots:
   xdg-basedir@5.1.0: {}
 
   xe-utils@3.7.8: {}
+
+  xe-utils@3.7.9: {}
 
   xml-name-validator@4.0.0: {}
 

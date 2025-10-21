@@ -110,12 +110,12 @@ defineExpose({
       :wrapper-col="{ span: 16 }"
     >
       <!-- 用户名 -->
-      <FormItem :label="$t('sysUser.username')">
+      <FormItem :label="$t('system.sysUser.username')">
         <Input v-model:value="formState.userName" readonly />
       </FormItem>
       <!-- 旧密码 -->
       <FormItem
-        :label="$t('sysUser.oldPassword')"
+        :label="$t('system.sysUser.oldPassword')"
         :rules="[{ required: true, message: $t('ui.formRules.required') }]"
         name="oldPassword"
       >
@@ -123,7 +123,7 @@ defineExpose({
       </FormItem>
       <!-- 新密码 -->
       <FormItem
-        :label="$t('sysUser.newPassword')"
+        :label="$t('system.sysUser.newPassword')"
         :rules="[
           { required: true, message: $t('ui.formRules.required') },
           { validator: lengthCheck, trigger: 'change' },
@@ -134,7 +134,7 @@ defineExpose({
       </FormItem>
       <!-- 确认密码 -->
       <FormItem
-        :label="$t('sysUser.confirmPassword')"
+        :label="$t('system.sysUser.confirmPassword')"
         :rules="[
           { required: true, message: $t('ui.formRules.required') },
           { validator: lengthCheck, trigger: 'change' },

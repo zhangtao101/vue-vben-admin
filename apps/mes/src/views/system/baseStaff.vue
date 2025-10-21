@@ -534,19 +534,19 @@ onMounted(() => {
       <Card>
         <Form :model="queryParams" layout="inline">
           <!-- 姓名 -->
-          <FormItem :label="$t('baseStaff.name')" style="margin-bottom: 1em">
+          <FormItem :label="$t('system.baseStaff.name')" style="margin-bottom: 1em">
             <Input v-model:value="queryParams.perName" />
           </FormItem>
           <!-- 工号 -->
           <FormItem
-            :label="$t('baseStaff.workNumber')"
+            :label="$t('system.baseStaff.workNumber')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.workNumber" />
           </FormItem>
           <!-- 岗位名称 -->
           <FormItem
-            :label="$t('baseStaff.jobTitle')"
+            :label="$t('system.baseStaff.jobTitle')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.stationName" />
@@ -665,76 +665,76 @@ onMounted(() => {
         name="editMessageForm"
       >
         <!-- 姓名 -->
-        <FormItem :label="$t('baseStaff.name')" name="perName">
+        <FormItem :label="$t('system.baseStaff.name')" name="perName">
           <Input
             v-model:value="editMessage.perName"
             :disabled="!!editMessage.id"
           />
         </FormItem>
         <!-- 工号 -->
-        <FormItem :label="$t('baseStaff.workNumber')" name="workNumber">
+        <FormItem :label="$t('system.baseStaff.workNumber')" name="workNumber">
           <Input
             v-model:value="editMessage.workNumber"
             :disabled="!!editMessage.id"
           />
         </FormItem>
         <!-- rfid号 -->
-        <FormItem :label="$t('baseStaff.rfid')" name="rfid">
+        <FormItem :label="$t('system.baseStaff.rfid')" name="rfid">
           <Input v-model:value="editMessage.rfid" />
         </FormItem>
         <!-- 性别 -->
-        <FormItem :label="$t('baseStaff.sex')" name="sex">
+        <FormItem :label="$t('system.baseStaff.sex')" name="sex">
           <RadioGroup v-model:value="editMessage.sex">
             <Radio value="男">{{ $t('status.male') }}</Radio>
             <Radio value="女">{{ $t('status.female') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 手机号码 -->
-        <FormItem :label="$t('baseStaff.phoneNumber')" name="phoneNumber">
+        <FormItem :label="$t('system.baseStaff.phoneNumber')" name="phoneNumber">
           <Input v-model:value="editMessage.phoneNumber" />
         </FormItem>
         <!-- 座机号码 -->
-        <FormItem :label="$t('baseStaff.landlineNumber')" name="teleNumber">
+        <FormItem :label="$t('system.baseStaff.landlineNumber')" name="teleNumber">
           <Input v-model:value="editMessage.teleNumber" />
         </FormItem>
         <!-- 手机短号 -->
-        <FormItem :label="$t('baseStaff.shortNumber')" name="shortNumber">
+        <FormItem :label="$t('system.baseStaff.shortNumber')" name="shortNumber">
           <Input v-model:value="editMessage.shortNumber" />
         </FormItem>
         <!-- 邮箱 -->
-        <FormItem :label="$t('baseStaff.email')" name="email">
+        <FormItem :label="$t('system.baseStaff.email')" name="email">
           <Input v-model:value="editMessage.email" />
         </FormItem>
 
         <!-- 员工类型 -->
-        <FormItem :label="$t('baseStaff.employeeType')" name="employeeType">
+        <FormItem :label="$t('system.baseStaff.employeeType')" name="employeeType">
           <RadioGroup v-model:value="editMessage.employeeType">
             <Radio value="正式员工">{{ $t('status.regularEmployee') }}</Radio>
             <Radio value="外包员工">{{ $t('status.outsourcedStaff') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 身份证号 -->
-        <FormItem :label="$t('baseStaff.idCard')" name="idCard">
+        <FormItem :label="$t('system.baseStaff.idCard')" name="idCard">
           <Input v-model:value="editMessage.idCard" />
         </FormItem>
         <!-- 身高 -->
-        <FormItem :label="$t('baseStaff.height')" name="height">
+        <FormItem :label="$t('system.baseStaff.height')" name="height">
           <InputNumber v-model:value="editMessage.height" />
           <span class="ml-4 align-top leading-8">CM</span>
         </FormItem>
         <!-- 年龄 -->
-        <FormItem :label="$t('baseStaff.age')" name="age">
+        <FormItem :label="$t('system.baseStaff.age')" name="age">
           <InputNumber v-model:value="editMessage.age" :max="99" :min="18" />
         </FormItem>
         <!-- 婚姻状况 -->
-        <FormItem :label="$t('baseStaff.maritalStatus')" name="maritalStatus">
+        <FormItem :label="$t('system.baseStaff.maritalStatus')" name="maritalStatus">
           <RadioGroup v-model:value="editMessage.maritalStatus">
             <Radio value="未婚">{{ $t('status.unmarried') }}</Radio>
             <Radio value="已婚">{{ $t('status.beMarried') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 健康状况 -->
-        <FormItem :label="$t('baseStaff.healthStatus')" name="healthStatus">
+        <FormItem :label="$t('system.baseStaff.healthStatus')" name="healthStatus">
           <RadioGroup v-model:value="editMessage.healthStatus">
             <Radio value="良好">{{ $t('status.good') }}</Radio>
             <Radio value="疾病">{{ $t('status.illness') }}</Radio>
@@ -742,7 +742,7 @@ onMounted(() => {
         </FormItem>
         <!-- 政治面貌 -->
         <FormItem
-          :label="$t('baseStaff.politicalOutlook')"
+          :label="$t('system.baseStaff.politicalOutlook')"
           name="politicalOutlook"
         >
           <RadioGroup v-model:value="editMessage.politicalOutlook">
@@ -753,7 +753,7 @@ onMounted(() => {
         </FormItem>
         <!-- 最高学历 -->
         <FormItem
-          :label="$t('baseStaff.highestEducation')"
+          :label="$t('system.baseStaff.highestEducation')"
           name="highestEducation"
         >
           <Segmented
@@ -762,14 +762,14 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 是否在职 -->
-        <FormItem :label="$t('baseStaff.isOnDuty')" name="isOnDuty">
+        <FormItem :label="$t('system.baseStaff.isOnDuty')" name="isOnDuty">
           <RadioGroup v-model:value="editMessage.isOnDuty">
             <Radio :value="1">{{ $t('status.yes') }}</Radio>
             <Radio :value="0">{{ $t('status.no') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 岗位名称 -->
-        <FormItem :label="$t('baseStaff.jobTitle')" name="stationCode">
+        <FormItem :label="$t('system.baseStaff.jobTitle')" name="stationCode">
           <Select
             v-model:value="editMessage.stationCode"
             :field-names="{ label: 'staName', value: 'staCode' }"
@@ -783,7 +783,7 @@ onMounted(() => {
         </FormItem>
         <!-- 所属组织 -->
         <FormItem
-          :label="$t('baseStaff.affiliatedOrganization')"
+          :label="$t('system.baseStaff.affiliatedOrganization')"
           name="orgCode"
         >
           <!--treeData          -->
@@ -804,7 +804,7 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 人员描述 -->
-        <FormItem :label="$t('baseStaff.description')" name="discription">
+        <FormItem :label="$t('system.baseStaff.description')" name="discription">
           <Textarea v-model:value="editMessage.discription" />
         </FormItem>
       </Form>

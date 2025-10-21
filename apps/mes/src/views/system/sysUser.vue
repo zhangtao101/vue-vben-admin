@@ -391,13 +391,13 @@ onMounted(() => {
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 用户名 -->
-        <FormItem :label="$t('sysUser.username')" style="margin-bottom: 1em">
+        <FormItem :label="$t('system.sysUser.username')" style="margin-bottom: 1em">
           <Input v-model:value="queryParams.userName" />
         </FormItem>
 
         <!-- 关联人员 -->
         <FormItem
-          :label="$t('sysUser.associatedPersonnel')"
+          :label="$t('system.sysUser.associatedPersonnel')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.perName" />
@@ -528,12 +528,12 @@ onMounted(() => {
         name="editMessageForm"
       >
         <!-- 用户名 -->
-        <FormItem :label="$t('sysUser.username')" name="userName">
+        <FormItem :label="$t('system.sysUser.username')" name="userName">
           <Input v-model:value="checkedRow.userName" />
         </FormItem>
         <!-- 关联人员 -->
         <FormItem
-          :label="$t('sysUser.associatedPersonnel')"
+          :label="$t('system.sysUser.associatedPersonnel')"
           name="perName_workNumber"
         >
           <Select
@@ -551,7 +551,7 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 角色 -->
-        <FormItem :label="$t('sysUser.role')" name="roles">
+        <FormItem :label="$t('system.sysUser.role')" name="roles">
           <Select
             v-model:value="checkedRow.roles"
             mode="multiple"
@@ -562,11 +562,11 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 工号 -->
-        <FormItem :label="$t('sysUser.workNumber')" name="workNumber">
+        <FormItem :label="$t('system.sysUser.workNumber')" name="workNumber">
           <Input v-model:value="checkedRow.workNumber" readonly />
         </FormItem>
         <!-- 状态 -->
-        <FormItem :label="$t('sysUser.status')" name="isEnable">
+        <FormItem :label="$t('system.sysUser.status')" name="isEnable">
           <RadioGroup v-model:value="checkedRow.isEnable">
             <Radio :value="1">启用</Radio>
             <Radio :value="0">禁用</Radio>
@@ -574,7 +574,7 @@ onMounted(() => {
         </FormItem>
 
         <!-- 用户描述 -->
-        <FormItem :label="$t('sysUser.description')" name="discription">
+        <FormItem :label="$t('system.sysUser.description')" name="discription">
           <Textarea v-model:value="checkedRow.discription" />
         </FormItem>
       </Form>

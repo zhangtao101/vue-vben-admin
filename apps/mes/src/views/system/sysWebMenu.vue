@@ -581,7 +581,7 @@ onMounted(() => {
         name="editMessageForm"
       >
         <!-- 上级菜单 -->
-        <FormItem :label="$t('sysWebMenu.parentMenu')" name="fCode">
+        <FormItem :label="$t('system.sysWebMenu.parentMenu')" name="fCode">
           <TreeSelect
             v-model:value="editMessage.fCode"
             :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
@@ -600,22 +600,22 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 菜单名称 -->
-        <FormItem :label="$t('sysWebMenu.menuName')" name="name">
+        <FormItem :label="$t('system.sysWebMenu.menuName')" name="name">
           <Input v-model:value="editMessage.name" />
         </FormItem>
         <!-- url" -->
-        <FormItem :label="$t('sysWebMenu.url')" name="url">
+        <FormItem :label="$t('system.sysWebMenu.url')" name="url">
           <Input v-model:value="editMessage.url" />
         </FormItem>
         <!-- 是否启用 -->
-        <FormItem :label="$t('sysWebMenu.isEnable')" name="isEnable">
+        <FormItem :label="$t('system.sysWebMenu.isEnable')" name="isEnable">
           <RadioGroup v-model:value="editMessage.isEnable">
             <Radio :value="1">{{ $t('status.enable') }}</Radio>
             <Radio :value="0">{{ $t('status.forbidden') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 描述 -->
-        <FormItem :label="$t('sysWebMenu.description')" name="discription">
+        <FormItem :label="$t('system.sysWebMenu.description')" name="discription">
           <Textarea v-model:value="editMessage.discription" />
         </FormItem>
       </Form>

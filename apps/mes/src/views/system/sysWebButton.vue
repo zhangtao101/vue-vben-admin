@@ -517,18 +517,18 @@ onMounted(() => {
         name="editMessageForm"
       >
         <!-- 按钮名称 -->
-        <FormItem :label="$t('sysButton.buttonName')" name="buttonName">
+        <FormItem :label="$t('system.sysButton.buttonName')" name="buttonName">
           <Input v-model:value="editMessage.buttonName" />
         </FormItem>
         <!-- 是否启用 -->
-        <FormItem :label="$t('sysButton.isEnable')" name="isEnable">
+        <FormItem :label="$t('system.sysButton.isEnable')" name="isEnable">
           <RadioGroup v-model:value="editMessage.isEnable">
             <Radio :value="1">{{ $t('status.enable') }}</Radio>
             <Radio :value="0">{{ $t('status.forbidden') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 描述 -->
-        <FormItem :label="$t('sysWebMenu.description')" name="discription">
+        <FormItem :label="$t('system.sysWebMenu.description')" name="discription">
           <Textarea v-model:value="editMessage.discription" />
         </FormItem>
       </Form>

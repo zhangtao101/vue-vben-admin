@@ -441,7 +441,7 @@ onMounted(() => {
         <Form :model="queryParams" layout="inline">
           <!-- 字典编号 -->
           <FormItem
-            :label="$t('baseDictionary.wordCode')"
+            :label="$t('system.baseDictionary.wordCode')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.wordCode" />
@@ -449,7 +449,7 @@ onMounted(() => {
 
           <!-- 字典名称 -->
           <FormItem
-            :label="$t('baseDictionary.wordName')"
+            :label="$t('system.baseDictionary.wordName')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.wordName" />
@@ -582,22 +582,22 @@ onMounted(() => {
         name="editMessageForm"
       >
         <!-- 字典名称 -->
-        <FormItem :label="$t('baseDictionary.wordName')" name="wordName">
+        <FormItem :label="$t('system.baseDictionary.wordName')" name="wordName">
           <Input v-model:value="editMessage.wordName" />
         </FormItem>
         <!-- 字典编号 -->
-        <FormItem :label="$t('baseDictionary.wordCode')" name="wordCode">
+        <FormItem :label="$t('system.baseDictionary.wordCode')" name="wordCode">
           <Input
             v-model:value="editMessage.wordCode"
             :readonly="!!editMessage.orderNumber"
           />
         </FormItem>
         <!-- 父级字典名称 -->
-        <FormItem :label="$t('baseDictionary.parentDictionary')" name="parName">
+        <FormItem :label="$t('system.baseDictionary.parentDictionary')" name="parName">
           <Input v-model:value="editMessage.parName" readonly />
         </FormItem>
         <!-- 描述 -->
-        <FormItem :label="$t('sysWebMenu.description')" name="discription">
+        <FormItem :label="$t('system.sysWebMenu.description')" name="discription">
           <Textarea v-model:value="editMessage.discription" />
         </FormItem>
       </Form>

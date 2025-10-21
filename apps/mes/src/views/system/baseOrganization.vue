@@ -495,7 +495,7 @@ onMounted(() => {
         <Form :model="queryParams" layout="inline">
           <!-- 组织全称 -->
           <FormItem
-            :label="$t('baseOrganization.fullNameOfOrganization')"
+            :label="$t('system.baseOrganization.fullNameOfOrganization')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.orgFullName" />
@@ -503,7 +503,7 @@ onMounted(() => {
 
           <!-- 组织编码 -->
           <FormItem
-            :label="$t('baseOrganization.tissueCoding')"
+            :label="$t('system.baseOrganization.tissueCoding')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.orgCode" />
@@ -648,65 +648,65 @@ onMounted(() => {
       >
         <!-- 组织全称 -->
         <FormItem
-          :label="$t('baseOrganization.fullNameOfOrganization')"
+          :label="$t('system.baseOrganization.fullNameOfOrganization')"
           name="orgFullName"
         >
           <Input v-model:value="editMessage.orgFullName" />
         </FormItem>
         <!-- 组织简称 -->
         <FormItem
-          :label="$t('baseOrganization.organizationAbbreviation')"
+          :label="$t('system.baseOrganization.organizationAbbreviation')"
           name="orgShortName"
         >
           <Input v-model:value="editMessage.orgShortName" />
         </FormItem>
         <!-- 组织类型 -->
-        <FormItem :label="$t('baseOrganization.tissueType')" name="orgType">
+        <FormItem :label="$t('system.baseOrganization.tissueType')" name="orgType">
           <RadioGroup v-model:value="editMessage.orgType" name="orgType">
             <Radio value="公司">公司</Radio>
             <Radio value="部门">部门</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 组织编码 -->
-        <FormItem :label="$t('baseOrganization.tissueCoding')" name="orgCode">
+        <FormItem :label="$t('system.baseOrganization.tissueCoding')" name="orgCode">
           <Input v-model:value="editMessage.orgCode" />
         </FormItem>
         <!-- 上级组织 -->
         <FormItem
-          :label="$t('baseOrganization.superiorOrganization')"
+          :label="$t('system.baseOrganization.superiorOrganization')"
           name="orgParFullName"
         >
           <Input v-model:value="editMessage.orgParFullName" readonly />
         </FormItem>
         <!-- 组织等级 -->
         <FormItem
-          :label="$t('baseOrganization.organizationalHierarchy')"
+          :label="$t('system.baseOrganization.organizationalHierarchy')"
           name="orgLevel"
         >
           <Input v-model:value="editMessage.orgLevel" readonly />
         </FormItem>
         <!-- 负责人 -->
-        <FormItem :label="$t('baseOrganization.personInCharge')" name="charge">
+        <FormItem :label="$t('system.baseOrganization.personInCharge')" name="charge">
           <Input v-model:value="editMessage.charge" />
         </FormItem>
         <!-- 座机号码 -->
-        <FormItem :label="$t('baseOrganization.landlineNumber')" name="tel">
+        <FormItem :label="$t('system.baseOrganization.landlineNumber')" name="tel">
           <Input v-model:value="editMessage.tel" />
         </FormItem>
         <!-- 联系地址 -->
-        <FormItem :label="$t('baseOrganization.contactAddress')" name="address">
+        <FormItem :label="$t('system.baseOrganization.contactAddress')" name="address">
           <Input v-model:value="editMessage.address" />
         </FormItem>
         <!-- 传真 -->
-        <FormItem :label="$t('baseOrganization.fax')" name="fax">
+        <FormItem :label="$t('system.baseOrganization.fax')" name="fax">
           <Input v-model:value="editMessage.fax" />
         </FormItem>
         <!-- 邮箱 -->
-        <FormItem :label="$t('baseOrganization.email')" name="email">
+        <FormItem :label="$t('system.baseOrganization.email')" name="email">
           <Input v-model:value="editMessage.email" />
         </FormItem>
         <!-- 是否可用 -->
-        <FormItem :label="$t('baseOrganization.status')" name="isEnable">
+        <FormItem :label="$t('system.baseOrganization.status')" name="isEnable">
           <RadioGroup v-model:value="editMessage.isEnable" name="statusGroup">
             <Radio :value="1">启用</Radio>
             <Radio :value="0">停用</Radio>
@@ -714,7 +714,7 @@ onMounted(() => {
         </FormItem>
         <!-- 描述 -->
         <FormItem
-          :label="$t('baseOrganization.description')"
+          :label="$t('system.baseOrganization.description')"
           name="discription"
         >
           <Input v-model:value="editMessage.discription" />

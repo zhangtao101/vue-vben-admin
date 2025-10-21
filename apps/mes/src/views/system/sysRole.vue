@@ -463,12 +463,12 @@ onMounted(() => {
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 角色名称 -->
-        <FormItem :label="$t('sysRole.roleName')" style="margin-bottom: 1em">
+        <FormItem :label="$t('system.sysRole.roleName')" style="margin-bottom: 1em">
           <Input v-model:value="queryParams.name" />
         </FormItem>
 
         <!-- 角色编码 -->
-        <FormItem :label="$t('sysRole.roleCode')" style="margin-bottom: 1em">
+        <FormItem :label="$t('system.sysRole.roleCode')" style="margin-bottom: 1em">
           <Input v-model:value="queryParams.code" />
         </FormItem>
 
@@ -615,7 +615,7 @@ onMounted(() => {
         name="editMessageForm"
       >
         <!-- 角色编码 -->
-        <FormItem :label="$t('sysRole.roleCode')" name="roleCode">
+        <FormItem :label="$t('system.sysRole.roleCode')" name="roleCode">
           <Input
             v-model:value="checkedRow.roleCode"
             disabled
@@ -623,22 +623,22 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 角色名称 -->
-        <FormItem :label="$t('sysRole.roleName')" name="roleName">
+        <FormItem :label="$t('system.sysRole.roleName')" name="roleName">
           <Input v-model:value="checkedRow.roleName" />
         </FormItem>
         <!-- 状态 -->
-        <FormItem :label="$t('sysRole.isEnable')" name="isEnable">
+        <FormItem :label="$t('system.sysRole.isEnable')" name="isEnable">
           <RadioGroup v-model:value="checkedRow.isEnable">
             <Radio :value="1">启用</Radio>
             <Radio :value="0">禁用</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 用户描述 -->
-        <FormItem :label="$t('sysRole.description')" name="discription">
+        <FormItem :label="$t('system.sysRole.description')" name="discription">
           <Textarea v-model:value="checkedRow.discription" />
         </FormItem>
         <!-- web角色权限配置 -->
-        <FormItem :label="$t('sysRole.webRolePermissions')">
+        <FormItem :label="$t('system.sysRole.webRolePermissions')">
           <!-- 权限配置按钮 -->
           <Button
             :icon="
@@ -650,11 +650,11 @@ onMounted(() => {
             type="primary"
             @click="showWebPermissionsConfiguration"
           >
-            {{ $t('sysRole.permissionConfiguration') }}
+            {{ $t('system.sysRole.permissionConfiguration') }}
           </Button>
         </FormItem>
         <!-- pda权限角色配置 -->
-        <!--        <FormItem :label="$t('sysRole.pdaRolePermissions')">
+        <!--        <FormItem :label="$t('system.sysRole.pdaRolePermissions')">
           &lt;!&ndash; 权限配置按钮 &ndash;&gt;
           <Button
             :icon="
@@ -666,7 +666,7 @@ onMounted(() => {
             type="primary"
             @click="showPdaPermissionsConfiguration"
           >
-            {{ $t('sysRole.permissionConfiguration') }}
+            {{ $t('system.sysRole.permissionConfiguration') }}
           </Button>
         </FormItem>-->
       </Form>

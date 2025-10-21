@@ -1,0 +1,97 @@
+{
+  "baseStaff": {
+    "name": "Name",
+    "workNumber": "EmployeeID",
+    "jobTitle": "Title",
+    "rfid": "RFID",
+    "sex": "Gender",
+    "phoneNumber": "Phone",
+    "landlineNumber": "Landline",
+    "shortNumber": "Extension",
+    "email": "Email",
+    "employeeType": "Type",
+    "idCard": "IDCard",
+    "height": "Height",
+    "age": "Age",
+    "maritalStatus": "Marital",
+    "healthStatus": "Health",
+    "politicalOutlook": "Politic",
+    "highestEducation": "Education",
+    "isOnDuty": "OnDuty",
+    "description": "Description",
+    "affiliatedOrganization": "Org"
+  },
+  "basePosition": {
+    "jobCode": "Code",
+    "jobName": "Name",
+    "jobType": "Type",
+    "jobLevel": "Level",
+    "workObjective": "Objective",
+    "remark": "Remark"
+  },
+  "baseOrganization": {
+    "fullNameOfOrganization": "FullName",
+    "organizationAbbreviation": "Abbr",
+    "tissueType": "Type",
+    "tissueCoding": "Code",
+    "organizationalHierarchy": "Level",
+    "personInCharge": "Leader",
+    "landlineNumber": "Landline",
+    "contactAddress": "Address",
+    "fax": "Fax",
+    "email": "Email",
+    "status": "Status",
+    "description": "Description",
+    "superiorOrganization": "Parent"
+  },
+  "baseDictionary": {
+    "wordCode": "Code",
+    "wordName": "Name",
+    "parentDictionary": "Parent",
+    "description": "Description"
+  },
+  "regionManagement": {
+    "regionalCode": "Code",
+    "regionalName": "Name",
+    "regionalSize": "Size",
+    "regionalManager": "Manager",
+    "areaCreator": "Creator",
+    "creationTime": "Created",
+    "forMoreDetails": "Details",
+    "department": "Department"
+  },
+  "sysRole": {
+    "roleCode": "Code",
+    "roleName": "Name",
+    "isEnable": "Status",
+    "description": "Description",
+    "webRolePermissions": "WebPerms",
+    "pdaRolePermissions": "PDAPerms",
+    "permissionConfiguration": "Config"
+  },
+  "sysButton": {
+    "buttonName": "Name",
+    "isEnable": "Enabled",
+    "description": "Description"
+  },
+  "sysUser": {
+    "username": "Username",
+    "associatedPersonnel": "Person",
+    "workNumber": "EmployeeID",
+    "status": "Status",
+    "description": "Description",
+    "webRolePermissions": "WebPerms",
+    "pdaRolePermissions": "PDAPerms",
+    "oldPassword": "OldPwd",
+    "newPassword": "NewPwd",
+    "confirmPassword": "ConfirmPwd",
+    "role": "Role"
+  },
+  "sysWebMenu": {
+    "menuName": "Name",
+    "parentMenu": "Parent",
+    "url": "URL",
+    "isEnable": "Enabled",
+    "description": "Description"
+  }
+}

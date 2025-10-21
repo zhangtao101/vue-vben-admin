@@ -1,0 +1,97 @@
+{
+  "baseStaff": {
+    "name": "姓名",
+    "workNumber": "工号",
+    "jobTitle": "岗位名称",
+    "rfid": "rfid号",
+    "sex": "性别",
+    "phoneNumber": "手机号码",
+    "landlineNumber": "座机号码",
+    "shortNumber": "手机短号",
+    "email": "邮箱",
+    "employeeType": "员工类型",
+    "idCard": "身份证号",
+    "height": "身高",
+    "age": "年龄",
+    "maritalStatus": "婚姻状况",
+    "healthStatus": "健康状况",
+    "politicalOutlook": "政治面貌",
+    "highestEducation": "最高学历",
+    "isOnDuty": "是否在职",
+    "description": "描述",
+    "affiliatedOrganization": "所属组织"
+  },
+  "basePosition": {
+    "jobCode": "岗位编码",
+    "jobName": "岗位名称",
+    "jobType": "岗位类别",
+    "jobLevel": "岗位等级",
+    "workObjective": "工作目标",
+    "remark": "备注"
+  },
+  "baseOrganization": {
+    "fullNameOfOrganization": "组织全称",
+    "organizationAbbreviation": "组织简称",
+    "tissueType": "组织类型",
+    "tissueCoding": "组织编码",
+    "organizationalHierarchy": "组织等级",
+    "personInCharge": "负责人",
+    "landlineNumber": "座机号码",
+    "contactAddress": "联系地址",
+    "fax": "传真",
+    "email": "邮箱",
+    "status": "状态",
+    "description": "描述",
+    "superiorOrganization": "上级组织"
+  },
+  "baseDictionary": {
+    "wordCode": "字典编号",
+    "wordName": "字典名称",
+    "parentDictionary": "父级字典",
+    "description": "描述"
+  },
+  "regionManagement": {
+    "regionalCode": "区域编号",
+    "regionalName": "区域名称",
+    "regionalSize": "区域大小(㎡)",
+    "regionalManager": "区域管理者",
+    "areaCreator": "区域创建人",
+    "creationTime": "创建时间",
+    "forMoreDetails": "查看详情",
+    "department": "部门"
+  },
+  "sysRole": {
+    "roleCode": "角色编码",
+    "roleName": "角色名称",
+    "isEnable": "状态",
+    "description": "描述",
+    "webRolePermissions": "web角色权限",
+    "pdaRolePermissions": "pda角色权限",
+    "permissionConfiguration": "权限配置"
+  },
+  "sysButton": {
+    "buttonName": "按钮名称",
+    "isEnable": "是否启用",
+    "description": "描述"
+  },
+  "sysUser": {
+    "username": "用户名",
+    "associatedPersonnel": "关联人员",
+    "workNumber": "工号",
+    "status": "状态",
+    "description": "描述",
+    "webRolePermissions": "网页角色权限",
+    "pdaRolePermissions": "PDA角色权限",
+    "oldPassword": "旧密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认密码",
+    "role": "角色"
+  },
+  "sysWebMenu": {
+    "menuName": "菜单名称",
+    "parentMenu": "上级菜单",
+    "url": "url",
+    "isEnable": "状态",
+    "description": "描述"
+  }
+}

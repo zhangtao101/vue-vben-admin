@@ -568,7 +568,7 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 区域名称 -->
         <FormItem
-          :label="$t('regionManagement.regionalName')"
+          :label="$t('system.regionManagement.regionalName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.location" />

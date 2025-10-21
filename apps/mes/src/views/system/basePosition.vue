@@ -294,7 +294,7 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 岗位编码 -->
         <FormItem
-          :label="$t('basePosition.jobCode')"
+          :label="$t('system.basePosition.jobCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.staCode" />
@@ -302,7 +302,7 @@ onMounted(() => {
 
         <!-- 岗位名称 -->
         <FormItem
-          :label="$t('basePosition.jobName')"
+          :label="$t('system.basePosition.jobName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.staName" />
@@ -389,15 +389,15 @@ onMounted(() => {
         ref="form"
       >
         <!-- 岗位编码 -->
-        <FormItem :label="$t('basePosition.jobCode')" name="staCode">
+        <FormItem :label="$t('system.basePosition.jobCode')" name="staCode">
           <Input v-model:value="editItem.staCode" />
         </FormItem>
         <!-- 岗位名称 -->
-        <FormItem :label="$t('basePosition.jobName')" name="staName">
+        <FormItem :label="$t('system.basePosition.jobName')" name="staName">
           <Input v-model:value="editItem.staName" />
         </FormItem>
         <!-- 岗位类别 -->
-        <FormItem :label="$t('basePosition.jobType')" name="staType">
+        <FormItem :label="$t('system.basePosition.jobType')" name="staType">
           <Select
             v-model:value="editItem.staType"
             :options="jobType"
@@ -406,7 +406,7 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 岗位等级 -->
-        <FormItem :label="$t('basePosition.jobLevel')" name="staLevel">
+        <FormItem :label="$t('system.basePosition.jobLevel')" name="staLevel">
           <Select
             v-model:value="editItem.staLevel"
             :options="jobLevel"
@@ -415,11 +415,14 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 工作目标 -->
-        <FormItem :label="$t('basePosition.workObjective')" name="workGoal">
+        <FormItem
+          :label="$t('system.basePosition.workObjective')"
+          name="workGoal"
+        >
           <Textarea v-model:value="editItem.workGoal" />
         </FormItem>
         <!-- 备注 -->
-        <FormItem :label="$t('basePosition.remark')" name="discription">
+        <FormItem :label="$t('system.basePosition.remark')" name="discription">
           <Textarea v-model:value="editItem.discription" />
         </FormItem>
       </Form>

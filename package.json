@@ -78,7 +78,8 @@
     "lodash-es": "^4.17.21",
     "qs": "^6.13.1",
     "sortablejs": "^1.15.6",
-    "vue-qrcode-reader": "^5.7.2"
+    "vue-qrcode-reader": "^5.7.2",
+    "xe-utils": "^3.7.9"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",
