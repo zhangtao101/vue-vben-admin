@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Page } from '@vben/common-ui';
 /* import { onMounted } from 'vue';
 
 import { Page } from '@vben/common-ui';
