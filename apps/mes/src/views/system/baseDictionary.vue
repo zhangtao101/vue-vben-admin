@@ -593,11 +593,17 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 父级字典名称 -->
-        <FormItem :label="$t('system.baseDictionary.parentDictionary')" name="parName">
+        <FormItem
+          :label="$t('system.baseDictionary.parentDictionary')"
+          name="parName"
+        >
           <Input v-model:value="editMessage.parName" readonly />
         </FormItem>
         <!-- 描述 -->
-        <FormItem :label="$t('system.sysWebMenu.description')" name="discription">
+        <FormItem
+          :label="$t('system.sysWebMenu.description')"
+          name="discription"
+        >
           <Textarea v-model:value="editMessage.discription" />
         </FormItem>
       </Form>

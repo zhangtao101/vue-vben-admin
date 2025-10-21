@@ -534,7 +534,10 @@ onMounted(() => {
       <Card>
         <Form :model="queryParams" layout="inline">
           <!-- 姓名 -->
-          <FormItem :label="$t('system.baseStaff.name')" style="margin-bottom: 1em">
+          <FormItem
+            :label="$t('system.baseStaff.name')"
+            style="margin-bottom: 1em"
+          >
             <Input v-model:value="queryParams.perName" />
           </FormItem>
           <!-- 工号 -->
@@ -690,15 +693,24 @@ onMounted(() => {
           </RadioGroup>
         </FormItem>
         <!-- 手机号码 -->
-        <FormItem :label="$t('system.baseStaff.phoneNumber')" name="phoneNumber">
+        <FormItem
+          :label="$t('system.baseStaff.phoneNumber')"
+          name="phoneNumber"
+        >
           <Input v-model:value="editMessage.phoneNumber" />
         </FormItem>
         <!-- 座机号码 -->
-        <FormItem :label="$t('system.baseStaff.landlineNumber')" name="teleNumber">
+        <FormItem
+          :label="$t('system.baseStaff.landlineNumber')"
+          name="teleNumber"
+        >
           <Input v-model:value="editMessage.teleNumber" />
         </FormItem>
         <!-- 手机短号 -->
-        <FormItem :label="$t('system.baseStaff.shortNumber')" name="shortNumber">
+        <FormItem
+          :label="$t('system.baseStaff.shortNumber')"
+          name="shortNumber"
+        >
           <Input v-model:value="editMessage.shortNumber" />
         </FormItem>
         <!-- 邮箱 -->
@@ -707,7 +719,10 @@ onMounted(() => {
         </FormItem>
 
         <!-- 员工类型 -->
-        <FormItem :label="$t('system.baseStaff.employeeType')" name="employeeType">
+        <FormItem
+          :label="$t('system.baseStaff.employeeType')"
+          name="employeeType"
+        >
           <RadioGroup v-model:value="editMessage.employeeType">
             <Radio value="正式员工">{{ $t('status.regularEmployee') }}</Radio>
             <Radio value="外包员工">{{ $t('status.outsourcedStaff') }}</Radio>
@@ -727,14 +742,20 @@ onMounted(() => {
           <InputNumber v-model:value="editMessage.age" :max="99" :min="18" />
         </FormItem>
         <!-- 婚姻状况 -->
-        <FormItem :label="$t('system.baseStaff.maritalStatus')" name="maritalStatus">
+        <FormItem
+          :label="$t('system.baseStaff.maritalStatus')"
+          name="maritalStatus"
+        >
           <RadioGroup v-model:value="editMessage.maritalStatus">
             <Radio value="未婚">{{ $t('status.unmarried') }}</Radio>
             <Radio value="已婚">{{ $t('status.beMarried') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 健康状况 -->
-        <FormItem :label="$t('system.baseStaff.healthStatus')" name="healthStatus">
+        <FormItem
+          :label="$t('system.baseStaff.healthStatus')"
+          name="healthStatus"
+        >
           <RadioGroup v-model:value="editMessage.healthStatus">
             <Radio value="良好">{{ $t('status.good') }}</Radio>
             <Radio value="疾病">{{ $t('status.illness') }}</Radio>
@@ -804,7 +825,10 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 人员描述 -->
-        <FormItem :label="$t('system.baseStaff.description')" name="discription">
+        <FormItem
+          :label="$t('system.baseStaff.description')"
+          name="discription"
+        >
           <Textarea v-model:value="editMessage.discription" />
         </FormItem>
       </Form>

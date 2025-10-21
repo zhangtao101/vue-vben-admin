@@ -463,12 +463,18 @@ onMounted(() => {
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 角色名称 -->
-        <FormItem :label="$t('system.sysRole.roleName')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('system.sysRole.roleName')"
+          style="margin-bottom: 1em"
+        >
           <Input v-model:value="queryParams.name" />
         </FormItem>
 
         <!-- 角色编码 -->
-        <FormItem :label="$t('system.sysRole.roleCode')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('system.sysRole.roleCode')"
+          style="margin-bottom: 1em"
+        >
           <Input v-model:value="queryParams.code" />
         </FormItem>
 

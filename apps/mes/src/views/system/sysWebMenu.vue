@@ -466,7 +466,7 @@ onMounted(() => {
             @select="selectedTree"
           >
             <template #title="{ name }">
-              <span v-if="name && name.indexOf(queryParams.name) > -1">
+              <span v-if="name && name.includes(queryParams.name)">
                 {{ name.substring(0, name.indexOf(queryParams.name)) }}
                 <span style="color: #f50">{{ queryParams.name }}</span>
                 {{
@@ -615,7 +615,10 @@ onMounted(() => {
           </RadioGroup>
         </FormItem>
         <!-- 描述 -->
-        <FormItem :label="$t('system.sysWebMenu.description')" name="discription">
+        <FormItem
+          :label="$t('system.sysWebMenu.description')"
+          name="discription"
+        >
           <Textarea v-model:value="editMessage.discription" />
         </FormItem>
       </Form>

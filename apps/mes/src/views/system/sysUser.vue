@@ -391,7 +391,10 @@ onMounted(() => {
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 用户名 -->
-        <FormItem :label="$t('system.sysUser.username')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('system.sysUser.username')"
+          style="margin-bottom: 1em"
+        >
           <Input v-model:value="queryParams.userName" />
         </FormItem>
 

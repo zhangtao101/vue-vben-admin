@@ -661,14 +661,20 @@ onMounted(() => {
           <Input v-model:value="editMessage.orgShortName" />
         </FormItem>
         <!-- 组织类型 -->
-        <FormItem :label="$t('system.baseOrganization.tissueType')" name="orgType">
+        <FormItem
+          :label="$t('system.baseOrganization.tissueType')"
+          name="orgType"
+        >
           <RadioGroup v-model:value="editMessage.orgType" name="orgType">
             <Radio value="公司">公司</Radio>
             <Radio value="部门">部门</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 组织编码 -->
-        <FormItem :label="$t('system.baseOrganization.tissueCoding')" name="orgCode">
+        <FormItem
+          :label="$t('system.baseOrganization.tissueCoding')"
+          name="orgCode"
+        >
           <Input v-model:value="editMessage.orgCode" />
         </FormItem>
         <!-- 上级组织 -->
@@ -686,15 +692,24 @@ onMounted(() => {
           <Input v-model:value="editMessage.orgLevel" readonly />
         </FormItem>
         <!-- 负责人 -->
-        <FormItem :label="$t('system.baseOrganization.personInCharge')" name="charge">
+        <FormItem
+          :label="$t('system.baseOrganization.personInCharge')"
+          name="charge"
+        >
           <Input v-model:value="editMessage.charge" />
         </FormItem>
         <!-- 座机号码 -->
-        <FormItem :label="$t('system.baseOrganization.landlineNumber')" name="tel">
+        <FormItem
+          :label="$t('system.baseOrganization.landlineNumber')"
+          name="tel"
+        >
           <Input v-model:value="editMessage.tel" />
         </FormItem>
         <!-- 联系地址 -->
-        <FormItem :label="$t('system.baseOrganization.contactAddress')" name="address">
+        <FormItem
+          :label="$t('system.baseOrganization.contactAddress')"
+          name="address"
+        >
           <Input v-model:value="editMessage.address" />
         </FormItem>
         <!-- 传真 -->
