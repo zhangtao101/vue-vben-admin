@@ -574,11 +574,17 @@ function eyeClose() {
         name="editMessageForm"
       >
         <!-- 材料编号 -->
-        <FormItem :label="$t('basic.bomManagement.materialCode')" name="materialCode">
+        <FormItem
+          :label="$t('basic.bomManagement.materialCode')"
+          name="materialCode"
+        >
           <Input v-model:value="editMessage.materialCode" disabled />
         </FormItem>
         <!-- 材料名称 -->
-        <FormItem :label="$t('basic.bomManagement.materialName')" name="materialName">
+        <FormItem
+          :label="$t('basic.bomManagement.materialName')"
+          name="materialName"
+        >
           <Input v-model:value="editMessage.materialName" disabled />
         </FormItem>
         <!-- 安全量上限 -->
@@ -631,11 +637,17 @@ function eyeClose() {
         name="editMessageForm"
       >
         <!-- 材料编号 -->
-        <FormItem :label="$t('basic.bomManagement.materialCode')" name="materialCode">
+        <FormItem
+          :label="$t('basic.bomManagement.materialCode')"
+          name="materialCode"
+        >
           <Input v-model:value="editMessage.materialCode" disabled />
         </FormItem>
         <!-- 材料名称 -->
-        <FormItem :label="$t('basic.bomManagement.materialName')" name="materialName">
+        <FormItem
+          :label="$t('basic.bomManagement.materialName')"
+          name="materialName"
+        >
           <Input v-model:value="editMessage.materialName" disabled />
         </FormItem>
         <!-- 文件描述 -->

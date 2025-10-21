@@ -450,22 +450,34 @@ onMounted(() => {
         ref="editMessageForm"
       >
         <!-- 产品编号 -->
-        <FormItem :label="$t('basic.productInform.productNumber')" name="productCode">
+        <FormItem
+          :label="$t('basic.productInform.productNumber')"
+          name="productCode"
+        >
           <Input v-model:value="editData.productCode" :disabled="!isEdit" />
         </FormItem>
         <!-- 产品名称 -->
-        <FormItem :label="$t('basic.productInform.productName')" name="productName">
+        <FormItem
+          :label="$t('basic.productInform.productName')"
+          name="productName"
+        >
           <Input v-model:value="editData.productName" :disabled="!isEdit" />
         </FormItem>
         <!-- 单/双面 -->
-        <FormItem :label="$t('basic.productInform.surface')" name="isSingleSide">
+        <FormItem
+          :label="$t('basic.productInform.surface')"
+          name="isSingleSide"
+        >
           <RadioGroup v-model:value="editData.isSingleSide" :disabled="!isEdit">
             <Radio :value="1">单面</Radio>
             <Radio :value="2">双面</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 计量单位 -->
-        <FormItem :label="$t('basic.productInform.unitOfMeasurement')" name="unit">
+        <FormItem
+          :label="$t('basic.productInform.unitOfMeasurement')"
+          name="unit"
+        >
           <Input v-model:value="editData.unit" :disabled="!isEdit" />
         </FormItem>
         <!-- 产品类别 -->
@@ -642,7 +654,9 @@ onMounted(() => {
         </FormItem>
         <!-- 刻印机B面程序号 -->
         <FormItem
-          :label="$t('basic.productInform.programNumberOnSideBOfTheEngravingMachine')"
+          :label="
+            $t('basic.productInform.programNumberOnSideBOfTheEngravingMachine')
+          "
           name="printProgramNob"
         >
           <Input v-model:value="editData.printProgramNob" :disabled="!isEdit" />

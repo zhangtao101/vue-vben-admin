@@ -1,0 +1,101 @@
+{
+  "productBom": {
+    "productNumber": "productNumber",
+    "productName": "productName"
+  },
+  "barCodeManagement": {
+    "ruleName": "ruleName",
+    "typeOfOwnership": "ownershipType",
+    "displayMode": "displayMode",
+    "categorySelection": "categorySelection",
+    "materialOrProductCode": "materialOrProductCode",
+    "materialOrProductName": "materialOrProductName",
+    "remark": "remark"
+  },
+  "productCategory": {
+    "categoryNumber": "categoryNumber",
+    "categoryName": "categoryName"
+  },
+  "bomManagement": {
+    "materialCode": "materialCode",
+    "materialName": "materialName",
+    "bomCategory": {},
+    "materialsCategory": {},
+    "maintainQualityMaterials": {},
+    "materialsInform": {
+      "upSafe": "upperSafeLimit",
+      "downSafe": "lowerSafeLimit",
+      "pasDescribe": "fileDescription",
+      "files": "files",
+      "productReference": "productReference",
+      "productDescription": "productDescription"
+    }
+  },
+  "factoryCalendar": {
+    "calendarName": "calendarName",
+    "affiliation": "affiliation",
+    "workWeekSetting": "workWeekSetting",
+    "workDaySetting": "workDaySetting",
+    "monday": "monday",
+    "tuesday": "tuesday",
+    "wednesday": "wednesday",
+    "thursday": "thursday",
+    "friday": "friday",
+    "saturday": "saturday",
+    "sunday": "sunday",
+    "workDay": "workDay",
+    "nonWorkDay": "nonWorkDay",
+    "exception": "exception",
+    "legend": "legend",
+    "ruleCode": "ruleCode",
+    "ruleName": "ruleName",
+    "time": "time"
+  },
+  "productInform": {
+    "productNumber": "productNumber",
+    "productName": "productName",
+    "surface": "side",
+    "unitOfMeasurement": "unit",
+    "productCategory": "category",
+    "customerItemNumber": "customerItem",
+    "customerModel": "customerModel",
+    "productionType": "productionType",
+    "planMarking": "planMark",
+    "standardWorkingHours": "stdHours",
+    "remarksOnWorkingHours": "outputPerHour",
+    "mark": "mark",
+    "qualityInspectionMark": "qcMark",
+    "smtProcess": "smtProcess",
+    "plugInProcess": "pluginProcess",
+    "repairWeldingProcess": "repairProcess",
+    "assemblyProcess": "assemblyProcess",
+    "packagingQuantity": "pkgQty",
+    "theNumberOfOuterBoxes": "outerBoxQty",
+    "outerBoxSize": "outerBoxSize",
+    "cubicMeter": "cbm",
+    "centimeter": "cm",
+    "long": "length",
+    "wide": "width",
+    "high": "height",
+    "relaxationRate": "relaxRate",
+    "standardHourlyProductionCapacity": "stdHourlyCap",
+    "productDescription": "description",
+    "printInformation": "printInfo",
+    "engravingMachineProgramNumber": "engraveProg",
+    "programNumberOnSideBOfTheEngravingMachine": "engraveProgB",
+    "theNumberOfScanningPoints": "scanPoints",
+    "theNumberOfPanels": "panelQty"
+  },
+  "printTemplate": {
+    "printTemplateCode": "printTemplateCode",
+    "printStatus": "printStatus",
+    "printType": "printType"
+  },
+  "workStationMaintenance": {
+    "workStationNumber": "workStationNumber",
+    "workstationName": "workstationName",
+    "workstationType": "workstationType",
+    "correspondingOperation": "correspondingOperation",
+    "configuringDeviceResources": "deviceConfig"
+  }
+}

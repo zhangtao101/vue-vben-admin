@@ -330,7 +330,10 @@ defineExpose({
     @close="detailsClose"
   >
     <!-- 日历名称 -->
-    <FormItem :label="$t('basic.factoryCalendar.calendarName')" name="calendarName">
+    <FormItem
+      :label="$t('basic.factoryCalendar.calendarName')"
+      name="calendarName"
+    >
       <Input v-model:value="details.calendarName" readonly />
     </FormItem>
     <!-- 所属组织 -->
@@ -446,7 +449,10 @@ defineExpose({
         <RangePicker v-model:value="editItem.time" />
       </FormItem>
       <!-- 工作周设定 -->
-      <FormItem :label="$t('basic.factoryCalendar.workWeekSetting')" name="startDay">
+      <FormItem
+        :label="$t('basic.factoryCalendar.workWeekSetting')"
+        name="startDay"
+      >
         <RadioGroup v-model:value="editItem.isWork" :options="workDayOptions" />
       </FormItem>
     </Form>

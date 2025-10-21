@@ -1205,7 +1205,9 @@ onMounted(async () => {
             <!-- 配置设备资源按钮 -->
             <Tooltip>
               <template #title>
-                {{ $t('basic.workStationMaintenance.configuringDeviceResources') }}
+                {{
+                  $t('basic.workStationMaintenance.configuringDeviceResources')
+                }}
               </template>
               <Button
                 :icon="h(MdiLightSettings, { class: 'inline-block size-6' })"
