@@ -9,7 +9,7 @@ import { MdiSearch } from '@vben/icons';
 
 import {
   Button,
-  Card,
+  Card, Checkbox,
   Col,
   DirectoryTree,
   Form,
@@ -20,7 +20,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getBomTypeList, getBomTypeTree } from '#/api';
+import { getBomTypeTree, getProductBomList } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -35,16 +35,38 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'typeCode', title: '类别编号', minWidth: 80 },
-    { field: 'typeName', title: '类别名称', minWidth: 80 },
-    { field: 'typeLevel', title: '类别等级', minWidth: 100 },
-    /* {
+    { field: 'bomTypeName', title: 'BOM类别', minWidth: 80 },
+    { field: 'productTypeName', title: '产品类别', minWidth: 80 },
+    { field: 'productCode', title: '产品编号', minWidth: 100 },
+    { field: 'productName', title: '产品名称', minWidth: 100 },
+    {
+      field: 'isLock',
+      title: '锁定',
+      minWidth: 100,
+      slots: { default: 'selectedState' },
+    },
+    {
+      field: 'isAudit',
+      title: '审核',
+      slots: { default: 'selectedState' },
+      minWidth: 100,
+    },
+    {
+      field: 'isHalf',
+      title: '半成品',
+      slots: { default: 'selectedState' },
+      minWidth: 100,
+    },
+    { field: 'materialCode', title: '材料编号', minWidth: 100 },
+    { field: 'remark', title: '备注说明', minWidth: 100 },
+    { field: 'sourceProduct', title: '来源产品', minWidth: 100 },
+    {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
       minWidth: 120,
-    },*/
+    },
   ],
   height: 500,
   stripe: true,
@@ -88,9 +110,9 @@ const selectedKey = ref<any>(undefined);
 // 查询参数
 const queryParams = ref({
   // 类别编号
-  typeCode: '',
+  productCode: '',
   // 类别名称
-  typeName: '',
+  productName: '',
 });
 
 /**
@@ -100,10 +122,10 @@ function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = queryParams.value;
     if (selectedKey.value && selectedKey.value.code) {
-      params.parentTypeCode = selectedKey.value.code;
+      params.bomTypeCode = selectedKey.value.code;
     }
     // 调用 listStations API函数，传递查询参数和分页信息
-    getBomTypeList({
+    getProductBomList({
       ...params, // 展开queryParams.value中的所有查询参数
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -177,7 +199,7 @@ onMounted(() => {
   // 调用 queryAllCategoryTree 函数，用于获取类别数据
   queryAllCategoryTree();
 });
-
+// todo 暂时做不下去了, 需要数据查看样式
 // endregion
 </script>
 
@@ -191,14 +213,14 @@ onMounted(() => {
             :label="$t('basic.productBom.productNumber')"
             style="margin-bottom: 1em"
           >
-            <Input v-model:value="queryParams.typeCode" />
+            <Input v-model:value="queryParams.productCode" />
           </FormItem>
           <!-- 类别名称 -->
           <FormItem
             :label="$t('basic.productBom.productName')"
             style="margin-bottom: 1em"
           >
-            <Input v-model:value="queryParams.typeName" />
+            <Input v-model:value="queryParams.productName" />
           </FormItem>
 
           <FormItem>
@@ -236,7 +258,11 @@ onMounted(() => {
         <!-- region 表格主体 -->
         <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
           <Card class="h-[60vh] overflow-y-auto">
-            <Grid />
+            <Grid >
+              <template #selectedState="{ row, column }">
+                <Checkbox v-model:checked="row[column.field]" disabled />
+              </template>
+            </Grid>
           </Card>
         </Col>
         <!-- endregion -->

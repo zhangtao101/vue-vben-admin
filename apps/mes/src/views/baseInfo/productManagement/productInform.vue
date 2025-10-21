@@ -418,7 +418,7 @@ onMounted(() => {
                 <!-- 查看 -->
                 <Tooltip>
                   <template #title>
-                    {{ $t('common.edit') }}
+                    {{ $t('common.view') }}
                   </template>
                   <Button @click="showEdit(row)" class="mr-2" type="link">
                     <IconifyIcon icon="mdi:eye" class="inline-block size-6" />
