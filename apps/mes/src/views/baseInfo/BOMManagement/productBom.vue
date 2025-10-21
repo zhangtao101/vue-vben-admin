@@ -188,14 +188,14 @@ onMounted(() => {
         <Form :model="queryParams" layout="inline">
           <!-- 类别编号 -->
           <FormItem
-            :label="$t('bisic.productBom.productNumber')"
+            :label="$t('basic.productBom.productNumber')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.typeCode" />
           </FormItem>
           <!-- 类别名称 -->
           <FormItem
-            :label="$t('bisic.productBom.productName')"
+            :label="$t('basic.productBom.productName')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.typeName" />

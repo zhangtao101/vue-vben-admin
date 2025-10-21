@@ -284,7 +284,7 @@ function onClose() {
       <Form :model="queryParams" layout="inline">
         <!-- 规则名称 -->
         <FormItem
-          :label="$t('page.barCodeManagement.ruleName')"
+          :label="$t('basic.barCodeManagement.ruleName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.ruleName" />
@@ -292,7 +292,7 @@ function onClose() {
 
         <!-- 所属类型 -->
         <FormItem
-          :label="$t('page.barCodeManagement.typeOfOwnership')"
+          :label="$t('basic.barCodeManagement.typeOfOwnership')"
           style="margin-bottom: 1em"
         >
           <Select
@@ -303,7 +303,7 @@ function onClose() {
         </FormItem>
         <!-- 展示方式 -->
         <FormItem
-          :label="$t('page.barCodeManagement.displayMode')"
+          :label="$t('basic.barCodeManagement.displayMode')"
           style="margin-bottom: 1em"
         >
           <Select
@@ -394,14 +394,14 @@ function onClose() {
       >
         <!-- 规则名称 -->
         <FormItem
-          :label="$t('page.barCodeManagement.ruleName')"
+          :label="$t('basic.barCodeManagement.ruleName')"
           name="ruleName"
         >
           <Input v-model:value="editMessage.ruleName" />
         </FormItem>
         <!-- 所属类型 -->
         <FormItem
-          :label="$t('page.barCodeManagement.typeOfOwnership')"
+          :label="$t('basic.barCodeManagement.typeOfOwnership')"
           name="typeName"
         >
           <Select
@@ -412,7 +412,7 @@ function onClose() {
         </FormItem>
         <!-- 展示方式 -->
         <FormItem
-          :label="$t('page.barCodeManagement.displayMode')"
+          :label="$t('basic.barCodeManagement.displayMode')"
           name="displayName"
         >
           <Select
@@ -423,27 +423,27 @@ function onClose() {
         </FormItem>
         <!-- 类别选择 -->
         <FormItem
-          :label="$t('page.barCodeManagement.categorySelection')"
+          :label="$t('basic.barCodeManagement.categorySelection')"
           name="typeCodeName"
         >
           <Input v-model:value="editMessage.typeCodeName" />
         </FormItem>
         <!-- 物料/产品编码 -->
         <FormItem
-          :label="$t('page.barCodeManagement.materialOrProductCode')"
+          :label="$t('basic.barCodeManagement.materialOrProductCode')"
           name="morpCode"
         >
           <Input v-model:value="editMessage.morpCode" />
         </FormItem>
         <!-- 物料/产品名称 -->
         <FormItem
-          :label="$t('page.barCodeManagement.materialOrProductName')"
+          :label="$t('basic.barCodeManagement.materialOrProductName')"
           name="morpName"
         >
           <Input v-model:value="editMessage.morpName" />
         </FormItem>
         <!-- 备注 -->
-        <FormItem :label="$t('page.barCodeManagement.remark')" name="remarks">
+        <FormItem :label="$t('basic.barCodeManagement.remark')" name="remarks">
           <Input v-model:value="editMessage.remarks" />
         </FormItem>
       </Form>

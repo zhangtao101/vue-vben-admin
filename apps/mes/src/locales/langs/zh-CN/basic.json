@@ -1,0 +1,107 @@
+{
+  "productBom": {
+    "productNumber": "产品编号",
+    "productName": "产品名称"
+  },
+  "barCodeManagement": {
+    "ruleName": "规则名称",
+    "typeOfOwnership": "所属类型",
+    "displayMode": "展示方式",
+    "categorySelection": "类别选择",
+    "materialOrProductCode": "物料/产品编码",
+    "materialOrProductName": "物料/产品名称",
+    "remark": "备注"
+  },
+  "productCategory": {
+    "categoryNumber": "类别编号",
+    "categoryName": "类别名称"
+  },
+  "bomManagement": {
+    "materialCode": "物料编号",
+    "materialName": "物料名称",
+    "bomCategory": {
+    },
+    "materialsCategory": {
+    },
+    "maintainQualityMaterials": {
+    },
+    "materialsInform": {
+      "upSafe": "安全量上限",
+      "downSafe": "安全量下限",
+      "pasDescribe": "文件描述",
+      "files": "文件",
+      "productReference": "产品引用",
+      "productDescription": "产品描述"
+    }
+  },
+  "factoryCalendar": {
+    "calendarName": "日历名称",
+    "affiliation": "所属组织",
+    "workWeekSetting": "工作周设定",
+    "workDaySetting": "工作日设定",
+    "monday": "周一",
+    "tuesday": "周二",
+    "wednesday": "周三",
+    "thursday": "周四",
+    "friday": "周五",
+    "saturday": "周六",
+    "sunday": "周日",
+    "workDay": "工作日",
+    "nonWorkDay": "休息日",
+    "exception": "例外-休息日",
+    "legend": "图例",
+    "ruleCode": "特殊规则编号",
+    "ruleName": "特殊规则名称",
+    "time": "特殊规则日期"
+  },
+  "productInform": {
+    "productNumber": "产品编号",
+    "productName": "产品名称",
+    "surface": "单/双面",
+    "unitOfMeasurement": "计量单位",
+    "productCategory": "产品类别",
+    "customerItemNumber": "客户货号",
+    "customerModel": "客户型号",
+    "productionType": "生产类型",
+    "planMarking": "计划标记",
+    "standardWorkingHours": "标准工时",
+    "remarksOnWorkingHours": "产量/小时*人数",
+    "mark": "标记",
+    "qualityInspectionMark": "质检标记",
+    "smtProcess": "SMT工序",
+    "plugInProcess": "插件工序",
+    "repairWeldingProcess": "补焊工序",
+    "assemblyProcess": "组装工序",
+    "packagingQuantity": "包装数量",
+    "theNumberOfOuterBoxes": "外箱数量",
+    "outerBoxSize": "外箱尺寸",
+    "cubicMeter": "立方米",
+    "centimeter": "厘米",
+    "long": "长",
+    "wide": "宽",
+    "high": "高",
+    "relaxationRate": "放宽率",
+    "standardHourlyProductionCapacity": "标准小时产能",
+    "productDescription": "产品描述",
+    "printInformation": "打印信息",
+    "engravingMachineProgramNumber": "刻印机程序号",
+    "programNumberOnSideBOfTheEngravingMachine": "刻印机B面程序号",
+    "theNumberOfScanningPoints": "扫码点数量",
+    "theNumberOfPanels": "拼版数量"
+  },
+  "printTemplate": {
+    "printTemplateCode": "打印模板编号",
+    "printStatus": "打印状态",
+    "printType": "打印类型"
+  },
+  "workStationMaintenance": {
+    "workStationNumber": "工作站编号",
+    "workstationName": "工作站名称",
+    "workstationType": "工作站类型",
+    "correspondingOperation": "对应工序",
+    "configuringDeviceResources": "配置设备资源"
+  }
+
+
+
+}

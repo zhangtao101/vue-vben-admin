@@ -203,8 +203,8 @@ const showEditDialog = ref(false);
 const editItem = ref<any>({});
 // 工作日选项
 const workDayOptions = ref<any>([
-  { label: $t('factoryCalendar.workDay'), value: 2 },
-  { label: $t('factoryCalendar.nonWorkDay'), value: 1 },
+  { label: $t('basic.factoryCalendar.workDay'), value: 2 },
+  { label: $t('basic.factoryCalendar.nonWorkDay'), value: 1 },
 ]);
 // 新增/编辑规则
 const editRules = ref<any>({
@@ -330,12 +330,12 @@ defineExpose({
     @close="detailsClose"
   >
     <!-- 日历名称 -->
-    <FormItem :label="$t('factoryCalendar.calendarName')" name="calendarName">
+    <FormItem :label="$t('basic.factoryCalendar.calendarName')" name="calendarName">
       <Input v-model:value="details.calendarName" readonly />
     </FormItem>
     <!-- 所属组织 -->
     <FormItem
-      :label="$t('factoryCalendar.affiliation')"
+      :label="$t('basic.factoryCalendar.affiliation')"
       name="organizationName"
     >
       <Input v-model:value="details.organizationName" readonly />
@@ -344,20 +344,20 @@ defineExpose({
       <Col :span="4">
         <div>
           <span class="text-lg font-bold">
-            {{ $t('factoryCalendar.legend') }}
+            {{ $t('basic.factoryCalendar.legend') }}
           </span>
           <span
             class="m-4 block h-8 border bg-cyan-500 px-4 text-center leading-[200%] text-white"
           >
-            {{ $t('factoryCalendar.nonWorkDay') }}
+            {{ $t('basic.factoryCalendar.nonWorkDay') }}
           </span>
           <span class="m-4 block h-8 border px-4 text-center leading-[200%]">
-            {{ $t('factoryCalendar.workDay') }}
+            {{ $t('basic.factoryCalendar.workDay') }}
           </span>
           <span
             class="mx-4 block h-8 border bg-yellow-500 px-4 text-center leading-[200%] text-white"
           >
-            {{ $t('factoryCalendar.exception') }}
+            {{ $t('basic.factoryCalendar.exception') }}
           </span>
         </div>
       </Col>
@@ -434,19 +434,19 @@ defineExpose({
       ref="form"
     >
       <!-- 规则编号 -->
-      <FormItem :label="$t('factoryCalendar.ruleCode')" name="ruleCode">
+      <FormItem :label="$t('basic.factoryCalendar.ruleCode')" name="ruleCode">
         <Input v-model:value="editItem.ruleCode" disabled />
       </FormItem>
       <!-- 特殊规则名称 -->
-      <FormItem :label="$t('factoryCalendar.ruleName')" name="ruleName">
+      <FormItem :label="$t('basic.factoryCalendar.ruleName')" name="ruleName">
         <Input v-model:value="editItem.ruleName" />
       </FormItem>
       <!-- 特殊规则日期 -->
-      <FormItem :label="$t('factoryCalendar.time')" name="time">
+      <FormItem :label="$t('basic.factoryCalendar.time')" name="time">
         <RangePicker v-model:value="editItem.time" />
       </FormItem>
       <!-- 工作周设定 -->
-      <FormItem :label="$t('factoryCalendar.workWeekSetting')" name="startDay">
+      <FormItem :label="$t('basic.factoryCalendar.workWeekSetting')" name="startDay">
         <RadioGroup v-model:value="editItem.isWork" :options="workDayOptions" />
       </FormItem>
     </Form>

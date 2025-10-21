@@ -328,14 +328,14 @@ onMounted(() => {
         <Form :model="queryParams" layout="inline">
           <!-- 产品编号 -->
           <FormItem
-            :label="$t('productInform.productNumber')"
+            :label="$t('basic.productInform.productNumber')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.productCode" />
           </FormItem>
           <!-- 产品名称 -->
           <FormItem
-            :label="$t('productInform.productName')"
+            :label="$t('basic.productInform.productName')"
             style="margin-bottom: 1em"
           >
             <Input v-model:value="queryParams.productName" />
@@ -450,34 +450,34 @@ onMounted(() => {
         ref="editMessageForm"
       >
         <!-- 产品编号 -->
-        <FormItem :label="$t('productInform.productNumber')" name="productCode">
+        <FormItem :label="$t('basic.productInform.productNumber')" name="productCode">
           <Input v-model:value="editData.productCode" :disabled="!isEdit" />
         </FormItem>
         <!-- 产品名称 -->
-        <FormItem :label="$t('productInform.productName')" name="productName">
+        <FormItem :label="$t('basic.productInform.productName')" name="productName">
           <Input v-model:value="editData.productName" :disabled="!isEdit" />
         </FormItem>
         <!-- 单/双面 -->
-        <FormItem :label="$t('productInform.surface')" name="isSingleSide">
+        <FormItem :label="$t('basic.productInform.surface')" name="isSingleSide">
           <RadioGroup v-model:value="editData.isSingleSide" :disabled="!isEdit">
             <Radio :value="1">单面</Radio>
             <Radio :value="2">双面</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 计量单位 -->
-        <FormItem :label="$t('productInform.unitOfMeasurement')" name="unit">
+        <FormItem :label="$t('basic.productInform.unitOfMeasurement')" name="unit">
           <Input v-model:value="editData.unit" :disabled="!isEdit" />
         </FormItem>
         <!-- 产品类别 -->
         <FormItem
-          :label="$t('productInform.productCategory')"
+          :label="$t('basic.productInform.productCategory')"
           name="productTypeName"
         >
           <Input v-model:value="editData.productTypeName" :disabled="!isEdit" />
         </FormItem>
         <!-- 客户货号 -->
         <FormItem
-          :label="$t('productInform.customerItemNumber')"
+          :label="$t('basic.productInform.customerItemNumber')"
           name="costomerGoodsCode"
         >
           <Input
@@ -487,7 +487,7 @@ onMounted(() => {
         </FormItem>
         <!-- 客户型号 -->
         <FormItem
-          :label="$t('productInform.customerModel')"
+          :label="$t('basic.productInform.customerModel')"
           name="costomerTypeCode"
         >
           <Input
@@ -497,7 +497,7 @@ onMounted(() => {
         </FormItem>
         <!-- 生产类型 -->
         <FormItem
-          :label="$t('productInform.productionType')"
+          :label="$t('basic.productInform.productionType')"
           name="produceType"
         >
           <Input
@@ -508,14 +508,14 @@ onMounted(() => {
             <template #addonAfter>
               <!-- 计划标记 -->
               <Checkbox v-model:checked="editData.planSign" :disabled="!isEdit">
-                {{ $t('productInform.planMarking') }}
+                {{ $t('basic.productInform.planMarking') }}
               </Checkbox>
             </template>
           </Input>
         </FormItem>
         <!-- 标准工时 -->
         <FormItem
-          :label="$t('productInform.standardWorkingHours')"
+          :label="$t('basic.productInform.standardWorkingHours')"
           name="customerModel"
         >
           <Input
@@ -525,81 +525,81 @@ onMounted(() => {
           >
             <template #addonAfter>
               <!-- 产量/小时*人数 -->
-              {{ $t('productInform.remarksOnWorkingHours') }}
+              {{ $t('basic.productInform.remarksOnWorkingHours') }}
             </template>
           </Input>
         </FormItem>
         <!-- 标记 -->
-        <FormItem :label="$t('productInform.mark')">
+        <FormItem :label="$t('basic.productInform.mark')">
           <!-- 质检标记 -->
           <Checkbox
             v-model:checked="editData.qualitySign"
             class="mb-2"
             :disabled="!isEdit"
           >
-            {{ $t('productInform.qualityInspectionMark') }}
+            {{ $t('basic.productInform.qualityInspectionMark') }}
           </Checkbox>
           <!-- SMT工序 -->
           <Checkbox v-model:checked="editData.smtProcess" :disabled="!isEdit">
-            {{ $t('productInform.smtProcess') }}
+            {{ $t('basic.productInform.smtProcess') }}
           </Checkbox>
           <!-- 插件工序 -->
           <Checkbox
             v-model:checked="editData.pluginProcess"
             :disabled="!isEdit"
           >
-            {{ $t('productInform.plugInProcess') }}
+            {{ $t('basic.productInform.plugInProcess') }}
           </Checkbox>
           <!-- 补焊工序 -->
           <Checkbox
             v-model:checked="editData.repairWeldingProcess"
             :disabled="!isEdit"
           >
-            {{ $t('productInform.repairWeldingProcess') }}
+            {{ $t('basic.productInform.repairWeldingProcess') }}
           </Checkbox>
           <!-- 组装工序 -->
           <Checkbox
             v-model:checked="editData.assemblyProcess"
             :disabled="!isEdit"
           >
-            {{ $t('productInform.assemblyProcess') }}
+            {{ $t('basic.productInform.assemblyProcess') }}
           </Checkbox>
         </FormItem>
         <!-- 包装数量 -->
         <FormItem
-          :label="$t('productInform.packagingQuantity')"
+          :label="$t('basic.productInform.packagingQuantity')"
           name="customerModel"
         >
           <Input v-model:value="editData.customerModel" :disabled="!isEdit" />
         </FormItem>
         <!-- 外箱尺寸 -->
-        <FormItem :label="$t('productInform.outerBoxSize')">
+        <FormItem :label="$t('basic.productInform.outerBoxSize')">
           <InputNumber v-model:value="editData.szie" :disabled="!isEdit" />
           <span class="ml-1 mr-1 align-middle">
-            {{ $t('productInform.cubicMeter') }} =
+            {{ $t('basic.productInform.cubicMeter') }} =
           </span>
           <!-- 长 -->
           <span class="ml-1 mr-1 align-middle">{{
-            $t('productInform.long')
+            $t('basic.productInform.long')
           }}</span>
           <InputNumber v-model:value="editData.length" :disabled="!isEdit" />
           <!-- 宽 -->
           <span class="ml-1 mr-1 align-middle">
-            * {{ $t('productInform.wide') }}
+            * {{ $t('basic.productInform.wide') }}
           </span>
           <InputNumber v-model:value="editData.width" :disabled="!isEdit" />
           <!-- 高 -->
           <span class="ml-1 mr-1 align-middle">
-            * {{ $t('productInform.high') }}
+            * {{ $t('basic.productInform.high') }}
           </span>
           <InputNumber v-model:value="editData.height" :disabled="!isEdit" />
           <span class="ml-1 mr-1 align-middle">{{
-            $t('productInform.centimeter')
+            $t('basic.productInform.centimeter')
           }}</span>
         </FormItem>
         <!-- 放宽率 -->
         <FormItem
-          :label="$t('productInform.relaxationRate')"
+          :label="$t('basic.productInform.relaxationRate')"
           name="relaxationRate"
         >
           <InputNumber
@@ -611,7 +611,7 @@ onMounted(() => {
         </FormItem>
         <!-- 标准小时产能 -->
         <FormItem
-          :label="$t('productInform.standardHourlyProductionCapacity')"
+          :label="$t('basic.productInform.standardHourlyProductionCapacity')"
           name="standardHourlyCapacity"
         >
           <Input
@@ -621,7 +621,7 @@ onMounted(() => {
         </FormItem>
         <!-- 产品描述 -->
         <FormItem
-          :label="$t('productInform.productDescription')"
+          :label="$t('basic.productInform.productDescription')"
           name="produceDescription"
         >
           <Textarea
@@ -631,25 +631,25 @@ onMounted(() => {
         </FormItem>
         <!-- 打印信息 -->
         <span class="mb-4 ml-16 block text-2xl">{{
-          $t('productInform.printInformation')
+          $t('basic.productInform.printInformation')
         }}</span>
         <!-- 刻印机程序号 -->
         <FormItem
-          :label="$t('productInform.engravingMachineProgramNumber')"
+          :label="$t('basic.productInform.engravingMachineProgramNumber')"
           name="printProgramNo"
         >
           <Input v-model:value="editData.printProgramNo" :disabled="!isEdit" />
         </FormItem>
         <!-- 刻印机B面程序号 -->
         <FormItem
-          :label="$t('productInform.programNumberOnSideBOfTheEngravingMachine')"
+          :label="$t('basic.productInform.programNumberOnSideBOfTheEngravingMachine')"
           name="printProgramNob"
         >
           <Input v-model:value="editData.printProgramNob" :disabled="!isEdit" />
         </FormItem>
         <!-- 扫码点数量 -->
         <FormItem
-          :label="$t('productInform.theNumberOfScanningPoints')"
+          :label="$t('basic.productInform.theNumberOfScanningPoints')"
           name="barcodePrintNumber"
         >
           <Input
@@ -659,7 +659,7 @@ onMounted(() => {
         </FormItem>
         <!-- 拼版数量 -->
         <FormItem
-          :label="$t('productInform.theNumberOfPanels')"
+          :label="$t('basic.productInform.theNumberOfPanels')"
           name="makeupNumber"
         >
           <Input v-model:value="editData.makeupNumber" :disabled="!isEdit" />

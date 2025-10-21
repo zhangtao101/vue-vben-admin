@@ -406,14 +406,14 @@ function eyeClose() {
       <Form :model="queryParams" layout="inline">
         <!-- 材料编号 -->
         <FormItem
-          :label="$t('bomManagement.materialCode')"
+          :label="$t('basic.bomManagement.materialCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.materialCode" />
         </FormItem>
         <!-- 材料名称 -->
         <FormItem
-          :label="$t('bomManagement.materialName')"
+          :label="$t('basic.bomManagement.materialName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.materialName" />
@@ -574,23 +574,23 @@ function eyeClose() {
         name="editMessageForm"
       >
         <!-- 材料编号 -->
-        <FormItem :label="$t('bomManagement.materialCode')" name="materialCode">
+        <FormItem :label="$t('basic.bomManagement.materialCode')" name="materialCode">
           <Input v-model:value="editMessage.materialCode" disabled />
         </FormItem>
         <!-- 材料名称 -->
-        <FormItem :label="$t('bomManagement.materialName')" name="materialName">
+        <FormItem :label="$t('basic.bomManagement.materialName')" name="materialName">
           <Input v-model:value="editMessage.materialName" disabled />
         </FormItem>
         <!-- 安全量上限 -->
         <FormItem
-          :label="$t('bomManagement.materialsInform.upSafe')"
+          :label="$t('basic.bomManagement.materialsInform.upSafe')"
           name="upSafe"
         >
           <InputNumber v-model:value="editMessage.upSafe" />
         </FormItem>
         <!-- 安全量下限 -->
         <FormItem
-          :label="$t('bomManagement.materialsInform.downSafe')"
+          :label="$t('basic.bomManagement.materialsInform.downSafe')"
           name="downSafe"
         >
           <InputNumber v-model:value="editMessage.downSafe" />
@@ -631,23 +631,23 @@ function eyeClose() {
         name="editMessageForm"
       >
         <!-- 材料编号 -->
-        <FormItem :label="$t('bomManagement.materialCode')" name="materialCode">
+        <FormItem :label="$t('basic.bomManagement.materialCode')" name="materialCode">
           <Input v-model:value="editMessage.materialCode" disabled />
         </FormItem>
         <!-- 材料名称 -->
-        <FormItem :label="$t('bomManagement.materialName')" name="materialName">
+        <FormItem :label="$t('basic.bomManagement.materialName')" name="materialName">
           <Input v-model:value="editMessage.materialName" disabled />
         </FormItem>
         <!-- 文件描述 -->
         <FormItem
-          :label="$t('bomManagement.materialsInform.pasDescribe')"
+          :label="$t('basic.bomManagement.materialsInform.pasDescribe')"
           name="pas_describe"
         >
           <Input v-model:value="editMessage.pas_describe" />
         </FormItem>
         <!-- 文件 -->
         <FormItem
-          :label="$t('bomManagement.materialsInform.files')"
+          :label="$t('basic.bomManagement.materialsInform.files')"
           name="files"
         >
           <UploadDragger
@@ -697,7 +697,7 @@ function eyeClose() {
       <Tabs v-model:active-key="activeKey">
         <TabPane
           key="1"
-          :tab="$t('bomManagement.materialsInform.productReference')"
+          :tab="$t('basic.bomManagement.materialsInform.productReference')"
         >
           <Table
             :columns="eyeColumns"
@@ -716,7 +716,7 @@ function eyeClose() {
         </TabPane>
         <TabPane
           key="3"
-          :tab="$t('bomManagement.materialsInform.productDescription')"
+          :tab="$t('basic.bomManagement.materialsInform.productDescription')"
         >
           {{ remark }}
         </TabPane>

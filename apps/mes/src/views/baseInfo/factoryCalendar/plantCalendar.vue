@@ -141,8 +141,8 @@ const dayArr = [
 ];
 // 工作日选项
 const workDayOptions = ref<any>([
-  { label: $t('factoryCalendar.workDay'), value: 2 },
-  { label: $t('factoryCalendar.nonWorkDay'), value: 1 },
+  { label: $t('basic.factoryCalendar.workDay'), value: 2 },
+  { label: $t('basic.factoryCalendar.nonWorkDay'), value: 1 },
 ]);
 // 新增/编辑规则
 const editRules = ref<any>({
@@ -385,14 +385,14 @@ onMounted(() => {
       >
         <!-- 日历名称 -->
         <FormItem
-          :label="$t('factoryCalendar.calendarName')"
+          :label="$t('basic.factoryCalendar.calendarName')"
           name="calendarName"
         >
           <Input v-model:value="editItem.calendarName" />
         </FormItem>
         <!-- 所属组织 -->
         <FormItem
-          :label="$t('factoryCalendar.affiliation')"
+          :label="$t('basic.factoryCalendar.affiliation')"
           name="organizationName"
         >
           <Select
@@ -405,12 +405,12 @@ onMounted(() => {
         </FormItem>
         <!-- 工作周设定 -->
         <FormItem
-          :label="$t('factoryCalendar.workWeekSetting')"
+          :label="$t('basic.factoryCalendar.workWeekSetting')"
           name="startDay"
         >
           <!-- 周日 - 周六 -->
           <FormItem
-            :label="$t(`factoryCalendar.${item}`)"
+            :label="$t(`basic.factoryCalendar.${item}`)"
             v-for="item of dayArr"
             :key="item"
           >

@@ -894,14 +894,14 @@ onMounted(async () => {
       <Form :model="queryParams" layout="inline">
         <!-- 工作站编号 -->
         <FormItem
-          :label="$t('workStationMaintenance.workStationNumber')"
+          :label="$t('basic.workStationMaintenance.workStationNumber')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.workstationCode" />
         </FormItem>
         <!-- 工作站名称 -->
         <FormItem
-          :label="$t('workStationMaintenance.workstationName')"
+          :label="$t('basic.workStationMaintenance.workstationName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.workstationName" />
@@ -1045,7 +1045,7 @@ onMounted(async () => {
       >
         <!-- 工作站编号 -->
         <FormItem
-          :label="$t('workStationMaintenance.workStationNumber')"
+          :label="$t('basic.workStationMaintenance.workStationNumber')"
           name="workstationCode"
           style="margin-bottom: 1em"
         >
@@ -1056,7 +1056,7 @@ onMounted(async () => {
         </FormItem>
         <!-- 工作站名称 -->
         <FormItem
-          :label="$t('workStationMaintenance.workstationName')"
+          :label="$t('basic.workStationMaintenance.workstationName')"
           name="workstationName"
           style="margin-bottom: 1em"
         >
@@ -1074,7 +1074,7 @@ onMounted(async () => {
         </FormItem>
         <!-- 工作站类型 -->
         <FormItem
-          :label="$t('workStationMaintenance.workstationType')"
+          :label="$t('basic.workStationMaintenance.workstationType')"
           class="mb-4 w-80"
           name="workstationType"
         >
@@ -1087,7 +1087,7 @@ onMounted(async () => {
         </FormItem>
         <!-- 对应工序 -->
         <FormItem
-          :label="$t('workStationMaintenance.correspondingOperation')"
+          :label="$t('basic.workStationMaintenance.correspondingOperation')"
           class="mb-4 w-80"
         >
           <Select
@@ -1205,7 +1205,7 @@ onMounted(async () => {
             <!-- 配置设备资源按钮 -->
             <Tooltip>
               <template #title>
-                {{ $t('workStationMaintenance.configuringDeviceResources') }}
+                {{ $t('basic.workStationMaintenance.configuringDeviceResources') }}
               </template>
               <Button
                 :icon="h(MdiLightSettings, { class: 'inline-block size-6' })"

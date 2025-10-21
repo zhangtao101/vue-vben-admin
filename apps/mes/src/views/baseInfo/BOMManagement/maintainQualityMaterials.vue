@@ -165,7 +165,7 @@ function onClose() {
       <Form :model="queryParams" layout="inline">
         <!-- 料号 -->
         <FormItem
-          :label="$t('bomManagement.materialCode')"
+          :label="$t('basic.bomManagement.materialCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.materialCode" />
@@ -250,11 +250,11 @@ function onClose() {
         name="editMessageForm"
       >
         <!-- 物料编号 -->
-        <FormItem :label="$t('bomManagement.materialCode')" name="ruleName">
+        <FormItem :label="$t('basic.bomManagement.materialCode')" name="ruleName">
           <Input v-model:value="editMessage.ruleName" />
         </FormItem>
         <!-- 物料名称 -->
-        <FormItem :label="$t('bomManagement.materialName')" name="typeCodeName">
+        <FormItem :label="$t('basic.bomManagement.materialName')" name="typeCodeName">
           <Input v-model:value="editMessage.materialName" />
         </FormItem>
       </Form>

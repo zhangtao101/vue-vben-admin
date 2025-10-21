@@ -243,14 +243,14 @@ onMounted(async () => {});
       <Form :model="queryParams" layout="inline">
         <!-- 工作站编号 -->
         <FormItem
-          :label="$t('workStationMaintenance.workStationNumber')"
+          :label="$t('basic.workStationMaintenance.workStationNumber')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.workstationCode" />
         </FormItem>
         <!-- 工作站名称 -->
         <FormItem
-          :label="$t('workStationMaintenance.workstationName')"
+          :label="$t('basic.workStationMaintenance.workstationName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.workstationName" />
@@ -360,7 +360,7 @@ onMounted(async () => {});
       >
         <!-- 打印模板编号 -->
         <FormItem
-          :label="$t('printTemplate.printTemplateCode')"
+          :label="$t('basic.printTemplate.printTemplateCode')"
           name="printCode"
         >
           <Input
@@ -369,14 +369,17 @@ onMounted(async () => {});
           />
         </FormItem>
         <!-- 打印模板编号 -->
-        <FormItem :label="$t('printTemplate.printStatus')" name="printState">
+        <FormItem
+          :label="$t('basic.printTemplate.printStatus')"
+          name="printState"
+        >
           <RadioGroup
             v-model:value="editMessage.printState"
             :options="statusOptions"
           />
         </FormItem>
         <!-- 打印模板编号 -->
-        <FormItem :label="$t('printTemplate.printType')" name="printType">
+        <FormItem :label="$t('basic.printTemplate.printType')" name="printType">
           <RadioGroup
             v-model:value="editMessage.printType"
             :options="printTemplateOptions"
