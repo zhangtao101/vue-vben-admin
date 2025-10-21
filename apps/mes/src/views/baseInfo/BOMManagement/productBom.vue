@@ -9,7 +9,8 @@ import { MdiSearch } from '@vben/icons';
 
 import {
   Button,
-  Card, Checkbox,
+  Card,
+  Checkbox,
   Col,
   DirectoryTree,
   Form,
@@ -258,7 +259,7 @@ onMounted(() => {
         <!-- region 表格主体 -->
         <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
           <Card class="h-[60vh] overflow-y-auto">
-            <Grid >
+            <Grid>
               <template #selectedState="{ row, column }">
                 <Checkbox v-model:checked="row[column.field]" disabled />
               </template>
