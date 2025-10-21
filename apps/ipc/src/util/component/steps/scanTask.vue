@@ -719,7 +719,9 @@ onBeforeUnmount(() => {
             </span>
             <!-- 显示设备联锁，无结果时显示默认提示 -->
             <span :class="getValueClass(details.errorType)">
-              {{ details?.equipControlFlagName || $t('productionOperation.none') }}
+              {{
+                details?.equipControlFlagName || $t('productionOperation.none')
+              }}
             </span>
           </div>
           <!-- endregion -->
