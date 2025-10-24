@@ -3,10 +3,10 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-// eslint-disable-next-line n/no-extraneous-import
-import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Col,

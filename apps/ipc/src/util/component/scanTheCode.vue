@@ -116,10 +116,7 @@ onMounted(() => {
     <!-- 点击此按钮触发 showQrcode 函数，显示扫码界面 -->
     <Button type="link" @click="showQrcode">
       <!-- 显示条码扫描图标 -->
-      <Icon
-        icon="mdi:barcode-scan"
-        class="inline-block align-middle text-xl"
-      />
+      <Icon icon="mdi:barcode-scan" class="inline-block align-middle text-xl" />
     </Button>
 
     <!-- 扫码抽屉组件，根据 displayScanCode 的值控制显示状态 -->

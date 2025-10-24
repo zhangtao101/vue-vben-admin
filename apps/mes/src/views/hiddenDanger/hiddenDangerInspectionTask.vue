@@ -579,10 +579,7 @@ onMounted(() => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" @click="showDetails(row.id)">
-              <Icon
-                icon="mdi:eye"
-                class="inline-block align-middle text-2xl"
-              />
+              <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
             </Button>
           </Tooltip>
           <template v-if="[3].includes(queryType)">

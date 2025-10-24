@@ -673,10 +673,7 @@ onBeforeUnmount(() => {
             @click="judgement(row, 1)"
             :loading="judgementLoading"
           >
-            <Icon
-              icon="mdi:check"
-              class="inline-block align-middle text-2xl"
-            />
+            <Icon icon="mdi:check" class="inline-block align-middle text-2xl" />
           </Button>
         </Tooltip>
         <!-- 不合格 -->
@@ -690,10 +687,7 @@ onBeforeUnmount(() => {
             :loading="judgementLoading"
             :disabled="row.errorFlag !== 1 && row.defectResult !== 0"
           >
-            <Icon
-              icon="mdi:times"
-              class="inline-block align-middle text-2xl"
-            />
+            <Icon icon="mdi:times" class="inline-block align-middle text-2xl" />
           </Button>
         </Tooltip>
       </template>

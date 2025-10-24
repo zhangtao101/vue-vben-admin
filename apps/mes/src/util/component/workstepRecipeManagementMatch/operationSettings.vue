@@ -6,7 +6,6 @@ import { useRoute } from 'vue-router';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-
 import {
   Button,
   Col,
@@ -584,10 +583,7 @@ defineExpose({
         <Tooltip>
           <template #title>{{ $t('common.view') }}</template>
           <Button type="link" @click="showSettingDrawer(row, false)">
-            <Icon
-              icon="mdi:eye"
-              class="inline-block align-middle text-2xl"
-            />
+            <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
           </Button>
         </Tooltip>
         <!-- 编辑按钮 -->

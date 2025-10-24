@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
+
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
 import {
@@ -534,10 +535,7 @@ onMounted(() => {
         class="ml-4 mr-4 inline-block"
       >
         <template #prefix>
-          <Icon
-            icon="mdi:dots-grid"
-            class="inline-block align-top text-4xl"
-          />
+          <Icon icon="mdi:dots-grid" class="inline-block align-top text-4xl" />
         </template>
       </Statistic>
       <!-- 启用设备 -->
@@ -547,10 +545,7 @@ onMounted(() => {
         class="ml-4 mr-4 inline-block"
       >
         <template #prefix>
-          <Icon
-            icon="mdi:play"
-            class="inline-block align-top text-4xl"
-          />
+          <Icon icon="mdi:play" class="inline-block align-top text-4xl" />
         </template>
       </Statistic>
       <!-- 未启用设备 -->
@@ -560,10 +555,7 @@ onMounted(() => {
         class="ml-4 mr-4 inline-block"
       >
         <template #prefix>
-          <Icon
-            icon="mdi:pause"
-            class="inline-block align-top text-4xl"
-          />
+          <Icon icon="mdi:pause" class="inline-block align-top text-4xl" />
         </template>
       </Statistic>
     </Card>

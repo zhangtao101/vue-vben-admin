@@ -3,11 +3,11 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-// eslint-disable-next-line n/no-extraneous-import
-import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Calendar,

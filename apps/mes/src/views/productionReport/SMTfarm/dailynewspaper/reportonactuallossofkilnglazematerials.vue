@@ -9,7 +9,6 @@ import { MdiSearch } from '@vben/icons';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-
 import {
   Button,
   Card,
@@ -366,10 +365,7 @@ onMounted(() => {
               {{ $t('common.view') }}
             </template>
             <Button type="link" @click="showDetails(row)">
-              <Icon
-                icon="mdi:eye"
-                class="inline-block align-middle text-2xl"
-              />
+              <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
             </Button>
           </Tooltip>
         </template>

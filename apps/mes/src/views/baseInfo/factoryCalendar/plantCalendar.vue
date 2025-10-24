@@ -5,10 +5,10 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-// eslint-disable-next-line n/no-extraneous-import
-import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,

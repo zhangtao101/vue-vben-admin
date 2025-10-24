@@ -21,7 +21,6 @@ export function obtainTheListOfProcessEquipment(params: any) {
 }
 /**
  * 获取用户列表
- * @param params 参数
  */
 export function getUserList() {
   return requestClient.get(
@@ -462,7 +461,6 @@ export function snCodeHcBindingCallBack(params: any) {
     params,
   );
 }
-
 
 /**
  * 复测

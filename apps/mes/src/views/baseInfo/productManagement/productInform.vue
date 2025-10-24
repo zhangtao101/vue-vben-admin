@@ -6,11 +6,10 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
+import { useAccessStore } from '@vben/stores';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-import { useAccessStore } from '@vben/stores';
-
 import {
   Button,
   Card,
@@ -412,10 +411,7 @@ onMounted(() => {
                     {{ $t('common.edit') }}
                   </template>
                   <Button @click="showEdit(row, true)" class="mr-2" type="link">
-                    <Icon
-                      icon="mdi:edit-outline"
-                      class="inline-block size-6"
-                    />
+                    <Icon icon="mdi:edit-outline" class="inline-block size-6" />
                   </Button>
                 </Tooltip>
                 <!-- 查看 -->

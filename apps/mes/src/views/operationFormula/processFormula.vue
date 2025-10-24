@@ -5,11 +5,10 @@ import { h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
+import { $t } from '@vben/locales';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-import { $t } from '@vben/locales';
-
 import { Button, Card, Form, FormItem, Input, Tooltip } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';

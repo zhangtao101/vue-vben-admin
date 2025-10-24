@@ -3,12 +3,12 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
 
-// eslint-disable-next-line n/no-extraneous-import
-import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
 import { PlusOutlined } from '@ant-design/icons-vue';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Drawer,

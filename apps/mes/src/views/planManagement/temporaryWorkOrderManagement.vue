@@ -9,7 +9,6 @@ import { MdiSearch } from '@vben/icons';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-
 import {
   Button,
   Card,
@@ -409,10 +408,7 @@ onMounted(() => {
               @click="open(row, true)"
               :disabled="row.lsOpen !== 1"
             >
-              <Icon
-                icon="mdi:lock-open-outline"
-                class="inline-block size-6"
-              />
+              <Icon icon="mdi:lock-open-outline" class="inline-block size-6" />
             </Button>
           </Tooltip>
           <!-- 关闭 -->
@@ -426,10 +422,7 @@ onMounted(() => {
               @click="open(row, false)"
               :disabled="row.lsOpen !== 2"
             >
-              <Icon
-                icon="mdi:lock-outline"
-                class="inline-block size-6"
-              />
+              <Icon icon="mdi:lock-outline" class="inline-block size-6" />
             </Button>
           </Tooltip>
         </template>

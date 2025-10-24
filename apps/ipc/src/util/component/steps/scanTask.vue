@@ -254,7 +254,7 @@ const gridOptions: VxeGridProps<any> = {
       title: '操作',
       fixed: 'right',
       minWidth: 200,
-      visible: multiStationList.value.includes(props.showTypeNumber),
+      visible: [27, 32, 33, 34, 35, 37].includes(props.showTypeNumber),
       slots: {
         default: 'action',
       },

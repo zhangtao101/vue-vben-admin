@@ -498,10 +498,7 @@ onMounted(() => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" @click="showDetails(row)">
-              <Icon
-                icon="mdi:eye"
-                class="inline-block align-middle text-2xl"
-              />
+              <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
             </Button>
           </Tooltip>
           <!-- 负责人审核 -->

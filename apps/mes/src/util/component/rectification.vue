@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
-// eslint-disable-next-line n/no-extraneous-import
-import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Cascader,

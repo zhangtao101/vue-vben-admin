@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import {h, onMounted, ref} from 'vue';
+import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { MdiSearch } from '@vben/icons';
 
-import {Button, Card, Form, FormItem, RangePicker} from 'ant-design-vue';
+import { Button, Card, Form, FormItem, RangePicker } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -15,7 +16,6 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
-import {MdiSearch} from "@vben/icons";
 
 // 路由信息
 const route = useRoute();

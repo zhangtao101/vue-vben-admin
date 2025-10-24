@@ -7,9 +7,9 @@ import { Page } from '@vben/common-ui';
 import { MdiChevronDown, MdiChevronUp } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+import { DownOutlined } from '@ant-design/icons-vue';
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-import { DownOutlined } from '@ant-design/icons-vue';
 import {
   Button,
   Card,

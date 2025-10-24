@@ -2,10 +2,10 @@
 import { ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-// eslint-disable-next-line n/no-extraneous-import
-import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -190,10 +190,7 @@ function queryMeterData(row: any) {
         </template>
         <FormItem :wrapper-col="{ span: 18, offset: 6 }">
           <Button class="w-48" @click="addLine">
-            <Icon
-              icon="mdi:add"
-              class="inline-block align-top text-2xl"
-            />
+            <Icon icon="mdi:add" class="inline-block align-top text-2xl" />
             {{ $t('common.add') }}
           </Button>
         </FormItem>

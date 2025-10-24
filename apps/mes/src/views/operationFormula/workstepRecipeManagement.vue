@@ -6,9 +6,9 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
+
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-
 import {
   Button,
   Card,

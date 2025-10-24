@@ -382,30 +382,21 @@ onMounted(() => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" size="small" @click="showFormulaEditing">
-              <Icon
-                icon="mdi:source-branch-sync"
-                class="inline-block size-6"
-              />
+              <Icon icon="mdi:source-branch-sync" class="inline-block size-6" />
             </Button>
           </Tooltip>
           <!-- 编辑按钮 -->
           <Tooltip v-if="author.includes('编辑')">
             <template #title>{{ $t('common.edit') }}</template>
             <Button type="link" size="small" @click="editRow(row)">
-              <Icon
-                icon="mdi:edit-outline"
-                class="inline-block size-6"
-              />
+              <Icon icon="mdi:edit-outline" class="inline-block size-6" />
             </Button>
           </Tooltip>
           <!-- 删除按钮 -->
           <Tooltip v-if="author.includes('删除')">
             <template #title>{{ $t('common.delete') }}</template>
             <Button type="link" danger size="small" @click="delRow(row)">
-              <Icon
-                icon="mdi-light:delete"
-                class="inline-block size-6"
-              />
+              <Icon icon="mdi-light:delete" class="inline-block size-6" />
             </Button>
           </Tooltip>
         </template>

@@ -3,10 +3,10 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-// eslint-disable-next-line n/no-extraneous-import
-import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Descriptions,
@@ -397,10 +397,7 @@ function detailsClose() {
             {{ $t('common.view') }}
           </template>
           <Button type="link" @click="displayParameterBinding(row)">
-            <Icon
-              icon="mdi:eye"
-              class="inline-block align-middle text-2xl"
-            />
+            <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
           </Button>
         </Tooltip>
       </template>
