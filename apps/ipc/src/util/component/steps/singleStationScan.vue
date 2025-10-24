@@ -3,10 +3,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { onBeforeUnmount, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Alert,
   Button,
@@ -695,7 +696,7 @@ onBeforeUnmount(() => {
         <Tooltip v-if="[32, 33].includes(showTypeNumber)">
           <template #title>{{ $t('productionOperation.unbind') }}</template>
           <Button type="link" @click="unlink(row)">
-            <IconifyIcon
+            <Icon
               icon="carbon:unlink"
               class="inline-block align-middle text-2xl"
             />
@@ -709,7 +710,7 @@ onBeforeUnmount(() => {
             @click="judgement(row, 1)"
             :loading="judgementLoading"
           >
-            <IconifyIcon
+            <Icon
               icon="mdi:check"
               class="inline-block align-middle text-2xl"
             />
@@ -726,7 +727,7 @@ onBeforeUnmount(() => {
             :loading="judgementLoading"
             :disabled="row.errorFlag !== 1 && row.defectResult !== 0"
           >
-            <IconifyIcon
+            <Icon
               icon="mdi:times"
               class="inline-block align-middle text-2xl"
             />

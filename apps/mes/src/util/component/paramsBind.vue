@@ -3,7 +3,8 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
 import {
@@ -384,7 +385,7 @@ function detailsClose() {
             {{ $t('common.edit') }}
           </template>
           <Button type="link" @click="edit(row)">
-            <IconifyIcon
+            <Icon
               icon="mdi:square-edit-outline"
               class="inline-block align-middle text-2xl"
             />
@@ -396,7 +397,7 @@ function detailsClose() {
             {{ $t('common.view') }}
           </template>
           <Button type="link" @click="displayParameterBinding(row)">
-            <IconifyIcon
+            <Icon
               icon="mdi:eye"
               class="inline-block align-middle text-2xl"
             />

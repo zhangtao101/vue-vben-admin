@@ -3,9 +3,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, ref } from 'vue';
 
-import { IconifyIcon, MdiLightDelete } from '@vben/icons';
+import { MdiLightDelete } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -494,7 +496,7 @@ defineExpose({
           <Button
             type="link"
             :icon="
-              h(IconifyIcon, {
+              h(Icon, {
                 icon: 'mdi:check-underline',
                 class: 'inline-block text-2xl',
               })
@@ -508,7 +510,7 @@ defineExpose({
           <Button
             type="link"
             :icon="
-              h(IconifyIcon, {
+              h(Icon, {
                 icon: 'mdi:battery-sync-outline',
                 class: 'inline-block text-2xl',
               })
@@ -521,7 +523,7 @@ defineExpose({
           <Button
             type="link"
             :icon="
-              h(IconifyIcon, {
+              h(Icon, {
                 icon: 'mdi:pause',
                 class: 'inline-block text-2xl',
               })
@@ -534,7 +536,7 @@ defineExpose({
           <Button
             type="link"
             :icon="
-              h(IconifyIcon, {
+              h(Icon, {
                 icon: 'mdi:backup-restore',
                 class: 'inline-block text-2xl',
               })
@@ -548,7 +550,7 @@ defineExpose({
           <Button
             type="link"
             :icon="
-              h(IconifyIcon, {
+              h(Icon, {
                 icon: 'mdi:login-variant',
                 class: 'inline-block text-2xl',
               })
@@ -570,7 +572,7 @@ defineExpose({
           <Button
             type="link"
             :icon="
-              h(IconifyIcon, {
+              h(Icon, {
                 icon: 'mdi:logout',
                 class: 'inline-block text-2xl',
               })
@@ -586,7 +588,7 @@ defineExpose({
           <Button
             type="link"
             :icon="
-              h(IconifyIcon, {
+              h(Icon, {
                 icon: 'mdi:arrow-up-thin',
                 class: 'inline-block text-2xl',
               })
@@ -608,7 +610,7 @@ defineExpose({
           <Button
             type="link"
             :icon="
-              h(IconifyIcon, {
+              h(Icon, {
                 icon: 'mdi:arrow-down-thin',
                 class: 'inline-block text-2xl',
               })

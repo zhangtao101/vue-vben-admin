@@ -3,7 +3,8 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
 import {
@@ -477,7 +478,7 @@ function getPlaceholder() {
       <Tooltip>
         <template #title>{{ $t('andon.anDengSEvaluation') }}</template>
         <Button type="link" @click="showViewDrawerFun(row)">
-          <IconifyIcon
+          <Icon
             icon="mdi:account-edit-outline"
             class="inline-block align-middle text-2xl"
           />
@@ -487,7 +488,7 @@ function getPlaceholder() {
       <Tooltip>
         <template #title>{{ $t('andon.eye') }}</template>
         <Button type="link" @click="queryRemarksFun(row.id)">
-          <IconifyIcon
+          <Icon
             icon="mdi-light:eye"
             class="inline-block align-middle text-2xl"
           />

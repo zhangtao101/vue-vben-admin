@@ -5,7 +5,9 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { useAccessStore } from '@vben/stores';
 
 import {
@@ -580,7 +582,7 @@ onMounted(() => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" @click="showDetails(row.id)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:eye"
                 class="inline-block align-middle text-2xl"
               />
@@ -591,7 +593,7 @@ onMounted(() => {
             <Tooltip v-if="author.includes('完成任务')">
               <template #title>{{ $t('common.taskCompleted') }}</template>
               <Button type="link" @click="showDetails(row.id, false)">
-                <IconifyIcon
+                <Icon
                   icon="mdi:calendar-task-outline"
                   class="inline-block align-middle text-2xl"
                 />
@@ -604,7 +606,7 @@ onMounted(() => {
             <Tooltip v-if="!row.checkUser && author.includes('指派')">
               <template #title>{{ $t('common.assign') }}</template>
               <Button type="link" @click="openAssigned(row)">
-                <IconifyIcon
+                <Icon
                   icon="mdi:hand-coin-outline"
                   class="inline-block align-middle text-2xl"
                 />
@@ -620,7 +622,7 @@ onMounted(() => {
                 @confirm="claimTheTask(row)"
               >
                 <Button type="link">
-                  <IconifyIcon
+                  <Icon
                     icon="mdi:book-multiple-outline"
                     class="inline-block align-middle text-2xl"
                   />
@@ -637,7 +639,7 @@ onMounted(() => {
                 @confirm="delItem(row)"
               >
                 <Button danger type="link">
-                  <IconifyIcon
+                  <Icon
                     icon="mdi-light:delete"
                     class="inline-block align-middle text-2xl"
                   />
@@ -792,7 +794,7 @@ onMounted(() => {
             @preview="handlePreview"
           >
             <div>
-              <IconifyIcon
+              <Icon
                 icon="mdi:cloud-upload"
                 class="inline-block align-middle text-4xl text-[#5085ff]"
               />

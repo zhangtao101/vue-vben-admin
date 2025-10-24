@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import {h, onMounted, ref} from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
-import { Button, Card } from 'ant-design-vue';
+import {Button, Card, Form, FormItem, RangePicker} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -15,6 +15,7 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import {MdiSearch} from "@vben/icons";
 
 // 路由信息
 const route = useRoute();
@@ -91,6 +92,11 @@ const [Grid] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // region 查询数据
 
+// 查询参数
+const queryParams = ref({
+  // 查询时间
+  searchTime: [] as any,
+});
 // 汇总数据
 const collect = ref<any>({});
 /**
@@ -99,7 +105,14 @@ const collect = ref<any>({});
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
+    const params: any = { ...queryParams.value };
+    if (params.searchTime && params.searchTime.length === 2) {
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+      params.searchTime = undefined;
+    }
     queryProductionAndBatchStatistics({
+      ...params,
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
@@ -122,7 +135,13 @@ function queryData({ page, pageSize }: any) {
 // region 文件下载
 
 function downloadTemplate() {
-  excelPathProductionAndBatchStatistics().then((data) => {
+  const params: any = { ...queryParams.value };
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  excelPathProductionAndBatchStatistics(params).then((data) => {
     window.open(data);
   });
 }
@@ -149,6 +168,27 @@ onMounted(() => {
 
 <template>
   <Page>
+    <!-- region 搜索 -->
+    <Card class="mb-8">
+      <Form :model="queryParams" layout="inline">
+        <!-- 时间范围 -->
+        <FormItem
+          :label="$t('productionDaily.timeFrame')"
+          style="margin-bottom: 1em"
+        >
+          <RangePicker v-model:value="queryParams.searchTime" />
+        </FormItem>
+        <FormItem style="margin-bottom: 1em">
+          <Button
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
+            type="primary"
+            @click="() => gridApi.reload()"
+          >
+            {{ $t('common.search') }}
+          </Button>
+        </FormItem>
+      </Form>
+    </Card>
     <!-- region 表格主体 -->
     <Card>
       <Grid>

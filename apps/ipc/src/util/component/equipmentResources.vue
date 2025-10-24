@@ -3,9 +3,10 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Col,
@@ -458,7 +459,7 @@ defineExpose({
       @click="displaysTheWorkOrderColumnTable({})"
     >
       <!-- 显示工作站图标 -->
-      <IconifyIcon
+      <Icon
         icon="mdi:account-box-multiple"
         class="inline-block align-middle text-xl"
       />

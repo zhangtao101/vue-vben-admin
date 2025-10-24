@@ -3,7 +3,8 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 
 import {
   Button,
@@ -303,7 +304,7 @@ defineExpose({
         <Tooltip>
           <template #title>{{ $t('common.edit') }}</template>
           <Button type="link" @click="showBindDrawer(row)">
-            <IconifyIcon
+            <Icon
               icon="mdi:edit-outline"
               class="inline-block align-middle text-2xl"
             />
@@ -313,7 +314,7 @@ defineExpose({
         <Tooltip>
           <template #title>{{ $t('operationFormula.runSetting') }}</template>
           <Button type="link" @click="openOperationSettings(row)">
-            <IconifyIcon
+            <Icon
               icon="mdi:settings-play-outline"
               class="inline-block align-middle text-2xl"
             />
@@ -324,7 +325,7 @@ defineExpose({
         <Tooltip>
           <template #title>{{ $t('common.delete') }}</template>
           <Button danger type="link" @click="deleteStep(row.id)">
-            <IconifyIcon
+            <Icon
               icon="mdi-light:delete"
               class="inline-block align-middle text-2xl"
             />

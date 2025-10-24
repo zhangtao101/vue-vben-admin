@@ -4,7 +4,8 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
 import {
@@ -253,7 +254,7 @@ function queryLog(row: any) {
             <Button
               type="link"
               :icon="
-                h(IconifyIcon, {
+                h(Icon, {
                   icon: 'mdi:eye',
                   class: 'inline-block text-2xl',
                 })
@@ -268,7 +269,7 @@ function queryLog(row: any) {
             <Button
               type="link"
               :icon="
-                h(IconifyIcon, {
+                h(Icon, {
                   icon: 'mdi:file-eye-outline',
                   class: 'inline-block text-2xl',
                 })

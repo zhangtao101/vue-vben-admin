@@ -3,7 +3,8 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
 import {
@@ -741,7 +742,7 @@ function queryAuditByRecord() {
               @click="displayFeeding(row)"
               :disabled="overclaimStatus"
             >
-              <IconifyIcon
+              <Icon
                 icon="mdi:shape-add"
                 class="inline-block align-middle text-2xl"
               />
@@ -757,7 +758,7 @@ function queryAuditByRecord() {
               @confirm="deleteFeed(rowIndex)"
             >
               <Button danger type="link" :disabled="overclaimStatus">
-                <IconifyIcon
+                <Icon
                   icon="mdi-light:delete"
                   class="inline-block align-middle text-2xl"
                 />

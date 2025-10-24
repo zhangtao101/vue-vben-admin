@@ -5,8 +5,10 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -373,14 +375,14 @@ onMounted(() => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" size="small" @click="viewRow(row)">
-              <IconifyIcon icon="mdi:eye-outline" class="inline-block size-6" />
+              <Icon icon="mdi:eye-outline" class="inline-block size-6" />
             </Button>
           </Tooltip>
           <!-- 路线修改 v-if="author.includes('编辑')"-->
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" size="small" @click="showFormulaEditing">
-              <IconifyIcon
+              <Icon
                 icon="mdi:source-branch-sync"
                 class="inline-block size-6"
               />
@@ -390,7 +392,7 @@ onMounted(() => {
           <Tooltip v-if="author.includes('编辑')">
             <template #title>{{ $t('common.edit') }}</template>
             <Button type="link" size="small" @click="editRow(row)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:edit-outline"
                 class="inline-block size-6"
               />
@@ -400,7 +402,7 @@ onMounted(() => {
           <Tooltip v-if="author.includes('删除')">
             <template #title>{{ $t('common.delete') }}</template>
             <Button type="link" danger size="small" @click="delRow(row)">
-              <IconifyIcon
+              <Icon
                 icon="mdi-light:delete"
                 class="inline-block size-6"
               />

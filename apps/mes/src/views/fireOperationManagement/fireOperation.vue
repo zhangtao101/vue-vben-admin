@@ -5,8 +5,10 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiLightDelete, MdiSearch } from '@vben/icons';
+import { MdiLightDelete, MdiSearch } from '@vben/icons';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -496,7 +498,7 @@ onMounted(() => {
           <Tooltip>
             <template #title>{{ $t('common.view') }}</template>
             <Button type="link" @click="showDetails(row)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:eye"
                 class="inline-block align-middle text-2xl"
               />
@@ -515,7 +517,7 @@ onMounted(() => {
               {{ $t('fireOperation.thePersonInChargeReviews') }}
             </template>
             <Button type="link" @click="showModal(row.id, 1)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:check"
                 class="inline-block align-middle text-2xl"
               />
@@ -535,7 +537,7 @@ onMounted(() => {
               {{ $t('fireOperation.safetyDepartmentReview') }}
             </template>
             <Button type="link" @click="showModal(row.id, 2)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:checkbox-marked-circle-outline"
                 class="inline-block align-middle text-2xl"
               />
@@ -556,7 +558,7 @@ onMounted(() => {
               }}
             </template>
             <Button type="link" @click="showModal(row.id, 3)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:check-underline"
                 class="inline-block align-middle text-2xl"
               />
@@ -575,7 +577,7 @@ onMounted(() => {
               {{ $t('fireOperation.statusChange') }}
             </template>
             <Button type="link" @click="showStatusChangeModal(row)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:update"
                 class="inline-block align-middle text-2xl"
               />
@@ -600,7 +602,7 @@ onMounted(() => {
               @confirm="taskClose(row)"
             >
               <Button type="link">
-                <IconifyIcon
+                <Icon
                   icon="mdi:close-outline"
                   class="inline-block align-middle text-2xl"
                 />

@@ -3,9 +3,10 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { onBeforeUnmount, onMounted } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { Button, message, Modal, Tooltip } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -235,7 +236,7 @@ onBeforeUnmount(() => {
       <Tooltip>
         <template #title>{{ $t('workOrderEntry.pullIn') }}</template>
         <Button type="link" @click="pullIn(row)">
-          <IconifyIcon
+          <Icon
             icon="mdi:login-variant"
             class="inline-block align-middle text-2xl"
           />

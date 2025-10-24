@@ -405,9 +405,9 @@ export async function excelPathPowderMonthlyDetailsStatistics() {
 /**
  * 生产总量与批次统计导出
  */
-export async function excelPathProductionAndBatchStatistics() {
+export async function excelPathProductionAndBatchStatistics(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathProductionAndBatchStatistics`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/worksheet/report/statistics/getExcelPathProductionAndBatchStatistics?${qs.stringify(params)}`,
   );
 }
 /**

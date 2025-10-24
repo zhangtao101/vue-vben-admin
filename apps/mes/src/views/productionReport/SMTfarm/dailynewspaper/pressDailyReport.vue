@@ -101,7 +101,13 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'dlValue',
-      title: '电耗(KWH)',
+      title: '压机电耗(KWH)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'wgdlvalue',
+      title: '卧干电耗(KWH)',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

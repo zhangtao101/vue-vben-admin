@@ -5,7 +5,10 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
+
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { useAccessStore } from '@vben/stores';
 
 import {
@@ -540,12 +543,12 @@ onMounted(() => {
             :value="sum.lastMonth"
           >
             <template #suffix>
-              <IconifyIcon
+              <Icon
                 icon="mdi:arrow-down-thin"
                 class="inline-block align-middle text-2xl text-green-500"
                 v-if="sum.hb >= 0"
               />
-              <IconifyIcon
+              <Icon
                 icon="mdi:arrow-up-thin"
                 class="inline-block align-middle text-2xl text-red-500"
                 v-else
@@ -566,12 +569,12 @@ onMounted(() => {
             :value="sum.lastYearMonth"
           >
             <template #suffix>
-              <IconifyIcon
+              <Icon
                 icon="mdi:arrow-down-thin"
                 class="inline-block align-middle text-2xl text-green-500"
                 v-if="sum.tb >= 0"
               />
-              <IconifyIcon
+              <Icon
                 icon="mdi:arrow-up-thin"
                 class="inline-block align-middle text-2xl text-red-500"
                 v-else
@@ -652,7 +655,7 @@ onMounted(() => {
               :loading="row.loading"
               v-if="row.status === 3"
             >
-              <IconifyIcon
+              <Icon
                 icon="mdi:eye"
                 class="inline-block align-middle text-2xl"
               />
@@ -669,7 +672,7 @@ onMounted(() => {
               v-if="author.includes('编辑') && row.status !== 3"
               :loading="row.loading"
             >
-              <IconifyIcon
+              <Icon
                 icon="mdi-light:check-circle"
                 class="inline-block align-middle text-2xl"
               />

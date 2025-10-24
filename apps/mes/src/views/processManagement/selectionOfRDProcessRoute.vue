@@ -5,7 +5,10 @@ import { h, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
+
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 
 import {
   Button,
@@ -462,7 +465,7 @@ onMounted(() => {
               {{ $t('selectionOfRDProcessRoute.selectionOfProcessRoute') }}
             </template>
             <Button type="link" @click="showDrawer(row)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:source-branch-sync"
                 class="inline-block align-middle text-2xl"
               />

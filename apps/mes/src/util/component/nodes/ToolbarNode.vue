@@ -1,10 +1,9 @@
 <script setup>
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 // eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { Handle, Position } from '@vue-flow/core';
-// eslint-disable-next-line n/no-extraneous-import
 import { NodeToolbar } from '@vue-flow/node-toolbar';
 import { Button, Tooltip } from 'ant-design-vue';
 
@@ -37,19 +36,19 @@ function update() {
     <Tooltip v-if="id !== 'start'">
       <template #title>{{ $t('common.edit') }}</template>
       <Button type="link" @click="update()">
-        <IconifyIcon icon="mdi:square-edit-outline" class="text-xl" />
+        <Icon icon="mdi:square-edit-outline" class="text-xl" />
       </Button>
     </Tooltip>
     <Tooltip>
       <template #title>{{ $t('common.add') }}</template>
       <Button type="link" @click="showCreate()">
-        <IconifyIcon icon="mdi:add" class="text-xl" />
+        <Icon icon="mdi:add" class="text-xl" />
       </Button>
     </Tooltip>
     <Tooltip v-if="id !== 'start'">
       <template #title>{{ $t('common.delete') }}</template>
       <Button type="link" @click="delNode()">
-        <IconifyIcon icon="mdi-light:delete" class="text-xl" />
+        <Icon icon="mdi-light:delete" class="text-xl" />
       </Button>
     </Tooltip>
   </NodeToolbar>

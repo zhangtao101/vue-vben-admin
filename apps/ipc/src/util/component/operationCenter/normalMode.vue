@@ -2,9 +2,11 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiChevronDown, MdiChevronUp } from '@vben/icons';
+import { MdiChevronDown, MdiChevronUp } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -173,7 +175,7 @@ onBeforeUnmount(() => {
           @click="isZoom = true"
         >
           <template #icon>
-            <IconifyIcon icon="mdi:image-size-select-small" class="text-xl" />
+            <Icon icon="mdi:image-size-select-small" class="text-xl" />
           </template>
         </FloatButton>
       </Popover>
@@ -316,7 +318,7 @@ onBeforeUnmount(() => {
               @click="fullScreen()"
               class="absolute right-0 top-0"
             >
-              <IconifyIcon
+              <Icon
                 :icon="
                   isItFullScreen ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'
                 "

@@ -5,7 +5,8 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
 import {
@@ -328,7 +329,7 @@ onMounted(() => {
             <template #title>{{ $t('common.view') }}</template>
             <Button class="mr-4" type="link" @click="showDetails(row)">
               <template #icon>
-                <IconifyIcon
+                <Icon
                   icon="mdi:eye-outline"
                   class="inline-block align-middle text-2xl"
                 />
@@ -340,7 +341,7 @@ onMounted(() => {
             <template #title>{{ $t('common.edit') }}</template>
             <Button class="mr-4" type="link" @click="showEdit(false, row)">
               <template #icon>
-                <IconifyIcon
+                <Icon
                   icon="mdi:edit-outline"
                   class="inline-block align-middle text-2xl"
                 />
@@ -353,7 +354,7 @@ onMounted(() => {
             <template #title>{{ $t('common.delete') }}</template>
             <Button danger type="link" @click="delRow(row)">
               <template #icon>
-                <IconifyIcon
+                <Icon
                   icon="mdi-light:delete"
                   class="inline-block align-middle text-2xl"
                 />

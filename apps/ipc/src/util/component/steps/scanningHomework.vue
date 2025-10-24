@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { Button, Col, Empty, Row, Spin } from 'ant-design-vue';
 
 import { listByCodeScan } from '#/api';
@@ -222,7 +223,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 根据校验结果显示不同的图标 -->
           <Button type="link" :danger="details.checkResult === -1">
-            <IconifyIcon
+            <Icon
               :icon="
                 details.checkResult === -1
                   ? 'mdi:error-outline'
@@ -360,7 +361,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 显示资源校验的值，无值时显示默认提示 -->
           <span class="inline-bloc align-middle text-xl">
-            <IconifyIcon
+            <Icon
               v-if="details.equipCheckFlag || details.equipCheckFlag === 0"
               :icon="
                 details.equipCheckFlag === -1
@@ -390,7 +391,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 显示工序校验的值，无值时显示默认提示 -->
           <span class="inline-bloc align-middle text-xl">
-            <IconifyIcon
+            <Icon
               v-if="details.processCheck || details.processCheck === 0"
               :icon="
                 details.processCheck === -1
@@ -420,7 +421,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 显示工单绑定的值，无值时显示默认提示 -->
           <span class="inline-bloc align-middle text-xl">
-            <IconifyIcon
+            <Icon
               v-if="details.readyFlag || details.readyFlag === 0"
               :icon="
                 details.readyFlag === -1
@@ -450,7 +451,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 显示参数判异的值，无值时显示默认提示 -->
           <span class="inline-bloc align-middle text-xl">
-            <IconifyIcon
+            <Icon
               v-if="details.paramCheckFlag || details.paramCheckFlag === 0"
               :icon="
                 details.paramCheckFlag === -1
@@ -480,7 +481,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 显示参数绑定的值，无值时显示默认提示 -->
           <span class="inline-bloc align-middle text-xl">
-            <IconifyIcon
+            <Icon
               v-if="details.paramBinding || details.paramBinding === 0"
               :icon="
                 details.paramBinding === -1
@@ -510,7 +511,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 显示设备联锁标签 -->
           <span class="inline-bloc align-middle text-xl">
-            <IconifyIcon
+            <Icon
               v-if="details.errorFlag || details.errorFlag === 0"
               :icon="
                 details.errorFlag === -1

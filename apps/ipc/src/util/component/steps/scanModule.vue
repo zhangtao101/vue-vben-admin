@@ -3,9 +3,10 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { Button, Col, Input, message, Modal, Row, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -421,7 +422,7 @@ onBeforeUnmount(() => {
             :danger="details.checkResult === -1"
             v-if="details && details.checkResult"
           >
-            <IconifyIcon
+            <Icon
               :icon="
                 details.checkResult === -1
                   ? 'mdi:error-outline'

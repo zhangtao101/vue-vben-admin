@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 // eslint-disable-next-line n/no-extraneous-import
 import { BrowserMultiFormatReader } from '@zxing/library';
 import { Button, Drawer, message } from 'ant-design-vue';
@@ -115,7 +116,7 @@ onMounted(() => {
     <!-- 点击此按钮触发 showQrcode 函数，显示扫码界面 -->
     <Button type="link" @click="showQrcode">
       <!-- 显示条码扫描图标 -->
-      <IconifyIcon
+      <Icon
         icon="mdi:barcode-scan"
         class="inline-block align-middle text-xl"
       />

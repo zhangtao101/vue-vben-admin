@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -156,7 +157,7 @@ onMounted(() => {
     @click="showWorkOrders()"
   >
     <template #icon>
-      <IconifyIcon icon="mdi:settings" class="text-xl" />
+      <Icon icon="mdi:settings" class="text-xl" />
     </template>
   </FloatButton>
 
@@ -167,7 +168,7 @@ onMounted(() => {
     @click="showWorkOrders(3)"
   >
     <template #icon>
-      <IconifyIcon icon="mdi:file-find-outline" class="text-xl" />
+      <Icon icon="mdi:file-find-outline" class="text-xl" />
     </template>
   </FloatButton>
 

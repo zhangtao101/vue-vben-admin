@@ -4,9 +4,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, IconParkSolidError, MdiSuccess } from '@vben/icons';
+import { IconParkSolidError, MdiSuccess } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   BadgeRibbon,
   Button,
@@ -652,7 +654,7 @@ onMounted(() => {
             <Button
               type="link"
               :icon="
-                h(IconifyIcon, {
+                h(Icon, {
                   icon: 'mdi:hand-extended-outline',
                   class: 'inline-block text-2xl',
                 })
@@ -666,7 +668,7 @@ onMounted(() => {
             <Button
               type="link"
               :icon="
-                h(IconifyIcon, {
+                h(Icon, {
                   icon: 'mdi:play-outline',
                   class: 'inline-block text-2xl',
                 })
@@ -680,7 +682,7 @@ onMounted(() => {
             <Button
               type="link"
               :icon="
-                h(IconifyIcon, {
+                h(Icon, {
                   icon: 'mdi:play-pause',
                   class: 'inline-block text-2xl',
                 })

@@ -4,7 +4,8 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 
 import {
   Button,
@@ -583,7 +584,7 @@ defineExpose({
         <Tooltip>
           <template #title>{{ $t('common.view') }}</template>
           <Button type="link" @click="showSettingDrawer(row, false)">
-            <IconifyIcon
+            <Icon
               icon="mdi:eye"
               class="inline-block align-middle text-2xl"
             />
@@ -593,7 +594,7 @@ defineExpose({
         <Tooltip v-if="author.includes('编辑')">
           <template #title>{{ $t('common.edit') }}</template>
           <Button type="link" @click="showSettingDrawer(row, true)">
-            <IconifyIcon
+            <Icon
               icon="mdi:edit-outline"
               class="inline-block align-middle text-2xl"
             />
@@ -608,7 +609,7 @@ defineExpose({
             type="link"
             @click="handleAudit(row, true)"
           >
-            <IconifyIcon
+            <Icon
               icon="mdi:success"
               class="inline-block align-middle text-2xl"
             />
@@ -623,7 +624,7 @@ defineExpose({
             type="link"
             @click="handleAudit(row, false)"
           >
-            <IconifyIcon
+            <Icon
               icon="icon-park-solid:error"
               class="inline-block align-middle text-2xl"
             />
@@ -634,7 +635,7 @@ defineExpose({
         <Tooltip v-if="author.includes('删除')">
           <template #title>{{ $t('common.delete') }}</template>
           <Button danger type="link" @click="deleteStep(row.id)">
-            <IconifyIcon
+            <Icon
               icon="mdi-light:delete"
               class="inline-block align-middle text-2xl"
             />

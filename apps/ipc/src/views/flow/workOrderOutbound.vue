@@ -6,7 +6,8 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
 import {
@@ -442,7 +443,7 @@ onMounted(() => {
             <Button
               type="link"
               :icon="
-                h(IconifyIcon, {
+                h(Icon, {
                   icon: 'mdi:output',
                   class: 'inline-block text-2xl',
                 })
@@ -458,7 +459,7 @@ onMounted(() => {
             <Button
               type="link"
               :icon="
-                h(IconifyIcon, {
+                h(Icon, {
                   icon: 'mdi-light:pause',
                   class: 'inline-block text-2xl',
                 })
@@ -473,7 +474,7 @@ onMounted(() => {
               danger
               type="link"
               :icon="
-                h(IconifyIcon, {
+                h(Icon, {
                   icon: 'mdi:cloud-download-outline',
                   class: 'inline-block text-2xl',
                 })

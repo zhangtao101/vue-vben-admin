@@ -3,16 +3,20 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { onBeforeUnmount, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Col,
+  FormItem,
   Input,
   message,
   Modal,
+  Radio,
+  RadioGroup,
   Row,
   Spin,
   Tooltip,
@@ -25,6 +29,8 @@ import {
   mrlCheckResult,
   snCodeHcBinding,
   snCodeHcBindingCallBack,
+  snCodeReCheck,
+  snStationReCheck,
 } from '#/api';
 import useWebSocket from '#/util/websocket-util';
 
@@ -247,7 +253,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       title: '操作',
       fixed: 'right',
-      minWidth: 150,
+      minWidth: 200,
       visible: multiStationList.value.includes(props.showTypeNumber),
       slots: {
         default: 'action',
@@ -328,6 +334,36 @@ function unlink(row: any) {
     title: '是否确认解绑?',
   });
 }
+
+/**
+ * 解绑
+ * @param row
+ */
+function retest(row: any) {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      message.warning('已取消复测!');
+    },
+    onOk() {
+      snStationReCheck({
+        snCode: row.qcCode,
+        bindingId: props.bindingId,
+        worksheetCode: row.partPlanCode,
+        stationNo: row.produceWorkshopCode,
+        workstationCode: props.workstationCode,
+        functionId: props.functionId,
+        stationCode: row.produceWorkshopCode,
+      }).then(() => {
+        message.success($t('common.successfulOperation'));
+        reload();
+      });
+    },
+    title: '是否确认复测?',
+  });
+}
 // region 查询数据
 
 /**
@@ -369,6 +405,40 @@ function queryTableData() {
           items: [],
         });
       });
+  });
+}
+
+// endregion
+
+// region 改派
+const showReassignmentItem = ref<any>({});
+const reassignmentModal = ref(false);
+
+function showReassignment(row: any) {
+  showReassignmentItem.value = {
+    snCode: row.qcCode,
+    worksheetCode: row.partPlanCode,
+    stationCode: row.produceWorkshopCode,
+    stationNo: row.produceWorkshopCode,
+    bindingId: props.bindingId,
+    workstationCode: props.workstationCode,
+    functionId: props.functionId,
+  };
+  reassignmentModal.value = true;
+}
+
+function closeReassignmentModal() {
+  reassignmentModal.value = false;
+  showReassignmentItem.value = {};
+}
+
+function submitReassignment() {
+  snCodeReCheck({
+    ...showReassignmentItem.value,
+  }).then(() => {
+    message.success($t('common.successfulOperation'));
+    reload();
+    closeReassignmentModal();
   });
 }
 
@@ -668,7 +738,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
 
         <!-- 定义一个列，占 24 格 -->
-          <Col :span="24">
+        <Col :span="24">
           <!-- region  SN校验 -->
           <!-- 显示 SN校验的容器 -->
           <div class="mb-4 mr-8 inline-block">
@@ -742,8 +812,30 @@ onBeforeUnmount(() => {
         <Tooltip v-if="[32, 33].includes(showTypeNumber)">
           <template #title>{{ $t('productionOperation.unbind') }}</template>
           <Button type="link" @click="unlink(row)">
-            <IconifyIcon
+            <Icon
               icon="carbon:unlink"
+              class="inline-block align-middle text-2xl"
+            />
+          </Button>
+        </Tooltip>
+        <!-- 复测 -->
+        <Tooltip v-if="[32, 33].includes(showTypeNumber)">
+          <template #title>{{ $t('productionOperation.retest') }}</template>
+          <Button type="link" @click="retest(row)">
+            <Icon
+              icon="mdi:restore"
+              class="inline-block align-middle text-2xl"
+            />
+          </Button>
+        </Tooltip>
+        <!-- 改派 -->
+        <Tooltip v-if="[32, 33, 34, 35, 37].includes(showTypeNumber)">
+          <template #title>
+            {{ $t('productionOperation.reassignment') }}
+          </template>
+          <Button type="link" @click="showReassignment(row)">
+            <Icon
+              icon="mdi:axis-x-arrow"
               class="inline-block align-middle text-2xl"
             />
           </Button>
@@ -756,10 +848,7 @@ onBeforeUnmount(() => {
             @click="judgement(row, 1)"
             :loading="judgementLoading"
           >
-            <IconifyIcon
-              icon="mdi:check"
-              class="inline-block align-middle text-2xl"
-            />
+            <Icon icon="mdi:check" class="inline-block align-middle text-2xl" />
           </Button>
         </Tooltip>
         <!-- 不合格 -->
@@ -773,15 +862,39 @@ onBeforeUnmount(() => {
             :loading="judgementLoading"
             :disabled="row.errorFlag !== 1 && row.defectResult !== 0"
           >
-            <IconifyIcon
-              icon="mdi:times"
-              class="inline-block align-middle text-2xl"
-            />
+            <Icon icon="mdi:times" class="inline-block align-middle text-2xl" />
           </Button>
         </Tooltip>
       </template>
     </Grid>
   </Spin>
+
+  <!-- 移入确认对话框 -->
+  <Modal
+    v-model:open="reassignmentModal"
+    :title="$t('productionOperation.reassignment')"
+    @ok="submitReassignment"
+    :ok-button-props="{
+      disabled: !(
+        showReassignmentItem.userCode &&
+        showReassignmentItem.password &&
+        showReassignmentItem.checkResult
+      ),
+    }"
+  >
+    <FormItem label="授权用户" prop="reassignmentUser">
+      <Input v-model:value="showReassignmentItem.userCode" />
+    </FormItem>
+    <FormItem label="授权密码" prop="reassignmentUser">
+      <Input type="password" v-model:value="showReassignmentItem.password" />
+    </FormItem>
+    <FormItem label="改判结果" prop="reassignmentUser">
+      <RadioGroup v-model:value="showReassignmentItem.checkResult">
+        <Radio :value="1">{{ $t('productionOperation.qualified') }}</Radio>
+        <Radio :value="-1">{{ $t('productionOperation.unqualified') }}</Radio>
+      </RadioGroup>
+    </FormItem>
+  </Modal>
 </template>
 
 <style scoped></style>

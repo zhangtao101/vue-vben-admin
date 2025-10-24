@@ -4,10 +4,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { DownOutlined } from '@ant-design/icons-vue';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Col,
@@ -723,7 +724,7 @@ onBeforeUnmount(() => {
             <Tooltip v-if="row.readyState === 0">
               <template #title>{{ $t('common.beInOrder') }}</template>
               <Button type="link" @click="ready(row, 1)">
-                <IconifyIcon
+                <Icon
                   icon="mdi:timer-sand-complete"
                   class="inline-block size-6"
                 />
@@ -733,7 +734,7 @@ onBeforeUnmount(() => {
             <Tooltip v-if="row.readyState === 1">
               <template #title>{{ $t('common.readyToWithdraw') }}</template>
               <Button type="link" @click="ready(row, 2)">
-                <IconifyIcon
+                <Icon
                   icon="fluent-mdl2:return-to-session"
                   class="inline-block size-6"
                 />
@@ -869,7 +870,7 @@ onBeforeUnmount(() => {
             :key="item.id"
           >
             <!-- 显示操作事项图标 -->
-            <IconifyIcon
+            <Icon
               :icon="iconEnum[item.opTypeName]"
               class="inline-block text-xl"
             />
@@ -1012,7 +1013,7 @@ onBeforeUnmount(() => {
             <Tooltip v-if="row.readyState === 0">
               <template #title>{{ $t('common.beInOrder') }}</template>
               <Button type="link" @click="ready(row, 1)">
-                <IconifyIcon
+                <Icon
                   icon="mdi:timer-sand-complete"
                   class="inline-block size-6"
                 />
@@ -1022,7 +1023,7 @@ onBeforeUnmount(() => {
             <Tooltip v-if="row.readyState === 1">
               <template #title>{{ $t('common.readyToWithdraw') }}</template>
               <Button type="link" @click="ready(row, 2)">
-                <IconifyIcon
+                <Icon
                   icon="fluent-mdl2:return-to-session"
                   class="inline-block size-6"
                 />
@@ -1156,7 +1157,7 @@ onBeforeUnmount(() => {
             :key="item.id"
           >
             <!-- 显示操作事项图标 -->
-            <IconifyIcon
+            <Icon
               :icon="iconEnum[item.opTypeName]"
               class="inline-block text-xl"
             />
@@ -1206,7 +1207,7 @@ onBeforeUnmount(() => {
       @click="statusChange"
     >
       <template #icon>
-        <IconifyIcon icon="icon-park-solid:update-rotation" class="text-xl" />
+        <Icon icon="icon-park-solid:update-rotation" class="text-xl" />
       </template>
     </FloatButton>
     <!--

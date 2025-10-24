@@ -4,9 +4,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiChevronDown, MdiChevronUp } from '@vben/icons';
+import { MdiChevronDown, MdiChevronUp } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { DownOutlined } from '@ant-design/icons-vue';
 import {
   Button,
@@ -720,7 +722,7 @@ onBeforeUnmount(() => {
           @click="isZoom = true"
         >
           <template #icon>
-            <IconifyIcon icon="mdi:image-size-select-small" class="text-xl" />
+            <Icon icon="mdi:image-size-select-small" class="text-xl" />
           </template>
         </FloatButton>
       </Popover>
@@ -856,7 +858,7 @@ onBeforeUnmount(() => {
             <Tooltip v-if="row.readyState === 0">
               <template #title>{{ $t('common.beInOrder') }}</template>
               <Button type="link" @click="ready(row, 1)">
-                <IconifyIcon
+                <Icon
                   icon="mdi:timer-sand-complete"
                   class="inline-block size-6"
                 />
@@ -866,7 +868,7 @@ onBeforeUnmount(() => {
             <Tooltip v-if="row.readyState === 1">
               <template #title>{{ $t('common.readyToWithdraw') }}</template>
               <Button type="link" @click="ready(row, 2)">
-                <IconifyIcon
+                <Icon
                   icon="fluent-mdl2:return-to-session"
                   class="inline-block size-6"
                 />
@@ -1046,7 +1048,7 @@ onBeforeUnmount(() => {
               :key="item.id"
             >
               <!-- 显示操作事项图标 -->
-              <IconifyIcon
+              <Icon
                 :icon="iconEnum[item.opTypeName]"
                 class="inline-block text-xl"
               />
@@ -1113,7 +1115,7 @@ onBeforeUnmount(() => {
               @click="fullScreen()"
               class="absolute right-0 top-0"
             >
-              <IconifyIcon
+              <Icon
                 :icon="
                   isItFullScreen ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'
                 "

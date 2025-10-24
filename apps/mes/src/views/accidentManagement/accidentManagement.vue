@@ -5,8 +5,10 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -301,7 +303,7 @@ onMounted(() => {
           <Tooltip v-if="author.includes('编辑')">
             <template #title>{{ $t('common.edit') }}</template>
             <Button type="link" @click="showEditFun(row)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:edit-outline"
                 class="inline-block align-middle text-2xl"
               />

@@ -463,6 +463,28 @@ export function snCodeHcBindingCallBack(params: any) {
   );
 }
 
+
+/**
+ * 复测
+ * @param params 参数
+ */
+export function snStationReCheck(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snStationReCheck`,
+    params,
+  );
+}
+/**
+ * 改判
+ * @param params 参数
+ */
+export function snCodeReCheck(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snCodeReCheck`,
+    params,
+  );
+}
+
 /**
  * 解绑
  * @param params 参数

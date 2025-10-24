@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { Button, Col, Input, message, Row, Spin } from 'ant-design-vue';
 
 import { handleMaulSncode, listHCByCodeScan } from '#/api';
@@ -244,7 +245,7 @@ onBeforeUnmount(() => {
               :danger="details.checkResult === -1"
               v-if="details.checkResult"
             >
-              <IconifyIcon
+              <Icon
                 :icon="
                   details.checkResult === -1
                     ? 'mdi:error-outline'
@@ -270,7 +271,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 当校验结果不为 '通过' 时显示锁定图标按钮 -->
           <Button type="link" v-if="details.error !== '通过'" danger>
-            <IconifyIcon
+            <Icon
               icon="mdi:lock-outline"
               class="inline-block align-middle text-2xl"
             />

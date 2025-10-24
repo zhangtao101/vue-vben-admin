@@ -77,6 +77,8 @@
   "transcoding": "转码",
   "transcodedList": "已转码列表",
   "unbind": "解绑",
+  "retest": "复测",
+  "reassignment": "改判",
   "singlePieceSNCode": "单件SN码",
   "producedQuantity": "产量",
   "processingStatus": "加工状态",

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
@@ -621,7 +622,7 @@ onMounted(() => {
             :headers="{ Authorization: `${accessStore.accessToken}` }"
           >
             <Button>
-              <IconifyIcon
+              <Icon
                 icon="mdi:cloud-upload"
                 class="inline-block align-middle text-xl text-[#5085ff]"
               />
@@ -673,7 +674,7 @@ onMounted(() => {
             :headers="{ Authorization: `${accessStore.accessToken}` }"
           >
             <Button>
-              <IconifyIcon
+              <Icon
                 icon="mdi:cloud-upload"
                 class="inline-block align-middle text-xl text-[#5085ff]"
               />
@@ -697,7 +698,7 @@ onMounted(() => {
             @preview="handlePreview"
           >
             <div>
-              <IconifyIcon
+              <Icon
                 icon="mdi:cloud-upload"
                 class="inline-block align-middle text-4xl text-[#5085ff]"
               />

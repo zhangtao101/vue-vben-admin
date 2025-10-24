@@ -5,7 +5,9 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 
 import {
   Button,
@@ -429,7 +431,7 @@ onMounted(() => {
               type="link"
               @click="editRow(row)"
             >
-              <IconifyIcon
+              <Icon
                 icon="mdi:edit-outline"
                 class="inline-block align-middle text-2xl"
               />
@@ -444,7 +446,7 @@ onMounted(() => {
               type="link"
               @click="showMatchDrawer(row)"
             >
-              <IconifyIcon
+              <Icon
                 icon="mdi:priority-low"
                 class="inline-block align-middle text-2xl"
               />
@@ -460,7 +462,7 @@ onMounted(() => {
               type="link"
               @click="delRow(row)"
             >
-              <IconifyIcon
+              <Icon
                 icon="mdi-light:delete"
                 class="inline-block align-middle text-2xl"
               />

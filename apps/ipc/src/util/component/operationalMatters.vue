@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
-
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { Radio, RadioGroup, Spin } from 'ant-design-vue';
 
 import { getOpFunctions } from '#/api';
@@ -222,7 +222,7 @@ onBeforeUnmount(() => {
         <!-- 遍历步骤条数据，渲染每个步骤 -->
         <template v-for="(item, index) of stepBar" :key="index">
           <!-- 在第一个步骤之后显示箭头图标 -->
-          <IconifyIcon
+          <Icon
             icon="mdi:arrow-right"
             class="align--center ml-4 mr-4 inline-block text-4xl"
             v-if="index > 0"
@@ -287,7 +287,7 @@ onBeforeUnmount(() => {
         }"
       >
         <div class="flex h-full items-center" @click="toggle">
-          <IconifyIcon
+          <Icon
             :icon="isShow ? 'mdi:menu-right' : 'mdi:menu-left'"
             class="translate-x-[35%] cursor-pointer text-6xl"
           />

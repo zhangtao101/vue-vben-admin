@@ -54,5 +54,8 @@ export default defineConfig(async () => {
         },
       },
     },
+    build: {
+      assetsInlineLimit: 4096, // 小于 4KB 的图标转为 base64
+    },
   };
 });

@@ -5,8 +5,10 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -317,7 +319,7 @@ onMounted(() => {
               {{ $t('alarmManagement.configuration') }}
             </template>
             <Button type="link" @click="showEditFun(row)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:square-edit-outline"
                 class="inline-block align-middle text-2xl"
               />
@@ -329,7 +331,7 @@ onMounted(() => {
               {{ $t('alarmManagement.reset') }}
             </template>
             <Button type="link" @click="reset(row)" danger>
-              <IconifyIcon
+              <Icon
                 icon="carbon:renew"
                 class="inline-block align-middle text-2xl"
               />
@@ -411,7 +413,7 @@ onMounted(() => {
                 {{ $t('common.delete') }}
               </template>
               <Button type="link" @click="delUser(index)" danger>
-                <IconifyIcon
+                <Icon
                   icon="mdi:delete"
                   class="inline-block align-middle text-2xl"
                 />

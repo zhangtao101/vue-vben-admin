@@ -4,7 +4,10 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
+
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
 import { Button, Card, Form, FormItem, Input, Tooltip } from 'ant-design-vue';
@@ -333,7 +336,7 @@ function queryFormulaData({ page, pageSize }: any) {
           <Tooltip>
             <template #title>{{ $t('common.enable') }}</template>
             <Button type="link">
-              <IconifyIcon
+              <Icon
                 icon="mdi:play"
                 class="inline-block align-middle text-2xl"
               />
@@ -343,7 +346,7 @@ function queryFormulaData({ page, pageSize }: any) {
           <Tooltip>
             <template #title>{{ $t('common.stopUsing') }}</template>
             <Button type="link">
-              <IconifyIcon
+              <Icon
                 icon="mdi:pause"
                 class="inline-block align-middle text-2xl"
               />
@@ -353,7 +356,7 @@ function queryFormulaData({ page, pageSize }: any) {
           <Tooltip>
             <template #title>{{ $t('common.unbind') }}</template>
             <Button type="link">
-              <IconifyIcon
+              <Icon
                 icon="carbon:unlink"
                 class="inline-block align-middle text-2xl"
               />

@@ -3,7 +3,8 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
@@ -846,7 +847,7 @@ onMounted(() => {
         <Button
           type="link"
           :icon="
-            h(IconifyIcon, {
+            h(Icon, {
               icon: 'mdi:invoice-receive',
               class: 'inline-block text-2xl',
             })
@@ -862,7 +863,7 @@ onMounted(() => {
         <Button
           type="link"
           :icon="
-            h(IconifyIcon, {
+            h(Icon, {
               icon: 'material-symbols:tv-signin-outline',
               class: 'inline-block text-2xl',
             })
@@ -878,7 +879,7 @@ onMounted(() => {
         <Button
           type="link"
           :icon="
-            h(IconifyIcon, {
+            h(Icon, {
               icon: 'material-symbols:security-update-warning-outline-rounded',
               class: 'inline-block text-2xl',
             })
@@ -894,7 +895,7 @@ onMounted(() => {
         <Button
           type="link"
           :icon="
-            h(IconifyIcon, {
+            h(Icon, {
               icon: 'mdi:file-alert',
               class: 'inline-block text-2xl',
             })
@@ -910,7 +911,7 @@ onMounted(() => {
         <Button
           type="link"
           :icon="
-            h(IconifyIcon, {
+            h(Icon, {
               icon: 'mdi:error-outline',
               class: 'inline-block text-2xl',
             })

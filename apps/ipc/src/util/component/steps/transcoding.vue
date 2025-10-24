@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Col,
@@ -486,7 +487,7 @@ onMounted(() => {
                   <Button type="link" @click="unbind(item)">
                     <template #icon>
                       <!-- 显示解绑图标 -->
-                      <IconifyIcon
+                      <Icon
                         icon="carbon:unlink"
                         class="inline-block align-middle text-xl"
                       />

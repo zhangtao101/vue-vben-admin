@@ -3,7 +3,8 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 
 import { Button, Drawer, Tooltip } from 'ant-design-vue';
 
@@ -108,7 +109,7 @@ defineExpose({
         <Tooltip>
           <template #title>{{ $t('common.bind') }}</template>
           <Button type="link" @click="openChildDrawer(row)">
-            <IconifyIcon
+            <Icon
               icon="mdi:link-variant"
               class="inline-block align-middle text-2xl"
             />

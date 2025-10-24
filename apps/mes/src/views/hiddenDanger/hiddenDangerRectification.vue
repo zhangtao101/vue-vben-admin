@@ -5,8 +5,10 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -662,7 +664,7 @@ onMounted(() => {
           <!-- 查看详情 -->
           <Tooltip :title="$t('common.view')">
             <Button type="link" @click="viewRow(row)">
-              <IconifyIcon
+              <Icon
                 icon="mdi:eye-outline"
                 class="inline-block align-middle text-2xl"
               />
@@ -682,7 +684,7 @@ onMounted(() => {
                 :disabled="!row.valid"
                 :loading="showRectificationLoading"
               >
-                <IconifyIcon
+                <Icon
                   icon="carbon:checkmark-outline-warning"
                   class="inline-block align-middle text-2xl"
                 />
@@ -700,7 +702,7 @@ onMounted(() => {
                 @click="showLevelChangeModal(row)"
                 :disabled="!row.valid"
               >
-                <IconifyIcon
+                <Icon
                   icon="mdi:repeat-once"
                   class="inline-block align-middle text-2xl"
                 />
@@ -714,7 +716,7 @@ onMounted(() => {
                 :disabled="!row.valid"
                 @click="showDistributedDrawer(row)"
               >
-                <IconifyIcon
+                <Icon
                   icon="mdi:arrow-decision"
                   class="inline-block align-middle text-2xl"
                 />
@@ -734,7 +736,7 @@ onMounted(() => {
                 :disabled="!row.valid"
                 :loading="showRectificationLoading"
               >
-                <IconifyIcon
+                <Icon
                   icon="mdi:shield-sync-outline"
                   class="inline-block align-middle text-2xl"
                 />
@@ -755,7 +757,7 @@ onMounted(() => {
                 :disabled="!row.valid"
                 :loading="showRectificationLoading"
               >
-                <IconifyIcon
+                <Icon
                   icon="mdi:shield-check-outline"
                   class="inline-block align-middle text-2xl"
                 />
@@ -776,7 +778,7 @@ onMounted(() => {
                 :disabled="!row.valid"
                 :loading="showRectificationLoading"
               >
-                <IconifyIcon
+                <Icon
                   icon="mdi:checkbox-multiple-marked-circle-outline"
                   class="inline-block align-middle text-2xl"
                 />
@@ -800,7 +802,7 @@ onMounted(() => {
                   :disabled="!row.valid"
                   :loading="retracementLoading"
                 >
-                  <IconifyIcon
+                  <Icon
                     icon="fluent-mdl2:return-to-session"
                     class="inline-block align-middle text-2xl"
                   />

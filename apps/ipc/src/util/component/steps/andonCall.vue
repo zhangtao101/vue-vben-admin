@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { Button, Drawer, message, Space, Tooltip } from 'ant-design-vue';
 
 import { abnormalFilling, handAddition, onLightCall } from '#/api';
@@ -161,7 +162,7 @@ function close() {
         class="!h-28 !w-28"
         @click="showAndonCall(1)"
       >
-        <IconifyIcon
+        <Icon
           icon="mdi:square-edit-outline"
           class="inline-block align-middle text-4xl"
         />
@@ -175,7 +176,7 @@ function close() {
         class="!h-28 !w-28"
         @click="showAndonCall(2)"
       >
-        <IconifyIcon
+        <Icon
           icon="mdi:call-bell-outline"
           class="inline-block align-middle text-4xl"
         />

@@ -2,7 +2,8 @@
 import { ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 
 import {
@@ -178,7 +179,7 @@ function queryMeterData(row: any) {
           </FormItem>
           <FormItem :wrapper-col="{ span: 18, offset: 6 }">
             <Button class="w-48" danger @click="deleteLine(index)">
-              <IconifyIcon
+              <Icon
                 icon="mdi-light:delete"
                 class="inline-block align-top text-2xl"
               />
@@ -189,7 +190,7 @@ function queryMeterData(row: any) {
         </template>
         <FormItem :wrapper-col="{ span: 18, offset: 6 }">
           <Button class="w-48" @click="addLine">
-            <IconifyIcon
+            <Icon
               icon="mdi:add"
               class="inline-block align-top text-2xl"
             />

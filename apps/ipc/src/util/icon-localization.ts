@@ -19,10 +19,10 @@ import { addCollection } from '@iconify/vue';
 
 export default function loadIconCollection() {
   addCollection(mdi);
+  addCollection(mdiLight);
   addCollection(iconParkSolid);
   addCollection(oui);
   addCollection(ep);
-  addCollection(mdiLight);
   addCollection(carbon);
   addCollection(fluentMdl2);
   addCollection(svgSpinners);

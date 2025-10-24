@@ -3,7 +3,8 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import { $t } from '@vben/locales';
 import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
@@ -394,7 +395,7 @@ defineExpose({
           <template #title>{{ $t('common.edit') }}</template>
           <Button class="mr-4" type="link" @click="showEdit(false, row)">
             <template #icon>
-              <IconifyIcon
+              <Icon
                 icon="mdi:edit-outline"
                 class="inline-block align-middle text-2xl"
               />
@@ -407,7 +408,7 @@ defineExpose({
           <template #title>{{ $t('common.delete') }}</template>
           <Button danger type="link" @click="delRow(row)">
             <template #icon>
-              <IconifyIcon
+              <Icon
                 icon="mdi-light:delete"
                 class="inline-block align-middle text-2xl"
               />
