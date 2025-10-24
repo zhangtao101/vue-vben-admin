@@ -101,7 +101,7 @@ const gridOptions: VxeGridProps<any> = {
             },
             {
               field: 'inStorageNumber',
-              title: '入库量（平方米）',
+              title: '窑炉入中间库（平方米）',
               minWidth: 150,
               slots: { footer: 'footerData' },
             },

@@ -609,7 +609,8 @@ onBeforeUnmount(() => {
           </span>
           <!-- 显示产品名称的值，无结果时显示默认提示 -->
           <span :class="getValueClass()">
-            {{ details.productName || $t('productionOperation.none') }}
+            {{ details.proceProductModel || $t('productionOperation.none') }}
+            <!--            {{  details.productName || $t('productionOperation.none') }}-->
           </span>
         </div>
         <!-- endregion -->
@@ -658,14 +659,16 @@ onBeforeUnmount(() => {
               {{ details.stationNo || $t('productionOperation.none') }}
             </span>
             <!-- 单工位时显示 -->
-            <span v-if="singleStationList.includes(showTypeNumber)"> 1# </span>
+            <span v-else-if="singleStationList.includes(showTypeNumber)">
+              1#
+            </span>
             <span v-else> {{ $t('productionOperation.none') }} </span>
           </span>
         </div>
         <!-- endregion -->
 
         <!-- 定义一个列，占 24 格 -->
-        <Col :span="24">
+          <Col :span="24">
           <!-- region  SN校验 -->
           <!-- 显示 SN校验的容器 -->
           <div class="mb-4 mr-8 inline-block">
@@ -679,7 +682,7 @@ onBeforeUnmount(() => {
             </span>
           </div>
           <!-- endregion -->
-          <!-- region 产品名称 -->
+          <!-- region 工位校验 -->
           <!-- 显示 工位校验 的容器 -->
           <div class="mb-4 mr-8 inline-block">
             <!-- 显示工位校验标签 -->
