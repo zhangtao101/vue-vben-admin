@@ -719,7 +719,7 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 模板编号 -->
         <FormItem
-          :label="$t('processParams.proceName')"
+          :label="$t('processManagement.processParams.proceName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.proceName" />
@@ -727,7 +727,7 @@ onMounted(() => {
 
         <!-- 模板名称 -->
         <FormItem
-          :label="$t('processParams.templateName')"
+          :label="$t('processManagement.processParams.templateName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.tempName" />
@@ -923,7 +923,7 @@ onMounted(() => {
       >
         <!-- 模板编号 -->
         <FormItem
-          :label="$t('processParams.templateNumber')"
+          :label="$t('processManagement.processParams.templateNumber')"
           name="tempCode"
           style="margin-bottom: 1em"
         >
@@ -931,7 +931,7 @@ onMounted(() => {
         </FormItem>
         <!-- 模板名称 -->
         <FormItem
-          :label="$t('processParams.templateName')"
+          :label="$t('processManagement.processParams.templateName')"
           name="tempName"
           style="margin-bottom: 1em"
         >
@@ -939,7 +939,7 @@ onMounted(() => {
         </FormItem>
         <!-- 模板类型 -->
         <FormItem
-          :label="$t('processParams.templateType')"
+          :label="$t('processManagement.processParams.templateType')"
           name="tempType"
           style="margin-bottom: 1em"
         >
@@ -955,7 +955,7 @@ onMounted(() => {
         </FormItem>
         <!-- 所属工序 -->
         <FormItem
-          :label="$t('processParams.subordinateProcess')"
+          :label="$t('processManagement.processParams.subordinateProcess')"
           name="proceCode"
           style="margin-bottom: 1em"
         >

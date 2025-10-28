@@ -1,0 +1,22 @@
+{
+  "processBase": {
+    "processName": "过称名称",
+    "processCode": "过称编码",
+    "parentProcess": "父过程",
+    "processType": "过称类型",
+    "reportingNode": "报工节点",
+    "experienceTime": "经验时间",
+    "criticalProcess": "关键过称",
+    "specialProcess": "特殊过称",
+    "planNode": "计划节点",
+    "remark": "备注"
+  },
+  "processParams": {
+    "templateNumber": "模板编号",
+    "templateName": "模板名称",
+    "proceName": "工序名称",
+    "templateType": "模板类型",
+    "subordinateProcess": "所属工序"
+  }
+
+}
