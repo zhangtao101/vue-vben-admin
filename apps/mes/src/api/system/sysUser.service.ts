@@ -29,6 +29,15 @@ export async function updateArticle(params: any) {
     params,
   );
 }
+/**
+ * 重置密码
+ */
+export async function resetPassword(params: any) {
+  return requestClient.put<any>(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/user/resetPassword/${params}`,
+    params,
+  );
+}
 
 /**
  * 删除用户信息

@@ -20,3 +20,13 @@ export function listSnCodeOpLog(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listSnCodeOpLog?${qs.stringify(params)}`,
   );
 }
+/**
+ * 改派
+ * @param params 参数
+ */
+export function snCodeIdReCheck(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/snCodeIdReCheck`,
+    params,
+  );
+}

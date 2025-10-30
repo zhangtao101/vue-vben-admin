@@ -16,6 +16,10 @@ import {
   Form,
   FormItem,
   Input,
+  message,
+  Modal,
+  Radio,
+  RadioGroup,
   Timeline,
   TimelineItem,
   Tooltip,
@@ -23,7 +27,7 @@ import {
 import { JsonViewer } from 'vue3-json-viewer';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { listSnCodeHistory, listSnCodeOpLog } from '#/api';
+import { listSnCodeHistory, listSnCodeOpLog, snCodeIdReCheck } from '#/api';
 
 import 'vue3-json-viewer/dist/vue3-json-viewer.css';
 
@@ -162,6 +166,34 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
+// region 改派
+const showReassignmentItem = ref<any>({});
+const reassignmentModal = ref(false);
+
+function showReassignment(row: any) {
+  showReassignmentItem.value = {
+    id: row.id,
+  };
+  reassignmentModal.value = true;
+}
+
+function closeReassignmentModal() {
+  reassignmentModal.value = false;
+  showReassignmentItem.value = {};
+}
+
+function submitReassignment() {
+  snCodeIdReCheck({
+    ...showReassignmentItem.value,
+  }).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+    closeReassignmentModal();
+  });
+}
+
+// endregion
+
 // region 查看详情
 // 详情
 const details = ref<any>({});
@@ -263,6 +295,19 @@ function queryLog(row: any) {
               :disabled="!row.paramDetail"
             />
           </Tooltip>
+
+          <!-- 改派 -->
+          <Tooltip>
+            <template #title>
+              {{ $t('productionOperation.reassignment') }}
+            </template>
+            <Button type="link" @click="showReassignment(row)">
+              <Icon
+                icon="mdi:axis-x-arrow"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
           <!-- 查看日志 -->
           <Tooltip>
             <template #title>{{ $t('common.viewLog') }}</template>
@@ -313,6 +358,33 @@ function queryLog(row: any) {
       </Timeline>
       <Empty v-else />
     </Drawer>
+
+    <!-- 改派弹窗 -->
+    <Modal
+      v-model:open="reassignmentModal"
+      :title="$t('productionOperation.reassignment')"
+      @ok="submitReassignment"
+      :ok-button-props="{
+        disabled: !(
+          showReassignmentItem.userCode &&
+          showReassignmentItem.password &&
+          showReassignmentItem.checkResult
+        ),
+      }"
+    >
+      <FormItem label="授权用户" prop="reassignmentUser">
+        <Input v-model:value="showReassignmentItem.userCode" />
+      </FormItem>
+      <FormItem label="授权密码" prop="reassignmentUser">
+        <Input type="password" v-model:value="showReassignmentItem.password" />
+      </FormItem>
+      <FormItem label="改判结果" prop="reassignmentUser">
+        <RadioGroup v-model:value="showReassignmentItem.checkResult">
+          <Radio :value="1">{{ $t('productionOperation.qualified') }}</Radio>
+          <Radio :value="-1">{{ $t('productionOperation.unqualified') }}</Radio>
+        </RadioGroup>
+      </FormItem>
+    </Modal>
   </Page>
 </template>
 

@@ -670,7 +670,7 @@ onMounted(() => {
               />
             </Button>
           </Tooltip>
-          <template v-if="row.anniu === 1">
+          <template v-if="row.anniu === 1 || row.anniu === 3">
             <!-- 隐患确认 -->
             <Tooltip
               :title="
@@ -691,11 +691,11 @@ onMounted(() => {
               </Button>
             </Tooltip>
           </template>
-          <template v-if="row.anniu === 2">
+          <template v-if="row.anniu === 2 || row.anniu === 3">
             <!-- 等级变更 -->
             <Tooltip
               :title="$t('common.levelChanges')"
-              v-if="0 !== row.state && row.anniu === 2"
+              v-if="0 !== row.state && (row.anniu === 2 || row.anniu === 3)"
             >
               <Button
                 type="link"

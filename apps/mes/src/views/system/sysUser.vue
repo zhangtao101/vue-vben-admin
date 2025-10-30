@@ -12,6 +12,8 @@ import {
   MdiSearch,
 } from '@vben/icons';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -39,6 +41,7 @@ import {
   listSysPerson,
   listUser,
   quXeryRoleManagementDropDown,
+  resetPassword,
   updateArticle,
 } from '#/api';
 import { $t } from '#/locales';
@@ -148,6 +151,8 @@ function editRow(row?: any) {
     ? {
         ...row,
         perName_workNumber: `${row.perName}&&${row.workNumber}`,
+        oldWorkNumber: row.workNumber,
+        oldUserName: row.userName,
       }
     : {};
   showEditDrawer.value = true;
@@ -290,6 +295,32 @@ function handleChange(value: any, _option: any) {
 // endregion
 
 // endregion
+
+// endregion
+
+// region 重置密码
+
+function resetPasswordFun(row: any) {
+  // 弹出确认对话框
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      // 点击取消按钮，显示警告消息
+      message.warning('已取消!');
+    },
+    onOk() {
+      // 调用 API 接口重置密码
+      resetPassword(row.id).then(() => {
+        // 显示操作成功消息
+        message.success($t('common.successfulOperation'));
+        gridApi.reload();
+      });
+    },
+    title: '是否确认重置密码?',
+  });
+}
 
 // endregion
 
@@ -448,6 +479,19 @@ onMounted(() => {
               class="mr-4"
               type="link"
               @click="editRow(row)"
+            />
+          </Tooltip>
+          <!-- 重置密码按钮 -->
+          <Tooltip>
+            <template #title>{{ $t('common.resetPassword') }}</template>
+            <Button
+              v-if="editButton"
+              :icon="
+                h(Icon, { icon: 'mdi:restore', class: 'inline-block size-6' })
+              "
+              class="mr-4"
+              type="link"
+              @click="resetPasswordFun(row)"
             />
           </Tooltip>
 
