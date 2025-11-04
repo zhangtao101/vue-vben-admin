@@ -1,4 +1,5 @@
 export * from './bomCategory.service';
+export * from './materialBaseManagement.service';
 export * from './plantCalendar.service';
 export * from './plantCalendarLook.service';
 export * from './printTemplateMaintenance.service';

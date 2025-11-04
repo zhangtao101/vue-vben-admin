@@ -1,32 +1,30 @@
 <script lang="ts" setup>
 import type { TreeProps } from 'ant-design-vue';
 
-import { computed, h, ref } from 'vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { h, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import {
-  MdiEditOutline,
-  MdiEyeOutline,
-  MdiLightDelete,
-  MdiLightSettings,
-  MdiSearch,
-  MdiTrayUpload,
-  MdiUpdate,
-} from '@vben/icons';
+import { MdiSearch, MdiTrayUpload } from '@vben/icons';
+import { useAccessStore } from '@vben/stores';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
+  Checkbox,
   Col,
   Drawer,
   Form,
   FormItem,
   Input,
   InputNumber,
+  message,
   Row,
   Space,
-  Switch,
-  Table,
   TabPane,
   Tabs,
   Tooltip,
@@ -36,7 +34,97 @@ import {
 // eslint-disable-next-line n/no-extraneous-import
 import { difference } from 'lodash-es';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  materialUpDownSafe,
+  queryMaterialInfoById,
+  queryMaterialInfoDetail,
+  queryMaterialInfoList,
+  queryMaterialInfoProductReferences,
+  updateNameToLabelAndIQC,
+} from '#/api';
 import { $t } from '#/locales';
+import { queryAuth } from '#/util';
+
+// region 表格操作
+
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    {
+      field: 'isQualityTest',
+      title: '质检',
+      minWidth: 80,
+      slots: { default: 'selectedState' },
+    },
+    {
+      field: 'isContract',
+      title: '合同',
+      minWidth: 80,
+      slots: { default: 'selectedState' },
+    },
+    {
+      field: 'isHalf',
+      title: '半成品',
+      minWidth: 80,
+      slots: { default: 'selectedState' },
+    },
+    {
+      field: 'isZeroStock',
+      title: '零库存',
+      minWidth: 80,
+      slots: { default: 'selectedState' },
+    },
+    { field: 'materialTypeCode', title: '材料类别', minWidth: 80 },
+    { field: 'materialCode', title: '材料编号', minWidth: 150 },
+    { field: 'materialDrawingCode', title: '材料图号', minWidth: 150 },
+    { field: 'materialName', title: '材料名称', minWidth: 200 },
+    { field: 'unit', title: '单位', minWidth: 100 },
+    { field: 'minPackNumber', title: '最小包装数', minWidth: 90 },
+    { field: 'safeLevel', title: '安全量', minWidth: 80 },
+    {
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: '操作',
+      width: 220,
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
+  },
+};
+
+const gridEvents: VxeGridListeners<any> = {
+  /* cellClick: ({ row }) => {
+    message.info(`cell-click: ${row.name}`);
+  },*/
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+// endregion
 
 // region 查询数据
 // 查询参数
@@ -47,181 +135,32 @@ const queryParams = ref({
   materialName: '',
 });
 
-// endregion
-
-// region 表格操作
-
-// 表格列名
-const columns = ref([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    title: '#',
-    width: 60,
-  },
-  {
-    dataIndex: 'isQualityTest',
-    ellipsis: true,
-    title: '质检',
-    width: 80,
-  },
-  {
-    dataIndex: 'isContract',
-    ellipsis: true,
-    title: '合同',
-    width: 80,
-  },
-  {
-    dataIndex: 'isHalf',
-    ellipsis: true,
-    title: '半成品',
-    width: 80,
-  },
-  {
-    dataIndex: 'isZeroStock',
-    ellipsis: true,
-    title: '零库存',
-    width: 80,
-  },
-  {
-    dataIndex: 'materialTypeCode',
-    ellipsis: true,
-    title: '材料类别',
-    width: 120,
-  },
-  {
-    dataIndex: 'materialCode',
-    ellipsis: true,
-    title: '材料编号',
-    width: 120,
-  },
-  {
-    dataIndex: 'materialDrawingCode',
-    ellipsis: true,
-    title: '材料图号',
-    width: 120,
-  },
-  {
-    dataIndex: 'materialName',
-    ellipsis: true,
-    title: '材料名称',
-    width: 120,
-  },
-  {
-    dataIndex: 'unit',
-    ellipsis: true,
-    title: '单位',
-    width: 120,
-  },
-  {
-    dataIndex: 'minPackNumber',
-    ellipsis: true,
-    title: '最小包装数',
-    width: 120,
-  },
-  {
-    dataIndex: 'safeLevel',
-    ellipsis: true,
-    title: '安全量',
-    width: 120,
-  },
-  {
-    dataIndex: 'operation',
-    ellipsis: true,
-    fixed: 'right',
-    title: '操作',
-    width: 220,
-  },
-] as any[]);
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 1500,
-  y: 350,
-});
-
-// 表格数据
-const data = ref([
-  {
-    isContract: true,
-    isHalf: false,
-    isQualityTest: true,
-    isZeroStock: true,
-    materialCode: 'MC001',
-    materialDrawingCode: 'MDC001',
-    materialName: '材料一',
-    materialTypeCode: 'MT001',
-    minPackNumber: 3,
-    safeLevel: 50,
-    unit: '个',
-  },
-  {
-    isContract: false,
-    isHalf: true,
-    isQualityTest: false,
-    isZeroStock: false,
-    materialCode: 'MC002',
-    materialDrawingCode: 'MDC002',
-    materialName: '材料二',
-    materialTypeCode: 'MT002',
-    minPackNumber: 1,
-    safeLevel: 80,
-    unit: '件',
-  },
-  {
-    isContract: true,
-    isHalf: true,
-    isQualityTest: true,
-    isZeroStock: true,
-    materialCode: 'MC003',
-    materialDrawingCode: 'MDC003',
-    materialName: '材料三',
-    materialTypeCode: 'MT003',
-    minPackNumber: 5,
-    safeLevel: 120,
-    unit: '套',
-  },
-  {
-    isContract: false,
-    isHalf: false,
-    isQualityTest: false,
-    isZeroStock: false,
-    materialCode: 'MC004',
-    materialDrawingCode: 'MDC004',
-    materialName: '材料四',
-    materialTypeCode: 'MT004',
-    minPackNumber: 8,
-    safeLevel: 60,
-    unit: '盒',
-  },
-  {
-    isContract: true,
-    isHalf: true,
-    isQualityTest: true,
-    isZeroStock: true,
-    materialCode: 'MC005',
-    materialDrawingCode: 'MDC005',
-    materialName: '材料五',
-    materialTypeCode: 'MT005',
-    minPackNumber: 2,
-    safeLevel: 100,
-    unit: '组',
-  },
-]);
-
-// 表格分页信息
-const pagination = computed(() => ({
-  current: 5,
-  pageSize: 20,
-  total: 200,
-}));
-
 /**
- * 分页信息改变事件
+ * 查询数据
+ * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
  */
-function paginationChange(page: any) {
-  pagination.value.current = page.current;
-  pagination.value.pageSize = page.pageSize;
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve, reject) => {
+    /**
+     * 调用 queryMaterialInfoList 函数，传入查询参数和分页信息。
+     * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
+     */
+    queryMaterialInfoList({
+      ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
+      pageNum: page, // 当前页码。
+      pageSize, // 每页显示的数据条数。
+    })
+      .then(({ total, results }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: results,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
 
 // endregion
@@ -252,7 +191,7 @@ function onLoadData(treeNode: any) {
   });
 }
 
-function handleExpand(keys: string[], { expanded, node }: any) {
+function handleExpand(keys: any[], { expanded, node }: any) {
   // node.parent add from 3.0.0-alpha.10
   const tempKeys = ((node.parent ? node.parent.children : treeData) || []).map(
     ({ key }: any) => key,
@@ -288,12 +227,44 @@ const editRules = ref({
  */
 function showEdit(row: any) {
   showEditDrawer.value = true;
-  editMessage.value = row;
+  queryMaterialInfoById({
+    id: row.id,
+  }).then((res) => {
+    editMessage.value = {
+      ...res,
+    };
+  });
 }
 
 // 关闭模态框
 function onClose() {
   showEditDrawer.value = false;
+}
+// 表单对象
+const editFormRef = ref();
+
+/**
+ * 提交表单
+ */
+function submitForm() {
+  editFormRef.value?.validate().then(() => {
+    materialUpDownSafe(editMessage.value).then(() => {
+      message.success('修改成功');
+      onClose();
+      gridApi.reload();
+    });
+  });
+}
+
+// endregion
+
+// region 更新物料标签描述
+
+function updateDes(row: any) {
+  updateNameToLabelAndIQC(row.materialCode).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
 }
 
 // endregion
@@ -315,8 +286,6 @@ const editPasRules = ref({
   ],
   upSafe: [{ message: '此项为必填项', required: true, trigger: 'change' }],
 } as any);
-// 文件列表
-const fileList = ref([]);
 
 /**
  * 显示编辑抽屉
@@ -334,51 +303,106 @@ function PasClose() {
 
 // endregion
 
+// 文件上传列表
+const accessStore = useAccessStore();
+// 文件上传列表
+const uploadFile = ref<any>([]);
+
+function getUploadUrl() {
+  return `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/andon/trigger/handle/upload`;
+}
+
+// endregion
+
 // region 查看
 
 // 抽屉是否显示
 const showEyeDrawer = ref(false);
-// 查看数据对象
-const eyeMessage = ref({} as any);
 // 当前活跃的标签页
 const activeKey = ref('1');
-// 查看详情表头配置
-const eyeColumns = ref([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    title: '#',
-    width: 60,
+
+const eeyeGridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    {
+      field: 'productCode',
+      title: '产品编号',
+      minWidth: 120,
+    },
+    {
+      field: 'productName',
+      title: '产品名称',
+      minWidth: 120,
+    },
+    {
+      field: 'useNumber',
+      title: '使用材料数',
+      minWidth: 120,
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
   },
-  {
-    dataIndex: 'productCode',
-    ellipsis: true,
-    title: '产品编号',
-    width: 120,
+  // 分页配置，禁用分页
+  pagerConfig: {
+    enabled: false,
   },
-  {
-    dataIndex: 'productName',
-    ellipsis: true,
-    title: '产品名称',
-    width: 120,
+  proxyConfig: {
+    ajax: {
+      query: async () => {
+        return await queryEyeData();
+      },
+    },
   },
-  {
-    dataIndex: 'useNumber',
-    ellipsis: true,
-    title: '使用材料数',
-    width: 120,
+  toolbarConfig: {
+    custom: true,
+    // import: true,
+    // export: true,
+    refresh: true,
+    zoom: true,
   },
-]);
-// 表格滚动信息配置
-const eyeScroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 1200,
-  y: 350,
+};
+
+const [EyeGrid] = useVbenVxeGrid({ gridOptions: eeyeGridOptions });
+
+const eyeQueryParams = ref({
+  materialCode: '',
 });
-// 表格数据
-const eyeData = ref([]);
-// 产品描述
-const remark = ref('123456');
+function queryEyeData() {
+  return new Promise((resolve, reject) => {
+    /**
+     * 调用 queryMaterialInfoList 函数，传入查询参数和分页信息。
+     * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
+     */
+    queryMaterialInfoProductReferences(eyeQueryParams.value.materialCode)
+      .then((data: any) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total: data.length,
+          items: data,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+const remark = ref('');
+/**
+ * 查询物料描述
+ */
+function queryDes() {
+  queryMaterialInfoDetail(eyeQueryParams.value.materialCode).then(
+    (data: any) => {
+      remark.value = data || '';
+    },
+  );
+}
 
 /**
  * 显示抽屉
@@ -386,7 +410,8 @@ const remark = ref('123456');
  */
 function showEye(row: any) {
   showEyeDrawer.value = true;
-  eyeMessage.value = row;
+  eyeQueryParams.value.materialCode = row.materialCode;
+  queryDes();
 }
 
 /**
@@ -395,6 +420,23 @@ function showEye(row: any) {
 function eyeClose() {
   showEditDrawer.value = false;
 }
+
+// endregion
+
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
+// endregion
+
+// region 初始化
+// 路由信息
+const route = useRoute();
+onMounted(() => {
+  // 查询权限
+  queryAuth(route.meta.code as string).then((data) => {
+    author.value = data;
+  });
+});
 
 // endregion
 </script>
@@ -423,6 +465,7 @@ function eyeClose() {
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
+            @click="gridApi.reload()"
           >
             {{ $t('common.search') }}
           </Button>
@@ -450,103 +493,95 @@ function eyeClose() {
       <!-- region 表格主体 -->
       <Col :lg="18" :md="16" :sm="20" :xl="20" :xs="14">
         <Card>
-          <Table
-            :columns="columns"
-            :data-source="data"
-            :pagination="pagination"
-            :scroll="scroll"
-            bordered
-            @change="paginationChange"
-          >
-            <template #bodyCell="{ column, index, record }">
-              <template v-if="column.dataIndex === 'step'">
-                <span>{{ index + 1 }}</span>
-              </template>
-              <template
-                v-else-if="
-                  [
-                    'isQualityTest',
-                    'isContract',
-                    'isHalf',
-                    'isZeroStock',
-                  ].includes(column.dataIndex as any)
-                "
-              >
-                <Switch
-                  v-model:checked="record[column.dataIndex as any]"
-                  disabled
+          <Grid>
+            <template #action="{ row }">
+              <!-- 编辑按钮 -->
+              <Tooltip>
+                <template #title>{{ $t('common.edit') }}</template>
+                <Button
+                  :icon="
+                    h(Icon, {
+                      icon: 'mdi:edit-outline',
+                      class: 'inline-block size-6',
+                    })
+                  "
+                  class="mx-1"
+                  type="link"
+                  @click="showEdit(row)"
                 />
-              </template>
+              </Tooltip>
 
-              <template v-else-if="column.dataIndex === 'operation'">
-                <Space>
-                  <!-- 编辑按钮 -->
-                  <Tooltip>
-                    <template #title>{{ $t('common.edit') }}</template>
-                    <Button
-                      :icon="
-                        h(MdiEditOutline, { class: 'inline-block size-6' })
-                      "
-                      type="link"
-                      @click="showEdit(record)"
-                    />
-                  </Tooltip>
-                  <!-- 维护PAS按钮 -->
-                  <Tooltip>
-                    <template #title>
-                      {{ $t('common.maintenancePAS') }}
-                    </template>
-                    <Button
-                      :icon="
-                        h(MdiLightSettings, {
-                          class: 'inline-block size-6',
-                        })
-                      "
-                      type="link"
-                      @click="showPas(record)"
-                    />
-                  </Tooltip>
-                  <!-- 更新物料标签描述按钮 -->
-                  <Tooltip>
-                    <template #title>
-                      {{ $t('common.updatedMaterialLabelDescription') }}
-                    </template>
-                    <Button
-                      :icon="
-                        h(MdiUpdate, {
-                          class: 'inline-block size-6',
-                        })
-                      "
-                      type="link"
-                    />
-                  </Tooltip>
-                  <!-- 查看按钮 -->
-                  <Tooltip>
-                    <template #title>{{ $t('common.view') }}</template>
-                    <Button
-                      :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
-                      type="link"
-                      @click="showEye(record)"
-                    />
-                  </Tooltip>
+              <!-- 维护PAS按钮 -->
+              <Tooltip>
+                <template #title>
+                  {{ $t('common.maintenancePAS') }}
+                </template>
+                <Button
+                  :icon="
+                    h(Icon, {
+                      icon: 'mdi-light:settings',
+                      class: 'inline-block size-6',
+                    })
+                  "
+                  class="mx-1"
+                  type="link"
+                  @click="showPas(record)"
+                />
+              </Tooltip>
+              <!-- 更新物料标签描述按钮 -->
+              <Tooltip>
+                <template #title>
+                  {{ $t('common.updatedMaterialLabelDescription') }}
+                </template>
+                <Button
+                  :icon="
+                    h(Icon, {
+                      icon: 'mdi:update',
+                      class: 'inline-block size-6',
+                    })
+                  "
+                  class="mx-1"
+                  type="link"
+                  @click="updateDes(row)"
+                />
+              </Tooltip>
 
-                  <!-- 删除按钮 -->
-                  <Tooltip>
-                    <template #title>{{ $t('common.delete') }}</template>
-                    <Button
-                      :icon="
-                        h(MdiLightDelete, {
-                          class: 'inline-block size-6',
-                        })
-                      "
-                      danger
-                      type="link"
-                    />
-                  </Tooltip>
-                </Space>
-              </template>
+              <!-- 查看 -->
+              <Tooltip>
+                <template #title>{{ $t('common.view') }}</template>
+                <Button
+                  type="link"
+                  :icon="
+                    h(Icon, {
+                      icon: 'mdi:eye',
+                      class: 'inline-block text-2xl',
+                    })
+                  "
+                  class="mx-1"
+                  @click="showEye(row)"
+                />
+              </Tooltip>
+
+              <!-- 删除按钮 -->
+              <Tooltip>
+                <template #title>{{ $t('common.delete') }}</template>
+                <Button
+                  :icon="
+                    h(Icon, {
+                      icon: 'mdi-light:delete',
+                      class: 'inline-block size-6',
+                    })
+                  "
+                  class="mx-1"
+                  danger
+                  type="link"
+                />
+              </Tooltip>
             </template>
-          </Table>
+            <template #selectedState="{ row, column }">
+              <Checkbox v-model:checked="row[column.field]" disabled />
+            </template>
+          </Grid>
         </Card>
       </Col>
       <!-- endregion -->
@@ -571,7 +606,7 @@ function eyeClose() {
         :rules="editRules"
         :wrapper-col="{ span: 16 }"
         autocomplete="off"
-        name="editMessageForm"
+        ref="editFormRef"
       >
         <!-- 材料编号 -->
         <FormItem
@@ -592,14 +627,14 @@ function eyeClose() {
           :label="$t('basic.bomManagement.materialsInform.upSafe')"
           name="upSafe"
         >
-          <InputNumber v-model:value="editMessage.upSafe" />
+          <InputNumber v-model:value="editMessage.upSafe" :min="0" />
         </FormItem>
         <!-- 安全量下限 -->
         <FormItem
           :label="$t('basic.bomManagement.materialsInform.downSafe')"
           name="downSafe"
         >
-          <InputNumber v-model:value="editMessage.downSafe" />
+          <InputNumber v-model:value="editMessage.downSafe" :max="0" />
         </FormItem>
       </Form>
 
@@ -610,7 +645,7 @@ function eyeClose() {
             {{ $t('common.cancel') }}
           </Button>
           <!-- 确认 -->
-          <Button type="primary" @click="onClose">
+          <Button type="primary" @click="submitForm">
             {{ $t('common.confirm') }}
           </Button>
         </Space>
@@ -663,10 +698,10 @@ function eyeClose() {
           name="files"
         >
           <UploadDragger
-            v-model:file-list="fileList"
-            :multiple="true"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            name="file"
+            v-model:file-list="uploadFile"
+            :action="getUploadUrl()"
+            :headers="{ Authorization: `${accessStore.accessToken}` }"
+            name="photo"
           >
             <div class="flex justify-center">
               <MdiTrayUpload class="size-16" />
@@ -711,20 +746,7 @@ function eyeClose() {
           key="1"
           :tab="$t('basic.bomManagement.materialsInform.productReference')"
         >
-          <Table
-            :columns="eyeColumns"
-            :data-source="eyeData"
-            :pagination="pagination"
-            :scroll="eyeScroll"
-            bordered
-            @change="paginationChange"
-          >
-            <template #bodyCell="{ column, index }">
-              <template v-if="column.dataIndex === 'step'">
-                <span>{{ index + 1 }}</span>
-              </template>
-            </template>
-          </Table>
+          <EyeGrid v-if="activeKey === '1'" />
         </TabPane>
         <TabPane
           key="3"

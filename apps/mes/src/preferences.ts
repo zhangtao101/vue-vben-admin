@@ -16,4 +16,7 @@ export const overridesPreferences = defineOverridesPreferences({
   theme: {
     mode: 'light',
   },
+  logo: {
+    source: '/logo.png',
+  },
 });

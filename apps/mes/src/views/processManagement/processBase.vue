@@ -19,14 +19,27 @@ import {
   Form,
   FormItem,
   Input,
+  InputNumber,
+  message,
+  Modal,
   RadioGroup,
   Row,
   Select,
+  Space,
+  Textarea,
   Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getProcessTree, queryProcessTable } from '#/api';
+import {
+  createProcess,
+  deleteProcess,
+  exportProcess,
+  getProcessTree,
+  queryProcessDetail,
+  queryProcessTable,
+  updateProcess,
+} from '#/api';
 import { queryAuth } from '#/util';
 
 // 路由信息
@@ -40,7 +53,7 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'processCode', title: '过程编码', minWidth: 90 },
+    { field: 'processCode', title: '过程编码', minWidth: 150 },
     { field: 'processName', title: '过程名称', minWidth: 200 },
     {
       field: 'isSpecial',
@@ -74,8 +87,8 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 90,
       slots: { default: 'selectedState' },
     },
-    { field: 'createTime', title: '创建时间', minWidth: 90 },
-    { field: 'updateTime', title: '操作时间', minWidth: 90 },
+    { field: 'createTime', title: '创建时间', minWidth: 150 },
+    { field: 'updateTime', title: '操作时间', minWidth: 150 },
     { field: 'updateUsername', title: '操作人', minWidth: 90 },
     { field: 'remark', title: '备注', minWidth: 120 },
     {
@@ -196,6 +209,16 @@ function selectedTree(_selectedKeys: any, { node }: any) {
   gridApi.reload();
 }
 
+/**
+ * 处理父过程编码改变事件
+ * @param _key
+ * @param item
+ */
+function parentProcessCodeChange(_key: any, item: any) {
+  editItem.value.parentProcessName = item.processName;
+  editItem.value.parentId = item.id;
+}
+
 // endregion
 
 // region 新增/ 编辑
@@ -208,12 +231,23 @@ const formRef = ref();
 // 工序过称类型列表
 const processTypeOptions = [
   {
-    value: 1,
+    value: true,
     label: '一般过程',
   },
   {
-    value: -1,
+    value: false,
     label: '检验过程',
+  },
+];
+// 操作类型
+const overweightType = [
+  {
+    label: '是',
+    value: true,
+  },
+  {
+    label: '否',
+    value: false,
   },
 ];
 
@@ -223,9 +257,13 @@ const processTypeOptions = [
  */
 function showDrawer(row: any) {
   drawerVisible.value = true;
-  editItem.value = {
-    ...row,
-  };
+  if (row.id) {
+    queryProcessDetail(row.id).then((data) => {
+      editItem.value = data;
+    });
+  } else {
+    editItem.value = {};
+  }
 }
 
 /**
@@ -234,6 +272,59 @@ function showDrawer(row: any) {
 function closeDrawer() {
   drawerVisible.value = false;
   editItem.value = {};
+}
+
+function submit() {
+  formRef.value.validate().then(() => {
+    const params = {
+      ...editItem.value,
+    };
+    const ob = params.id ? updateProcess(params) : createProcess(params);
+    ob.then(() => {
+      message.success($t('common.successfulOperation'));
+      gridApi.reload();
+    });
+  });
+}
+
+// endregion
+
+// region 删除
+
+function deleteRow(row: any) {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      message.warning('已取消删除!');
+    },
+    onOk() {
+      deleteProcess(row.id)
+        .then(() => {
+          // 显示操作成功的提示信息
+          message.success($t('common.successfulOperation'));
+          gridApi.query();
+          queryAllCategoryTree();
+        })
+        .catch((error) => {
+          // 显示操作失败的提示信息
+          message.error($t('common.operationFailure'));
+          message.error(error.msg); // 显示操作失败的提示信息
+        });
+    },
+    title: '是否确认删除该条数据?',
+  });
+}
+
+// endregion
+
+// region 文件下载
+
+function downloadTemplate() {
+  exportProcess(queryParams.value.parentId || 0).then((data) => {
+    window.open(data);
+  });
 }
 
 // endregion
@@ -255,7 +346,6 @@ onMounted(() => {
   // 调用 queryAllCategoryTree 函数，用于获取类别数据
   queryAllCategoryTree();
 });
-// todo 暂时不做, 先忙其他的
 // endregion
 </script>
 
@@ -286,6 +376,16 @@ onMounted(() => {
       <Col :lg="16" :md="16" :sm="16" :xl="19" :xs="20">
         <Card class="h-[70vh] overflow-y-auto">
           <Grid>
+            <template #toolbar-tools>
+              <!-- 添加按钮 -->
+              <Button type="primary" class="mr-4" @click="showDrawer({})">
+                {{ $t('common.add') }}
+              </Button>
+              <!-- 导出按钮 -->
+              <Button type="primary" @click="downloadTemplate()">
+                {{ $t('common.export') }}
+              </Button>
+            </template>
             <template #selectedState="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
@@ -303,7 +403,7 @@ onMounted(() => {
               <!-- 删除数据 -->
               <Tooltip>
                 <template #title>{{ $t('common.delete') }}</template>
-                <Button danger type="link" @click="deleteStep(row.id)">
+                <Button danger type="link" @click="deleteRow(row)">
                   <Icon
                     icon="mdi-light:delete"
                     class="inline-block align-middle text-2xl"
@@ -335,13 +435,21 @@ onMounted(() => {
         <Row class="my-2 w-full">
           <!-- 过称名称 -->
           <Col :span="12">
-            <FormItem :label="$t('processManagement.processBase.processName')">
+            <FormItem
+              :label="$t('processManagement.processBase.processName')"
+              :rules="[{ required: true, message: '该项为必填项' }]"
+              name="processName"
+            >
               <Input v-model:value="editItem.processName" class="w-full" />
             </FormItem>
           </Col>
           <!-- 过称编码 -->
           <Col :span="12">
-            <FormItem :label="$t('processManagement.processBase.processCode')">
+            <FormItem
+              :label="$t('processManagement.processBase.processCode')"
+              :rules="[{ required: true, message: '该项为必填项' }]"
+              name="processCode"
+            >
               <Input v-model:value="editItem.processCode" class="w-full" />
             </FormItem>
           </Col>
@@ -351,31 +459,130 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.parentProcess')"
+              :rules="[{ required: false, message: '该项为必填项' }]"
+              name="parentProcessCode"
             >
               <Select
-                v-model:value="editItem.parentProcess"
+                v-model:value="editItem.parentProcessCode"
                 class="w-full"
-                :filter-option="false"
                 :options="treeData[0].children"
                 :field-names="{
                   label: 'processName',
-                  value: 'id',
+                  value: 'processCode',
                 }"
+                @change="parentProcessCodeChange"
+                :disabled="!!editItem.id"
               />
             </FormItem>
           </Col>
           <!-- 过称类型 -->
           <Col :span="12">
-            <FormItem :label="$t('processManagement.processBase.processType')">
+            <FormItem
+              :label="$t('processManagement.processBase.processType')"
+              :rules="[{ required: true, message: '该项为必填项' }]"
+              name="isGeneral"
+            >
               <RadioGroup
-                v-model:value="editItem.materialCode"
+                v-model:value="editItem.isGeneral"
                 class="w-full"
                 :options="processTypeOptions"
               />
             </FormItem>
           </Col>
         </Row>
+        <Row class="my-2 w-full">
+          <!-- 报工节点 -->
+          <Col :span="12">
+            <FormItem
+              :label="$t('processManagement.processBase.reportingNode')"
+              :rules="[{ required: true, message: '该项为必填项' }]"
+              name="isReport"
+            >
+              <RadioGroup
+                v-model:value="editItem.isReport"
+                class="w-full"
+                :options="overweightType"
+              />
+            </FormItem>
+          </Col>
+          <!-- 经验时间 -->
+          <Col :span="12">
+            <FormItem
+              :label="$t('processManagement.processBase.experienceTime')"
+            >
+              <InputNumber
+                v-model:value="editItem.experienceTime"
+                addon-after="秒(S)"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row class="my-2 w-full">
+          <!-- 关键过称 -->
+          <Col :span="12">
+            <FormItem
+              :label="$t('processManagement.processBase.criticalProcess')"
+              :rules="[{ required: true, message: '该项为必填项' }]"
+              name="isKey"
+            >
+              <RadioGroup
+                v-model:value="editItem.isKey"
+                class="w-full"
+                :options="overweightType"
+              />
+            </FormItem>
+          </Col>
+          <!-- 特殊过称 -->
+          <Col :span="12">
+            <FormItem
+              :label="$t('processManagement.processBase.specialProcess')"
+              :rules="[{ required: true, message: '该项为必填项' }]"
+              name="isSpecial"
+            >
+              <RadioGroup
+                v-model:value="editItem.isSpecial"
+                class="w-full"
+                :options="overweightType"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row class="my-2 w-full">
+          <!-- 计划节点 -->
+          <Col :span="12">
+            <FormItem
+              :label="$t('processManagement.processBase.planNode')"
+              :rules="[{ required: true, message: '该项为必填项' }]"
+              name="isPlan"
+            >
+              <RadioGroup
+                v-model:value="editItem.isPlan"
+                class="w-full"
+                :options="overweightType"
+              />
+            </FormItem>
+          </Col>
+          <!-- 备注 -->
+          <Col :span="12">
+            <FormItem :label="$t('processManagement.processBase.remark')">
+              <Textarea v-model:value="editItem.remark" />
+            </FormItem>
+          </Col>
+        </Row>
       </Form>
+
+      <template #footer>
+        <Space>
+          <!-- 取消 -->
+          <Button @click="closeDrawer">
+            {{ $t('common.cancel') }}
+          </Button>
+          <!-- 提交  -->
+          <Button type="primary" @click="submit()">
+            {{ $t('common.confirm') }}
+          </Button>
+        </Space>
+      </template>
     </Drawer>
   </Page>
 </template>
