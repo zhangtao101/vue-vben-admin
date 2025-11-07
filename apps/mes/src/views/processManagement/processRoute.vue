@@ -392,7 +392,7 @@ onMounted(() => {
             <template #title>
               {{ $t('processManagement.processRoute.delete') }}
             </template>
-            <Button type="link" @click="pullIn(row)" class="px-1">
+            <Button type="link" @click="pullIn(row)" danger class="px-1">
               <Icon
                 icon="mdi:delete-forever-outline"
                 class="inline-block align-middle text-2xl"
@@ -476,6 +476,7 @@ onMounted(() => {
         </Space>
       </template>
     </Drawer>
+    <!-- endregion -->
 
     <ProcessRouteDetailPage ref="processRouteDetailPageRef" />
   </Page>
