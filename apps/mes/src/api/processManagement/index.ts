@@ -2,6 +2,8 @@ export * from './changeOperation.service';
 export * from './process.service';
 export * from './processBase.service';
 export * from './processParams.service';
+export * from './processRoute.service';
+export * from './processRouteDetail.service';
 export * from './selectionOfRDProcessRoute.service';
 export * from './waterContentMaintenance.service';
 export * from './workStationMaintenance.service';

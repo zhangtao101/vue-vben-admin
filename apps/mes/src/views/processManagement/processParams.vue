@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { VxeGridProps } from '@vben/plugins/src/vxe-table/types';
+import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -751,34 +751,30 @@ onMounted(() => {
     <!-- endregion -->
     <!-- region 表格 -->
     <Card class="mb-8">
-      <div>
-        <Space>
-          <!-- 新增按钮 -->
-          <Button
-            v-if="addButton"
-            class="mb-4"
-            type="primary"
-            @click="editRow()"
-          >
-            {{ $t('common.add') }}
-          </Button>
-
-          <!-- 导入按钮 -->
-          <Upload
-            v-model:file-list="fileList"
-            :action="action"
-            :headers="headers"
-            :show-upload-list="false"
-            name="file"
-            @change="handleChange"
-          >
-            <Button class="mb-4" type="primary">
-              {{ $t('common.import') }}
-            </Button>
-          </Upload>
-        </Space>
-      </div>
       <Grid>
+        <template #toolbar-tools>
+          <Space>
+            <!-- 新增按钮 -->
+            <Button v-if="addButton" type="primary" @click="editRow()">
+              {{ $t('common.add') }}
+            </Button>
+
+            <!-- 导入按钮 -->
+            <Upload
+              v-model:file-list="fileList"
+              :action="action"
+              :headers="headers"
+              :show-upload-list="false"
+              name="file"
+              @change="handleChange"
+            >
+              <Button type="primary">
+                {{ $t('common.import') }}
+              </Button>
+            </Upload>
+          </Space>
+        </template>
+
         <template #paramType="{ row }">
           <span>{{
             row.paramType === 1
@@ -1041,13 +1037,13 @@ onMounted(() => {
       </template>
     </Drawer>
 
-    <!-- region 新增/编辑 抽屉 -->
+    <!-- region 日志 抽屉 -->
     <Drawer
       v-model:open="showLogDrawer"
       :footer-style="{ textAlign: 'right' }"
       :height="500"
       placement="top"
-      title="信息编辑"
+      title="日志查看"
       @close="onClose()"
     >
       <Spin :spinning="logLoading">
