@@ -1,0 +1,35 @@
+{
+  "processBase": {
+    "processName": "processName",
+    "processCode": "processCode",
+    "parentProcess": "parentProcess",
+    "processType": "processType",
+    "reportingNode": "reportingNode",
+    "experienceTime": "experienceTime",
+    "criticalProcess": "criticalProcess",
+    "specialProcess": "specialProcess",
+    "planNode": "planNode",
+    "remark": "remark"
+  },
+  "processParams": {
+    "templateNumber": "templateNumber",
+    "templateName": "templateName",
+    "proceName": "processName",
+    "templateType": "templateType",
+    "subordinateProcess": "subordinateProcess"
+  },
+  "processRoute": {
+    "viewRouting": "viewRouting",
+    "editTheBasicInformation": "editBasicInfo",
+    "bindProductModel": "bindProductModel",
+    "audit": "audit",
+    "startAndStopChanges": "startStopChanges",
+    "change": "change",
+    "logView": "logView",
+    "delete": "delete",
+    "processRouteNumber": "processRouteNumber",
+    "processRouteName": "processRouteName",
+    "routeType": "routeType",
+    "processName": "processName"
+  }
+}

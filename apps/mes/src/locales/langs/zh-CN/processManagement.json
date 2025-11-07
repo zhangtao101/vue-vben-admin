@@ -17,6 +17,19 @@
     "proceName": "工序名称",
     "templateType": "模板类型",
     "subordinateProcess": "所属工序"
+  },
+  "processRoute": {
+    "viewRouting": "查看工艺路线",
+    "editTheBasicInformation": "编辑基础信息",
+    "bindProductModel": "绑定产品型号",
+    "audit": "审核",
+    "startAndStopChanges": "启停变更",
+    "change": "变更",
+    "logView": "日志查看",
+    "delete": "删除",
+    "processRouteNumber": "工艺路线编号",
+    "processRouteName": "工艺路线名称",
+    "routeType": "路线类型",
+    "processName": "过称名称"
   }
-
 }
