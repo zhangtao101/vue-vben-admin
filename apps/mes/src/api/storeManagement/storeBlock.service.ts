@@ -42,6 +42,15 @@ export function queryWareAreaById(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/wareArea/detail/${params}`,
   );
 }
+/**
+ * 根据仓库ID查询库区列表
+ * @param params
+ */
+export function queryWareAreaListByWarehouseId(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/wareArea/list/warehouseId/${params}`,
+  );
+}
 
 /**
  * 新增库区
