@@ -22,9 +22,6 @@ import {
   Select,
   Space,
   Tooltip,
-  Row,
-  Col,
-  RadioGroup,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -315,9 +312,7 @@ onMounted(() => {
           </Button>
         </template>
         <template #isUse="{ row }">
-          {{
-            row.isUse === 1 ? $t('status.enable') : $t('status.forbidden')
-          }}
+          {{ row.isUse === 1 ? $t('status.enable') : $t('status.forbidden') }}
         </template>
         <template #action="{ row }">
           <!-- 编辑 -->
