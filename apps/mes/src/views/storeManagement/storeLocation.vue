@@ -2,6 +2,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -29,6 +30,7 @@ import {
   deleteWareLocation,
   insertWareLocation,
   queryAllPhysicalWarehouse,
+  queryPrintTemplateDetails,
   queryWareAreaListByWarehouseId,
   queryWareLocation,
   queryWareLocationById,
@@ -43,6 +45,7 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
+    { type: 'checkbox', width: 60 },
     { field: 'wareLocationCode', title: '库位编号', minWidth: 80 },
     { field: 'wareLocationName', title: '库位名称', minWidth: 80 },
     { field: 'warehouseName', title: '物理仓库', minWidth: 80 },
@@ -274,6 +277,52 @@ function warehouseChange(warehouseId: any, isClear: boolean = false) {
 
 // endregion
 
+// region 打印
+
+/**
+ * 打印
+ */
+function printFile() {
+  // 当前选中的数据
+  const selectedRows = gridApi.grid.getCheckboxRecords();
+  if (selectedRows.length === 0) {
+    message.warning('请至少选择一条数据!');
+    return;
+  }
+
+  // 当前选中的库位名称
+  const codes: {
+    barcode1: string;
+    barcode2: string;
+  }[] = [];
+  for (let i = 0, size = selectedRows.length; i < size; i += 2) {
+    codes.push({
+      barcode1: selectedRows[i].wareLocationName,
+      barcode2: selectedRows[i + 1]
+        ? selectedRows[i + 1].wareLocationName
+        : undefined,
+    });
+  }
+  // 打印数据包装
+  const data = {
+    barcodeList: codes,
+  };
+  // 打印模板获取
+  queryPrintTemplateDetails('库位打印').then((res: any) => {
+    try {
+      const templateRef = JSON.parse(res.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({
+        template: templateRef,
+      });
+      hiprintTemplate.print(data, { leftOffset: -1, topOffset: -1 });
+    } catch {
+      console.error('模板解析失败');
+    }
+  });
+}
+
+// endregion
+
 // region 初始化
 // 路由信息
 const route = useRoute();
@@ -364,8 +413,13 @@ onMounted(() => {
     <Card class="mb-8">
       <Grid>
         <template #toolbar-tools>
-          <Button type="primary" @click="showEditDrawerFn()">
+          <Button type="primary" @click="showEditDrawerFn()" class="mx-4">
             {{ $t('common.add') }}
+          </Button>
+
+          <!-- 打印按钮 -->
+          <Button type="primary" @click="printFile()">
+            {{ $t('common.print') }}
           </Button>
         </template>
         <template #isUse="{ row }">

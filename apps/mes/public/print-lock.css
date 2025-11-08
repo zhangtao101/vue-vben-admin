@@ -3,12 +3,18 @@
     margin: 0px;
     padding: 0px;
   }
+  .hiprint-barcode {
+    width: 120px;
+  }
 }
 
 @page {
   margin: 0;
 }
 
+.hiprint-barcode {
+  width: 120px;
+}
 .hiprint-printPaper * {
   box-sizing: border-box;
   -moz-box-sizing: border-box; /* Firefox */

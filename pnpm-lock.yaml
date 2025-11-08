@@ -877,8 +877,8 @@ importers:
         specifier: ^3.5.17
         version: 3.5.17(typescript@5.8.3)
       vue-plugin-hiprint:
-        specifier: 0.0.58-fix
-        version: 0.0.58-fix
+        specifier: ^0.0.60
+        version: 0.0.60
       vue-router:
         specifier: 'catalog:'
         version: 4.6.3(vue@3.5.17(typescript@5.8.3))
@@ -6470,9 +6470,6 @@ packages:
 
   core-js-compat@3.46.0:
     resolution: {integrity: sha512-p9hObIIEENxSV8xIu+V68JjSeARg6UVMG5mR+JEUguG3sI6MsiS1njz2jHmyJDvA+8jX/sytkBHup6kxhM9law==}
-
-  core-js@3.41.0:
-    resolution: {integrity: sha512-SJ4/EHwS36QMJd6h/Rg+GyR4A5xE0FSI3eZ+iBVpfqf1x0eTSg1smWLHrA+2jQThZSh97fmSgFSU8B61nxosxA==}
 
   core-js@3.46.0:
     resolution: {integrity: sha512-vDMm9B0xnqqZ8uSBpZ8sNtRtOdmfShrvT6h2TuQGLs0Is+cR0DYbj/KWP6ALVNbWPpqA/qPLoOuppJN07humpA==}
@@ -12107,9 +12104,9 @@ packages:
     peerDependencies:
       vue: ^3.5.17
 
-  vue-plugin-hiprint@0.0.58-fix:
-    resolution: {integrity: sha512-D9oU8EEUE8p1cN+Fc7pt4clXijVirgrK9+ghBeMfymwFh524/oxsRH2Z5nNem1ygCSFyDU2pGrgrNuvin654UA==}
-    engines: {node: 16.x}
+  vue-plugin-hiprint@0.0.60:
+    resolution: {integrity: sha512-a5uOMn6Nr4qlYYaVNbQKwRZJa8UcNMTflfi6J430/NDtySJB+5ArE8I8+NLjgVV56x3/qdUBs/GWuZCX5Umv1w==}
+    engines: {node: '>=16'}
 
   vue-qrcode-reader@5.7.3:
     resolution: {integrity: sha512-iSGko42FsEvdHyizBMBs/X+HMO9Z5ONDxjW+mQdoraOR5emRNedmjC5SEJdYzGz8ZP5ME3lwB4iHy3S7MOt5Qw==}
@@ -12705,7 +12702,7 @@ snapshots:
   '@antv/g-math@3.0.1':
     dependencies:
       '@antv/util': 3.3.11
-      '@babel/runtime': 7.27.6
+      '@babel/runtime': 7.28.4
       gl-matrix: 3.4.4
       tslib: 2.8.1
 
@@ -12714,7 +12711,7 @@ snapshots:
       '@antv/g-lite': 2.3.2
       '@antv/g-math': 3.0.1
       '@antv/util': 3.3.11
-      '@babel/runtime': 7.27.6
+      '@babel/runtime': 7.28.4
       tslib: 2.8.1
 
   '@antv/g-plugin-canvas-picker@2.1.27':
@@ -12724,7 +12721,7 @@ snapshots:
       '@antv/g-plugin-canvas-path-generator': 2.1.22
       '@antv/g-plugin-canvas-renderer': 2.3.3
       '@antv/util': 3.3.11
-      '@babel/runtime': 7.27.6
+      '@babel/runtime': 7.28.4
       gl-matrix: 3.4.4
       tslib: 2.8.1
 
@@ -12735,14 +12732,14 @@ snapshots:
       '@antv/g-plugin-canvas-path-generator': 2.1.22
       '@antv/g-plugin-image-loader': 2.1.26
       '@antv/util': 3.3.11
-      '@babel/runtime': 7.27.6
+      '@babel/runtime': 7.28.4
       gl-matrix: 3.4.4
       tslib: 2.8.1
 
   '@antv/g-plugin-dom-interaction@2.1.27':
     dependencies:
       '@antv/g-lite': 2.3.2
-      '@babel/runtime': 7.27.6
+      '@babel/runtime': 7.28.4
       tslib: 2.8.1
 
   '@antv/g-plugin-dragndrop@2.0.38':
@@ -12756,7 +12753,7 @@ snapshots:
     dependencies:
       '@antv/g-lite': 2.3.2
       '@antv/util': 3.3.11
-      '@babel/runtime': 7.27.6
+      '@babel/runtime': 7.28.4
       gl-matrix: 3.4.4
       tslib: 2.8.1
 
@@ -12764,7 +12761,7 @@ snapshots:
     dependencies:
       '@antv/g-lite': 2.3.2
       '@antv/util': 3.3.11
-      '@babel/runtime': 7.27.6
+      '@babel/runtime': 7.28.4
       gl-matrix: 3.4.4
       tslib: 2.8.1
 
@@ -17195,7 +17192,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
       '@types/raf': 3.4.3
-      core-js: 3.41.0
+      core-js: 3.46.0
       raf: 3.4.1
       regenerator-runtime: 0.13.11
       rgbcolor: 1.0.1
@@ -17538,8 +17535,6 @@ snapshots:
   core-js-compat@3.46.0:
     dependencies:
       browserslist: 4.27.0
-
-  core-js@3.41.0: {}
 
   core-js@3.46.0: {}
 
@@ -19978,7 +19973,7 @@ snapshots:
       fflate: 0.8.2
     optionalDependencies:
       canvg: 3.0.11
-      core-js: 3.41.0
+      core-js: 3.46.0
       dompurify: 2.5.8
       html2canvas: 1.4.1
 
@@ -23722,7 +23717,7 @@ snapshots:
       clipboard: 2.0.11
       vue: 3.5.17(typescript@5.8.3)
 
-  vue-plugin-hiprint@0.0.58-fix:
+  vue-plugin-hiprint@0.0.60:
     dependencies:
       '@claviska/jquery-minicolors': 2.3.6(jquery@3.7.1)
       '@wtto00/html2canvas': 1.4.3

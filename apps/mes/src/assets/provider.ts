@@ -750,6 +750,62 @@ export const provider = function () {
           },
         },
         {
+          tid: 'providerModule2.batchBarcodeTable',
+          title: '批量条形码(表格)',
+          type: 'table',
+          options: {
+            field: 'barcodeList', // 绑定您的数组字段
+            tableStyle: 'border-collapse: collapse; border: none;', // 无边框
+            tableBodyStyle: 'border: none;',
+          },
+          columns: [
+            [
+              {
+                width: 140, // 每列宽度（px）
+                height: 60, // 行高（px）
+                field: 'barcode1',
+                checked: true,
+                columnId: 'barcode1',
+                fixed: false,
+                rowspan: 1,
+                colspan: 1,
+                align: 'center',
+                tableTextType: 'barcode',
+                tableQRCodeLevel: 0,
+                tableSummaryTitle: true,
+                tableSummary: '',
+                showCodeTitle: true,
+              },
+              {
+                width: 140, // 每列宽度（px）
+                height: 60, // 行高（px）
+                field: 'barcode2',
+                checked: true,
+                columnId: 'barcode2',
+                fixed: false,
+                rowspan: 1,
+                colspan: 1,
+                align: 'center',
+                tableTextType: 'barcode',
+                tableQRCodeLevel: 0,
+                tableSummaryTitle: true,
+                tableSummary: '',
+                showCodeTitle: true,
+              },
+            ],
+          ],
+          tableBodyCellBorder: 'noBorder',
+          tableBodyRowBorder: 'noBorder',
+          tableBodyStyle: 'border: none;',
+          tableBorder: 'noBorder',
+          tableFooterBorder: 'noBorder',
+          tableFooterCellBorder: 'noBorder',
+          tableFooterRepeat: 'no',
+          tableHeaderBorder: 'noBorder',
+          tableHeaderRepeat: 'none',
+          tableStyle: 'border-collapse: collapse; border: none;',
+        },
+        {
           tid: 'providerModule1.qrcode',
           title: '二维码',
           data: 'XS888888888',
