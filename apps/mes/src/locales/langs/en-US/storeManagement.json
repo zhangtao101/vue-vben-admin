@@ -1,0 +1,24 @@
+{
+  "storeManage": {
+    "storeName": "Store Name",
+    "storeCode": "Store Code",
+    "storeType": "Store Type",
+    "storeLocation": "Store Location",
+    "storeCapacity": "Store Capacity",
+    "storeRemark": "Remark"
+  },
+  "physicalStore": {
+    "status": "Status",
+    "isLineWarehouse": "Is Line Warehouse"
+  },
+  "storeBlock": {
+    "wareAreaCode": "Ware Area Code",
+    "wareAreaName": "Ware Area Name",
+    "physicalWarehouse": "Physical Warehouse"
+  },
+  "storeLocation": {
+    "wareLocationCode": "Ware Location Code",
+    "wareLocationName": "Ware Location Name",
+    "physicalWareArea": "Physical Ware Area"
+  }
+}

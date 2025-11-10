@@ -1,0 +1,24 @@
+{
+  "storeManage": {
+    "storeName": "仓库名称",
+    "storeCode": "仓库编码",
+    "storeType": "仓库类型",
+    "storeLocation": "仓库位置",
+    "storeCapacity": "仓库容量",
+    "storeRemark": "备注"
+  },
+  "physicalStore": {
+    "status": "状态",
+    "isLineWarehouse": "是否为线边仓"
+  },
+  "storeBlock": {
+    "wareAreaCode": "库区编号",
+    "wareAreaName": "库区名称",
+    "physicalWarehouse": "物理仓库"
+  },
+  "storeLocation": {
+    "wareLocationCode": "库位编号",
+    "wareLocationName": "库位名称",
+    "physicalWareArea": "物理库区"
+  }
+}
