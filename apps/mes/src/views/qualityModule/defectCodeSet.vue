@@ -25,11 +25,12 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getProceByName, listWordListByParentCode } from '#/api';
 import {
   deleteDefectCodeSet,
   exportDefectCodeSet,
+  getProceByName,
   insertDefectCodeSet,
+  listWordListByParentCode,
   queryDefectCodeSet,
   queryDefectCodeSetById,
   updateDefectCodeSet,

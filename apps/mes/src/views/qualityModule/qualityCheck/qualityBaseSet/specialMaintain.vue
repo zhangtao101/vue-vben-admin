@@ -100,7 +100,7 @@ const queryParams = ref<any>({});
 
 /**
  * queryData - 负责根据当前的查询参数、分页信息，从后端服务查询数据
- * @param {Object} param - 查询参数对象
+ * @param {object} param - 查询参数对象
  * @param {number} param.page - 当前页码
  * @param {number} param.pageSize - 每页显示条数
  * @returns {Promise} 返回包含总条数和数据列表的Promise
@@ -154,7 +154,7 @@ const editRules = ref<any>({
 
 /**
  * 显示编辑抽屉
- * @param {Object} [item] - 要编辑的行数据，如果为空则为新增操作
+ * @param {object} [item] - 要编辑的行数据，如果为空则为新增操作
  */
 function showEditDrawerFn(item?: any) {
   if (item) {
@@ -207,7 +207,7 @@ function submit() {
 
 /**
  * 处理删除操作
- * @param {Object} row - 当前要删除的行数据
+ * @param {object} row - 当前要删除的行数据
  */
 function delPhysicalWarehouse(row: any) {
   // 弹出确认对话框
