@@ -4,7 +4,6 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { onBeforeUnmount, ref } from 'vue';
 
 import { $t } from '@vben/locales';
-import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -22,6 +21,7 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   handleMaulSncode,
   hCHqCheckClear,

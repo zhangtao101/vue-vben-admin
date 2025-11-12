@@ -33,7 +33,7 @@ import {
   queryDefectCodeSet,
   queryDefectCodeSetById,
   updateDefectCodeSet,
-} from '#/api/qualityModule';
+} from '#/api';
 import { queryAuth } from '#/util';
 
 // region 表格
@@ -349,18 +349,27 @@ onMounted(() => {
     <Card class="mb-8">
       <Grid>
         <template #toolbar-tools>
-          <Button type="primary" @click="showEditDrawerFn()" class="mx-2">
+          <Button
+            type="primary"
+            @click="showEditDrawerFn()"
+            class="mx-2"
+            v-if="author.includes('新增')"
+          >
             {{ $t('common.add') }}
           </Button>
 
           <!-- 导出按钮 -->
-          <Button type="primary" @click="exportFile()">
+          <Button
+            type="primary"
+            @click="exportFile()"
+            v-if="author.includes('导出')"
+          >
             {{ $t('common.export') }}
           </Button>
         </template>
         <template #action="{ row }">
           <!-- 编辑 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('编辑')">
             <template #title>
               {{ $t('common.edit') }}
             </template>
@@ -373,7 +382,7 @@ onMounted(() => {
           </Tooltip>
 
           <!-- 删除 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('删除')">
             <template #title>
               {{ $t('common.delete') }}
             </template>

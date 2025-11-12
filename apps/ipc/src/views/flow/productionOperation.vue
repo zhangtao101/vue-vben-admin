@@ -602,7 +602,6 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- 页面容器组件 -->
   <Page>
     <!-- region 简单模式 -->
     <SimpleMode

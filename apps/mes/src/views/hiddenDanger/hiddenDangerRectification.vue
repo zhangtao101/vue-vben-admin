@@ -585,6 +585,7 @@ onMounted(() => {
             v-model:value="queryParams.level"
             :options="levelOptions"
             class="!w-48"
+            allow-clear
           />
         </FormItem>
 
@@ -597,6 +598,7 @@ onMounted(() => {
             v-model:value="queryParams.state"
             :options="statusOptions"
             class="!w-48"
+            allow-clear
           />
         </FormItem>
 

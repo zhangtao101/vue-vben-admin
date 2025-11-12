@@ -12,6 +12,7 @@ export * from './operationFormula';
 export * from './planMannagement';
 export * from './processManagement';
 export * from './productionReport';
+export * from './qualityModule';
 export * from './risk';
 export * from './riskManagement';
 export * from './stepManagement';

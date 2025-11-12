@@ -29,34 +29,38 @@ import {
   querySpecialCharacter,
   querySpecialCharacterById,
   updateSpecialCharacter,
-} from '#/api/qualityModule';
+} from '#/api';
 import { queryAuth } from '#/util';
 
 // region 表格
 
+/**
+ * 表格配置项
+ * 定义表格的列、样式、工具栏等配置
+ */
 const gridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
+  align: 'center', // 表格内容居中对齐
+  border: true, // 显示表格边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'specialCharacterName', title: '特殊特性名称', minWidth: 90 },
-    { field: 'specialCharacterSymbol', title: '特殊特性符号', minWidth: 90 },
-    { field: 'remark', title: '备注', minWidth: 100 },
-    { field: 'operateTime', title: '操作时间', minWidth: 150 },
-    { field: 'operateUserName', title: '操作人', minWidth: 80 },
+    { title: '序号', type: 'seq', width: 50 }, // 序号列
+    { field: 'specialCharacterName', title: '特殊特性名称', minWidth: 90 }, // 特殊特性名称列
+    { field: 'specialCharacterSymbol', title: '特殊特性符号', minWidth: 90 }, // 特殊特性符号列
+    { field: 'remark', title: '备注', minWidth: 100 }, // 备注列
+    { field: 'operateTime', title: '操作时间', minWidth: 150 }, // 操作时间列
+    { field: 'operateUserName', title: '操作人', minWidth: 80 }, // 操作人列
     {
       title: '操作',
       minWidth: 150,
       fixed: 'right',
       slots: {
-        default: 'action',
+        default: 'action', // 使用action插槽自定义操作列
       },
     },
   ],
-  height: 500,
-  stripe: true,
+  height: 500, // 表格高度
+  stripe: true, // 斑马纹效果
   sortConfig: {
-    multiple: true,
+    multiple: true, // 支持多列排序
   },
   proxyConfig: {
     ajax: {
@@ -69,42 +73,51 @@ const gridOptions: VxeGridProps<any> = {
     },
   },
   toolbarConfig: {
-    custom: true,
-    // import: true,
-    // export: true,
-    refresh: true,
-    zoom: true,
+    custom: true, // 自定义工具栏
+    refresh: true, // 显示刷新按钮
+    zoom: true, // 显示缩放按钮
   },
 };
 
+/**
+ * 表格事件处理
+ */
 const gridEvents: any = {
   /* cellClick: ({ row }) => {
     message.info(`cell-click: ${row.name}`);
   },*/
 };
 
+/**
+ * 创建表格实例
+ * Grid: 表格组件
+ * gridApi: 表格API，用于操作表格
+ */
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // 查询参数
 const queryParams = ref<any>({});
 
 /**
- * queryData - 负责根据当前的查询参数、分页信息和日期范围，从后端服务查询数据。
- * 该函数会更新表格的加载状态，并在查询完成后更新数据列表和总条数。
+ * queryData - 负责根据当前的查询参数、分页信息，从后端服务查询数据
+ * @param {Object} param - 查询参数对象
+ * @param {number} param.page - 当前页码
+ * @param {number} param.pageSize - 每页显示条数
+ * @returns {Promise} 返回包含总条数和数据列表的Promise
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
-    // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数。
+    // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数
     const params = {
-      // 展开 queryParams.value 对象，包含所有查询参数。
+      // 展开 queryParams.value 对象，包含所有查询参数
       ...queryParams.value,
-      // 设置当前页码。
+      // 设置当前页码
       pageNum: page,
-      // 设置每页显示的数据条数。
+      // 设置每页显示的数据条数
       pageSize,
     };
 
-    // 调用 querySpecialCharacter 函数查询数据。
+    // 调用 querySpecialCharacter 函数查询数据
     querySpecialCharacter(params)
       .then(({ total, results }) => {
         resolve({
@@ -122,11 +135,11 @@ function queryData({ page, pageSize }: any) {
 
 // region 新增/编辑 抽屉
 
-// 编辑form表单
+// 编辑form表单引用
 const editForm = ref();
-// 编辑抽屉是否显示
+// 编辑抽屉是否显示的状态
 const showEditDrawer = ref(false);
-// 编辑的对象
+// 编辑的对象数据
 const editItem = ref<any>({});
 // form表单规则验证
 const editRules = ref<any>({
@@ -141,23 +154,23 @@ const editRules = ref<any>({
 
 /**
  * 显示编辑抽屉
- * @param item
+ * @param {Object} [item] - 要编辑的行数据，如果为空则为新增操作
  */
 function showEditDrawerFn(item?: any) {
   if (item) {
+    // 如果有传入item，则查询详情数据进行编辑
     querySpecialCharacterById(item.id).then((data) => {
       editItem.value = {
         ...data,
       };
     });
   } else {
-    editItem.value = {
-      isUse: 0,
-      isTransit: 0,
-    };
+    // 否则清空编辑对象，进行新增操作
+    editItem.value = {};
   }
   showEditDrawer.value = true;
 }
+
 /**
  * 关闭编辑抽屉
  */
@@ -166,17 +179,23 @@ function closeEditDrawer() {
   showEditDrawer.value = false;
 }
 
+/**
+ * 提交表单数据
+ * 根据是否有id判断是新增还是编辑操作
+ */
 function submit() {
   editForm.value.validate().then(() => {
     const params = {
       ...editItem.value,
     };
+    // 根据是否有id判断是更新还是新增操作
     const ob = params.id
       ? updateSpecialCharacter(params)
       : insertSpecialCharacter(params);
     ob.then(() => {
       closeEditDrawer();
       message.success($t('common.successfulOperation'));
+      // 刷新表格数据
       gridApi.reload();
     });
   });
@@ -187,8 +206,8 @@ function submit() {
 // region 删除
 
 /**
- * 处理工单删除操作
- * @param row - 当前要删除的工单行数据
+ * 处理删除操作
+ * @param {Object} row - 当前要删除的行数据
  */
 function delPhysicalWarehouse(row: any) {
   // 弹出确认对话框
@@ -212,6 +231,7 @@ function delPhysicalWarehouse(row: any) {
     title: '是否确认删除?',
   });
 }
+
 // endregion
 
 // region 初始化
@@ -219,6 +239,11 @@ function delPhysicalWarehouse(row: any) {
 const route = useRoute();
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
+
+/**
+ * 组件挂载时执行
+ * 查询当前页面的权限信息
+ */
 onMounted(() => {
   // 查询权限
   queryAuth(route.meta.code as string).then((data) => {
@@ -234,13 +259,18 @@ onMounted(() => {
     <Card class="mb-8">
       <Grid>
         <template #toolbar-tools>
-          <Button type="primary" @click="showEditDrawerFn()" class="mx-2">
+          <Button
+            type="primary"
+            @click="showEditDrawerFn()"
+            class="mx-2"
+            v-if="author.includes('新增')"
+          >
             {{ $t('common.add') }}
           </Button>
         </template>
         <template #action="{ row }">
-          <!-- 编辑 -->
-          <Tooltip>
+          <!-- 编辑按钮 -->
+          <Tooltip v-if="author.includes('编辑')">
             <template #title>
               {{ $t('common.edit') }}
             </template>
@@ -252,8 +282,8 @@ onMounted(() => {
             </Button>
           </Tooltip>
 
-          <!-- 删除 -->
-          <Tooltip>
+          <!-- 删除按钮 -->
+          <Tooltip v-if="author.includes('删除')">
             <template #title>
               {{ $t('common.delete') }}
             </template>
@@ -273,7 +303,7 @@ onMounted(() => {
       </Grid>
     </Card>
 
-    <!-- region 新增/编辑 抽屉 -->
+    <!-- 新增/编辑 抽屉 -->
     <Drawer
       v-model:open="showEditDrawer"
       :footer-style="{ textAlign: 'right' }"
@@ -328,18 +358,17 @@ onMounted(() => {
 
       <template #footer>
         <Space>
-          <!-- 取消 -->
+          <!-- 取消按钮 -->
           <Button @click="closeEditDrawer">
             {{ $t('common.cancel') }}
           </Button>
-          <!-- 确认 -->
+          <!-- 确认按钮 -->
           <Button type="primary" @click="submit">
             {{ $t('common.confirm') }}
           </Button>
         </Space>
       </template>
     </Drawer>
-    <!-- endregion -->
   </Page>
 </template>
 

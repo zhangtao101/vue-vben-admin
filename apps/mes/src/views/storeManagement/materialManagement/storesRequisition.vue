@@ -880,6 +880,7 @@ onMounted(async () => {
             v-model:value="queryParams.applyType"
             :options="listOfApplicationCategories"
             class="!w-48"
+            allow-clear
           />
         </FormItem>
         <!-- 领料进度 -->

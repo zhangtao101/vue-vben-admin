@@ -4,7 +4,6 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { ref } from 'vue';
 
 import { $t } from '@vben/locales';
-import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
 
 import {
   Button,
@@ -15,6 +14,7 @@ import {
   Space,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { listEquipControl, updateEquipControl } from '#/api';
 
 /**
