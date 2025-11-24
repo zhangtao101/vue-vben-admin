@@ -1,0 +1,55 @@
+{
+  "defectCodeSet": {
+    "defectName": "Defect Name",
+    "defectCode": "Defect Code",
+    "responsibleProcess": "Responsible Process",
+    "responsibleWorkshop": "Responsible Workshop"
+  },
+  "qualityCheck": {
+    "qualityBaseSet": {
+      "specialMaintain": {
+        "name": "Special Characteristic Name",
+        "symbol": "Special Characteristic Symbol",
+        "remark": "Remark"
+      },
+      "measureMaintain": {
+        "name": "Measurement Method Name"
+      },
+      "qualityCheckForm": {
+        "code": "Quality Form Code",
+        "name": "Quality Form Name",
+        "workshop": "Belonging Workshop",
+        "version": "Version Number",
+        "type": "Type",
+        "correlation": "Product Correlation",
+        "sendCheck": "Sampling Quantity",
+        "view": "View Check Items"
+      },
+      "formQualityCheckItem": {
+        "title": "Form Quality Check Item",
+        "view": "View Standard",
+        "maintenance": "Inspection Detail Maintenance",
+        "name": "Quality Check Item",
+        "process": "Belonging Process"
+      },
+      "qualityCheckDetail": {
+        "name": "Quality Check Item Name",
+        "code": "Quality Check Item Code",
+        "details": "Quality Check Item Details"
+      },
+      "standardItem": {
+        "basic": "Quality Check Item Basic Information",
+        "code": "Product Code",
+        "type": "Standard Type",
+        "metricType": "Metric Type",
+        "measureMethod": "Measurement Method",
+        "judgeDescription": "Judgement Description",
+        "numberType": "Number Type",
+        "max": "Maximum Value",
+        "min": "Minimum Value",
+        "standardValue": "Standard Value",
+        "unit": "Unit"
+      }
+    }
+  }
+}

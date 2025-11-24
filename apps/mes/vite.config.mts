@@ -13,6 +13,13 @@ export default defineConfig(async () => {
             target: 'http://localhost:5320/api',
             ws: true,
           },
+          '/scadaImage': {
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/scadaImage/, ''),
+            // mock代理目标地址
+            target: 'http://192.168.0.102:8880/prod-api',
+            ws: true,
+          },
           '/ht': {
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/ht/, ''),
@@ -25,9 +32,9 @@ export default defineConfig(async () => {
             // target: 'http://192.168.7.131:8050',
             // target: 'http://192.168.199.205:8050',
             // target: 'http://192.168.31.58:8050',
-            target: 'http://192.168.0.102:8060',
+            // target: 'http://192.168.0.102:8060',
             // target: 'http://192.168.0.68:8050',
-            // target: 'http://192.168.0.215:8050',
+            target: 'http://192.168.0.215:8050',
             // target: 'http://271z43k730.zicp.vip',
           },
         },

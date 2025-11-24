@@ -10,6 +10,7 @@ import '@vben/styles/antd';
 import { useTitle } from '@vueuse/core';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
+import Menus from 'vue3-menus';
 
 import { $t, setupI18n } from '#/locales';
 
@@ -40,6 +41,8 @@ async function bootstrap(namespace: string) {
 
   // 配置路由及路由守卫
   app.use(router);
+  // 自定义右键菜单
+  app.use(Menus as any);
 
   // 动态更新标题
   watchEffect(() => {

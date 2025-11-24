@@ -40,6 +40,7 @@
   "maintenancePAS": "Maintain PAS",
   "updatedMaterialLabelDescription": "Update Material Label Description",
   "view": "View",
+  "preview": "Preview",
   "viewLog": "View Log",
   "more": "More",
   "templateDownload": "Template Download",
@@ -95,5 +96,8 @@
   "assign": "Assign",
   "receive": "Receive",
   "previousStep": "Previous Step",
-  "nextStep": "Next Step"
+  "nextStep": "Next Step",
+  "imageGeneration": "Image Generation",
+  "imageGenerationSuccess": "Image Generation Successful",
+  "imageGenerationFailure": "Image Generation Failed, Please Try Again Later"
 }

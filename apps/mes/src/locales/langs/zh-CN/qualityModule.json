@@ -1,0 +1,55 @@
+{
+  "defectCodeSet": {
+    "defectName": "不良名称",
+    "defectCode": "不良代码",
+    "responsibleProcess": "责任工序",
+    "responsibleWorkshop": "责任车间"
+  },
+  "qualityCheck": {
+    "qualityBaseSet": {
+      "specialMaintain": {
+        "name": "特殊特性名称",
+        "symbol": "特殊特性符号",
+        "remark": "备注"
+      },
+      "measureMaintain": {
+        "name": "度量方法名称"
+      },
+      "qualityCheckForm":  {
+        "code": "质检表编号",
+        "name": "质检表名称",
+        "workshop": "所属车间",
+        "version": "版本号",
+        "type": "类型",
+        "correlation": "产品相关",
+        "sendCheck": "送检数量",
+        "view": "查看质检项"
+      },
+      "formQualityCheckItem": {
+        "title": "表单质检项",
+        "view": "查看标准",
+        "maintenance": "检验明细维护",
+        "name": "质检项",
+        "process": "所属工序"
+      },
+      "qualityCheckDetail": {
+        "name": "质检项名称",
+        "code": "质检项编号",
+        "details": "质检项明细"
+      },
+      "standardItem": {
+        "basic": "质检项基本信息",
+        "code": "产品编号",
+        "type": "标准类型",
+        "metricType": "度量类型",
+        "measureMethod": "度量方法",
+        "judgeDescription": "判定描述",
+        "numberType": "数值类型",
+        "max": "最大值",
+        "min": "最小值",
+        "standardValue": "标准值",
+        "unit": "单位"
+      }
+    }
+  }
+}

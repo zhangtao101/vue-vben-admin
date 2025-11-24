@@ -70,9 +70,9 @@ function createRequestClient(baseURL: string) {
     fulfilled: (response) => {
       const { data: responseData, status } = response;
 
-      const { code, data, msg }: any = responseData;
+      const { code, data, msg, rows }: any = responseData;
       if (status >= 200 && status < 400 && code === 200) {
-        return data;
+        return data ?? rows;
       }
       // 如果业务状态码不为200，显示错误消息
       else if (code !== 200) {

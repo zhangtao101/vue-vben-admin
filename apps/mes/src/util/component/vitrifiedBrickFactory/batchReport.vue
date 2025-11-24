@@ -69,6 +69,18 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'inwg',
+      title: '卧干入库量 M2',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'insy',
+      title: '施釉出线量 M2',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       field: 'inYLQuantity',
       title: '进窑量(M2)',
       minWidth: 200,

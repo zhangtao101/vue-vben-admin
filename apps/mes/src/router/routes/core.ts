@@ -939,6 +939,15 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'workstepRecipeManagement',
         path: 'workstepRecipeManagement',
       },
+      {
+        component: () => import('#/views/scada/scadaPreview.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '预览',
+        },
+        name: 'scadaPreview',
+        path: 'scadaPreview',
+      },
     ],
   },
 ];

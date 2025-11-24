@@ -15,6 +15,7 @@ export * from './productionReport';
 export * from './qualityModule';
 export * from './risk';
 export * from './riskManagement';
+export * from './scada';
 export * from './stepManagement';
 export * from './storeManagement';
 export * from './system';

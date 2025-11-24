@@ -31,17 +31,17 @@ const queryParams = ref({
 
 const activeKey = ref<string>('1');
 
-const batchReport = ref<any>();
-const detailedList = ref<any>();
+const batchReportRef = ref<any>();
+const detailedListRef = ref<any>();
 
 function queryData() {
   switch (activeKey.value) {
     case '1': {
-      batchReport.value.reload();
+      batchReportRef.value.reload();
       break;
     }
     case '2': {
-      detailedList.value.reload();
+      detailedListRef.value.reload();
       break;
     }
   }
@@ -109,13 +109,13 @@ onMounted(() => {});
     <Card>
       <!--      <Tabs v-model:active-key="activeKey" type="card">
         <TabPane key="1" tab="批报">
-          <BatchReport ref="batchReport" :query-params="queryParams" />
+          <BatchReport ref="detailedListRef" :query-params="queryParams" />
         </TabPane>
         <TabPane key="2" tab="明细表">
           <DetailedList ref="detailedList" :query-params="queryParams" />
         </TabPane>
       </Tabs>-->
-      <BatchReport ref="batchReport" :query-params="queryParams" />
+      <BatchReport ref="batchReportRef" :query-params="queryParams" />
     </Card>
     <!-- endregion -->
   </Page>

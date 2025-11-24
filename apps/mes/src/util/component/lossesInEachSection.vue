@@ -32,30 +32,48 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'month', title: '月份', minWidth: 150 },
     { field: 'ylLine', title: '窑线', minWidth: 150 },
     {
-      title: '粉料段',
+      title: '制浆段',
       children: [
         {
-          title: '原料 → 粉料',
-          children: [
-            {
-              field: 'feedNumber',
-              title: '投入泥料量T',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'outNumber',
-              title: '产出粉料量T',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'flLossRate',
-              title: '损耗%',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-          ],
+          field: 'feedNumber',
+          title: '投入泥浆料T',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'outjlnumber',
+          title: '产出浆料量T',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'zjLossRate',
+          title: '损耗%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '制粉段',
+      children: [
+        {
+          field: 'injlnumber',
+          title: '投入浆量料T',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'outNumber',
+          title: '产出粉料量T',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'flLossRate',
+          title: '损耗%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
         },
       ],
     },
@@ -63,55 +81,114 @@ const gridOptions: VxeGridProps<any> = {
       title: '配送段',
       children: [
         {
-          title: '粉料 → 砖坯',
-          children: [
-            {
-              field: 'feesFlNumber',
-              title: '投入粉料量T',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'outZP',
-              title: '产出砖坯量T',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'lossRate',
-              title: '损耗%',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-          ],
+          field: 'feesFlNumber',
+          title: '投入粉料量T',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'outZP',
+          title: '产出砖坯量T',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'psLossRate',
+          title: '损耗%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '窑炉',
+      title: '成型',
       children: [
         {
-          title: '砖坯 → 中间库或成品库',
-          children: [
-            {
-              field: 'pressQuantity',
-              title: '压制量（平方米）',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'inStorageNumber',
-              title: '窑炉入中间库（平方米）',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'ylLossRate',
-              title: '损耗%',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-          ],
+          field: 'pressQuantity',
+          title: '压制量（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'outWg',
+          title: '出卧量（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'cxLossRate',
+          title: '损耗%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '施釉',
+      children: [
+        {
+          field: 'outWg',
+          title: '出卧量（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'outyx',
+          title: '出线量（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'syLossRate',
+          title: '损耗%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '烧成',
+      children: [
+        {
+          field: 'outyx',
+          title: '出线量（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'inStorageNumber',
+          title: '入中间库量（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'ylLossRate',
+          title: '损耗%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+      ],
+    },
+    {
+      title: '制造部',
+      children: [
+        {
+          field: 'pressQuantity',
+          title: '压制量（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'inStorageNumber',
+          title: '入中间库量（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'zzbLossRate',
+          title: '损耗%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
         },
       ],
     },
@@ -119,27 +196,22 @@ const gridOptions: VxeGridProps<any> = {
       title: '抛光',
       children: [
         {
-          title: '中间库 → 成品库',
-          children: [
-            {
-              field: 'pginStorageNumber',
-              title: '中间库素砖（平方米）',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'outStorageNumber',
-              title: '成品库入库（平方米）',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: 'pgLossRate',
-              title: '损耗%',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-          ],
+          field: 'pginStorageNumber',
+          title: '中间库素砖（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'outStorageNumber',
+          title: '成品库入库（平方米）',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
+        },
+        {
+          field: 'pgLossRate',
+          title: '损耗%',
+          minWidth: 150,
+          slots: { footer: 'footerData' },
         },
       ],
     },

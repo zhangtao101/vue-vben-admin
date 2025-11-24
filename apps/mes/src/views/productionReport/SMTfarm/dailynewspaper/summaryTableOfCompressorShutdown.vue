@@ -33,7 +33,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'workstation', title: '工作站', minWidth: 200 },
     { field: 'typeName', title: '类型', minWidth: 200 },
     { field: 'stopTime', title: '停机时间合计(H)', minWidth: 200 },
-    { field: 'stopValue', title: '停机能耗', minWidth: 200 },
+    { field: 'stopValue', title: '停机能耗合计', minWidth: 200 },
     {
       title: '客定品新品',
       children: [

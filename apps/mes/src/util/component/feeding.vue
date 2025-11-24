@@ -92,6 +92,9 @@ defineExpose({
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
+  rowClassName({ row: { zsflag } }) {
+    return zsflag ? 'bg-yellow-500' : '';
+  },
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'materialCode', title: '物料编号', minWidth: 120 },
@@ -148,6 +151,8 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function reload() {
   gridApi.reload();
 }
+// 是否是补投料
+const zsTotalflagRef = ref(false);
 
 function queryData(_data: any) {
   return new Promise((resolve, reject) => {
@@ -161,11 +166,12 @@ function queryData(_data: any) {
           editItem.value.worksheetCode,
         );
 
-    ob.then((data: any) => {
+    ob.then(({ zsTotalflag, list }: any) => {
+      zsTotalflagRef.value = zsTotalflag;
       // 将接口返回的数据适配到表格所需的格式
       resolve({
-        total: data.length, // 总数据量
-        items: data, // 当前页数据
+        total: list.length, // 总数据量
+        items: list, // 当前页数据
       });
     }).catch((error: any) => {
       // 捕获接口调用错误并拒绝 Promise
@@ -296,7 +302,7 @@ function displayFeeding(row?: any) {
       } else {
         if (editFeed.value.batchCodes) {
           editFeed.value.batchCodes.forEach((item: any) => {
-            formState.value.push({
+            const formitem: any = {
               waterNumber: item.waterNumber,
               waterNumber_black: (item.waterNumber * 100).toFixed(4),
               areaCode: item.areaCode,
@@ -305,8 +311,12 @@ function displayFeeding(row?: any) {
               standardNumber: item.standardNumber,
               stockQuality: item.stockQuality,
               unFeedNumber: 0,
-            });
+            };
 
+            if (editFeed.value.zsflag) {
+              formitem.feedNumber = item.stockQuality;
+            }
+            formState.value.push(formitem);
             warehouseCodeList.value.push({
               label: item.warehouseCode,
               value: `${item.warehouseCode}&&${item.stockQuality}`,
@@ -622,6 +632,7 @@ function submit(type: 0 | 1) {
       close();
     } else {
       miscellaneousIncome.value = false;
+      reload();
     }
   }).finally(() => {
     submitLoading.value = false;
@@ -686,9 +697,11 @@ function queryAuditByRecord() {
           @click="submit(1)"
           :loading="submitLoading"
           :disabled="
-            (isSpecialWorkstation(['制浆']) && miscellaneousIncome) ||
-            overclaimStatus ||
-            !btlRemark
+            zsTotalflagRef
+              ? false
+              : (isSpecialWorkstation(['制浆']) && miscellaneousIncome) ||
+                overclaimStatus ||
+                !btlRemark
           "
         >
           {{ $t('common.feeding') }}
@@ -715,7 +728,9 @@ function queryAuditByRecord() {
           <!-- 杂收 -->
           <Button
             type="primary"
-            :disabled="!miscellaneousIncome || overclaimStatus"
+            :disabled="
+              !miscellaneousIncome || overclaimStatus || zsTotalflagRef
+            "
             :loading="miscellaneousIncomeLoading"
             @click="submit(0)"
             v-if="!isAuxiliaryMaterials"

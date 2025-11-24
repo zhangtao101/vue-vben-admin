@@ -40,6 +40,7 @@
   "maintenancePAS": "维护PAS",
   "updatedMaterialLabelDescription": "更新物料标签描述",
   "view": "查看",
+  "preview": "预览",
   "viewLog": "查看日志",
   "more": "更多",
   "templateDownload": "模板下载",
@@ -100,5 +101,8 @@
   "levelChanges": "等级变更",
   "upload": "上传",
   "previousStep": "上一步",
-  "nextStep": "下一步"
+  "nextStep": "下一步",
+  "imageGeneration": "图片生成",
+  "imageGenerationSuccess": "图片生成成功",
+  "imageGenerationFailure": "图片生成失败，请稍后重试"
 }
