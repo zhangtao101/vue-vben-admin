@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { useTopoAnimation } from '#/util/topo/useTopoAnimation';
 
 /* -------------------------------------------  Props  ------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  动画能力（复用 ViewSvg 逻辑）  ------------------------------------------- */
 useTopoAnimation(props.detail, props.editMode);

@@ -9,7 +9,7 @@ import { useTopoStore } from '#/store';
 import 'echarts-liquidfill'; // 水球图扩展
 
 /* -------------------------------------------  Props  ------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  Store  ------------------------------------------- */
 const topoStore = useTopoStore();

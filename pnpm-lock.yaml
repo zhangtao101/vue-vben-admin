@@ -891,6 +891,9 @@ importers:
       vue:
         specifier: ^3.5.17
         version: 3.5.17(typescript@5.8.3)
+      vue-baidu-map-3x:
+        specifier: ^1.0.40
+        version: 1.0.40(vue@3.5.17(typescript@5.8.3))
       vue-plugin-hiprint:
         specifier: ^0.0.60
         version: 0.0.60
@@ -5697,6 +5700,9 @@ packages:
     resolution: {integrity: sha512-jwsb+xL8N+gjrSNABSaFdxmWtE4c7RNFjP20lo1G7gs63Qqo1phhxVBTzxc/apDVh6LgXsU2l5bwKtXd9uz65w==}
     engines: {node: '>=8.0.0'}
 
+  '@yangjianfei/bmaplib.lushu@1.0.0':
+    resolution: {integrity: sha512-qZVijbgUgNs6tsP1muS67x0XzE5fJ3kFireouDvXO3bUYVV6XbpjZXksQTsggihLMIEvC1DO9GS9vVF8CnEeqQ==}
+
   '@zxing/library@0.21.3':
     resolution: {integrity: sha512-hZHqFe2JyH/ZxviJZosZjV+2s6EDSY0O24R+FQmlWZBZXP9IqMo7S3nb3+2LBWxodJQkSurdQGnqE7KXqrYgow==}
     engines: {node: '>= 10.4.0'}
@@ -6042,6 +6048,21 @@ packages:
 
   bluebird@3.4.7:
     resolution: {integrity: sha512-iD3898SR7sWVRHbiQv+sHUtHnMvC1o3nW5rAcqnq3uOn07DSAppZYUkIGslDz6gXC7HfunPe7YVBgoEJASPcHA==}
+
+  bmaplib.curveline@1.0.0:
+    resolution: {integrity: sha512-9wcFMVhiYxNPqpvsLDAADn3qDhNzXp2mA6VyHSHg2XOAgSooC7ZiujdFhy0sp+0QYjTfJ/MjmLuNoUg2HHxH4Q==}
+
+  bmaplib.distancetool@1.0.2:
+    resolution: {integrity: sha512-EvxMnQRH6xM036zx5OLPyTg5tMCTbFBuGTTHOtExLy2/T0X6v5Va0YE7c3IPm/a/Eo5V/ynYpOLOLZbRY8ccyA==}
+
+  bmaplib.heatmap@1.0.4:
+    resolution: {integrity: sha512-rmhqUARBpUSJ9jXzUI2j7dIOqnc38bqubkx/8a349U2qtw/ulLUwyzRD535OrA8G7w5cz4aPKm6/rNvUAarg/Q==}
+
+  bmaplib.markerclusterer@1.0.13:
+    resolution: {integrity: sha512-VrLyWSiuDEVNi0yUfwOhFQ6z1oEEHS4w36GNu3iASu6p52QIx9uAXMUkuSCHReNR0bj2Cp9SA1dSx5RpojXajQ==}
+
+  bmaplib.texticonoverlay@1.0.2:
+    resolution: {integrity: sha512-4ZTWr4ZP3B6qEWput5Tut16CfZgII38YwM3bpyb4gFTQyORlKYryFp9WHWrwZZaHlOyYDAXG9SX0hka43jTADg==}
 
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
@@ -12126,6 +12147,11 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
+  vue-baidu-map-3x@1.0.40:
+    resolution: {integrity: sha512-Rq3g1KNsNztkuX3SJIuCpy6HE3xHVX8ySgqS2xC3jut/hvVr5kFBS0Nu7uYppk3xYVz69S1JFxU8WUI0Xftpyg==}
+    peerDependencies:
+      vue: ^3.5.17
+
   vue-component-type-helpers@2.2.12:
     resolution: {integrity: sha512-YbGqHZ5/eW4SnkPNR44mKVc6ZKQoRs/Rux1sxC6rdwXb4qpbOSYfDr9DsTHolOTGmIKgM9j141mZbBeg05R1pw==}
 
@@ -16744,6 +16770,8 @@ snapshots:
       css-line-break: 2.1.0
       text-segmentation: 1.0.3
 
+  '@yangjianfei/bmaplib.lushu@1.0.0': {}
+
   '@zxing/library@0.21.3':
     dependencies:
       ts-custom-error: 3.3.1
@@ -17141,6 +17169,18 @@ snapshots:
       readable-stream: 4.7.0
 
   bluebird@3.4.7: {}
+
+  bmaplib.curveline@1.0.0: {}
+
+  bmaplib.distancetool@1.0.2: {}
+
+  bmaplib.heatmap@1.0.4: {}
+
+  bmaplib.markerclusterer@1.0.13:
+    dependencies:
+      bmaplib.texticonoverlay: 1.0.2
+
+  bmaplib.texticonoverlay@1.0.2: {}
 
   boolbase@1.0.0: {}
 
@@ -23858,6 +23898,17 @@ snapshots:
   vscode-languageserver-textdocument@1.0.12: {}
 
   vscode-uri@3.1.0: {}
+
+  vue-baidu-map-3x@1.0.40(vue@3.5.17(typescript@5.8.3)):
+    dependencies:
+      '@yangjianfei/bmaplib.lushu': 1.0.0
+      bmaplib.curveline: 1.0.0
+      bmaplib.distancetool: 1.0.2
+      bmaplib.heatmap: 1.0.4
+      bmaplib.markerclusterer: 1.0.13
+      tiny-emitter: 2.1.0
+      vue: 3.5.17(typescript@5.8.3)
+      vue-router: 4.6.3(vue@3.5.17(typescript@5.8.3))
 
   vue-component-type-helpers@2.2.12: {}
 

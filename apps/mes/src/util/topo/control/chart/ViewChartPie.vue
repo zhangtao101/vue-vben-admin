@@ -7,7 +7,7 @@ import * as echarts from 'echarts';
 import { queryDeviceStatistic } from '#/api';
 
 /* -------------------------------------------  Props  ------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  Store  ------------------------------------------- */
 // const topoStore = useTopoStore();

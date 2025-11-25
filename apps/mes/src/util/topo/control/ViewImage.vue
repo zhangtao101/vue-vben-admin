@@ -9,7 +9,7 @@ import { useTopoAnimation } from '#/util/topo/useTopoAnimation';
 /* ---------- props ---------- */
 const props = defineProps<{
   detail: any;
-  editMode: boolean;
+  editMode?: boolean;
 }>();
 
 /* ---------- pinia ---------- */

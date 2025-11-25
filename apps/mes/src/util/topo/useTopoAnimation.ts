@@ -5,7 +5,7 @@ import { animateInit, getAnimate } from './anime';
 
 export function useTopoAnimation(
   detail: any, // 对应原 props.detail
-  editMode: boolean, // 对应原 props.editMode
+  editMode?: boolean = false, // 对应原 props.editMode
 ) {
   const animateView = ref<any>(null);
 

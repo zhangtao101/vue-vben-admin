@@ -4,7 +4,7 @@ import { computed } from 'vue';
 
 const props = defineProps<{
   detail: any;
-  editMode: boolean;
+  editMode?: boolean;
 }>();
 
 /* -------------------------------------------  本地常量  ------------------------------------------- */

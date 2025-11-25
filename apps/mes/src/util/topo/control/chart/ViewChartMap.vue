@@ -51,7 +51,7 @@ import chartOption from '#/assets/topo-data/chart-option';
 // import { useTopoStore } from '#/store';
 
 /* -------------------------------------------  Props  ------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  Store  ------------------------------------------- */
 // const topoStore = useTopoStore();

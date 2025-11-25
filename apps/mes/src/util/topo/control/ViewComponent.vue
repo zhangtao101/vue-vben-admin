@@ -15,7 +15,7 @@ import topoUtil from '#/util/topo/topo_utils';
 import { useTopoAnimation } from '#/util/topo/useTopoAnimation';
 
 /* -------------------------------------------  Props  ------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  Store  ------------------------------------------- */
 const topoStore = useTopoStore();

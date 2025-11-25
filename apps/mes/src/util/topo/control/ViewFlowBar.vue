@@ -5,6 +5,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useTopoStore } from '#/store';
 import topoUtil from '#/util/topo/topo_utils';
 import { useTopoAnimation } from '#/util/topo/useTopoAnimation';
+// import { useTopoAnimation } from '#/util/topo/useTopoAnimation';
 
 /* -------------------------------------------  Props  ------------------------------------------- */
 const props = defineProps<{
@@ -173,7 +174,6 @@ function drawLine(ctx: CanvasRenderingContext2D) {
   for (let i = 0; i < pts.length - 1; i++) {
     ctx.moveTo(pts[i].x, pts[i].y);
     ctx.lineTo(pts[i + 1].x, pts[i + 1].y);
-    if (i === pts.length - 2) break;
   }
   ctx.lineWidth = lw;
   ctx.strokeStyle = color;
@@ -224,12 +224,11 @@ const onMouseUp = () => (flag.value = false);
 /* -------------------------------------------  生命周期  ------------------------------------------- */
 onMounted(() => {
   calcPoints();
-  nextTick(() => {
-    goggle(
-      `${props.detail.style.animations}-${props.detail.style.speed}`,
-      dashoffset.value,
-    );
-  });
+  goggle(
+    `${props.detail.style.animations}-${props.detail.style.speed}`,
+    dashoffset.value,
+  );
+  nextTick(reDraw);
 });
 </script>
 

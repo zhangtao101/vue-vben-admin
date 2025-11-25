@@ -82,9 +82,9 @@ export async function updateStat(params: any) {
 /**
  * 删除仪表
  */
-export async function deleteTheMeter(id: any) {
+export async function deleteTheMeter(params: any) {
   return requestClient.delete<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/Zoning/equipment/delete/${id}`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/Zoning/equipment/delete?${qs.stringify(params)}`,
     {},
   );
 }

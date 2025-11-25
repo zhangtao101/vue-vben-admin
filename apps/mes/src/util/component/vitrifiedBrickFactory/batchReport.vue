@@ -69,8 +69,20 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'outwg',
+      title: '卧干投入量 M2',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       field: 'inwg',
       title: '卧干入库量 M2',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'outsy',
+      title: '施釉进线量 M2',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -94,7 +106,31 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'inYLRate',
-      title: '入库/进窑',
+      title: '烧成投入产出率',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'cxRate',
+      title: '成型投入产出率',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'scRate',
+      title: '卧干投入产出率',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'syRate',
+      title: '施釉投入产出率',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'zzcjRate',
+      title: '制造车间投入产出率',
       minWidth: 200,
       slots: { footer: 'footerData' },
     },

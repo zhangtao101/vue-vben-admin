@@ -169,6 +169,7 @@ function editRow(row?: any) {
   checkedRow.value = row
     ? {
         ...row,
+        zoningId: row.zoningId * 1,
       }
     : {};
   showEditDrawer.value = true;
@@ -187,11 +188,13 @@ function delRow(row: any) {
       message.warning('已取消删除!');
     },
     onOk() {
-      deleteTheMeter(row.id).then(() => {
-        // 显示操作成功的提示信息
-        message.success($t('common.successfulOperation'));
-        gridApi.query();
-      });
+      deleteTheMeter({ id: row.id, equipmentCode: row.equipmentCode }).then(
+        () => {
+          // 显示操作成功的提示信息
+          message.success($t('common.successfulOperation'));
+          gridApi.query();
+        },
+      );
     },
     title: '是否确认删除该条数据?',
   });

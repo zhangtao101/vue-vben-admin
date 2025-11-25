@@ -20,8 +20,8 @@ import {
 import dayjs from 'dayjs';
 
 import {
+  getClassNameList,
   getDayClassEnergy,
-  getItemizedList,
   getMonthClassEnergy,
   getYearClassEnergy,
 } from '#/api';
@@ -66,7 +66,7 @@ const dataTypeList = ref<any>([]);
  * 查询分项名称
  */
 function queryDataTypeList() {
-  getItemizedList().then((data) => {
+  getClassNameList().then((data) => {
     dataTypeList.value = [];
     data.forEach((item: string) => {
       dataTypeList.value.push({
@@ -305,7 +305,7 @@ onMounted(() => {
     <!-- region 查询条件 -->
     <Card class="mb-4 mt-4">
       <Form :model="queryParams" layout="inline">
-        <!-- 数据类型 -->
+        <!-- 班组名称 -->
         <FormItem
           :label="$t('energyConsumptionAnalysis.teamName')"
           style="margin-bottom: 1em"
@@ -356,7 +356,9 @@ onMounted(() => {
             @click="
               () => {
                 queryChartData();
-                gridApi.reload();
+                if (gridApi) {
+                  gridApi.reload();
+                }
               }
             "
           >

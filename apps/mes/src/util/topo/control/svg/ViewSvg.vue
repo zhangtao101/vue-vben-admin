@@ -3,7 +3,7 @@
 import { computed, nextTick, watch } from 'vue';
 
 /* -------------------------------------------  Props  ------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  计算：SVG 地址  ------------------------------------------- */
 const svgURL = computed(() => {

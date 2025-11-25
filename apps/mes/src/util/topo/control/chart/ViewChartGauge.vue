@@ -14,7 +14,7 @@ import * as echarts from 'echarts';
 import { useTopoStore } from '#/store';
 
 /* --------------------------------------------------  Props  -------------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* --------------------------------------------------  Pinia  -------------------------------------------------- */
 const topoStore = useTopoStore();

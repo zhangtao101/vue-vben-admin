@@ -44,7 +44,6 @@ import {
   getExcelPathItemizedSystemList,
   getItemizedSystemList,
   getItemizedSystemTemplate,
-  getSystemType,
   selectEquipment,
   selectFQList,
   stopItemizedSystem,
@@ -377,21 +376,6 @@ function queryUnitPartitions() {
 
 // endregion
 
-// region 系统类型
-const systemTypeOptions = ref<any>([]);
-function querySystemType() {
-  getSystemType().then((data) => {
-    systemTypeOptions.value = [];
-    data.forEach((item: any) => {
-      systemTypeOptions.value.push({
-        label: item,
-        value: item,
-      });
-    });
-  });
-}
-// endregion
-
 // region 查询数据
 // 查询参数
 const queryParams = ref<any>({
@@ -518,7 +502,6 @@ onMounted(() => {
   });
   queryTheMeter('');
   queryUnitPartitions();
-  querySystemType();
 });
 
 // endregion
@@ -747,11 +730,8 @@ onMounted(() => {
           <Input v-model:value="checkedRow.location" />
         </FormItem>
         <!-- 系统类型 -->
-        <FormItem :label="$t('equip.unitPartitioning')" name="systemType">
-          <Select
-            v-model:value="checkedRow.systemType"
-            :options="systemTypeOptions"
-          />
+        <FormItem :label="$t('equip.systemType')" name="systemType">
+          <Input v-model:value="checkedRow.systemType" />
         </FormItem>
       </Form>
 

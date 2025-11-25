@@ -6,7 +6,7 @@ import { requestClient } from '#/api/request';
 import { useTopoAnimation } from '#/util/topo/useTopoAnimation';
 
 /* -------------------------------------------  Props  ------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  动画能力  ------------------------------------------- */
 useTopoAnimation(props.detail, props.editMode);

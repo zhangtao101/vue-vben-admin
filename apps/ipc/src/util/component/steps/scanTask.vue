@@ -666,7 +666,7 @@ onBeforeUnmount(() => {
           </span>
           <!-- 显示工单编号的值，无结果时显示默认提示 -->
           <span :class="getValueClass()">
-            {{ details.worksheetCode || $t('productionOperation.none') }}
+            {{ details.proceWorksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
         <!-- endregion -->

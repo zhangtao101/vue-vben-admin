@@ -15,10 +15,11 @@ import * as echarts from 'echarts';
 import { queryEchartById } from '#/api';
 import { requestClient } from '#/api/request';
 import chartOption from '#/assets/topo-data/chart-option';
+import { useTopoAnimation } from '#/util/topo/useTopoAnimation';
 // import {useTopoAnimation} from "#/util/topo/useTopoAnimation";
 
 /* -------------------------------------------  Props  ------------------------------------------- */
-const props = defineProps<{ detail: any; editMode: boolean }>();
+const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  DOM  ------------------------------------------- */
 const xwin = ref<HTMLDivElement>();
@@ -35,7 +36,7 @@ const echartSecond = ref((props.detail.dataBind.echartSecond || 60) as number);
 const echartData = ref(props.detail.dataBind.echartData as string);
 
 /* -------------------------------------------  动画能力  ------------------------------------------- */
-// const { play, pause } = useTopoAnimation(props.detail, props.editMode);
+useTopoAnimation(props.detail, props.editMode);
 
 /* -------------------------------------------  计算：运行标记  ------------------------------------------- */
 const echartRunFlag = computed(() => {
