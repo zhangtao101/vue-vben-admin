@@ -120,6 +120,10 @@
     "file": {
       "tips": "单击或拖动文件到此区域进行上传",
       "tips1": "支持单个或批量上传。"
+    },
+    "timezone": {
+      "setTimezone": "设置时区",
+      "setSuccess": "时区设置成功"
     }
   }
 }

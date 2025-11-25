@@ -116,6 +116,10 @@
     "file": {
       "tips": "Click or drag file to this area to upload",
       "tips1": "Support for a single or bulk upload."
+    },
+    "timezone": {
+      "setTimezone": "Set Timezone",
+      "setSuccess": "Timezone set successfully"
     }
   }
 }
