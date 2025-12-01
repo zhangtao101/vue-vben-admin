@@ -15,6 +15,7 @@ import {
   RadioButton,
   RadioGroup,
   RangePicker,
+  Spin,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
@@ -72,7 +73,7 @@ const queryParams = ref({
 });
 // 资源类型
 const resourceType = ref(1);
-
+const show = ref(false);
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -99,8 +100,11 @@ function queryData() {
           ...params, // 展开 queryParams.value 对象，包含所有查询参数。
         });
 
+  show.value = false;
   ob.then((data) => {
-    initChart(data);
+    show.value = true;
+    const arr = data.filter((item: any) => item.value > 0);
+    initChart(arr);
   });
 }
 
@@ -152,7 +156,9 @@ onMounted(() => {
         <RadioButton :value="1">电能流向分析</RadioButton>
         <RadioButton :value="2">水流向分析</RadioButton>
       </RadioGroup>
-      <div id="chart"></div>
+      <Spin size="large" :spinning="!show">
+        <div id="chart"></div>
+      </Spin>
     </Card>
   </Page>
 </template>

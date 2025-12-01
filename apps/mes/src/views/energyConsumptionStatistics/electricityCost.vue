@@ -39,19 +39,19 @@ const queryParams = ref({
 // 时间粒度列表
 const timeGranularityList = ref([
   {
-    label: $t('energyConsumptionStatistics.hourS'),
+    label: $t('energyConsumption.energyConsumptionStatistics.hourS'),
     value: 'HOUR',
   },
   {
-    label: $t('energyConsumptionStatistics.day'),
+    label: $t('energyConsumption.energyConsumptionStatistics.day'),
     value: 'DAY',
   },
   {
-    label: $t('energyConsumptionStatistics.month'),
+    label: $t('energyConsumption.energyConsumptionStatistics.month'),
     value: 'MONTH',
   },
   {
-    label: $t('energyConsumptionStatistics.year'),
+    label: $t('energyConsumption.energyConsumptionStatistics.year'),
     value: 'YEAR',
   },
 ]);
@@ -88,27 +88,33 @@ function getADescriptionOfTheTariffInChinese(key: any): string {
   switch (key) {
     case 'normalPeriodCharge': {
       // 平时段电费
-      return $t('energyConsumptionStatistics.normalPeriodCharge');
+      return $t(
+        'energyConsumption.energyConsumptionStatistics.normalPeriodCharge',
+      );
     }
     case 'peakHour': {
       // 峰时段电费
-      return $t('energyConsumptionStatistics.electricityBillDuringPeakHours');
+      return $t(
+        'energyConsumption.energyConsumptionStatistics.electricityBillDuringPeakHours',
+      );
     }
     case 'peakPeriod': {
       // 尖时段电费
-      return $t('energyConsumptionStatistics.peakCharge');
+      return $t('energyConsumption.energyConsumptionStatistics.peakCharge');
     }
     case 'totalElectricityCharge': {
       // 总电费
-      return $t('energyConsumptionStatistics.totalElectricityCharge');
+      return $t(
+        'energyConsumption.energyConsumptionStatistics.totalElectricityCharge',
+      );
     }
     case 'valleyInterval': {
       // 谷时段电费
-      return $t('energyConsumptionStatistics.valleyCharge');
+      return $t('energyConsumption.energyConsumptionStatistics.valleyCharge');
     }
     default: {
       // 未定义的类型
-      return $t('energyConsumptionStatistics.undefinedType');
+      return $t('energyConsumption.energyConsumptionStatistics.undefinedType');
     }
   }
 }
@@ -122,11 +128,15 @@ function obtainTheChineseDescriptionOfTheElectricityPrice(key: any): string {
   switch (key) {
     case 'totalElectricityCharge': {
       // 平均电价
-      return $t('energyConsumptionStatistics.averageElectricityPrice');
+      return $t(
+        'energyConsumption.energyConsumptionStatistics.averageElectricityPrice',
+      );
     }
     default: {
       // 电价
-      return $t('energyConsumptionStatistics.electricityPrice');
+      return $t(
+        'energyConsumption.energyConsumptionStatistics.electricityPrice',
+      );
     }
   }
 }
@@ -137,12 +147,12 @@ function obtainTheChineseDescriptionOfTheElectricityPrice(key: any): string {
 const showType = ref([
   // 图表
   {
-    label: $t('energyConsumptionStatistics.chart'),
+    label: $t('energyConsumption.energyConsumptionStatistics.chart'),
     value: 'chart',
   },
   // 表格
   {
-    label: $t('energyConsumptionStatistics.table'),
+    label: $t('energyConsumption.energyConsumptionStatistics.table'),
     value: 'table',
   },
 ]);
@@ -480,13 +490,17 @@ onMounted(() => {
   <Page>
     <!-- region 查询条件 -->
     <Card
-      :title="$t('energyConsumptionStatistics.wattHourCharge')"
+      :title="
+        $t('energyConsumption.energyConsumptionStatistics.wattHourCharge')
+      "
       class="mb-4"
     >
       <Form :model="queryParams" layout="inline" ref="ref1">
         <!-- 时间范围 -->
         <FormItem
-          :label="$t('energyConsumptionStatistics.timeGranularity')"
+          :label="
+            $t('energyConsumption.energyConsumptionStatistics.timeGranularity')
+          "
           style="margin-bottom: 1em"
         >
           <Segmented
@@ -496,7 +510,7 @@ onMounted(() => {
         </FormItem>
         <!-- 时间范围 -->
         <FormItem
-          :label="$t('energyConsumptionStatistics.timeFrame')"
+          :label="$t('energyConsumption.energyConsumptionStatistics.timeFrame')"
           style="margin-bottom: 1em"
         >
           <RangePicker v-model:value="queryParams.searchTime" />
@@ -542,7 +556,11 @@ onMounted(() => {
             <Col :span="8" :offset="2" class="text-center">
               <!-- 电费 -->
               <Statistic
-                :title="$t('energyConsumptionStatistics.electricCharge')"
+                :title="
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.electricCharge',
+                  )
+                "
                 :value="item.electrovalence"
               />
             </Col>
@@ -580,7 +598,11 @@ onMounted(() => {
         <Col :span="10">
           <!-- 电费分析 -->
           <Card
-            :title="$t('energyConsumptionStatistics.electricityRateAnalysis')"
+            :title="
+              $t(
+                'energyConsumption.energyConsumptionStatistics.electricityRateAnalysis',
+              )
+            "
           >
             <Alert
               message="提示：避峰用谷，合理调配可以降低总用电费用。"
@@ -593,7 +615,11 @@ onMounted(() => {
         <Col :span="14">
           <!-- 电费用量 -->
           <Card
-            :title="$t('energyConsumptionStatistics.electricityConsumption')"
+            :title="
+              $t(
+                'energyConsumption.energyConsumptionStatistics.electricityConsumption',
+              )
+            "
           >
             <div id="electricityConsumption"></div>
           </Card>

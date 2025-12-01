@@ -175,11 +175,15 @@ const { close: websocketClose } = useWebSocket(readMessage, {
  * - 依赖父级作用域中的details响应式引用
  */
 function readMessage(message: string) {
-  // 反序列化WebSocket消息
-  const data = JSON.parse(message);
-  // 有效性检查后更新视图数据
-  if (data) {
-    details.value = data; // 直接替换整个状态对象
+  try {
+    // 反序列化WebSocket消息
+    const data = JSON.parse(message);
+    // 有效性检查后更新视图数据
+    if (data) {
+      queryData(); // 直接替换整个状态对象
+    }
+  } catch (error) {
+    console.error('WebSocket消息解析错误:', error);
   }
 }
 // endregion

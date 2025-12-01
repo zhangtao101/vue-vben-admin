@@ -4,36 +4,39 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { ScrollBoard } from '@kjgl77/datav-vue3';
 
-import { queryScadaAlertLogList, queryScadaDictsByType } from '#/api'; // 根据项目实际路径调整
+import { queryScadaAlertLogList, queryScadaDictsByType } from '#/api'; // 按项目实际路径调整
 
 /* -------------------------------------------  Props  ------------------------------------------- */
 const props = defineProps<{ detail: any; editMode?: boolean }>();
 
 /* -------------------------------------------  字典  ------------------------------------------- */
 const dictAlertLevel = ref<any>([]);
-
+const dictProcessStatus = ref<any>([]);
 function queryDict() {
-  queryScadaDictsByType('iot_alert_level').then((result) => {
-    dictAlertLevel.value = result;
+  Promise.all([
+    queryScadaDictsByType('iot_alert_level'),
+    queryScadaDictsByType('iot_process_status'),
+  ]).then((result) => {
+    dictAlertLevel.value = result[0];
+    dictProcessStatus.value = result[1];
   });
 }
 
 /* -------------------------------------------  本地状态  ------------------------------------------- */
 const key = ref(Date.now());
 const timer = ref<null | number>(null);
-const tableData = ref<any>([]);
 
-/* -------------------------------------------  计算：滚动板配置（只读父级）  ------------------------------------------- */
+/* -------------------------------------------  计算：滚动板配置  ------------------------------------------- */
 const boardConfig = computed(() => ({
   rowNum: props.detail.style.rowNum,
-  data: tableData.value,
+  data: tableData.value || [],
   header: props.detail.style.header,
   headerBGC: props.detail.style.headerBGC,
   oddRowBGC: props.detail.style.oddRowBGC,
   evenRowBGC: props.detail.style.evenRowBGC,
   waitTime: props.detail.style.waitTime,
   headerHeight: props.detail.style.headerHeight,
-  columnWidth: props.detail.style.columnWidth?.split(',') || ['120px'],
+  columnWidth: props.detail.style.columnWidth.split(','),
   align: props.detail.style.align,
   index: props.detail.style.index,
   indexHeader: props.detail.style.indexHeader,
@@ -64,26 +67,25 @@ function getColor(type: string): string {
   return map[type] || '#000';
 }
 
-/* -------------------------------------------  加载数据  ------------------------------------------- */
+/* -------------------------------------------  加载告警列表  ------------------------------------------- */
+const tableData = ref<any>([]);
 function loadData() {
-  queryScadaAlertLogList({ status: 3, pageNum: 1, pageSize: 9999 }).then(
-    (res: any) => {
-      if (res.code !== 200) return;
-      const data: string[][] = [];
-      res.rows.forEach((item: any) => {
-        data.push([
-          item.createTime,
-          item.alertName,
-          item.deviceName,
-          getSpecifiedElement(dictAlertLevel.value, item.alertLevel),
-          item.remark,
-        ]);
-      });
-      /* 只改本地副本，不直接改 props */
-      tableData.value = data;
-      key.value = Date.now();
-    },
-  );
+  queryScadaAlertLogList({ pageNum: 1, pageSize: 9999 }).then((res: any) => {
+    if (res.code !== 200) return;
+    const data: string[][] = [];
+    res.rows.forEach((item: any) => {
+      data.push([
+        item.createTime,
+        item.alertName,
+        item.deviceName,
+        getSpecifiedElement(dictAlertLevel.value, item.alertLevel),
+        getSpecifiedElement(dictProcessStatus.value, item.status),
+      ]);
+    });
+    /* 只改本地副本，不直接改 props */
+    tableData.value = data;
+    key.value = Date.now();
+  });
 }
 
 /* -------------------------------------------  生命周期  ------------------------------------------- */

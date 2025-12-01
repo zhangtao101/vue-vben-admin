@@ -69,6 +69,10 @@ function createRequestClient(baseURL: string) {
   client.addResponseInterceptor<HttpResponse>({
     fulfilled: (response) => {
       const { data: responseData, status } = response;
+      // 兼容第三方接口返回数据格式
+      if (!responseData.data && status === 200 && !responseData.code) {
+        return responseData;
+      }
 
       const { code, data, msg, rows }: any = responseData;
       if (status >= 200 && status < 400 && code === 200) {

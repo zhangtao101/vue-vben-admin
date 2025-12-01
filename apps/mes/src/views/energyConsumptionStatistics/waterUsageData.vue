@@ -178,6 +178,13 @@ function queryMeterData() {
         label: `${item.equipmentName}(${item.equipmentCode})`,
         value: item.equipmentCode,
       });
+      if (equipmentOptions.value && equipmentOptions.value.length > 0) {
+        queryParams.value.meterCode = equipmentOptions.value[0].value;
+        queryChartData();
+        setTimeout(() => {
+          gridApi.reload();
+        }, 200);
+      }
     });
   });
 }
@@ -200,14 +207,15 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 设备编号 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.deviceNumber')"
+          :label="
+            $t('energyConsumption.energyConsumptionAnalysis.deviceNumber')
+          "
           style="margin-bottom: 1em"
         >
           <Select
             v-model:value="queryParams.meterCode"
             :options="equipmentOptions"
             show-search
-            allow-clear
             :filter-option="filterOption"
             class="!w-48"
           />

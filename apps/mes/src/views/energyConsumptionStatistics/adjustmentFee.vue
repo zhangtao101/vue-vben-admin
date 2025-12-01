@@ -35,19 +35,19 @@ const queryParams = ref({
 // 时间粒度列表
 const timeGranularityList = ref([
   {
-    label: $t('energyConsumptionStatistics.hourS'),
+    label: $t('energyConsumption.energyConsumptionStatistics.hourS'),
     value: 'HOUR',
   },
   {
-    label: $t('energyConsumptionStatistics.day'),
+    label: $t('energyConsumption.energyConsumptionStatistics.day'),
     value: 'DAY',
   },
   {
-    label: $t('energyConsumptionStatistics.month'),
+    label: $t('energyConsumption.energyConsumptionStatistics.month'),
     value: 'MONTH',
   },
   {
-    label: $t('energyConsumptionStatistics.year'),
+    label: $t('energyConsumption.energyConsumptionStatistics.year'),
     value: 'YEAR',
   },
 ]);
@@ -59,12 +59,12 @@ const timeGranularityList = ref([
 const showType = ref([
   // 图表
   {
-    label: $t('energyConsumptionStatistics.chart'),
+    label: $t('energyConsumption.energyConsumptionStatistics.chart'),
     value: 'chart',
   },
   // 表格
   {
-    label: $t('energyConsumptionStatistics.table'),
+    label: $t('energyConsumption.energyConsumptionStatistics.table'),
     value: 'table',
   },
 ]);
@@ -173,13 +173,19 @@ onMounted(() => {
   <Page>
     <!-- region 查询条件 -->
     <Card
-      :title="$t('energyConsumptionStatistics.powerRegulationCharge')"
+      :title="
+        $t(
+          'energyConsumption.energyConsumptionStatistics.powerRegulationCharge',
+        )
+      "
       class="mb-4"
     >
       <Form :model="queryParams" layout="inline">
         <!-- 时间范围 -->
         <FormItem
-          :label="$t('energyConsumptionStatistics.timeGranularity')"
+          :label="
+            $t('energyConsumption.energyConsumptionStatistics.timeGranularity')
+          "
           style="margin-bottom: 1em"
         >
           <Segmented
@@ -189,7 +195,7 @@ onMounted(() => {
         </FormItem>
         <!-- 时间范围 -->
         <FormItem
-          :label="$t('energyConsumptionStatistics.timeFrame')"
+          :label="$t('energyConsumption.energyConsumptionStatistics.timeFrame')"
           style="margin-bottom: 1em"
         >
           <RangePicker v-model:value="queryParams.searchTime" />
@@ -216,7 +222,11 @@ onMounted(() => {
           <Row>
             <Col span="24" offset="1" class="text-center">
               <span class="text-2xl text-lg font-semibold">
-                {{ $t('energyConsumptionStatistics.reactivePowerPenalty') }}
+                {{
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.reactivePowerPenalty',
+                  )
+                }}
               </span>
             </Col>
           </Row>
@@ -224,21 +234,33 @@ onMounted(() => {
             <Col :span="8" class="text-center">
               <!-- 年累计(元) -->
               <Statistic
-                :title="$t('energyConsumptionStatistics.annualAccumulation')"
+                :title="
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.annualAccumulation',
+                  )
+                "
                 :value="444"
               />
             </Col>
             <Col :span="8" class="text-center">
               <!-- 最大值(元) -->
               <Statistic
-                :title="$t('energyConsumptionStatistics.maximumValue')"
+                :title="
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.maximumValue',
+                  )
+                "
                 :value="111"
               />
             </Col>
             <Col :span="8" class="text-center">
               <!-- 每月平均(元) -->
               <Statistic
-                :title="$t('energyConsumptionStatistics.monthlyAverage')"
+                :title="
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.monthlyAverage',
+                  )
+                "
                 :value="111"
               />
             </Col>
@@ -250,7 +272,11 @@ onMounted(() => {
           <Row>
             <Col span="24" offset="1" class="text-center">
               <span class="text-2xl text-lg font-semibold">
-                {{ $t('energyConsumptionStatistics.powerFactor') }}
+                {{
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.powerFactor',
+                  )
+                }}
               </span>
             </Col>
           </Row>
@@ -258,7 +284,11 @@ onMounted(() => {
             <Col :span="8" class="text-center">
               <!-- 功率因数KPI -->
               <Statistic
-                :title="$t('energyConsumptionStatistics.powerFactorKPI')"
+                :title="
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.powerFactorKPI',
+                  )
+                "
                 :value="444"
               />
             </Col>
@@ -266,7 +296,9 @@ onMounted(() => {
               <!-- 最大值 -->
               <Statistic
                 :title="
-                  $t('energyConsumptionStatistics.theMaximumValueTakesNoUnits')
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.theMaximumValueTakesNoUnits',
+                  )
                 "
                 :value="111"
               />
@@ -275,7 +307,9 @@ onMounted(() => {
               <!-- 最小值 -->
               <Statistic
                 :title="
-                  $t('energyConsumptionStatistics.minimumValueWithoutUnits')
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.minimumValueWithoutUnits',
+                  )
                 "
                 :value="111"
               />
@@ -310,7 +344,9 @@ onMounted(() => {
           <!-- 力调电费/功率因数 -->
           <Card
             :title="
-              $t('energyConsumptionStatistics.powerAdjustmentChargePowerFactor')
+              $t(
+                'energyConsumption.energyConsumptionStatistics.powerAdjustmentChargePowerFactor',
+              )
             "
           >
             <div id="powerFactorDiagram"></div>

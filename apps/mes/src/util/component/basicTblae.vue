@@ -79,6 +79,9 @@ onBeforeUnmount(() => {
       <template #toolbar-tools>
         <slot name="toolbar-tools"></slot>
       </template>
+      <template #action="{ row }">
+        <slot name="action" :row="row"></slot>
+      </template>
     </Grid>
   </div>
 </template>

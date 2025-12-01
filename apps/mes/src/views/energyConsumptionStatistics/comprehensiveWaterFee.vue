@@ -33,19 +33,19 @@ const queryParams = ref({
 // 时间粒度列表
 const timeGranularityList = ref([
   {
-    label: $t('energyConsumptionStatistics.hourS'),
+    label: $t('energyConsumption.energyConsumptionStatistics.hourS'),
     value: 'HOUR',
   },
   {
-    label: $t('energyConsumptionStatistics.day'),
+    label: $t('energyConsumption.energyConsumptionStatistics.day'),
     value: 'DAY',
   },
   {
-    label: $t('energyConsumptionStatistics.month'),
+    label: $t('energyConsumption.energyConsumptionStatistics.month'),
     value: 'MONTH',
   },
   {
-    label: $t('energyConsumptionStatistics.year'),
+    label: $t('energyConsumption.energyConsumptionStatistics.year'),
     value: 'YEAR',
   },
 ]);
@@ -57,12 +57,12 @@ const timeGranularityList = ref([
 const showType = ref([
   // 图表
   {
-    label: $t('energyConsumptionStatistics.chart'),
+    label: $t('energyConsumption.energyConsumptionStatistics.chart'),
     value: 'chart',
   },
   // 表格
   {
-    label: $t('energyConsumptionStatistics.table'),
+    label: $t('energyConsumption.energyConsumptionStatistics.table'),
     value: 'table',
   },
 ]);
@@ -159,13 +159,17 @@ onMounted(() => {
   <Page>
     <!-- region 查询条件 -->
     <Card
-      :title="$t('energyConsumptionStatistics.combinedWaterCharge')"
+      :title="
+        $t('energyConsumption.energyConsumptionStatistics.combinedWaterCharge')
+      "
       class="mb-4"
     >
       <Form :model="queryParams" layout="inline">
         <!-- 时间范围 -->
         <FormItem
-          :label="$t('energyConsumptionStatistics.timeGranularity')"
+          :label="
+            $t('energyConsumption.energyConsumptionStatistics.timeGranularity')
+          "
           style="margin-bottom: 1em"
         >
           <Segmented
@@ -175,7 +179,7 @@ onMounted(() => {
         </FormItem>
         <!-- 时间范围 -->
         <FormItem
-          :label="$t('energyConsumptionStatistics.timeFrame')"
+          :label="$t('energyConsumption.energyConsumptionStatistics.timeFrame')"
           style="margin-bottom: 1em"
         >
           <RangePicker v-model:value="queryParams.searchTime" />
@@ -201,7 +205,11 @@ onMounted(() => {
           <Row>
             <Col span="24" offset="1" class="text-center">
               <span class="text-2xl text-lg font-semibold">
-                {{ $t('energyConsumptionStatistics.totalWaterCharge') }}
+                {{
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.totalWaterCharge',
+                  )
+                }}
               </span>
             </Col>
           </Row>
@@ -209,14 +217,20 @@ onMounted(() => {
             <Col :span="12" class="text-center">
               <!-- 水费 -->
               <Statistic
-                :title="$t('energyConsumptionStatistics.waterRate')"
+                :title="
+                  $t('energyConsumption.energyConsumptionStatistics.waterRate')
+                "
                 :value="444"
               />
             </Col>
             <Col :span="12" class="text-center">
               <!-- 用水量 -->
               <Statistic
-                :title="$t('energyConsumptionStatistics.waterConsumption')"
+                :title="
+                  $t(
+                    'energyConsumption.energyConsumptionStatistics.waterConsumption',
+                  )
+                "
                 :value="111"
               />
             </Col>
@@ -236,7 +250,13 @@ onMounted(() => {
       <Row :gutter="10" class="mt-4" v-show="selectShowType === 'chart'">
         <Col :span="24">
           <!-- 水费水量 -->
-          <Card :title="$t('energyConsumptionStatistics.waterFeeAndQuantity')">
+          <Card
+            :title="
+              $t(
+                'energyConsumption.energyConsumptionStatistics.waterFeeAndQuantity',
+              )
+            "
+          >
             <div id="powerFactorDiagram"></div>
           </Card>
         </Col>

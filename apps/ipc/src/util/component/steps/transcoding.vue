@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
@@ -27,6 +27,7 @@ import {
   snCodeBindingCallBack,
 } from '#/api';
 import ScanTheCode from '#/util/component/scanTheCode.vue';
+import useWebSocket from '#/util/websocket-util';
 
 /**
  * 定义组件的 props，用于接收父组件传递的数据
@@ -268,24 +269,23 @@ const details = ref<any>({});
 function queryData() {
   // 开启加载状态
   spinning.value = true;
-  const ob =
-    props.showTypeNumber === 30
-      ? // 显示类型为 30 时，调用 listHCByCodeScan API
-        listHCByCodeScan({
-          workstationCode: props.workstationCode,
-          equipCode: props.equipCode,
-          worksheetCode: props.worksheetCode,
-          bindingId: props.bindingId,
-          functionId: props.functionId,
-        })
-      : // 其他显示类型，调用 listByCodeScan API
-        listByCodeScan({
-          workstationCode: props.workstationCode,
-          equipCode: props.equipCode,
-          worksheetCode: props.worksheetCode,
-          bindingId: props.bindingId,
-          functionId: props.functionId,
-        });
+  const ob = [30, 45].includes(props.showTypeNumber)
+    ? // 显示类型为 30 时，调用 listHCByCodeScan API
+      listHCByCodeScan({
+        workstationCode: props.workstationCode,
+        equipCode: props.equipCode,
+        worksheetCode: props.worksheetCode,
+        bindingId: props.bindingId,
+        functionId: props.functionId,
+      })
+    : // 其他显示类型，调用 listByCodeScan API
+      listByCodeScan({
+        workstationCode: props.workstationCode,
+        equipCode: props.equipCode,
+        worksheetCode: props.worksheetCode,
+        bindingId: props.bindingId,
+        functionId: props.functionId,
+      });
 
   ob.then((data: any) => {
     if (props.showTypeNumber === 15) {
@@ -293,7 +293,7 @@ function queryData() {
       const { snCode, list } = data;
       transcodedList.value = list;
       sourceCode.value = snCode;
-    } else if (props.showTypeNumber === 30) {
+    } else if ([30, 45].includes(props.showTypeNumber)) {
       // 显示类型为 30 时，更新已转码列表和总产量
       const { totalNumber, codeRecords, ...d } = data;
       details.value = d;
@@ -306,11 +306,53 @@ function queryData() {
   });
 }
 
+// region websocket
+
+const { close: websocketClose } = useWebSocket(readMessage, {
+  workstationCode: props.workstationCode,
+  equipCode: props.equipCode,
+  worksheetCode: props.worksheetCode,
+  bindingId: props.bindingId,
+  functionId: props.functionId,
+});
+
+/**
+ * WebSocket消息处理回调
+ * 功能：解析并更新资源验证状态数据
+ * 流程：
+ * 1. 解析原始消息为JSON对象
+ * 2. 验证数据有效性（非空检查）
+ * 3. 更新响应式状态数据
+ *
+ * @param message - WebSocket推送的原始消息字符串
+ *
+ * 注意事项：
+ * - 当前未处理JSON解析异常，需增加try-catch逻辑
+ * - 会直接覆盖原有状态数据，需确保数据结构一致性
+ * - 依赖父级作用域中的details响应式引用
+ */
+function readMessage(message: string) {
+  try {
+    // 反序列化WebSocket消息
+    const data = JSON.parse(message);
+    // 有效性检查后更新视图数据
+    if (data) {
+      queryData(); // 直接替换整个状态对象
+    }
+  } catch (error) {
+    console.error('WebSocket消息解析错误:', error);
+  }
+}
+// endregion
+
 /**
  * 组件挂载后执行的钩子函数，会在组件挂载完成后调用 queryData 函数获取数据
  */
 onMounted(() => {
   queryData();
+});
+onBeforeUnmount(() => {
+  websocketClose();
 });
 </script>
 
@@ -380,7 +422,11 @@ onMounted(() => {
               {{ $t('productionOperation.sourceCode') }}
             </Col>
             <!-- 显示源码输入框和扫码组件的列 -->
-            <Col span="16" class="flex">
+            <Col
+              span="16"
+              class="flex"
+              v-if="[15, 30].includes(props.showTypeNumber)"
+            >
               <!-- 源码输入框，支持回车键触发 sourceCodeChange 函数 -->
               <Input
                 ref="sourceCodeRef"
@@ -402,6 +448,14 @@ onMounted(() => {
                 "
               />
             </Col>
+            <!-- 显示内容 -->
+            <Col
+              span="16"
+              class="flex"
+              v-else-if="[45].includes(props.showTypeNumber)"
+            >
+              {{ details.snCode }}
+            </Col>
           </Row>
           <!-- endregion -->
           <!-- region 转码 -->
@@ -412,7 +466,11 @@ onMounted(() => {
               {{ $t('productionOperation.transcoding') }}
             </Col>
             <!-- 显示转码输入框和扫码组件的列 -->
-            <Col span="16" class="flex">
+            <Col
+              span="16"
+              class="flex"
+              v-if="[15, 30].includes(props.showTypeNumber)"
+            >
               <!-- 转码输入框，支持回车键触发 transcodingChange 函数 -->
               <Input
                 ref="transcodingRef"
@@ -433,6 +491,14 @@ onMounted(() => {
                   }
                 "
               />
+            </Col>
+            <!-- 显示内容 -->
+            <Col
+              span="16"
+              class="flex"
+              v-else-if="[45].includes(props.showTypeNumber)"
+            >
+              {{ details.barcode }}
             </Col>
           </Row>
           <!-- endregion -->

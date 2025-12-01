@@ -112,7 +112,7 @@ function queryMeterData(row: any) {
               message: '该项为必填字段',
               trigger: 'change',
             }"
-            :label="$t('energyConsumptionAnalysis.meterType')"
+            :label="$t('energyConsumption.energyConsumptionAnalysis.meterType')"
             class="mb-2"
           >
             <Select
@@ -134,7 +134,9 @@ function queryMeterData(row: any) {
               message: '该项为必填字段',
               trigger: 'change',
             }"
-            :label="$t('energyConsumptionAnalysis.deviceNumber')"
+            :label="
+              $t('energyConsumption.energyConsumptionAnalysis.deviceNumber')
+            "
             class="mb-2"
           >
             <Select
@@ -153,7 +155,9 @@ function queryMeterData(row: any) {
               message: '该项为必填字段',
               trigger: 'change',
             }"
-            :label="$t('energyConsumptionAnalysis.collectTime')"
+            :label="
+              $t('energyConsumption.energyConsumptionAnalysis.collectTime')
+            "
             class="mb-2"
           >
             <DatePicker
@@ -169,7 +173,11 @@ function queryMeterData(row: any) {
               message: '该项为必填字段',
               trigger: 'change',
             }"
-            :label="$t('energyConsumptionAnalysis.energyConsumption')"
+            :label="
+              $t(
+                'energyConsumption.energyConsumptionAnalysis.energyConsumption',
+              )
+            "
             class="mb-2"
           >
             <InputNumber

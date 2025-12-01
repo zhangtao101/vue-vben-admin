@@ -609,7 +609,7 @@ onMounted(() => {
 
         <!-- 时间范围 -->
         <FormItem
-          :label="$t('energyConsumptionStatistics.timeFrame')"
+          :label="$t('energyConsumption.energyConsumptionStatistics.timeFrame')"
           style="margin-bottom: 1em"
         >
           <RangePicker v-model:value="queryParams.searchTime" />

@@ -304,16 +304,24 @@ onMounted(() => {
 
         <!-- 操作类型 -->
         <FormItem
-          :label="$t('energyConsumptionCollectionDetails.operationType')"
+          :label="
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.operationType',
+            )
+          "
           style="margin-bottom: 1em"
         >
           <RadioGroup v-model:value="queryParams.collectionType">
             <Radio value="">
-              {{ $t('energyConsumptionCollectionDetails.all') }}
+              {{
+                $t('energyConsumption.energyConsumptionCollectionDetails.all')
+              }}
             </Radio>
             <Radio :value="-1">
               {{
-                $t('energyConsumptionCollectionDetails.nonProductionReporting')
+                $t(
+                  'energyConsumption.energyConsumptionCollectionDetails.nonProductionReporting',
+                )
               }}
             </Radio>
           </RadioGroup>
@@ -321,25 +329,43 @@ onMounted(() => {
 
         <!-- 操作类型 -->
         <FormItem
-          :label="$t('energyConsumptionCollectionDetails.operationType')"
+          :label="
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.operationType',
+            )
+          "
           style="margin-bottom: 1em"
         >
           <RadioGroup v-model:value="queryParams.opType">
             <Radio value="">
-              {{ $t('energyConsumptionCollectionDetails.all') }}
+              {{
+                $t('energyConsumption.energyConsumptionCollectionDetails.all')
+              }}
             </Radio>
             <Radio :value="1">
-              {{ $t('energyConsumptionCollectionDetails.normalCollection') }}
+              {{
+                $t(
+                  'energyConsumption.energyConsumptionCollectionDetails.normalCollection',
+                )
+              }}
             </Radio>
             <Radio :value="-1">
-              {{ $t('energyConsumptionCollectionDetails.abnormalCollection') }}
+              {{
+                $t(
+                  'energyConsumption.energyConsumptionCollectionDetails.abnormalCollection',
+                )
+              }}
             </Radio>
           </RadioGroup>
         </FormItem>
 
         <!-- 异常类型 -->
         <FormItem
-          :label="$t('energyConsumptionCollectionDetails.exceptionType')"
+          :label="
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.exceptionType',
+            )
+          "
           style="margin-bottom: 1em"
         >
           <Select
@@ -394,8 +420,12 @@ onMounted(() => {
           <span>
             {{
               row.opType === '1'
-                ? $t('energyConsumptionCollectionDetails.normalCollection')
-                : $t('energyConsumptionCollectionDetails.abnormalCollection')
+                ? $t(
+                    'energyConsumption.energyConsumptionCollectionDetails.normalCollection',
+                  )
+                : $t(
+                    'energyConsumption.energyConsumptionCollectionDetails.abnormalCollection',
+                  )
             }}
           </span>
         </template>

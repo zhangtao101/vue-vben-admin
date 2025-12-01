@@ -5,10 +5,9 @@ export function useTopoComponents() {
   const components = shallowRef({
     // 基础控件
     'view-text': () => import('./control/ViewText.vue'),
-    // 'view-3d-model': () => import('./control/View3DModel.vue'),
+    'view-3d-model': () => import('./control/View3DModel.vue'),
     'view-image': () => import('./control/ViewImage.vue'),
-    // 'view-image-switch': () => import('./control/ViewImageSwitch.vue'),
-    //
+    'view-image-switch': () => import('./control/ViewImageSwitch.vue'),
     // Canvas 图形控件
     'view-circular': () => import('./control/canvas/ViewCircular.vue'),
     'view-line': () => import('./control/canvas/ViewLine.vue'),
@@ -33,26 +32,26 @@ export function useTopoComponents() {
     'view-svg-static': () => import('./control/svg/ViewSvgStatic.vue'),
     //
     // // 多媒体控件
-    // 'view-video': () => import('./control/ViewVideo.vue'),
-    // 'view-video-play': () => import('./control/ViewVideoPlay.vue'),
-    // 'view-video-mp4': () => import('./control/ViewVideoMp4.vue'),
+    'view-video': () => import('./control/ViewVideo.vue'),
+    'view-video-play': () => import('./control/ViewVideoPlay.vue'),
+    'view-video-mp4': () => import('./control/ViewVideoMp4.vue'),
     //
     // // 功能控件
-    // 'view-timer': () => import('./control/ViewTimer.vue'),
+    'view-timer': () => import('./control/ViewTimer.vue'),
     'view-map': () => import('./control/ViewMap.vue'),
-    // 'view-weather': () => import('./control/ViewWeather.vue'),
-    // 'view-warn': () => import('./control/ViewWarn.vue'),
-    // 'view-real-data': () => import('./control/ViewRealData.vue'),
-    // 'view-history': () => import('./control/ViewHistory.vue'),
-    // 'view-flow-bar': () => import('./control/ViewFlowBar.vue'),
+    'view-weather': () => import('./control/ViewWeather.vue'),
+    'view-warn': () => import('./control/ViewWarn.vue'),
+    'view-real-data': () => import('./control/ViewRealData.vue'),
+    'view-history': () => import('./control/ViewHistory.vue'),
+    'view-flow-bar': () => import('./control/ViewFlowBar.vue'),
     'view-flow-bar-dynamic': () => import('./control/ViewFlowBarDynamic.vue'),
-    // 'view-knob-switch': () => import('./control/ViewKnobSwitch.vue'),
-    // 'view-text-static': () => import('./control/ViewTextStatic.vue'),
-    // 'view-panel': () => import('./control/ViewPanel.vue'),
+    'view-knob-switch': () => import('./control/ViewKnobSwitch.vue'),
+    'view-text-static': () => import('./control/ViewTextStatic.vue'),
+    'view-panel': () => import('./control/ViewPanel.vue'),
     'view-order': () => import('./control/ViewOrder.vue'),
-    // 'view-luck-draw': () => import('./control/ViewLuckDraw.vue'),
+    'view-luck-draw': () => import('./control/ViewLuckDraw.vue'),
     // 'view-vr': () => import('./control/ViewVR.vue'),
-    // 'view-component': () => import('./control/ViewComponent.vue'),
+    'view-component': () => import('./control/ViewComponent.vue'),
     //
     // // Three.js 相关
     // 'view-three-js': () => import('./control/three/ViewThreeJs.vue'),

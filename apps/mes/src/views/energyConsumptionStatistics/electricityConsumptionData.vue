@@ -242,7 +242,9 @@ function queryMeterData() {
     if (equipmentOptions.value && equipmentOptions.value.length > 0) {
       queryParams.value.equipmentCode = equipmentOptions.value[0].value;
       queryChartData();
-      gridApi.reload();
+      setTimeout(() => {
+        gridApi.reload();
+      }, 200);
     }
   });
 }
@@ -264,14 +266,15 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 设备编号 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.deviceNumber')"
+          :label="
+            $t('energyConsumption.energyConsumptionAnalysis.deviceNumber')
+          "
           style="margin-bottom: 1em"
         >
           <Select
             v-model:value="queryParams.equipmentCode"
             :options="equipmentOptions"
             show-search
-            allow-clear
             :filter-option="filterOption"
             class="!w-48"
           />

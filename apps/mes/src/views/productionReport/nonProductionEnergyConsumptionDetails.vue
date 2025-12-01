@@ -386,7 +386,11 @@ onMounted(() => {
 
         <!-- 设备编号 -->
         <FormItem
-          :label="$t('energyConsumptionCollectionDetails.equipmentNumber')"
+          :label="
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.equipmentNumber',
+            )
+          "
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.worksheetCode" />
@@ -394,7 +398,11 @@ onMounted(() => {
 
         <!-- 异常类型 -->
         <FormItem
-          :label="$t('energyConsumptionCollectionDetails.exceptionType')"
+          :label="
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.exceptionType',
+            )
+          "
           style="margin-bottom: 1em"
         >
           <Select
@@ -481,7 +489,9 @@ onMounted(() => {
         <!-- 采集仪表编号 -->
         <FormItem
           :label="
-            $t('energyConsumptionCollectionDetails.collectTheInstrumentNumber')
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.collectTheInstrumentNumber',
+            )
           "
           name="energyEquipCode"
         >
@@ -489,27 +499,51 @@ onMounted(() => {
         </FormItem>
         <!-- 采集模式 -->
         <FormItem
-          :label="$t('energyConsumptionCollectionDetails.collectionMode')"
+          :label="
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.collectionMode',
+            )
+          "
           name="type"
         >
           <RadioGroup v-model:value="editItem.type">
             <Radio value="1">
-              {{ $t('energyConsumptionCollectionDetails.naturalGas') }}
+              {{
+                $t(
+                  'energyConsumption.energyConsumptionCollectionDetails.naturalGas',
+                )
+              }}
             </Radio>
             <Radio value="2">
-              {{ $t('energyConsumptionCollectionDetails.electricity') }}
+              {{
+                $t(
+                  'energyConsumption.energyConsumptionCollectionDetails.electricity',
+                )
+              }}
             </Radio>
             <Radio value="3">
-              {{ $t('energyConsumptionCollectionDetails.waterCoalSlurry') }}
+              {{
+                $t(
+                  'energyConsumption.energyConsumptionCollectionDetails.waterCoalSlurry',
+                )
+              }}
             </Radio>
             <Radio value="4">
-              {{ $t('energyConsumptionCollectionDetails.cokeOvenGas') }}
+              {{
+                $t(
+                  'energyConsumption.energyConsumptionCollectionDetails.cokeOvenGas',
+                )
+              }}
             </Radio>
           </RadioGroup>
         </FormItem>
         <!-- 采集时间 -->
         <FormItem
-          :label="$t('energyConsumptionCollectionDetails.collectionTime')"
+          :label="
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.collectionTime',
+            )
+          "
           name="collectionTime"
         >
           <RangePicker v-model:value="editItem.collectionTime" show-time />
@@ -517,7 +551,9 @@ onMounted(() => {
         <!-- 采集开始读数 -->
         <FormItem
           :label="
-            $t('energyConsumptionCollectionDetails.startReadingCollection')
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.startReadingCollection',
+            )
           "
           name="startValue"
         >
@@ -526,7 +562,9 @@ onMounted(() => {
         <!-- 采集结束读数 -->
         <FormItem
           :label="
-            $t('energyConsumptionCollectionDetails.readingAtTheEndOfCollection')
+            $t(
+              'energyConsumption.energyConsumptionCollectionDetails.readingAtTheEndOfCollection',
+            )
           "
           name="endValue"
         >

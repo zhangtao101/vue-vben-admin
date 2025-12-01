@@ -32,7 +32,7 @@ let itemizedEnergyAnalysisChart: any;
 function itemizedEnergyAnalysisChartCreation(chartData: any) {
   if (itemizedEnergyAnalysisChart) {
     // 绑定数据并渲染图表
-    itemizedEnergyAnalysisChart.data(chartData);
+    itemizedEnergyAnalysisChart.changeData(chartData);
   } else {
     itemizedEnergyAnalysisChart = new Chart({ container: 'energyContrast' });
     itemizedEnergyAnalysisChart.options({
@@ -92,7 +92,7 @@ let analysisEnergyRatioChart: any;
 function createAnAnalyticalEnergyShareChart(chartData: any) {
   if (analysisEnergyRatioChart) {
     // 绑定数据并渲染图表
-    analysisEnergyRatioChart.data(chartData);
+    analysisEnergyRatioChart.changeData(chartData);
   } else {
     analysisEnergyRatioChart = new Chart({ container: 'energyUseRatio' });
 
@@ -152,18 +152,25 @@ let yearOnYearAnalysisChart: any;
  */
 function createYearOverYearAnalysisCharts(chartData: any) {
   if (yearOnYearAnalysisChart) {
-    // 绑定数据并渲染图表
-    yearOnYearAnalysisChart.data(chartData);
+    // 更新数据并重新渲染
+    yearOnYearAnalysisChart.changeData(chartData);
   } else {
-    yearOnYearAnalysisChart = new Chart({ container: 'yearOnYearAnalysis' });
-    yearOnYearAnalysisChart.options({
-      type: 'interval',
+    yearOnYearAnalysisChart = new Chart({
+      container: 'yearOnYearAnalysis',
       height: 400,
       autoFit: true,
+    });
+    yearOnYearAnalysisChart.options({
+      type: 'interval',
       data: chartData,
       encode: { x: 'type', y: 'data', color: 'name' },
       transform: [{ type: 'dodgeX' }],
-      interaction: { elementHighlight: { background: true } },
+      interaction: {
+        elementHighlightByX: { background: true },
+        tooltip: {
+          shared: true,
+        },
+      },
       axis: {
         x: {
           title: false,
@@ -173,8 +180,8 @@ function createYearOverYearAnalysisCharts(chartData: any) {
         },
       },
     });
+    yearOnYearAnalysisChart.render();
   }
-  yearOnYearAnalysisChart.render();
 }
 
 /**
@@ -215,7 +222,7 @@ let trendChartOfItemizedEnergyUse: any;
 function createATrendChartForItemizedEnergyUse(chartData: any) {
   if (trendChartOfItemizedEnergyUse) {
     // 绑定数据并渲染图表
-    trendChartOfItemizedEnergyUse.data(chartData);
+    trendChartOfItemizedEnergyUse.changeData(chartData);
   } else {
     trendChartOfItemizedEnergyUse = new Chart({ container: 'energyUseTrend' });
 

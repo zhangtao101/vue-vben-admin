@@ -35,3 +35,39 @@ export async function getMonthItemizedEnergy(params: any) {
     `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getMonthItemizedEnergy?${qs.stringify(params)}`,
   );
 }
+/**
+ * 二氧化碳排放仪表查询
+ */
+export async function getCo2YB(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2YB?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 二氧化碳排数据查询
+ */
+export async function getCo2Data(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2Data?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 电网排放因子导入
+ */
+export async function introductionOfGridEmissionFactors(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/EnergyInsert/insertdwyz`,
+    params,
+  );
+}
+/**
+ * 电网排放因子导入
+ */
+export async function introductionOfGasCarbonDioxideCalculationParameter(
+  params: any,
+) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/EnergyInsert/insertrqcs`,
+    params,
+  );
+}

@@ -1,6 +1,7 @@
 export * from './alertLog.service';
 export * from './center.service';
 export * from './component.service';
+export * from './dictData.service';
 export * from './echart.service';
 export * from './gallery.service';
 export * from './model.service';

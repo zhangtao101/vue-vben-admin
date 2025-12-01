@@ -186,7 +186,7 @@ defineProps({
     <LampInstallationRecord v-if="step.type === 13" />
     <!-- 安灯评价：根据工步类型为 14 时，渲染安灯记录查询组件，并传递评价位置参数 -->
     <LampInstallationRecord :place="3" v-if="step.type === 14" />
-    <!-- 转码：根据工步类型为 15 或 30 时，渲染转码组件，并传递相关参数 -->
+    <!-- 转码：根据工步类型为 15 或 30 或 45 时，渲染转码组件，并传递相关参数 -->
     <Transcoding
       :workstation-code="workstationCode"
       :equip-code="equipCode"
@@ -194,7 +194,7 @@ defineProps({
       :binding-id="bindingId"
       :function-id="step.id"
       :show-type-number="step.type"
-      v-if="[15, 30].includes(step.type)"
+      v-if="[15, 30, 45].includes(step.type)"
     />
     <!-- 首检：根据工步类型为 16 时，渲染首检组件，并传递相关参数 -->
     <FirstInspection

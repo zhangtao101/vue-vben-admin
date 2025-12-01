@@ -91,6 +91,7 @@ const dataInit = computed(() => {
       border: `${detail.style.waterBorderWidth}px solid !important`,
       borderRadius: `${detail.style.borderRadius}px !important`,
       borderColor: detail.style.waterBorderColor,
+      opacity: '1 !important',
     }"
     :class="classStyle"
     :id="detail.identifier"

@@ -356,14 +356,14 @@ onMounted(() => {
       <Form :model="queryParams" layout="inline">
         <!-- 班组名称 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.teamName')"
+          :label="$t('energyConsumption.energyConsumptionAnalysis.teamName')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.className" />
         </FormItem>
         <!-- 班组编号 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.teamNumber')"
+          :label="$t('energyConsumption.energyConsumptionAnalysis.teamNumber')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.classNumber" />
@@ -457,7 +457,7 @@ onMounted(() => {
       >
         <!-- 班组名称 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.teamName')"
+          :label="$t('energyConsumption.energyConsumptionAnalysis.teamName')"
           name="className"
         >
           <Input
@@ -467,7 +467,7 @@ onMounted(() => {
         </FormItem>
         <!-- 班组编号 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.teamNumber')"
+          :label="$t('energyConsumption.energyConsumptionAnalysis.teamNumber')"
           name="classNumber"
         >
           <Input
@@ -477,7 +477,9 @@ onMounted(() => {
         </FormItem>
         <!-- 所属产线 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.productionLine')"
+          :label="
+            $t('energyConsumption.energyConsumptionAnalysis.productionLine')
+          "
           name="productionLine"
         >
           <Input v-model:value="checkedRow.productionLine" />
@@ -492,14 +494,14 @@ onMounted(() => {
         </FormItem>
         <!-- 时间范围 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.timeFrame')"
+          :label="$t('energyConsumption.energyConsumptionAnalysis.timeFrame')"
           name="time"
         >
           <TimeRangePicker v-model:value="checkedRow.time" />
         </FormItem>
         <!-- 备注 -->
         <FormItem
-          :label="$t('energyConsumptionAnalysis.remarks')"
+          :label="$t('energyConsumption.energyConsumptionAnalysis.remarks')"
           name="remark"
         >
           <Input v-model:value="checkedRow.remark" />

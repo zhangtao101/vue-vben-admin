@@ -32,12 +32,12 @@ import BasicTblae from '#/util/component/basicTblae.vue';
 const showType = ref([
   // 图表
   {
-    label: $t('energyConsumptionStatistics.chart'),
+    label: $t('energyConsumption.energyConsumptionStatistics.chart'),
     value: 'chart',
   },
   // 表格
   {
-    label: $t('energyConsumptionStatistics.table'),
+    label: $t('energyConsumption.energyConsumptionStatistics.table'),
     value: 'table',
   },
 ]);
