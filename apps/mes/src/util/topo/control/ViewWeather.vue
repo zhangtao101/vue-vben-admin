@@ -127,9 +127,9 @@ function getWeaImage(val: string): string {
       </Row>
       <div :style="{ fontSize: `${detail.style.position.h / 13}px` }">
         <span>湿度：{{ weatherDetail.humidity }}</span>
-        <span style=" margin-right: 10px;margin-left: 10px">|</span>
+        <span style="margin-right: 10px; margin-left: 10px">|</span>
         <span>气压：{{ weatherDetail.pressure }}</span>
-        <span style=" margin-right: 10px;margin-left: 10px">|</span>
+        <span style="margin-right: 10px; margin-left: 10px">|</span>
         <span>
           空气质量：
           <span style="color: #ffb527">{{ weatherDetail.air_level }}</span>
