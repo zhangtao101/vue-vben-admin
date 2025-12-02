@@ -1,4 +1,12 @@
 <script setup lang="ts">
+/**
+ * 工厂日历异常规则管理组件
+ * 用于管理和维护工厂日历的特殊工作日规则，包括：
+ * 1. 日历视图展示和特殊日期标识
+ * 2. 异常规则的增删改查操作
+ * 3. 工作日/非工作日的特殊设置
+ * 4. 日历图例说明和数据表格管理
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
@@ -35,15 +43,21 @@ import {
   updateAdditionalRule,
 } from '#/api';
 
-// region 显示详情
-
+// region 日历详情展示管理
+// 控制详情抽屉的显示状态
 const detailsDrawer = ref(false);
+// 存储当前查看的日历详情数据
 const details = ref<any>({});
+
 /**
- * 查询详情
+ * 显示日历详情
+ * 打开详情抽屉并展示选中日历的详细信息和日历视图
+ * @param {object} row - 日历数据行对象，包含日历基本信息
  */
 function showDetails(row: any) {
+  // 显示详情抽屉
   detailsDrawer.value = true;
+  // 存储当前选中的日历详情数据，使用扩展运算符确保数据独立性
   details.value = {
     ...row,
   };
@@ -51,94 +65,133 @@ function showDetails(row: any) {
 
 /**
  * 关闭详情抽屉
+ * 清空详情数据并关闭日历视图显示
  */
 function detailsClose() {
+  // 隐藏日历组件
   showCalendar.value = false;
+  // 隐藏详情抽屉
   detailsDrawer.value = false;
+  // 清空详情数据
   details.value = {};
 }
 
+/**
+ * 获取日历日期的样式类名
+ * 根据日期的属性（是否为异常日期、是否为非工作日）返回对应的CSS类名
+ * @param {object} time - dayjs日期对象
+ * @returns {string} CSS类名字符串，用于控制日期的显示样式
+ */
 function getADayOff(time: any) {
+  // 首先检查是否为异常日期（黄色背景）
   if (isException(time)) {
     return 'bg-yellow-500 text-white';
   }
+
+  // 根据星期几判断是否为设定的非工作日（青色背景）
+  // dayjs的day()方法：0=周日，1=周一，...，6=周六
   switch (time.day()) {
     case 0: {
+      // 周日
       return details.value.sunday === 1 ? 'bg-cyan-500 text-white' : '';
     }
     case 1: {
+      // 周一
       return details.value.monday === 1 ? 'bg-cyan-500 text-white' : '';
     }
     case 2: {
+      // 周二
       return details.value.tuesday === 1 ? 'bg-cyan-500 text-white' : '';
     }
     case 3: {
+      // 周三
       return details.value.wednesday === 1 ? 'bg-cyan-500 text-white' : '';
     }
     case 4: {
+      // 周四
       return details.value.thursday === 1 ? 'bg-cyan-500 text-white' : '';
     }
     case 5: {
+      // 周五
       return details.value.friday === 1 ? 'bg-cyan-500 text-white' : '';
     }
     case 6: {
+      // 周六
       return details.value.saturday === 1 ? 'bg-cyan-500 text-white' : '';
     }
     default: {
+      // 异常情况返回空字符串
       return '';
     }
   }
 }
 
+/**
+ * 判断给定日期是否为异常日期
+ * 通过检查当前日期是否在特殊规则（isWork=1）的时间范围内来确定
+ * @param {object} time - dayjs日期对象，需要检查的日期
+ * @returns {boolean} 如果是异常日期返回true，否则返回false
+ */
 function isException(time: any) {
+  // 获取表格中的所有异常规则数据
   const arr = gridApi.grid?.getTableData().tableData || [];
+
+  // 遍历所有异常规则，检查当前日期是否在规则时间范围内
   for (const item of arr) {
+    // 只检查标记为工作日的规则（isWork=1表示设为工作日的异常）
     if (item.isWork === 1) {
+      // 使用dayjs的isBetween方法检查日期是否在规则起止日期之间
+      // '[]'表示包含起止日期，'day'表示按天比较
       const res = time.isBetween(
-        dayjs(item.startDate, 'YYYY-MM-DD'),
-        dayjs(item.endDate, 'YYYY-MM-DD'),
-        'day',
-        '[]',
+        dayjs(item.startDate, 'YYYY-MM-DD'), // 规则开始日期
+        dayjs(item.endDate, 'YYYY-MM-DD'), // 规则结束日期
+        'day', // 比较精度：天
+        '[]', // 包含边界（[startDate, endDate]）
       );
       if (res) {
-        return true;
+        return true; // 找到匹配的异常规则，返回true
       }
     }
   }
-  return false;
+  return false; // 没有找到匹配的异常规则，返回false
 }
 
 // endregion
 
-// region 表格操作
-// 表格配置
+// region 异常规则表格管理
+/**
+ * VXE表格配置选项
+ * 配置工厂日历异常规则的数据展示表格，包含规则的基本信息和操作列
+ * 支持分页、排序、工具栏等功能
+ */
 const gridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
+  align: 'center', // 表格内容居中对齐
+  border: true, // 显示表格边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'ruleCode', title: '规则编号', minWidth: 150 },
-    { field: 'ruleName', title: '规则名称', minWidth: 150 },
-    { field: 'startDate', title: '开始日期', minWidth: 150 },
-    { field: 'endDate', title: '结束日期', minWidth: 150 },
-    { field: 'uTime', title: '修改时间', minWidth: 150 },
-    { field: 'uName', title: '操作人', minWidth: 150 },
+    { title: '序号', type: 'seq', width: 50 }, // 序号列
+    { field: 'ruleCode', title: '规则编号', minWidth: 150 }, // 规则唯一标识
+    { field: 'ruleName', title: '规则名称', minWidth: 150 }, // 规则描述名称
+    { field: 'startDate', title: '开始日期', minWidth: 150 }, // 规则生效开始日期
+    { field: 'endDate', title: '结束日期', minWidth: 150 }, // 规则生效结束日期
+    { field: 'uTime', title: '修改时间', minWidth: 150 }, // 规则最后修改时间
+    { field: 'uName', title: '操作人', minWidth: 150 }, // 最后修改操作人员
     {
       field: 'action',
-      fixed: 'right',
-      slots: { default: 'action' },
+      fixed: 'right', // 固定在表格右侧
+      slots: { default: 'action' }, // 操作列插槽
       title: '操作',
       minWidth: 220,
     },
   ],
-  height: 500,
-  stripe: true,
+  height: 500, // 表格固定高度
+  stripe: true, // 斑马纹效果
   sortConfig: {
-    multiple: true,
+    multiple: true, // 支持多字段排序
   },
   proxyConfig: {
     ajax: {
       query: async ({ page }) => {
+        // 异步查询异常规则数据
         return await queryData({
           page: page?.currentPage,
           pageSize: page?.pageSize,
@@ -147,163 +200,202 @@ const gridOptions: VxeGridProps<any> = {
     },
   },
   toolbarConfig: {
-    custom: true,
-    // import: true,
-    // export: true,
-    refresh: true,
-    zoom: true,
+    custom: true, // 支持自定义列显示
+    // import: true, // 预留导入功能
+    // export: true, // 预留导出功能
+    refresh: true, // 刷新按钮
+    zoom: true, // 缩放功能
   },
 };
 
+/**
+ * 表格事件监听器配置
+ * 处理表格的用户交互事件
+ */
 const gridEvents: VxeGridListeners<any> = {
   /* cellClick: ({ row }) => {
+    // 单元格点击事件（示例代码，当前已注释）
     message.info(`cell-click: ${row.name}`);
   },*/
 };
 
+/**
+ * 创建VXE表格实例
+ * 使用useVbenVxeGrid钩子创建表格组件和API对象
+ */
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 /**
- * 删除行
- * @param row
+ * 删除异常规则
+ * 显示确认对话框，用户确认后调用删除接口删除指定的异常规则
+ * @param {object} row - 表格行数据，包含要删除的异常规则信息
  */
 function delRow(row: any) {
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
-    okType: 'danger',
+    okType: 'danger', // 危险操作，使用红色按钮
     onCancel() {
+      // 用户取消删除时显示警告信息
       message.warning('已取消删除!');
     },
     onOk() {
+      // 用户确认删除时执行删除操作
       deleteAdditionalRule({
-        id: row.id,
+        id: row.id, // 异常规则ID
       })
         .then(() => {
-          // 显示操作成功的提示信息
-          message.success($t('common.successfulOperation'));
-          gridApi.query();
+          // 删除成功时的处理
+          message.success($t('common.successfulOperation')); // 显示成功提示
+          gridApi.query(); // 重新查询表格数据
         })
         .catch((error) => {
-          // 显示操作失败的提示信息
-          message.error($t('common.operationFailure'));
-          message.error(error.msg); // 显示操作失败的提示信息
+          // 删除失败时的处理
+          message.error($t('common.operationFailure')); // 显示通用错误提示
+          message.error(error.msg); // 显示具体错误信息
         });
     },
-    title: '是否确认删除该条数据?',
+    title: '是否确认删除该条数据?', // 确认对话框标题
   });
 }
 
 // endregion
 
-// region 新增/编辑
+// region 异常规则新增/编辑管理
+// 表单引用对象，用于表单验证和重置
 const form = ref();
-// 新增/编辑弹窗是否显示
+// 控制新增/编辑对话框的显示状态
 const showEditDialog = ref(false);
-// 新增/编辑对象
+// 当前编辑的异常规则数据对象
 const editItem = ref<any>({});
-// 工作日选项
+// 工作日类型选项配置
 const workDayOptions = ref<any>([
-  { label: $t('basic.factoryCalendar.workDay'), value: 2 },
-  { label: $t('basic.factoryCalendar.nonWorkDay'), value: 1 },
+  { label: $t('basic.factoryCalendar.workDay'), value: 2 }, // 工作日
+  { label: $t('basic.factoryCalendar.nonWorkDay'), value: 1 }, // 非工作日
 ]);
-// 新增/编辑规则
+// 表单验证规则配置
 const editRules = ref<any>({
   staCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
   time: [{ message: '此项为必填项', required: true, trigger: 'change' }],
 });
 /**
- * 显示编辑抽屉
- * @param isCreate 是否是新增
- * @param row 当前行数据(isCreate为false时才会有)
+ * 显示异常规则编辑对话框
+ * 根据是否为新增操作，初始化编辑数据并显示对话框
+ * @param {boolean} isCreate - 是否为新增操作，true为新增，false为编辑
+ * @param {object} row - 编辑时传入的当前行数据对象（仅在isCreate=false时有效）
  */
 function showEdit(isCreate: boolean, row?: any) {
+  // 显示编辑对话框
   showEditDialog.value = true;
+
   if (isCreate) {
+    // 新增操作：清空编辑数据
     editItem.value = {};
   } else {
+    // 编辑操作：先清空编辑数据，然后查询规则详情
     editItem.value = {};
     getAdditionalRuleDetail({
-      id: row.id,
+      id: row.id, // 规则ID
     }).then((data: any) => {
       editItem.value = data;
+      // 将日期字符串转换为dayjs对象数组，用于RangePicker组件显示
       editItem.value.time = [
-        dayjs(editItem.value.startDate, 'YYYY-MM-DD'),
-        dayjs(editItem.value.endDate, 'YYYY-MM-DD'),
+        dayjs(editItem.value.startDate, 'YYYY-MM-DD'), // 开始日期
+        dayjs(editItem.value.endDate, 'YYYY-MM-DD'), // 结束日期
       ];
     });
   }
 }
 
 /**
- * 关闭抽屉
+ * 关闭编辑对话框
+ * 清空编辑数据并隐藏对话框
  */
 function close() {
   showEditDialog.value = false;
   editItem.value = {};
 }
 
-// 上传状态
+// 表单提交加载状态控制
 const submitLoading = ref(false);
+
 /**
- * 提交
+ * 提交异常规则表单数据
+ * 执行表单验证，验证通过后根据是否包含ID决定是新增还是更新操作
  */
 function submit() {
-  const params = {
-    ...editItem.value,
-    calendarId: details.value.id,
-  };
-  if (params.time) {
-    params.startDate = params.time[0].format('YYYY-MM-DD');
-    params.endDate = params.time[1].format('YYYY-MM-DD');
-    delete params.time;
-  }
   /**
-   * 使用 form.value.validate() 方法验证表单。
-   * 这个方法返回一个 Promise 对象，我们使用 then 方法来处理验证通过的情况。
+   * 使用Ant Design Vue表单的validate方法进行表单验证
+   * 该方法返回Promise对象，验证通过时执行then中的逻辑
    */
   form.value.validate().then(() => {
+    // 构造提交参数，包含编辑数据和关联的日历ID
+    const params = {
+      ...editItem.value,
+      calendarId: details.value.id, // 关联的日历ID
+    };
+
+    // 处理日期范围数据：将数组格式转换为独立的开始和结束日期字符串
+    if (params.time) {
+      params.startDate = params.time[0].format('YYYY-MM-DD'); // 开始日期
+      params.endDate = params.time[1].format('YYYY-MM-DD'); // 结束日期
+      delete params.time; // 删除临时的时间数组属性
+    }
+    // 显示提交加载状态，防止重复提交
     submitLoading.value = true;
+
+    // 根据是否存在ID决定调用新增还是更新接口
     const ob = editItem.value.id
-      ? updateAdditionalRule(params)
-      : addAdditionalRule(params);
+      ? updateAdditionalRule(params) // 更新现有规则
+      : addAdditionalRule(params); // 新增规则
+
     ob.then(() => {
-      // 显示操作成功的提示信息
-      message.success($t('common.successfulOperation'));
-      gridApi.query();
-      close();
+      // 操作成功时的处理
+      message.success($t('common.successfulOperation')); // 显示成功提示
+      gridApi.query(); // 重新查询表格数据
+      close(); // 关闭编辑对话框
     }).finally(() => {
+      // 无论成功或失败，都要隐藏提交加载状态
       submitLoading.value = false;
     });
   });
 }
 // endregion
 
-// region 查询数据
+// region 异常规则数据查询
+// 控制日历组件的显示状态，确保数据加载完成后再显示日历
 const showCalendar = ref(false);
+
 /**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
+ * 查询异常规则数据
+ * 根据日历ID分页查询该日历下的所有异常规则数据
+ * @param {object} params - 查询参数对象
+ * @param {number} params.page - 当前页码
+ * @param {number} params.pageSize - 每页显示的数据条数
+ * @returns {Promise} 返回包含总数和数据列表的Promise对象
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
-    // 调用 getPlantCalendarList API函数，传递查询参数和分页信息
+    // 调用查询异常规则的API接口
     queryAdditionalRules({
-      calendarId: details.value.id,
-      pageNum: page, // 当前页码。
-      pageSize, // 每页显示的数据条数。
+      calendarId: details.value.id, // 关联的日历ID
+      pageNum: page, // 当前页码
+      pageSize, // 每页显示的数据条数
     })
       .then(({ total, list }) => {
-        // 成功获取数据后，更新数据列表和总条数
+        // 成功获取数据后，返回符合VXE表格要求的数据格式
         resolve({
-          total,
-          items: list,
+          total, // 总记录数
+          items: list, // 异常规则数据列表
         });
       })
       .catch((error) => {
+        // 查询失败时拒绝Promise，传递错误信息
         reject(error);
       })
       .finally(() => {
+        // 无论成功或失败，延迟500ms后显示日历组件
+        // 确保表格数据加载完成后再显示日历视图，避免样式问题
         setTimeout(() => {
           showCalendar.value = true;
         }, 500);

@@ -54,6 +54,7 @@
     "@vueuse/core": "catalog:",
     "animejs": "^3.2.1",
     "ant-design-vue": "catalog:",
+    "clipboard": "^2.0.11",
     "dayjs": "catalog:",
     "echarts": "catalog:",
     "echarts-liquidfill": "^3.1.0",
@@ -69,6 +70,7 @@
     "vue-baidu-map-3x": "^1.0.40",
     "vue-plugin-hiprint": "^0.0.60",
     "vue-router": "catalog:",
+    "vue3-json-viewer": "^2.4.1",
     "vue3-menus": "^1.1.2"
   }
 }

@@ -129,8 +129,8 @@ function queryData({ page, pageSize }: any) {
       ...queryParams.value,
     };
     if (params.searchTime && params.searchTime.length === 2) {
-      params.startTime = params.searchTime[0].format('YYYY-MM-DD HH:mm:ss');
-      params.endTime = params.searchTime[1].format('YYYY-MM-DD HH:mm:ss');
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
       params.searchTime = undefined;
     }
     queryPowderMonthlyDetailsStatistics({

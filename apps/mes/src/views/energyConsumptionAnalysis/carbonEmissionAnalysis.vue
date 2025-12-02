@@ -1,4 +1,16 @@
 <script lang="ts" setup>
+/**
+ * 碳排放分析页面
+ * 功能：分析电能和燃气消耗产生的碳排放数据，支持参数导入和图表展示
+ *
+ * 主要功能模块：
+ * 1. 数据查询条件设置（仪表类型、时间范围等）
+ * 2. 碳排放数据图表展示
+ * 3. 电网排放因子参数管理
+ * 4. 燃气二氧化碳计算参数管理
+ * 5. 统计数据展示
+ */
+
 import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
@@ -35,7 +47,12 @@ import {
 } from '#/api';
 import MyStatistic from '#/util/myStatistic.vue';
 
-// region 查询数据
+// region 数据查询相关功能
+
+/**
+ * 仪表类型选项
+ * 1-电表，3-气表
+ */
 const type = [
   {
     label: '电表',
@@ -47,28 +64,40 @@ const type = [
   },
 ];
 
-// 查询参数
+/**
+ * 查询参数
+ * 默认选择电表类型，按月统计
+ */
 const queryParams = ref<any>({
   type: 1,
   timeType: 2,
 });
-// 时间选择器类型
+
+/**
+ * 时间选择器类型映射
+ * 根据时间粒度设置选择器的picker类型
+ */
 const timeType: any = {
-  2: 'month',
-  3: 'year',
+  2: 'month', // 月度
+  3: 'year', // 年度
 };
 
-// 分项名称
+/**
+ * 仪表分项名称列表
+ * 用于选择具体的采集仪表
+ */
 const dataTypeList = ref<any>([]);
 
 /**
- * 查询分项名称
+ * 查询对应类型下的仪表分项名称
+ * 根据选择的仪表类型获取可用的仪表列表
  */
 function queryEquipTypeList() {
   getCo2YB({
     type: queryParams.value.type,
   }).then((data) => {
     dataTypeList.value = [];
+    // 将返回的字符串数组转换为选项格式
     data.forEach((item: string) => {
       dataTypeList.value.push({
         label: item,
@@ -80,34 +109,44 @@ function queryEquipTypeList() {
 
 // endregion
 
-// region 图表
-// 图表
+// region 图表相关功能
+
+/**
+ * G2图表实例
+ */
 let chart: any;
 
 /**
- * 图表初始化
- * @param chartData
+ * 初始化或更新碳排放图表
+ * 显示两条线：a线（实际值）和b线（对比值），超出部分用红点标记
+ *
+ * @param chartData 图表数据数组，包含x轴时间、a值、b值
  */
 function chartInit(chartData: any = []) {
+  // 计算超出点（a值大于b值的点）
   const exceedPoints = chartData
     .filter((d: any) => d.a > d.b)
     .map((d: any) => ({ x: d.x, y: d.a }));
+
   if (chart) {
+    // 更新现有图表
     const lines = chart.getNodesByType('line');
     const pointsMark = chart.getNodesByType('point')[0];
-    // 更新第一条线(a线)
+
+    // 更新第一条线(a线) - 实际排放值
     lines[0].data(chartData);
 
-    // 更新第二条线(b线)
+    // 更新第二条线(b线) - 对比值
     lines[1].data(chartData);
 
-    // 更新超出点
+    // 更新超出标记点
     pointsMark.data(exceedPoints);
 
     chart.options({
       data: chartData,
     });
   } else {
+    // 创建新图表
     chart = new Chart({ container: 'container' });
     chart.options({
       type: 'view',
@@ -119,7 +158,7 @@ function chartInit(chartData: any = []) {
           data: chartData,
           encode: {
             x: 'x',
-            y: 'a',
+            y: 'a', // 实际排放值
           },
           style: {
             stroke: '#1890ff',
@@ -131,7 +170,7 @@ function chartInit(chartData: any = []) {
           data: chartData,
           encode: {
             x: 'x',
-            y: 'b',
+            y: 'b', // 对比值
           },
           style: {
             stroke: '#f04864',
@@ -158,22 +197,33 @@ function chartInit(chartData: any = []) {
   chart.render();
 }
 
+/**
+ * 时间格式化映射
+ * 根据时间粒度设置不同的日期格式
+ */
 const formMat: any = {
-  1: 'YYYY-MM-DD',
-  2: 'YYYY-MM',
-  3: 'YYYY',
+  1: 'YYYY-MM-DD', // 日
+  2: 'YYYY-MM', // 月
+  3: 'YYYY', // 年
 };
 
-// 图表数据详情
-const details = ref<any>({});
 /**
- * 查询图表数据
+ * 图表数据详情
+ * 存储除了图表数据外的其他统计信息
+ */
+const details = ref<any>({});
+
+/**
+ * 查询碳排放图表数据
+ * 根据查询条件获取数据并更新图表
  */
 function queryChartData() {
   const params: any = {
     ...queryParams.value,
     dayType: timeType[queryParams.value.timeType],
   };
+
+  // 处理时间范围参数
   if (queryParams.value.searchTime) {
     params.startDay = params.searchTime[0].format(
       formMat[queryParams.value.timeType],
@@ -183,8 +233,13 @@ function queryChartData() {
     );
     delete params.searchTime;
   }
+
+  // 调用接口获取数据
   getCo2Data(params).then(({ daycurrect, ...d }: any) => {
+    // 保存图表外的详细信息
     details.value = d;
+
+    // 如果有图表数据，延迟渲染图表（确保DOM已准备好）
     if (daycurrect && daycurrect.length > 0) {
       setTimeout(() => {
         chartInit(daycurrect);
@@ -195,16 +250,26 @@ function queryChartData() {
 
 // endregion
 
-// region 电网排放因子导入
-// 电网排放因子导入抽屉是否显示
+// region 电网排放因子导入功能
+
+/**
+ * 是否显示电网排放因子导入抽屉
+ */
 const isShowGridEmissionFactorImportDrawer = ref(false);
-// 电网排放因子导入表单状态
+
+/**
+ * 电网排放因子导入表单数据
+ */
 const gridEmissionFactorImportFormState = ref<any>({});
-// 电网排放因子导入表单引用
+
+/**
+ * 电网排放因子导入表单引用
+ */
 const gridEmissionFactorImportFormRef = ref<any>({});
 
 /**
- * 显示电网排放因子导入抽屉
+ * 打开电网排放因子导入抽屉
+ * 重置表单状态
  */
 function showGridEmissionFactorImportDrawer() {
   isShowGridEmissionFactorImportDrawer.value = true;
@@ -213,6 +278,7 @@ function showGridEmissionFactorImportDrawer() {
 
 /**
  * 关闭电网排放因子导入抽屉
+ * 清空表单数据
  */
 function closeGridEmissionFactorImportDrawer() {
   isShowGridEmissionFactorImportDrawer.value = false;
@@ -220,7 +286,8 @@ function closeGridEmissionFactorImportDrawer() {
 }
 
 /**
- * 处理电网排放因子导入表单提交
+ * 提交电网排放因子导入表单
+ * 验证表单后调用接口保存数据
  */
 function handleGridEmissionFactorImportSubmit() {
   gridEmissionFactorImportFormRef.value.validate().then((valid: boolean) => {
@@ -228,9 +295,13 @@ function handleGridEmissionFactorImportSubmit() {
       const params: any = {
         ...gridEmissionFactorImportFormState.value,
       };
+
+      // 格式化月份参数
       if (params.time) {
         params.time = params.time.format('YYYY-MM');
       }
+
+      // 调用接口保存数据
       introductionOfGridEmissionFactors(params).then(() => {
         message.success($t('common.successfulOperation'));
         if (queryParams.value.equipmentCode) {
@@ -243,16 +314,26 @@ function handleGridEmissionFactorImportSubmit() {
 
 // endregion
 
-// region 燃气二氧化碳计算参数导入
-// 电网排放因子导入抽屉是否显示
+// region 燃气二氧化碳计算参数导入功能
+
+/**
+ * 是否显示燃气二氧化碳计算参数导入抽屉
+ */
 const isShowGasCarbonDioxideCalculationParameterImportDrawer = ref(false);
-// 燃气二氧化碳计算参数导入表单状态
+
+/**
+ * 燃气二氧化碳计算参数导入表单数据
+ */
 const gasCarbonDioxideCalculationParameterImportFormState = ref<any>({});
-// 燃气二氧化碳计算参数导入表单引用
+
+/**
+ * 燃气二氧化碳计算参数导入表单引用
+ */
 const gasCarbonDioxideCalculationParameterImportFormRef = ref<any>({});
 
 /**
- * 显示电网排放因子导入抽屉
+ * 打开燃气二氧化碳计算参数导入抽屉
+ * 重置表单状态
  */
 function showGasCarbonDioxideCalculationParameterImportDrawer() {
   isShowGasCarbonDioxideCalculationParameterImportDrawer.value = true;
@@ -260,7 +341,8 @@ function showGasCarbonDioxideCalculationParameterImportDrawer() {
 }
 
 /**
- * 关闭电网排放因子导入抽屉
+ * 关闭燃气二氧化碳计算参数导入抽屉
+ * 清空表单数据
  */
 function closeGasCarbonDioxideCalculationParameterImportDrawer() {
   isShowGasCarbonDioxideCalculationParameterImportDrawer.value = false;
@@ -268,7 +350,8 @@ function closeGasCarbonDioxideCalculationParameterImportDrawer() {
 }
 
 /**
- * 处理电网排放因子导入表单提交
+ * 提交燃气二氧化碳计算参数导入表单
+ * 验证表单后调用接口保存数据
  */
 function handleGasCarbonDioxideCalculationParameterImportSubmit() {
   gasCarbonDioxideCalculationParameterImportFormRef.value
@@ -278,9 +361,13 @@ function handleGasCarbonDioxideCalculationParameterImportSubmit() {
         const params: any = {
           ...gasCarbonDioxideCalculationParameterImportFormState.value,
         };
+
+        // 格式化月份参数
         if (params.time) {
           params.time = params.time.format('YYYY-MM');
         }
+
+        // 调用接口保存数据
         introductionOfGasCarbonDioxideCalculationParameter(params).then(() => {
           message.success($t('common.successfulOperation'));
           if (queryParams.value.equipmentCode) {
@@ -292,20 +379,30 @@ function handleGasCarbonDioxideCalculationParameterImportSubmit() {
 }
 // endregion
 
-// region 生命周期
+// region 页面生命周期
+
+/**
+ * 页面挂载时初始化数据
+ * 设置默认时间范围并查询仪表列表
+ */
 onMounted(() => {
-  // 获取当前时间
+  // 设置默认查询时间范围：上个月至今
   const now = dayjs();
   queryParams.value.searchTime = [now.subtract(1, 'month'), now];
+
+  // 查询默认仪表类型的仪表列表
   queryEquipTypeList();
+
+  // 暂时注释掉自动查询图表，需要用户手动选择仪表后查询
   // queryChartData();
 });
+
 // endregion
 </script>
 
 <template>
   <Page>
-    <!-- region 查询条件 -->
+    <!-- region 查询条件区域 -->
     <Card class="mb-4 mt-4">
       <Form :model="queryParams" layout="inline">
         <!-- 仪表类型 -->
@@ -381,7 +478,7 @@ onMounted(() => {
       </Form>
     </Card>
     <!-- endregion -->
-    <!-- region 主要内容 -->
+    <!-- region 主要内容区域 -->
     <Card class="mb-4 mt-4">
       <div>
         <Space>
@@ -438,7 +535,7 @@ onMounted(() => {
       </template>
     </Card>
     <!-- endregion -->
-    <!-- region 电网排放因子 -->
+    <!-- region 电网排放因子导入抽屉 -->
     <Drawer
       v-model:open="isShowGridEmissionFactorImportDrawer"
       :footer-style="{ textAlign: 'right' }"
@@ -501,7 +598,7 @@ onMounted(() => {
       </template>
     </Drawer>
     <!-- endregion -->
-    <!-- region 燃气二氧化碳计算参数导入 -->
+    <!-- region 燃气二氧化碳计算参数导入抽屉 -->
     <Drawer
       v-model:open="isShowGasCarbonDioxideCalculationParameterImportDrawer"
       :footer-style="{ textAlign: 'right' }"

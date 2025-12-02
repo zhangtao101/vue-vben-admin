@@ -20,5 +20,18 @@
     "wareLocationCode": "库位编号",
     "wareLocationName": "库位名称",
     "physicalWareArea": "物理库区"
+  },
+  "ioBillManagement": {
+    "ioBillCode": "单据编号",
+    "ioBillType": "单据类型",
+    "materialCode": "物料编码",
+    "materialName": "物料名称",
+    "time": "单据时间",
+    "type": "单据类型",
+    "opType": "操作类型",
+    "bindBillCode": "绑定单号",
+    "supplierName": "供应商名称",
+    "number": "数量",
+    "materialFeatureId": "物料特征ID"
   }
 }

@@ -10,6 +10,7 @@ import '@vben/styles/antd';
 import { useTitle } from '@vueuse/core';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
+import JsonViewer from 'vue3-json-viewer';
 import Menus from 'vue3-menus';
 
 import { $t, setupI18n } from '#/locales';
@@ -17,6 +18,8 @@ import { $t, setupI18n } from '#/locales';
 import { initComponentAdapter } from './adapter/component';
 import App from './app.vue';
 import { router } from './router';
+
+import 'vue3-json-viewer/dist/vue3-json-viewer.css';
 
 async function bootstrap(namespace: string) {
   // dayjs插件
@@ -38,6 +41,9 @@ async function bootstrap(namespace: string) {
 
   // 初始化 tippy
   initTippy(app);
+
+  // 第三方工具
+  app.use(JsonViewer);
 
   // 配置路由及路由守卫
   app.use(router);
