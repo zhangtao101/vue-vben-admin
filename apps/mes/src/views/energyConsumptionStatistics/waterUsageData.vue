@@ -21,13 +21,11 @@ import { Chart } from '@antv/g2';
 import {
   Button,
   Card,
-  Col,
   Form,
   FormItem,
   RadioButton,
   RadioGroup,
   RangePicker,
-  Row,
   Select,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';

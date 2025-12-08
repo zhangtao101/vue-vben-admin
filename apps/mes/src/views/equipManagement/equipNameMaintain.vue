@@ -6,7 +6,6 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
-import { useAccessStore } from '@vben/stores';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
