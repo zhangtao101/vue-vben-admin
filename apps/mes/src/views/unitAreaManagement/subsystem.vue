@@ -178,7 +178,7 @@ const editRules = ref<any>({
       },
     },
   ],
-  subarea: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  subarea: [{ message: '此项为必填项', required: false, trigger: 'change' }],
   systemType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
 });
 
@@ -388,11 +388,12 @@ function selectAll(check: boolean) {
 // region 单元分区
 
 // 分区列表
+/*
 const listOfUnitPartitions = ref<any>([]);
 
-/**
+/!**
  * 分区查询
- */
+ *!/
 function queryUnitPartitions() {
   selectFQList().then((data) => {
     listOfUnitPartitions.value = [];
@@ -404,6 +405,7 @@ function queryUnitPartitions() {
     });
   });
 }
+*/
 
 // endregion
 
@@ -554,7 +556,7 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
-  queryUnitPartitions();
+  // queryUnitPartitions();
 });
 
 // endregion
@@ -781,10 +783,7 @@ onMounted(() => {
         </FormItem>
         <!-- 单元分区 -->
         <FormItem :label="$t('equip.unitPartitioning')" name="subarea">
-          <Select
-            v-model:value="checkedRow.subarea"
-            :options="listOfUnitPartitions"
-          />
+          <Input v-model:value="checkedRow.subarea" />
         </FormItem>
         <!-- 安装地址 -->
         <FormItem :label="$t('equip.installationAddress')" name="location">

@@ -180,7 +180,7 @@ const formMat: any = {
  */
 function queryChartData() {
   const params: any = {
-    itemizedName: queryParams.value.itemizedName, // 班组名称
+    className: queryParams.value.className, // 班组名称
   };
 
   // 处理时间范围参数
