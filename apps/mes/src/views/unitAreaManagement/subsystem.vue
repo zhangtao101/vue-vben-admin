@@ -45,7 +45,6 @@ import {
   getItemizedSystemList,
   getItemizedSystemTemplate,
   selectEquipment,
-  selectFQList,
   stopItemizedSystem,
   updateItemizedSystemList,
 } from '#/api';
