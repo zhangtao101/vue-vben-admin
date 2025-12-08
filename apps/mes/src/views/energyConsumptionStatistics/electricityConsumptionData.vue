@@ -16,13 +16,11 @@ import { Chart } from '@antv/g2';
 import {
   Button,
   Card,
-  Col,
   Form,
   FormItem,
   RadioButton,
   RadioGroup,
   RangePicker,
-  Row,
   Select,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
@@ -130,12 +128,12 @@ function queryChartData() {
         {
           time: item.time,
           value: item.activePower,
-          type: '有功电量', // 有功电量数据系列
+          type: '有功功率', // 有功功率数据系列
         },
         {
           time: item.time,
           value: item.reactivePower,
-          type: '无功电量', // 无功电量数据系列
+          type: '无功功率', // 无功功率数据系列
         },
       );
     });
@@ -169,12 +167,12 @@ const columns: any = [
   },
   {
     field: 'activePower',
-    title: '有功电量（kWh）', // 有效功消耗电量
+    title: '有功功率', // 有功功率
     minWidth: 150,
   },
   {
     field: 'reactivePower',
-    title: '无功电量（kWh）', // 无功功率消耗电量
+    title: '无功功率', // 无功功率
     minWidth: 150,
   },
   {
@@ -474,26 +472,22 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
 
-    <!-- region 主要内容展示区域 -->
+    <!-- region 图表展示区域 -->
     <Card class="mb-4 mt-4">
-      <Row>
-        <!-- 图表展示区域 - 左侧占50%宽度 -->
-        <Col span="12" class="h-full">
-          <!-- 用电量趋势图表容器 -->
-          <div id="lineChart"></div>
-        </Col>
+      <!-- 用电量趋势图表容器 -->
+      <div id="lineChart"></div>
+    </Card>
+    <!-- endregion -->
 
-        <!-- 表格展示区域 - 右侧占50%宽度 -->
-        <Col span="12">
-          <!-- region 数据表格 -->
-          <BasicTblae
-            :columns="columns"
-            :query-data="queryData"
-            @initialization-complete="(args) => (gridApi = args)"
-          />
-          <!-- endregion -->
-        </Col>
-      </Row>
+    <!-- region 表格展示区域 -->
+    <Card class="mb-4 mt-4">
+      <!-- region 数据表格 -->
+      <BasicTblae
+        :columns="columns"
+        :query-data="queryData"
+        @initialization-complete="(args) => (gridApi = args)"
+      />
+      <!-- endregion -->
     </Card>
     <!-- endregion -->
   </Page>

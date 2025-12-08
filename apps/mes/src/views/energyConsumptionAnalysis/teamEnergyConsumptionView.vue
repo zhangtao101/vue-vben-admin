@@ -237,10 +237,7 @@ function queryChartData() {
       });
     }
 
-    // 有数据时才渲染图表
-    if (chartData && chartData.length > 0) {
-      chartInit(chartData);
-    }
+    chartInit(chartData);
   });
 }
 

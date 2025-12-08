@@ -2,15 +2,11 @@
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
 
-withDefaults(
-  defineProps<{
-    percent: number;
-    title: string;
-    trend?: 'down' | 'up';
-    value: string;
-  }>(),
-  { trend: 'up' },
-);
+defineProps<{
+  percent?: number;
+  title: string;
+  value: number;
+}>();
 
 /* 新拟态 surface 变量，方便以后换肤 */
 const surfaceClass = 'surface';
@@ -25,13 +21,14 @@ const surfaceClass = 'surface';
 
       <!-- 趋势 -->
       <div
+        v-if="percent !== undefined && percent > 0"
         class="ml-auto flex items-center gap-1 text-sm font-semibold"
-        :class="trend === 'up' ? 'text-emerald-600' : 'text-rose-500'"
+        :class="percent > 0 ? 'text-rose-600' : 'text-emerald-500'"
       >
         <span>{{ percent }}%</span>
 
         <Icon
-          :icon="trend === 'up' ? 'mdi:arrow-up' : 'mdi:arrow-down'"
+          :icon="percent > 0 ? 'mdi:arrow-up' : 'mdi:arrow-down'"
           class="inline-block size-6"
         />
         <!-- mdi:arrow-down -->

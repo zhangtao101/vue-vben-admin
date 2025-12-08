@@ -409,26 +409,22 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
 
-    <!-- region 主要内容展示区域 -->
+    <!-- region 图表展示区域 -->
     <Card class="mb-4 mt-4">
-      <Row>
-        <!-- 图表展示区域 - 左侧占50%宽度 -->
-        <Col span="12" class="h-full">
-          <!-- 用水量趋势图表容器 -->
-          <div id="lineChart"></div>
-        </Col>
+      <!-- 用水量趋势图表容器 -->
+      <div id="lineChart"></div>
+    </Card>
+    <!-- endregion -->
 
-        <!-- 表格展示区域 - 右侧占50%宽度 -->
-        <Col span="12">
-          <!-- region 数据表格 -->
-          <BasicTblae
-            :columns="columns"
-            :query-data="queryData"
-            @initialization-complete="(args) => (gridApi = args)"
-          />
-          <!-- endregion -->
-        </Col>
-      </Row>
+    <!-- region 表格展示区域 -->
+    <Card class="mb-4 mt-4">
+      <!-- region 数据表格 -->
+      <BasicTblae
+        :columns="columns"
+        :query-data="queryData"
+        @initialization-complete="(args) => (gridApi = args)"
+      />
+      <!-- endregion -->
     </Card>
     <!-- endregion -->
   </Page>

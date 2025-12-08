@@ -437,20 +437,20 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 分区ID -->
+        <!-- 线损对象编号 -->
         <FormItem
-          :label="$t('unitAreaManagement.partitionID')"
+          :label="$t('unitAreaManagement.lineLossObjectNumber')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.partitionID" />
+          <Input v-model:value="queryParams.lossNumber" />
         </FormItem>
 
-        <!-- 分区名称 -->
+        <!-- 线损对象名称 -->
         <FormItem
-          :label="$t('unitAreaManagement.partitionName')"
+          :label="$t('unitAreaManagement.lineLossObjectName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.partitionName" />
+          <Input v-model:value="queryParams.lossName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">

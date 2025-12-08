@@ -760,7 +760,6 @@ onMounted(() => {});
             v-model:value="item.startEnergyValue"
             :min="0"
             @change="energyChange(item)"
-            读数变化时触发能耗计算
           />
         </DescriptionsItem>
         <!-- 仪表结束时间显示 -->
@@ -772,11 +771,8 @@ onMounted(() => {});
           <InputNumber
             v-model:value="item.endEnergyValue"
             :min="item.startEnergyValue || 0"
-            最小值为开始读数，确保结束读数不小于开始读数
             :disabled="!(item.startEnergyValue || item.startEnergyValue === 0)"
-            未输入开始读数时禁用结束读数编辑
             @change="energyChange(item)"
-            读数变化时触发能耗计算
           />
         </DescriptionsItem>
         <!-- 能耗值编辑 -->
@@ -785,7 +781,6 @@ onMounted(() => {});
             v-model:value="item.energyValue"
             :min="0"
             @change="energyChange(item)"
-            能耗值变化时的处理
           />
         </DescriptionsItem>
         <!-- 异常说明显示 -->

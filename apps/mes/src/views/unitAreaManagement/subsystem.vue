@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import {h, onMounted, ref, watch} from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -76,6 +76,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'systemType',
       title: '系统类型',
       minWidth: 150,
+      slots: { default: 'systemType' },
     },
     {
       field: 'subarea',
@@ -178,6 +179,7 @@ const editRules = ref<any>({
     },
   ],
   subarea: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  systemType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
 });
 
 /**
@@ -307,11 +309,12 @@ const meterDrawer = ref(false);
 const meterKey = ref<string>('');
 /**
  * 查询仪表列表
- * @param val
+ * @param type
  */
-function queryTheMeter(val: string) {
+function queryTheMeter(type: string) {
   selectEquipment({
-    equipmentCode: val,
+    equipmentCode: '',
+    type,
   }).then((data) => {
     meterList.value = [];
     data.forEach((item: any) => {
@@ -328,9 +331,11 @@ function queryTheMeter(val: string) {
  * @param row
  */
 function showMeterDrawer(row: any) {
+  queryTheMeter(row.systemType);
   meterDrawer.value = true;
   checkedRow.value = {
     ...row,
+    equipmentCode: row.equipmentCodes,
   };
 }
 
@@ -351,6 +356,32 @@ function meterClose() {
   meterDrawer.value = false;
   checkedRow.value = {};
 }
+
+// region 全选
+/**
+ * 全选/取消全选
+ */
+function selectAll(check: boolean) {
+  // 过滤出包含 meterKey.value 的仪表
+  // eslint-disable-next-line array-callback-return
+  const arr = meterList.value.map((item: any) => {
+    if (item.label.includes(meterKey.value)) {
+      return item.value;
+    }
+  });
+  if (check) {
+    checkedRow.value.equipmentCode.push(...arr);
+    checkedRow.value.equipmentCode = [
+      ...new Set(checkedRow.value.equipmentCode),
+    ];
+  } else {
+    checkedRow.value.equipmentCode = checkedRow.value.equipmentCode.filter(
+      (item: string) => !arr.includes(item),
+    );
+  }
+}
+
+// endregion
 
 // endregion
 
@@ -396,6 +427,29 @@ const statusOptions = ref([
     value: 0,
   },
 ]);
+// 系统类型列表
+const systemType = [
+  {
+    label: '电表',
+    value: '1',
+  },
+  {
+    label: '水表',
+    value: '2',
+  },
+  {
+    label: '气表',
+    value: '3',
+  },
+  {
+    label: '碳表',
+    value: '5',
+  },
+];
+// 系统类型映射表
+const systemTypeMap = Object.fromEntries(
+  systemType.map(({ value, label }) => [value, label]),
+);
 
 // 总数信息
 const sum = ref<any>({
@@ -500,7 +554,6 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
-  queryTheMeter('');
   queryUnitPartitions();
 });
 
@@ -557,7 +610,12 @@ onMounted(() => {
         </FormItem>
         <!-- 系统类型 -->
         <FormItem :label="$t('equip.systemType')" style="margin-bottom: 1em">
-          <Input v-model:value="queryParams.systemType" />
+          <Select
+            allow-clear
+            v-model:value="queryParams.systemType"
+            :options="systemType"
+            class="!w-48"
+          />
         </FormItem>
         <!-- 设备状态 -->
         <FormItem
@@ -628,6 +686,9 @@ onMounted(() => {
               {{ $t('common.import') }}
             </Button>
           </Upload>
+        </template>
+        <template #systemType="{ row }">
+          {{ systemTypeMap[row.systemType] || row.systemType }}
         </template>
         <template #isUse="{ row }">
           <RadioGroup
@@ -731,7 +792,7 @@ onMounted(() => {
         </FormItem>
         <!-- 系统类型 -->
         <FormItem :label="$t('equip.systemType')" name="systemType">
-          <Input v-model:value="checkedRow.systemType" />
+          <Select v-model:value="checkedRow.systemType" :options="systemType" />
         </FormItem>
       </Form>
 
@@ -761,6 +822,10 @@ onMounted(() => {
       @close="meterClose"
     >
       <Input v-model:value="meterKey" placeholder="请输入仪表名称或编号" />
+      <Space class="my-4">
+        <Button @click="selectAll(true)" type="primary">全选</Button>
+        <Button @click="selectAll(false)" type="primary">全不选</Button>
+      </Space>
       <CheckboxGroup v-model:value="checkedRow.equipmentCode">
         <Row>
           <template v-for="item of meterList" :key="item.value">

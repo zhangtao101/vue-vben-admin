@@ -45,6 +45,8 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     { field: 'workSheetCode', title: '工单号', minWidth: 200 },
+    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'productName', title: '产品名称', minWidth: 200 },
     { field: 'catchCode', title: '任务采集编号', minWidth: 250 },
     { field: 'workstationName', title: '工作站名称', minWidth: 250 },
     { field: 'type', title: '采集模式', minWidth: 200 },

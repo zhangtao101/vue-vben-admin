@@ -414,6 +414,8 @@ defineExpose({
 </script>
 
 <template>
+  <!-- region 日历详情展示抽屉 -->
+  <!-- 全屏抽屉组件，用于展示日历详情和异常规则管理 -->
   <Drawer
     v-model:open="detailsDrawer"
     :footer-style="{ textAlign: 'right' }"
@@ -422,34 +424,42 @@ defineExpose({
     title="信息详情"
     @close="detailsClose"
   >
-    <!-- 日历名称 -->
+    <!-- 日历基本信息展示区域 -->
+    <!-- 日历名称显示项（只读） -->
     <FormItem
       :label="$t('basic.factoryCalendar.calendarName')"
       name="calendarName"
     >
       <Input v-model:value="details.calendarName" readonly />
     </FormItem>
-    <!-- 所属组织 -->
+    <!-- 所属组织显示项（只读） -->
     <FormItem
       :label="$t('basic.factoryCalendar.affiliation')"
       name="organizationName"
     >
       <Input v-model:value="details.organizationName" readonly />
     </FormItem>
+
+    <!-- 日历视图和图例说明区域 -->
     <Row>
       <Col :span="4">
+        <!-- 日历图例说明区域 -->
         <div>
+          <!-- 图例标题 -->
           <span class="text-lg font-bold">
             {{ $t('basic.factoryCalendar.legend') }}
           </span>
+          <!-- 非工作日图例（青色背景） -->
           <span
             class="m-4 block h-8 border bg-cyan-500 px-4 text-center leading-[200%] text-white"
           >
             {{ $t('basic.factoryCalendar.nonWorkDay') }}
           </span>
+          <!-- 普通工作日图例（无背景色） -->
           <span class="m-4 block h-8 border px-4 text-center leading-[200%]">
             {{ $t('basic.factoryCalendar.workDay') }}
           </span>
+          <!-- 异常日期图例（黄色背景） -->
           <span
             class="mx-4 block h-8 border bg-yellow-500 px-4 text-center leading-[200%] text-white"
           >
@@ -458,10 +468,14 @@ defineExpose({
         </div>
       </Col>
       <Col :span="20">
+        <!-- 日历组件展示区域 -->
         <Spin :spinning="!showCalendar">
+          <!-- 日历组件，显示当前月份的日期视图 -->
           <Calendar v-if="showCalendar">
+            <!-- 自定义日期单元格渲染模板 -->
             <template #dateFullCellRender="{ current }">
               <div class="h-24 p-4">
+                <!-- 日期数字显示，根据规则动态添加样式类 -->
                 <span
                   class="inline-block h-8 w-8 rounded-full text-center leading-[200%]"
                   :class="getADayOff(current)"
@@ -474,19 +488,25 @@ defineExpose({
         </Spin>
       </Col>
     </Row>
+
+    <!-- 异常规则管理表格 -->
     <Grid v-if="detailsDrawer">
+      <!-- 表格工具栏插槽：新增按钮 -->
       <template #toolbar-tools>
-        <!-- 新增按钮 -->
+        <!-- 新增异常规则按钮 -->
         <Button type="primary" @click="showEdit(true)">
           {{ $t('common.add') }}
         </Button>
       </template>
+
+      <!-- 表格操作列插槽：编辑和删除按钮 -->
       <template #action="{ row }">
         <!-- 编辑按钮 -->
         <Tooltip>
           <template #title>{{ $t('common.edit') }}</template>
           <Button class="mr-4" type="link" @click="showEdit(false, row)">
             <template #icon>
+              <!-- 编辑图标 -->
               <Icon
                 icon="mdi:edit-outline"
                 class="inline-block align-middle text-2xl"
@@ -495,11 +515,12 @@ defineExpose({
           </Button>
         </Tooltip>
 
-        <!-- 删除数据 -->
+        <!-- 删除按钮 -->
         <Tooltip>
           <template #title>{{ $t('common.delete') }}</template>
           <Button danger type="link" @click="delRow(row)">
             <template #icon>
+              <!-- 删除图标 -->
               <Icon
                 icon="mdi-light:delete"
                 class="inline-block align-middle text-2xl"
@@ -511,7 +532,8 @@ defineExpose({
     </Grid>
   </Drawer>
 
-  <!-- region 新增 / 编辑 -->
+  <!-- region 异常规则新增/编辑抽屉 -->
+  <!-- 右侧抽屉组件，用于新增或编辑异常规则 -->
   <Drawer
     v-model:open="showEditDialog"
     :footer-style="{ textAlign: 'right' }"
@@ -520,6 +542,7 @@ defineExpose({
     title="信息编辑"
     @close="close"
   >
+    <!-- 异常规则编辑表单 -->
     <Form
       :label-col="{ span: 8 }"
       :model="editItem"
@@ -529,19 +552,19 @@ defineExpose({
       name="editMessageForm"
       ref="form"
     >
-      <!-- 规则编号 -->
+      <!-- 规则编号字段（系统自动生成，只读） -->
       <FormItem :label="$t('basic.factoryCalendar.ruleCode')" name="ruleCode">
         <Input v-model:value="editItem.ruleCode" disabled />
       </FormItem>
-      <!-- 特殊规则名称 -->
+      <!-- 特殊规则名称字段（用户输入） -->
       <FormItem :label="$t('basic.factoryCalendar.ruleName')" name="ruleName">
         <Input v-model:value="editItem.ruleName" />
       </FormItem>
-      <!-- 特殊规则日期 -->
+      <!-- 特殊规则日期范围选择（开始日期-结束日期） -->
       <FormItem :label="$t('basic.factoryCalendar.time')" name="time">
         <RangePicker v-model:value="editItem.time" />
       </FormItem>
-      <!-- 工作周设定 -->
+      <!-- 工作日类型选择（工作日/非工作日） -->
       <FormItem
         :label="$t('basic.factoryCalendar.workWeekSetting')"
         name="startDay"
@@ -550,13 +573,14 @@ defineExpose({
       </FormItem>
     </Form>
 
+    <!-- 表单底部操作按钮区域 -->
     <template #footer>
       <Space>
-        <!-- 取消 -->
+        <!-- 取消按钮：关闭对话框，不保存数据 -->
         <Button @click="close">
           {{ $t('common.cancel') }}
         </Button>
-        <!-- 确认 -->
+        <!-- 确认按钮：提交表单数据，显示加载状态 -->
         <Button type="primary" @click="submit" :loading="submitLoading">
           {{ $t('common.confirm') }}
         </Button>
@@ -566,4 +590,9 @@ defineExpose({
   <!-- endregion -->
 </template>
 
-<style scoped></style>
+<style scoped>
+/*
+ * 组件专属样式
+ * 当前为空，如需要可以在此添加局部样式
+ */
+</style>

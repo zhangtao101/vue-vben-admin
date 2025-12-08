@@ -19,6 +19,12 @@ import {
   Switch,
 } from 'ant-design-vue';
 
+/**
+ * 工艺流程配置组件
+ * 用于配置制造执行系统中不同工序的操作规则和参数设置
+ * 支持多种操作类型：工序过程、投料、领料、入库、流转、工艺配制采集、工艺过程采集、能源采集、报工作业
+ */
+
 // 使用 defineProps 方法定义组件的属性
 const defaultProps = defineProps({
   details: {
@@ -85,32 +91,34 @@ const defaultEmits = defineEmits([
 // 抽屉是否打开
 const drawerOpen = ref(false);
 
-// 操作类型, 不需要响应式
+// 操作类型配置数据结构，包含工序流程中所有可能的操作类型及其规则配置
+// 该数据为静态配置，不需要响应式处理
 const typeOfOperation: {
-  // 操作类型中文名
+  // 操作类型中文名称，用于界面显示
   label: string;
+  // 该操作类型下的规则配置列表
   rules: {
-    // 规则中文名
+    // 规则中文名称，用于界面显示
     label: string;
-    // 下拉列表选项
+    // 下拉列表选项（当规则类型为5或6时使用）
     options?: {
-      label: string;
-      value: string;
+      label: string; // 选项显示文本
+      value: string; // 选项实际值
     }[];
-    // 显示条件
+    // 显示条件（可选）
     show?: string;
     /**
-     * 规则类型
-     * 1: 开关
-     * 2: 数值输入
-     * 3: 文本输入
-     * 4: 阈值校验加阈值设定
-     * 5: 下拉选项
-     * 6: 多选框
+     * 规则类型枚举值，对应不同的表单控件类型
+     * 1: 开关控件 (Switch) - 用于布尔值配置
+     * 2: 数值输入 (InputNumber) - 用于数字类型配置
+     * 3: 文本输入 (Input) - 用于字符串类型配置
+     * 4: 阈值校验加阈值设定 (Switch + InputNumber) - 用于需要同时配置启用状态和阈值的规则
+     * 5: 下拉选项 (Select) - 用于单选配置
+     * 6: 多选框 (CheckboxGroup) - 用于多选配置
      */
     type: number;
   }[];
-  // 操作类型值
+  // 操作类型的唯一标识值，用于后端存储和匹配
   value: number;
 }[] = [
   {
@@ -325,37 +333,42 @@ const typeOfOperation: {
 ];
 
 // region 查询数据及初始化
-// 操作详情
+// 操作详情列表，存储当前配置的所有操作类型及其规则数据
 const operationDetails = ref<any[]>([]);
 
 /**
- * 查询并设置流程详情的函数。
- * 这个函数通过调用 queryProcessSetDetailById 函数来获取与 parentId 相关的流程设置详情，
- * 然后根据获取到的数据更新组件的状态。
+ * 查询并设置流程详情的函数
+ * 这个函数负责处理流程配置数据的初始化和转换
+ * 主要功能：将传入的详情数据与预定义的操作类型进行匹配，并解析规则数据
  */
 function queryProcessSetDetail() {
+  // 检查是否有传入的详情数据
   if (defaultProps.details && defaultProps.details.length > 0) {
+    // 遍历传入的详情数据
     for (const item of defaultProps.details as any[]) {
       /**
-       * 遍历 typeOfOperation 数组，这个数组可能包含了不同的操作类型。
-       * 对于每个操作类型，检查当前流程设置项的 opType 是否与之匹配。
+       * 遍历预定义的操作类型数组，寻找与当前项目匹配的操作类型
+       * 通过 opType 字段进行匹配，找到对应的操作类型配置
        */
       typeOfOperation.forEach((i: any) => {
         if (item.opType === i.value) {
           /**
-           * 如果匹配，解析 item 的 ruleData 属性，这个属性可能是一个 JSON 字符串，
-           * 并将其结果赋值给 item 的 rules 属性。
+           * 解析存储的规则数据 JSON 字符串
+           * ruleData 字段存储了之前保存的规则配置，需要转换为对象格式
            */
           item.rules = JSON.parse(item.ruleData);
           /**
-           * 同时，将当前操作类型的规则赋值给 item 的 rulePending 属性。
+           * 为当前项目设置待处理规则列表
+           * rulePending 用于界面显示和编辑，包含该操作类型的所有可用规则
            */
           item.rulePending = i.rules;
         }
       });
     }
+    // 将处理后的详情数据设置到响应式变量中
     operationDetails.value = [...defaultProps.details];
   } else {
+    // 如果没有传入数据，初始化为空数组
     operationDetails.value = [];
   }
   /**
@@ -396,47 +409,33 @@ function queryProcessSetDetail() {
 }
 
 /**
- * 关闭组件的函数。
- * 这个函数用于关闭组件，并通知父组件更新相关的状态。
+ * 关闭抽屉组件的函数
+ * 执行关闭操作并通知父组件更新状态
  */
 function close() {
-  /**
-   * 将 drawerOpen 的值设置为 false。
-   * drawerOpen 可能是一个响应式变量，用于控制组件的显示状态。
-   * 当设置为 false 时，组件会被隐藏。
-   */
+  // 关闭内部抽屉状态
   drawerOpen.value = false;
 
-  /**
-   * 使用 defaultEmits 发射一个名为 'update:isOpen' 的事件。
-   * 这个事件用于通知父组件 `isOpen` 属性应该更新为 false。
-   * 父组件可以监听这个事件，并根据需要更新其对应的 `isOpen` prop。
-   *
-   * @param {boolean} false - 发射事件时传递的值，表示 isOpen 应该设置为 false。
-   */
+  // 向父组件发送更新事件，同步 isOpen 状态为 false
+  // 使用 v-model:isOpen 双向绑定的标准方式
   defaultEmits('update:isOpen', false);
 }
 
 /**
- * 使用 Vue.js 的 watch 函数来观察 defaultProps.isOpen 的变化。
- * 当 isOpen 的值变化时，这个观察者会根据新的值来执行相应的操作。
- *
- * @param {Function} source - 一个返回需要观察的源的函数，这里是 defaultProps.isOpen。
- * @param {Function} callback - 当观察到的源变化时，会调用这个回调函数。
+ * 监听 isOpen 属性变化的观察者
+ * 根据父组件传入的 isOpen 状态控制抽屉的显示和数据加载
  */
 watch(
-  () => defaultProps.isOpen, // 观察的源是 defaultProps.isOpen。
+  () => defaultProps.isOpen, // 监听源的函数，返回要观察的 props.isOpen
   (val) => {
-    // 回调函数接受一个参数 val，它是 defaultProps.isOpen 的新值。
-    /**
-     * 如果 val 为 true 且 defaultProps.parentId 存在，
-     * 则执行以下操作：
-     */
+    // val 是 isOpen 的新值
     if (val && defaultProps.parentId) {
-      queryProcessSetDetail(); // 调用 queryProcessSetDetail 函数来查询流程设置详情。
-      drawerOpen.value = true; // 将 drawerOpen 的值设置为 true，打开抽屉组件。
+      // 当抽屉需要打开且存在有效的 parentId 时
+      queryProcessSetDetail(); // 加载并处理流程配置详情数据
+      drawerOpen.value = true; // 打开内部抽屉状态
     } else {
-      close(); // 如果 val 为 false 或 defaultProps.parentId 不存在，调用 close 函数来关闭抽屉组件。
+      // 当抽屉需要关闭或缺少必要参数时
+      close(); // 执行关闭操作
     }
   },
 );
@@ -444,111 +443,96 @@ watch(
 // endregion
 
 // region 表单
-// 表单对象
+// 表单引用，用于表单验证操作
 const form = ref();
+
 /**
- * 设置规则的方法，用于根据当前选择的规则更新父级对象的规则设置。
+ * 设置规则的高阶函数
+ * 用于根据选择的操作类型动态配置对应的规则参数
  *
- * @param {any} parentLevel - 父级对象，包含了规则待处理列表和最终的规则列表。
- * @returns {Function} - 返回一个函数，该函数接受当前选择的对象，并根据其规则更新父级对象。
+ * @param {any} parentLevel - 父级操作对象，包含规则待处理列表和最终规则列表
+ * @returns {Function} - 返回一个函数，该函数接受当前选择的操作类型对象并更新规则配置
  */
 function setRules(parentLevel: any) {
-  // 返回一个函数，这个函数将被调用来更新父级对象的规则。
+  // 返回一个闭包函数，用于处理选择操作类型后的规则设置
   return (currentlySelected: any) => {
-    /**
-     * 将当前选择的规则赋值给父级对象的规则待处理列表。
-     * 这个步骤是为了准备将这些规则应用到父级对象上。
-     */
+    // 将选中操作类型的规则模板设置为父级对象的待处理规则
     parentLevel.rulePending = currentlySelected.rules;
 
-    /**
-     * 清空父级对象的规则列表，为新的规则设置做准备。
-     * 每次设置新规则前都需要清空旧的规则，以避免规则累积。
-     */
+    // 清空现有规则列表，为新的规则配置做准备
     parentLevel.rules = [];
 
-    /**
-     * 遍历规则待处理列表，对每一条规则进行处理。
-     * 这一步是为了将待处理的规则转换为父级对象能够识别和应用的格式。
-     */
+    // 遍历待处理规则，为每条规则生成对应的参数对象
     parentLevel.rulePending.forEach((rule: any) => {
-      // 定义一个临时对象，用于存储转换后的规则参数。
+      // 创建规则参数对象，用于存储该规则的配置值
       const param: any = {};
 
       /**
-       * 根据规则的类型，设置对应的参数值。
-       * 规则的类型决定了参数的值和格式。
+       * 根据规则类型设置默认值
+       * 不同类型的规则对应不同的表单控件和默认值
        */
       switch (rule.type) {
         case 1: {
-          // 如果规则类型为1，设置对应的标签值为true。
+          // 开关控件：默认开启状态
           param[rule.label] = true;
           break;
         }
         case 2: {
-          // 如果规则类型为2，设置对应的标签值为0。
+          // 数值输入：默认值为0
           param[rule.label] = 0;
           break;
         }
         case 3: {
-          // 如果规则类型为3，设置对应的标签值为一个空字符串。
+          // 文本输入：默认为空字符串
           param[rule.label] = '';
           break;
         }
         case 4: {
-          // 如果规则类型为4，设置对应的标签值为true，并添加一个范围标签，其值为0。
-          param[rule.label] = true;
-          param[`${rule.label}范围`] = 0;
+          // 阈值校验：包含开关和范围两个参数
+          param[rule.label] = true; // 校验开关默认开启
+          param[`${rule.label}范围`] = 0; // 阈值范围默认为0
           break;
         }
         case 5: {
-          // 如果规则类型为5，设置对应的标签值为一个空字符串。
+          // 下拉选择：默认为空字符串
           param[rule.label] = '';
           break;
         }
         case 6: {
-          // 如果规则类型为6，设置对应的标签值为一个空数组。
+          // 多选框：默认为空数组
           param[rule.label] = [];
           break;
         }
       }
 
-      /**
-       * 将转换后的规则参数添加到父级对象的规则列表中。
-       * 这样，每一条待处理的规则都被转换成了父级对象可以理解和应用的规则。
-       */
+      // 将生成的规则参数添加到规则列表中
       parentLevel.rules.push(param);
     });
   };
 }
 
 /**
- * 提交表单的函数。
- * 这个函数用于处理表单的提交操作，包括验证表单、构建提交参数、
- * 执行添加或编辑流程设置的操作，并在操作完成后关闭抽屉并显示相应的提示信息。
+ * 提交表单数据并保存配置
+ * 执行表单验证、数据格式化、事件发送和组件关闭等操作
  */
 function submit() {
-  /**
-   * 使用 form.value.validate() 方法验证表单。
-   * 这个方法返回一个 Promise 对象，我们使用 then 方法来处理验证通过的情况。
-   */
+  // 执行表单验证，验证通过后处理提交逻辑
   form.value.validate().then(() => {
-    /**
-     * 校验通过后的操作。
-     */
-    // 构建提交参数。
+    // 构建提交的详情数据数组
     const details: any = [];
 
-    /**
-     * 遍历 operationDetails.value 数组，构建每个流程设置项的提交参数。
-     */
+    // 遍历所有操作详情，格式化为提交所需的格式
     for (const item of operationDetails.value) {
       details.push({
-        opType: item.opType, // 操作类型。
-        ruleData: JSON.stringify(item.rules), // 将规则对象转换为 JSON 字符串。
+        opType: item.opType, // 操作类型标识
+        ruleData: JSON.stringify(item.rules), // 将规则对象序列化为JSON字符串存储
       });
     }
+
+    // 向父组件发送配置变更事件，传递格式化后的详情数据
     defaultEmits('changed', details);
+
+    // 关闭抽屉组件
     close();
   });
 }
@@ -556,7 +540,12 @@ function submit() {
 // endregion
 </script>
 
+<!--
+  工艺流程配置组件模板
+  使用抽屉布局展示配置界面，支持动态添加、编辑和删除操作类型规则
+-->
 <template>
+  <!-- 右侧抽屉容器，用于展示操作详情配置界面 -->
   <Drawer
     v-model:open="drawerOpen"
     :footer-style="{ textAlign: 'right' }"
@@ -565,6 +554,7 @@ function submit() {
     title="操作详情配置"
     @close="close"
   >
+    <!-- 表单容器，用于配置各种操作类型和规则 -->
     <Form
       ref="form"
       :label-col="{
@@ -576,8 +566,11 @@ function submit() {
       }"
       name="dynamic_form_nest_item"
     >
+      <!-- 动态渲染操作详情配置项 -->
       <template v-for="(item, index) of operationDetails" :key="index">
+        <!-- 单个操作配置卡片容器，带阴影和圆角样式 -->
         <div class="mb-4 rounded-xl border-2 p-4 shadow-lg shadow-blue-200">
+          <!-- 操作类型选择器 -->
           <FormItem
             :rules="{
               required: true,
@@ -585,6 +578,7 @@ function submit() {
             }"
             label="操作类型"
           >
+            <!-- 下拉选择框，用于选择操作类型 -->
             <Select
               v-model:value="item.opType"
               :options="typeOfOperation"
@@ -596,12 +590,15 @@ function submit() {
               "
             />
           </FormItem>
+          <!-- 规则配置区域：仅在有规则时显示 -->
           <template v-if="item.rulePending && item.rulePending.length > 0">
+            <!-- 动态渲染每个规则项 -->
             <FormItem
               v-for="(rule, i) of item.rulePending"
               :key="i"
               :label="rule.label"
             >
+              <!-- 规则类型1：开关控件 -->
               <template v-if="rule.type === 1">
                 <Switch
                   v-model:checked="item.rules[i][rule.label]"
@@ -609,12 +606,15 @@ function submit() {
                   un-checked-children="关"
                 />
               </template>
+              <!-- 规则类型2：数值输入控件 -->
               <template v-else-if="rule.type === 2">
                 <InputNumber v-model:value="item.rules[i][rule.label]" />
               </template>
+              <!-- 规则类型3：文本输入控件 -->
               <template v-else-if="rule.type === 3">
                 <Input v-model:value="item.rules[i][rule.label]" />
               </template>
+              <!-- 规则类型4：开关+数值组合控件（阈值校验） -->
               <template v-else-if="rule.type === 4">
                 <Space>
                   <Switch
@@ -629,6 +629,7 @@ function submit() {
                   </FormItemRest>
                 </Space>
               </template>
+              <!-- 规则类型5：下拉选择控件 -->
               <template v-else-if="rule.type === 5">
                 <Select
                   v-model:value="item.rules[i][rule.label]"
@@ -636,6 +637,7 @@ function submit() {
                   class="w-full"
                 />
               </template>
+              <!-- 规则类型6：多选框控件 -->
               <template v-else-if="rule.type === 6">
                 <CheckboxGroup
                   v-model:value="item.rules[i][rule.label]"
@@ -645,7 +647,9 @@ function submit() {
             </FormItem>
           </template>
 
+          <!-- 删除操作按钮（非查看状态时显示） -->
           <FormItem v-if="!isShowStatus" :wrapper-col="{ offset: 6, span: 18 }">
+            <!-- 删除确认弹窗 -->
             <Popconfirm
               :cancel-text="$t('common.cancel')"
               :ok-text="$t('common.confirm')"
@@ -662,6 +666,8 @@ function submit() {
         </div>
       </template>
     </Form>
+
+    <!-- 新增操作按钮（非查看状态时显示） -->
     <Button
       v-if="!isShowStatus"
       :icon="h(MdiAdd, { class: 'inline-block size-6' })"
@@ -676,13 +682,14 @@ function submit() {
       新增
     </Button>
 
+    <!-- 抽屉底部操作按钮区域 -->
     <template #footer>
       <Space>
-        <!-- 取消 -->
+        <!-- 取消按钮：关闭抽屉并取消修改 -->
         <Button @click="close">
           {{ $t('common.cancel') }}
         </Button>
-        <!-- 确认 -->
+        <!-- 确认按钮：验证表单并保存配置 -->
         <Button type="primary" @click="submit">
           {{ $t('common.confirm') }}
         </Button>
@@ -691,4 +698,5 @@ function submit() {
   </Drawer>
 </template>
 
+<!-- 组件样式：当前使用 scoped 样式，暂无自定义样式规则 -->
 <style scoped></style>

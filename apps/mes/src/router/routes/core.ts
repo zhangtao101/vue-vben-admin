@@ -221,6 +221,19 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
+          import(
+            '#/views/storeManagement/materialManagement/ioBillManagement.vue'
+          ),
+        meta: {
+          ignoreAccess: true,
+          title: '出/入库单管理',
+          code: 'WM_533',
+        },
+        name: 'ioBillManagement',
+        path: 'ioBillManagement',
+      },
+      {
+        component: () =>
           import('#/views/productionReport/SMTfarm/productionDaily.vue'),
         meta: {
           ignoreAccess: true,

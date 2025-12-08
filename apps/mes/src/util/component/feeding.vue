@@ -1,4 +1,13 @@
 <script setup lang="ts">
+/**
+ * 生产投料操作管理组件
+ * 用于管理生产过程中的物料投料、补投料和杂收操作，包括：
+ * 1. 物料BOM清单展示和管理
+ * 2. 物料投料记录的新增和编辑
+ * 3. 不同工位的特殊处理逻辑（制浆、制粉、制釉等）
+ * 4. 干湿料换算和库存管理
+ * 5. 异常审批和杂收处理
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
@@ -43,87 +52,113 @@ import {
   smkFeedZYSave,
 } from '#/api';
 
+// region 组件基础状态管理
 /**
- * 是否显示抽屉
+ * 控制主抽屉组件的显示状态
+ * 用于显示投料操作的主界面
  */
 const showDrawer = ref(false);
+
 /**
- * 编辑的项
+ * 当前编辑的工位/工单数据
+ * 存储从父组件传入的工位信息，包含工位编码、工单号等
  */
 const editItem = ref<any>({});
+
 /**
- * 是否是辅助料
+ * 标识当前工位是否为辅助料工位
+ * 用于区分主料和辅助料的不同处理逻辑
  */
 const isAuxiliaryMaterials = ref(false);
+
 /**
- * 显示抽屉
- * @param row
+ * 显示投料管理抽屉
+ * 初始化组件数据并开始投料操作流程
+ * @param {object} row - 工位数据行对象，包含工位基本信息
  */
 function show(row: any) {
+  // 存储当前工位数据
   editItem.value = row;
+
+  // 显示主操作抽屉
   showDrawer.value = true;
+
+  // 判断是否为辅助料工位（通过工位编码判断）
   isAuxiliaryMaterials.value = !isSpecialWorkstation(
-    ['ZJ', 'BC1'],
+    ['ZJ', 'BC1'], // 辅助料工位编码前缀
     editItem.value.workstationCode,
   );
+
+  // 延迟200ms执行数据加载，确保DOM渲染完成
   setTimeout(() => {
-    reload();
-    queryAuditByRecord();
+    reload(); // 重新加载BOM数据
+    queryAuditByRecord(); // 查询审核状态
   }, 200);
 }
 
 /**
- * 关闭抽屉
+ * 关闭投料管理抽屉
+ * 清空状态数据并隐藏界面
  */
 function close() {
   showDrawer.value = false;
-  btlRemark.value = '';
-  editItem.value = {};
+  btlRemark.value = ''; // 清空补料原因
+  editItem.value = {}; // 清空工位数据
 }
 
-// region 暴露方法，供父组件调用
+// region 组件方法暴露
+/**
+ * 暴露组件方法供父组件调用
+ */
 defineExpose({
-  show,
+  show, // 显示投料管理界面
 });
 // endregion
 
-// region 表格操作
-
+// region BOM数据表格管理
+/**
+ * VXE表格配置选项
+ * 配置物料BOM清单的数据展示表格，显示当前工位所需的物料信息
+ */
 const gridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
+  align: 'center', // 表格内容居中对齐
+  border: true, // 显示表格边框
+
+  // 动态行样式：补投料行显示黄色背景
   rowClassName({ row: { zsflag } }) {
     return zsflag ? 'bg-yellow-500' : '';
   },
+
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'materialCode', title: '物料编号', minWidth: 120 },
-    { field: 'materialName', title: '原料名称', minWidth: 200 },
-    { field: 'materialDosage', title: '干料标准量', minWidth: 150 },
-    { field: 'unit', title: '投入单位', minWidth: 150 },
-    { field: 'materialUseNumber', title: '已投入量', minWidth: 150 },
+    { title: '序号', type: 'seq', width: 50 }, // 序号列
+    { field: 'materialCode', title: '物料编号', minWidth: 120 }, // 物料唯一标识
+    { field: 'materialName', title: '原料名称', minWidth: 200 }, // 物料描述名称
+    { field: 'materialDosage', title: '干料标准量', minWidth: 150 }, // 标准用量
+    { field: 'unit', title: '投入单位', minWidth: 150 }, // 计量单位
+    { field: 'materialUseNumber', title: '已投入量', minWidth: 150 }, // 已投用量
     {
       field: '',
       title: '补投入量',
       minWidth: 150,
-      slots: { default: 'feedingAmount' },
+      slots: { default: 'feedingAmount' }, // 自定义补投料量显示插槽
     },
     {
       field: 'action',
-      fixed: 'right',
-      slots: { default: 'action' },
+      fixed: 'right', // 固定在表格右侧
+      slots: { default: 'action' }, // 操作列插槽
       title: '操作',
       minWidth: 150,
     },
   ],
-  height: 500,
-  stripe: true,
+  height: 500, // 表格固定高度
+  stripe: true, // 斑马纹效果
   sortConfig: {
-    multiple: true,
+    multiple: true, // 支持多字段排序
   },
   proxyConfig: {
     ajax: {
       query: async ({ page }) => {
+        // 异步查询BOM数据
         return await queryData({
           page: page.currentPage,
           pageSize: page.pageSize,
@@ -132,42 +167,69 @@ const gridOptions: VxeGridProps<any> = {
     },
   },
   toolbarConfig: {
-    custom: true,
-    // import: true,
-    // export: true,
-    refresh: true,
-    zoom: true,
+    custom: true, // 支持自定义列显示
+    // import: true, // 预留导入功能
+    // export: true, // 预留导出功能
+    refresh: true, // 刷新按钮
+    zoom: true, // 缩放功能
   },
 };
 
+/**
+ * 表格事件监听器配置
+ * 处理表格的用户交互事件
+ */
 const gridEvents: VxeGridListeners<any> = {
   /* cellClick: ({ row }) => {
+    // 单元格点击事件（示例代码，当前已注释）
     message.info(`cell-click: ${row.name}`);
   },*/
 };
 
+/**
+ * 创建VXE表格实例
+ * 使用useVbenVxeGrid钩子创建表格组件和API对象
+ */
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
+/**
+ * 重新加载表格数据
+ * 调用表格API的reload方法刷新数据
+ */
 function reload() {
   gridApi.reload();
 }
-// 是否是补投料
+
+/**
+ * 标识当前是否为补投料状态
+ * 用于控制界面按钮的显示和操作权限
+ */
 const zsTotalflagRef = ref(false);
 
+/**
+ * 查询BOM物料数据
+ * 根据工位编码调用不同的API获取物料清单
+ * @param {object} _data - 查询参数（当前未使用）
+ * @returns {Promise} 返回包含物料列表的Promise对象
+ */
 function queryData(_data: any) {
   return new Promise((resolve, reject) => {
+    // 根据工位编码判断调用哪个API
+    // ZF开头的工位使用专用API，其他使用通用API
     const ob = editItem.value.workstationCode.includes('ZF')
       ? getZFBomMaterialListByCode(
-          editItem.value.workstationCode,
-          editItem.value.worksheetCode,
+          editItem.value.workstationCode, // 工位编码
+          editItem.value.worksheetCode, // 工单编码
         )
       : getBtlBomMaterialListByCode(
-          editItem.value.workstationCode,
-          editItem.value.worksheetCode,
+          editItem.value.workstationCode, // 工位编码
+          editItem.value.worksheetCode, // 工单编码
         );
 
     ob.then(({ zsTotalflag, list }: any) => {
+      // 设置补投料状态标志
       zsTotalflagRef.value = zsTotalflag;
+
       // 将接口返回的数据适配到表格所需的格式
       resolve({
         total: list.length, // 总数据量
@@ -213,7 +275,11 @@ function isSpecialWorkstation(keywords: string[], key?: string) {
 }
 
 /**
- * 字符串解析函数
+ * 组合字符串解析处理函数
+ * 解析并设置物料的库位、批次等信息到数据对象中
+ * @param {string} value - 需要解析的组合字符串
+ * @param {object} item - 目标数据对象
+ * @param {boolean} isWarehouse - 是否为库位解析模式
  */
 function handleCombinedStringChange(
   value: string,
@@ -222,16 +288,18 @@ function handleCombinedStringChange(
 ) {
   const arr = parseCombinedString(value);
   if (isWarehouse) {
-    item.warehouseCode = arr[0];
-    item.stockQuality = arr[1];
-    item.areaCode = arr[2] ?? undefined;
-    item.batchCode = arr[3] ?? undefined;
+    // 库位模式解析：库位编码&&库存质量&&储位&&批次
+    item.warehouseCode = arr[0]; // 库位编码
+    item.stockQuality = arr[1]; // 库存质量
+    item.areaCode = arr[2] ?? undefined; // 储位
+    item.batchCode = arr[3] ?? undefined; // 批次
   } else {
-    item.batchCode = arr[0];
-    item.warehouseCodeAndNumber = arr[1];
-    item.warehouseCode = arr[1];
-    item.stockQuality = arr[2];
-    item.areaCode = arr[3];
+    // 普通模式解析：批次&&库位编码&&库存质量&&储位
+    item.batchCode = arr[0]; // 批次
+    item.warehouseCodeAndNumber = arr[1]; // 库位编码和编号
+    item.warehouseCode = arr[1]; // 库位编码
+    item.stockQuality = arr[2]; // 库存质量
+    item.areaCode = arr[3]; // 储位
   }
 }
 
@@ -246,35 +314,60 @@ function getDryCharge(item: any) {
 }
 // endregion
 
-// region 加料/投料
-// 是否显示加料/投料
+// region 加料/投料操作管理
+/**
+ * 控制加料/投料对话框的显示状态
+ */
 const showFeed = ref(false);
-// 加料/投料数据
+
+/**
+ * 当前编辑的加料/投料数据
+ * 存储正在编辑的物料投料详细信息
+ */
 const editFeed = ref<any>({});
-// 表单引用
+
+/**
+ * 表单组件引用对象
+ * 用于表单验证和重置操作
+ */
 const formRef = ref<any>();
-// 表单数据
+
+/**
+ * 投料表单数据列表
+ * 存储多行投料数据的数组结构
+ */
 const formState = ref<any>();
-// 是否为创建
+
+/**
+ * 标识当前操作是否为新增投料记录
+ */
 const isCreate = ref(false);
-// 物料列表
+
+/**
+ * 物料代码选项列表
+ * 用于新增投料时的物料选择
+ */
 const materialCodeList = ref<any>([]);
 
 /**
- * 显示加料/投料
- * @param row
+ * 显示加料/投料操作对话框
+ * 初始化投料表单数据并根据不同工位类型进行特殊处理
+ * @param {object} row - 可选的现有投料数据，编辑时传入
  */
 function displayFeeding(row?: any) {
   showFeed.value = true;
 
   if (row) {
+    // 编辑模式：设置现有数据
     isCreate.value = row.isCreate;
     editFeed.value = row;
-    // 判断是否处于审核状态
+
+    // 判断是否处于审核状态，使用相应的详情数据
     formState.value = editFeed.value.overtakingApproval
       ? editFeed.value.overclaimDetails
       : editFeed.value?.details || [];
 
+    // 如果没有详情数据，根据工位类型初始化表单
     if (formState.value.length === 0) {
       if (
         isSpecialWorkstation([
@@ -287,10 +380,13 @@ function displayFeeding(row?: any) {
           '抛光',
         ])
       ) {
+        // 特殊工位的表单初始化逻辑
         formState.value.push({
-          unFeedNumber: 0,
+          unFeedNumber: 0, // 初始化补投料量
         });
         warehouseCodeList.value = [];
+
+        // 处理批次代码数据
         editFeed.value.batchCodes?.forEach((item: any) => {
           item.labelFormmat = `${item.batchCode}(${item.areaCode})`;
           item.valueFormmat = `${item.batchCode}&&${item.warehouseCode}&&${item.stockQuality}&&${item.areaCode}`;
@@ -300,6 +396,7 @@ function displayFeeding(row?: any) {
           });
         });
       } else {
+        // 其他工位的表单初始化逻辑
         if (editFeed.value.batchCodes) {
           editFeed.value.batchCodes.forEach((item: any) => {
             const formitem: any = {
@@ -313,6 +410,7 @@ function displayFeeding(row?: any) {
               unFeedNumber: 0,
             };
 
+            // 补投料特殊处理
             if (editFeed.value.zsflag) {
               formitem.feedNumber = item.stockQuality;
             }
@@ -330,6 +428,7 @@ function displayFeeding(row?: any) {
       }
     }
   } else {
+    // 新增模式：初始化空表单并加载物料列表
     isCreate.value = true;
     editFeed.value = {};
     formState.value = [
@@ -337,6 +436,8 @@ function displayFeeding(row?: any) {
         unFeedNumber: 0,
       },
     ];
+
+    // 加载可用的物料代码列表
     getMaterialCodeByJjcl().then((data) => {
       materialCodeList.value = [];
       if (data && data.length > 0) {
@@ -541,63 +642,92 @@ function delFeedLine(index: number) {
   });
 }
 /**
- * 获取加料数据
+ * 获取并处理投料表单数据
+ * 对表单数据进行最终处理，准备提交到后端
+ * @returns {Array} 处理后的投料数据列表
  */
 function getRawMaterialData() {
   const values = formState.value;
   values.forEach((item: any) => {
+    // 确保含水率有默认值
     if (!item.waterNumber) {
       item.waterNumber = 0;
     }
+    // 设置物料编码
     item.materialCode = editItem.value.materialCode;
+    // 处理库位编码的格式
     item.warehouseCode =
       typeof item.warehouseCode === 'string'
         ? item.warehouseCode
         : item.warehouseCode[0];
+    // 确保库位编码不为空
     item.warehouseCode = item.warehouseCode || '';
   });
   return values;
 }
 // endregion
 
-// region 杂收/ 提交
+// region 杂收/投料提交管理
 
-// 杂收提交状态
+/**
+ * 杂收操作提交状态控制
+ */
 const miscellaneousIncomeLoading = ref(false);
-// 提交状态
+
+/**
+ * 投料提交状态控制
+ */
 const submitLoading = ref(false);
-// 是否尚未杂收
+
+/**
+ * 标识当前是否尚未进行杂收操作
+ */
 const miscellaneousIncome = ref(true);
-// 补料原因
+
+/**
+ * 补料原因备注信息
+ */
 const btlRemark = ref('');
 
 /**
- * 提交
+ * 提交投料或杂收操作
+ * 根据操作类型和工位类型调用相应的API接口
+ * @param {number} type - 操作类型：0=杂收，1=投料
  */
 function submit(type: 0 | 1) {
+  // 构造提交参数
   const params: any = {
-    equipCode: editItem.value.workstationCode,
-    workSheetCode: editItem.value.worksheetCode,
-    feedDetailVMs: [] as any,
+    equipCode: editItem.value.workstationCode, // 工位编码
+    workSheetCode: editItem.value.worksheetCode, // 工单编码
+    feedDetailVMs: [] as any, // 投料详情列表
   };
+
+  // 从表格数据中提取有效的投料详情
   gridApi.grid.getTableData().tableData.forEach((item: any) => {
     item.details?.forEach((detail: any) => {
       if (detail.feedNumber >= 0) {
         params.feedDetailVMs.push({
           ...detail,
-          materialCode: item.materialCode,
+          materialCode: item.materialCode, // 物料编码
         });
       }
     });
   });
+
+  // 验证是否有有效的投料数据
   if (params.feedDetailVMs.length === 0) {
     message.error('请先添加物料');
     return;
   }
+
   let ob: any;
+
   if (type === 1) {
-    params.btlRemark = btlRemark.value;
-    params.feedBindingId = editItem.value.feedBindingId;
+    // 投料操作处理
+    params.btlRemark = btlRemark.value; // 补料原因
+    params.feedBindingId = editItem.value.feedBindingId; // 绑定ID
+
+    // 根据工位类型调用不同的API接口
     if (isSpecialWorkstation(['制浆'])) {
       ob = smkFeedSave(params);
     } else if (isSpecialWorkstation(['制粉'])) {
@@ -620,21 +750,25 @@ function submit(type: 0 | 1) {
       message.warning('当前没有具体的接口, 请联系相关人员!');
       return;
     }
-    submitLoading.value = true;
+    submitLoading.value = true; // 设置投料提交状态
   } else {
+    // 杂收操作处理
     ob = smkFeedZs(params);
-    miscellaneousIncomeLoading.value = true;
+    miscellaneousIncomeLoading.value = true; // 设置杂收提交状态
   }
+
+  // 执行提交操作
   ob.then(() => {
     message.success($t('common.successfulOperation'));
     if (type === 1) {
       miscellaneousIncome.value = true;
-      close();
+      close(); // 关闭主抽屉
     } else {
       miscellaneousIncome.value = false;
-      reload();
+      reload(); // 重新加载表格数据
     }
   }).finally(() => {
+    // 清除所有提交状态
     submitLoading.value = false;
     miscellaneousIncomeLoading.value = false;
   });
