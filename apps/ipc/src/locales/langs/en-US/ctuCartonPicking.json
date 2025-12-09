@@ -1,0 +1,14 @@
+{
+  "packingAndPicking": "Packing And Picking",
+  "boxCode": "Box Code",
+  "startPicking": "Start Picking",
+  "pickingComplete": "Picking Complete",
+  "picking": "Picking",
+  "hasLabel": "Has Label",
+  "materialCode": "Material Code",
+  "materialName": "Material Name",
+  "materialCharacteristics": "Material Characteristics",
+  "quantity": "Quantity",
+  "unit": "Unit",
+  "materialLabel": "Material Label"
+}

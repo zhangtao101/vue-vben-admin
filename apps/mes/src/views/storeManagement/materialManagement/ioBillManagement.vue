@@ -1072,7 +1072,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      title="特性选择"
     >
       <JsonViewer
         v-for="item of materialCharacteristics"

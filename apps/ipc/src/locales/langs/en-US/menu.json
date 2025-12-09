@@ -5,12 +5,14 @@
   "workOrderOutbound": "Work Order Outbound",
   "andonManagement": "Andon Management",
   "qualityInspection": "Quality Inspection",
-  "workFlow": "Work Flow",
+  "workFlow": "Production Workflow",
   "andonProblemAssessment": "Problem Assessment",
-  "andengFillingOut": "Andon Reporting",
-  "badJudgment": "Defective Judgment",
+  "andengFillingOut": "Andon Report",
+  "badJudgment": "Defect Handling",
   "rework": "Rework",
-  "poorHandling": "Defective Handling",
+  "poorHandling": "Quality Management",
   "reportManagement": "Report Management",
-  "barcodeInspection": "Barcode Inspection"
+  "barcodeInspection": "Barcode Inspection",
+  "ctuOutboundPicking": "CTU Outbound Picking",
+  "ctuCartonPicking": "CTU Carton Picking"
 }

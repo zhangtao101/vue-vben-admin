@@ -1,0 +1,14 @@
+{
+  "packingAndPicking": "装箱拣货",
+  "boxCode": "箱码",
+  "startPicking": "开始拣货",
+  "pickingComplete": "拣货完成",
+  "picking": "拣货",
+  "hasLabel": "是否有标签",
+  "materialCode": "物料编号",
+  "materialName": "物料名称",
+  "materialCharacteristics": "物料特性",
+  "quantity": "数量",
+  "unit": "单位",
+  "materialLabel": "物料标签"
+}

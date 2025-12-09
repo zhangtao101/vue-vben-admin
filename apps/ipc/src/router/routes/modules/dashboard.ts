@@ -94,6 +94,26 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.barcodeInspection'),
         },
       },
+      {
+        name: 'ctuCartonPicking',
+        path: 'ctuCartonPicking',
+        component: () => import('#/views/flow/ctuCartonPicking.vue'),
+        meta: {
+          icon: 'mdi:inbox-full-outline',
+          ignoreAccess: true,
+          title: $t('menu.ctuCartonPicking'),
+        },
+      },
+      {
+        name: 'ctuOutboundPicking',
+        path: 'ctuOutboundPicking',
+        component: () => import('#/views/flow/ctuOutboundPicking.vue'),
+        meta: {
+          icon: 'mdi:file-table-box-multiple-outline',
+          ignoreAccess: true,
+          title: $t('menu.ctuOutboundPicking'),
+        },
+      },
     ],
   },
   {
