@@ -1,0 +1,11 @@
+{
+  "productTraceSet": {
+    "routingName": "Routing Name",
+    "routingNo": "Routing Number",
+    "traceShow": "Trace Display",
+    "detailInfoShow": "Detail Info Display",
+    "processParameterInfoShow": "Process Parameter Display",
+    "qualityInspectionInformationDisplay": "Quality Inspection Display",
+    "qualityInspectionDetailSetting": "Quality Inspection Detail Setting"
+  }
+}

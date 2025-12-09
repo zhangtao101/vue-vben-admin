@@ -19,4 +19,5 @@ export * from './scada';
 export * from './stepManagement';
 export * from './storeManagement';
 export * from './system';
+export * from './tracingModule';
 export * from './unitAreaManagement';

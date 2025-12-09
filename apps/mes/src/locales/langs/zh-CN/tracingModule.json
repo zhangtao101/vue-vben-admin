@@ -1,0 +1,11 @@
+{
+  "productTraceSet": {
+    "routingName": "工艺路线名称",
+    "routingNo": "工艺路线编号",
+    "traceShow": "追溯展示",
+    "detailInfoShow": "详情信息展示",
+    "processParameterInfoShow": "工艺参数信息展示",
+    "qualityInspectionInformationDisplay": "质检信息展示",
+    "qualityInspectionDetailSetting": "质检详情设置"
+  }
+}
