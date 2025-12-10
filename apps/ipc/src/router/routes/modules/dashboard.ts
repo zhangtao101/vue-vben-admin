@@ -94,7 +94,7 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.barcodeInspection'),
         },
       },
-      {
+      /* {
         name: 'ctuCartonPicking',
         path: 'ctuCartonPicking',
         component: () => import('#/views/flow/ctuCartonPicking.vue'),
@@ -113,10 +113,10 @@ const routes: RouteRecordRaw[] = [
           ignoreAccess: true,
           title: $t('menu.ctuOutboundPicking'),
         },
-      },
+      },*/
     ],
   },
-  {
+  /* {
     meta: {
       icon: 'mdi:alarm-light',
       order: -1,
@@ -156,8 +156,8 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
-  {
+  },*/
+  /* {
     meta: {
       icon: 'mdi:quality-medium',
       order: -1,
@@ -197,7 +197,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
+  },*/
   /*  // 报表管理
   {
     meta: {
