@@ -8,13 +8,15 @@ import { Segmented } from 'ant-design-vue';
 import { debounce } from 'lodash-es';
 
 import WorkOrderDispatch from '#/util/component/dispatchHomework/workOrderDispatch.vue';
+import WorkOrderDisassemblyAndConsolidation
+  from "#/util/component/dispatchHomework/workOrderDisassemblyAndConsolidation.vue";
 
 // region 页面下发导航
 const bottomNavigation = reactive([
   '工单派工',
   '工单改派',
-  /* '工单拆合并',
-  '流程卡打印',*/
+  '工单拆合并',
+  // '流程卡打印',
 ]);
 // 选中的导航
 const checkedBottomNavigation = ref(bottomNavigation[0]);
@@ -50,6 +52,9 @@ onMounted(() => {
     <WorkOrderDispatch
       :type="2"
       v-if="checkedBottomNavigation === '工单改派'"
+    />
+    <WorkOrderDisassemblyAndConsolidation
+      v-if="checkedBottomNavigation === '工单拆合并'"
     />
     <Segmented
       v-model:value="checkedBottomNavigation"

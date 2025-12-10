@@ -12,5 +12,13 @@
   "preWorkOrder": "前置作业",
   "workOrderOperation": "工单操作",
   "workStepOperation": "工步操作",
-  "processSelection": "工序选择"
+  "processSelection": "工序选择",
+  "disassembly": "拆单",
+  "consolidation": "合单",
+  "urgentApproval": "紧急批",
+  "theNumberOfUnofflineQuantities": "未下线数量",
+  "numberOfDownlines": "下线数量",
+  "theNumberOfBatchesIsEstablished": "开立批数",
+  "expectedOpeningDate": "预计开立日",
+  "notes": "备注说明"
 }
