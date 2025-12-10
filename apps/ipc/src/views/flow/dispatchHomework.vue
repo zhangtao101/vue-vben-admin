@@ -7,9 +7,8 @@ import { Segmented } from 'ant-design-vue';
 // eslint-disable-next-line n/no-extraneous-import
 import { debounce } from 'lodash-es';
 
+import WorkOrderDisassemblyAndConsolidation from '#/util/component/dispatchHomework/workOrderDisassemblyAndConsolidation.vue';
 import WorkOrderDispatch from '#/util/component/dispatchHomework/workOrderDispatch.vue';
-import WorkOrderDisassemblyAndConsolidation
-  from "#/util/component/dispatchHomework/workOrderDisassemblyAndConsolidation.vue";
 
 // region 页面下发导航
 const bottomNavigation = reactive([
