@@ -42,6 +42,15 @@ export function getDetailInAreaCodeEnout(params: any) {
     `${import.meta.env.VITE_GLOB_MES_WMS}/wms/enout/optask/getDetailInAreaCode?${qs.stringify(params)}`,
   );
 }
+/**
+ * 获取允许出库的储位列表
+ * @param params 参数
+ */
+export function getDetailOutTaskEnout(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/wms/enout/optask/getDetailOutTask?${qs.stringify(params)}`,
+  );
+}
 
 /**
  * 出库单明细出库作业
@@ -53,6 +62,17 @@ export function detailOutTaskEnout(params: any) {
     params,
   );
 }
+/**
+ * 入库单明细入库作业
+ * @param params 参数
+ */
+export function detailInTaskEnout(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/wms/enout/optask/detailInTask`,
+    params,
+  );
+}
+
 /**
  * 出入库单据作业完成
  * @param params 参数

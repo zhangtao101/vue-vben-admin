@@ -20,8 +20,9 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { listTodoFormEnout } from '#/api';
+import { formStartEnout, listTodoFormEnout } from '#/api';
 import { $t } from '#/locales';
+import OperationDetails from '#/util/component/operationDetails.vue';
 
 import 'vue3-json-viewer/dist/vue3-json-viewer.css';
 
@@ -160,9 +161,23 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
-function viewRow(row: any) {
-  console.error(row);
+// region 查看详情 / 开始作业
+const operationDetailsRef = ref();
+
+function viewRow(row: any, showOptions = false) {
+  operationDetailsRef.value.openDrawer(row, showOptions);
 }
+
+function startJob(row: any, auto = false) {
+  formStartEnout({
+    formCode: row.formCode,
+    opFuncationType: auto ? 1 : 2,
+  }).then(() => {
+    operationDetailsRef.value.openDrawer(row, !auto);
+  });
+}
+
+// endregion
 </script>
 
 <template>
@@ -233,22 +248,24 @@ function viewRow(row: any) {
               <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
             </Button>
           </Tooltip>
-          <!-- 开工 -->
-          <Tooltip v-if="row.formState === -1">
-            <template #title>{{ $t('common.startWork') }}</template>
-            <Button type="link" @click="viewRow(row)">
+          <!-- 自动开工 -->
+          <Tooltip v-if="[-1, 1].includes(row.formState) && row.taskType !== 2">
+            <template #title>
+              {{ $t('ioBillOperation.automatedJobs') }}
+            </template>
+            <Button type="link" @click="startJob(row, true)">
               <Icon
-                icon="mdi:play"
+                icon="mdi:autorenew"
                 class="inline-block align-middle text-2xl"
               />
             </Button>
           </Tooltip>
-          <!-- 完工 -->
-          <Tooltip v-if="row.formState === 1">
-            <template #title>{{ $t('common.completed') }}</template>
-            <Button type="link" @click="viewRow(row)">
+          <!-- 手动开工 -->
+          <Tooltip v-if="[-1, 1].includes(row.formState) && row.taskType !== 1">
+            <template #title>{{ $t('ioBillOperation.manualJobs') }}</template>
+            <Button type="link" @click="startJob(row, false)">
               <Icon
-                icon="mdi:pause"
+                icon="mdi:hand-double-tap"
                 class="inline-block align-middle text-2xl"
               />
             </Button>
@@ -256,6 +273,13 @@ function viewRow(row: any) {
         </template>
       </Grid>
     </Card>
+    <!-- endregion -->
+
+    <!-- region 操作详情抽屉 -->
+    <OperationDetails
+      ref="operationDetailsRef"
+      @close="() => gridApi.reload()"
+    />
     <!-- endregion -->
   </Page>
 </template>

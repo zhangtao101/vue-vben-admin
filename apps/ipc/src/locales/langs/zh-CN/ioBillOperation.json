@@ -9,5 +9,13 @@
   "bindBillCode": "绑定单号",
   "supplierName": "供应商名称",
   "number": "数量",
-  "materialFeatureId": "物料特征ID"
+  "materialFeatureId": "物料特征ID",
+  "startJob": "开始作业",
+  "performTaskLists": "执行任务列表",
+  "boxCode": "箱码",
+  "materialFeature": "物料特征",
+  "unit": "单位",
+  "storagePosition": "储位",
+  "automatedJobs": "自动作业",
+  "manualJobs": "手动作业"
 }
