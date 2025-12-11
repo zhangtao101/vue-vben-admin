@@ -14,7 +14,7 @@ import WorkOrderDispatch from '#/util/component/dispatchHomework/workOrderDispat
 const bottomNavigation = reactive([
   '工单派工',
   '工单改派',
-  '工单拆合并',
+  '工单合单',
   // '流程卡打印',
 ]);
 // 选中的导航
@@ -53,7 +53,7 @@ onMounted(() => {
       v-if="checkedBottomNavigation === '工单改派'"
     />
     <WorkOrderDisassemblyAndConsolidation
-      v-if="checkedBottomNavigation === '工单拆合并'"
+      v-if="checkedBottomNavigation === '工单合单'"
     />
     <Segmented
       v-model:value="checkedBottomNavigation"

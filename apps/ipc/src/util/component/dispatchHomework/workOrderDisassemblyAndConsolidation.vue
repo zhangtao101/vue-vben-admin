@@ -227,19 +227,19 @@ const status = ref(1);
 /**
  * 拆单
  */
-function openOrder() {
-  // 获取当前选中的表格行
-  const checkboxRecords = gridApi.grid.getCheckboxRecords();
-  if (checkboxRecords.length === 1) {
-    additional.value.id = checkboxRecords[0].id;
-    additional.value.quantityNotOffLine =
-      checkboxRecords[0].produceNotFinishNumber;
-    showAdditional.value = true;
-    status.value = 1;
-  } else {
-    message.error('请选择一条数据进行拆单!');
-  }
-}
+// function openOrder() {
+//   // 获取当前选中的表格行
+//   const checkboxRecords = gridApi.grid.getCheckboxRecords();
+//   if (checkboxRecords.length === 1) {
+//     additional.value.id = checkboxRecords[0].id;
+//     additional.value.quantityNotOffLine =
+//       checkboxRecords[0].produceNotFinishNumber;
+//     showAdditional.value = true;
+//     status.value = 1;
+//   } else {
+//     message.error('请选择一条数据进行拆单!');
+//   }
+// }
 
 /**
  * 合单
@@ -330,9 +330,9 @@ function orderSubmit() {
     <Grid>
       <template #toolbar-tools>
         <Space>
-          <Button type="primary" @click="openOrder">
-            {{ $t('dispatchHomework.disassembly') }}
-          </Button>
+          <!--          <Button type="primary" @click="openOrder">-->
+          <!--            {{ $t('dispatchHomework.disassembly') }}-->
+          <!--          </Button>-->
           <Button type="primary" @click="joiningOrders">
             {{ $t('dispatchHomework.consolidation') }}
           </Button>
