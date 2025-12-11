@@ -114,6 +114,16 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.ctuOutboundPicking'),
         },
       },
+      {
+        name: 'ioBillOperation',
+        path: 'ioBillOperation',
+        component: () => import('#/views/flow/ioBillOperation.vue'),
+        meta: {
+          icon: 'mdi:text-box-edit-outline',
+          ignoreAccess: true,
+          title: $t('menu.ioBillOperation'),
+        },
+      },
     ],
   },
   {
