@@ -86,7 +86,7 @@ const gridEvents: VxeGridListeners<any> = {
   },*/
 };
 
-const [Grid] = useVbenVxeGrid({ gridEvents, gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // endregion
 
@@ -137,8 +137,8 @@ function queryData({ page, pageSize }: any) {
 function downloadTemplate() {
   const params: any = { ...queryParams.value };
   if (params.searchTime && params.searchTime.length === 2) {
-    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
-    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.startTime = params.searchTime[0].format('YYYY');
+    params.endTime = params.searchTime[1].format('YYYY');
     params.searchTime = undefined;
   }
   excelPathProductionAndBatchStatistics(params).then((data) => {
@@ -176,7 +176,7 @@ onMounted(() => {
           :label="$t('productionDaily.timeFrame')"
           style="margin-bottom: 1em"
         >
-          <RangePicker v-model:value="queryParams.searchTime" />
+          <RangePicker v-model:value="queryParams.searchTime" picker="year" />
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button
