@@ -316,12 +316,7 @@ function updateStatus(row: any) {
 
 // region 查询数据
 // 查询参数
-const queryParams = ref({
-  // 关联人员
-  perName: '',
-  // 用户名
-  userName: '',
-});
+const queryParams = ref<any>({});
 
 /**
  * 查询数据
@@ -372,28 +367,35 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 工步名称 -->
+        <!-- 设备编号 -->
         <FormItem
-          :label="$t('stepManagementView.workStepName')"
+          :label="$t('stepManagementView.equipCode')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.userName" />
+          <Input v-model:value="queryParams.equipCode" />
         </FormItem>
 
-        <!-- 所属工序 -->
+        <!-- 设备名称 -->
         <FormItem
-          :label="$t('stepManagementView.affiliatedProcess')"
+          :label="$t('stepManagementView.equipName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.perName" />
+          <Input v-model:value="queryParams.equipName" />
         </FormItem>
 
-        <!-- 工步类型 -->
+        <!-- 配方编号 -->
         <FormItem
-          :label="$t('stepManagementView.workStepType')"
+          :label="$t('stepManagementView.formulaCode')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.perName" />
+          <Input v-model:value="queryParams.formulaCode" />
+        </FormItem>
+        <!-- 配方名称 -->
+        <FormItem
+          :label="$t('stepManagementView.formulaName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.formulaName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
@@ -531,7 +533,7 @@ onMounted(() => {
             :not-found-content="equipLoading ? undefined : null"
             :options="equipData"
             :show-arrow="false"
-            placeholder="输入用户名进行查询"
+            placeholder="输入关键字进行查询"
             placement="bottomRight"
             show-search
             @search="handleSearch"

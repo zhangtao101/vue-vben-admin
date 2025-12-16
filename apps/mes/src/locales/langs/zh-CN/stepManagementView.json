@@ -5,5 +5,9 @@
   "workingStepVersion": "工步版本",
   "jobType": "作业类型",
   "functionName": "功能名称",
-  "detailsAndRemarks": "详情备注"
+  "detailsAndRemarks": "详情备注",
+  "equipCode": "设备编号",
+  "equipName": "设备名称",
+  "formulaCode": "配方编号",
+  "formulaName": "配方名称"
 }

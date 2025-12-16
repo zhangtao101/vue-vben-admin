@@ -388,7 +388,7 @@ catalogs:
       specifier: ^5.14.0
       version: 5.14.0
     sass:
-      specifier: ^1.94.0
+      specifier: 1.94.0
       version: 1.94.0
     secure-ls:
       specifier: ^2.0.0
@@ -575,6 +575,9 @@ importers:
       qs:
         specifier: ^6.13.1
         version: 6.14.0
+      sass:
+        specifier: 'catalog:'
+        version: 1.94.0
       sortablejs:
         specifier: ^1.15.6
         version: 1.15.6
@@ -11962,8 +11965,8 @@ packages:
     resolution: {integrity: sha512-gnmRz++suzmvxtp3ehQts6s2JtAGPuDPjA1F3a9ckNpG1kYdYuHWYpazoAnL9FS5/B21tKlhkorbdCXat0+4xQ==}
     engines: {node: '>=6.0.0', npm: '>=3.10.0'}
 
-  webworkify-webpack@https://codeload.github.com/xqq/webworkify-webpack/tar.gz/24d1e719b4a6cac37a518b2bb10fe124527ef4ef:
-    resolution: {tarball: https://codeload.github.com/xqq/webworkify-webpack/tar.gz/24d1e719b4a6cac37a518b2bb10fe124527ef4ef}
+  webworkify-webpack@git+https://git@github.com:xqq/webworkify-webpack.git#24d1e719b4a6cac37a518b2bb10fe124527ef4ef:
+    resolution: {commit: 24d1e719b4a6cac37a518b2bb10fe124527ef4ef, repo: git@github.com:xqq/webworkify-webpack.git, type: git}
     version: 2.1.5
 
   whatwg-encoding@3.1.1:
@@ -20006,7 +20009,7 @@ snapshots:
   mpegts.js@1.8.0:
     dependencies:
       es6-promise: 4.2.8
-      webworkify-webpack: https://codeload.github.com/xqq/webworkify-webpack/tar.gz/24d1e719b4a6cac37a518b2bb10fe124527ef4ef
+      webworkify-webpack: git+https://git@github.com:xqq/webworkify-webpack.git#24d1e719b4a6cac37a518b2bb10fe124527ef4ef
 
   mqtt-packet@9.0.2:
     dependencies:
@@ -23171,7 +23174,7 @@ snapshots:
     dependencies:
       sdp: 3.2.1
 
-  webworkify-webpack@https://codeload.github.com/xqq/webworkify-webpack/tar.gz/24d1e719b4a6cac37a518b2bb10fe124527ef4ef: {}
+  webworkify-webpack@git+https://git@github.com:xqq/webworkify-webpack.git#24d1e719b4a6cac37a518b2bb10fe124527ef4ef: {}
 
   whatwg-encoding@3.1.1:
     dependencies:
