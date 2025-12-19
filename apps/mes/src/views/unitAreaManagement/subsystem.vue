@@ -528,10 +528,18 @@ const fileList = ref<any>([]);
 function handleChange(info: any) {
   // 检查文件是否上传成功
   if (info.file.status === 'done') {
-    // 重新查询数据，更新列表
-    gridApi.reload();
-    // 显示成功消息
-    message.success('文件上传成功!');
+    const {
+      response: { code, msg },
+    } = info.file;
+    if (code === 200) {
+      // 重新查询数据，更新列表
+      gridApi.reload();
+      // 显示成功消息
+      message.success('文件上传成功!');
+    } else {
+      // 显示错误消息
+      message.error(msg);
+    }
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
     const errorMessage = info.file.response?.message || '文件上传失败';
@@ -820,10 +828,12 @@ onMounted(() => {
       @close="meterClose"
     >
       <Input v-model:value="meterKey" placeholder="请输入仪表名称或编号" />
-      <Space class="my-4">
-        <Button @click="selectAll(true)" type="primary">全选</Button>
-        <Button @click="selectAll(false)" type="primary">全不选</Button>
-      </Space>
+      <div>
+        <Space class="my-4">
+          <Button @click="selectAll(true)" type="primary">全选</Button>
+          <Button @click="selectAll(false)" type="primary">全不选</Button>
+        </Space>
+      </div>
       <CheckboxGroup v-model:value="checkedRow.equipmentCode">
         <Row>
           <template v-for="item of meterList" :key="item.value">

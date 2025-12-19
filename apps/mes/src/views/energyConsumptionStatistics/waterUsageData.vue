@@ -90,13 +90,7 @@ function chartInit(chartData: any) {
       children: [
         {
           type: 'line', // 折线图类型
-          labels: [
-            {
-              // 数据标签配置
-              text: 'waterUse', // 显示用水量数值
-              style: { dx: -10, dy: -12 }, // 标签偏移位置
-            },
-          ],
+          labels: [],
         },
         {
           type: 'point', // 数据点

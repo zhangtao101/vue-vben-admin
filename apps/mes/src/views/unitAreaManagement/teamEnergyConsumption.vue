@@ -33,8 +33,8 @@ import {
   checkClassNumber,
   deleteClassController,
   getClassControllerList,
+  getItemizedList,
   insertClassController,
-  selectFQList,
   updateClassController,
 } from '#/api';
 import { $t } from '#/locales';
@@ -288,12 +288,12 @@ const listOfUnitPartitions = ref<any>([]);
  * 分区查询
  */
 function queryUnitPartitions() {
-  selectFQList().then((data) => {
+  getItemizedList().then((data) => {
     listOfUnitPartitions.value = [];
     data.forEach((item: any) => {
       listOfUnitPartitions.value.push({
-        label: item.name,
-        value: item.name,
+        label: item,
+        value: item,
       });
     });
   });
@@ -319,13 +319,20 @@ function queryData({ page, pageSize }: any) {
       ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
-    }).then(({ total, list }) => {
-      // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-      resolve({
-        total,
-        items: list,
+    })
+      .then(({ total, list }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch(() => {
+        resolve({
+          total: 0,
+          items: [],
+        });
       });
-    });
   });
 }
 

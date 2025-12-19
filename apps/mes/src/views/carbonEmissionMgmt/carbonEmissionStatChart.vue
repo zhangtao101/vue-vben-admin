@@ -328,9 +328,7 @@ function createATrendChartForItemizedEnergyUse(chartData: any) {
  * 根据选择的分项名称获取近30天的能耗趋势数据
  */
 function queryATrendChartForItemizedEnergyUseData() {
-  getCo2FXEnergyQS({
-    systemName: contrast.value, // 传入选中的分项名称
-  }).then((data) => {
+  getCo2FXEnergyQS().then((data) => {
     createATrendChartForItemizedEnergyUse(data);
   });
 }
@@ -405,12 +403,12 @@ onMounted(() => {
   <Page>
     <Row :gutter="20" class="mb-4 mt-4">
       <Col :span="12">
-        <Card title="分项用能对比">
+        <Card title="分项碳排放对比">
           <div id="energyContrast"></div>
         </Card>
       </Col>
       <Col :span="12">
-        <Card title="分项用能同比分析">
+        <Card title="分项碳排放同比分析">
           <template #extra>
             <label>
               分项名称:
@@ -429,12 +427,12 @@ onMounted(() => {
 
     <Row :gutter="20">
       <Col :span="12">
-        <Card title="分项用能占比（近30天）">
+        <Card title="分项碳排放占比（近30天）">
           <div id="energyUseRatio"></div>
         </Card>
       </Col>
       <Col :span="12">
-        <Card title="分项用能趋势（近30天）">
+        <Card title="分项碳排放趋势（近30天）">
           <div id="energyUseTrend"></div>
         </Card>
       </Col>
