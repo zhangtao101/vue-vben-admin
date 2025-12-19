@@ -34,22 +34,22 @@ import {
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import { getCo2Data, getCo2YB } from '#/api';
+import { gaugeDropDownBox, getCo2Data } from '#/api';
 import MyStatistic from '#/util/myStatistic.vue';
 
 // region 数据查询相关功能
 
 /**
  * 仪表类型选项
- * 1-电表，3-气表
+ * 1-企业净购入电力隐含碳排放，3-化石燃料燃烧碳排放
  */
 const type = [
   {
-    label: '电表',
+    label: '企业净购入电力隐含碳排放',
     value: 1,
   },
   {
-    label: '气表',
+    label: '化石燃料燃烧碳排放',
     value: 3,
   },
 ];
@@ -83,15 +83,16 @@ const dataTypeList = ref<any>([]);
  * 根据选择的仪表类型获取可用的仪表列表
  */
 function queryEquipTypeList() {
-  getCo2YB({
-    type: queryParams.value.type,
+  gaugeDropDownBox({
+    equipType: queryParams.value.type,
+    equipmentCode: '',
   }).then((data) => {
     dataTypeList.value = [];
     // 将返回的字符串数组转换为选项格式
-    data.forEach((item: string) => {
+    data.forEach((item: any) => {
       dataTypeList.value.push({
-        label: item,
-        value: item,
+        label: `${item.equipmentName}(${item.equipmentCode})`,
+        value: item.equipmentCode,
       });
     });
   });
@@ -302,15 +303,14 @@ onMounted(() => {
           <RadioGroup
             v-model:value="queryParams.type"
             :options="type"
-            class="!w-36"
             @change="queryEquipTypeList"
           />
         </FormItem>
-        <!-- 采集仪表编号 -->
+        <!-- 碳排放区域编号 -->
         <FormItem
           :label="
             $t(
-              'energyConsumption.energyConsumptionCollectionDetails.collectTheInstrumentNumber',
+              'energyConsumption.energyConsumptionCollectionDetails.regionNumber',
             )
           "
           style="margin-bottom: 1em"
@@ -318,7 +318,7 @@ onMounted(() => {
           <Select
             v-model:value="queryParams.equipmentCode"
             :options="dataTypeList"
-            class="!w-36"
+            class="!w-56"
             @change="queryChartData()"
             show-search
             :filter-option="filterOption"

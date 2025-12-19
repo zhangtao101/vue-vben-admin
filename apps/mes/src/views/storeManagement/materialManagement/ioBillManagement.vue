@@ -163,7 +163,7 @@ const showEditDrawer = ref(false);
  */
 const documentType = [
   { label: '入库单', value: 1 },
-  { label: '出库单', value: 2 },
+  { label: '出库单', value: -1 },
 ];
 
 /**
@@ -177,10 +177,10 @@ const operateType1 = [
 
 /**
  * 出库单操作类型选项
- * 1-正常入库，2-退货
+ * 1-正常出库，2-退货
  */
 const operateType2 = [
-  { label: '正常入库', value: 1 },
+  { label: '正常出库', value: 1 },
   { label: '退货', value: 2 },
 ];
 
@@ -364,6 +364,8 @@ function addRow(data: any) {
   addGridApi.grid.insert(data);
 }
 
+// endregion
+
 /**
  * 是否显示明细编辑抽屉
  */
@@ -391,7 +393,7 @@ const detailsRules = ref<any>({
   ],
   number: [{ message: '此项为必填项', required: true, trigger: 'change' }],
   contractCode: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: '此项为必填项', required: false, trigger: 'change' },
   ],
 });
 

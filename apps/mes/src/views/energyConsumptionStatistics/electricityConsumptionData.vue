@@ -76,13 +76,6 @@ function chartInit(chartData: any) {
       children: [
         {
           type: 'line', // 折线图类型
-          labels: [
-            {
-              // 数据标签配置
-              text: 'value', // 显示数值
-              style: { dx: -10, dy: -12 }, // 标签偏移位置
-            },
-          ],
           encode: { shape: 'smooth' }, // 平滑曲线样式
         },
         {

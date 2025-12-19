@@ -31,7 +31,8 @@
     "cokeOvenGas": "焦炉气",
     "normalCollection": "正常采集",
     "abnormalCollection": "异常采集",
-    "exceptionType": "异常类型"
+    "exceptionType": "异常类型",
+    "regionNumber": "碳排放区域编号"
   },
   "energyConsumptionStatistics": {
     "timeFrame": "时间范围",

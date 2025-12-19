@@ -83,6 +83,30 @@ const gridOptions: VxeGridProps<any> = {
       slots: { footer: 'footerData' },
     },
     {
+      field: 'hpssum',
+      title: '后破碎合计(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'hpssumM2',
+      title: '后破碎合计(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'pssum',
+      title: '破碎合计(片)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
+      field: 'pssumM2',
+      title: '破碎合计(M2)',
+      minWidth: 200,
+      slots: { footer: 'footerData' },
+    },
+    {
       title: '入库PA率(PA量/入库量)',
       children: [
         {
@@ -100,17 +124,17 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '前破碎率（破碎合计/投入量）',
+      title: '破损率',
       children: [
         {
-          field: 'mbqpsl',
-          title: '目标',
+          field: 'ylqpsl',
+          title: '前破碎',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
-          field: 'ylqpsl',
-          title: '窑炉',
+          field: 'hqpsl',
+          title: '后破碎',
           minWidth: 150,
           slots: { footer: 'footerData' },
         },

@@ -1,5 +1,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 
+import { useAccessStore } from '@vben/stores';
+
 // eslint-disable-next-line n/no-extraneous-import
 import qs from 'qs';
 
@@ -21,6 +23,8 @@ export default function useWebSocket(fun: any, params: any = {}) {
   // 重连的定时器
   let reconnectTimer: any = null; // 重连定时器
 
+  // 获取TOKEN
+  const accessStore = useAccessStore();
   // 建立 WebSocket 连接的函数
   const connect = async () => {
     // 获取 WebSocket 的连接路径，假设这是一个异步函数
@@ -78,7 +82,12 @@ export default function useWebSocket(fun: any, params: any = {}) {
       // 检查 WebSocket 是否处于 OPEN 状态
       if (socket.value.readyState === WebSocket.OPEN) {
         // 发送心跳消息
-        socket.value.send(JSON.stringify({ type: 'heartbeat' }));
+        socket.value.send(
+          JSON.stringify({
+            type: 'heartbeat',
+            token: accessStore.accessToken || '',
+          }),
+        );
       } else {
         // 如果 WebSocket 不处于 OPEN 状态，打印错误日志并关闭连接
         console.error('Heartbeat failed, closing connection');

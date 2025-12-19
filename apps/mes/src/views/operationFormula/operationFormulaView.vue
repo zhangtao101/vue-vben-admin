@@ -489,7 +489,7 @@ onMounted(() => {
             :not-found-content="null"
             :options="personnelData"
             :show-arrow="false"
-            placeholder="输入用户名进行查询"
+            placeholder="输入关键字进行查询"
             placement="bottomRight"
             show-search
             @change="handleChange"
@@ -508,7 +508,7 @@ onMounted(() => {
             :not-found-content="null"
             :options="personnelData"
             :show-arrow="false"
-            placeholder="输入用户名进行查询"
+            placeholder="输入关键字进行查询"
             placement="bottomRight"
             show-search
             @change="handleChange"

@@ -95,6 +95,15 @@ export async function editorEquipment(params: any) {
     params,
   );
 }
+/**
+ * 38、配置分项仪表
+ */
+export async function editorTeamEnergyConsumption(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/editorEquipment`,
+    params,
+  );
+}
 
 /**
  * 分项列表删除

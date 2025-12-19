@@ -1,0 +1,21 @@
+{
+  "ioBillCode": "IO Bill Code",
+  "ioBillType": "IO Bill Type",
+  "materialCode": "Material Code",
+  "materialName": "Material Name",
+  "time": "Bill Time",
+  "type": "Bill Type",
+  "opType": "Operation Type",
+  "bindBillCode": "Bind Bill Code",
+  "supplierName": "Supplier Name",
+  "number": "Quantity",
+  "materialFeatureId": "Material Feature ID",
+  "startJob": "Start Job",
+  "performTaskLists": "Perform Task List",
+  "boxCode": "Box Code",
+  "materialFeature": "Material Feature",
+  "unit": "Unit",
+  "storagePosition": "Storage Position",
+  "automatedJobs": "Automated Jobs",
+  "manualJobs": "Manual Jobs"
+}
