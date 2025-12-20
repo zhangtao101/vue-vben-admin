@@ -84,7 +84,7 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.workOrderOutbound'),
         },
       },
-      {
+      /* {
         name: 'barcodeInspection',
         path: 'barcodeInspection',
         component: () => import('#/views/flow/barcodeInspection.vue'),
@@ -123,7 +123,7 @@ const routes: RouteRecordRaw[] = [
           ignoreAccess: true,
           title: $t('menu.ioBillOperation'),
         },
-      },
+      },*/
     ],
   },
   {
