@@ -18,6 +18,7 @@ import ParamTemplate from '#/util/component/steps/paramTemplate.vue';
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
+import RecipeExecution from '#/util/component/steps/recipeExecution.vue';
 import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
@@ -25,7 +26,6 @@ import ScanTask from '#/util/component/steps/scanTask.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
 import SingleStationScan from '#/util/component/steps/singleStationScan.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
-import RecipeExecution from "#/util/component/steps/recipeExecution.vue";
 
 /**
  * 定义组件接收的 props，用于传递工步执行所需的相关信息
