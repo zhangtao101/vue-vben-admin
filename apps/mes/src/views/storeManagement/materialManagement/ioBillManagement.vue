@@ -207,11 +207,11 @@ const editRules = ref<any>({
 function editRow(row?: any, isShow = false) {
   checkedRow.value = row
     ? {
-      id: row.id,
-      enterType: row.enterOut,
-      operateDate: dayjs(row.operateDate, 'YYYY-MM-DD'),
-      outType: row.outType,
-    }
+        id: row.id,
+        enterType: row.enterOut,
+        operateDate: dayjs(row.operateDate, 'YYYY-MM-DD'),
+        outType: row.outType,
+      }
     : {};
   showEditDrawer.value = true;
   showViewDrawer.value = isShow;
