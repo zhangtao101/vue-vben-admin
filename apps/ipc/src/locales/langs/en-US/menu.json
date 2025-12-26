@@ -14,5 +14,6 @@
   "reportManagement": "Report Management",
   "barcodeInspection": "Barcode Inspection",
   "ctuOutboundPicking": "CTU Outbound Picking",
-  "ctuCartonPicking": "CTU Carton Picking"
+  "ctuCartonPicking": "CTU Carton Picking",
+  "oneClickClean": "One Click Clean"
 }

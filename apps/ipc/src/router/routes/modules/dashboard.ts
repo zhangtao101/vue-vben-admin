@@ -84,6 +84,16 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.workOrderOutbound'),
         },
       },
+      {
+        name: 'oneClickClean',
+        path: 'oneClickClean',
+        component: () => import('#/views/flow/oneClickClean.vue'),
+        meta: {
+          icon: 'mdi:restore',
+          ignoreAccess: true,
+          title: $t('menu.oneClickClean'),
+        },
+      },
       /* {
         name: 'barcodeInspection',
         path: 'barcodeInspection',
