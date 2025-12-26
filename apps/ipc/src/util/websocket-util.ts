@@ -18,8 +18,9 @@ export default function useWebSocket(fun: any, params: any = {}) {
   const reconnectInterval = 5000; // 重连间隔
   // 心跳检测间隔时间，单位为毫秒
   const heartbeatInterval = 30_000; // 心跳间隔
+  // const heartbeatInterval = 500; // 心跳间隔
   // 心跳检测的定时器
-  let heartbeatTimer: any = null; // 心跳定时器
+  let heartbeatTimer: any; // 心跳定时器
   // 重连的定时器
   let reconnectTimer: any = null; // 重连定时器
 
@@ -34,13 +35,14 @@ export default function useWebSocket(fun: any, params: any = {}) {
     // 监听 WebSocket 的 'open' 事件，表示连接成功
     socket.value.addEventListener('open', () => {
       isConnected.value = true; // 更新连接状态为 true
-      startHeartbeat(); // 启动心跳检测
+      // startHeartbeat(); // 启动心跳检测
+      setTimeout(() => startHeartbeat(), 0);
     });
     // 监听 WebSocket 的 'message' 事件，处理接收到的消息
     socket.value.addEventListener('message', (event: any) => {
       fun(event.data);
       // 重置心跳检测定时器
-      resetHeartbeat();
+      // resetHeartbeat();
     });
     // 监听 WebSocket 的 'close' 事件，表示连接关闭
     socket.value.addEventListener('close', () => {
@@ -99,7 +101,7 @@ export default function useWebSocket(fun: any, params: any = {}) {
   // 重置心跳检测定时器的函数
   const resetHeartbeat = () => {
     // 清除当前的心跳检测定时器
-    clearTimeout(heartbeatTimer);
+    clearInterval(heartbeatTimer);
     // 将心跳检测定时器设置为 null
     heartbeatTimer = null;
   };

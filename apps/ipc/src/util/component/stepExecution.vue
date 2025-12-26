@@ -18,6 +18,7 @@ import ParamTemplate from '#/util/component/steps/paramTemplate.vue';
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
+import RecipeExecution from '#/util/component/steps/recipeExecution.vue';
 import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
 import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
@@ -431,6 +432,16 @@ defineProps({
       :function-id="step.id"
       :show-type-number="step.type"
       v-if="step.type === 99"
+    />
+    <!-- 配方执行 - 和城：根据工步类型为 101 时，渲染配方执行组件，并传递相关参数 -->
+    <RecipeExecution
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      :show-type-number="step.type"
+      v-if="step.type === 101"
     />
 
     <!-- 设备点位信息：根据工步类型为 999 时，渲染设备点位信息组件，并传递相关参数 -->
