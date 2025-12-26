@@ -199,21 +199,12 @@ const editRules = ref<any>({
 });
 
 /**
- * 查看单据详情
- * 打开详情抽屉，显示完整单据信息
- * @param row 表格行数据
- */
-function viewRow(row: any) {
-  checkedRow.value = row;
-  showViewDrawer.value = true;
-}
-
-/**
  * 打开编辑抽屉
  * 支持新增和编辑两种模式，编辑时加载已有数据
  * @param row 表格行数据，为空时为新增模式
+ * @param isShow 是否为查看模式
  */
-function editRow(row?: any) {
+function editRow(row?: any, isShow = false) {
   checkedRow.value = row
     ? {
         id: row.id,
@@ -223,6 +214,7 @@ function editRow(row?: any) {
       }
     : {};
   showEditDrawer.value = true;
+  showViewDrawer.value = isShow;
   // 延迟加载明细数据，确保表格已渲染完成
   setTimeout(() => {
     addGridApi.grid.loadData(row?.details || []);
@@ -800,7 +792,7 @@ onMounted(() => {
               :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
               class="mr-4"
               type="link"
-              @click="viewRow(row)"
+              @click="editRow(row, true)"
             />
           </Tooltip>
           <!-- 编辑按钮 -->
@@ -926,7 +918,12 @@ onMounted(() => {
           <!-- 表格工具栏工具区域，显示切换和添加按钮 -->
           <template #toolbar-tools>
             <!-- 添加按钮，点击后在表格中添加新行 -->
-            <Button type="primary" class="mr-4" @click="openEditDrawer()">
+            <Button
+              type="primary"
+              class="mr-4"
+              @click="openEditDrawer()"
+              v-if="!showViewDrawer"
+            >
               {{ $t('common.add') }}
             </Button>
           </template>
@@ -934,7 +931,12 @@ onMounted(() => {
             <!-- 编辑按钮 -->
             <Tooltip>
               <template #title>{{ $t('common.edit') }}</template>
-              <Button class="mr-4" type="link" @click="openEditDrawer(row)">
+              <Button
+                class="mr-4"
+                type="link"
+                @click="openEditDrawer(row)"
+                v-if="!showViewDrawer"
+              >
                 <template #icon>
                   <Icon
                     icon="mdi:edit-outline"
@@ -947,7 +949,12 @@ onMounted(() => {
             <!-- 删除数据 -->
             <Tooltip>
               <template #title>{{ $t('common.delete') }}</template>
-              <Button danger type="link" @click="delDetails(row)">
+              <Button
+                danger
+                type="link"
+                @click="delDetails(row)"
+                v-if="!showViewDrawer"
+              >
                 <template #icon>
                   <Icon
                     icon="mdi-light:delete"
