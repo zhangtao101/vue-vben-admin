@@ -20,6 +20,24 @@ export function obtainTheListOfProcessEquipment(params: any) {
   );
 }
 /**
+ * 查询工作中心
+ * @param params 参数
+ */
+export function queryTheWorkCenter(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listStationClean?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 一键清洗
+ * @param params 参数
+ */
+export function oneClickCleaning(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_KANBAN_OPFUNCTION}/equip/worksheet/stationClean?${qs.stringify(params)}`,
+  );
+}
+/**
  * 获取用户列表
  */
 export function getUserList() {

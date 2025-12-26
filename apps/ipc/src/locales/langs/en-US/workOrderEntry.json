@@ -26,5 +26,10 @@
   "numberOfGoodProducts": "Number of Good Products",
   "badNumber": "Number of Defective Products",
   "whenPeopleArePresent": "Labor Hours",
-  "whenTheMachineIsAvailable": "Machine Hours"
+  "whenTheMachineIsAvailable": "Machine Hours",
+  "startWashing": "Start Washing",
+  "total": "Total Number Of Devices",
+  "complete": "Cleaning Is Complete",
+  "cleaning": "cleaning",
+  "error": "An Anomaly Occurs"
 }

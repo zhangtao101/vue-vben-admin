@@ -28,5 +28,10 @@
   "badNumber": "不良数",
   "whenPeopleArePresent": "人时",
   "whenTheMachineIsAvailable": "机时",
-  "detailsOfProcessReporting": "工序报工详情"
+  "detailsOfProcessReporting": "工序报工详情",
+  "startWashing": "开始清洗",
+  "total": "设备总数",
+  "complete": "清洗完成",
+  "cleaning": "清洗中",
+  "error": "发生异常"
 }
