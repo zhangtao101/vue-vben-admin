@@ -187,7 +187,12 @@ onMounted(() => {
           />
         </FormItem>
         <FormItem :wrapper-col="{ offset: 4, span: 24 }">
-          <Button type="primary" @click="startCleaning" class="w-full">
+          <Button
+            type="primary"
+            @click="startCleaning"
+            class="w-full"
+            :disabled="!queryParams.stationCode"
+          >
             {{ $t('workOrderEntry.startWashing') }}
           </Button>
         </FormItem>
