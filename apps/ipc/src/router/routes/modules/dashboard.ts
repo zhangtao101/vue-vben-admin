@@ -44,7 +44,7 @@ const routes: RouteRecordRaw[] = [
     name: 'workFlow',
     path: '/workFlow',
     children: [
-      {
+      /* {
         name: 'dispatchHomework',
         path: 'dispatchHomework',
         component: () => import('#/views/flow/dispatchHomework.vue'),
@@ -93,7 +93,7 @@ const routes: RouteRecordRaw[] = [
           ignoreAccess: true,
           title: $t('menu.barcodeInspection'),
         },
-      },
+      },*/
       {
         name: 'ctuCartonPicking',
         path: 'ctuCartonPicking',
@@ -126,7 +126,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  {
+  /* {
     meta: {
       icon: 'mdi:alarm-light',
       order: -1,
@@ -166,8 +166,8 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
-  {
+  },*/
+  /* {
     meta: {
       icon: 'mdi:quality-medium',
       order: -1,
@@ -207,7 +207,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
     ],
-  },
+  },*/
   /*  // 报表管理
   {
     meta: {
