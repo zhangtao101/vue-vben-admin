@@ -21,7 +21,7 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  detailInTaskEnout,
+  detailInTaskEnout, detailOutTaskEnout,
   formFinishEnout,
   getDetailByCodeEnout,
   getDetailInAreaCodeEnout,
@@ -288,6 +288,22 @@ function inSubmit() {
     closeTheAssignment(); // 结束作业操作
   });
 }
+/**
+ * 出库操作提交
+ * 构建入库操作参数并调用接口提交
+ */
+function outSubmit() {
+  // 构建入库操作参数
+  const params = {
+    ...jobData.value, // 作业数据（箱码、储位等）
+    formCode: details.value.formCode, // 单据编码
+    opFuncationType: 2, // 操作类型：2表示入库
+  };
+  detailOutTaskEnout(params).then(() => {
+    message.success($t('common.successfulOperation')); // 显示成功提示
+    closeTheAssignment(); // 结束作业操作
+  });
+}
 
 // endregion
 
@@ -350,7 +366,7 @@ defineExpose({
     :footer-style="{ textAlign: 'right' }"
     height="80%"
     placement="top"
-    :title="$t('productionOperation.personnelTitle')"
+    :title="$t('ioBillOperation.manualJobs')"
     @close="afterClose"
   >
     <!-- 单据基本信息展示区域 -->
@@ -534,7 +550,7 @@ defineExpose({
               <!-- 操作按钮区域 -->
               <FormItem :wrapper-col="{ span: 24 }">
                 <!-- 确认按钮，点击后提交出库操作 -->
-                <Button type="primary" @click="inSubmit" class="my-4 w-full">
+                <Button type="primary" @click="outSubmit" class="my-4 w-full">
                   {{ $t('common.confirm') }}
                 </Button>
                 <!-- 取消按钮，点击后关闭出库操作界面 -->
