@@ -21,7 +21,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  detailInTaskEnout, detailOutTaskEnout,
+  detailInTaskEnout,
+  detailOutTaskEnout,
   formFinishEnout,
   getDetailByCodeEnout,
   getDetailInAreaCodeEnout,
