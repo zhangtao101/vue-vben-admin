@@ -7,7 +7,6 @@ import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { useAuthStore } from '#/store';
-import {Icon} from "@iconify/vue";
 
 defineOptions({ name: 'Login' });
 
