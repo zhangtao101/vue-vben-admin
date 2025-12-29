@@ -7,7 +7,14 @@ import { useRoute } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 
-import { Button, Card, Form, FormItem, Input } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Form,
+  FormItem,
+  Input,
+  RangePicker,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { queryTheEnergyConsumptionOfASingleProduct } from '#/api';
@@ -69,7 +76,10 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // region 查询数据
 // 查询参数
-const queryParams = ref<any>({});
+const queryParams = ref<any>({
+  // 查询时间范围 - 用户选择的时间段
+  searchTime: [] as any,
+});
 
 /**
  * 查询数据
@@ -77,12 +87,21 @@ const queryParams = ref<any>({});
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
+    const params = {
+      ...queryParams.value,
+    };
+    // 处理时间范围参数
+    if (params.searchTime && params.searchTime.length > 0) {
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD 00:00:00');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD 23:59:59');
+      delete params.searchTime;
+    }
     /**
      * 调用 queryTheEnergyConsumptionOfASingleProduct 函数，传入查询参数和分页信息。
-     * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
+     * 查询参数包括 params 中的所有属性，以及当前页码和每页大小。
      */
     queryTheEnergyConsumptionOfASingleProduct({
-      ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
+      ...params,
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
@@ -140,6 +159,13 @@ onMounted(() => {
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.equipmentNo" />
+        </FormItem>
+        <!-- 时间范围选择器 -->
+        <FormItem
+          :label="$t('energyConsumption.energyConsumptionStatistics.timeFrame')"
+          style="margin-bottom: 1em"
+        >
+          <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
