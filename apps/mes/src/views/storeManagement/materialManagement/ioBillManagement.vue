@@ -89,8 +89,8 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'enterOutName', title: '单据类型说明', minWidth: 150 },
     { field: 'outType', title: '操作类型', minWidth: 150 },
     { field: 'outTypeName', title: '操作类型说明', minWidth: 150 },
-    { field: 'auditsState', title: '审核状态', minWidth: 150 },
-    { field: 'auditstateName', title: '审核状态说明', minWidth: 150 },
+    { field: 'formStateName', title: '单据执行状态', minWidth: 150 },
+    { field: 'auditStateName', title: '审核状态', minWidth: 150 },
     { field: 'auditUser', title: '审核人', minWidth: 150 },
     { field: 'auditTime', title: '审核时间', minWidth: 150 },
     {

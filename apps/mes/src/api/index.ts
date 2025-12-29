@@ -5,6 +5,7 @@ export * from './baseInfo';
 export * from './core';
 export * from './energyConsumptionAnalysis';
 export * from './energyConsumptionStatistics';
+export * from './energyUnitConsumptionMgmt';
 export * from './equipManagement';
 export * from './fireOperationManagement';
 export * from './hiddenDanger';

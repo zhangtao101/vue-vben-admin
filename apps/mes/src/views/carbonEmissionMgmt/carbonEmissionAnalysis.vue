@@ -166,9 +166,7 @@ function chartInit(chartData: any = []) {
           },
           tooltip: {
             title: '时间',
-            items: [
-              { channel: 'y', name: '当期排放值', valueFormatter: '.0f' },
-            ],
+            items: [{ channel: 'y', name: '当期排放值' }],
           },
         },
         {
@@ -185,9 +183,7 @@ function chartInit(chartData: any = []) {
           },
           tooltip: {
             title: '时间',
-            items: [
-              { channel: 'y', name: '上期排放值', valueFormatter: '.0f' },
-            ],
+            items: [{ channel: 'y', name: '上期排放值' }],
           },
         },
         {
