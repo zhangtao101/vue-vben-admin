@@ -44,7 +44,7 @@ const routes: RouteRecordRaw[] = [
     name: 'workFlow',
     path: '/workFlow',
     children: [
-       {
+      {
         name: 'dispatchHomework',
         path: 'dispatchHomework',
         component: () => import('#/views/flow/dispatchHomework.vue'),
