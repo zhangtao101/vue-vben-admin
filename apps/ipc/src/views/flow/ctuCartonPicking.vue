@@ -2,6 +2,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -33,6 +34,7 @@ import {
   productPackingFinish,
   productPackingIn,
   productPackingStart,
+  queryPrintTemplateDetails,
 } from '#/api';
 
 /**
@@ -370,6 +372,29 @@ function selectMaterialCharacteristics(materialDescriptionId: number) {
   }
 }
 // endregion
+
+// region 打印
+
+function print() {
+  queryPrintTemplateDetails('箱码打印').then((res: any) => {
+    try {
+      const templateRef = JSON.parse(res.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({
+        template: templateRef,
+      });
+      hiprintTemplate.print(
+        {
+          qrcode: 'test1111',
+        },
+        { leftOffset: -1, topOffset: -1 },
+      );
+    } catch {
+      console.error('模板解析失败');
+    }
+  });
+}
+
+// endregion
 </script>
 
 <!--
@@ -389,6 +414,7 @@ function selectMaterialCharacteristics(materialDescriptionId: number) {
             @keyup.enter="
               () => {
                 gridApi.reload();
+                print();
               }
             "
           />
@@ -413,7 +439,11 @@ function selectMaterialCharacteristics(materialDescriptionId: number) {
       </Form>
 
       <!-- 拣货详情数据表格 -->
-      <Grid />
+      <Grid>
+        <template #toolbar-actions>
+          <Button type="primary">编辑</Button>
+        </template>
+      </Grid>
     </Card>
 
     <!-- 拣货操作抽屉，用于输入拣货详情信息 -->
