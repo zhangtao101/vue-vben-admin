@@ -21,14 +21,13 @@ const {
   paperTypes,
   curPaperType,
   paperPopVisible,
-  paperWidth,
-  paperHeight,
   showPaperPop,
   setPaper,
   setPaperOther,
 } = usePaper(TEMPLATE_KEY);
 const { scaleValue, changeScale } = useZoom(TEMPLATE_KEY);
-
+const paperHeight = ref(80);
+const paperWidth = ref(220);
 // 初始化 provider
 hiprint.init({
   providers: [provider()],
@@ -182,14 +181,14 @@ onMounted(() => {
               <div class="mt-10 flex-row">
                 <input
                   class="input"
-                  :value="paperWidth"
+                  v-model="paperWidth"
                   type="number"
                   placeholder="宽(mm)"
                 />
                 <span class="ml-10 mr-10">x</span>
                 <input
                   class="input"
-                  :value="paperHeight"
+                  v-model="paperHeight"
                   type="number"
                   placeholder="高(mm)"
                 />
@@ -197,7 +196,7 @@ onMounted(() => {
               <button
                 class="primary circle-10"
                 style="margin-top: 6px"
-                @click.stop="setPaperOther"
+                @click.stop="setPaperOther(paperHeight, paperWidth)"
               >
                 确定
               </button>

@@ -11,3 +11,12 @@ export async function queryTheEnergyConsumptionOfASingleProduct(params: any) {
     `${import.meta.env.VITE_GLOB_MES_ENERGY}/consumption/list?${qs.stringify(params)}`,
   );
 }
+
+/**
+ * 查询电量统计
+ */
+export async function checkThePowerStatistics(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/consumption/listEnergy?${qs.stringify(params)}`,
+  );
+}

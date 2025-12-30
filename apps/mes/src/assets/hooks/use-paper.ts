@@ -92,10 +92,8 @@ export function usePaper(key: any) {
       message.error(error);
     }
   };
-  const setPaperOther = () => {
-    const value: any = {};
-    value.width = state.paperWidth;
-    value.height = state.paperHeight;
+  const setPaperOther = (height: number, width: number) => {
+    const value: any = { width, height };
     state.paperPopVisible = false;
     setPaper('other', value);
   };
