@@ -7,7 +7,14 @@ import { useRoute } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 
-import {Button, Card, Form, FormItem, Input, RangePicker} from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Form,
+  FormItem,
+  Input,
+  RangePicker,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { checkThePowerStatistics } from '#/api';
