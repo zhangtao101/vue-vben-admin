@@ -43,6 +43,7 @@
     "maotu": "0.6.5-beta1",
     "pinia": "catalog:",
     "vue": "catalog:",
+    "vue-plugin-hiprint": "^0.0.60",
     "vue-router": "catalog:",
     "vue3-json-viewer": "^2.4.1",
     "vue3-marquee": "^4.2.2"

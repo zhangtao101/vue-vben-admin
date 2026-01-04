@@ -2,6 +2,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -30,11 +31,12 @@ import {
   getDetailByCode,
   getDetailByLabelCode,
   materialFeatureGetByMaterialCodeWith,
+  packingInfoCreate,
   productPackingFinish,
   productPackingIn,
   productPackingStart,
+  queryPrintTemplateDetails,
 } from '#/api';
-
 /**
  * CTU纸箱拣货组件
  * 用于制造执行系统中的CTU(Carton Transfer Unit)纸箱拣货作业管理
@@ -370,6 +372,41 @@ function selectMaterialCharacteristics(materialDescriptionId: number) {
   }
 }
 // endregion
+
+// region 打印
+
+/**
+ * 生成箱码
+ */
+function createLabel() {
+  packingInfoCreate().then(({ packingCode }: any) => {
+    queryParams.value.packingCode = packingCode;
+  });
+}
+
+/**
+ * 打印箱码
+ */
+function print() {
+  queryPrintTemplateDetails('箱码打印').then((res: any) => {
+    try {
+      const templateRef = JSON.parse(res.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({
+        template: templateRef,
+      });
+      hiprintTemplate.print(
+        {
+          qrcode: queryParams.value.packingCode,
+        },
+        { leftOffset: -1, topOffset: -1 },
+      );
+    } catch {
+      console.error('模板解析失败');
+    }
+  });
+}
+
+// endregion
 </script>
 
 <!--
@@ -413,7 +450,21 @@ function selectMaterialCharacteristics(materialDescriptionId: number) {
       </Form>
 
       <!-- 拣货详情数据表格 -->
-      <Grid />
+      <Grid>
+        <template #toolbar-actions>
+          <Button type="primary" @click="createLabel" class="mx-2">
+            {{ $t('common.barcodeGeneration') }}
+          </Button>
+          <Button
+            type="primary"
+            @click="print"
+            class="mx-2"
+            :disabled="!queryParams.packingCode"
+          >
+            {{ $t('common.print') }}
+          </Button>
+        </template>
+      </Grid>
     </Card>
 
     <!-- 拣货操作抽屉，用于输入拣货详情信息 -->
