@@ -151,9 +151,10 @@ function createAnAnalyticalEnergyShareChart(chartData: any) {
         inactive: { opacity: 0.5, zIndex: 100 }, // 非激活状态
       },
       axis: false, // 隐藏坐标轴
-      legend: {
+      legend: false, // 隐藏图例
+      /* legend: {
         color: { position: 'right', layout: { justifyContent: 'center' } }, // 图例位置
-      },
+      },*/
       tooltip: {
         title: (d: any) => d.year, // 工具提示标题
         items: [

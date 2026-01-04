@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 
-import { Button, Card, Form, FormItem, RangePicker } from 'ant-design-vue';
+import {Button, Card, Form, FormItem, Input, RangePicker} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { checkThePowerStatistics } from '#/api';
@@ -24,6 +24,7 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
+    { field: 'area', title: '系统名称', minWidth: 150 },
     { field: 'energyTotal', title: '使用总能耗', minWidth: 150 },
     { field: 'energyWork', title: '生产能耗', minWidth: 150 },
     { field: 'energyNoWork', title: '非生产能耗', minWidth: 150 },
@@ -135,6 +136,13 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
+        <!-- 系统名称 -->
+        <FormItem
+          :label="$t('basic.productBom.systemName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.area" />
+        </FormItem>
         <!-- 时间范围选择器 -->
         <FormItem
           :label="$t('energyConsumption.energyConsumptionStatistics.timeFrame')"
