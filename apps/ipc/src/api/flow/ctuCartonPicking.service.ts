@@ -24,6 +24,15 @@ export function getDetailByLabelCode(params: any) {
 }
 
 /**
+ * 箱码生成
+ */
+export function packingInfoCreate() {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/human/packing/packingInfoCreate`,
+  );
+}
+
+/**
  * 开始CTU箱拣选
  * @param params 参数
  */
