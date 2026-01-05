@@ -33,6 +33,14 @@ export function packingInfoCreate() {
     `${import.meta.env.VITE_GLOB_MES_WMS}/human/packing/packingInfoCreate`,
   );
 }
+/**
+ * 批量生成箱码
+ */
+export function batchCodeCreate(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/human/packing/batchCodeCreate?${qs.stringify(params)}`,
+  );
+}
 
 /**
  * 开始CTU箱拣选

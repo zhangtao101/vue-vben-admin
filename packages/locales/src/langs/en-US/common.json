@@ -47,6 +47,7 @@
   "export": "Export",
   "import": "Import",
   "print": "Print",
+  "batchPrinting": "Batch Printing",
   "barcodeGeneration": "Barcode Generation",
   "successfulOperation": "Operation Successful",
   "operationFailure": "Operation Failed",
