@@ -23,11 +23,12 @@ import {
   getFXEnergy,
   getFXEnergyDB,
   getFXEnergyQS,
-  getFXEnergyTB,
+  getFXEnergyTB, getItemized,
   getItemizedList,
 } from '#/api';
 
 // region 分项用能对比分析
+const ids = ref([]);
 
 /**
  * 分项用能对比分析图表实例
@@ -59,7 +60,10 @@ function itemizedEnergyAnalysisChartCreation(chartData: any) {
         color: 'name', // 颜色：去年/今年
       },
       transform: [{ type: 'dodgeX' }], // X轴分组变换
-      interaction: { elementHighlight: { background: true } }, // 元素高亮
+      interaction: {
+        elementHighlightByX: { background: true }, // X轴元素高亮
+        tooltip: { shared: true }, // 共享工具提示
+      },
       coordinate: { transform: [{ type: 'transpose' }] }, // 转置坐标系（横向柱状图）
       axis: {
         x: { title: false }, // 隐藏X轴标题
@@ -75,28 +79,32 @@ function itemizedEnergyAnalysisChartCreation(chartData: any) {
  * 获取各分项系统的去年和今年能耗数据，用于对比分析
  */
 function queryItemizedEnergyAnalysisChart() {
-  getFXEnergyDB().then((data) => {
-    const chartData: any = [];
+  if (ids.value.length > 0) {
+    getFXEnergyDB({
+      ids: ids.value.join(','),
+    }).then((data) => {
+      const chartData: any = [];
 
-    // 将数据转换为图表需要的格式
-    data.forEach((item: any) => {
-      chartData.push(
-        {
-          type: item.systemName, // 分项系统名称
-          data: item.lastValue, // 去年能耗值
-          name: '去年',
-        },
-        {
-          type: item.systemName, // 分项系统名称
-          data: item.currentValue, // 今年能耗值
-          name: '今年',
-        },
-      );
+      // 将数据转换为图表需要的格式
+      data.forEach((item: any) => {
+        chartData.push(
+          {
+            type: item.systemName, // 分项系统名称
+            data: item.lastValue, // 去年能耗值
+            name: '去年',
+          },
+          {
+            type: item.systemName, // 分项系统名称
+            data: item.currentValue, // 今年能耗值
+            name: '今年',
+          },
+        );
+      });
+
+      // 创建图表
+      itemizedEnergyAnalysisChartCreation(chartData);
     });
-
-    // 创建图表
-    itemizedEnergyAnalysisChartCreation(chartData);
-  });
+  }
 }
 // endregion
 
@@ -179,9 +187,13 @@ function createAnAnalyticalEnergyShareChart(chartData: any) {
  * 获取各分项系统的能耗占比数据，用于环形图展示
  */
 function queryEnergyConsumptionRatio() {
-  getFXEnergy().then((data) => {
-    createAnAnalyticalEnergyShareChart(data);
-  });
+  if (ids.value.length > 0) {
+    getFXEnergy({
+      ids: ids.value.join(','),
+    }).then((data) => {
+      createAnAnalyticalEnergyShareChart(data);
+    });
+  }
 }
 
 // endregion
@@ -333,6 +345,29 @@ function queryATrendChartForItemizedEnergyUseData() {
 
 // endregion
 
+// region 分项系统查询(ID)
+/**
+ * 分项系统列表
+ */
+const systemOptions = ref<any>([]);
+
+/**
+ * 查询分项系统, 带id
+ */
+function itemSystemQueryID() {
+  getItemized().then((res: any) => {
+    systemOptions.value = [];
+    res.forEach((item: any) => {
+      systemOptions.value.push({
+        value: item.id,
+        label: item.systemName,
+      });
+    });
+  });
+}
+
+// endregion
+
 // region 对比项目管理
 
 /**
@@ -394,44 +429,64 @@ onMounted(() => {
 
   // 查询分项列表并初始化同比和趋势分析
   queryContrastType();
+
+  // 查询分项系统(带id)
+  itemSystemQueryID();
 });
 </script>
 
 <template>
   <Page>
+    <Card class="my-2">
+      <label>
+        分项名称:
+        <Select
+          class="w-[80%]"
+          mode="multiple"
+          v-model:value="ids"
+          :options="systemOptions"
+          @change="
+            () => {
+              queryEnergyConsumptionRatio();
+              queryItemizedEnergyAnalysisChart();
+            }
+          "
+        />
+      </label>
+    </Card>
     <Row :gutter="20" class="mb-4 mt-4">
       <Col :span="12">
         <Card title="分项用能对比">
-          <div id="energyContrast"></div>
+          <div id="energyContrast" class="min-h-[300px]"></div>
         </Card>
       </Col>
       <Col :span="12">
-        <Card title="分项用能同比分析">
-          <template #extra>
-            <label>
-              分项名称:
-              <Select
-                class="w-48"
-                v-model:value="contrast"
-                :options="contrastItem"
-                @change="query()"
-              />
-            </label>
-          </template>
-          <div id="yearOnYearAnalysis"></div>
+        <Card title="分项用能占比（近30天）">
+          <div id="energyUseRatio" class="min-h-[300px]"></div>
         </Card>
       </Col>
     </Row>
 
+    <Card class="my-2">
+      <label>
+        分项名称:
+        <Select
+          class="w-48"
+          v-model:value="contrast"
+          :options="contrastItem"
+          @change="query()"
+        />
+      </label>
+    </Card>
     <Row :gutter="20">
       <Col :span="12">
-        <Card title="分项用能占比（近30天）">
-          <div id="energyUseRatio"></div>
+        <Card title="分项用能同比分析">
+          <div id="yearOnYearAnalysis" class="min-h-[300px]"></div>
         </Card>
       </Col>
       <Col :span="12">
         <Card title="分项用能趋势（近30天）">
-          <div id="energyUseTrend"></div>
+          <div id="energyUseTrend" class="min-h-[300px]"></div>
         </Card>
       </Col>
     </Row>

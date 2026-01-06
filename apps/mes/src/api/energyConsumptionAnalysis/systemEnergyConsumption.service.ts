@@ -6,17 +6,17 @@ import { requestClient } from '#/api/request';
 /**
  * 分项用能占比
  */
-export async function getFXEnergy() {
+export async function getFXEnergy(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergy`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergy?${qs.stringify(params)}`,
   );
 }
 /**
  * 分项用能对比
  */
-export async function getFXEnergyDB() {
+export async function getFXEnergyDB(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergyDB`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergyDB?${qs.stringify(params)}`,
   );
 }
 /**

@@ -12,6 +12,14 @@ export async function getItemizedList() {
   );
 }
 /**
+ * 获取分项系统下拉框(id)
+ */
+export async function getItemized() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getItemized`,
+  );
+}
+/**
  * 获取二氧化碳排放分项系统下拉框
  */
 export async function getCo2ItemizedList() {
