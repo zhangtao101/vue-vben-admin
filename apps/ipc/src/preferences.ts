@@ -11,7 +11,7 @@ export const overridesPreferences = defineOverridesPreferences({
     // accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
     layout: 'mixed-nav',
-    defaultHomePath: '/workFlow/productionOperation',
+    defaultHomePath: '/workFlow/ioBillOperation',
     preferencesButtonPosition: 'header',
   },
   sidebar: {
