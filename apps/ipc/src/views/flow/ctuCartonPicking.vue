@@ -14,7 +14,6 @@ import {
   Form,
   FormItem,
   Input,
-  InputNumber,
   message,
   Modal,
   RadioGroup,
@@ -28,7 +27,6 @@ import { JsonViewer } from 'vue3-json-viewer';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  batchCodeCreate,
   getByMaterialCodeAndName,
   getDetailByCode,
   getDetailByLabelCode,
@@ -409,69 +407,6 @@ function print() {
 }
 
 // endregion
-
-// region 批量打印
-
-const isOpen = ref(false);
-/**
- * 面数信息
- */
-const numberOfFacesOptions = [
-  {
-    label: '单面',
-    value: 1,
-  },
-  {
-    label: '双面',
-    value: 2,
-  },
-];
-/**
- * 批量打印信息
- */
-const printMessage = ref({
-  type: 1,
-  number: 0,
-});
-/**
- * 查询打印模板
- */
-function showPrintModal() {
-  printMessage.value = {
-    type: 1,
-    number: 0,
-  };
-  isOpen.value = true;
-}
-/**
- * 查询打印模板
- */
-function closePrintModal() {
-  isOpen.value = false;
-}
-
-/**
- * 批量打印
- */
-function handleOk() {
-  Promise.all([
-    queryPrintTemplateDetails('箱码打印'),
-    batchCodeCreate(printMessage.value),
-  ]).then(([printRes, codeRes]: any) => {
-    try {
-      const templateRef = JSON.parse(printRes.printData);
-      const hiprintTemplate = new hiprint.PrintTemplate({
-        template: templateRef,
-      });
-      hiprintTemplate.print(codeRes, { leftOffset: -1, topOffset: -1 });
-      closePrintModal();
-    } catch {
-      console.error('模板解析失败');
-    }
-  });
-}
-
-// endregion
 </script>
 
 <!--
@@ -527,9 +462,6 @@ function handleOk() {
             :disabled="!queryParams.packingCode"
           >
             {{ $t('common.print') }}
-          </Button>
-          <Button type="primary" @click="showPrintModal" class="mx-2">
-            {{ $t('common.batchPrinting') }}
           </Button>
         </template>
       </Grid>
@@ -703,24 +635,6 @@ function handleOk() {
         @click="selectMaterialCharacteristics(item.id)"
       />
     </Drawer>
-
-    <Modal
-      v-model:open="isOpen"
-      :title="$t('common.batchPrinting')"
-      @ok="handleOk"
-    >
-      <!-- 面数 -->
-      <FormItem :label="$t('ioBillOperation.numberOfFaces')">
-        <RadioGroup
-          v-model:value="printMessage.type"
-          :options="numberOfFacesOptions"
-        />
-      </FormItem>
-      <!-- 数量 -->
-      <FormItem :label="$t('ioBillOperation.number')">
-        <InputNumber v-model:value="printMessage.number" class="w-48" />
-      </FormItem>
-    </Modal>
   </Page>
 </template>
 
