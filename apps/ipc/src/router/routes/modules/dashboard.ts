@@ -105,6 +105,16 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'batchPrinting',
+        path: 'batchPrinting',
+        component: () => import('#/views/flow/batchPrinting.vue'),
+        meta: {
+          icon: 'mdi:inbox-full-outline',
+          ignoreAccess: true,
+          title: $t('menu.batchPrinting'),
+        },
+      },
+      {
         name: 'ctuOutboundPicking',
         path: 'ctuOutboundPicking',
         component: () => import('#/views/flow/ctuOutboundPicking.vue'),
