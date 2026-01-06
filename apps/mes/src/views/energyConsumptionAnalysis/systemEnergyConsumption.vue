@@ -23,7 +23,8 @@ import {
   getFXEnergy,
   getFXEnergyDB,
   getFXEnergyQS,
-  getFXEnergyTB, getItemized,
+  getFXEnergyTB,
+  getItemized,
   getItemizedList,
 } from '#/api';
 
@@ -79,32 +80,30 @@ function itemizedEnergyAnalysisChartCreation(chartData: any) {
  * 获取各分项系统的去年和今年能耗数据，用于对比分析
  */
 function queryItemizedEnergyAnalysisChart() {
-  if (ids.value.length > 0) {
-    getFXEnergyDB({
-      ids: ids.value.join(','),
-    }).then((data) => {
-      const chartData: any = [];
+  getFXEnergyDB({
+    ids: ids.value.join(','),
+  }).then((data) => {
+    const chartData: any = [];
 
-      // 将数据转换为图表需要的格式
-      data.forEach((item: any) => {
-        chartData.push(
-          {
-            type: item.systemName, // 分项系统名称
-            data: item.lastValue, // 去年能耗值
-            name: '去年',
-          },
-          {
-            type: item.systemName, // 分项系统名称
-            data: item.currentValue, // 今年能耗值
-            name: '今年',
-          },
-        );
-      });
-
-      // 创建图表
-      itemizedEnergyAnalysisChartCreation(chartData);
+    // 将数据转换为图表需要的格式
+    data.forEach((item: any) => {
+      chartData.push(
+        {
+          type: item.systemName, // 分项系统名称
+          data: item.lastValue, // 去年能耗值
+          name: '去年',
+        },
+        {
+          type: item.systemName, // 分项系统名称
+          data: item.currentValue, // 今年能耗值
+          name: '今年',
+        },
+      );
     });
-  }
+
+    // 创建图表
+    itemizedEnergyAnalysisChartCreation(chartData);
+  });
 }
 // endregion
 
@@ -187,13 +186,11 @@ function createAnAnalyticalEnergyShareChart(chartData: any) {
  * 获取各分项系统的能耗占比数据，用于环形图展示
  */
 function queryEnergyConsumptionRatio() {
-  if (ids.value.length > 0) {
-    getFXEnergy({
-      ids: ids.value.join(','),
-    }).then((data) => {
-      createAnAnalyticalEnergyShareChart(data);
-    });
-  }
+  getFXEnergy({
+    ids: ids.value.join(','),
+  }).then((data) => {
+    createAnAnalyticalEnergyShareChart(data);
+  });
 }
 
 // endregion
