@@ -23,8 +23,9 @@ import {
   getCo2FXEnergy,
   getCo2FXEnergyDB,
   getCo2FXEnergyQS,
-  getCo2FXEnergyTB, getCo2Itemized,
-  getCo2ItemizedList, getItemized,
+  getCo2FXEnergyTB,
+  getCo2Itemized,
+  getCo2ItemizedList,
 } from '#/api';
 
 // region 分项用能对比分析
@@ -386,7 +387,6 @@ function query() {
 }
 
 // endregion
-
 
 // region 分项系统查询(ID)
 /**
