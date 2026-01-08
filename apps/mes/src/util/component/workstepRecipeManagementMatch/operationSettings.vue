@@ -166,7 +166,7 @@ function openDrawer(
   stepList.value = [];
   listOfSteps.forEach((item: any) => {
     stepList.value.push({
-      label: item.functionTypeName+ item.id,
+      label: item.functionTypeName + item.id,
       value: item.id,
     });
   });

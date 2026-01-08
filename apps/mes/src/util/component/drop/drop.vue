@@ -192,9 +192,7 @@ defineExpose({
           <button title="set horizontal layout" @click="layoutGraph('LR')">
             整理
           </button>
-          <button title="set horizontal layout" @click="clear()">
-            清空
-          </button>
+          <button title="set horizontal layout" @click="clear()">清空</button>
         </div>
       </Panel>
       <template #node-menu="props">

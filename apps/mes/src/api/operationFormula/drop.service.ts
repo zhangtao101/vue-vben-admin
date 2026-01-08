@@ -13,7 +13,9 @@ export async function queryNodes() {
  */
 export async function listOpFunctionSetRoute(opDetailId: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/functionset/listOpFunctionSetRoute?opDetailId=${opDetailId}`,
+    `${
+      import.meta.env.VITE_GLOB_MES_MAIN
+    }/workstation/functionset/listOpFunctionSetRoute?opDetailId=${opDetailId}`,
   );
 }
 /**
