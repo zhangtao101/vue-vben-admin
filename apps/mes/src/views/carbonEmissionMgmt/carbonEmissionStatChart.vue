@@ -24,6 +24,7 @@ import {
   getCo2FXEnergyDB,
   getCo2FXEnergyQS,
   getCo2FXEnergyTB,
+  getCo2Itemized,
   getCo2ItemizedList,
 } from '#/api';
 
@@ -34,6 +35,7 @@ import {
  * 展示各分项系统去年和今年的用能对比
  */
 let itemizedEnergyAnalysisChart: any;
+const ids = ref([]);
 
 /**
  * 创建分项用能对比分析图表
@@ -79,7 +81,7 @@ function itemizedEnergyAnalysisChartCreation(chartData: any) {
  */
 function queryItemizedEnergyAnalysisChart() {
   getCo2FXEnergyDB({
-    systemName: contrast.value, // 传入选中的分项名称
+    ids: ids.value.join(','), // 传入选中的分项名称
   }).then((data) => {
     const chartData: any = [];
 
@@ -184,7 +186,9 @@ function createAnAnalyticalEnergyShareChart(chartData: any) {
  * 获取各分项系统的能耗占比数据，用于环形图展示
  */
 function queryEnergyConsumptionRatio() {
-  getCo2FXEnergy().then((data) => {
+  getCo2FXEnergy({
+    ids: ids.value.join(','), // 传入选中的分项名称
+  }).then((data) => {
     createAnAnalyticalEnergyShareChart(data);
   });
 }
@@ -384,6 +388,29 @@ function query() {
 
 // endregion
 
+// region 分项系统查询(ID)
+/**
+ * 分项系统列表
+ */
+const systemOptions = ref<any>([]);
+
+/**
+ * 查询分项系统, 带id
+ */
+function itemSystemQueryID() {
+  getCo2Itemized().then((res: any) => {
+    systemOptions.value = [];
+    res.forEach((item: any) => {
+      systemOptions.value.push({
+        value: item.id,
+        label: item.systemName,
+      });
+    });
+  });
+}
+
+// endregion
+
 /**
  * 页面挂载时初始化
  * 一次性加载所有图表的数据
@@ -397,44 +424,64 @@ onMounted(() => {
 
   // 查询分项列表并初始化同比和趋势分析
   queryContrastType();
+
+  // 查询分项系统(带id)
+  itemSystemQueryID();
 });
 </script>
 
 <template>
   <Page>
+    <Card class="my-2">
+      <label>
+        分项名称:
+        <Select
+          class="w-[80%]"
+          mode="multiple"
+          v-model:value="ids"
+          :options="systemOptions"
+          @change="
+            () => {
+              queryEnergyConsumptionRatio();
+              queryItemizedEnergyAnalysisChart();
+            }
+          "
+        />
+      </label>
+    </Card>
     <Row :gutter="20" class="mb-4 mt-4">
       <Col :span="12">
-        <Card title="分项碳排放对比">
-          <div id="energyContrast"></div>
+        <Card title="分项用能对比">
+          <div id="energyContrast" class="min-h-[300px]"></div>
         </Card>
       </Col>
       <Col :span="12">
-        <Card title="分项碳排放同比分析">
-          <template #extra>
-            <label>
-              分项名称:
-              <Select
-                class="w-48"
-                v-model:value="contrast"
-                :options="contrastItem"
-                @change="query()"
-              />
-            </label>
-          </template>
-          <div id="yearOnYearAnalysis"></div>
+        <Card title="分项用能占比（近30天）">
+          <div id="energyUseRatio" class="min-h-[300px]"></div>
         </Card>
       </Col>
     </Row>
 
+    <Card class="my-2">
+      <label>
+        分项名称:
+        <Select
+          class="w-48"
+          v-model:value="contrast"
+          :options="contrastItem"
+          @change="query()"
+        />
+      </label>
+    </Card>
     <Row :gutter="20">
       <Col :span="12">
-        <Card title="分项碳排放占比（近30天）">
-          <div id="energyUseRatio"></div>
+        <Card title="分项用能同比分析">
+          <div id="yearOnYearAnalysis" class="min-h-[300px]"></div>
         </Card>
       </Col>
       <Col :span="12">
-        <Card title="分项碳排放趋势（近30天）">
-          <div id="energyUseTrend"></div>
+        <Card title="分项用能趋势（近30天）">
+          <div id="energyUseTrend" class="min-h-[300px]"></div>
         </Card>
       </Col>
     </Row>

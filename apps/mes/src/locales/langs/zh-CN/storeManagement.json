@@ -32,6 +32,8 @@
     "bindBillCode": "绑定单号",
     "supplierName": "供应商名称",
     "number": "数量",
-    "materialFeatureId": "物料特征ID"
+    "materialFeatureId": "物料特征ID",
+    "shifts": "班次",
+    "batch": "批号"
   }
 }

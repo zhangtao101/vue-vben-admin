@@ -12,6 +12,22 @@ export async function getItemizedList() {
   );
 }
 /**
+ * 获取分项系统下拉框(id)
+ */
+export async function getItemized() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getItemized`,
+  );
+}
+/**
+ * 获取分项系统下拉框(id)
+ */
+export async function getCo2Itemized() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2Itemized`,
+  );
+}
+/**
  * 获取二氧化碳排放分项系统下拉框
  */
 export async function getCo2ItemizedList() {
@@ -24,7 +40,9 @@ export async function getCo2ItemizedList() {
  */
 export async function getDayItemizedEnergy(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getDayItemizedEnergy?${qs.stringify(params)}`,
+    `${
+      import.meta.env.VITE_GLOB_MES_ENERGY
+    }/energyEfficiencyAnalysis/getDayItemizedEnergy?${qs.stringify(params)}`,
   );
 }
 /**
@@ -32,7 +50,9 @@ export async function getDayItemizedEnergy(params: any) {
  */
 export async function getYearItemizedEnergy(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getYearItemizedEnergy?${qs.stringify(params)}`,
+    `${
+      import.meta.env.VITE_GLOB_MES_ENERGY
+    }/energyEfficiencyAnalysis/getYearItemizedEnergy?${qs.stringify(params)}`,
   );
 }
 /**
@@ -40,7 +60,9 @@ export async function getYearItemizedEnergy(params: any) {
  */
 export async function getMonthItemizedEnergy(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getMonthItemizedEnergy?${qs.stringify(params)}`,
+    `${
+      import.meta.env.VITE_GLOB_MES_ENERGY
+    }/energyEfficiencyAnalysis/getMonthItemizedEnergy?${qs.stringify(params)}`,
   );
 }
 /**
@@ -48,7 +70,9 @@ export async function getMonthItemizedEnergy(params: any) {
  */
 export async function getCo2YB(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2YB?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2YB?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -56,7 +80,9 @@ export async function getCo2YB(params: any) {
  */
 export async function getCo2Data(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2Data?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2Data?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
