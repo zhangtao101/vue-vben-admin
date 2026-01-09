@@ -10,5 +10,9 @@
   "materialCharacteristics": "物料特性",
   "quantity": "数量",
   "unit": "单位",
-  "materialLabel": "物料标签"
+  "materialLabel": "物料标签",
+  "workOrderNumber": "工单号",
+  "class": "班别",
+  "line": "线别",
+  "lotNumber": "批次号"
 }
