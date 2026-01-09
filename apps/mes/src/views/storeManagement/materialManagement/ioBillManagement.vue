@@ -911,6 +911,24 @@ onMounted(() => {
               />
             </FormItem>
           </Col>
+          <Col :span="12" v-if="checkedRow.enterType === 1">
+            <!-- 班次 -->
+            <FormItem
+              :label="$t('storeManagement.ioBillManagement.shifts')"
+              name="classType"
+            >
+              <Input v-model:value="checkedRow.classType" />
+            </FormItem>
+          </Col>
+          <Col :span="12" v-if="checkedRow.enterType === 1">
+            <!-- 批号 -->
+            <FormItem
+              :label="$t('storeManagement.ioBillManagement.batch')"
+              name="batchCode"
+            >
+              <Input v-model:value="checkedRow.batchCode" />
+            </FormItem>
+          </Col>
         </Row>
       </Form>
       <div>
