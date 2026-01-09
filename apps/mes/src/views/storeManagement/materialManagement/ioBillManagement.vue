@@ -911,8 +911,8 @@ onMounted(() => {
               />
             </FormItem>
           </Col>
-          <Col :span="12" v-if="checkedRow.enterType === 1">
-            <!-- 班次 -->
+          <!--          <Col :span="12" v-if="checkedRow.enterType === 1">
+            &lt;!&ndash; 班次 &ndash;&gt;
             <FormItem
               :label="$t('storeManagement.ioBillManagement.shifts')"
               name="classType"
@@ -921,14 +921,14 @@ onMounted(() => {
             </FormItem>
           </Col>
           <Col :span="12" v-if="checkedRow.enterType === 1">
-            <!-- 批号 -->
+            &lt;!&ndash; 批号 &ndash;&gt;
             <FormItem
               :label="$t('storeManagement.ioBillManagement.batch')"
               name="batchCode"
             >
               <Input v-model:value="checkedRow.batchCode" />
             </FormItem>
-          </Col>
+          </Col>-->
         </Row>
       </Form>
       <div>

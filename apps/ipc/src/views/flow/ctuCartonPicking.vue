@@ -591,6 +591,22 @@ function print() {
         <FormItem :label="$t('ctuCartonPicking.unit')">
           <Input v-model:value="editedInformation.unit" disabled />
         </FormItem>
+        <!-- 工单号 -->
+        <FormItem :label="$t('ctuCartonPicking.workOrderNumber')">
+          <Input v-model:value="editedInformation.worksheetCode" />
+        </FormItem>
+        <!-- 班别 -->
+        <FormItem :label="$t('ctuCartonPicking.class')">
+          <Input v-model:value="editedInformation.classType" />
+        </FormItem>
+        <!-- 线别 -->
+        <FormItem :label="$t('ctuCartonPicking.line')">
+          <Input v-model:value="editedInformation.lineType" />
+        </FormItem>
+        <!-- 批次号 -->
+        <FormItem :label="$t('ctuCartonPicking.lotNumber')">
+          <Input v-model:value="editedInformation.batchCode" />
+        </FormItem>
       </Form>
 
       <!-- 拣货抽屉底部操作按钮区域 -->
