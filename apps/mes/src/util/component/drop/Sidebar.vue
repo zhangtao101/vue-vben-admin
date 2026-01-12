@@ -17,7 +17,7 @@ function queryNode() {
       nodes.value.push({
         ...item,
         data: {
-          type: item.value,
+          type: `${item.value}`,
           label: item.label,
           toolbarPosition: Position.Top,
         },

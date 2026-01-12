@@ -24,6 +24,7 @@ function delNode() {
 }
 function update() {
   emit('update', {
+    elId: props.id,
     id: props.data.functionId,
     functionTypeName: props.data.functionTypeName,
   });

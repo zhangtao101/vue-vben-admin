@@ -37,6 +37,7 @@ import {
   productPackingStart,
   queryPrintTemplateDetails,
 } from '#/api';
+import { createDmImage } from '#/util';
 /**
  * CTU纸箱拣货组件
  * 用于制造执行系统中的CTU(Carton Transfer Unit)纸箱拣货作业管理
@@ -397,6 +398,7 @@ function print() {
       hiprintTemplate.print(
         {
           qrcode: queryParams.value.packingCode,
+          dmCode: createDmImage(queryParams.value.packingCode),
         },
         { leftOffset: -1, topOffset: -1 },
       );

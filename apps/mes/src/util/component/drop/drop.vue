@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { nextTick, ref } from 'vue';
 
+import { $t } from '@vben/locales';
+
 import { Panel, useVueFlow, VueFlow } from '@vue-flow/core';
 import { MiniMap } from '@vue-flow/minimap';
+import { message } from 'ant-design-vue';
 
-import { bindStepQuery } from '#/api';
 import ToolbarNode from '#/util/component/nodes/ToolbarNode.vue';
 import OperationSettings from '#/util/component/workstepRecipeManagementMatch/operationSettings.vue';
 import { useLayout } from '#/util/useLayout';
@@ -14,7 +16,7 @@ import Sidebar from './Sidebar.vue';
 import useDragAndDrop from './useDnD';
 
 const props = defineProps(['formula', 'matching']);
-const { addEdges, fitView, removeNodes } = useVueFlow();
+const { addEdges, fitView, removeNodes, findNode } = useVueFlow();
 const { layout } = useLayout();
 
 const { onDragOver, onDrop, onDragLeave, isDragOver } = useDragAndDrop();
@@ -49,7 +51,7 @@ function onConnect(params: any) {
 async function layoutGraph(direction: any) {
   nodes.value = layout(nodes.value, edges.value, direction);
 
-  nextTick(() => {
+  await nextTick(() => {
     fitView();
   });
 }
@@ -127,16 +129,28 @@ const operationSettingRef = ref();
  * @param row 工步数据
  */
 function openOperationSettings(row: any): void {
-  bindStepQuery({
-    equipCode: props.formula.equipCode,
-    processCode: props.formula.processCode,
-    functionType: props.formula.opType,
-    workstationCode: props.formula.workstationCode,
-    equipTypeCode: props.formula.formulaCode,
-    opType: props.matching.opType,
-  }).then((data) => {
-    operationSettingRef.value.open(props.formula, props.matching, row, data);
-  });
+  const arr: any = [];
+  // 1. 首先找到所有直接后续节点（即该节点作为source的边所指向的target节点）
+  const directSuccessorIds = edges.value
+    .filter((edge: any) => edge.source === row.elId)
+    .map((edge: any) => edge.target);
+
+  // 2. 通过节点ID找到对应的节点对象
+  for (const nodeId of directSuccessorIds) {
+    const node: any = findNode(nodeId);
+    if (node) {
+      if (node.data.type === 'end') {
+        node.functionTypeName = '结束';
+        node.data.functionTypeName = '结束';
+      }
+      if (!node.functionId) {
+        message.warning($t('当前节点的后续节点暂未保存, 请先保存后再继续操作'));
+        return;
+      }
+      arr.push(node);
+    }
+  }
+  operationSettingRef.value.open(props.formula, props.matching, row, arr);
 }
 
 // endregion
@@ -150,7 +164,7 @@ defineExpose({
     };
   },
   setData: (routes: any, details: any) => {
-    const arr = details.filter((edge: any) => {
+    nodes.value = details.filter((edge: any) => {
       const item = {
         ...edge,
       };
@@ -158,7 +172,6 @@ defineExpose({
       item.data.functionTypeName = item.functionTypeName;
       return item;
     });
-    nodes.value = arr;
     edges.value = routes;
   },
   cleanAndCheckGraph,
