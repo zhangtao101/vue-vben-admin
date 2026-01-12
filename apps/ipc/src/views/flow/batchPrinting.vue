@@ -15,7 +15,7 @@ import {
 } from 'ant-design-vue';
 
 import { batchCodeCreate, queryPrintTemplateDetails } from '#/api';
-import {createDmImage} from "#/util";
+import { createDmImage } from '#/util';
 
 /**
  * 面数信息
@@ -57,7 +57,7 @@ function print() {
           qrcode,
           dmCode: createDmImage(qrcode),
         });
-      })
+      });
       hiprintTemplate.print(arr, { leftOffset: -1, topOffset: -1 });
       printMessage.value = {
         type: 1,

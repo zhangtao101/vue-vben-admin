@@ -6,7 +6,6 @@ import { hiprint } from 'vue-plugin-hiprint';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
-import bwipjs from 'bwip-js'
 
 import {
   Button,
@@ -38,7 +37,7 @@ import {
   productPackingStart,
   queryPrintTemplateDetails,
 } from '#/api';
-import {createDmImage} from "#/util";
+import { createDmImage } from '#/util';
 /**
  * CTU纸箱拣货组件
  * 用于制造执行系统中的CTU(Carton Transfer Unit)纸箱拣货作业管理
