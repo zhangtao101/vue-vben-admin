@@ -761,7 +761,7 @@ defineExpose({
               <Select
                 v-model:value="editItem.stepFunctionId"
                 :options="stepList"
-                :disabled="!isEdit && ( stepList.length <= 1 )"
+                :disabled="!isEdit && stepList.length <= 1"
               />
             </FormItem>
           </Col>
