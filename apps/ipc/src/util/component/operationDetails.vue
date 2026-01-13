@@ -59,7 +59,7 @@ const addGridOptions: VxeGridProps<any> = {
     { field: 'materialName', title: '物料名称', minWidth: 150 }, // 物料的描述性名称
     { field: 'materialDescriptionId', title: '物料特征', minWidth: 150 }, // 物料的特征标识
     { field: 'number', title: '数量', minWidth: 150 }, // 物料数量
-    { field: 'stockNumberNumber', title: '已入数量', minWidth: 150 }, // 物料数量
+    { field: 'stockNumber', title: '已入数量', minWidth: 150 }, // 物料数量
     { field: 'unit', title: '单位', minWidth: 150 }, // 物料计量单位
     {
       field: 'detailState',
