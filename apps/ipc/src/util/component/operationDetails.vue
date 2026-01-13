@@ -171,7 +171,7 @@ let timeoutId: any;
  */
 function queryDetails(row: any) {
   getDetailByCodeEnout({ formCode: row.formCode }).then((res) => {
-    gridApi.grid.clearData(); // 先清空数据
+    gridApi.grid.loadData([]); // 先清空数据
     gridApi.grid.insert(res); // 将查询结果插入表格
 
     if (visible.value) {
