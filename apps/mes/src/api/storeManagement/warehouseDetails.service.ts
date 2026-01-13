@@ -9,7 +9,9 @@ import { requestClient } from '#/api/request';
  */
 export function queryScadaWarehouseStockByLocation(query: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_WMS}/wms/materialRecord/getRecordByLocation?${qs.stringify(query)}`,
+    `${import.meta.env.VITE_GLOB_MES_WMS}/wms/materialRecord/getRecordByLocation?${qs.stringify(
+      query,
+    )}`,
   );
 }
 
@@ -59,6 +61,8 @@ export function exportScadaWarehouseStockByMaterial(query: any) {
  */
 export function exportScadaWarehouseStockByLabel(query: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_WMS}/wms/materialRecord/exportMaterialDetailed?${qs.stringify(query)}`,
+    `${import.meta.env.VITE_GLOB_MES_WMS}/wms/materialRecord/exportMaterialDetailed?${qs.stringify(
+      query,
+    )}`,
   );
 }

@@ -32,8 +32,8 @@ import {
   deleteWareArea,
   insertWareArea,
   queryScadaLogicalWarehouseTree,
-  queryScadaPhysicalWarehouseTree, queryScadaWarehouseStockByLocation,
-  queryWareArea,
+  queryScadaPhysicalWarehouseTree,
+  queryScadaWarehouseStockByLocation,
   queryWareAreaById,
   updateWareArea,
 } from '#/api';
