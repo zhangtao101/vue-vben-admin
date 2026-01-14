@@ -92,7 +92,7 @@ const gridOptions: VxeGridProps<any> = {
   },
   toolbarConfig: {
     custom: true,
-    refresh: true,
+    refresh: false,
     zoom: true,
   },
 };
