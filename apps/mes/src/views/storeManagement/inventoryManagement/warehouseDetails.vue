@@ -237,16 +237,16 @@ function queryBottomData({ page, pageSize }: any) {
 // region 仓库树查询
 
 // 仓库类型选项
-const types = [
-  {
-    label: $t('storeManagement.inventoryManagement.physicalWarehouse'),
-    value: 2,
-  },
-  {
-    label: $t('storeManagement.inventoryManagement.logicalRepositories'),
-    value: 1,
-  },
-];
+// const types = [
+//   {
+//     label: $t('storeManagement.inventoryManagement.physicalWarehouse'),
+//     value: 2,
+//   },
+//   {
+//     label: $t('storeManagement.inventoryManagement.logicalRepositories'),
+//     value: 1,
+//   },
+// ];
 
 // 仓库树相关
 const repositoryList = ref<any>([]);
@@ -334,7 +334,7 @@ onMounted(() => {
         </FormItem>
 
         <!-- 仓库类型 -->
-        <FormItem
+        <!--        <FormItem
           :label="$t('storeManagement.inventoryManagement.warehouseType')"
           style="margin-bottom: 1em"
         >
@@ -343,7 +343,7 @@ onMounted(() => {
             :options="types"
             @change="queryPhysicalWarehouse"
           />
-        </FormItem>
+        </FormItem>-->
 
         <!-- 搜索按钮 -->
         <FormItem style="margin-bottom: 1em">
