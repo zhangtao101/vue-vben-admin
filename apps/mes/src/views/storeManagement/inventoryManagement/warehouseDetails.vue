@@ -158,7 +158,7 @@ const gridBottomOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'logicWarehouseName', title: '所属仓库', minWidth: 100 },
+    { field: 'storageCode', title: '所在储位', minWidth: 100 },
     { field: 'wareHouse', title: '所在仓库', minWidth: 100 },
     { field: 'wareArea', title: '所在库区', minWidth: 120 },
     { field: 'wareLocation', title: '所在库位', minWidth: 80 },
