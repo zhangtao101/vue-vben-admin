@@ -8,58 +8,74 @@ import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-// eslint-disable-next-line n/no-extraneous-import
-import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
+  Checkbox,
   Col,
-  Drawer,
   Form,
   FormItem,
   Input,
-  message,
-  Modal,
   RadioGroup,
+  RangePicker,
   Row,
-  Space,
-  Tooltip,
   Tree,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  deleteWareArea,
-  insertWareArea,
   queryScadaLogicalWarehouseTree,
   queryScadaPhysicalWarehouseTree,
   queryScadaWarehouseStockByLocation,
-  queryWareAreaById,
-  updateWareArea,
+  queryScadaWarehouseStockDetail,
 } from '#/api';
 import { queryAuth } from '#/util';
 
-// region 表格
+// region 上方表格（库存汇总）
 
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'wareAreaCode', title: '库区编号', minWidth: 80 },
-    { field: 'wareAreaName', title: '库区名称', minWidth: 80 },
-    { field: 'warehouseName', title: '物理仓库', minWidth: 80 },
-    { field: 'remark', title: '备注', minWidth: 80 },
     {
-      title: '操作',
-      minWidth: 150,
-      fixed: 'right',
-      slots: {
-        default: 'action',
-      },
+      field: 'isQualityTest',
+      title: '质检',
+      minWidth: 50,
+      slots: { default: 'status' },
     },
+    {
+      field: 'isContract',
+      title: '合同',
+      minWidth: 50,
+      slots: { default: 'status' },
+    },
+    {
+      field: 'isHalf',
+      title: '半成品',
+      minWidth: 80,
+      slots: { default: 'status' },
+    },
+    {
+      field: 'isZeroStock',
+      title: '零库存',
+      minWidth: 80,
+      slots: { default: 'status' },
+    },
+    { field: 'materialTypeCode', title: '材料类别', minWidth: 80 },
+    { field: 'materialCode', title: '材料编号', minWidth: 80 },
+    { field: 'materialDrawingCode', title: '材料图号', minWidth: 80 },
+    { field: 'materialName', title: '材料名称', minWidth: 200 },
+    { field: 'unit', title: '单位', minWidth: 80 },
+    { field: 'stockQuality', title: '库存数量', minWidth: 80 },
+    { field: 'minPackNumber', title: '最小包装数', minWidth: 100 },
+    { field: 'safeLevel', title: '安全量', minWidth: 80 },
   ],
-  height: 500,
+  rowConfig: {
+    isCurrent: true,
+    isHover: true,
+  },
+  height: 300,
   stripe: true,
   sortConfig: {
     multiple: true,
@@ -76,17 +92,20 @@ const gridOptions: VxeGridProps<any> = {
   },
   toolbarConfig: {
     custom: true,
-    // import: true,
-    // export: true,
     refresh: true,
     zoom: true,
   },
 };
 
+// 当前选中的行数据
+const selectedRow = ref<any>({});
+
+// 表格行切换事件
 const gridEvents: any = {
-  /* cellClick: ({ row }) => {
-    message.info(`cell-click: ${row.name}`);
-  },*/
+  currentRowChange: ({ row }: any) => {
+    selectedRow.value = { ...row };
+    gridBottomApi.reload();
+  },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
@@ -97,33 +116,33 @@ const queryParams = ref<any>({
 });
 
 /**
- * queryData - 负责根据当前的查询参数、分页信息和日期范围，从后端服务查询数据。
- * 该函数会更新表格的加载状态，并在查询完成后更新数据列表和总条数。
+ * 查询上方表格数据
+ * @param page - 当前页码
+ * @param pageSize - 每页条数
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
-    // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数。
     const params = {
-      // 展开 queryParams.value 对象，包含所有查询参数。
       ...queryParams.value,
-      // 设置当前页码。
       pageNum: page,
-      // 设置每页显示的数据条数。
       pageSize,
     };
 
+    // 处理日期范围
+    if (params.searchTime && params.searchTime.length === 2) {
+      params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+      params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+      params.searchTime = undefined;
+    }
+
+    // 添加选中的树节点参数
     if (selectedNode.value) {
       Object.assign(params, selectedNode.value);
     }
 
-    // 调用 queryScadaWarehouseStockByLocation 函数查询数据。
     queryScadaWarehouseStockByLocation(params)
       .then(({ total, results }) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-        resolve({
-          total,
-          items: results,
-        });
+        resolve({ total, items: results });
       })
       .catch((error) => {
         reject(error);
@@ -133,95 +152,91 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
-// region 新增/编辑 抽屉
+// region 下方表格（库存明细）
 
-// 编辑form表单
-const editForm = ref();
-// 编辑抽屉是否显示
-const showEditDrawer = ref(false);
-// 编辑的对象
-const editItem = ref<any>({});
-// form表单规则验证
-const editRules = ref<any>({
-  warehouseName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+const gridBottomOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'logicWarehouseName', title: '所属仓库', minWidth: 100 },
+    { field: 'wareHouse', title: '所在仓库', minWidth: 100 },
+    { field: 'wareArea', title: '所在库区', minWidth: 120 },
+    { field: 'wareLocation', title: '所在库位', minWidth: 80 },
+    { field: 'labelCode', title: '条码编号', minWidth: 150 },
+    { field: 'checkResult', title: '质检结论', minWidth: 100 },
+    { field: 'stockQuality', title: '库存数', minWidth: 100 },
+    { field: 'manufacturerName', title: '供应厂商', minWidth: 100 },
+    { field: 'validDate', title: '有效期', minWidth: 90 },
+    { field: 'batchCode', title: '供应商批次号', minWidth: 120 },
+    { field: 'produceDate', title: '制造日期', minWidth: 90 },
+    { field: 'contractCode', title: '采购合同', minWidth: 100 },
   ],
+  height: 300,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }: any) => {
+        return await queryBottomData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    refresh: true,
+    zoom: true,
+  },
+};
+
+const [GridBottom, gridBottomApi] = useVbenVxeGrid({
+  gridOptions: gridBottomOptions,
 });
 
 /**
- * 显示编辑抽屉
- * @param item
+ * 查询下方表格数据（基于上方表格选中的行）
+ * @param page - 当前页码
+ * @param pageSize - 每页条数
  */
-function showEditDrawerFn(item?: any) {
-  if (item) {
-    queryWareAreaById(item.id).then((data) => {
-      editItem.value = {
-        ...data,
-      };
-    });
-  } else {
-    editItem.value = {
-      isUse: 0,
-      isTransit: 0,
-    };
-  }
-  showEditDrawer.value = true;
-}
-/**
- * 关闭编辑抽屉
- */
-function closeEditDrawer() {
-  editItem.value = {};
-  showEditDrawer.value = false;
-}
+function queryBottomData({ page, pageSize }: any) {
+  return new Promise((resolve, reject) => {
+    // 未选中行时返回空数据
+    if (!selectedRow.value?.materialCode) {
+      resolve({ total: 0, items: [] });
+      return;
+    }
 
-function submit() {
-  editForm.value.validate().then(() => {
     const params = {
-      ...editItem.value,
+      materialCode: selectedRow.value.materialCode,
+      batchCode: queryParams.value.batchCode,
+      pageNum: page,
+      pageSize,
     };
-    const ob = params.id ? updateWareArea(params) : insertWareArea(params);
-    ob.then(() => {
-      closeEditDrawer();
-      message.success($t('common.successfulOperation'));
-      gridApi.reload();
-    });
-  });
-}
 
-// endregion
+    if (selectedNode.value) {
+      Object.assign(params, selectedNode.value);
+    }
 
-// region 删除
-
-/**
- * 处理工单删除操作
- * @param row - 当前要删除的工单行数据
- */
-function delPhysicalWarehouse(row: any) {
-  // 弹出确认对话框
-  Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
-    okType: 'danger',
-    // 取消操作回调
-    onCancel() {
-      message.warning('已取消删除!');
-    },
-    // 确认操作回调
-    onOk() {
-      // 调用删除接口
-      deleteWareArea(row.id).then(() => {
-        message.success($t('common.successfulOperation'));
-        // 刷新表格数据
-        gridApi.reload();
+    queryScadaWarehouseStockDetail(params)
+      .then(({ total, results }) => {
+        resolve({ total, items: results });
+      })
+      .catch((error) => {
+        reject(error);
       });
-    },
-    title: '是否确认删除?',
   });
 }
+
 // endregion
 
-// region 物理仓库/ 逻辑仓库查询查询
+// region 仓库树查询
+
+// 仓库类型选项
 const types = [
   {
     label: $t('storeManagement.inventoryManagement.physicalWarehouse'),
@@ -232,14 +247,14 @@ const types = [
     value: 1,
   },
 ];
-// 仓库列表
+
+// 仓库树相关
 const repositoryList = ref<any>([]);
-// 选中的key
 const selectedKeys = ref<any>([]);
-// 选中的节点信息
 const selectedNode = ref<any>({});
+
 /**
- * 查询所有物理仓库
+ * 查询仓库树数据
  */
 function queryPhysicalWarehouse() {
   const ob =
@@ -252,32 +267,25 @@ function queryPhysicalWarehouse() {
 }
 
 /**
- * 选择变更
- * @param _key 选中的key
- * @param type 选中节点的type
- * @param id 选中节点的id
+ * 树节点选择变更
+ * @param _key - 选中的key
+ * @param info - 节点信息
  */
 function selectChange(_key: any, { node: { type, id }, selected }: any) {
-  selectedNode.value = selected
-    ? {
-        type,
-        id,
-      }
-    : {};
-  if (selected) {
-    gridApi.reload();
-  }
+  selectedNode.value = selected ? { type, id } : {};
+  selectedRow.value = {};
+  gridApi.reload();
+  gridBottomApi.reload();
 }
 
 // endregion
 
 // region 初始化
-// 路由信息
+
 const route = useRoute();
-// 当前页面按钮权限列表
 const author = ref<string[]>([]);
+
 onMounted(() => {
-  // 查询权限
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
@@ -289,26 +297,43 @@ onMounted(() => {
 
 <template>
   <Page>
-    <!-- region 搜索 -->
+    <!-- 搜索表单 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 仓库编码 -->
+        <!-- 材料编号 -->
         <FormItem
-          :label="$t('storeManagement.storeBlock.wareAreaCode')"
+          :label="$t('storeManagement.inventoryManagement.materialNumber')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.code" />
+          <Input v-model:value="queryParams.materialCode" />
         </FormItem>
-
-        <!-- 仓库名称 -->
+        <!-- 材料名称 -->
         <FormItem
-          :label="$t('storeManagement.storeBlock.wareAreaName')"
+          :label="$t('storeManagement.inventoryManagement.materialName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.name" />
+          <Input v-model:value="queryParams.materialName" />
+        </FormItem>
+        <!-- 供应商批次号 -->
+        <FormItem
+          :label="$t('storeManagement.inventoryManagement.vendorLotNumber')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.batchCode" />
+        </FormItem>
+        <!-- 期间库存时间分区 -->
+        <FormItem
+          :label="
+            $t(
+              'storeManagement.inventoryManagement.periodInventoryTimePartition',
+            )
+          "
+          style="margin-bottom: 1em"
+        >
+          <RangePicker v-model:value="queryParams.searchTime" />
         </FormItem>
 
-        <!-- 物理仓库 -->
+        <!-- 仓库类型 -->
         <FormItem
           :label="$t('storeManagement.inventoryManagement.warehouseType')"
           style="margin-bottom: 1em"
@@ -320,13 +345,16 @@ onMounted(() => {
           />
         </FormItem>
 
+        <!-- 搜索按钮 -->
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
             @click="
               () => {
+                selectedRow = {};
                 gridApi.reload();
+                gridBottomApi.reload();
               }
             "
           >
@@ -335,8 +363,10 @@ onMounted(() => {
         </FormItem>
       </Form>
     </Card>
-    <!-- endregion -->
+
+    <!-- 主内容区域 -->
     <Row :gutter="24">
+      <!-- 左侧仓库树 -->
       <Col :span="6">
         <Card class="mb-8">
           <Tree
@@ -347,132 +377,27 @@ onMounted(() => {
           />
         </Card>
       </Col>
+
+      <!-- 右侧表格区域 -->
       <Col :span="18">
+        <!-- 上方库存汇总表格 -->
         <Card class="mb-8">
           <Grid>
-            <template #toolbar-tools>
-              <Button type="primary" @click="showEditDrawerFn()">
-                {{ $t('common.add') }}
-              </Button>
-            </template>
-            <template #isUse="{ row }">
-              {{
-                row.isUse === 1 ? $t('status.enable') : $t('status.forbidden')
-              }}
-            </template>
-            <template #action="{ row }">
-              <!-- 编辑 -->
-              <Tooltip>
-                <template #title>
-                  {{ $t('common.edit') }}
-                </template>
-                <Button type="link" @click="showEditDrawerFn(row)" class="px-1">
-                  <Icon
-                    icon="mdi:edit"
-                    class="inline-block align-middle text-2xl"
-                  />
-                </Button>
-              </Tooltip>
-
-              <!-- 删除 -->
-              <Tooltip>
-                <template #title>
-                  {{ $t('common.delete') }}
-                </template>
-                <Button
-                  type="link"
-                  @click="delPhysicalWarehouse(row)"
-                  danger
-                  class="px-1"
-                >
-                  <Icon
-                    icon="mdi:delete-forever-outline"
-                    class="inline-block align-middle text-2xl"
-                  />
-                </Button>
-              </Tooltip>
+            <template #status="{ row, column }">
+              <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
           </Grid>
         </Card>
+
+        <!-- 下方库存明细表格 -->
+        <Card class="mb-8">
+          <GridBottom />
+        </Card>
       </Col>
     </Row>
-
-    <!-- region 新增/编辑 抽屉 -->
-    <Drawer
-      v-model:open="showEditDrawer"
-      :footer-style="{ textAlign: 'right' }"
-      :width="600"
-      placement="right"
-      :title="$t('common.edit')"
-      @close="closeEditDrawer()"
-      class="z-auto"
-    >
-      <Form
-        ref="editForm"
-        :model="editItem"
-        :rules="editRules"
-        :label-col="{ span: 6 }"
-        :wrapper-col="{ span: 18 }"
-      >
-        <!-- 库区编号 -->
-        <FormItem
-          :label="$t('storeManagement.storeBlock.wareAreaCode')"
-          name="wareAreaCode"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="editItem.wareAreaCode" :disabled="true" />
-        </FormItem>
-        <!-- 库区名称 -->
-        <FormItem
-          :label="$t('storeManagement.storeBlock.wareAreaName')"
-          name="wareAreaName"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="editItem.wareAreaName" />
-        </FormItem>
-        <!-- 物理仓库 -->
-        <FormItem
-          :label="$t('storeManagement.storeBlock.physicalWarehouse')"
-          name="warehouseId"
-          style="margin-bottom: 1em"
-        >
-          <!--          <Select-->
-          <!--            v-model:value="editItem.warehouseId"-->
-          <!--            :options="physicalWarehouse"-->
-          <!--          />-->
-        </FormItem>
-        <!-- 备注 -->
-        <FormItem
-          :label="$t('storeManagement.storeManage.storeRemark')"
-          name="remark"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="editItem.remark" />
-        </FormItem>
-      </Form>
-
-      <template #footer>
-        <Space>
-          <!-- 取消 -->
-          <Button @click="closeEditDrawer">
-            {{ $t('common.cancel') }}
-          </Button>
-          <!-- 确认 -->
-          <Button type="primary" @click="submit">
-            {{ $t('common.confirm') }}
-          </Button>
-        </Space>
-      </template>
-    </Drawer>
-    <!-- endregion -->
   </Page>
 </template>
 
 <style scoped lang="scss">
-.test {
-  label {
-    display: inline-block;
-    margin: 1em 0;
-  }
-}
+/* 暂无自定义样式 */
 </style>

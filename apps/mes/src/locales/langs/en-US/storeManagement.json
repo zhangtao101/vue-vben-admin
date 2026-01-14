@@ -35,5 +35,14 @@
     "materialFeatureId": "Material Feature ID",
     "shifts": "Shifts",
     "batch": "Batch Number"
+  },
+  "inventoryManagement": {
+    "materialNumber": "Material Number",
+    "materialName": "Material Name",
+    "vendorLotNumber": "Vendor Lot Number",
+    "periodInventoryTimePartition": "Period Inventory Time Partition",
+    "warehouseType": "Warehouse Type",
+    "logicalRepositories": "Logical Repositories",
+    "physicalWarehouse": "Physical Warehouse"
   }
 }
