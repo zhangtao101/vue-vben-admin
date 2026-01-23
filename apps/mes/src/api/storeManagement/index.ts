@@ -1,3 +1,4 @@
+export * from './batchLock.service';
 export * from './materialManagement';
 export * from './physicalStore.service';
 export * from './storeBlock.service';
