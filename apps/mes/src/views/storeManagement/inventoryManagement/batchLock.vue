@@ -8,10 +8,19 @@ import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import {Button, Card, Form, FormItem, Input, message, Modal, Select, Space} from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Form,
+  FormItem,
+  Input,
+  message,
+  Modal,
+  Space,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {materialRecordBatchLock, materialRecordListBatchLock} from '#/api';
+import { materialRecordBatchLock, materialRecordListBatchLock } from '#/api';
 import { queryAuth } from '#/util';
 
 // region 表格
