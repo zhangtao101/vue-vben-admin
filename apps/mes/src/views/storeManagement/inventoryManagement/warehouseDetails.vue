@@ -320,6 +320,13 @@ onMounted(() => {
         >
           <Input v-model:value="queryParams.batchCode" />
         </FormItem>
+        <!-- 单号 -->
+        <FormItem
+          :label="$t('storeManagement.inventoryManagement.number')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.worksheetCode" />
+        </FormItem>
         <!-- 期间库存时间分区 -->
         <FormItem
           :label="

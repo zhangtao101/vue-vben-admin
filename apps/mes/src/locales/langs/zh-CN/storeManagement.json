@@ -43,6 +43,17 @@
     "periodInventoryTimePartition": "期间库存时间分区",
     "warehouseType": "仓库类型",
     "logicalRepositories": "逻辑仓库",
-    "physicalWarehouse": "物理仓库"
+    "physicalWarehouse": "物理仓库",
+    "number": "单号"
+  },
+  "batchLock": {
+    "batch": "批次",
+    "workOrderNumber": "工单号",
+    "warehouseLocation": "库位",
+    "reservoirArea": "库区",
+    "partNumber": "料号",
+    "lock": "锁定",
+    "unlock": "解锁",
+    "tag": "标记"
   }
 }

@@ -134,6 +134,16 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.ioBillOperation'),
         },
       },
+      {
+        name: 'errorLog',
+        path: 'errorLog',
+        component: () => import('#/views/flow/errorLog.vue'),
+        meta: {
+          icon: 'mdi:file-document-error-outline',
+          ignoreAccess: true,
+          title: $t('menu.errorLog'),
+        },
+      },
     ],
   },
   /* {
