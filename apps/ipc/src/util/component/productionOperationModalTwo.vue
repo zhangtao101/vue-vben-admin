@@ -20,7 +20,6 @@ import {
 import { inReportByScanCode } from '#/api';
 import OperationalMatters from '#/util/component/operationalMatters.vue';
 import StepExecution from '#/util/component/stepExecution.vue';
-import ExitReport from "#/util/component/steps/exitReport.vue";
 // endregion
 
 const props = defineProps(['details']);

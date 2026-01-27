@@ -239,13 +239,13 @@ function queryData() {
  * 该函数用于调用 outReport 接口提交报工信息，提交成功后会执行一系列后续操作，
  * 包括显示成功消息、重置详情数据、重新连接 WebSocket 以及刷新表格数据。
  */
-function submit() {
+function submit(type?: number) {
   // 调用 outReport 接口提交报工信息，将 details 数据、bindingId、functionId 和 outType 作为参数传递
   outReport({
     ...details.value,
     bindingId: props.bindingId,
     functionId: props.functionId,
-    outType: details.value.outFlag,
+    outType: type || details.value.outFlag,
   }).then(() => {
     // 若接口调用成功，显示成功消息
     message.success($t('common.successfulOperation'));
@@ -539,7 +539,7 @@ onBeforeUnmount(() => {
         <Button
           type="primary"
           class="w-full"
-          @click="submit()"
+          @click="submit(1)"
           v-if="showTypeNumber === 31 && [1, 4].includes(details.outFlag)"
         >
           {{ $t('productionOperation.outbound') }}
@@ -550,7 +550,7 @@ onBeforeUnmount(() => {
         <Button
           type="primary"
           class="w-full"
-          @click="submit()"
+          @click="submit(2)"
           v-if="showTypeNumber === 31 && [2, 4].includes(details.outFlag)"
         >
           {{ $t('productionOperation.suspendExit') }}

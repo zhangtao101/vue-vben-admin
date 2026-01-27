@@ -24,7 +24,9 @@ export function workstationGetSetRecordFlag() {
  */
 export function obtainTheListOfProcessEquipment(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getAllEquipList?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getAllEquipList?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -105,7 +107,9 @@ export function listUserUpInfo(params: any) {
  */
 export function getSheetProces(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getSheetProces?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getSheetProces?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -114,7 +118,9 @@ export function getSheetProces(params: any) {
  */
 export function getOpFunctions(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getOpFunctions?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getOpFunctions?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -123,7 +129,9 @@ export function getOpFunctions(params: any) {
  */
 export function queryOfResourceVerificationStatus(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listCheckInfo?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listCheckInfo?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -142,7 +150,9 @@ export function equipmentMonitoringQuery(params: any) {
  */
 export function equipmentCleaningInformation(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipClean?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipClean?${qs.stringify(
+      params,
+    )}`,
   );
 }
 
@@ -152,7 +162,9 @@ export function equipmentCleaningInformation(params: any) {
  */
 export function processEntryInformationQuery(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listProcessIn?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listProcessIn?${qs.stringify(
+      params,
+    )}`,
   );
 }
 
@@ -162,7 +174,9 @@ export function processEntryInformationQuery(params: any) {
  */
 export function queryOfFormulaDistributionInformation(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listParamSend?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listParamSend?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -200,7 +214,9 @@ export function materialFeedingInformationQuerySlitting(params: any) {
  */
 export function deviceClearanceInformationQuery(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipClear?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipClear?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -230,7 +246,9 @@ export function theEquipmentManuallyFinishesTheOperation(params: any) {
  */
 export function processExitInformationQuery(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listProcessOut?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listProcessOut?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -239,7 +257,9 @@ export function processExitInformationQuery(params: any) {
  */
 export function listByOutReport(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByOutReport?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByOutReport?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -259,7 +279,9 @@ export function outReport(params: any) {
  */
 export function processReportingInformationQuery(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listReport?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listReport?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -339,7 +361,9 @@ export function snCodeBindingCallBack(params: any) {
  */
 export function listByCodeScan(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByCodeScan?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByCodeScan?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -348,7 +372,9 @@ export function listByCodeScan(params: any) {
  */
 export function checkCodeBinding(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/checkCodeBinding?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/checkCodeBinding?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -357,7 +383,9 @@ export function checkCodeBinding(params: any) {
  */
 export function listEquipSend(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipSend?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipSend?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -377,7 +405,9 @@ export function sendEquip(params: any) {
  */
 export function listHCByCodeScan(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listHCByCodeScan?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listHCByCodeScan?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -386,7 +416,9 @@ export function listHCByCodeScan(params: any) {
  */
 export function listUserList(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listUserList?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listUserList?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -395,7 +427,9 @@ export function listUserList(params: any) {
  */
 export function handleMaulSncode(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/handleMaulSncode?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/handleMaulSncode?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -404,7 +438,9 @@ export function handleMaulSncode(params: any) {
  */
 export function listByInReport(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByInReport?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByInReport?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -413,7 +449,9 @@ export function listByInReport(params: any) {
  */
 export function listEquipControl(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipControl?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listEquipControl?${qs.stringify(
+      params,
+    )}`,
   );
 }
 

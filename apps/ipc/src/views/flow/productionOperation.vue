@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {onMounted, ref} from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
