@@ -143,7 +143,6 @@ const routes: RouteRecordRaw[] = [
           ignoreAccess: true,
           title: $t('menu.errorLog'),
         },
-      },
       },*/
     ],
   },

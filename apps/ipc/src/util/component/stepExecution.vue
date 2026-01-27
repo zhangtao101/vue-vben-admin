@@ -67,6 +67,11 @@ defineProps({
     default: '',
   },
 });
+
+const emit = defineEmits(['complete']);
+function complete() {
+  emit('complete');
+}
 </script>
 
 <template>
@@ -321,6 +326,7 @@ defineProps({
       :binding-id="bindingId"
       :function-id="step.id"
       :show-type-number="step.type"
+      @complete="complete"
       v-if="step.type === 31"
     />
     <!-- 扫码作业--- 成品、半成品老练检：根据工步类型为 32 时，渲染扫码作业组件，并传递相关参数 -->
@@ -401,6 +407,7 @@ defineProps({
       :binding-id="bindingId"
       :function-id="step.id"
       :show-type-number="step.type"
+      @complete="complete"
       v-if="step.type === 38"
     />
     <!-- 单工位扫码 - 和城：根据工步类型为 40 时，渲染工序报工组件，并传递相关参数 -->

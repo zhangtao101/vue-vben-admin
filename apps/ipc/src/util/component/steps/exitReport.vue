@@ -54,6 +54,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['complete']);
+
 /**
  * 获取标签的class
  */
@@ -272,6 +274,7 @@ function submit() {
     connect();
     // 刷新表格数据
     gridApi.reload();
+    emit('complete');
   });
 }
 
@@ -528,21 +531,27 @@ onBeforeUnmount(() => {
         >
           {{ $t('common.processReporting') }}
         </Button>
+      </Col>
+    </Row>
+    <Row :gutter="24">
+      <Col :span="8" offset="4">
         <!-- 完工出站 -->
         <Button
           type="primary"
           class="w-full"
           @click="submit()"
-          v-if="showTypeNumber === 31 && details.outFlag === 1"
+          v-if="showTypeNumber === 31 && [1, 4].includes(details.outFlag)"
         >
           {{ $t('productionOperation.outbound') }}
         </Button>
+      </Col>
+      <Col :span="8">
         <!-- 暂停出站 -->
         <Button
           type="primary"
           class="w-full"
           @click="submit()"
-          v-if="showTypeNumber === 31 && details.outFlag === 2"
+          v-if="showTypeNumber === 31 && [2, 4].includes(details.outFlag)"
         >
           {{ $t('productionOperation.suspendExit') }}
         </Button>

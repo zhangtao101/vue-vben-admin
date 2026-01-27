@@ -243,8 +243,17 @@ onBeforeUnmount(() => {
               'anomaly border-4': item.errorFlag === 1 && current !== index,
               // 当步骤为当前步骤时，显示蓝色边框和阴影
               'border-4 border-sky-500 shadow-xl': current === index,
+              // 当步骤为当前步骤时，显示蓝色边框和阴影
+              '!cursor-not-allowed border-0 border-gray-500':
+                item.functionType === 36,
             }"
-            @click="current = index"
+            @click="
+              () => {
+                if (item.functionType !== 36) {
+                  current = index;
+                }
+              }
+            "
           >
             <!-- 显示步骤名称 -->
             <div class="font-black">{{ item.title }}</div>

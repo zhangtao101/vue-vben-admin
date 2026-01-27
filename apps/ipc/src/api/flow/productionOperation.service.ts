@@ -11,6 +11,14 @@ export function workstationListAcquisition() {
   );
 }
 /**
+ * 获取对应的作业模式
+ */
+export function workstationGetSetRecordFlag() {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getSetRecordFlag`,
+  );
+}
+/**
  * 获取工序设备列表
  * @param params 参数
  */
@@ -35,6 +43,17 @@ export function getUserList() {
 export function userUp(params: any) {
   return requestClient.post(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/human/patch/userUp`,
+    params,
+  );
+}
+
+/**
+ * 扫码工序进站
+ * @param params 参数
+ */
+export function inReportByScanCode(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/inReportByScanCode`,
     params,
   );
 }
