@@ -15,5 +15,7 @@
   "barcodeInspection": "条码排查",
   "ctuOutboundPicking": "CTU出仓拣选",
   "ctuCartonPicking": "CTU箱拣选",
-  "ioBillOperation": "出入库单据作业"
+  "ioBillOperation": "出入库单据作业",
+  "batchPrinting": "批量打印",
+  "errorLog": "错误日志"
 }

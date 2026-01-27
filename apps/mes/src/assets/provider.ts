@@ -819,6 +819,14 @@ export const provider = function () {
             textType: 'qrcode',
           },
         },
+        {
+          tid: 'providerModule1.dmCode',
+          title: 'DM码',
+          type: 'image',
+          options: {
+            field: 'dmCode',
+          },
+        },
       ]),
     ]);
   };

@@ -22,6 +22,7 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   detailInTaskEnout,
+  detailOutTaskEnout,
   formFinishEnout,
   getDetailByCodeEnout,
   getDetailInAreaCodeEnout,
@@ -58,6 +59,7 @@ const addGridOptions: VxeGridProps<any> = {
     { field: 'materialName', title: '物料名称', minWidth: 150 }, // 物料的描述性名称
     { field: 'materialDescriptionId', title: '物料特征', minWidth: 150 }, // 物料的特征标识
     { field: 'number', title: '数量', minWidth: 150 }, // 物料数量
+    { field: 'stockNumber', title: '单据完成数量', minWidth: 150 }, // 物料数量
     { field: 'unit', title: '单位', minWidth: 150 }, // 物料计量单位
     {
       field: 'detailState',
@@ -161,6 +163,7 @@ function openDrawer(row: any, showOptions = false) {
   queryDetails(row); // 查询物料明细
 }
 
+let timeoutId: any;
 /**
  * 查询单据的物料明细信息
  * 根据单据编码获取对应的物料明细列表
@@ -168,7 +171,15 @@ function openDrawer(row: any, showOptions = false) {
  */
 function queryDetails(row: any) {
   getDetailByCodeEnout({ formCode: row.formCode }).then((res) => {
+    gridApi.grid.loadData([]); // 先清空数据
     gridApi.grid.insert(res); // 将查询结果插入表格
+
+    if (visible.value) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        queryDetails(row);
+      }, 1000 * 30);
+    }
   });
 }
 
@@ -288,6 +299,22 @@ function inSubmit() {
     closeTheAssignment(); // 结束作业操作
   });
 }
+/**
+ * 出库操作提交
+ * 构建入库操作参数并调用接口提交
+ */
+function outSubmit() {
+  // 构建入库操作参数
+  const params = {
+    ...jobData.value, // 作业数据（箱码、储位等）
+    formCode: details.value.formCode, // 单据编码
+    opFuncationType: 2, // 操作类型：2表示入库
+  };
+  detailOutTaskEnout(params).then(() => {
+    message.success($t('common.successfulOperation')); // 显示成功提示
+    closeTheAssignment(); // 结束作业操作
+  });
+}
 
 // endregion
 
@@ -350,7 +377,7 @@ defineExpose({
     :footer-style="{ textAlign: 'right' }"
     height="80%"
     placement="top"
-    :title="$t('productionOperation.personnelTitle')"
+    :title="$t('ioBillOperation.manualJobs')"
     @close="afterClose"
   >
     <!-- 单据基本信息展示区域 -->
@@ -534,7 +561,7 @@ defineExpose({
               <!-- 操作按钮区域 -->
               <FormItem :wrapper-col="{ span: 24 }">
                 <!-- 确认按钮，点击后提交出库操作 -->
-                <Button type="primary" @click="inSubmit" class="my-4 w-full">
+                <Button type="primary" @click="outSubmit" class="my-4 w-full">
                   {{ $t('common.confirm') }}
                 </Button>
                 <!-- 取消按钮，点击后关闭出库操作界面 -->

@@ -20,5 +20,40 @@
     "wareLocationCode": "Ware Location Code",
     "wareLocationName": "Ware Location Name",
     "physicalWareArea": "Physical Ware Area"
+  },
+  "ioBillManagement": {
+    "ioBillCode": "IO Bill Code",
+    "ioBillType": "IO Bill Type",
+    "materialCode": "Material Code",
+    "materialName": "Material Name",
+    "time": "Bill Time",
+    "type": "Bill Type",
+    "opType": "Operation Type",
+    "bindBillCode": "Bind Bill Code",
+    "supplierName": "Supplier Name",
+    "number": "Quantity",
+    "materialFeatureId": "Material Feature ID",
+    "shifts": "Shifts",
+    "batch": "Batch Number"
+  },
+  "inventoryManagement": {
+    "materialNumber": "Material Number",
+    "materialName": "Material Name",
+    "vendorLotNumber": "Vendor Lot Number",
+    "periodInventoryTimePartition": "Period Inventory Time Partition",
+    "warehouseType": "Warehouse Type",
+    "logicalRepositories": "Logical Repositories",
+    "physicalWarehouse": "Physical Warehouse",
+    "number": "Document Number"
+  },
+  "batchLock": {
+    "batch": "Batch",
+    "workOrderNumber": "Work Order Number",
+    "warehouseLocation": "Warehouse Location",
+    "reservoirArea": "Reservoir Area",
+    "partNumber": "Part Number",
+    "lock": "Lock",
+    "unlock": "Unlock",
+    "tag": "Tag"
   }
 }

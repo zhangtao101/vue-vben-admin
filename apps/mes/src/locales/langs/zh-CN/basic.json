@@ -1,7 +1,9 @@
 {
   "productBom": {
     "productNumber": "产品编号",
-    "productName": "产品名称"
+    "productName": "产品名称",
+    "deviceNumber": "设备编号",
+    "systemName": "系统名称"
   },
   "barCodeManagement": {
     "ruleName": "规则名称",
@@ -101,7 +103,4 @@
     "correspondingOperation": "对应工序",
     "configuringDeviceResources": "配置设备资源"
   }
-
-
-
 }

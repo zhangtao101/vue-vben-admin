@@ -1,7 +1,9 @@
 {
   "productBom": {
     "productNumber": "productNumber",
-    "productName": "productName"
+    "productName": "productName",
+    "deviceNumber": "Device Number",
+    "systemName": "System Name"
   },
   "barCodeManagement": {
     "ruleName": "ruleName",

@@ -6,17 +6,21 @@ import { requestClient } from '#/api/request';
 /**
  * 分项用能占比
  */
-export async function getFXEnergy() {
+export async function getFXEnergy(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergy`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergy?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
  * 分项用能对比
  */
-export async function getFXEnergyDB() {
+export async function getFXEnergyDB(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergyDB`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergyDB?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -24,7 +28,9 @@ export async function getFXEnergyDB() {
  */
 export async function getFXEnergyQS(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergyQS?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergyQS?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -32,15 +38,19 @@ export async function getFXEnergyQS(params: any) {
  */
 export async function getFXEnergyTB(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergyTB?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getFXEnergyTB?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
  * 分项用能占比(二氧化碳排放)
  */
-export async function getCo2FXEnergy() {
+export async function getCo2FXEnergy(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2FXEnergy`,
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2FXEnergy?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -56,7 +66,9 @@ export async function getCo2FXEnergyQS() {
  */
 export async function getCo2FXEnergyDB(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2FXEnergyDB?${qs.stringify(params)}`,
+    `${
+      import.meta.env.VITE_GLOB_MES_ENERGY
+    }/energyEfficiencyAnalysis/getCo2FXEnergyDB?${qs.stringify(params)}`,
   );
 }
 /**
@@ -64,6 +76,8 @@ export async function getCo2FXEnergyDB(params: any) {
  */
 export async function getCo2FXEnergyTB(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_ENERGY}/energyEfficiencyAnalysis/getCo2FXEnergyTB?${qs.stringify(params)}`,
+    `${
+      import.meta.env.VITE_GLOB_MES_ENERGY
+    }/energyEfficiencyAnalysis/getCo2FXEnergyTB?${qs.stringify(params)}`,
   );
 }

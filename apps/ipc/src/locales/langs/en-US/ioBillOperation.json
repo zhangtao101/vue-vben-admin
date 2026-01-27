@@ -17,5 +17,6 @@
   "unit": "Unit",
   "storagePosition": "Storage Position",
   "automatedJobs": "Automated Jobs",
-  "manualJobs": "Manual Jobs"
+  "manualJobs": "Manual Jobs",
+  "numberOfFaces": "Number Of Faces"
 }
