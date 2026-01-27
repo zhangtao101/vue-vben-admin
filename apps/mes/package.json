@@ -61,6 +61,7 @@
     "ezuikit-js": "^8.2.0",
     "gsap": "^3.13.0",
     "html2canvas": "^1.4.1",
+    "jordium-gantt-vue3": "^1.8.0",
     "mpegts.js": "^1.8.0",
     "mqtt": "^5.14.1",
     "pinia": "catalog:",
