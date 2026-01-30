@@ -31,11 +31,25 @@ const numberOfFacesOptions = [
   },
 ];
 /**
+ * 打印类型
+ */
+const printType = [
+  {
+    label: '外箱码',
+    value: 1,
+  },
+  {
+    label: '货架码',
+    value: 2,
+  },
+];
+/**
  * 批量打印信息
  */
 const printMessage = ref({
   type: 1,
   number: 0,
+  labelType: 1,
 });
 
 /**
@@ -62,6 +76,7 @@ function print() {
       printMessage.value = {
         type: 1,
         number: 0,
+        labelType: 1,
       };
     } catch {
       console.error('模板解析失败');
@@ -79,6 +94,13 @@ function print() {
           <RadioGroup
             v-model:value="printMessage.type"
             :options="numberOfFacesOptions"
+          />
+        </FormItem>
+        <!-- 标签类型 -->
+        <FormItem :label="$t('ioBillOperation.labelType')">
+          <RadioGroup
+            v-model:value="printMessage.labelType"
+            :options="printType"
           />
         </FormItem>
         <!-- 数量 -->
