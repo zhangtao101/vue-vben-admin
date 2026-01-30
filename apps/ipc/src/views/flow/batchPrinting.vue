@@ -76,6 +76,7 @@ function print() {
       printMessage.value = {
         type: 1,
         number: 0,
+        labelType: 1,
       };
     } catch {
       console.error('模板解析失败');
