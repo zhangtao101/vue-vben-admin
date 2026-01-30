@@ -18,5 +18,6 @@
   "storagePosition": "Storage Position",
   "automatedJobs": "Automated Jobs",
   "manualJobs": "Manual Jobs",
-  "numberOfFaces": "Number Of Faces"
+  "numberOfFaces": "Number Of Faces",
+  "labelType": "Label Type"
 }
