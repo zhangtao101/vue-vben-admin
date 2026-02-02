@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Card, Form, FormItem, Input, message } from 'ant-design-vue';
+import { Button, Card, Form, FormItem, Input } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getStorageDetailByCode } from '#/api/flow/cartonCodeQuery.service';
@@ -85,8 +85,6 @@ function queryData() {
           reject(error); // 请求失败时抛出错误，由表格组件处理
         });
     } else {
-      // 没有箱码时返回空数据集，避免无效请求
-      message.warning('请输入箱码!');
       resolve({
         total: 0,
         items: [],
