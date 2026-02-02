@@ -85,8 +85,6 @@ function queryData() {
           reject(error); // 请求失败时抛出错误，由表格组件处理
         });
     } else {
-      // 没有箱码时返回空数据集，避免无效请求
-      message.warning('请输入箱码!');
       resolve({
         total: 0,
         items: [],
