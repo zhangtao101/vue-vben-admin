@@ -8,6 +8,8 @@ import { requestClient } from '#/api/request';
  */
 export function getStorageDetailByCode(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_WMS}//human/packing/getStorageDetailByCode?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_WMS}//human/packing/getStorageDetailByCode?${qs.stringify(
+      params,
+    )}`,
   );
 }
