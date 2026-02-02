@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, Card, Form, FormItem, Input, message } from 'ant-design-vue';
+import { Button, Card, Form, FormItem, Input } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getStorageDetailByCode } from '#/api/flow/cartonCodeQuery.service';
