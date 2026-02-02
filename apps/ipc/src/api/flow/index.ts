@@ -1,4 +1,5 @@
 export * from './barcodeInspection.service';
+export * from './cartonCodeQuery.service';
 export * from './ctuCartonPicking.service';
 export * from './dispatchHomework.service';
 export * from './errorLog.service';
