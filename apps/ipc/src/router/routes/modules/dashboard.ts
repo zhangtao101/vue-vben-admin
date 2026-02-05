@@ -143,6 +143,16 @@ const routes: RouteRecordRaw[] = [
           ignoreAccess: true,
           title: $t('menu.errorLog'),
         },
+      },
+      {
+        name: 'cartonCodeQuery',
+        path: 'cartonCodeQuery',
+        component: () => import('#/views/flow/cartonCodeQuery.vue'),
+        meta: {
+          icon: 'mdi:qrcode-scan',
+          ignoreAccess: true,
+          title: $t('menu.cartonCodeQuery'),
+        },
       },*/
     ],
   },
