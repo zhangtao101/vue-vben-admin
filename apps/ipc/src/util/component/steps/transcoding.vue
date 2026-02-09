@@ -535,8 +535,11 @@ onBeforeUnmount(() => {
           <template #renderItem="{ item }">
             <ListItem>
               <!-- 根据显示类型显示不同的条码信息 -->
-              <span v-if="[15, 30, 45].includes(showTypeNumber)" class="flex-1">
+              <span v-if="[15].includes(showTypeNumber)" class="flex-1">
                 {{ item.qrcode }} => {{ item.barcode }}
+              </span>
+              <span v-if="[30, 45].includes(showTypeNumber)" class="flex-1">
+                {{ item.qcCode }} => {{ item.barcode }}
               </span>
               <!-- 显示产品名称 -->
               <span v-if="[30, 45].includes(showTypeNumber)">

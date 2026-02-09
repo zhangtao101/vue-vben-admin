@@ -332,13 +332,20 @@ function queryData({ page, pageSize }: any) {
       ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
-    }).then(({ total, list }) => {
-      // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-      resolve({
-        total,
-        items: list,
+    })
+      .then(({ total, list }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch(() => {
+        resolve({
+          total: 0,
+          items: [],
+        });
       });
-    });
   });
 }
 
