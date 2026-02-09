@@ -532,6 +532,7 @@ const listOfMaterialNumbersSearchThrottling = debounce(
 function workorderCodeChange(_value: any, _item: any) {
   detailsState.value.materialCode = _item.materialCode;
   detailsState.value.materialName = _item.materialName;
+  detailsState.value.materialDescriptionId = '';
   queryMaterialCode(detailsState.value.materialCode);
 }
 
