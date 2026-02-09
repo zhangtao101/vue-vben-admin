@@ -314,6 +314,7 @@ const { close: websocketClose } = useWebSocket(readMessage, {
   worksheetCode: props.worksheetCode,
   bindingId: props.bindingId,
   functionId: props.functionId,
+  type: 5,
 });
 
 /**
