@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onBeforeUnmount, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
@@ -450,39 +450,59 @@ const judgementLoading = ref(false);
  * @param result
  */
 function judgement(row: any, result: -1 | 1 = -1) {
-  // 弹出确认对话框
-  Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
-    okType: 'danger',
-    onCancel() {
-      // 点击取消按钮，显示警告消息
-      message.warning('已取消操作!');
-    },
-    onOk() {
-      judgementLoading.value = true;
-      mrlCheckResult({
-        ...row,
-        checkResult: result,
-        ...props,
-      })
-        .then(() => {
-          message.success($t('common.successfulOperation'));
-          reload();
-        })
-        .finally(() => {
-          judgementLoading.value = false;
-        });
-    },
-    title: '是否确认该操作?',
-  });
+  judgementLoading.value = true;
+  mrlCheckResult({
+    ...row,
+    checkResult: result,
+    ...props,
+  })
+    .then(() => {
+      message.success($t('common.successfulOperation'));
+      reload();
+    })
+    .finally(() => {
+      judgementLoading.value = false;
+    });
 }
 
 // endregion
 
+// region 全局键盘事件监听
+
+/**
+ * 处理键盘按下事件
+ * Ctrl+Alt+1: 调用合格判定
+ * Ctrl+Alt+2: 调用不合格判定
+ */
+function handleKeyDown(event: KeyboardEvent) {
+  // 判断是否按下了 Ctrl+Alt 组合键
+  if (event.ctrlKey && event.altKey) {
+    // Ctrl+Alt+1: 合格判定
+    if (event.key === '1') {
+      event.preventDefault();
+      judgement(getTableData(), 1);
+    }
+    // Ctrl+Alt+2: 不合格判定
+    else if (event.key === '2') {
+      event.preventDefault();
+      judgement(getTableData(), -1);
+    }
+  }
+}
+
+onMounted(() => {
+  // 添加全局键盘事件监听
+  window.addEventListener('keydown', handleKeyDown);
+});
+
 onBeforeUnmount(() => {
+  // 移除全局键盘事件监听
+  window.removeEventListener('keydown', handleKeyDown);
+  // 关闭 WebSocket 连接
   websocketClose();
 });
+
+// endregion
 </script>
 
 <template>
