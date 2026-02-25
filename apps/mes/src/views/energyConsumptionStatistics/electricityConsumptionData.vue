@@ -69,7 +69,7 @@ const dataFields: string[] = ['value', 'activePower', 'reactivePower'];
 /**
  * 图表单位映射表
  */
-const chartUnits: string[] = ['kWh', 'kW', 'KW'];
+const chartUnits: string[] = ['kWh', 'kW', 'kvar'];
 
 /**
  * 存储查询到的原始数据
