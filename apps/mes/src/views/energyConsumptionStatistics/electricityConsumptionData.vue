@@ -22,6 +22,8 @@ import {
   RadioGroup,
   RangePicker,
   Select,
+  TabPane,
+  Tabs,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
@@ -36,102 +38,149 @@ import BasicTblae from '#/util/component/basicTblae.vue';
 
 // region 图表模块
 /**
- * 用电量趋势图表对象
- * 使用AntV G2图表库创建的多指标线图
+ * 当前激活的tab索引
  */
-let lineChart: any;
+const activeTab = ref('0');
 
 /**
- * 初始化或更新用电量趋势图表
- * @param {Array} chartData - 图表数据数组，包含时间、数值和类型信息
- *
- * 支持三种电量指标的多线展示：
- * - 用电量：总用电量统计
- * - 有功电量：有效功消耗电量
- * - 无功电量：无功功率消耗电量
+ * 图表对象，仅存储当前激活的图表实例
  */
-function chartInit(chartData: any) {
-  if (lineChart) {
-    // 图表已存在，更新数据
-    lineChart.options({
-      data: chartData,
-    });
-  } else {
-    // 首次创建图表
-    lineChart = new Chart({ container: 'lineChart' });
-    lineChart.options({
-      type: 'view', // 图表类型为视图容器
-      autoFit: true, // 自动适应容器大小
-      inset: 20, // 图表内边距
-      data: chartData, // 绑定图表数据
-      encode: {
-        x: 'time', // X轴映射到时间字段
-        y: 'value', // Y轴映射到电量数值
-        color: 'type', // 颜色映射到电量类型
-      },
-      scale: {
-        x: { range: [0, 1] }, // X轴范围设置
-        y: { domainMin: 0, nice: true }, // Y轴从0开始，优化刻度
-      },
-      children: [
-        {
-          type: 'line', // 折线图类型
-          encode: { shape: 'smooth' }, // 平滑曲线样式
-        },
-        {
-          type: 'point', // 数据点
-          style: { fill: 'white' }, // 白色填充
-          tooltip: false, // 禁用数据点tooltip
-        },
-      ],
-      axis: {
-        y: {
-          title: '电量（kWh）', // Y轴标题
-          grid: null, // 隐藏网格线
-          labelFormatter: (d: any) => `${d}`, // Y轴标签格式化
-        },
-      },
-    });
+let currentChart: any = null;
+
+/**
+ * 图表容器ID数组
+ */
+const chartContainerIds = [
+  'usageChart',
+  'activePowerChart',
+  'reactivePowerChart',
+];
+
+/**
+ * 图表标题映射表
+ */
+const chartTitles: string[] = ['用电量', '有功功率', '无功功率'];
+
+/**
+ * 图表数据字段映射表
+ */
+const dataFields: string[] = ['value', 'activePower', 'reactivePower'];
+
+/**
+ * 图表单位映射表
+ */
+const chartUnits: string[] = ['kWh', 'kW', 'KW'];
+
+/**
+ * 存储查询到的原始数据
+ */
+let chartDataList: any[] = [];
+
+/**
+ * 初始化当前激活tab的图表
+ * @param {number} chartIndex - 图表索引（0-用电量，1-有功功率，2-无功功率）
+ * @param {Array} chartData - 图表数据数组
+ * @param {string} title - 图表标题
+ * @param {string} dataField - 数据字段名
+ */
+function renderChart(
+  chartIndex: number,
+  chartData: any,
+  title: string,
+  dataField: string,
+) {
+  const containerId = chartContainerIds[chartIndex];
+  const unit = chartUnits[chartIndex]; // 获取对应图表的单位
+
+  // 如果已存在图表实例，先销毁
+  if (currentChart) {
+    currentChart.destroy();
+    currentChart = null;
   }
 
+  // 创建新图表
+  currentChart = new Chart({ container: containerId });
+  currentChart.options({
+    type: 'view', // 图表类型为视图容器
+    autoFit: true, // 自动适应容器大小
+    inset: 20, // 图表内边距
+    data: chartData, // 绑定图表数据
+    encode: {
+      x: 'time', // X轴映射到时间字段
+      y: dataField, // Y轴映射到对应数值字段
+    },
+    scale: {
+      x: { range: [0, 1] }, // X轴范围设置
+      y: { domainMin: 0, nice: true }, // Y轴从0开始，优化刻度
+    },
+    children: [
+      {
+        type: 'line', // 折线图类型
+        encode: { shape: 'smooth' }, // 平滑曲线样式
+      },
+      {
+        type: 'point', // 数据点
+        style: { fill: 'white' }, // 白色填充
+        tooltip: false, // 禁用数据点tooltip
+      },
+    ],
+    axis: {
+      y: {
+        title: `${title}（${unit}）`, // Y轴标题
+        grid: null, // 隐藏网格线
+        labelFormatter: (d: any) => `${d}`, // Y轴标签格式化
+      },
+      x: {
+        title: '时间',
+      },
+    },
+  });
+
   // 渲染图表到页面
-  lineChart.render();
+  currentChart.render();
+}
+
+/**
+ * Tab切换事件处理
+ * @param {string} activeKey - 当前激活的tab key
+ */
+function handleTabChange(activeKey: number | string) {
+  const chartIndex = Number.parseInt(String(activeKey), 10);
+  const field = dataFields[chartIndex] as string;
+  const title = chartTitles[chartIndex] as string;
+
+  // 从已存储的数据中重构当前图表
+  const chartData = chartDataList.map((item: any) => ({
+    time: item.time,
+    [field]: item[field],
+  }));
+
+  // 延迟渲染，等待DOM更新完成
+  setTimeout(() => {
+    renderChart(chartIndex, chartData, title, field);
+  }, 100);
 }
 
 /**
  * 查询并处理图表数据
- * 从后端获取电量数据，转换为图表所需格式并渲染
- *
- * 数据转换逻辑：
- * 1. 将原始数据转换为多系列图表数据
- * 2. 分别处理用电量、有功电量、无功电量三个指标
- * 3. 按时间顺序展示三种电量的变化趋势
+ * 从后端获取电量数据，存储数据并渲染当前激活的图表
  */
 function queryChartData() {
   getRequest().then(({ list }: any) => {
-    const chartData: any = [];
-    // 将原始数据转换为图表所需的多系列格式
-    list.forEach((item: any) => {
-      chartData.push(
-        {
-          time: item.time,
-          value: item.value,
-          type: '用电量', // 总用电量数据系列
-        },
-        {
-          time: item.time,
-          value: item.activePower,
-          type: '有功功率', // 有功功率数据系列
-        },
-        {
-          time: item.time,
-          value: item.reactivePower,
-          type: '无功功率', // 无功功率数据系列
-        },
-      );
-    });
-    // 使用转换后的数据初始化图表
-    chartInit(chartData);
+    // 存储原始数据
+    chartDataList = list;
+
+    // 只渲染当前激活tab的图表
+    const chartIndex = Number.parseInt(activeTab.value, 10);
+    const field = dataFields[chartIndex] as string;
+    const title = chartTitles[chartIndex] as string;
+
+    const chartData = list.map((item: any) => ({
+      time: item.time,
+      [field]: item[field],
+    }));
+
+    renderChart(chartIndex, chartData, title, field);
   });
 }
 // endregion
@@ -467,8 +516,18 @@ onMounted(() => {
 
     <!-- region 图表展示区域 -->
     <Card class="mb-4 mt-4">
-      <!-- 用电量趋势图表容器 -->
-      <div id="lineChart"></div>
+      <!-- 使用Tabs组件展示三个独立图表 -->
+      <Tabs v-model:active-key="activeTab" @change="handleTabChange">
+        <TabPane key="0" :tab="chartTitles[0]">
+          <div id="usageChart" style="height: 400px"></div>
+        </TabPane>
+        <TabPane key="1" :tab="chartTitles[1]">
+          <div id="activePowerChart" style="height: 400px"></div>
+        </TabPane>
+        <TabPane key="2" :tab="chartTitles[2]">
+          <div id="reactivePowerChart" style="height: 400px"></div>
+        </TabPane>
+      </Tabs>
     </Card>
     <!-- endregion -->
 
