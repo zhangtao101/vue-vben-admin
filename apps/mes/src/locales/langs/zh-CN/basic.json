@@ -102,5 +102,14 @@
     "workstationType": "工作站类型",
     "correspondingOperation": "对应工序",
     "configuringDeviceResources": "配置设备资源"
+  },
+  "electricityTimeSlotRule": {
+    "peakHours": "尖时段",
+    "fengHours": "峰时段",
+    "usualTimes": "平时段",
+    "valleyTime": "谷时段",
+    "month": "月份",
+    "type": "类型",
+    "time": "计算时间"
   }
 }
