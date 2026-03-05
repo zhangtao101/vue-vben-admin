@@ -100,7 +100,7 @@ function queryData({ page, pageSize }: any) {
     if (params.time) {
       params.startTime = params.time[0].format('YYYY-MM-DD HH:mm:ss');
       params.endTime = params.time[1].format('YYYY-MM-DD HH:mm:ss');
-      delete  params.time;
+      delete params.time;
     }
     obtainRawAcquisitionData({
       ...params, // 展开 queryParams.value 对象，包含所有查询参数。
