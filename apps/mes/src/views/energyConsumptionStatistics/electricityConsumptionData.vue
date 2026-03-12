@@ -207,7 +207,7 @@ const columns: any = [
     title: '用电量（kWh）', // 总用电量数值
     minWidth: 150,
   },
-  {
+  /* {
     field: 'activePower',
     title: '有功功率', // 有功功率
     minWidth: 150,
@@ -221,7 +221,7 @@ const columns: any = [
     field: 'powerFactor',
     title: '实际功率因数', // 电能质量指标
     minWidth: 150,
-  },
+  },*/
   {
     field: 'time',
     title: '日期', // 数据记录时间
@@ -521,12 +521,12 @@ onMounted(() => {
         <TabPane key="0" :tab="chartTitles[0]">
           <div id="usageChart" style="height: 400px"></div>
         </TabPane>
-        <TabPane key="1" :tab="chartTitles[1]">
+        <!--        <TabPane key="1" :tab="chartTitles[1]">
           <div id="activePowerChart" style="height: 400px"></div>
         </TabPane>
         <TabPane key="2" :tab="chartTitles[2]">
           <div id="reactivePowerChart" style="height: 400px"></div>
-        </TabPane>
+        </TabPane>-->
       </Tabs>
     </Card>
     <!-- endregion -->

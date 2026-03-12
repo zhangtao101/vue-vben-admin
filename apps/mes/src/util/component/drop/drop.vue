@@ -5,7 +5,7 @@ import { $t } from '@vben/locales';
 
 import { Panel, useVueFlow, VueFlow } from '@vue-flow/core';
 import { MiniMap } from '@vue-flow/minimap';
-import { message } from 'ant-design-vue';
+import { InputNumber, message, Modal } from 'ant-design-vue';
 
 import ToolbarNode from '#/util/component/nodes/ToolbarNode.vue';
 import OperationSettings from '#/util/component/workstepRecipeManagementMatch/operationSettings.vue';
@@ -15,7 +15,7 @@ import DropzoneBackground from './DropzoneBackground.vue';
 import Sidebar from './Sidebar.vue';
 import useDragAndDrop from './useDnD';
 
-const props = defineProps(['formula', 'matching']);
+const props = defineProps(['formula', 'matching', 'isRouter']);
 const { addEdges, fitView, removeNodes, findNode } = useVueFlow();
 const { layout } = useLayout();
 
@@ -123,12 +123,28 @@ function cleanAndCheckGraph(endNodeId = 'end') {
 // region 运行设置
 
 const operationSettingRef = ref();
-
+// 是否显示流转时长模态框
+const showTimeModal = ref(false);
+// 当前正在编辑的时间
+const editTime = ref(0);
+// 当前正在编辑的id
+const editId = ref();
 /**
  * 打开运行设置抽屉
  * @param row 工步数据
  */
 function openOperationSettings(row: any): void {
+  if (props.isRouter) {
+    const arr: any[] = nodes.value.filter((edge: any) => edge.id === row.elId);
+    if (arr.length > 0) {
+      showTimeModal.value = true;
+      editTime.value = arr[0].data.turnTime;
+      editId.value = row.elId;
+    } else {
+      message.error('没有找到具体的节点');
+    }
+    return;
+  }
   const arr: any = [];
   // 1. 首先找到所有直接后续节点（即该节点作为source的边所指向的target节点）
   const directSuccessorIds = edges.value
@@ -151,6 +167,19 @@ function openOperationSettings(row: any): void {
     }
   }
   operationSettingRef.value.open(props.formula, props.matching, row, arr);
+}
+
+function timeOk() {
+  const arr: any[] = nodes.value.filter(
+    (edge: any) => edge.id === editId.value,
+  );
+  if (arr.length > 0) {
+    arr[0].data.turnTime = editTime.value;
+
+    editTime.value = 0;
+    editId.value = '';
+    showTimeModal.value = false;
+  }
 }
 
 // endregion
@@ -181,7 +210,7 @@ defineExpose({
 
 <template>
   <div class="mt-2 flex h-[80%]" @drop="onDrop">
-    <Sidebar />
+    <Sidebar :is-router="isRouter" />
 
     <VueFlow
       v-model:nodes="nodes"
@@ -208,10 +237,10 @@ defineExpose({
           <button title="set horizontal layout" @click="clear()">清空</button>
         </div>
       </Panel>
-      <template #node-menu="props">
+      <template #node-menu="p">
         <ToolbarNode
-          :id="props.id"
-          :data="props.data"
+          :id="p.id"
+          :data="p.data"
           @del-node="delNode"
           @update="openOperationSettings"
         />
@@ -219,7 +248,12 @@ defineExpose({
       <MiniMap pannable zoomable />
     </VueFlow>
 
+    <!-- 属性设置 -->
     <OperationSettings ref="operationSettingRef" />
+    <!-- 流转时长设置 -->
+    <Modal v-model:open="showTimeModal" title="流转时长设置" @ok="timeOk">
+      <InputNumber v-model:value="editTime" addon-after="S" />
+    </Modal>
   </div>
 </template>
 <style lang="scss">

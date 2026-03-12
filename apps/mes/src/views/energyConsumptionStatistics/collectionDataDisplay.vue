@@ -12,12 +12,12 @@ import {
   Card,
   Form,
   FormItem,
-  Input,
   RangePicker,
+  Select,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { obtainRawAcquisitionData } from '#/api';
+import { gaugeDropDownBox, obtainRawAcquisitionData } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
@@ -39,22 +39,20 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'axdl', title: 'a相电流', minWidth: 190 },
     { field: 'bxdl', title: 'b相电流', minWidth: 190 },
     { field: 'cxdl', title: 'c相电流', minWidth: 190 },
-    { field: 'axyggl', title: 'a相有功功率', minWidth: 190 },
-    { field: 'bxyggl', title: 'b相有功功率', minWidth: 190 },
-    { field: 'cxyggl', title: 'c相有功功率', minWidth: 190 },
-    { field: 'zyggl', title: '总有功功率', minWidth: 190 },
-    { field: 'axwggl', title: 'a相无功功率', minWidth: 190 },
-    { field: 'bxwggl', title: 'b相无功功率', minWidth: 190 },
-    { field: 'cxwggl', title: 'c相无功功率', minWidth: 190 },
-    { field: 'zwggl', title: '总无功功率', minWidth: 190 },
+
     { field: 'zszgl', title: '总视在功率', minWidth: 190 },
     { field: 'glys', title: '功率因数', minWidth: 190 },
     { field: 'dwpl', title: '电网频率', minWidth: 190 },
+    { field: 'zyggl', title: '总有功功率', minWidth: 190 },
     { field: 'zxygdn', title: '正向有功电能', minWidth: 190 },
     { field: 'fxygdn', title: '反向有功电能', minWidth: 190 },
     { field: 'zxwgdn', title: '正向无功电能', minWidth: 190 },
     { field: 'fxwgdn', title: '反向无功电能', minWidth: 190 },
   ],
+  pagerConfig: {
+    pageSizes: [50, 100, 200, 250],
+    pageSize: 200,
+  },
   height: 500,
   stripe: true,
   sortConfig: {
@@ -126,6 +124,58 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
+// region 电表设备查询模块
+/**
+ * 下拉选择器过滤函数
+ * 支持按设备名称和设备编号进行模糊搜索
+ * @param {string} input - 用户输入的搜索关键词
+ * @param {object} option - 选项对象
+ * @returns {boolean} 是否匹配搜索条件
+ */
+const filterOption = (input: string, option: any) => {
+  // 同时搜索设备编号和设备名称
+  return `${option.value}&&${option.label}`
+    .toLowerCase()
+    .includes(input.toLowerCase());
+};
+
+/**
+ * 电表设备选项列表
+ * 存储从后端获取的电表设备信息，用于下拉选择器
+ */
+const equipmentOptions = ref<any>([]);
+
+/**
+ * 查询电表设备数据
+ * 从后端获取所有电表设备信息，并初始化默认选择和数据展示
+ *
+ * 执行流程：
+ * 1. 调用gaugeDropDownBox API获取电表列表（equipType: 1 表示电表）
+ * 2. 将返回数据转换为下拉选择器所需格式
+ * 3. 自动选择第一个设备作为默认选项
+ * 4. 触发图表数据查询
+ * 5. 延迟刷新表格数据，确保数据加载完成
+ */
+function queryMeterData() {
+  gaugeDropDownBox({
+    equipType: 1, // 设备类型：1-电表，2-水表，3-气表
+    equipmentCode: '', // 空字符串表示查询所有设备
+  }).then((res: any) => {
+    // 清空现有选项列表
+    equipmentOptions.value = [];
+
+    // 转换数据格式为下拉选择器所需格式
+    res.forEach((item: any) => {
+      equipmentOptions.value.push({
+        label: `${item.equipmentName}(${item.equipmentCode})`, // 显示名称：设备名称(设备编号)
+        value: item.equipmentCode, // 值：设备编号
+      });
+    });
+  });
+}
+
+// endregion
+
 // region 权限查询
 
 // 路由信息
@@ -142,6 +192,7 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  queryMeterData();
 });
 
 // endregion
@@ -152,14 +203,21 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 设备编号 -->
+        <!-- 电表设备选择器 -->
         <FormItem
           :label="
             $t('energyConsumption.energyConsumptionAnalysis.deviceNumber')
           "
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.equipCode" />
+          <Select
+            v-model:value="queryParams.equipCode"
+            :options="equipmentOptions"
+            show-search
+            allow-clear
+            :filter-option="filterOption"
+            class="!w-48"
+          />
         </FormItem>
         <!-- 时间范围 -->
         <FormItem

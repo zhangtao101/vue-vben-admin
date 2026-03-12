@@ -317,7 +317,7 @@ onMounted(() => {
             </template>
             <Button
               type="link"
-              @click="showRouteDetailPage(row.id, false)"
+              @click="showRouteDetailPage(row.id, false, row.routeType)"
               class="px-1"
             >
               <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
