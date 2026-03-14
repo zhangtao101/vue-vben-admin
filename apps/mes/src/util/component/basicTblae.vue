@@ -44,6 +44,10 @@ const props = defineProps({
     type: Boolean,
     default: true, // 默认启用分页
   },
+  height: {
+    type: Number,
+    default: 500
+  }
 });
 
 /**
@@ -64,7 +68,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center', // 表格内容居中对齐
   border: true, // 显示表格边框线
   columns: props.columns, // 动态绑定列配置项
-  height: 500, // 固定表格高度（像素）
+  height: props.height || 500, // 固定表格高度（像素）
   stripe: true, // 启用斑马纹效果，提高可读性
 
   // 排序配置

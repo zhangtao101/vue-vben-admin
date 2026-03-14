@@ -199,7 +199,7 @@ defineExpose({
       </Descriptions>
     </div>
 
-    <Drop ref="dropRef" :formula="details" :is-router="true" />
+    <Drop ref="dropRef" :formula="details" :is-router="true" v-if="isOpen" />
 
     <!-- 抽屉底部操作按钮 -->
     <template #footer>
