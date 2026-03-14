@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { VxeGridProps } from '#/adapter/vxe-table';
-
 import { ref } from 'vue';
 
 import { $t } from '@vben/locales';
@@ -10,132 +8,51 @@ import {
   Descriptions,
   DescriptionsItem,
   Drawer,
-  Input,
   message,
+  Space,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getUserInfoApi,
-  processSort,
-  queryProcessRouteDetailList,
   queryRouterDetails,
+  routeFlowGetById,
+  routeFlowSave,
 } from '#/api';
+import Drop from '#/util/component/drop/drop.vue';
 
 // region 表格
 
-const gridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
-
-  rowConfig: {
-    drag: true,
-  },
-  columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'processCode', title: '过程编码', minWidth: 105, dragSort: true },
-    { field: 'processName', title: '过程名称', minWidth: 150 },
-    { field: 'processTypeName', title: '过程类型', minWidth: 95 },
-    { field: 'turnTime', title: '流转时长（s）', minWidth: 120 },
-    { field: 'opTime', title: '操作时间', minWidth: 150 },
-    { field: 'opUserName', title: '操作人', minWidth: 80 },
-    {
-      title: '操作',
-      minWidth: 300,
-      fixed: 'right',
-      slots: {
-        default: 'action',
-      },
-    },
-  ],
-  height: 500,
-  stripe: true,
-  sortConfig: {
-    multiple: true,
-  },
-  proxyConfig: {
-    ajax: {
-      query: async ({ page }: any) => {
-        return await queryData({
-          page: page.currentPage,
-          pageSize: page.pageSize,
-        });
-      },
-    },
-  },
-  toolbarConfig: {
-    custom: true,
-    // import: true,
-    // export: true,
-    refresh: true,
-    zoom: true,
-  },
-};
-
-const gridEvents: any = {
-  /* cellClick: ({ row }) => {
-    message.info(`cell-click: ${row.name}`);
-  },*/
-  rowDragend: () => {
-    sort();
-  },
-};
-
-const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
-
-const queryParams = ref<any>({});
+// const queryParams = ref<any>({});
 /**
  * queryData - 负责根据当前的查询参数、分页信息和日期范围，从后端服务查询数据。
  * 该函数会更新表格的加载状态，并在查询完成后更新数据列表和总条数。
  */
-function queryData({ page, pageSize }: any) {
-  return new Promise((resolve, reject) => {
-    // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数。
-    const params = {
-      ...queryParams.value,
-      routeId: routerId.value,
-      // 设置当前页码。
-      pageNum: page,
-      // 设置每页显示的数据条数。
-      pageSize,
-    };
-
-    // 调用 searchWorksheetNoWater 函数查询数据。
-    queryProcessRouteDetailList(params)
-      .then(({ total, list }) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-        resolve({
-          total,
-          items: list,
-        });
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
-
-/**
- * 排序
- */
-function sort() {
-  const { tableData } = gridApi.grid.getTableData();
-  const params: any = {
-    list: [],
-    opUser: userMessage.value.userName,
-    opUserName: userMessage.value.perName,
-  };
-  tableData.forEach((item: any, index: number) => {
-    params.list.push({
-      ...item,
-      orderNum: index + 1,
-    });
-  });
-  processSort(params).then(() => {
-    message.success($t('common.successfulOperation'));
-    gridApi.reload();
-  });
-}
+// function _queryData({ page, pageSize }: any) {
+//   return new Promise((resolve, reject) => {
+//     // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数。
+//     const params = {
+//       ...queryParams.value,
+//       routeId: routerId.value,
+//       // 设置当前页码。
+//       pageNum: page,
+//       // 设置每页显示的数据条数。
+//       pageSize,
+//     };
+//
+//     // 调用 searchWorksheetNoWater 函数查询数据。
+//     queryProcessRouteDetailList(params)
+//       .then(({ total, list }) => {
+//         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+//         resolve({
+//           total,
+//           items: list,
+//         });
+//       })
+//       .catch((error) => {
+//         reject(error);
+//       });
+//   });
+// }
 
 // endregion
 
@@ -174,6 +91,7 @@ const details = ref<any>({});
 function queryDetails(id: string) {
   queryRouterDetails(id).then((data) => {
     details.value = data;
+    read();
   });
 }
 
@@ -193,6 +111,48 @@ function queryLoginUser() {
   });
 }
 
+// endregion
+
+// region 保存
+const dropRef = ref();
+
+/**
+ * 保存路线
+ */
+function save() {
+  /**
+   * allPathsLeadToEnd: 是否合规
+   * cleanedNodes: 清理后的节点
+   * edges: 连接线
+   */
+  const { allPathsLeadToEnd, cleanedNodes, edges } =
+    dropRef.value.cleanAndCheckGraph();
+  if (allPathsLeadToEnd && cleanedNodes.length > 0) {
+    edges.forEach((edge: any) => {
+      edge.opDetailId = routerId.value;
+    });
+    const params = {
+      routeId: routerId.value,
+      routes: edges,
+      nodes: cleanedNodes,
+    };
+    routeFlowSave(params).then(() => {
+      message.success($t('common.successfulOperation'));
+      dropRef.value.setData([], []);
+      closeDrawer();
+    });
+  } else {
+    message.error('请确保至少有一条完整的路线(开始 => xxx => 结束)!');
+  }
+}
+// endregion
+
+// region 读取
+function read() {
+  routeFlowGetById(details.value.id).then(({ nodes, routes }: any) => {
+    dropRef.value.setData(routes, nodes);
+  });
+}
 // endregion
 
 // region 暴露方法
@@ -216,6 +176,7 @@ defineExpose({
         ? $t('processManagement.processRoute.change')
         : $t('processManagement.processRoute.viewRouting')
     "
+    :footer-style="{ textAlign: 'right' }"
     @close="closeDrawer"
   >
     <div>
@@ -235,29 +196,25 @@ defineExpose({
         >
           {{ details.routeName }}
         </DescriptionsItem>
-        <DescriptionsItem
-          :label="$t('processManagement.processRoute.processName')"
-        >
-          <Input v-model:value="queryParams.processName" />
-        </DescriptionsItem>
-        <DescriptionsItem>
-          <Button
-            type="primary"
-            @click="
-              () => {
-                gridApi.reload();
-              }
-            "
-            class="float-right w-48"
-          >
-            {{ $t('common.search') }}
-          </Button>
-        </DescriptionsItem>
       </Descriptions>
     </div>
 
-    <!-- 渲染已派工单表格组件 -->
-    <Grid v-if="isOpen" />
+    <Drop ref="dropRef" :formula="details" :is-router="true" v-if="isOpen" />
+
+    <!-- 抽屉底部操作按钮 -->
+    <template #footer>
+      <!-- 按钮组，包含取消和确认按钮 -->
+      <Space>
+        <!-- 取消按钮，点击后关闭人员操作抽屉 -->
+        <Button @click="closeDrawer()">
+          {{ $t('common.cancel') }}
+        </Button>
+        <!-- 确认按钮，点击后提交人员操作信息 -->
+        <Button type="primary" @click="save()">
+          {{ $t('common.confirm') }}
+        </Button>
+      </Space>
+    </template>
   </Drawer>
 </template>
 

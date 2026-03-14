@@ -30,6 +30,8 @@
     "processRouteNumber": "工艺路线编号",
     "processRouteName": "工艺路线名称",
     "routeType": "路线类型",
-    "processName": "过称名称"
+    "processName": "过称名称",
+    "type": "模板类型",
+    "modal": "模板"
   }
 }

@@ -99,5 +99,14 @@
     "workstationType": "workstationType",
     "correspondingOperation": "correspondingOperation",
     "configuringDeviceResources": "deviceConfig"
+  },
+  "electricityTimeSlotRule": {
+    "peakHours": "Peak Hours",
+    "fengHours": "Feng Hours",
+    "usualTimes": "Usual Times",
+    "valleyTime": "Valley Time",
+    "month": "Month",
+    "type": "Type",
+    "time": "Calculation Time"
   }
 }

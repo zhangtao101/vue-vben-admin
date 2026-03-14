@@ -281,14 +281,14 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 巡检项目 -->
+        <!-- 仪表编号 -->
         <FormItem
           :label="$t('alarmManagement.meterNumber')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.equipmentCode" />
         </FormItem>
-        <!-- 巡检项目 -->
+        <!-- 仪表名称 -->
         <FormItem
           :label="$t('alarmManagement.meterName')"
           style="margin-bottom: 1em"

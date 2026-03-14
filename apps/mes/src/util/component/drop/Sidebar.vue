@@ -3,24 +3,34 @@ import { onMounted, ref } from 'vue';
 
 import { Position } from '@vue-flow/core';
 
-import { queryNodes } from '#/api';
+import { allProceLabel, queryNodes } from '#/api';
 
 import useDragAndDrop from './useDnD';
+
+const props = defineProps(['isRouter']);
 
 const { onDragStart } = useDragAndDrop();
 
 const nodes = ref([]);
 function queryNode() {
-  queryNodes().then((data) => {
+  const ob = props.isRouter ? allProceLabel() : queryNodes();
+  ob.then((data) => {
     nodes.value = [];
     data.forEach((item) => {
+      const data = {
+        type: `${item.value}`,
+        label: item.label,
+        toolbarPosition: Position.Top,
+        processType: 1,
+      };
+      if (props.isRouter) {
+        Object.assign(data, {
+          turnTime: 0,
+        });
+      }
       nodes.value.push({
         ...item,
-        data: {
-          type: `${item.value}`,
-          label: item.label,
-          toolbarPosition: Position.Top,
-        },
+        data,
       });
     });
   });
