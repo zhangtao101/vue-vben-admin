@@ -1,0 +1,10 @@
+{
+  "code": "箱码",
+  "tip": "任务号覆盖",
+  "clearTip": "传输线清空复位",
+  "missionNumber": "任务号",
+  "boxCode": "箱码",
+  "transmissionLineNumber": "传输线编号",
+  "errorLogBreakdown": "错误日志明细",
+  "operation": "操作"
+}

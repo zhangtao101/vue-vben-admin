@@ -8,23 +8,43 @@ import { NodeToolbar } from '@vue-flow/node-toolbar';
 import { Button, Tooltip } from 'ant-design-vue';
 
 const props = defineProps(['id', 'data']);
-const emit = defineEmits(['showCreate', 'delNode', 'update']);
+const emit = defineEmits(['showCreate', 'delNode', 'update', 'bind']);
 // const { updateNodeData } = useVueFlow();
 // region 类型选择
 
-function showCreate() {
-  emit('showCreate', {
-    id: props.id,
-  });
-}
+// function showCreate() {
+//   emit('showCreate', {
+//     id: props.id,
+//   });
+// }
+/**
+ * 删除
+ */
 function delNode() {
   emit('delNode', {
     id: props.id,
   });
 }
+
+/**
+ * 修改
+ */
 function update() {
   emit('update', {
-    id: props.id,
+    elId: props.id,
+    id: props.data.functionId,
+    functionTypeName: props.data.functionTypeName,
+  });
+}
+
+/**
+ * 绑定
+ */
+function bind() {
+  emit('bind', {
+    elId: props.id,
+    id: props.data.functionId,
+    functionTypeName: props.data.functionTypeName,
   });
 }
 
@@ -32,23 +52,36 @@ function update() {
 </script>
 
 <template>
-  <NodeToolbar v-if="id !== 'end'" :position="data.toolbarPosition">
-    <Tooltip v-if="id !== 'start'">
-      <template #title>{{ $t('common.edit') }}</template>
-      <Button type="link" @click="update()">
-        <Icon icon="mdi:square-edit-outline" class="text-xl" />
-      </Button>
-    </Tooltip>
+  <NodeToolbar :position="data.toolbarPosition">
+    <!--
     <Tooltip>
       <template #title>{{ $t('common.add') }}</template>
       <Button type="link" @click="showCreate()">
         <Icon icon="mdi:add" class="text-xl" />
       </Button>
+    </Tooltip>-->
+    <Tooltip v-if="!['start', 'end'].includes(id)">
+      <template #title>{{ $t('common.edit') }}</template>
+      <Button type="link" @click="update()">
+        <Icon icon="mdi:pencil" class="text-xl" />
+      </Button>
     </Tooltip>
-    <Tooltip v-if="id !== 'start'">
+    <Tooltip
+      v-if="
+        data.turnTime >= 0 &&
+        data.routeDetailId &&
+        !['start', 'end'].includes(id)
+      "
+    >
+      <template #title>{{ $t('common.bind') }}</template>
+      <Button type="link" @click="bind()">
+        <Icon icon="mdi:link-variant" class="text-xl" />
+      </Button>
+    </Tooltip>
+    <Tooltip>
       <template #title>{{ $t('common.delete') }}</template>
-      <Button type="link" @click="delNode()">
-        <Icon icon="mdi-light:delete" class="text-xl" />
+      <Button type="link" @click="delNode()" danger>
+        <Icon icon="mdi:delete-outline" class="text-xl" />
       </Button>
     </Tooltip>
   </NodeToolbar>

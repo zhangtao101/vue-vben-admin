@@ -14,5 +14,9 @@
   "reportManagement": "Report Management",
   "barcodeInspection": "Barcode Inspection",
   "ctuOutboundPicking": "CTU Outbound Picking",
-  "ctuCartonPicking": "CTU Carton Picking"
+  "ctuCartonPicking": "CTU Carton Picking",
+  "ioBillOperation": "Io Bill Operation",
+  "batchPrinting": "Batch Printing",
+  "errorLog": "Error Log",
+  "cartonCodeQuery": "Carton Code Query"
 }

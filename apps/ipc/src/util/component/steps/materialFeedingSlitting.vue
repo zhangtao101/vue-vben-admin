@@ -152,6 +152,7 @@ const { close: websocketClose } = useWebSocket(readMessage, {
   worksheetCode: props.worksheetCode,
   bindingId: props.bindingId,
   functionId: props.functionId,
+  webSocketType: 5,
 });
 
 /**

@@ -5,36 +5,38 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MdiSearch } from '@vben/icons';
+import { IconParkSolidError, MdiSearch, MdiSuccess } from '@vben/icons';
 import { $t } from '@vben/locales';
+import { useAccessStore } from '@vben/stores';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
-  Drawer,
   Form,
   FormItem,
   Input,
   message,
-  RadioGroup,
-  Select,
+  Modal,
   Space,
   Switch,
   Tooltip,
+  Upload,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  addProcessRoute,
-  listWordListByParentCode,
+  deleteScadaProcessRoute,
+  exportScadaProcessRouteList,
   queryProcessRouteList,
-  updateProcessRoute,
+  routeAudit,
   updateProcessRouteUse,
 } from '#/api';
 import { queryAuth } from '#/util';
 import ProcessRouteDetailPage from '#/util/component/processManagement/processRouteDetailPage.vue';
+import ProcessRouteEditDrawer from '#/util/component/processManagement/ProcessRouteEditDrawer.vue';
+import ProductBindDrawer from '#/util/component/processManagement/ProductBindDrawer.vue';
 
 // region 表格
 
@@ -86,44 +88,25 @@ const gridOptions: VxeGridProps<any> = {
   },
   toolbarConfig: {
     custom: true,
-    // import: true,
-    // export: true,
     refresh: true,
     zoom: true,
   },
 };
 
-const gridEvents: any = {
-  /* cellClick: ({ row }) => {
-    message.info(`cell-click: ${row.name}`);
-  },*/
-};
-
-const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 // 查询参数
 const queryParams = ref<any>({});
 
-/**
- * queryData - 负责根据当前的查询参数、分页信息和日期范围，从后端服务查询数据。
- * 该函数会更新表格的加载状态，并在查询完成后更新数据列表和总条数。
- */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
-    // 构建查询参数对象，包含所有查询参数、当前页码和每页显示的数据条数。
     const params = {
-      // 展开 queryParams.value 对象，包含所有查询参数。
       ...queryParams.value,
-      // 设置当前页码。
       pageNum: page,
-      // 设置每页显示的数据条数。
       pageSize,
     };
-
-    // 调用 searchWorksheetNoWater 函数查询数据。
     queryProcessRouteList(params)
       .then(({ total, list }) => {
-        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
           items: list,
@@ -137,71 +120,46 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
-// region 新增/编辑 抽屉
+// region 导出和导入
 
-// 编辑form表单
-const editForm = ref();
-// 编辑抽屉是否显示
-const showEditDrawer = ref(false);
-// 编辑的对象
-const editItem = ref<any>({});
-// form表单规则验证
-const editRules = ref<any>({
-  routeCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  routeName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  routeType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  remark: [{ message: '此项为必填项', required: false, trigger: 'change' }],
-});
-
-/**
- * 显示编辑抽屉
- * @param item
- */
-function showEditDrawerFn(item: any) {
-  editItem.value = {
-    ...item,
+function handleExport() {
+  const params = {
+    ...queryParams.value,
   };
-  showEditDrawer.value = true;
-}
-/**
- * 关闭编辑抽屉
- */
-function closeEditDrawer() {
-  editItem.value = {};
-  showEditDrawer.value = false;
+  exportScadaProcessRouteList(params).then((res: any) => {
+    window.location.href = res;
+  });
 }
 
-function submit() {
-  editForm.value.validate().then(() => {
-    message.success($t('common.successfulOperation'));
-    const params = {
-      ...editItem.value,
-    };
-    const ob = params.id ? updateProcessRoute(params) : addProcessRoute(params);
-    ob.then(() => {
-      closeEditDrawer();
-      message.success($t('common.successfulOperation'));
-      gridApi.reload();
-    });
-  });
+function handleUploadChange(info: any) {
+  if (info.file.status === 'done') {
+    message.success('上传成功');
+    gridApi.reload();
+  } else if (info.file.status === 'error') {
+    message.error('文件上传失败');
+  }
+}
+
+function beforeUpload(file: any) {
+  const isExcel =
+    file.type === 'application/vnd.ms-excel' ||
+    file.type ===
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  if (!isExcel) {
+    message.error('只能上传 Excel 文件');
+  }
+  return isExcel;
 }
 
 // endregion
 
 // region 状态切换
 
-/**
- * changeState - 处理状态切换事件，根据用户操作更新数据状态。
- * @param row - 当前行数据对象，包含状态信息。
- */
-function changeState(row: any) {
-  // 构建更新参数对象，包含状态值和行 ID。
+function handleStateChange(row: any) {
   const params = {
     auditState: '',
     routeId: row.id,
   };
-
-  // 调用 updateWorkstation 函数更新数据状态。
   updateProcessRouteUse(params)
     .then(() => {
       message.success($t('common.successfulOperation'));
@@ -213,14 +171,30 @@ function changeState(row: any) {
 
 // endregion
 
-// region 查询路线类型字典表
-const routeTypeList = ref<any>([]);
-function queryRouteType() {
-  listWordListByParentCode('LXLB').then((data) => {
-    routeTypeList.value = data.map((item: any) => ({
-      label: item.wordName,
-      value: item.orderNumber,
-    }));
+// region 审核
+
+function handleAudit(row: any, isPass: boolean) {
+  const title = isPass ? '是否确认通过该条数据?' : '是否确认不通过该条数据?';
+  const statusCode = isPass ? 2 : 3;
+
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'primary',
+    onOk() {
+      submitAudit(row.id, statusCode);
+    },
+    title,
+  });
+}
+
+function submitAudit(id: number, status: number) {
+  routeAudit({
+    auditState: status,
+    routeId: id,
+  }).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
   });
 }
 
@@ -229,28 +203,66 @@ function queryRouteType() {
 // region 工艺路线查看 / 编辑
 const processRouteDetailPageRef = ref();
 
-/**
- * 显示工艺路线查看 / 编辑抽屉
- * @param id 工艺路线ID
- * @param isUpdate 是否为编辑模式
- */
-function showRouteDetailPage(id: string, isUpdate: boolean) {
+function handleViewRouteDetail(id: string, isUpdate: boolean) {
   processRouteDetailPageRef.value.openDrawer(id, isUpdate);
 }
 
 // endregion
 
+// region 删除
+
+function handleDelete(row: any) {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      message.warning('已取消删除!');
+    },
+    onOk() {
+      confirmDelete(row.id);
+    },
+    title: '是否确认删除该条数据?',
+  });
+}
+
+function confirmDelete(id: number) {
+  deleteScadaProcessRoute(id).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
+}
+
+// endregion
+
+// region 抽屉组件引用
+
+const editDrawerRef = ref();
+const productBindDrawerRef = ref();
+
+function openEditDrawer(item: any = {}) {
+  editDrawerRef.value?.openDrawer(item);
+}
+
+function openProductBindDrawer(row: any) {
+  productBindDrawerRef.value?.openDrawer(row);
+}
+
+// endregion
+
 // region 初始化
-// 路由信息
+
+const accessStore = useAccessStore();
 const route = useRoute();
-// 当前页面按钮权限列表
 const author = ref<string[]>([]);
+
+// 上传接口地址
+const uploadAction = `${import.meta.env.VITE_GLOB_MES_MAIN}/process/route/uploadExcel`;
+
 onMounted(() => {
-  // 查询权限
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
-  queryRouteType();
 });
 
 // endregion
@@ -261,31 +273,19 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 模板编号 -->
+        <!-- 工艺路线名称 -->
         <FormItem
-          :label="$t('processManagement.processParams.proceName')"
+          :label="$t('processManagement.processRoute.processRouteName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.proceName" />
-        </FormItem>
-
-        <!-- 模板名称 -->
-        <FormItem
-          :label="$t('processManagement.processParams.templateName')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.tempName" />
+          <Input v-model:value="queryParams.routeName" />
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="
-              () => {
-                gridApi.reload();
-              }
-            "
+            @click="gridApi.reload()"
           >
             {{ $t('common.search') }}
           </Button>
@@ -296,6 +296,38 @@ onMounted(() => {
 
     <Card class="mb-8">
       <Grid>
+        <template #toolbar-tools>
+          <Space>
+            <!-- 新增按钮 -->
+            <Button
+              v-if="author.includes('新增')"
+              type="primary"
+              @click="openEditDrawer()"
+            >
+              {{ $t('common.add') }}
+            </Button>
+            <!-- 导出按钮 -->
+            <Button
+              v-if="author.includes('导出')"
+              type="primary"
+              @click="handleExport"
+            >
+              导出
+            </Button>
+            <!-- 上传按钮 -->
+            <Upload
+              v-if="author.includes('新增') && false"
+              :action="uploadAction"
+              :headers="{ Authorization: `${accessStore.accessToken}` }"
+              :show-upload-list="false"
+              name="file"
+              :before-upload="beforeUpload"
+              @change="handleUploadChange"
+            >
+              <Button type="primary">点击上传</Button>
+            </Upload>
+          </Space>
+        </template>
         <template #status="{ row }">
           <div v-if="row.state === 3">已弃用</div>
           <div v-else>
@@ -303,32 +335,33 @@ onMounted(() => {
               v-model:checked="row.useState"
               :checked-value="1"
               :un-checked-value="2"
+              :disabled="!author.includes('启停变更')"
               checked-children="启用"
               un-checked-children="停用"
-              @change="changeState(row)"
+              @change="handleStateChange(row)"
             />
           </div>
         </template>
         <template #action="{ row }">
           <!-- 查看工艺路线 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('查看工艺路线')">
             <template #title>
               {{ $t('processManagement.processRoute.viewRouting') }}
             </template>
             <Button
               type="link"
-              @click="showRouteDetailPage(row.id, false)"
+              @click="handleViewRouteDetail(row.id, false)"
               class="px-1"
             >
               <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
             </Button>
           </Tooltip>
           <!-- 编辑基础信息 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('编辑基本信息')">
             <template #title>
               {{ $t('processManagement.processRoute.editTheBasicInformation') }}
             </template>
-            <Button type="link" @click="showEditDrawerFn(row)" class="px-1">
+            <Button type="link" @click="openEditDrawer(row)" class="px-1">
               <Icon
                 icon="mdi:edit-box-outline"
                 class="inline-block align-middle text-2xl"
@@ -336,37 +369,54 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 绑定产品型号 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('绑定产品型号')">
             <template #title>
               {{ $t('processManagement.processRoute.bindProductModel') }}
             </template>
-            <Button type="link" @click="pullIn(row)" class="px-1">
+            <Button
+              type="link"
+              @click="openProductBindDrawer(row)"
+              class="px-1"
+            >
               <Icon
                 icon="mdi:attachment"
                 class="inline-block align-middle text-2xl"
               />
             </Button>
           </Tooltip>
-          <!-- 审核 -->
-          <Tooltip>
-            <template #title>
-              {{ $t('processManagement.processRoute.audit') }}
-            </template>
-            <Button type="link" @click="pullIn(row)" class="px-1">
-              <Icon
-                icon="mdi:checkbox-multiple-marked-circle-outline"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
+          <!-- 审核通过 -->
+          <Tooltip v-if="row.auditState === 1 && author.includes('审核')">
+            <template #title>{{ $t('common.pass') }}</template>
+            <Button
+              :icon="h(MdiSuccess, { class: 'inline-block size-6' })"
+              class="mr-4"
+              type="link"
+              @click="handleAudit(row, true)"
+            />
+          </Tooltip>
+
+          <!-- 审核不通过 -->
+          <Tooltip v-if="row.auditState === 1 && author.includes('审核')">
+            <template #title>{{ $t('common.noPass') }}</template>
+            <Button
+              :icon="
+                h(IconParkSolidError, {
+                  class: 'inline-block size-6 text-red-600',
+                })
+              "
+              class="mr-4"
+              type="link"
+              @click="handleAudit(row, false)"
+            />
           </Tooltip>
           <!-- 变更 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('变更')">
             <template #title>
               {{ $t('processManagement.processRoute.change') }}
             </template>
             <Button
               type="link"
-              @click="showRouteDetailPage(row.id, true)"
+              @click="handleViewRouteDetail(row.id, true)"
               class="px-1"
             >
               <Icon
@@ -375,24 +425,12 @@ onMounted(() => {
               />
             </Button>
           </Tooltip>
-          <!-- 日志查看 -->
-          <Tooltip>
-            <template #title>
-              {{ $t('processManagement.processRoute.logView') }}
-            </template>
-            <Button type="link" @click="pullIn(row)" class="px-1">
-              <Icon
-                icon="mdi:file-document-box-search-outline"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
           <!-- 删除 -->
-          <Tooltip>
+          <Tooltip v-if="author.includes('删除')">
             <template #title>
               {{ $t('processManagement.processRoute.delete') }}
             </template>
-            <Button type="link" @click="pullIn(row)" danger class="px-1">
+            <Button type="link" @click="handleDelete(row)" danger class="px-1">
               <Icon
                 icon="mdi:delete-forever-outline"
                 class="inline-block align-middle text-2xl"
@@ -403,81 +441,13 @@ onMounted(() => {
       </Grid>
     </Card>
 
-    <!-- region 新增/编辑 抽屉 -->
-    <Drawer
-      v-model:open="showEditDrawer"
-      :footer-style="{ textAlign: 'right' }"
-      :width="600"
-      placement="right"
-      :title="$t('common.edit')"
-      @close="closeEditDrawer()"
-      class="z-auto"
-    >
-      <Form
-        ref="editForm"
-        :model="editItem"
-        :rules="editRules"
-        :label-col="{ span: 6 }"
-        :wrapper-col="{ span: 18 }"
-      >
-        <!-- 工艺路线编号 -->
-        <FormItem
-          :label="$t('processManagement.processRoute.processRouteNumber')"
-          name="routeCode"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="editItem.routeCode" :disabled="!!editItem.id" />
-        </FormItem>
-        <!-- 工艺路线名称 -->
-        <FormItem
-          :label="$t('processManagement.processRoute.processRouteName')"
-          name="routeName"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="editItem.routeName" />
-        </FormItem>
-        <!-- 路线类型 -->
-        <FormItem
-          :label="$t('processManagement.processRoute.routeType')"
-          name="routeType"
-          style="margin-bottom: 1em"
-        >
-          <RadioGroup
-            v-model:value="editItem.routeType"
-            :options="routeTypeList"
-            v-if="routeTypeList.length <= 3"
-          />
-          <Select
-            v-model:value="editItem.routeType"
-            :options="routeTypeList"
-            v-else
-          />
-        </FormItem>
-        <!-- 备注 -->
-        <FormItem
-          :label="$t('processManagement.processBase.remark')"
-          name="remark"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="editItem.remark" />
-        </FormItem>
-      </Form>
+    <!-- 编辑抽屉 -->
+    <ProcessRouteEditDrawer ref="editDrawerRef" @success="gridApi.reload()" />
 
-      <template #footer>
-        <Space>
-          <!-- 取消 -->
-          <Button @click="closeEditDrawer">
-            {{ $t('common.cancel') }}
-          </Button>
-          <!-- 确认 -->
-          <Button type="primary" @click="submit">
-            {{ $t('common.confirm') }}
-          </Button>
-        </Space>
-      </template>
-    </Drawer>
-    <!-- endregion -->
+    <!-- 产品绑定抽屉 -->
+    <ProductBindDrawer ref="productBindDrawerRef" :author="author" />
 
+    <!-- 工艺路线详情页面 -->
     <ProcessRouteDetailPage ref="processRouteDetailPageRef" />
   </Page>
 </template>
