@@ -89,8 +89,8 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'enterOutName', title: '单据类型说明', minWidth: 150 },
     { field: 'outType', title: '操作类型', minWidth: 150 },
     { field: 'outTypeName', title: '操作类型说明', minWidth: 150 },
-    { field: 'auditsState', title: '审核状态', minWidth: 150 },
-    { field: 'auditstateName', title: '审核状态说明', minWidth: 150 },
+    { field: 'formStateName', title: '单据执行状态', minWidth: 150 },
+    { field: 'auditStateName', title: '审核状态', minWidth: 150 },
     { field: 'auditUser', title: '审核人', minWidth: 150 },
     { field: 'auditTime', title: '审核时间', minWidth: 150 },
     {
@@ -532,6 +532,7 @@ const listOfMaterialNumbersSearchThrottling = debounce(
 function workorderCodeChange(_value: any, _item: any) {
   detailsState.value.materialCode = _item.materialCode;
   detailsState.value.materialName = _item.materialName;
+  detailsState.value.materialDescriptionId = '';
   queryMaterialCode(detailsState.value.materialCode);
 }
 
@@ -911,6 +912,24 @@ onMounted(() => {
               />
             </FormItem>
           </Col>
+          <!--          <Col :span="12" v-if="checkedRow.enterType === 1">
+            &lt;!&ndash; 班次 &ndash;&gt;
+            <FormItem
+              :label="$t('storeManagement.ioBillManagement.shifts')"
+              name="classType"
+            >
+              <Input v-model:value="checkedRow.classType" />
+            </FormItem>
+          </Col>
+          <Col :span="12" v-if="checkedRow.enterType === 1">
+            &lt;!&ndash; 批号 &ndash;&gt;
+            <FormItem
+              :label="$t('storeManagement.ioBillManagement.batch')"
+              name="batchCode"
+            >
+              <Input v-model:value="checkedRow.batchCode" />
+            </FormItem>
+          </Col>-->
         </Row>
       </Form>
       <div>

@@ -577,7 +577,7 @@ onMounted(() => {
         <FormItem
           :label="
             $t(
-              'energyConsumptionCollectionDetails.collectTheTotalEnergyConsumption',
+              'energyConsumption.energyConsumptionCollectionDetails.collectTheTotalEnergyConsumption',
             )
           "
           name="energyValue"

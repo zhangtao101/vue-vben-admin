@@ -782,11 +782,17 @@ onMounted(() => {
       >
         <!-- 系统编号 -->
         <FormItem :label="$t('equip.systemNumber')" name="systemNumber">
-          <Input v-model:value="checkedRow.systemNumber" />
+          <Input
+            v-model:value="checkedRow.systemNumber"
+            :disabled="!!checkedRow.id"
+          />
         </FormItem>
         <!-- 系统名称 -->
         <FormItem :label="$t('equip.systemName')" name="systemName">
-          <Input v-model:value="checkedRow.systemName" />
+          <Input
+            v-model:value="checkedRow.systemName"
+            :disabled="!!checkedRow.id"
+          />
         </FormItem>
         <!-- 单元分区 -->
         <FormItem :label="$t('equip.unitPartitioning')" name="subarea">

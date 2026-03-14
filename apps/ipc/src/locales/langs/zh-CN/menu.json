@@ -16,5 +16,8 @@
   "ctuOutboundPicking": "CTU出仓拣选",
   "ctuCartonPicking": "CTU箱拣选",
   "ioBillOperation": "出入库单据作业",
-  "oneClickClean": "一键清洗"
+  "oneClickClean": "一键清洗",
+  "batchPrinting": "批量打印",
+  "errorLog": "错误日志",
+  "cartonCodeQuery": "箱码查询"
 }

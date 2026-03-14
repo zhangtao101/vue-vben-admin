@@ -15,5 +15,9 @@
   "barcodeInspection": "Barcode Inspection",
   "ctuOutboundPicking": "CTU Outbound Picking",
   "ctuCartonPicking": "CTU Carton Picking",
-  "oneClickClean": "One Click Clean"
+  "oneClickClean": "One Click Clean",
+  "ioBillOperation": "Io Bill Operation",
+  "batchPrinting": "Batch Printing",
+  "errorLog": "Error Log",
+  "cartonCodeQuery": "Carton Code Query"
 }

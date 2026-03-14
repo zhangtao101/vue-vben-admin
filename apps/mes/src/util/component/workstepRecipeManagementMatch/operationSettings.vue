@@ -167,7 +167,7 @@ function openDrawer(
   listOfSteps.forEach((item: any) => {
     stepList.value.push({
       label: item.functionTypeName,
-      value: item.id,
+      value: item.data.functionId,
     });
   });
   // 赋值配方
@@ -761,7 +761,7 @@ defineExpose({
               <Select
                 v-model:value="editItem.stepFunctionId"
                 :options="stepList"
-                :disabled="!isEdit"
+                :disabled="!isEdit && stepList.length <= 1"
               />
             </FormItem>
           </Col>

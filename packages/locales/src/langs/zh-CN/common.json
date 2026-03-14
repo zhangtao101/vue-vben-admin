@@ -47,6 +47,8 @@
   "export": "导出",
   "import": "导入",
   "print": "打印",
+  "batchPrinting": "批量打印",
+  "barcodeGeneration": "条码生成",
   "successfulOperation": "操作成功",
   "operationFailure": "操作失败",
   "cancelOperation": "取消操作",

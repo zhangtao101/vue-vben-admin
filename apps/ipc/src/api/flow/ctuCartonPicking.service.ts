@@ -19,7 +19,26 @@ export function getDetailByCode(params: any) {
  */
 export function getDetailByLabelCode(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_WMS}/human/packing/getDetailByLabelCode?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_WMS}/human/packing/getDetailByLabelCode?${qs.stringify(
+      params,
+    )}`,
+  );
+}
+
+/**
+ * 箱码生成
+ */
+export function packingInfoCreate() {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/human/packing/packingInfoCreate`,
+  );
+}
+/**
+ * 批量生成箱码
+ */
+export function batchCodeCreate(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/human/packing/batchCodeCreate?${qs.stringify(params)}`,
   );
 }
 
@@ -71,7 +90,9 @@ export function productPackingOut(params: any) {
  */
 export function materialFeatureGetByMaterialCodeWith(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_WMS}/base/materialFeature/getByMaterialCodeWithPage?${qs.stringify(params)}`,
+    `${
+      import.meta.env.VITE_GLOB_MES_WMS
+    }/base/materialFeature/getByMaterialCodeWithPage?${qs.stringify(params)}`,
   );
 }
 /**
@@ -80,7 +101,9 @@ export function materialFeatureGetByMaterialCodeWith(params: any) {
  */
 export function getMaterialCodeList(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_WMS}/base/materialInfo/getMaterialCodeList?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_WMS}/base/materialInfo/getMaterialCodeList?${qs.stringify(
+      params,
+    )}`,
   );
 }
 /**
@@ -89,6 +112,8 @@ export function getMaterialCodeList(params: any) {
  */
 export function getByMaterialCodeAndName(params: any) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_WMS}/base/materialInfo/getByMaterialCodeAndName?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_WMS}/base/materialInfo/getByMaterialCodeAndName?${qs.stringify(
+      params,
+    )}`,
   );
 }

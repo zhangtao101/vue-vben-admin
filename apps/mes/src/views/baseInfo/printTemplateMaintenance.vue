@@ -37,12 +37,12 @@ const gridOptions: VxeGridProps<any> = {
       title: '打印状态',
       minWidth: 150,
     },
-    {
+    /* {
       field: 'printType',
       slots: { default: 'printType' },
       title: '打印类型',
       minWidth: 150,
-    },
+    },*/
     {
       field: 'action',
       fixed: 'right',
@@ -176,12 +176,12 @@ const statusOptions = [
   },
 ];
 // 打印模板
-const printTemplateOptions = [
+/* const printTemplateOptions = [
   {
     label: '含水率打印模板',
     value: 1,
   },
-];
+];*/
 
 /**
  * 显示编辑抽屉
@@ -379,12 +379,12 @@ onMounted(async () => {});
           />
         </FormItem>
         <!-- 打印模板编号 -->
-        <FormItem :label="$t('basic.printTemplate.printType')" name="printType">
+        <!--        <FormItem :label="$t('basic.printTemplate.printType')" name="printType">
           <RadioGroup
             v-model:value="editMessage.printType"
             :options="printTemplateOptions"
           />
-        </FormItem>
+        </FormItem>-->
       </Form>
 
       <template #footer>

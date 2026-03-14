@@ -3,13 +3,9 @@ import { h, nextTick, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-// eslint-disable-next-line n/no-extraneous-import
 import { Background } from '@vue-flow/background';
-// eslint-disable-next-line n/no-extraneous-import
 import { Controls } from '@vue-flow/controls';
-// eslint-disable-next-line n/no-extraneous-import
 import { Panel, Position, useVueFlow, VueFlow } from '@vue-flow/core';
-// eslint-disable-next-line n/no-extraneous-import
 import { MiniMap } from '@vue-flow/minimap';
 import { Button, Drawer, message, Modal, Select, Space } from 'ant-design-vue';
 

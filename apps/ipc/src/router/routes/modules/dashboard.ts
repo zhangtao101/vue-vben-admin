@@ -115,6 +115,16 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'batchPrinting',
+        path: 'batchPrinting',
+        component: () => import('#/views/flow/batchPrinting.vue'),
+        meta: {
+          icon: 'mdi:inbox-full-outline',
+          ignoreAccess: true,
+          title: $t('menu.batchPrinting'),
+        },
+      },
+      {
         name: 'ctuOutboundPicking',
         path: 'ctuOutboundPicking',
         component: () => import('#/views/flow/ctuOutboundPicking.vue'),
@@ -132,6 +142,26 @@ const routes: RouteRecordRaw[] = [
           icon: 'mdi:text-box-edit-outline',
           ignoreAccess: true,
           title: $t('menu.ioBillOperation'),
+        },
+      },
+      {
+        name: 'errorLog',
+        path: 'errorLog',
+        component: () => import('#/views/flow/errorLog.vue'),
+        meta: {
+          icon: 'mdi:file-document-error-outline',
+          ignoreAccess: true,
+          title: $t('menu.errorLog'),
+        },
+      },
+      {
+        name: 'cartonCodeQuery',
+        path: 'cartonCodeQuery',
+        component: () => import('#/views/flow/cartonCodeQuery.vue'),
+        meta: {
+          icon: 'mdi:qrcode-scan',
+          ignoreAccess: true,
+          title: $t('menu.cartonCodeQuery'),
         },
       },*/
     ],

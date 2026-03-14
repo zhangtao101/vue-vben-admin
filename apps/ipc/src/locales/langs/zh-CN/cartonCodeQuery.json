@@ -1,0 +1,15 @@
+{
+  "boxCodeQuery": "箱码查询",
+  "boxCode": "箱码",
+  "materialCode": "料号",
+  "materialName": "物料名称",
+  "materialDescriptionId": "物料特征ID",
+  "materialDescription": "物料特征",
+  "quantity": "数量",
+  "unit": "单位",
+  "manufacturerName": "供应商名称",
+  "batchCode": "批次号",
+  "workOrderNumber": "工单号",
+  "storageLocation": "储位",
+  "pleaseEnterBoxCode": "请输入箱码"
+}

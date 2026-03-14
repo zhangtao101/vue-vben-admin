@@ -1,7 +1,9 @@
 {
   "productBom": {
     "productNumber": "productNumber",
-    "productName": "productName"
+    "productName": "productName",
+    "deviceNumber": "Device Number",
+    "systemName": "System Name"
   },
   "barCodeManagement": {
     "ruleName": "ruleName",
@@ -97,5 +99,14 @@
     "workstationType": "workstationType",
     "correspondingOperation": "correspondingOperation",
     "configuringDeviceResources": "deviceConfig"
+  },
+  "electricityTimeSlotRule": {
+    "peakHours": "Peak Hours",
+    "fengHours": "Feng Hours",
+    "usualTimes": "Usual Times",
+    "valleyTime": "Valley Time",
+    "month": "Month",
+    "type": "Type",
+    "time": "Calculation Time"
   }
 }

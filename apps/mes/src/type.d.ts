@@ -1,6 +1,7 @@
 declare module 'vue-plugin-hiprint';
 declare module 'animejs';
 declare module 'vue-baidu-map-3x';
+declare module 'jordium-gantt-vue3';
 
 declare module '*.vue' {
   import { DefineComponent } from 'vue';

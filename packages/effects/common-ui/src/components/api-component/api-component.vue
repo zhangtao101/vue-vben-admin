@@ -36,6 +36,8 @@ interface Props {
   childrenField?: string;
   /** value字段名 */
   valueField?: string;
+  /** disabled字段名 */
+  disabledField?: string;
   /** 组件接收options数据的属性名 */
   optionsPropName?: string;
   /** 是否立即调用api */
@@ -75,6 +77,7 @@ defineOptions({ name: 'ApiComponent', inheritAttrs: false });
 const props = withDefaults(defineProps<Props>(), {
   labelField: 'label',
   valueField: 'value',
+  disabledField: 'disabled',
   childrenField: '',
   optionsPropName: 'options',
   resultField: '',
@@ -108,17 +111,25 @@ const isFirstLoaded = ref(false);
 const hasPendingRequest = ref(false);
 
 const getOptions = computed(() => {
-  const { labelField, valueField, childrenField, numberToString } = props;
+  const {
+    labelField,
+    valueField,
+    disabledField,
+    childrenField,
+    numberToString,
+  } = props;
 
   const refOptionsData = unref(refOptions);
 
   function transformData(data: OptionsItem[]): OptionsItem[] {
     return data.map((item) => {
       const value = get(item, valueField);
+      const disabled = get(item, disabledField);
       return {
-        ...objectOmit(item, [labelField, valueField, childrenField]),
+        ...objectOmit(item, [labelField, valueField, disabled, childrenField]),
         label: get(item, labelField),
         value: numberToString ? `${value}` : value,
+        disabled: get(item, disabledField),
         ...(childrenField && item[childrenField]
           ? { children: transformData(item[childrenField]) }
           : {}),
@@ -264,7 +275,7 @@ defineExpose({
   /** 获取当前值 */
   getValue: () => unref(modelValue),
   /** 获取被包装的组件实例 */
-  getComponentRef: <T = any,>() => componentRef.value as T,
+  getComponentRef: <T = any>() => componentRef.value as T,
   /** 更新Api参数 */
   updateParam(newParams: Record<string, any>) {
     innerParams.value = newParams;

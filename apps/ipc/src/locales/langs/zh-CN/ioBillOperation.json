@@ -17,5 +17,7 @@
   "unit": "单位",
   "storagePosition": "储位",
   "automatedJobs": "自动作业",
-  "manualJobs": "手动作业"
+  "manualJobs": "手动作业",
+  "numberOfFaces": "面数",
+  "labelType": "标签类型"
 }

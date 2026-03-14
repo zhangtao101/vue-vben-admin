@@ -21,8 +21,10 @@ import {
   RadioGroup,
   Select,
   Space,
+  TimeRangePicker,
   Tooltip,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -169,6 +171,73 @@ function showEdit(isCreate: boolean, row?: any) {
       id: row.id,
     }).then((data: any) => {
       editItem.value = data;
+      for (const item of dayArr) {
+        switch (item) {
+          case 'friday': {
+            if (editItem.value.startTime6) {
+              editItem.value[`${item}_time`] = [
+                dayjs(editItem.value.startTime6, 'HH:mm:ss'),
+                dayjs(editItem.value.endTime6, 'HH:mm:ss'),
+              ];
+            }
+            break;
+          }
+          case 'monday': {
+            if (editItem.value.startTime2) {
+              editItem.value[`${item}_time`] = [
+                dayjs(editItem.value.startTime2, 'HH:mm:ss'),
+                dayjs(editItem.value.endTime2, 'HH:mm:ss'),
+              ];
+            }
+            break;
+          }
+          case 'saturday': {
+            if (editItem.value.startTime7) {
+              editItem.value[`${item}_time`] = [
+                dayjs(editItem.value.startTime7, 'HH:mm:ss'),
+                dayjs(editItem.value.endTime7, 'HH:mm:ss'),
+              ];
+            }
+            break;
+          }
+          case 'sunday': {
+            if (editItem.value.startTime1) {
+              editItem.value[`${item}_time`] = [
+                dayjs(editItem.value.startTime1, 'HH:mm:ss'),
+                dayjs(editItem.value.endTime1, 'HH:mm:ss'),
+              ];
+            }
+            break;
+          }
+          case 'thursday': {
+            if (editItem.value.startTime5) {
+              editItem.value[`${item}_time`] = [
+                dayjs(editItem.value.startTime5, 'HH:mm:ss'),
+                dayjs(editItem.value.endTime5, 'HH:mm:ss'),
+              ];
+            }
+            break;
+          }
+          case 'tuesday': {
+            if (editItem.value.startTime3) {
+              editItem.value[`${item}_time`] = [
+                dayjs(editItem.value.startTime3, 'HH:mm:ss'),
+                dayjs(editItem.value.endTime3, 'HH:mm:ss'),
+              ];
+            }
+            break;
+          }
+          case 'wednesday': {
+            if (editItem.value.startTime4) {
+              editItem.value[`${item}_time`] = [
+                dayjs(editItem.value.startTime4, 'HH:mm:ss'),
+                dayjs(editItem.value.endTime4, 'HH:mm:ss'),
+              ];
+            }
+            break;
+          }
+        }
+      }
     });
   }
 }
@@ -193,9 +262,55 @@ function submit() {
    */
   form.value.validate().then(() => {
     submitLoading.value = true;
-    const ob = editItem.value.id
-      ? updatePlantCalendar(editItem.value)
-      : addPlantCalendar(editItem.value);
+    const params = {
+      ...editItem.value,
+    };
+    for (const item of dayArr) {
+      const day = params[item];
+      const time = params[`${item}_time`];
+      if (day === 2 && time && time.length === 2) {
+        switch (item) {
+          case 'friday': {
+            params.startTime6 = time[0].format('HH:mm:ss');
+            params.endTime6 = time[1].format('HH:mm:ss');
+            break;
+          }
+          case 'monday': {
+            params.startTime2 = time[0].format('HH:mm:ss');
+            params.endTime2 = time[1].format('HH:mm:ss');
+            break;
+          }
+          case 'saturday': {
+            params.startTime7 = time[0].format('HH:mm:ss');
+            params.endTime7 = time[1].format('HH:mm:ss');
+            break;
+          }
+          case 'sunday': {
+            params.startTime1 = time[0].format('HH:mm:ss');
+            params.endTime1 = time[1].format('HH:mm:ss');
+            break;
+          }
+          case 'thursday': {
+            params.startTime5 = time[0].format('HH:mm:ss');
+            params.endTime5 = time[1].format('HH:mm:ss');
+            break;
+          }
+          case 'tuesday': {
+            params.startTime3 = time[0].format('HH:mm:ss');
+            params.endTime3 = time[1].format('HH:mm:ss');
+            break;
+          }
+          case 'wednesday': {
+            params.startTime4 = time[0].format('HH:mm:ss');
+            params.endTime4 = time[1].format('HH:mm:ss');
+            break;
+          }
+        }
+      }
+    }
+    const ob = params.id
+      ? updatePlantCalendar(params)
+      : addPlantCalendar(params);
     ob.then(() => {
       // 显示操作成功的提示信息
       message.success($t('common.successfulOperation'));
@@ -418,6 +533,12 @@ onMounted(() => {
             <RadioGroup
               v-model:value="editItem[item]"
               :options="workDayOptions"
+              class="mt-1"
+            />
+            <TimeRangePicker
+              v-model:value="editItem[`${item}_time`]"
+              class="mt-4"
+              v-if="editItem[item] === 2"
             />
           </FormItem>
         </FormItem>

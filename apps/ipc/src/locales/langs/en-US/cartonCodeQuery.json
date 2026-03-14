@@ -1,0 +1,15 @@
+{
+  "boxCodeQuery": "Box Code Query",
+  "boxCode": "Box Code",
+  "materialCode": "Material Code",
+  "materialName": "Material Name",
+  "materialDescriptionId": "Material Description ID",
+  "materialDescription": "Material Description",
+  "quantity": "Quantity",
+  "unit": "Unit",
+  "manufacturerName": "Manufacturer Name",
+  "batchCode": "Batch Code",
+  "workOrderNumber": "Work Order Number",
+  "storageLocation": "Storage Location",
+  "pleaseEnterBoxCode": "Please enter box code"
+}
