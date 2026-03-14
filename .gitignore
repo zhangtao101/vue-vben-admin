@@ -50,3 +50,11 @@ vite.config.ts.*
 *.sw?
 .history
 .cursor
+
+# AI
+.codebuddy
+.agent
+.agents
+.claude
+.codex
+skills-lock.json

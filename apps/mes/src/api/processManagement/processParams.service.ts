@@ -58,6 +58,25 @@ export async function addProcessParam(params: any) {
     params,
   );
 }
+/**
+ * 保存模板接口
+ */
+export async function addParamTemp(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/process/routeDetail/addParamTemp`,
+    params,
+  );
+}
+/**
+ * 查询模板接口
+ */
+export async function getParamById(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/process/routeDetail/getParamById?${qs.stringify(
+      params,
+    )}`,
+  );
+}
 
 /**
  * 修改工艺参数

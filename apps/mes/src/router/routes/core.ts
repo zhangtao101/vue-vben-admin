@@ -195,9 +195,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/storeManagement/materialManagement/storesRequisition.vue'
-          ),
+          import('#/views/storeManagement/materialManagement/storesRequisition.vue'),
         meta: {
           ignoreAccess: true,
           title: '领料申请',
@@ -208,9 +206,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/storeManagement/materialManagement/lineSideWarehouseAllocation.vue'
-          ),
+          import('#/views/storeManagement/materialManagement/lineSideWarehouseAllocation.vue'),
         meta: {
           ignoreAccess: true,
           title: '线边仓调拨',
@@ -221,9 +217,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/storeManagement/materialManagement/ioBillManagement.vue'
-          ),
+          import('#/views/storeManagement/materialManagement/ioBillManagement.vue'),
         meta: {
           ignoreAccess: true,
           title: '出/入库单管理',
@@ -245,9 +239,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/pressDailyReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/pressDailyReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '压机日报',
@@ -258,9 +250,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/kilnDaily.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/kilnDaily.vue'),
         meta: {
           ignoreAccess: true,
           title: '窑炉日报',
@@ -271,9 +261,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/glazeLineDaily.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/glazeLineDaily.vue'),
         meta: {
           ignoreAccess: true,
           title: '釉线日报',
@@ -284,9 +272,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/poliShing.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/poliShing.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光产量日报',
@@ -297,9 +283,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/polishingShutdownDailyReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/polishingShutdownDailyReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光停机日报',
@@ -310,9 +294,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/powderDaily.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/powderDaily.vue'),
         meta: {
           ignoreAccess: true,
           title: '粉料统计日报',
@@ -323,9 +305,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/reportonactuallossofkilnglazematerials.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/reportonactuallossofkilnglazematerials.vue'),
         meta: {
           ignoreAccess: true,
           title: '窑釉料实际损耗日报',
@@ -335,9 +315,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/powderTransfer.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/powderTransfer.vue'),
         meta: {
           ignoreAccess: true,
           title: '粉料移交报表',
@@ -348,9 +326,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/polishingProductionDailyReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/polishingProductionDailyReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光产量日报',
@@ -361,9 +337,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/energyConsumptionReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/energyConsumptionReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '能耗报表',
@@ -374,9 +348,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfKilnShutdown.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfKilnShutdown.vue'),
         meta: {
           ignoreAccess: true,
           title: '窑炉停机汇总',
@@ -387,9 +359,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfGlazeLineShutdown.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfGlazeLineShutdown.vue'),
         meta: {
           ignoreAccess: true,
           title: '釉线停机汇总',
@@ -400,9 +370,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfCompressorShutdown.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/summaryTableOfCompressorShutdown.vue'),
         meta: {
           ignoreAccess: true,
           title: '压缩机停机汇总',
@@ -413,9 +381,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/summaryOfPowderPlantShutdown.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/summaryOfPowderPlantShutdown.vue'),
         meta: {
           ignoreAccess: true,
           title: '粉料停机汇总',
@@ -426,9 +392,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/prodTimeName.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/prodTimeName.vue'),
         meta: {
           ignoreAccess: true,
           title: '生成产品名称',
@@ -439,9 +403,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/prodReportName.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/prodReportName.vue'),
         meta: {
           ignoreAccess: true,
           title: '生产报告名称',
@@ -452,9 +414,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/powerConsumptionDetailsOfKilnFactory.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/powerConsumptionDetailsOfKilnFactory.vue'),
         meta: {
           ignoreAccess: true,
           title: '窑炉耗电量详情',
@@ -465,9 +425,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/gasMetersForKilnShutdownInEachFactory.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/gasMetersForKilnShutdownInEachFactory.vue'),
         meta: {
           ignoreAccess: true,
           title: '窑炉停机用燃气表',
@@ -478,9 +436,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/polishingWarehouseDailyReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/polishingWarehouseDailyReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光入库日报',
@@ -491,9 +447,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/brokenSummary.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/brokenSummary.vue'),
         meta: {
           ignoreAccess: true,
           title: '破碎汇总',
@@ -504,9 +458,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/productionStatisticsOfAutomaticPackagingMachine.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/productionStatisticsOfAutomaticPackagingMachine.vue'),
         meta: {
           ignoreAccess: true,
           title: '自动打包机生产统计',
@@ -517,9 +469,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/sectionLoss.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/sectionLoss.vue'),
         meta: {
           ignoreAccess: true,
           title: '工段损耗',
@@ -530,9 +480,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/polishingQualityDailyReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/polishingQualityDailyReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光质量日报',
@@ -543,9 +491,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/batchReportOnInputoutputOfVitrifiedBrickFactoryProducts.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/batchReportOnInputoutputOfVitrifiedBrickFactoryProducts.vue'),
         meta: {
           ignoreAccess: true,
           title: '玻化砖厂产品投入产出批报',
@@ -556,9 +502,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/dailyReportOfKilnShutdown.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/dailyReportOfKilnShutdown.vue'),
         meta: {
           ignoreAccess: true,
           title: '窑炉停机日报',
@@ -569,9 +513,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyBPGIOReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/monthlyBPGIOReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '玻化砖厂生产投入产出月报',
@@ -582,9 +524,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyPFIOReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/monthlyPFIOReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光厂投入产出月报',
@@ -595,9 +535,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/bpgPressingDetailTable.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/bpgPressingDetailTable.vue'),
         meta: {
           ignoreAccess: true,
           title: '玻化砖厂压制量明细表',
@@ -608,9 +546,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/glazeRoomDailyProductionReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/glazeRoomDailyProductionReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '制釉间生产日报',
@@ -621,9 +557,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyReportOfCompressor.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/monthlyReportOfCompressor.vue'),
         meta: {
           ignoreAccess: true,
           title: '压机月报',
@@ -634,9 +568,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/glazeLineMonthlyReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/glazeLineMonthlyReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '釉线月报',
@@ -647,9 +579,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/dayPFIOReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/dayPFIOReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光厂投入产出日报',
@@ -660,9 +590,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/kilnMonthlyReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/kilnMonthlyReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '窑炉月报',
@@ -673,9 +601,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyPowderReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/monthlyPowderReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '粉料月报',
@@ -686,9 +612,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/totalProductionAndBatchStatistics.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/totalProductionAndBatchStatistics.vue'),
         meta: {
           ignoreAccess: true,
           title: '生产总量与批次统计',
@@ -699,9 +623,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/monthlyDetailedListOfPowderMaterials.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/monthlyDetailedListOfPowderMaterials.vue'),
         meta: {
           ignoreAccess: true,
           title: '粉料分月明细表',
@@ -712,9 +634,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/productionSelectionSummaryTable.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/productionSelectionSummaryTable.vue'),
         meta: {
           ignoreAccess: true,
           title: '生产复选汇总表',
@@ -725,9 +645,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/energyConsumptionOfPolishingFactory.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/energyConsumptionOfPolishingFactory.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光分厂能耗',
@@ -738,9 +656,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/powderFactoryShutdownDetails.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/powderFactoryShutdownDetails.vue'),
         meta: {
           ignoreAccess: true,
           title: '粉料厂停机明细表',
@@ -751,9 +667,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/detailedListOfGlazeLineShutdown.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/detailedListOfGlazeLineShutdown.vue'),
         meta: {
           ignoreAccess: true,
           title: '釉线停机明细表',
@@ -764,9 +678,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/detailedListOfKilnShutdown.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/detailedListOfKilnShutdown.vue'),
         meta: {
           ignoreAccess: true,
           title: '窑炉停机明细表',
@@ -777,9 +689,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/pressShutdownDetailsTable.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/pressShutdownDetailsTable.vue'),
         meta: {
           ignoreAccess: true,
           title: '压机停机明细表',
@@ -790,9 +700,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/polishingShutdownDetails.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/polishingShutdownDetails.vue'),
         meta: {
           ignoreAccess: true,
           title: '抛光停机明细表',
@@ -803,9 +711,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/productionOrderScheduledActualReport.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/productionOrderScheduledActualReport.vue'),
         meta: {
           ignoreAccess: true,
           title: '生产工单应发实发报表',
@@ -827,9 +733,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/energyConsumptionCollectionDetails.vue'
-          ),
+          import('#/views/productionReport/energyConsumptionCollectionDetails.vue'),
         meta: {
           ignoreAccess: true,
           title: '能耗采集',
@@ -851,9 +755,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/nonProductionEnergyConsumptionDetails.vue'
-          ),
+          import('#/views/productionReport/nonProductionEnergyConsumptionDetails.vue'),
         meta: {
           ignoreAccess: true,
           title: '非生产能耗',
@@ -864,9 +766,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/crossSystemInteractionWorkOrderLockList.vue'
-          ),
+          import('#/views/productionReport/crossSystemInteractionWorkOrderLockList.vue'),
         meta: {
           ignoreAccess: true,
           title: '跨系统交互工单锁定列表',
@@ -930,9 +830,7 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
-          import(
-            '#/views/productionReport/SMTfarm/dailynewspaper/materialExceptionApprovalHistory.vue'
-          ),
+          import('#/views/productionReport/SMTfarm/dailynewspaper/materialExceptionApprovalHistory.vue'),
         meta: {
           ignoreAccess: true,
           title: '投料异常审批历史记录',
@@ -951,15 +849,6 @@ const coreRoutes: RouteRecordRaw[] = [
         },
         name: 'workstepRecipeManagement',
         path: 'workstepRecipeManagement',
-      },
-      {
-        component: () => import('#/views/scada/scadaPreview.vue'),
-        meta: {
-          ignoreAccess: true,
-          title: '预览',
-        },
-        name: 'scadaPreview',
-        path: 'scadaPreview',
       },
     ],
   },
