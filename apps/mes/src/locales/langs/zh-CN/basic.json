@@ -1,7 +1,7 @@
 {
   "productBom": {
-    "productNumber": "产品编号",
-    "productName": "产品名称",
+    "code": "类别编号",
+    "name": "类别名称",
     "deviceNumber": "设备编号",
     "systemName": "系统名称"
   },

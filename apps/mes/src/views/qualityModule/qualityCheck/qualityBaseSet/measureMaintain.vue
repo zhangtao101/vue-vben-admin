@@ -255,7 +255,7 @@ onMounted(() => {
 
 <template>
   <Page>
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Grid>
         <template #toolbar-tools>
           <!-- 新增按钮 -->

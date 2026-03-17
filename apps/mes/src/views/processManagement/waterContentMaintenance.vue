@@ -442,7 +442,7 @@ onMounted(() => {
 <template>
   <Page class="bg-background-deep">
     <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 工单号 -->
         <FormItem

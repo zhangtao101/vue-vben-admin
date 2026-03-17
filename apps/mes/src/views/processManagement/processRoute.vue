@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { IconParkSolidError, MdiSearch, MdiSuccess } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
@@ -155,18 +154,34 @@ function beforeUpload(file: any) {
 
 // region 状态切换
 
-function handleStateChange(row: any) {
-  const params = {
-    auditState: '',
-    routeId: row.id,
-  };
-  updateProcessRouteUse(params)
-    .then(() => {
-      message.success($t('common.successfulOperation'));
-    })
-    .finally(() => {
+function handleStateChange(row: any, checked: boolean) {
+  const isEnable = checked;
+  const title = isEnable
+    ? '是否确认启用该工艺路线?'
+    : '是否确认停用该工艺路线?';
+
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'primary',
+    onCancel() {
       gridApi.reload();
-    });
+    },
+    onOk() {
+      const params = {
+        auditState: '',
+        routeId: row.id,
+      };
+      updateProcessRouteUse(params)
+        .then(() => {
+          message.success($t('common.successfulOperation'));
+        })
+        .finally(() => {
+          gridApi.reload();
+        });
+    },
+    title,
+  });
 }
 
 // endregion
@@ -271,7 +286,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 工艺路线名称 -->
         <FormItem
@@ -282,11 +297,8 @@ onMounted(() => {
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
-          <Button
-            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
-            type="primary"
-            @click="gridApi.reload()"
-          >
+          <Button type="primary" @click="gridApi.reload()">
+            <Icon icon="mdi:magnify" class="mr-2" />
             {{ $t('common.search') }}
           </Button>
         </FormItem>
@@ -294,7 +306,7 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
 
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Grid>
         <template #toolbar-tools>
           <Space>
@@ -332,13 +344,11 @@ onMounted(() => {
           <div v-if="row.state === 3">已弃用</div>
           <div v-else>
             <Switch
-              v-model:checked="row.useState"
-              :checked-value="1"
-              :un-checked-value="2"
+              :checked="row.useState === 1"
               :disabled="!author.includes('启停变更')"
               checked-children="启用"
               un-checked-children="停用"
-              @change="handleStateChange(row)"
+              @change="(checked: any) => handleStateChange(row, checked)"
             />
           </div>
         </template>
@@ -350,10 +360,10 @@ onMounted(() => {
             </template>
             <Button
               type="link"
+              class="!px-2"
               @click="handleViewRouteDetail(row.id, false)"
-              class="px-1"
             >
-              <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
+              <Icon icon="mdi:eye" class="text-2xl" />
             </Button>
           </Tooltip>
           <!-- 编辑基础信息 -->
@@ -361,11 +371,8 @@ onMounted(() => {
             <template #title>
               {{ $t('processManagement.processRoute.editTheBasicInformation') }}
             </template>
-            <Button type="link" @click="openEditDrawer(row)" class="px-1">
-              <Icon
-                icon="mdi:edit-box-outline"
-                class="inline-block align-middle text-2xl"
-              />
+            <Button type="link" class="!px-2" @click="openEditDrawer(row)">
+              <Icon icon="mdi:edit-box-outline" class="text-2xl" />
             </Button>
           </Tooltip>
           <!-- 绑定产品型号 -->
@@ -375,39 +382,26 @@ onMounted(() => {
             </template>
             <Button
               type="link"
+              class="!px-2"
               @click="openProductBindDrawer(row)"
-              class="px-1"
             >
-              <Icon
-                icon="mdi:attachment"
-                class="inline-block align-middle text-2xl"
-              />
+              <Icon icon="mdi:attachment" class="text-2xl" />
             </Button>
           </Tooltip>
           <!-- 审核通过 -->
           <Tooltip v-if="row.auditState === 1 && author.includes('审核')">
             <template #title>{{ $t('common.pass') }}</template>
-            <Button
-              :icon="h(MdiSuccess, { class: 'inline-block size-6' })"
-              class="mr-4"
-              type="link"
-              @click="handleAudit(row, true)"
-            />
+            <Button type="link" class="!px-2" @click="handleAudit(row, true)">
+              <Icon icon="mdi:check-circle" class="text-2xl" />
+            </Button>
           </Tooltip>
 
           <!-- 审核不通过 -->
           <Tooltip v-if="row.auditState === 1 && author.includes('审核')">
             <template #title>{{ $t('common.noPass') }}</template>
-            <Button
-              :icon="
-                h(IconParkSolidError, {
-                  class: 'inline-block size-6 text-red-600',
-                })
-              "
-              class="mr-4"
-              type="link"
-              @click="handleAudit(row, false)"
-            />
+            <Button type="link" class="!px-2" @click="handleAudit(row, false)">
+              <Icon icon="mdi:close-circle" class="text-2xl text-red-600" />
+            </Button>
           </Tooltip>
           <!-- 变更 -->
           <Tooltip v-if="author.includes('变更')">
@@ -416,13 +410,10 @@ onMounted(() => {
             </template>
             <Button
               type="link"
+              class="!px-2"
               @click="handleViewRouteDetail(row.id, true)"
-              class="px-1"
             >
-              <Icon
-                icon="mdi:update"
-                class="inline-block align-middle text-2xl"
-              />
+              <Icon icon="mdi:update" class="text-2xl" />
             </Button>
           </Tooltip>
           <!-- 删除 -->
@@ -430,11 +421,8 @@ onMounted(() => {
             <template #title>
               {{ $t('processManagement.processRoute.delete') }}
             </template>
-            <Button type="link" @click="handleDelete(row)" danger class="px-1">
-              <Icon
-                icon="mdi:delete-forever-outline"
-                class="inline-block align-middle text-2xl"
-              />
+            <Button type="link" class="!px-2" @click="handleDelete(row)" danger>
+              <Icon icon="mdi:delete-forever-outline" class="text-2xl" />
             </Button>
           </Tooltip>
         </template>

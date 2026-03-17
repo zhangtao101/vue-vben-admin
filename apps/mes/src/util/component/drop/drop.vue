@@ -27,7 +27,7 @@ import DropzoneBackground from './DropzoneBackground.vue';
 import Sidebar from './Sidebar.vue';
 import useDragAndDrop from './useDnD';
 
-const props = defineProps(['formula', 'matching', 'isRouter']);
+const props = defineProps(['formula', 'matching', 'isRouter', 'isUpdate']);
 const { addEdges, fitView, removeNodes, findNode } = useVueFlow();
 const { layout } = useLayout();
 
@@ -456,7 +456,7 @@ defineExpose({
 
 <template>
   <div class="mt-2 flex h-[80%]" @drop="onDrop">
-    <Sidebar :is-router="isRouter" />
+    <Sidebar :is-router="isRouter" v-if="isUpdate" />
 
     <VueFlow
       v-model:nodes="nodes"
@@ -475,7 +475,7 @@ defineExpose({
         <p v-if="isDragOver">放置</p>
       </DropzoneBackground>
 
-      <Panel class="process-panel" position="top-right">
+      <Panel class="process-panel" position="top-right" v-if="isUpdate">
         <div class="layout-panel">
           <button title="set horizontal layout" @click="layoutGraph('LR')">
             整理
@@ -490,6 +490,7 @@ defineExpose({
           @del-node="delNode"
           @update="openOperationSettings"
           @bind="openBind"
+          :hide-options="!isUpdate"
         />
       </template>
       <MiniMap pannable zoomable />

@@ -435,7 +435,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 线损对象编号 -->
         <FormItem

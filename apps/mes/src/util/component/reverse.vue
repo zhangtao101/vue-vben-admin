@@ -294,7 +294,7 @@ onMounted(() => {
     :title="$t('common.chargeAgainst')"
     @close="close"
   >
-    <Descriptions bordered :column="2" class="mb-8">
+    <Descriptions bordered :column="2" class="!mb-8">
       <!-- 当前库存 -->
       <DescriptionsItem
         :span="2"

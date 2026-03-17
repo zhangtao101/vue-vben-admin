@@ -5,5 +5,6 @@ export * from './processParams.service';
 export * from './processRoute.service';
 export * from './processRouteDetail.service';
 export * from './selectionOfRDProcessRoute.service';
+export * from './sopBinding.service';
 export * from './waterContentMaintenance.service';
 export * from './workStationMaintenance.service';

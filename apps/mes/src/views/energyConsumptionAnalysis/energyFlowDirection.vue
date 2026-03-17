@@ -165,7 +165,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 查询条件区域 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 时间范围 -->
         <FormItem

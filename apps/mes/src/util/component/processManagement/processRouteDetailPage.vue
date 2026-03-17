@@ -199,12 +199,18 @@ defineExpose({
       </Descriptions>
     </div>
 
-    <Drop ref="dropRef" :formula="details" :is-router="true" v-if="isOpen" />
+    <Drop
+      ref="dropRef"
+      :formula="details"
+      :is-router="true"
+      v-if="isOpen"
+      :is-update="updateStatus"
+    />
 
     <!-- 抽屉底部操作按钮 -->
     <template #footer>
       <!-- 按钮组，包含取消和确认按钮 -->
-      <Space>
+      <Space v-if="updateStatus">
         <!-- 取消按钮，点击后关闭人员操作抽屉 -->
         <Button @click="closeDrawer()">
           {{ $t('common.cancel') }}

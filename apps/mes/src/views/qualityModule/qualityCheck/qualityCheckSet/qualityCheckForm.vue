@@ -332,7 +332,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- 搜索区域 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 质检表编号搜索框 -->
         <FormItem

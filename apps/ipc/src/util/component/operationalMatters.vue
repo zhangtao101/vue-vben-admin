@@ -211,7 +211,7 @@ onBeforeUnmount(() => {
   <!-- <RadioGroup
     v-model:value="theSelectedJobType"
     :options="jobType"
-    class="mb-8"
+    class="!mb-8"
   /> -->
   <!-- 根据 loading 状态显示加载动画 -->
   <Spin :spinning="loading">

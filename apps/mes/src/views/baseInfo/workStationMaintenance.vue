@@ -609,10 +609,8 @@ function submit() {
 
   // 验证表单并构建提交参数
   editForm.value.validate().then(() => {
-    // 复制 checkedRow.value 对象的所有属性作为提交参数
-    const params = { ...checkedRow.value };
     // 初始化绑定 VM 数组
-    params.bindingVMs = [];
+    const bindingVMs: any[] = [];
 
     // 遍历工作站详情数组，构建绑定 VM 数组
     workStationDetail.value.forEach((item: any, index: number) => {
@@ -620,19 +618,23 @@ function submit() {
         message.error($t('ui.fallback.costCenterError'));
         throw new Error($t('ui.fallback.costCenterError'));
       }
-      params.bindingVMs.push({
+      bindingVMs.push({
         costCenterCode: item.costCenterCode,
         details: item.details || [],
         equipCodeList: item.equipCodeList || [],
         orderNo: index,
         processCode: item.processCode,
         processName: item.processName,
-        workstationCode: params.workstationCode,
+        workstationCode: checkedRow.value.workstationCode,
       });
     });
 
-    // 将 bindingdtos 设置为 undefined
-    params.bindingdtos = undefined;
+    // 构建提交参数
+    const params = {
+      ...checkedRow.value,
+      bindingVMs,
+      bindingdtos: undefined,
+    };
 
     // 根据 params 对象中是否有 id 属性来决定是编辑还是添加工作站
     const operation = params.id ? editWorkstation : addWorkstation;
@@ -890,7 +892,7 @@ onMounted(async () => {
 <template>
   <Page class="bg-background-deep">
     <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 工作站编号 -->
         <FormItem

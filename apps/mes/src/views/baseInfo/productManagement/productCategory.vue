@@ -16,7 +16,6 @@ import {
   FormItem,
   Input,
   Row,
-  Space,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -99,10 +98,11 @@ const queryParams = ref({
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = queryParams.value;
-    if (selectedKey.value && selectedKey.value.code) {
+    // 设置 parentTypeCode
+    if (selectedKey.value && selectedKey.value.code !== undefined) {
       params.parentTypeCode = selectedKey.value.code;
     }
-    // 调用 listStations API函数，传递查询参数和分页信息
+    // 调用 queryCategoryList API函数，传递查询参数和分页信息
     queryCategoryList({
       data: { ...params }, // 展开queryParams.value中的所有查询参数
       pageNum: page, // 当前页码。
@@ -130,7 +130,13 @@ const expandedKeys = ref<string[]>([]);
 // 当前选中的节点
 const selectedKeys = ref<string[]>([]);
 // 节点数据
-const treeData = ref<any[]>([]);
+const treeData = ref<any[]>([
+  {
+    code: '',
+    name: '全部',
+    childrens: [],
+  },
+]);
 
 /**
  * 查询类别树
@@ -140,8 +146,8 @@ function queryAllCategoryTree() {
   queryCategoryTree().then((data) => {
     // 检查返回的数据是否存在且长度大于0
     if (data) {
-      // 如果数据有效，更新treeData
-      treeData.value = [data];
+      // 如果数据有效，更新treeData的第一个根节点的childrens
+      treeData.value[0].childrens = data;
     }
   });
 }
@@ -154,7 +160,8 @@ function queryAllCategoryTree() {
  * @param {boolean} info.selected - 节点的选中状态
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
-  selectedKey.value = selected && node.orgLevel < 3 ? node : undefined;
+  // 选中的节点设置到selectedKey用于查询
+  selectedKey.value = selected ? node : undefined;
   gridApi.reload();
 }
 
@@ -183,66 +190,65 @@ onMounted(() => {
 
 <template>
   <Page>
-    <Space direction="vertical" style="width: 100%">
-      <Card>
-        <Form :model="queryParams" layout="inline">
-          <!-- 类别编号 -->
-          <FormItem
-            :label="$t('basic.productCategory.categoryNumber')"
-            style="margin-bottom: 1em"
-          >
-            <Input v-model:value="queryParams.typeCode" />
-          </FormItem>
-          <!-- 类别名称 -->
-          <FormItem
-            :label="$t('basic.productCategory.categoryName')"
-            style="margin-bottom: 1em"
-          >
-            <Input v-model:value="queryParams.typeName" />
-          </FormItem>
+    <Card class="!mb-8">
+      <Form :model="queryParams" layout="inline">
+        <!-- 类别编号 -->
+        <FormItem
+          :label="$t('basic.productCategory.categoryNumber')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.typeCode" />
+        </FormItem>
+        <!-- 类别名称 -->
+        <FormItem
+          :label="$t('basic.productCategory.categoryName')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.typeName" />
+        </FormItem>
 
-          <FormItem>
-            <Button
-              :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
-              type="primary"
-              @click="() => gridApi.reload()"
-            >
-              {{ $t('common.search') }}
-            </Button>
-          </FormItem>
-        </Form>
-      </Card>
-      <!-- region 主要内容显示区域 -->
-      <Row :gutter="16">
-        <!-- region 树形菜单 -->
-        <Col :lg="6" :md="8" :sm="8" :xl="8" :xs="8">
-          <Card class="h-[60vh] overflow-y-auto">
-            <DirectoryTree
-              v-model:expanded-keys="expandedKeys"
-              v-model:selected-keys="selectedKeys"
-              :auto-expand-parent="true"
-              :field-names="{
-                children: 'children',
-                title: 'orgFullName',
-                key: 'orgCode',
-              }"
-              :tree-data="treeData"
-              @select="selectedTree"
-            />
-          </Card>
-        </Col>
-        <!-- endregion -->
-
-        <!-- region 表格主体 -->
-        <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
-          <Card class="h-[60vh] overflow-y-auto">
-            <Grid />
-          </Card>
-        </Col>
-        <!-- endregion -->
-      </Row>
+        <FormItem>
+          <Button
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
+            type="primary"
+            @click="() => gridApi.reload()"
+          >
+            {{ $t('common.search') }}
+          </Button>
+        </FormItem>
+      </Form>
+    </Card>
+    <!-- region 主要内容显示区域 -->
+    <Row :gutter="16">
+      <!-- region 树形菜单 -->
+      <Col :lg="6" :md="8" :sm="8" :xl="8" :xs="8">
+        <Card class="h-[60vh] overflow-y-auto">
+          <DirectoryTree
+            v-model:expanded-keys="expandedKeys"
+            v-model:selected-keys="selectedKeys"
+            :auto-expand-parent="true"
+            :default-expand-all="true"
+            :field-names="{
+              children: 'childrens',
+              title: 'name',
+              key: 'code',
+            }"
+            :tree-data="treeData"
+            @select="selectedTree"
+          />
+        </Card>
+      </Col>
       <!-- endregion -->
-    </Space>
+
+      <!-- region 表格主体 -->
+      <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
+        <Card class="h-[60vh] overflow-y-auto">
+          <Grid />
+        </Card>
+      </Col>
+      <!-- endregion -->
+    </Row>
+    <!-- endregion -->
   </Page>
 </template>
 

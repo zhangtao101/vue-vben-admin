@@ -718,7 +718,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 顶部搜索区域 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 单据编号 -->
         <FormItem

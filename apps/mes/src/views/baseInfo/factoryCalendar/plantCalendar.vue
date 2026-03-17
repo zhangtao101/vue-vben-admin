@@ -430,7 +430,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 表格 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Grid>
         <template #toolbar-tools>
           <!-- 新增按钮 -->

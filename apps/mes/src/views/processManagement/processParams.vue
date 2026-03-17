@@ -715,7 +715,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 模板编号 -->
         <FormItem
@@ -750,7 +750,7 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
     <!-- region 表格 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Grid>
         <template #toolbar-tools>
           <Space>
