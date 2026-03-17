@@ -1,11 +1,19 @@
-<script setup lang="ts">
-import { computed, h, onMounted, ref, unref, watch } from 'vue';
+<script lang="ts" setup>
+/**
+ * 变更任务管理页面
+ * 用于管理工艺参数模板和工艺路线的变更任务
+ * 功能包括：查询变更任务列表、查看变更详情、执行变更操作
+ */
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MdiEyeOutline, MdiSearch } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -20,234 +28,246 @@ import {
   Select,
   SelectOption,
   Space,
-  Table,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { changeUse, queryChange, queryChangeDetail } from '#/api';
 import { queryAuth } from '#/util';
 
 // 路由信息
 const route = useRoute();
 
-// region 表格
+// region 主表格配置
 
-const columns = ref([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    title: '#',
-    width: 60,
+/**
+ * 主表格配置选项
+ * 显示变更任务列表，包含变更任务编号、变更类型、变更前后版本、状态等字段
+ */
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'changeCode', title: '变更任务编号', minWidth: 120 },
+    { field: 'changeTypeName', title: '变更类型', minWidth: 120 },
+    { field: 'changeBeforeVersion', title: '变更前版本', minWidth: 120 },
+    { field: 'changeAfterVersion', title: '变更后版本', minWidth: 120 },
+    { field: 'stateName', title: '变更任务状态', minWidth: 120 },
+    { field: 'changeTime', title: '变更时间', minWidth: 120 },
+    {
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: '操作',
+      minWidth: 100,
+    },
+  ],
+  height: '500px',
+  stripe: true,
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }: any) => {
+        return await queryChangeListData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
   },
-  {
-    dataIndex: 'changeCode',
-    ellipsis: true,
-    title: '变更任务编号',
-    width: 120,
+  toolbarConfig: {
+    custom: true,
+    refresh: true,
+    zoom: true,
   },
-  {
-    dataIndex: 'changeTypeName',
-    ellipsis: true,
-    title: '变更类型',
-    width: 120,
-  },
-  {
-    dataIndex: 'changeBeforeVersion',
-    ellipsis: true,
-    title: '变更前版本',
-    width: 120,
-  },
-  {
-    dataIndex: 'changeAfterVersion',
-    ellipsis: true,
-    title: '变更后版本',
-    width: 120,
-  },
-  {
-    dataIndex: 'stateName',
-    ellipsis: true,
-    title: '变更任务状态',
-    width: 120,
-  },
-  {
-    dataIndex: 'changeTime',
-    ellipsis: true,
-    title: '变更时间',
-    width: 120,
-  },
-  {
-    dataIndex: 'operation',
-    ellipsis: true,
-    fixed: 'right',
-    title: '操作',
-    width: 120,
-  },
-] as any[]);
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 1500,
-  y: 350,
-});
+};
 
-// 表格数据
-const data = ref([{}]);
+/**
+ * 主表格事件
+ */
+const gridEvents: VxeGridListeners<any> = {};
 
-// 分页信息
-const paging = ref({
-  current: 1,
-  pageSize: 20,
-  total: 200,
-});
-// 表格分页信息
-const pagination = computed<any>(() => paging);
+/**
+ * 主表格实例和 API
+ */
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-// 查询参数
+// endregion
+
+// region 查询参数
+
+/**
+ * 查询参数
+ * 包含变更任务编号、变更类型等筛选条件
+ */
 const queryParams = ref<any>({
   changeCode: '',
   changeType: '',
 });
 
-// 表格加载状态
-const tableLoading = ref(false);
-
 /**
- * 从服务器查询工作站数据的函数。
- * 这个函数用于发送查询请求，并在成功获取数据后更新组件的状态。
+ * 查询变更任务列表数据
+ * @param page 当前页码
+ * @param pageSize 每页条数
+ * @returns Promise 包含列表和总数的对象
  */
-function queryData() {
-  tableLoading.value = true;
-  /**
-   * 调用 queryWorkstation 函数，传入查询参数和分页信息。
-   * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
-   */
-  queryChange({
-    ...queryParams.value, // 展开 queryParams.value 对象，包含所有查询参数。
-    pageNum: paging.value.current, // 当前页码。
-    pageSize: paging.value.pageSize, // 每页显示的数据条数。
-  })
-    .then(({ total, list }) => {
-      // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
-      /**
-       * 更新组件的状态。
-       * 将查询到的数据列表赋值给 data.value，以便在组件中显示。
-       */
-      data.value = list;
-
-      /**
-       * 更新分页信息。
-       * 将查询到的总条数赋值给 paging.value.total，以便正确显示分页控件。
-       */
-      paging.value.total = total;
-    })
-    .finally(() => {
-      // 无论查询是否成功或失败，都将表格加载状态设置为 false。
-      tableLoading.value = false;
-    });
+function queryChangeListData({ page, pageSize }: any) {
+  return new Promise((resolve, reject) => {
+    const params = {
+      ...queryParams.value,
+      pageNum: page,
+      pageSize,
+    };
+    queryChange(params)
+      .then(({ list, total }: any) => {
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
 
 /**
- * 处理分页变化的函数。
- * 当分页控件的当前页或每页显示条数发生变化时，这个函数会被调用以更新分页状态。
- *
- * @param {object} page - 包含分页信息的对象。
+ * 处理查询操作
+ * 重置页码并重新加载表格数据
  */
-function paginationChange(page: any) {
-  /**
-   * 更新当前页码。
-   * 将传入的 page 对象中的 current 属性值赋给 paging.value.current。
-   * 这表示用户选择了新的当前页码。
-   */
-  paging.value.current = page.current;
-
-  /**
-   * 更新每页显示条数。
-   * 将传入的 page 对象中的 pageSize 属性值赋给 paging.value.pageSize。
-   * 这表示用户选择了新的每页显示条数。
-   */
-  paging.value.pageSize = page.pageSize;
-  queryData();
+function handleSearch() {
+  gridApi.reload();
 }
 
 // endregion
 
-// region 查看详情 / 变更
-// 详情抽屉是否显示
-const detailsVisible = ref(false);
-// 详情数据
+// region 详情抽屉
+
+/**
+ * 对话框显示状态
+ */
+const detailsVisible = ref<boolean>(false);
+/**
+ * 详情数据
+ */
 const editItem = ref<any>({});
-// 变更详情表格列
-const changeTableColumn = ref<any>();
-// 工艺路线变更表格头
+/**
+ * 选中的行
+ */
+const selectedRow = ref<any[]>([]);
+
+// endregion
+
+// region 详情表格配置
+
+/**
+ * 详情表格列配置
+ */
+const detailsColumns = ref<any[]>([]);
+
+/**
+ * 详情表格配置选项
+ * 显示变更详情列表，支持复选框选择
+ */
+const detailsGridOptions = computed<VxeGridProps<any>>(() => ({
+  align: 'center',
+  border: true,
+  checkboxConfig: {
+    highlight: true,
+    reserve: true,
+  },
+  columns: detailsColumns.value,
+  data: [],
+  height: 350,
+  pagerConfig: {
+    enabled: false,
+  },
+  stripe: true,
+}));
+
+/**
+ * 详情表格事件
+ * 处理复选框变化和全选事件
+ */
+const detailsGridEvents: VxeGridListeners<any> = {
+  checkboxChange: ({ checked, row }) => {
+    if (checked) {
+      const exists = selectedRow.value.some((r) => r.id === row.id);
+      if (!exists) {
+        selectedRow.value.push(row.id);
+      }
+    } else {
+      selectedRow.value = selectedRow.value.filter((r) => r !== row.id);
+    }
+  },
+  checkboxAll: ({ checked, records }) => {
+    selectedRow.value = checked ? records.map((r: any) => r.id) : [];
+  },
+};
+
+/**
+ * 详情表格实例和 API
+ */
+const [DetailsGrid, detailsGridApi] = useVbenVxeGrid({
+  gridEvents: detailsGridEvents,
+  gridOptions: detailsGridOptions.value,
+});
+
+/**
+ * 工艺路线变更表格列配置
+ */
 const changeOfProcessRoute = [
   {
-    dataIndex: 'productCode',
-    ellipsis: true,
+    field: 'productCode',
     title: '绑定产品编号',
     width: 120,
   },
   {
-    dataIndex: 'productName',
-    ellipsis: true,
+    field: 'productName',
     title: '绑定产品名称',
     width: 120,
   },
 ];
-// 工艺参数模板变更表格头
+
+/**
+ * 工艺参数模板变更表格列配置
+ */
 const processParameterTemplate = [
   {
-    dataIndex: 'routeCode',
-    ellipsis: true,
+    field: 'routeCode',
     title: '对应工艺路线编号',
     width: 180,
   },
   {
-    dataIndex: 'routeName',
-    ellipsis: true,
+    field: 'routeName',
     title: '对应工艺路线名称',
     width: 180,
   },
 ];
+
+/**
+ * 公共表格头配置
+ */
 const tableHeaders = [
   {
-    dataIndex: 'useVersion',
-    ellipsis: true,
+    field: 'useVersion',
     title: '更新后的版本号',
     width: 160,
   },
   {
-    dataIndex: 'nowVersion',
-    ellipsis: true,
+    field: 'nowVersion',
     title: '当前对应使用的版本',
     width: 160,
   },
   {
-    dataIndex: 'useStateName',
-    ellipsis: true,
+    field: 'useStateName',
     title: '应用状态',
     width: 120,
   },
 ];
-const detailsTableScroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 740,
-  y: 350,
-});
-// 详情
-const detailsTableData = ref<any>([]);
-// 加载状态
-const detailsTableDataLoading = ref(false);
-// 选中的行
-const selectedRow = ref<any>([]);
 
-// 表格行选中配置
-const rowSelection: any = computed(() => {
-  return {
-    onChange: (selectedRowKeys: any[], _selectedRows: any[]) => {
-      selectedRow.value = selectedRowKeys;
-    },
-    selectedRowKeys: unref(selectedRow),
-  };
-});
+// endregion
+
+// region 详情/变更操作
 
 /**
  * 显示详情
@@ -256,34 +276,36 @@ const rowSelection: any = computed(() => {
 function showDetails(row: any) {
   editItem.value = { ...row };
   detailsVisible.value = true;
-  detailsTableDataLoading.value = true;
-  changeTableColumn.value =
+  selectedRow.value = [];
+  // 根据变更类型设置表格列
+  const columns =
     editItem.value.changeType === 1
       ? [...processParameterTemplate, ...tableHeaders]
       : [...changeOfProcessRoute, ...tableHeaders];
+  detailsColumns.value = columns;
   queryChangeDetail(editItem.value.id || 1)
     .then((d) => {
-      d.forEach((item: any) => {
-        item.key = item.id;
-      });
-      detailsTableData.value = d;
+      detailsGridApi.grid.reloadData(d);
     })
-    .finally(() => {
-      detailsTableDataLoading.value = false;
+    .catch(() => {
+      detailsGridApi.grid.reloadData([]);
     });
 }
 
 /**
  * 关闭抽屉
  */
-function close() {
+function closeDetails() {
   editItem.value = {};
   detailsVisible.value = false;
-  detailsTableData.value = [];
+  detailsGridApi.grid.reloadData([]);
   selectedRow.value = [];
 }
 
-function submit() {
+/**
+ * 提交变更操作
+ */
+function submitChange() {
   Modal.confirm({
     cancelText: '取消',
     okText: '确认',
@@ -298,15 +320,13 @@ function submit() {
           changeRecordId: editItem.value.id,
         })
           .then(() => {
-            // 显示操作成功的提示信息
             message.success($t('common.successfulOperation'));
-            queryData();
-            close();
+            gridApi.reload();
+            closeDetails();
           })
-          .catch((error) => {
-            // 显示操作失败的提示信息
+          .catch((error: any) => {
             message.error($t('common.operationFailure'));
-            message.error(error.msg); // 显示操作失败的提示信息
+            message.error(error.msg);
           });
       } else {
         message.error('至少选择一条数据!');
@@ -318,29 +338,26 @@ function submit() {
 
 // endregion
 
-// region 权限查询
-// 当前页面按钮权限列表
-const author = ref<string[]>([]);
-// 编辑按钮是否显示
-const editButton = ref(false);
+// region 权限
 
-// 监听权限变化, 变更按钮的显示情况
-watch(
-  () => author.value,
-  () => {
-    // 当 author.value 包含 '编辑' 时，设置 editButton.value 为 true，表示允许编辑
-    editButton.value = author.value.includes('变更');
-  },
-);
+/**
+ * 权限列表
+ */
+const author = ref<string[]>([]);
 
 // endregion
 
+/**
+ * 组件挂载时执行
+ * 查询权限列表
+ */
 onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
-  queryData();
 });
+
+// endregion
 </script>
 
 <template>
@@ -369,11 +386,8 @@ onMounted(() => {
           </Select>
         </FormItem>
         <FormItem style="margin-bottom: 1em">
-          <Button
-            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
-            type="primary"
-            @click="queryData()"
-          >
+          <Button type="primary" @click="handleSearch">
+            <Icon icon="mdi:magnify" class="mr-2" />
             {{ $t('common.search') }}
           </Button>
         </FormItem>
@@ -381,45 +395,25 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
 
-    <!-- region 表格主体 -->
     <Card>
-      <Table
-        :columns="columns"
-        :data-source="data"
-        :loading="tableLoading"
-        :pagination="pagination"
-        :scroll="scroll"
-        bordered
-        @change="paginationChange"
-      >
-        <template #bodyCell="{ column, index, record }">
-          <template v-if="column.dataIndex === 'step'">
-            <span>{{ index + 1 }}</span>
-          </template>
-
-          <template v-else-if="column.dataIndex === 'operation'">
-            <!-- 查看按钮 -->
-            <Tooltip>
-              <template #title>{{ $t('common.view') }}</template>
-              <Button
-                :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
-                class="mr-4"
-                type="link"
-                @click="showDetails(record)"
-              />
-            </Tooltip>
-          </template>
+      <div>
+        <Grid>
+        <template #action="{ row }">
+          <Button type="link" class="!p-1" @click="showDetails(row)">
+            <Icon icon="mdi:eye" class="text-xl" />
+          </Button>
         </template>
-      </Table>
+      </Grid>
+      </div>
     </Card>
-    <!-- endregion -->
 
+    <!-- 详情抽屉 -->
     <Drawer
+      v-model:open="detailsVisible"
       :footer-style="{ textAlign: 'right' }"
-      :visible="detailsVisible"
       :width="800"
       title="详情"
-      @close="close"
+      @close="closeDetails"
     >
       <Descriptions :column="2" bordered>
         <DescriptionsItem label="变更编号">
@@ -436,25 +430,16 @@ onMounted(() => {
         </DescriptionsItem>
       </Descriptions>
 
-      <Table
-        :columns="changeTableColumn"
-        :data-source="detailsTableData"
-        :loading="detailsTableDataLoading"
-        :pagination="false"
-        :row-selection="rowSelection"
-        :scroll="detailsTableScroll"
-        bordered
-        class="mt-8"
-      />
+      <div class="mt-8">
+        <DetailsGrid />
+      </div>
 
       <template #footer>
         <Space>
-          <!-- 取消 -->
-          <Button @click="close">
+          <Button @click="closeDetails">
             {{ $t('common.cancel') }}
           </Button>
-          <!-- 确认 -->
-          <Button type="primary" @click="submit">
+          <Button type="primary" @click="submitChange">
             {{ $t('common.confirm') }}
           </Button>
         </Space>

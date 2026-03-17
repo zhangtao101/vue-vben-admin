@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+/**
+ * SOP 绑定管理页面
+ * 用于管理工艺路线与 SOP 文件的绑定关系
+ * 功能包括：查询 SOP 绑定列表、新增绑定、编辑绑定、删除绑定、上传 SOP 文件
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
@@ -39,6 +44,10 @@ import { queryAuth } from '#/util';
 
 // region 表格配置
 
+/**
+ * 主表格配置选项
+ * 显示 SOP 绑定列表，包含产品编号、产品名称、路线编号、路线名称、对应工序、SOP图纸名称等字段
+ */
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -80,19 +89,35 @@ const gridOptions: VxeGridProps<any> = {
   },
 };
 
+/**
+ * 主表格事件
+ */
 const gridEvents: VxeGridListeners<any> = {};
 
+/**
+ * 主表格实例和 API
+ */
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // endregion
 
 // region 查询参数
 
+/**
+ * 查询参数
+ * 包含产品编号、产品名称、路线编号、路线名称等筛选条件
+ */
 const queryParams = ref<any>({
   pageNum: 1,
   pageSize: 10,
 });
 
+/**
+ * 查询 SOP 绑定列表数据
+ * @param page 当前页码
+ * @param pageSize 每页条数
+ * @returns Promise 包含列表和总数的对象
+ */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params = {
@@ -113,6 +138,10 @@ function queryData({ page, pageSize }: any) {
   });
 }
 
+/**
+ * 处理查询操作
+ * 重置页码并重新加载表格数据
+ */
 function handleSearch() {
   queryParams.value.pageNum = 1;
   gridApi.reload();
@@ -122,26 +151,56 @@ function handleSearch() {
 
 // region 新增/编辑
 
+/**
+ * 对话框显示状态
+ */
 const dialogVisible = ref<boolean>(false);
+/**
+ * 对话框状态：create-新增，update-编辑
+ */
 const dialogStatus = ref<string>('create');
+/**
+ * 表单数据
+ */
 const formData = ref<any>({});
+/**
+ * 表单引用
+ */
 const formRef = ref();
+/**
+ * 产品列表
+ */
 const productList = ref<any[]>([]);
+/**
+ * 路线列表
+ */
 const routeList = ref<any[]>([]);
+/**
+ * 路线明细列表
+ */
 const routeDetailList = ref<any[]>([]);
+/**
+ * 选中的行
+ */
 const selectedRows = ref<any[]>([]);
+/**
+ * 文件列表
+ */
 const fileList = ref<any>({});
+/**
+ * 表单验证规则
+ */
 const rules: any = {
-  productCode: [
-    { required: true, message: '请选择产品型号', trigger: 'change' },
-  ],
-  productName: [
-    { required: true, message: '产品名称为必填项', trigger: 'blur' },
-  ],
+  productCode: [{ required: true, message: '请选择产品型号', trigger: 'change' }],
+  productName: [{ required: true, message: '产品名称为必填项', trigger: 'blur' }],
   routeCode: [{ required: true, message: '请选择路线编号', trigger: 'change' }],
   routeName: [{ required: true, message: '路线名称为必填项', trigger: 'blur' }],
 };
 
+/**
+ * 打开新增对话框
+ * 清空表单数据、重置列表、加载产品列表
+ */
 function openCreateDialog() {
   dialogStatus.value = 'create';
   formData.value = {};
@@ -152,6 +211,11 @@ function openCreateDialog() {
   loadProductList();
 }
 
+/**
+ * 打开编辑对话框
+ * @param row 当前行数据
+ * 显示当前行的数据、加载产品列表和路线列表
+ */
 function openEditDialog(row: any) {
   dialogStatus.value = 'update';
   formData.value = { ...row };
@@ -180,6 +244,10 @@ function openEditDialog(row: any) {
   });
 }
 
+/**
+ * 关闭对话框
+ * 清空所有数据和列表
+ */
 function closeDialog() {
   dialogVisible.value = false;
   formData.value = {};
@@ -189,6 +257,11 @@ function closeDialog() {
   routeDetailGridApi.grid.reloadData([]);
 }
 
+/**
+ * 产品型号变化处理
+ * @param val 选中的产品编码
+ * 根据产品加载对应的路线列表
+ */
 function handleProductChange(val: any) {
   const product = productList.value.find((item) => item.productCode === val);
   if (product) {
@@ -204,6 +277,11 @@ function handleProductChange(val: any) {
   });
 }
 
+/**
+ * 路线编号变化处理
+ * @param val 选中的路线编码
+ * 根据路线加载对应的工序明细
+ */
 function handleRouteChange(val: any) {
   const route = routeList.value.find((item) => item.routeCode === val);
   if (route) {
@@ -229,10 +307,13 @@ function handleRouteChange(val: any) {
   }
 }
 
+/**
+ * 提交保存
+ * 验证表单，收集选中的行和文件ID，调用新增或更新接口
+ */
 function handleSubmit() {
   formRef.value.validate().then(() => {
     const params: any[] = [];
-    console.log(selectedRows.value);
     selectedRows.value.forEach((item: any) => {
       const p: any = {
         productRouteDetailId:
@@ -255,6 +336,12 @@ function handleSubmit() {
   });
 }
 
+/**
+ * 工序文件上传处理
+ * @param row 当前行数据
+ * @returns 文件变化处理函数
+ * 处理文件上传成功和删除事件
+ */
 function handleDetailFileChange(row: any) {
   return (info: any) => {
     if (!fileList.value) {
@@ -291,6 +378,10 @@ function handleDetailFileChange(row: any) {
 
 // region 工艺路线明细表格配置
 
+/**
+ * 工艺路线明细表格配置选项
+ * 显示工序明细列表，支持复选框、文件上传等操作
+ */
 const routeDetailGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -328,6 +419,10 @@ const routeDetailGridOptions: VxeGridProps<any> = {
   stripe: true,
 };
 
+/**
+ * 工艺路线明细表格事件
+ * 处理复选框变化和全选事件
+ */
 const routeDetailGridEvents: VxeGridListeners<any> = {
   checkboxChange: ({ checked, row }) => {
     if (checked) {
@@ -344,6 +439,9 @@ const routeDetailGridEvents: VxeGridListeners<any> = {
   },
 };
 
+/**
+ * 工艺路线明细表格实例和 API
+ */
 const [RouteDetailGrid, routeDetailGridApi] = useVbenVxeGrid({
   gridEvents: routeDetailGridEvents,
   gridOptions: routeDetailGridOptions,
@@ -353,6 +451,10 @@ const [RouteDetailGrid, routeDetailGridApi] = useVbenVxeGrid({
 
 // region 删除
 
+/**
+ * 删除 SOP 绑定
+ * @param row 当前行数据
+ */
 function handleDelete(row: any) {
   Modal.confirm({
     cancelText: '取消',
@@ -375,12 +477,28 @@ function handleDelete(row: any) {
 
 // region 初始化
 
+/**
+ * 访问令牌存储
+ */
 const accessStore = useAccessStore();
+/**
+ * 路由信息
+ */
 const route = useRoute();
+/**
+ * 权限列表
+ */
 const author = ref<string[]>([]);
 
+/**
+ * 文件上传接口地址
+ */
 const fileUploadUrl = `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/process/productSop/fileUpload`;
 
+/**
+ * 加载产品列表
+ * 查询有路线的产品
+ */
 function loadProductList() {
   queryProductList(1, 9999, {
     productCode: '',
@@ -391,6 +509,10 @@ function loadProductList() {
   });
 }
 
+/**
+ * 组件挂载时执行
+ * 查询权限列表
+ */
 onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
