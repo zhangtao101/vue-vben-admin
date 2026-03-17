@@ -228,7 +228,9 @@ const areaCodeList = ref<any>([]);
  * @param option 下拉框选项对象
  */
 const filterOption = (input: string, option: any) => {
-  return `${option.storageCode.toLowerCase()}${option.storageName.toLowerCase()}`.includes(input.toLowerCase());
+  return `${option.storageCode.toLowerCase()}${option.storageName.toLowerCase()}`.includes(
+    input.toLowerCase(),
+  );
 };
 
 /**
