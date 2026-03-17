@@ -191,8 +191,12 @@ const fileList = ref<any>({});
  * 表单验证规则
  */
 const rules: any = {
-  productCode: [{ required: true, message: '请选择产品型号', trigger: 'change' }],
-  productName: [{ required: true, message: '产品名称为必填项', trigger: 'blur' }],
+  productCode: [
+    { required: true, message: '请选择产品型号', trigger: 'change' },
+  ],
+  productName: [
+    { required: true, message: '产品名称为必填项', trigger: 'blur' },
+  ],
   routeCode: [{ required: true, message: '请选择路线编号', trigger: 'change' }],
   routeName: [{ required: true, message: '路线名称为必填项', trigger: 'blur' }],
 };

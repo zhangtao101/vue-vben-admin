@@ -398,12 +398,12 @@ onMounted(() => {
     <Card>
       <div>
         <Grid>
-        <template #action="{ row }">
-          <Button type="link" class="!p-1" @click="showDetails(row)">
-            <Icon icon="mdi:eye" class="text-xl" />
-          </Button>
-        </template>
-      </Grid>
+          <template #action="{ row }">
+            <Button type="link" class="!p-1" @click="showDetails(row)">
+              <Icon icon="mdi:eye" class="text-xl" />
+            </Button>
+          </template>
+        </Grid>
       </div>
     </Card>
 
