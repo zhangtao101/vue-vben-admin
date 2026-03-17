@@ -7,7 +7,7 @@ import { Handle, Position } from '@vue-flow/core';
 import { NodeToolbar } from '@vue-flow/node-toolbar';
 import { Button, Tooltip } from 'ant-design-vue';
 
-const props = defineProps(['id', 'data']);
+const props = defineProps(['id', 'data', 'hideOptions']);
 const emit = defineEmits(['showCreate', 'delNode', 'update', 'bind']);
 // const { updateNodeData } = useVueFlow();
 // region 类型选择
@@ -52,7 +52,7 @@ function bind() {
 </script>
 
 <template>
-  <NodeToolbar :position="data.toolbarPosition">
+  <NodeToolbar :position="data.toolbarPosition" v-if="!hideOptions">
     <!--
     <Tooltip>
       <template #title>{{ $t('common.add') }}</template>

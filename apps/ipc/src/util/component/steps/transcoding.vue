@@ -417,7 +417,7 @@ onBeforeUnmount(() => {
         <Row class="h-full flex-col justify-evenly">
           <!-- region 源码 -->
           <!-- 显示源码输入框和扫码组件的容器 -->
-          <Row class="mb-8">
+          <Row class="!mb-8">
             <!-- 显示源码标签的列 -->
             <Col span="8" :class="getLabelClass()" class="border-0">
               {{ $t('productionOperation.sourceCode') }}

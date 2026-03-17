@@ -141,7 +141,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- 搜索表单 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 批次 -->
         <FormItem
@@ -193,7 +193,7 @@ onMounted(() => {
     </Card>
 
     <!-- 数据表格 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Grid>
         <template #toolbar-tools>
           <Space>

@@ -342,7 +342,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 仓库编码 -->
         <FormItem
@@ -410,7 +410,7 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
 
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Grid>
         <template #toolbar-tools>
           <Button type="primary" @click="showEditDrawerFn()" class="mx-4">

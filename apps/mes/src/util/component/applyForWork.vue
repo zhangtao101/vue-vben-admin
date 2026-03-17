@@ -574,7 +574,7 @@ onMounted(() => {});
     <!-- 有报工数据时显示详情编辑区域 -->
     <div v-if="editDetails && editDetails.length > 0">
       <!-- 遍历每个报工记录，显示详细信息 -->
-      <div v-for="item of editDetails" :key="item.id" class="mb-8">
+      <div v-for="item of editDetails" :key="item.id" class="!mb-8">
         <!-- 报工基本信息描述列表 -->
         <Descriptions bordered :column="2" class="mb-4">
           <DescriptionsItem label="报工总数" :span="2">
@@ -736,7 +736,7 @@ onMounted(() => {});
         v-for="item of editEnergyHarvesting"
         :column="2"
         :key="item.id"
-        class="mb-8"
+        class="!mb-8"
       >
         <!-- 能源类型显示 -->
         <DescriptionsItem label="能源类型">

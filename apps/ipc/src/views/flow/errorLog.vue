@@ -96,7 +96,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 顶部搜索区域 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 箱码 -->
         <FormItem :label="$t('errorLog.code')" style="margin-bottom: 1em">

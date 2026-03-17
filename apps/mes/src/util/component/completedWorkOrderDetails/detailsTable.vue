@@ -320,7 +320,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form :model="queryParams" layout="inline" class="mb-8">
+  <Form :model="queryParams" layout="inline" class="!mb-8">
     <!-- 查询时间 -->
     <FormItem
       :label="$t('workOrderStatusQuery.queryTime')"

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import type { TreeProps } from 'ant-design-vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { computed, h, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
@@ -10,221 +11,236 @@ import {
   Button,
   Card,
   Col,
+  DirectoryTree,
   Form,
   FormItem,
   Input,
   Row,
-  Table,
-  Tree,
 } from 'ant-design-vue';
-// eslint-disable-next-line n/no-extraneous-import
-import { difference } from 'lodash-es';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { queryMaterialCategoryList, queryMaterialTree } from '#/api';
 import { $t } from '#/locales';
+import { queryAuth } from '#/util';
 
-// region 查询数据
+// 路由信息
+const route = useRoute();
+
+// region 表格操作
+
+// 表格配置
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { title: '序号', type: 'seq', width: 50 },
+    { field: 'typeCode', title: '类别编号', minWidth: 100 },
+    { field: 'typeName', title: '类别名称', minWidth: 100 },
+    { field: 'typeLevel', title: '类别等级', minWidth: 100 },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: {
+    multiple: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          page: page?.currentPage,
+          pageSize: page?.pageSize,
+        });
+      },
+    },
+  },
+  toolbarConfig: {
+    custom: true,
+    refresh: true,
+    zoom: true,
+  },
+};
+
+const gridEvents: VxeGridListeners<any> = {};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+// 当前选中的节点
+const selectedKey = ref<any>(undefined);
+
+// endregion
+
+// region 数据查询
+
 // 查询参数
 const queryParams = ref({
-  // 展示方式
-  ruleDisplayMode: '',
-  // 规则名称
-  ruleName: '',
-  // 所属类型
-  type: '',
+  // 类别编号
+  typeCode: '',
+  // 类别名称
+  typeName: '',
 });
+
+/**
+ * 查询数据
+ */
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve, reject) => {
+    const params: any = queryParams.value;
+    // 设置 selectedTypeCode
+    if (selectedKey.value && selectedKey.value.typeCode !== undefined) {
+      params.selectedTypeCode = selectedKey.value.typeCode;
+    }
+    // 调用 queryMaterialCategoryList API函数，传递查询参数和分页信息
+    queryMaterialCategoryList({
+      ...params,
+      pageNum: page, // 当前页码。
+      pageSize, // 每页显示的数据条数。
+    })
+      .then((response: any) => {
+        // 根据响应结构获取数据
+        const data = response.data || response;
+        // 成功获取数据后，更新数据列表和总条数
+        resolve({
+          total: data.total,
+          items: data.results,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
 
 // endregion
 
 // region 树形菜单操作
+
 // 当前展开的节点
 const expandedKeys = ref<string[]>([]);
 // 当前选中的节点
 const selectedKeys = ref<string[]>([]);
 // 节点数据
-const treeData = ref<TreeProps['treeData']>([{ key: '0', title: '全部' }]);
+const treeData = ref<any[]>([
+  {
+    typeCode: '',
+    typeName: '全部',
+    childs: [],
+  },
+]);
 
-// 远程加载节点数据
-function onLoadData(treeNode: any) {
-  return new Promise<void>((resolve) => {
-    if (treeNode.dataRef?.children) {
-      resolve();
-      return;
+/**
+ * 查询物料类别树
+ */
+function queryAllMaterialTree() {
+  // 调用 queryMaterialTree API函数，获取菜单列表
+  queryMaterialTree().then((response: any) => {
+    // 根据响应结构获取数据
+    const data = response.data || response;
+    console.log('物料类别树数据:', data);
+    // 检查返回的数据是否存在且长度大于0
+    if (data) {
+      // 将数据赋值给根节点的childs
+      treeData.value[0].childs = data;
     }
-    setTimeout(() => {
-      treeNode.dataRef!.children = [
-        { key: `${treeNode.eventKey}-0`, title: 'Child Node' },
-        { key: `${treeNode.eventKey}-1`, title: 'Child Node' },
-      ];
-      treeData.value = [...treeData.value!];
-      resolve();
-    }, 1000);
   });
 }
 
-function handleExpand(keys: string[], { expanded, node }: any) {
-  // node.parent add from 3.0.0-alpha.10
-  const tempKeys = ((node.parent ? node.parent.children : treeData) || []).map(
-    ({ key }: any) => key,
-  );
-  expandedKeys.value = expanded
-    ? [...difference(keys, tempKeys), node.key]
-    : keys;
+/**
+ * 处理树形控件选中事件
+ * @param {any} _selectedKeys - 当前选中的节点键值
+ * @param {object} info - 包含节点和选中状态的对象
+ * @param {object} info.node - 当前操作的节点对象
+ * @param {boolean} info.selected - 节点的选中状态
+ */
+function selectedTree(_selectedKeys: any, info: any) {
+  const { node, selected } = info;
+  // 选中的节点设置到selectedKey用于查询
+  selectedKey.value = selected ? node : undefined;
+  gridApi.reload();
 }
 
 // endregion
 
-// region 表格操作
+// region 权限查询
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
 
-// 表格列名
-const columns = ref([
-  {
-    dataIndex: 'step',
-    ellipsis: true,
-    title: '#',
-    width: 60,
-  },
-  {
-    dataIndex: 'typeCode',
-    ellipsis: true,
-    title: '类别编号',
-    width: 120,
-  },
-  {
-    dataIndex: 'typeName',
-    ellipsis: true,
-    title: '类别名称',
-    width: 120,
-  },
-  {
-    dataIndex: 'typeLevel',
-    ellipsis: true,
-    title: '类别等级',
-    width: 120,
-  },
-] as any[]);
-// 表格滚动信息配置
-const scroll = ref({
-  scrollToFirstRowOnChange: true,
-  x: 1500,
-  y: 350,
+// endregion
+
+// region 初始化
+
+// 当组件挂载到DOM上后，立即执行的函数
+onMounted(() => {
+  // 调用queryAuth函数，用于获取用户权限信息
+  queryAuth(route.meta.code as string).then((data) => {
+    author.value = data;
+  });
+  // 调用 queryAllMaterialTree 函数，用于获取类别数据
+  queryAllMaterialTree();
 });
-
-// 表格数据
-const data = ref([
-  {
-    typeCode: '001',
-    typeLevel: '一级',
-    typeName: '类别A',
-  },
-  {
-    typeCode: '002',
-    typeLevel: '二级',
-    typeName: '类别B',
-  },
-  {
-    typeCode: '003',
-    typeLevel: '三级',
-    typeName: '类别C',
-  },
-  {
-    typeCode: '004',
-    typeLevel: '一级',
-    typeName: '类别D',
-  },
-  {
-    typeCode: '005',
-    typeLevel: '二级',
-    typeName: '类别E',
-  },
-]);
-
-// 表格分页信息
-const pagination = computed(() => ({
-  current: 5,
-  pageSize: 20,
-  total: 200,
-}));
-
-/**
- * 分页信息改变事件
- */
-function paginationChange(page: any) {
-  pagination.value.current = page.current;
-  pagination.value.pageSize = page.pageSize;
-}
 
 // endregion
 </script>
 
 <template>
   <Page>
-    <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 类别编号 -->
         <FormItem
           :label="$t('basic.productCategory.categoryNumber')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.ruleName" />
+          <Input v-model:value="queryParams.typeCode" />
         </FormItem>
         <!-- 类别名称 -->
         <FormItem
           :label="$t('basic.productCategory.categoryName')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.ruleName" />
+          <Input v-model:value="queryParams.typeName" />
         </FormItem>
-        <FormItem style="margin-bottom: 1em">
+
+        <FormItem>
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
+            @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
           </Button>
         </FormItem>
       </Form>
     </Card>
-    <!-- endregion -->
-
     <!-- region 主要内容显示区域 -->
-
     <Row :gutter="16">
       <!-- region 树形菜单 -->
-      <Col :lg="6" :md="8" :sm="4" :xl="4" :xs="10">
-        <Card class="min-h-96">
-          <Tree
+      <Col :lg="6" :md="8" :sm="8" :xl="8" :xs="8">
+        <Card class="h-[60vh] overflow-y-auto">
+          <DirectoryTree
             v-model:expanded-keys="expandedKeys"
             v-model:selected-keys="selectedKeys"
-            :load-data="onLoadData"
+            :auto-expand-parent="true"
+            :default-expand-all="true"
+            :field-names="{
+              children: 'childs',
+              title: 'typeName',
+              key: 'typeCode',
+            }"
             :tree-data="treeData"
-            @expand="handleExpand"
+            @select="selectedTree"
           />
         </Card>
       </Col>
       <!-- endregion -->
+
       <!-- region 表格主体 -->
-      <Col :lg="18" :md="16" :sm="20" :xl="20" :xs="14">
-        <Card>
-          <Table
-            :columns="columns"
-            :data-source="data"
-            :pagination="pagination"
-            :scroll="scroll"
-            bordered
-            @change="paginationChange"
-          >
-            <template #bodyCell="{ column, index }">
-              <template v-if="column.dataIndex === 'step'">
-                <span>{{ index + 1 }}</span>
-              </template>
-            </template>
-          </Table>
+      <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
+        <Card class="h-[60vh] overflow-y-auto">
+          <Grid />
         </Card>
       </Col>
       <!-- endregion -->
     </Row>
-
     <!-- endregion -->
   </Page>
 </template>

@@ -26,6 +26,7 @@ import {
   RadioGroup,
   Row,
   Space,
+  Tabs,
   Textarea,
   Tooltip,
   Upload,
@@ -151,8 +152,9 @@ const queryParams = ref({
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = queryParams.value;
-    if (selectedKey.value && selectedKey.value.code) {
-      params.parentTypeCode = selectedKey.value.code;
+    // 设置 typeCode
+    if (selectedKey.value && selectedKey.value.code !== undefined) {
+      params.typeCode = selectedKey.value.code;
     }
     // 调用 queryErpProductArchivesList API函数，传递查询参数和分页信息
     queryErpProductArchivesList({
@@ -160,11 +162,25 @@ function queryData({ page, pageSize }: any) {
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
     })
-      .then(({ total, list }) => {
+      .then((response: any) => {
+        // 根据响应结构获取数据
+        const data = response.data || response;
+        const { total, list } = data;
+        // 转换布尔值
+        const processedList = list.map((item: any) => ({
+          ...item,
+          qualitySign:
+            item.qualitySign === 1 ? true : item.qualitySign === true,
+          semifinishedProductSign:
+            item.semifinishedProductSign === 1
+              ? true
+              : item.semifinishedProductSign === true,
+          planSign: item.planSign === 1 ? true : item.planSign === true,
+        }));
         // 成功获取数据后，更新数据列表和总条数
         resolve({
           total,
-          items: list,
+          items: processedList,
         });
       })
       .catch((error) => {
@@ -182,18 +198,26 @@ const expandedKeys = ref<string[]>([]);
 // 当前选中的节点
 const selectedKeys = ref<string[]>([]);
 // 节点数据
-const treeData = ref<any[]>([]);
+const treeData = ref<any[]>([
+  {
+    code: '',
+    name: '全部',
+    childrens: [],
+  },
+]);
 
 /**
  * 查询类别树
  */
 function queryAllCategoryTree() {
   // 调用 queryCategoryTree API函数，获取菜单列表
-  queryCategoryTree().then((data) => {
+  queryCategoryTree().then((response: any) => {
+    // 根据响应结构获取数据
+    const data = response.data || response;
     // 检查返回的数据是否存在且长度大于0
     if (data) {
-      // 如果数据有效，更新treeData
-      treeData.value = [data];
+      // 将数据赋值给根节点的childrens
+      treeData.value[0].childrens = data;
     }
   });
 }
@@ -206,7 +230,8 @@ function queryAllCategoryTree() {
  * @param {boolean} info.selected - 节点的选中状态
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
-  selectedKey.value = selected && node.orgLevel < 3 ? node : undefined;
+  // 选中的节点设置到selectedKey用于查询
+  selectedKey.value = selected ? node : undefined;
   gridApi.reload();
 }
 
@@ -215,18 +240,12 @@ function selectedTree(_selectedKeys: any, { node, selected }: any) {
 // region 编辑 / 查看
 
 const editData = ref<any>({});
-const editMessageForm = ref();
-// 编辑对象表单验证规则
-const editRules = ref({
-  materialCode: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
-  ],
-  feedNumber: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-} as any);
 // 是否为编辑状态
 const isEdit = ref(false);
 // 是否显示编辑/查看抽屉
 const isOpen = ref(false);
+// 查看详情标签页
+const activeTabKey = ref('first');
 
 /**
  * 显示编辑/查看抽屉
@@ -236,10 +255,33 @@ const isOpen = ref(false);
 function showEdit(row: any, edit = false) {
   queryProductDetail({
     productCode: row.productCode,
-  }).then((data: any) => {
+  }).then((response: any) => {
+    // 根据响应结构获取数据
+    const data = response.data || response;
     isOpen.value = true;
     isEdit.value = edit;
-    editData.value = data;
+    // 转换布尔值
+    const processedData: any = { ...data };
+    if (processedData.qualitySign === 1) processedData.qualitySign = true;
+    if (processedData.semifinishedProductSign === 1)
+      processedData.semifinishedProductSign = true;
+    else if (processedData.semifinishedProductSign === 2)
+      processedData.semifinishedProductSign = false;
+    if (processedData.planSign === 1) processedData.planSign = true;
+    if (processedData.smtProcess === 1) processedData.smtProcess = true;
+    else if (processedData.smtProcess === 2) processedData.smtProcess = false;
+    if (processedData.pluginProcess === 1) processedData.pluginProcess = true;
+    else if (processedData.pluginProcess === 2)
+      processedData.pluginProcess = false;
+    if (processedData.repairWeldingProcess === 1)
+      processedData.repairWeldingProcess = true;
+    else if (processedData.repairWeldingProcess === 2)
+      processedData.repairWeldingProcess = false;
+    if (processedData.assemblyProcess === 1)
+      processedData.assemblyProcess = true;
+    else if (processedData.assemblyProcess === 2)
+      processedData.assemblyProcess = false;
+    editData.value = processedData;
   });
 }
 
@@ -247,10 +289,19 @@ function close() {
   isOpen.value = false;
   isEdit.value = false;
   editData.value = {};
+  activeTabKey.value = 'first';
 }
 
 function submit() {
-  updateProduct(editData.value).then(() => {
+  // 转换布尔值为 1/2
+  const submitData: any = { ...editData.value };
+  submitData.smtProcess = submitData.smtProcess === true ? 1 : 2;
+  submitData.repairWeldingProcess =
+    submitData.repairWeldingProcess === true ? 1 : 2;
+  submitData.assemblyProcess = submitData.assemblyProcess === true ? 1 : 2;
+  submitData.pluginProcess = submitData.pluginProcess === true ? 1 : 2;
+
+  updateProduct(submitData).then(() => {
     message.success($t('common.successfulOperation'));
     close();
     gridApi.reload();
@@ -325,359 +376,402 @@ onMounted(() => {
 
 <template>
   <Page>
-    <Space direction="vertical" style="width: 100%">
-      <Card>
-        <Form :model="queryParams" layout="inline">
-          <!-- 产品编号 -->
-          <FormItem
-            :label="$t('basic.productInform.productNumber')"
-            style="margin-bottom: 1em"
-          >
-            <Input v-model:value="queryParams.productCode" />
-          </FormItem>
-          <!-- 产品名称 -->
-          <FormItem
-            :label="$t('basic.productInform.productName')"
-            style="margin-bottom: 1em"
-          >
-            <Input v-model:value="queryParams.productName" />
-          </FormItem>
-
-          <FormItem>
-            <Button
-              :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
-              type="primary"
-              @click="() => gridApi.reload()"
-            >
-              {{ $t('common.search') }}
-            </Button>
-          </FormItem>
-        </Form>
-      </Card>
-      <!-- region 主要内容显示区域 -->
-      <Row :gutter="16">
-        <!-- region 树形菜单 -->
-        <Col :lg="8" :md="8" :sm="6" :xl="6" :xs="8">
-          <Card class="h-[60vh] overflow-y-auto">
-            <DirectoryTree
-              v-model:expanded-keys="expandedKeys"
-              v-model:selected-keys="selectedKeys"
-              :auto-expand-parent="true"
-              :field-names="{
-                children: 'children',
-                title: 'orgFullName',
-                key: 'orgCode',
-              }"
-              :tree-data="treeData"
-              @select="selectedTree"
-            />
-          </Card>
-        </Col>
-        <!-- endregion -->
-
-        <!-- region 表格主体 -->
-        <Col :lg="16" :md="16" :sm="16" :xl="18" :xs="16">
-          <Card class="h-[60vh] overflow-y-auto">
-            <!-- 导入 -->
-            <!-- 导入按钮 -->
-            <Upload
-              v-model:file-list="fileList"
-              :action="action"
-              :headers="headers"
-              :show-upload-list="false"
-              name="file"
-              @change="handleChange"
-            >
-              <Button type="primary">
-                {{ $t('common.import') }}
-              </Button>
-            </Upload>
-
-            <!-- 模板下载 -->
-            <Button class="ml-4" type="primary" @click="downloadTemplate">
-              {{ $t('common.templateDownload') }}
-            </Button>
-            <Grid>
-              <template #selectedState="{ row, column }">
-                <Checkbox v-model:checked="row[column.field]" disabled />
-              </template>
-              <template #isSingleSide="{ row }">
-                {{ row.isSingleSide === 1 ? '单面' : '双面' }}
-              </template>
-              <template #action="{ row }">
-                <!-- 编辑按钮 -->
-                <Tooltip>
-                  <template #title>
-                    {{ $t('common.edit') }}
-                  </template>
-                  <Button @click="showEdit(row, true)" class="mr-2" type="link">
-                    <Icon icon="mdi:edit-outline" class="inline-block size-6" />
-                  </Button>
-                </Tooltip>
-                <!-- 查看 -->
-                <Tooltip>
-                  <template #title>
-                    {{ $t('common.view') }}
-                  </template>
-                  <Button @click="showEdit(row)" class="mr-2" type="link">
-                    <Icon icon="mdi:eye" class="inline-block size-6" />
-                  </Button>
-                </Tooltip>
-              </template>
-            </Grid>
-          </Card>
-        </Col>
-        <!-- endregion -->
-      </Row>
-      <!-- endregion -->
-    </Space>
-    <!-- 编辑 -->
-    <Drawer
-      v-model:open="isOpen"
-      :footer-style="{ textAlign: 'right' }"
-      :width="800"
-      class="custom-class"
-      placement="right"
-      :title="isEdit ? $t('common.edit') : $t('common.view')"
-    >
-      <Form
-        :label-col="{ span: 6 }"
-        :model="editData"
-        :rules="editRules"
-        :wrapper-col="{ span: 18 }"
-        autocomplete="off"
-        ref="editMessageForm"
-      >
+    <Card class="!mb-8">
+      <Form :model="queryParams" layout="inline">
         <!-- 产品编号 -->
         <FormItem
           :label="$t('basic.productInform.productNumber')"
-          name="productCode"
+          style="margin-bottom: 1em"
         >
-          <Input v-model:value="editData.productCode" :disabled="!isEdit" />
+          <Input v-model:value="queryParams.productCode" />
         </FormItem>
         <!-- 产品名称 -->
         <FormItem
           :label="$t('basic.productInform.productName')"
-          name="productName"
+          style="margin-bottom: 1em"
         >
-          <Input v-model:value="editData.productName" :disabled="!isEdit" />
+          <Input v-model:value="queryParams.productName" />
         </FormItem>
-        <!-- 单/双面 -->
-        <FormItem
-          :label="$t('basic.productInform.surface')"
-          name="isSingleSide"
-        >
-          <RadioGroup v-model:value="editData.isSingleSide" :disabled="!isEdit">
-            <Radio :value="1">单面</Radio>
-            <Radio :value="2">双面</Radio>
-          </RadioGroup>
-        </FormItem>
-        <!-- 计量单位 -->
-        <FormItem
-          :label="$t('basic.productInform.unitOfMeasurement')"
-          name="unit"
-        >
-          <Input v-model:value="editData.unit" :disabled="!isEdit" />
-        </FormItem>
-        <!-- 产品类别 -->
-        <FormItem
-          :label="$t('basic.productInform.productCategory')"
-          name="productTypeName"
-        >
-          <Input v-model:value="editData.productTypeName" :disabled="!isEdit" />
-        </FormItem>
-        <!-- 客户货号 -->
-        <FormItem
-          :label="$t('basic.productInform.customerItemNumber')"
-          name="costomerGoodsCode"
-        >
-          <Input
-            v-model:value="editData.costomerGoodsCode"
-            :disabled="!isEdit"
-          />
-        </FormItem>
-        <!-- 客户型号 -->
-        <FormItem
-          :label="$t('basic.productInform.customerModel')"
-          name="costomerTypeCode"
-        >
-          <Input
-            v-model:value="editData.costomerTypeCode"
-            :disabled="!isEdit"
-          />
-        </FormItem>
-        <!-- 生产类型 -->
-        <FormItem
-          :label="$t('basic.productInform.productionType')"
-          name="produceType"
-        >
-          <Input
-            v-model:value="editData.produceType"
-            :disabled="!isEdit"
-            class="mr-4"
+
+        <FormItem>
+          <Button
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
+            type="primary"
+            @click="() => gridApi.reload()"
           >
-            <template #addonAfter>
-              <!-- 计划标记 -->
-              <Checkbox v-model:checked="editData.planSign" :disabled="!isEdit">
-                {{ $t('basic.productInform.planMarking') }}
-              </Checkbox>
-            </template>
-          </Input>
-        </FormItem>
-        <!-- 标准工时 -->
-        <FormItem
-          :label="$t('basic.productInform.standardWorkingHours')"
-          name="customerModel"
-        >
-          <Input
-            v-model:value="editData.customerModel"
-            :disabled="!isEdit"
-            class="mr-4"
-          >
-            <template #addonAfter>
-              <!-- 产量/小时*人数 -->
-              {{ $t('basic.productInform.remarksOnWorkingHours') }}
-            </template>
-          </Input>
-        </FormItem>
-        <!-- 标记 -->
-        <FormItem :label="$t('basic.productInform.mark')">
-          <!-- 质检标记 -->
-          <Checkbox
-            v-model:checked="editData.qualitySign"
-            class="mb-2"
-            :disabled="!isEdit"
-          >
-            {{ $t('basic.productInform.qualityInspectionMark') }}
-          </Checkbox>
-          <!-- SMT工序 -->
-          <Checkbox v-model:checked="editData.smtProcess" :disabled="!isEdit">
-            {{ $t('basic.productInform.smtProcess') }}
-          </Checkbox>
-          <!-- 插件工序 -->
-          <Checkbox
-            v-model:checked="editData.pluginProcess"
-            :disabled="!isEdit"
-          >
-            {{ $t('basic.productInform.plugInProcess') }}
-          </Checkbox>
-          <!-- 补焊工序 -->
-          <Checkbox
-            v-model:checked="editData.repairWeldingProcess"
-            :disabled="!isEdit"
-          >
-            {{ $t('basic.productInform.repairWeldingProcess') }}
-          </Checkbox>
-          <!-- 组装工序 -->
-          <Checkbox
-            v-model:checked="editData.assemblyProcess"
-            :disabled="!isEdit"
-          >
-            {{ $t('basic.productInform.assemblyProcess') }}
-          </Checkbox>
-        </FormItem>
-        <!-- 包装数量 -->
-        <FormItem
-          :label="$t('basic.productInform.packagingQuantity')"
-          name="customerModel"
-        >
-          <Input v-model:value="editData.customerModel" :disabled="!isEdit" />
-        </FormItem>
-        <!-- 外箱尺寸 -->
-        <FormItem :label="$t('basic.productInform.outerBoxSize')">
-          <InputNumber v-model:value="editData.szie" :disabled="!isEdit" />
-          <span class="ml-1 mr-1 align-middle">
-            {{ $t('basic.productInform.cubicMeter') }} =
-          </span>
-          <!-- 长 -->
-          <span class="ml-1 mr-1 align-middle">{{
-            $t('basic.productInform.long')
-          }}</span>
-          <InputNumber v-model:value="editData.length" :disabled="!isEdit" />
-          <!-- 宽 -->
-          <span class="ml-1 mr-1 align-middle">
-            * {{ $t('basic.productInform.wide') }}
-          </span>
-          <InputNumber v-model:value="editData.width" :disabled="!isEdit" />
-          <!-- 高 -->
-          <span class="ml-1 mr-1 align-middle">
-            * {{ $t('basic.productInform.high') }}
-          </span>
-          <InputNumber v-model:value="editData.height" :disabled="!isEdit" />
-          <span class="ml-1 mr-1 align-middle">{{
-            $t('basic.productInform.centimeter')
-          }}</span>
-        </FormItem>
-        <!-- 放宽率 -->
-        <FormItem
-          :label="$t('basic.productInform.relaxationRate')"
-          name="relaxationRate"
-        >
-          <InputNumber
-            v-model:value="editData.relaxationRate"
-            :disabled="!isEdit"
-          >
-            <template #addonAfter> % </template>
-          </InputNumber>
-        </FormItem>
-        <!-- 标准小时产能 -->
-        <FormItem
-          :label="$t('basic.productInform.standardHourlyProductionCapacity')"
-          name="standardHourlyCapacity"
-        >
-          <Input
-            v-model:value="editData.standardHourlyCapacity"
-            :disabled="!isEdit"
-          />
-        </FormItem>
-        <!-- 产品描述 -->
-        <FormItem
-          :label="$t('basic.productInform.productDescription')"
-          name="produceDescription"
-        >
-          <Textarea
-            v-model:value="editData.produceDescription"
-            :disabled="!isEdit"
-          />
-        </FormItem>
-        <!-- 打印信息 -->
-        <span class="mb-4 ml-16 block text-2xl">{{
-          $t('basic.productInform.printInformation')
-        }}</span>
-        <!-- 刻印机程序号 -->
-        <FormItem
-          :label="$t('basic.productInform.engravingMachineProgramNumber')"
-          name="printProgramNo"
-        >
-          <Input v-model:value="editData.printProgramNo" :disabled="!isEdit" />
-        </FormItem>
-        <!-- 刻印机B面程序号 -->
-        <FormItem
-          :label="
-            $t('basic.productInform.programNumberOnSideBOfTheEngravingMachine')
-          "
-          name="printProgramNob"
-        >
-          <Input v-model:value="editData.printProgramNob" :disabled="!isEdit" />
-        </FormItem>
-        <!-- 扫码点数量 -->
-        <FormItem
-          :label="$t('basic.productInform.theNumberOfScanningPoints')"
-          name="barcodePrintNumber"
-        >
-          <Input
-            v-model:value="editData.barcodePrintNumber"
-            :disabled="!isEdit"
-          />
-        </FormItem>
-        <!-- 拼版数量 -->
-        <FormItem
-          :label="$t('basic.productInform.theNumberOfPanels')"
-          name="makeupNumber"
-        >
-          <Input v-model:value="editData.makeupNumber" :disabled="!isEdit" />
+            {{ $t('common.search') }}
+          </Button>
         </FormItem>
       </Form>
+    </Card>
+    <!-- region 主要内容显示区域 -->
+    <Row :gutter="16">
+      <!-- region 树形菜单 -->
+      <Col :lg="8" :md="8" :sm="6" :xl="6" :xs="8">
+        <Card class="h-[60vh] overflow-y-auto">
+          <DirectoryTree
+            v-model:expanded-keys="expandedKeys"
+            v-model:selected-keys="selectedKeys"
+            :auto-expand-parent="true"
+            :default-expand-all="true"
+            :field-names="{
+              children: 'childrens',
+              title: 'name',
+              key: 'code',
+            }"
+            :tree-data="treeData"
+            @select="selectedTree"
+          />
+        </Card>
+      </Col>
+      <!-- endregion -->
+
+      <!-- region 表格主体 -->
+      <Col :lg="16" :md="16" :sm="16" :xl="18" :xs="16">
+        <Card class="h-[60vh] overflow-y-auto">
+          <!-- 导入 -->
+          <!-- 导入按钮 -->
+          <Upload
+            v-model:file-list="fileList"
+            :action="action"
+            :headers="headers"
+            :show-upload-list="false"
+            name="file"
+            @change="handleChange"
+          >
+            <Button type="primary">
+              {{ $t('common.import') }}
+            </Button>
+          </Upload>
+
+          <!-- 模板下载 -->
+          <Button class="ml-4" type="primary" @click="downloadTemplate">
+            {{ $t('common.templateDownload') }}
+          </Button>
+          <Grid>
+            <template #selectedState="{ row, column }">
+              <Checkbox v-model:checked="row[column.field]" disabled />
+            </template>
+            <template #isSingleSide="{ row }">
+              {{ row.isSingleSide === 1 ? '单面' : '双面' }}
+            </template>
+            <template #action="{ row }">
+              <!-- 编辑按钮 -->
+              <Tooltip>
+                <template #title>
+                  {{ $t('common.edit') }}
+                </template>
+                <Button @click="showEdit(row, true)" class="mr-2" type="link">
+                  <Icon icon="mdi:edit-outline" class="inline-block size-6" />
+                </Button>
+              </Tooltip>
+              <!-- 查看 -->
+              <Tooltip>
+                <template #title>
+                  {{ $t('common.view') }}
+                </template>
+                <Button @click="showEdit(row)" class="mr-2" type="link">
+                  <Icon icon="mdi:eye" class="inline-block size-6" />
+                </Button>
+              </Tooltip>
+            </template>
+          </Grid>
+        </Card>
+      </Col>
+      <!-- endregion -->
+    </Row>
+    <!-- endregion -->
+    <!-- 编辑 -->
+    <Drawer
+      v-model:open="isOpen"
+      :footer-style="{ textAlign: 'right' }"
+      :width="900"
+      class="custom-class"
+      placement="right"
+      :title="isEdit ? $t('common.edit') : $t('common.view')"
+    >
+      <Tabs v-model:active-key="activeTabKey">
+        <Tabs.TabPane key="first" tab="产品信息">
+          <Form
+            :label-col="{ span: 6 }"
+            :model="editData"
+            :wrapper-col="{ span: 18 }"
+            autocomplete="off"
+          >
+            <!-- 产品编号 -->
+            <FormItem
+              :label="$t('basic.productInform.productNumber')"
+              name="productCode"
+            >
+              <Input v-model:value="editData.productCode" :disabled="!isEdit" />
+            </FormItem>
+            <!-- 产品名称 -->
+            <FormItem
+              :label="$t('basic.productInform.productName')"
+              name="productName"
+            >
+              <Input v-model:value="editData.productName" :disabled="!isEdit" />
+            </FormItem>
+            <!-- 单/双面 -->
+            <FormItem
+              :label="$t('basic.productInform.surface')"
+              name="isSingleSide"
+            >
+              <RadioGroup
+                v-model:value="editData.isSingleSide"
+                :disabled="!isEdit"
+              >
+                <Radio :value="1">单面</Radio>
+                <Radio :value="2">双面</Radio>
+              </RadioGroup>
+            </FormItem>
+            <!-- 计量单位 -->
+            <FormItem
+              :label="$t('basic.productInform.unitOfMeasurement')"
+              name="unit"
+            >
+              <Input v-model:value="editData.unit" :disabled="!isEdit" />
+            </FormItem>
+            <!-- 产品类别 -->
+            <FormItem
+              :label="$t('basic.productInform.productCategory')"
+              name="productTypeName"
+            >
+              <Input
+                v-model:value="editData.productTypeName"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+            <!-- 客户货号 -->
+            <FormItem
+              :label="$t('basic.productInform.customerItemNumber')"
+              name="costomerGoodsCode"
+            >
+              <Input
+                v-model:value="editData.costomerGoodsCode"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+            <!-- 客户型号 -->
+            <FormItem
+              :label="$t('basic.productInform.customerModel')"
+              name="costomerTypeCode"
+            >
+              <Input
+                v-model:value="editData.costomerTypeCode"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+            <!-- 生产类型 -->
+            <FormItem
+              :label="$t('basic.productInform.productionType')"
+              name="produceType"
+            >
+              <Input
+                v-model:value="editData.produceType"
+                :disabled="!isEdit"
+                class="mr-4"
+              >
+                <template #addonAfter>
+                  <!-- 计划标记 -->
+                  <Checkbox
+                    v-model:checked="editData.planSign"
+                    :disabled="!isEdit"
+                  >
+                    {{ $t('basic.productInform.planMarking') }}
+                  </Checkbox>
+                </template>
+              </Input>
+            </FormItem>
+            <!-- 标准工时 -->
+            <FormItem
+              :label="$t('basic.productInform.standardWorkingHours')"
+              name="workTime"
+            >
+              <Input
+                v-model:value="editData.workTime"
+                :disabled="!isEdit"
+                class="mr-4"
+              >
+                <template #addonAfter>
+                  <!-- 产量/小时*人数 -->
+                  {{ $t('basic.productInform.remarksOnWorkingHours') }}
+                </template>
+              </Input>
+            </FormItem>
+            <!-- 标记 -->
+            <FormItem :label="$t('basic.productInform.mark')">
+              <!-- 质检标记 -->
+              <Checkbox
+                v-model:checked="editData.qualitySign"
+                class="mb-2"
+                :disabled="!isEdit"
+              >
+                {{ $t('basic.productInform.qualityInspectionMark') }}
+              </Checkbox>
+              <!-- SMT工序 -->
+              <Checkbox
+                v-model:checked="editData.smtProcess"
+                :disabled="!isEdit"
+              >
+                {{ $t('basic.productInform.smtProcess') }}
+              </Checkbox>
+              <!-- 插件工序 -->
+              <Checkbox
+                v-model:checked="editData.pluginProcess"
+                :disabled="!isEdit"
+              >
+                {{ $t('basic.productInform.plugInProcess') }}
+              </Checkbox>
+              <!-- 补焊工序 -->
+              <Checkbox
+                v-model:checked="editData.repairWeldingProcess"
+                :disabled="!isEdit"
+              >
+                {{ $t('basic.productInform.repairWeldingProcess') }}
+              </Checkbox>
+              <!-- 组装工序 -->
+              <Checkbox
+                v-model:checked="editData.assemblyProcess"
+                :disabled="!isEdit"
+              >
+                {{ $t('basic.productInform.assemblyProcess') }}
+              </Checkbox>
+            </FormItem>
+            <!-- 包装数量 -->
+            <FormItem
+              :label="$t('basic.productInform.packagingQuantity')"
+              name="packageNum"
+            >
+              <Input v-model:value="editData.packageNum" :disabled="!isEdit" />
+            </FormItem>
+            <!-- 外箱尺寸 -->
+            <FormItem :label="$t('basic.productInform.outerBoxSize')">
+              <InputNumber v-model:value="editData.szie" :disabled="!isEdit" />
+              <span class="ml-1 mr-1 align-middle">
+                {{ $t('basic.productInform.cubicMeter') }} =
+              </span>
+              <!-- 长 -->
+              <span class="ml-1 mr-1 align-middle">{{
+                $t('basic.productInform.long')
+              }}</span>
+              <InputNumber
+                v-model:value="editData.length"
+                :disabled="!isEdit"
+              />
+              <!-- 宽 -->
+              <span class="ml-1 mr-1 align-middle">
+                * {{ $t('basic.productInform.wide') }}
+              </span>
+              <InputNumber v-model:value="editData.width" :disabled="!isEdit" />
+              <!-- 高 -->
+              <span class="ml-1 mr-1 align-middle">
+                * {{ $t('basic.productInform.high') }}
+              </span>
+              <InputNumber
+                v-model:value="editData.height"
+                :disabled="!isEdit"
+              />
+              <span class="ml-1 mr-1 align-middle">{{
+                $t('basic.productInform.centimeter')
+              }}</span>
+            </FormItem>
+            <!-- 放宽率 -->
+            <FormItem
+              :label="$t('basic.productInform.relaxationRate')"
+              name="relaxationRate"
+            >
+              <InputNumber
+                v-model:value="editData.relaxationRate"
+                :disabled="!isEdit"
+              >
+                <template #addonAfter> % </template>
+              </InputNumber>
+            </FormItem>
+            <!-- 标准小时产能 -->
+            <FormItem
+              :label="
+                $t('basic.productInform.standardHourlyProductionCapacity')
+              "
+              name="standardHourlyCapacity"
+            >
+              <Input
+                v-model:value="editData.standardHourlyCapacity"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+            <!-- 产品描述 -->
+            <FormItem
+              :label="$t('basic.productInform.productDescription')"
+              name="produceDescription"
+            >
+              <Textarea
+                v-model:value="editData.produceDescription"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+          </Form>
+        </Tabs.TabPane>
+        <Tabs.TabPane key="second" tab="打码信息">
+          <Form
+            :label-col="{ span: 6 }"
+            :model="editData"
+            :wrapper-col="{ span: 18 }"
+            autocomplete="off"
+          >
+            <!-- 刻印机程序号 -->
+            <FormItem
+              :label="$t('basic.productInform.engravingMachineProgramNumber')"
+              name="printProgramNo"
+            >
+              <Input
+                v-model:value="editData.printProgramNo"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+            <!-- 刻印机B面程序号 -->
+            <FormItem
+              :label="
+                $t(
+                  'basic.productInform.programNumberOnSideBOfTheEngravingMachine',
+                )
+              "
+              name="printProgramNob"
+            >
+              <Input
+                v-model:value="editData.printProgramNob"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+            <!-- 扫码点数量 -->
+            <FormItem
+              :label="$t('basic.productInform.theNumberOfScanningPoints')"
+              name="barcodePrintNumber"
+            >
+              <Input
+                v-model:value="editData.barcodePrintNumber"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+            <!-- 拼版数量 -->
+            <FormItem
+              :label="$t('basic.productInform.theNumberOfPanels')"
+              name="makeupNumber"
+            >
+              <Input
+                v-model:value="editData.makeupNumber"
+                :disabled="!isEdit"
+              />
+            </FormItem>
+          </Form>
+        </Tabs.TabPane>
+        <!-- 仅在查看时显示产品描述 -->
+        <Tabs.TabPane v-if="!isEdit" key="third" tab="产品描述">
+          <div style="min-height: 200px; padding: 20px">
+            {{ editData.produceDescription || '暂无描述' }}
+          </div>
+        </Tabs.TabPane>
+      </Tabs>
 
       <template #footer v-if="isEdit">
         <Space>

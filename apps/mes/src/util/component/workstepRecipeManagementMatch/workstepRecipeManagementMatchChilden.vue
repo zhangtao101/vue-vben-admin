@@ -142,7 +142,12 @@ defineExpose({
         {{ matching.opTypeName }}
       </DescriptionsItem>
     </Descriptions>
-    <Drop ref="dropRef" :formula="formula" :matching="matching" />
+    <Drop
+      ref="dropRef"
+      :formula="formula"
+      :matching="matching"
+      :is-update="true"
+    />
 
     <!-- 抽屉底部操作按钮 -->
     <template #footer>

@@ -178,7 +178,7 @@ const selectedKeys = ref<string[]>([]);
 // 节点数据
 const treeData = ref<any[]>([
   {
-    children: [],
+    childNodes: [],
     processName: '根节点',
     id: 0,
   },
@@ -193,7 +193,7 @@ function queryAllCategoryTree() {
     // 检查返回的数据是否存在且长度大于0
     if (data) {
       // 如果数据有效，更新treeData
-      treeData.value[0].children = [...data];
+      treeData.value[0].childNodes = [...data];
     }
   });
 }
@@ -205,7 +205,7 @@ function queryAllCategoryTree() {
  * @param {object} info.node - 当前操作的节点对象
  */
 function selectedTree(_selectedKeys: any, { node }: any) {
-  queryParams.value.parentId = node.id;
+  queryParams.value.parentId = node.id || 0;
   gridApi.reload();
 }
 
@@ -283,6 +283,7 @@ function submit() {
     ob.then(() => {
       message.success($t('common.successfulOperation'));
       gridApi.reload();
+      closeDrawer();
     });
   });
 }
@@ -361,11 +362,12 @@ onMounted(() => {
             v-model:selected-keys="selectedKeys"
             :auto-expand-parent="true"
             :field-names="{
-              children: 'children',
+              children: 'childNodes',
               title: 'processName',
               key: 'id',
             }"
             :tree-data="treeData"
+            class="[&__.ant-tree-node-content-wrapper]:overflow-hidden [&_.ant-tree-node-content-wrapper]:text-ellipsis [&_.ant-tree-node-content-wrapper]:whitespace-nowrap"
             @select="selectedTree"
           />
         </Card>
@@ -465,13 +467,14 @@ onMounted(() => {
               <Select
                 v-model:value="editItem.parentProcessCode"
                 class="w-full"
-                :options="treeData[0].children"
+                :options="treeData[0].childNodes"
                 :field-names="{
                   label: 'processName',
                   value: 'processCode',
                 }"
                 @change="parentProcessCodeChange"
                 :disabled="!!editItem.id"
+                allow-clear
               />
             </FormItem>
           </Col>

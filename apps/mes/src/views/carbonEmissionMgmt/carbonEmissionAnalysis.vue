@@ -370,7 +370,7 @@ onMounted(() => {
       <Empty v-if="!(details.sumcurrent >= 0)" />
       <template v-else>
         <Row>
-          <Col :span="12" class="mb-8">
+          <Col :span="12" class="!mb-8">
             <MyStatistic
               :title="
                 $t(

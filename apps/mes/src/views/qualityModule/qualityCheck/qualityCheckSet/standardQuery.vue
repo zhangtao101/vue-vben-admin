@@ -176,7 +176,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- 搜索区域卡片 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <!-- 查询表单 -->
       <Form :model="queryParams" layout="inline">
         <!-- 产品编号输入框 -->

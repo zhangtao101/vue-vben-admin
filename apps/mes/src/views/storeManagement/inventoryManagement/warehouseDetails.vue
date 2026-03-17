@@ -297,7 +297,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- 搜索表单 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 材料编号 -->
         <FormItem
@@ -374,7 +374,7 @@ onMounted(() => {
     <Row :gutter="24">
       <!-- 左侧仓库树 -->
       <Col :span="6">
-        <Card class="mb-8">
+        <Card class="!mb-8">
           <Tree
             v-model:selected-keys="selectedKeys"
             @select="selectChange"
@@ -387,7 +387,7 @@ onMounted(() => {
       <!-- 右侧表格区域 -->
       <Col :span="18">
         <!-- 上方库存汇总表格 -->
-        <Card class="mb-8">
+        <Card class="!mb-8">
           <Grid>
             <template #status="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
@@ -396,7 +396,7 @@ onMounted(() => {
         </Card>
 
         <!-- 下方库存明细表格 -->
-        <Card class="mb-8">
+        <Card class="!mb-8">
           <GridBottom />
         </Card>
       </Col>

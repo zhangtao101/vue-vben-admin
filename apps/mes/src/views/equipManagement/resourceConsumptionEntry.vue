@@ -194,7 +194,7 @@ function queryMeterData(row: any) {
               {{ $t('common.delete') }}
             </Button>
           </FormItem>
-          <hr class="mb-8" />
+          <hr class="!mb-8" />
         </template>
         <FormItem :wrapper-col="{ span: 18, offset: 6 }">
           <Button class="w-48" @click="addLine">

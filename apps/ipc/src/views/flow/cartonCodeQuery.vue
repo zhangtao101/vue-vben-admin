@@ -125,7 +125,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- 查询表单区域，用于输入箱码 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 箱码输入框，支持回车键触发查询 -->
         <FormItem
@@ -154,7 +154,7 @@ onMounted(() => {
     </Card>
 
     <!-- 数据表格区域，显示查询到的库存明细 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Grid />
     </Card>
   </Page>

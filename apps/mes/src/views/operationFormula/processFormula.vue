@@ -250,7 +250,7 @@ function queryFormulaData({ page, pageSize }: any) {
 <template>
   <Page>
     <!-- region 搜索 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <!-- 配方名称 -->
         <FormItem
@@ -288,12 +288,12 @@ function queryFormulaData({ page, pageSize }: any) {
     </Card>
     <!-- endregion -->
     <!-- region 表格主体 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Grid />
     </Card>
     <!-- endregion -->
     <!-- region 表格主体 -->
-    <Card class="mb-8">
+    <Card class="!mb-8">
       <Form :model="formulaQueryParams" layout="inline">
         <!-- 配方名称 -->
         <FormItem
