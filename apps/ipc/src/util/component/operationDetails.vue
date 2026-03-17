@@ -228,7 +228,7 @@ const areaCodeList = ref<any>([]);
  * @param option 下拉框选项对象
  */
 const filterOption = (input: string, option: any) => {
-  return option.storageCode.toLowerCase().includes(input.toLowerCase());
+  return `${option.storageCode.toLowerCase()}${option.storageName.toLowerCase()}`.includes(input.toLowerCase());
 };
 
 /**
@@ -504,7 +504,6 @@ defineExpose({
             <Col :span="8">
               <!-- 箱码选择下拉框（出库操作需要选择已有箱码） -->
               <FormItem :label="$t('ioBillOperation.boxCode')">
-                <Input v-model:value="jobData.packingCode" />
                 <Select
                   v-model:value="jobData.packingCode"
                   show-search
