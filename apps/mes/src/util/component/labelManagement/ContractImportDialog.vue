@@ -19,10 +19,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  fetchContractList,
-  fetchToReceivePlanList,
-} from '#/api';
+import { fetchContractList, fetchToReceivePlanList } from '#/api';
 
 // Props
 const props = defineProps<{
@@ -50,21 +47,84 @@ const contractSelection = ref<any[]>([]);
 // 表格列配置
 const gridColumns: any[] = [
   { type: 'checkbox', width: 55 },
-  { field: 'contractCode', title: $t('storeManagement.labelPrint.billCode'), width: 120 },
-  { field: 'manufacturerName', title: $t('storeManagement.labelPrint.manufacturerName'), width: 200, showOverflow: 'tooltip' },
-  { field: 'materialCode', title: $t('storeManagement.labelPrint.materialCode'), width: 120 },
-  { field: 'materialName', title: $t('storeManagement.labelPrint.materialName'), width: 200, showOverflow: 'tooltip' },
-  { field: 'unPackageNumber', title: $t('storeManagement.labelPrint.unPackageNumber'), width: 100, slots: { default: 'unPackageNumber' } },
-  { field: 'nowPackageNumber', title: $t('storeManagement.labelPrint.nowPackageNumber'), width: 130, slots: { default: 'nowPackageNumber' } },
-  { field: 'lableNumber', title: $t('storeManagement.labelPrint.labelCount'), width: 100, slots: { default: 'lableNumber' } },
-  { field: 'packageNumber', title: $t('storeManagement.labelPrint.packageNumber'), width: 100 },
-  { field: 'purchaseDate', title: $t('storeManagement.labelPrint.billDate'), width: 100, slots: { default: 'purchaseDate' } },
-  { field: 'deliveryDate', title: $t('storeManagement.labelPrint.deliveryDate'), width: 100, slots: { default: 'deliveryDate' } },
-  { field: 'formType', title: $t('storeManagement.labelPrint.formType'), width: 100 },
+  {
+    field: 'contractCode',
+    title: $t('storeManagement.labelPrint.billCode'),
+    width: 120,
+  },
+  {
+    field: 'manufacturerName',
+    title: $t('storeManagement.labelPrint.manufacturerName'),
+    width: 200,
+    showOverflow: 'tooltip',
+  },
+  {
+    field: 'materialCode',
+    title: $t('storeManagement.labelPrint.materialCode'),
+    width: 120,
+  },
+  {
+    field: 'materialName',
+    title: $t('storeManagement.labelPrint.materialName'),
+    width: 200,
+    showOverflow: 'tooltip',
+  },
+  {
+    field: 'unPackageNumber',
+    title: $t('storeManagement.labelPrint.unPackageNumber'),
+    width: 100,
+    slots: { default: 'unPackageNumber' },
+  },
+  {
+    field: 'nowPackageNumber',
+    title: $t('storeManagement.labelPrint.nowPackageNumber'),
+    width: 130,
+    slots: { default: 'nowPackageNumber' },
+  },
+  {
+    field: 'lableNumber',
+    title: $t('storeManagement.labelPrint.labelCount'),
+    width: 100,
+    slots: { default: 'lableNumber' },
+  },
+  {
+    field: 'packageNumber',
+    title: $t('storeManagement.labelPrint.packageNumber'),
+    width: 100,
+  },
+  {
+    field: 'purchaseDate',
+    title: $t('storeManagement.labelPrint.billDate'),
+    width: 100,
+    slots: { default: 'purchaseDate' },
+  },
+  {
+    field: 'deliveryDate',
+    title: $t('storeManagement.labelPrint.deliveryDate'),
+    width: 100,
+    slots: { default: 'deliveryDate' },
+  },
+  {
+    field: 'formType',
+    title: $t('storeManagement.labelPrint.formType'),
+    width: 100,
+  },
   { field: 'unit', title: $t('storeManagement.labelPrint.unit'), width: 80 },
-  { field: 'originalPackageNumber', title: $t('storeManagement.labelPrint.packageNumber'), width: 100 },
-  { field: 'purchasePlanCode', title: $t('storeManagement.labelPrint.purchasePlanCode'), width: 120 },
-  { field: 'remark', title: $t('storeManagement.labelPrint.remark'), width: 150 },
+  {
+    field: 'originalPackageNumber',
+    title: $t('storeManagement.labelPrint.packageNumber'),
+    width: 100,
+  },
+  {
+    field: 'purchasePlanCode',
+    title: $t('storeManagement.labelPrint.purchasePlanCode'),
+    width: 120,
+  },
+  {
+    field: 'remark',
+    title: $t('storeManagement.labelPrint.remark'),
+    width: 150,
+  },
 ];
 
 // 表格配置
@@ -166,8 +226,9 @@ function handleLabelNumberChange(row: any, index: number) {
   const reg2 = /^[1-9][0-9]*$/g;
   if (reg1.test(row.nowPackageNumber) && reg2.test(row.lableNumber)) {
     const num = row.nowPackageNumber / row.lableNumber;
-    tableData[index].packageNumber =
-      Number.isInteger(num) ? num : Number(num).toFixed(4);
+    tableData[index].packageNumber = Number.isInteger(num)
+      ? num
+      : Number(num).toFixed(4);
   }
 }
 
@@ -218,26 +279,38 @@ function handleClose() {
       <FormItem :label="$t('storeManagement.labelPrint.billCode')">
         <Input
           v-model:value="queryParams.code"
-          :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.billCode')"
+          :placeholder="
+            $t('common.pleaseEnter') + $t('storeManagement.labelPrint.billCode')
+          "
           style="width: 150px"
         />
       </FormItem>
       <FormItem :label="$t('storeManagement.labelPrint.materialCode')">
         <Input
           v-model:value="queryParams.materialCode"
-          :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.materialCode')"
+          :placeholder="
+            $t('common.pleaseEnter') +
+            $t('storeManagement.labelPrint.materialCode')
+          "
           style="width: 150px"
         />
       </FormItem>
       <FormItem :label="$t('storeManagement.labelPrint.materialName')">
         <Input
           v-model:value="queryParams.materialName"
-          :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.materialName')"
+          :placeholder="
+            $t('common.pleaseEnter') +
+            $t('storeManagement.labelPrint.materialName')
+          "
           style="width: 150px"
         />
       </FormItem>
       <FormItem>
-        <Button type="primary" @click="handleQuery">{{ $t('common.search') }}</Button>
+        <Button type="primary" @click="handleQuery">
+{{
+          $t('common.search')
+        }}
+</Button>
       </FormItem>
     </Form>
 

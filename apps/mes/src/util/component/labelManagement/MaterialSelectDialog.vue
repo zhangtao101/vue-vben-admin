@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TreeProps } from 'ant-design-vue';
+
 /**
  * 物料选择对话框组件
  */
@@ -8,19 +10,7 @@ import { reactive, ref, watch } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import {
-  Button,
-  Checkbox,
-  Col,
-  Form,
-  FormItem,
-  Input,
-  message,
-  Modal,
-  Row,
-  Tree,
-  type TreeProps,
-} from 'ant-design-vue';
+import { Button, Checkbox, Col, Form, FormItem, Input, message, Modal, Row, Tree } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -150,7 +140,9 @@ function loadMaterialTree() {
       materialTreeData.value = data ? [data] : [];
     })
     .catch((error: any) => {
-      message.error(error.message || $t('storeManagement.labelPrint.getDetailFailed'));
+      message.error(
+        error.message || $t('storeManagement.labelPrint.getDetailFailed'),
+      );
     });
 }
 
@@ -226,7 +218,11 @@ function handleClose() {
       <Col :span="6">
         <Tree
           :tree-data="materialTreeData"
-          :field-names="{ children: 'children', title: 'typeName', key: 'typeCode' }"
+          :field-names="{
+            children: 'children',
+            title: 'typeName',
+            key: 'typeCode',
+          }"
           @select="handleTreeNodeClick"
         />
       </Col>
@@ -235,19 +231,29 @@ function handleClose() {
           <FormItem :label="$t('storeManagement.labelPrint.materialName')">
             <Input
               v-model:value="queryParams.materialName"
-              :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.materialName')"
+              :placeholder="
+                $t('common.pleaseEnter') +
+                $t('storeManagement.labelPrint.materialName')
+              "
               style="width: 150px"
             />
           </FormItem>
           <FormItem :label="$t('storeManagement.labelPrint.materialCode')">
             <Input
               v-model:value="queryParams.materialCode"
-              :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.materialCode')"
+              :placeholder="
+                $t('common.pleaseEnter') +
+                $t('storeManagement.labelPrint.materialCode')
+              "
               style="width: 150px"
             />
           </FormItem>
           <FormItem>
-            <Button type="primary" @click="handleQuery">{{ $t('common.search') }}</Button>
+            <Button type="primary" @click="handleQuery">
+{{
+              $t('common.search')
+            }}
+</Button>
           </FormItem>
         </Form>
 

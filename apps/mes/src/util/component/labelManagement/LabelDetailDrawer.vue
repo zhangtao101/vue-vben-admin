@@ -8,14 +8,7 @@ import { watch } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import {
-  Button,
-  Drawer,
-  message,
-  Modal,
-  Space,
-  Tag,
-} from 'ant-design-vue';
+import { Button, Drawer, message, Modal, Space, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -64,26 +57,108 @@ const statusColorMap: Record<number, string> = {
 // 表格列配置
 const gridColumns: any[] = [
   { type: 'checkbox', width: 55 },
-  { field: 'printTimes', title: $t('storeManagement.labelPrint.printTimes'), width: 80 },
-  { field: 'status', title: $t('storeManagement.labelPrint.status'), width: 80, slots: { default: 'status' } },
-  { field: 'createDate', title: $t('storeManagement.labelPrint.createDate'), width: 100, slots: { default: 'createDate' } },
-  { field: 'labelCode', title: $t('storeManagement.labelPrint.labelCode'), width: 180 },
-  { field: 'materialCode', title: $t('storeManagement.labelPrint.materialCode'), width: 120 },
-  { field: 'materialName', title: $t('storeManagement.labelPrint.materialName'), width: 200, showOverflow: 'tooltip' },
+  {
+    field: 'printTimes',
+    title: $t('storeManagement.labelPrint.printTimes'),
+    width: 80,
+  },
+  {
+    field: 'status',
+    title: $t('storeManagement.labelPrint.status'),
+    width: 80,
+    slots: { default: 'status' },
+  },
+  {
+    field: 'createDate',
+    title: $t('storeManagement.labelPrint.createDate'),
+    width: 100,
+    slots: { default: 'createDate' },
+  },
+  {
+    field: 'labelCode',
+    title: $t('storeManagement.labelPrint.labelCode'),
+    width: 180,
+  },
+  {
+    field: 'materialCode',
+    title: $t('storeManagement.labelPrint.materialCode'),
+    width: 120,
+  },
+  {
+    field: 'materialName',
+    title: $t('storeManagement.labelPrint.materialName'),
+    width: 200,
+    showOverflow: 'tooltip',
+  },
   { field: 'unit', title: $t('storeManagement.labelPrint.unit'), width: 80 },
-  { field: 'labelNumber', title: $t('storeManagement.labelPrint.labelNumber'), width: 80 },
-  { field: 'packageNumber', title: $t('storeManagement.labelPrint.packageNumber'), width: 80 },
-  { field: 'toEnterNumber', title: $t('storeManagement.labelPrint.toEnterNumber'), width: 80 },
-  { field: 'toRejectNumber', title: $t('storeManagement.labelPrint.toRejectNumber'), width: 80 },
-  { field: 'enterWarehouseNumber', title: $t('storeManagement.labelPrint.enterWarehouseNumber'), width: 80 },
-  { field: 'rejectNumber', title: $t('storeManagement.labelPrint.rejectNumber'), width: 80 },
-  { field: 'purchasePlanCode', title: $t('storeManagement.labelPrint.purchasePlanCode'), width: 120 },
-  { field: 'contractCode', title: $t('storeManagement.labelPrint.contractCode'), width: 120 },
-  { field: 'formType', title: $t('storeManagement.labelPrint.formType'), width: 100 },
-  { field: 'manufacturerName', title: $t('storeManagement.labelPrint.manufacturerName'), width: 150, showOverflow: 'tooltip' },
-  { field: 'produceDate', title: $t('storeManagement.labelPrint.produceDate'), width: 100, slots: { default: 'produceDate' } },
-  { field: 'validDate', title: $t('storeManagement.labelPrint.validDate'), width: 100, slots: { default: 'validDate' } },
-  { field: 'batchCode', title: $t('storeManagement.labelPrint.batchCode'), width: 180 },
+  {
+    field: 'labelNumber',
+    title: $t('storeManagement.labelPrint.labelNumber'),
+    width: 80,
+  },
+  {
+    field: 'packageNumber',
+    title: $t('storeManagement.labelPrint.packageNumber'),
+    width: 80,
+  },
+  {
+    field: 'toEnterNumber',
+    title: $t('storeManagement.labelPrint.toEnterNumber'),
+    width: 80,
+  },
+  {
+    field: 'toRejectNumber',
+    title: $t('storeManagement.labelPrint.toRejectNumber'),
+    width: 80,
+  },
+  {
+    field: 'enterWarehouseNumber',
+    title: $t('storeManagement.labelPrint.enterWarehouseNumber'),
+    width: 80,
+  },
+  {
+    field: 'rejectNumber',
+    title: $t('storeManagement.labelPrint.rejectNumber'),
+    width: 80,
+  },
+  {
+    field: 'purchasePlanCode',
+    title: $t('storeManagement.labelPrint.purchasePlanCode'),
+    width: 120,
+  },
+  {
+    field: 'contractCode',
+    title: $t('storeManagement.labelPrint.contractCode'),
+    width: 120,
+  },
+  {
+    field: 'formType',
+    title: $t('storeManagement.labelPrint.formType'),
+    width: 100,
+  },
+  {
+    field: 'manufacturerName',
+    title: $t('storeManagement.labelPrint.manufacturerName'),
+    width: 150,
+    showOverflow: 'tooltip',
+  },
+  {
+    field: 'produceDate',
+    title: $t('storeManagement.labelPrint.produceDate'),
+    width: 100,
+    slots: { default: 'produceDate' },
+  },
+  {
+    field: 'validDate',
+    title: $t('storeManagement.labelPrint.validDate'),
+    width: 100,
+    slots: { default: 'validDate' },
+  },
+  {
+    field: 'batchCode',
+    title: $t('storeManagement.labelPrint.batchCode'),
+    width: 180,
+  },
 ];
 
 // 表格配置
@@ -122,7 +197,9 @@ function loadLabelDetail() {
       gridApi.grid.loadData(data.labelList || []);
     })
     .catch((error: any) => {
-      message.error(error.message || $t('storeManagement.labelPrint.getDetailFailed'));
+      message.error(
+        error.message || $t('storeManagement.labelPrint.getDetailFailed'),
+      );
     });
 }
 
@@ -247,10 +324,26 @@ function handleClose() {
     @close="handleClose"
   >
     <Space class="mb-4">
-      <Button type="primary" @click="handlePrint">{{ $t('common.print') }}</Button>
-      <Button type="primary" danger @click="handleDelete">{{ $t('common.delete') }}</Button>
-      <Button type="primary" @click="handleEnterWarehouse">{{ $t('storeManagement.labelPrint.judgeWarehouse') }}</Button>
-      <Button type="primary" @click="handleJudgeReturn">{{ $t('storeManagement.labelPrint.judgeReturnWarehouse') }}</Button>
+      <Button type="primary" @click="handlePrint">
+{{
+        $t('common.print')
+      }}
+</Button>
+      <Button type="primary" danger @click="handleDelete">
+{{
+        $t('common.delete')
+      }}
+</Button>
+      <Button type="primary" @click="handleEnterWarehouse">
+{{
+        $t('storeManagement.labelPrint.judgeWarehouse')
+      }}
+</Button>
+      <Button type="primary" @click="handleJudgeReturn">
+{{
+        $t('storeManagement.labelPrint.judgeReturnWarehouse')
+      }}
+</Button>
     </Space>
     <Grid>
       <template #status="{ row }">

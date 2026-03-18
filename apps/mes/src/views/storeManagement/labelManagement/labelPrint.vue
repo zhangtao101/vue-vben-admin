@@ -59,11 +59,31 @@ const labelPrintColumns: any[] = [
     width: 50,
     slots: { default: 'isPrint' },
   },
-  { field: 'recordCode', title: $t('storeManagement.labelPrint.recordCode'), minWidth: 180 },
-  { field: 'recordDate', title: $t('storeManagement.labelPrint.recordDate'), minWidth: 180 },
-  { field: 'manufacturerName', title: $t('storeManagement.labelPrint.supplier'), minWidth: 150 },
-  { field: 'remark', title: $t('storeManagement.labelPrint.remark'), minWidth: 150 },
-  { field: 'operatorName', title: $t('storeManagement.labelPrint.operatorName'), minWidth: 100 },
+  {
+    field: 'recordCode',
+    title: $t('storeManagement.labelPrint.recordCode'),
+    minWidth: 180,
+  },
+  {
+    field: 'recordDate',
+    title: $t('storeManagement.labelPrint.recordDate'),
+    minWidth: 180,
+  },
+  {
+    field: 'manufacturerName',
+    title: $t('storeManagement.labelPrint.supplier'),
+    minWidth: 150,
+  },
+  {
+    field: 'remark',
+    title: $t('storeManagement.labelPrint.remark'),
+    minWidth: 150,
+  },
+  {
+    field: 'operatorName',
+    title: $t('storeManagement.labelPrint.operatorName'),
+    minWidth: 100,
+  },
   {
     title: $t('common.operation'),
     minWidth: 150,
@@ -106,31 +126,103 @@ const [LabelPrintGrid, labelPrintGridApi] = useVbenVxeGrid({
 
 const labelQueryColumns: any[] = [
   { type: 'checkbox', width: 55 },
-  { field: 'printTimes', title: $t('storeManagement.labelPrint.printTimes'), minWidth: 80 },
+  {
+    field: 'printTimes',
+    title: $t('storeManagement.labelPrint.printTimes'),
+    minWidth: 80,
+  },
   {
     field: 'status',
     title: $t('storeManagement.labelPrint.status'),
     minWidth: 80,
     slots: { default: 'status' },
   },
-  { field: 'createDate', title: $t('storeManagement.labelPrint.createDate'), minWidth: 120 },
-  { field: 'labelCode', title: $t('storeManagement.labelPrint.labelCode'), minWidth: 180 },
-  { field: 'materialCode', title: $t('storeManagement.labelPrint.materialCode'), minWidth: 120 },
-  { field: 'materialName', title: $t('storeManagement.labelPrint.materialName'), minWidth: 200 },
+  {
+    field: 'createDate',
+    title: $t('storeManagement.labelPrint.createDate'),
+    minWidth: 120,
+  },
+  {
+    field: 'labelCode',
+    title: $t('storeManagement.labelPrint.labelCode'),
+    minWidth: 180,
+  },
+  {
+    field: 'materialCode',
+    title: $t('storeManagement.labelPrint.materialCode'),
+    minWidth: 120,
+  },
+  {
+    field: 'materialName',
+    title: $t('storeManagement.labelPrint.materialName'),
+    minWidth: 200,
+  },
   { field: 'unit', title: $t('storeManagement.labelPrint.unit'), minWidth: 80 },
-  { field: 'labelNumber', title: $t('storeManagement.labelPrint.labelNumber'), minWidth: 100 },
-  { field: 'packageNumber', title: $t('storeManagement.labelPrint.packageNumber'), minWidth: 100 },
-  { field: 'toEnterNumber', title: $t('storeManagement.labelPrint.toEnterNumber'), minWidth: 100 },
-  { field: 'toRejectNumber', title: $t('storeManagement.labelPrint.toRejectNumber'), minWidth: 100 },
-  { field: 'enterWarehouseNumber', title: $t('storeManagement.labelPrint.enterWarehouseNumber'), minWidth: 100 },
-  { field: 'rejectNumber', title: $t('storeManagement.labelPrint.rejectNumber'), minWidth: 100 },
-  { field: 'purchasePlanCode', title: $t('storeManagement.labelPrint.purchasePlanCode'), minWidth: 120 },
-  { field: 'contractCode', title: $t('storeManagement.labelPrint.contractCode'), minWidth: 120 },
-  { field: 'formType', title: $t('storeManagement.labelPrint.formType'), minWidth: 100 },
-  { field: 'manufacturerName', title: $t('storeManagement.labelPrint.manufacturerName'), minWidth: 150 },
-  { field: 'produceDate', title: $t('storeManagement.labelPrint.produceDate'), minWidth: 120 },
-  { field: 'validDate', title: $t('storeManagement.labelPrint.validDate'), minWidth: 120 },
-  { field: 'batchCode', title: $t('storeManagement.labelPrint.batchCode'), minWidth: 180 },
+  {
+    field: 'labelNumber',
+    title: $t('storeManagement.labelPrint.labelNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'packageNumber',
+    title: $t('storeManagement.labelPrint.packageNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'toEnterNumber',
+    title: $t('storeManagement.labelPrint.toEnterNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'toRejectNumber',
+    title: $t('storeManagement.labelPrint.toRejectNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'enterWarehouseNumber',
+    title: $t('storeManagement.labelPrint.enterWarehouseNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'rejectNumber',
+    title: $t('storeManagement.labelPrint.rejectNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'purchasePlanCode',
+    title: $t('storeManagement.labelPrint.purchasePlanCode'),
+    minWidth: 120,
+  },
+  {
+    field: 'contractCode',
+    title: $t('storeManagement.labelPrint.contractCode'),
+    minWidth: 120,
+  },
+  {
+    field: 'formType',
+    title: $t('storeManagement.labelPrint.formType'),
+    minWidth: 100,
+  },
+  {
+    field: 'manufacturerName',
+    title: $t('storeManagement.labelPrint.manufacturerName'),
+    minWidth: 150,
+  },
+  {
+    field: 'produceDate',
+    title: $t('storeManagement.labelPrint.produceDate'),
+    minWidth: 120,
+  },
+  {
+    field: 'validDate',
+    title: $t('storeManagement.labelPrint.validDate'),
+    minWidth: 120,
+  },
+  {
+    field: 'batchCode',
+    title: $t('storeManagement.labelPrint.batchCode'),
+    minWidth: 180,
+  },
 ];
 
 const labelQueryGridOptions: VxeGridProps<any> = {
@@ -482,7 +574,10 @@ onMounted(() => {
             <FormItem :label="$t('storeManagement.labelPrint.recordCode')">
               <Input
                 v-model:value="printQueryParams.recordCode"
-                :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.recordCode')"
+                :placeholder="
+                  $t('common.pleaseEnter') +
+                  $t('storeManagement.labelPrint.recordCode')
+                "
                 allow-clear
                 style="width: 200px"
               />
@@ -510,8 +605,16 @@ onMounted(() => {
               <Icon icon="mdi:plus" class="mr-1" />
               {{ $t('common.add') }}
             </Button>
-            <Button @click="handleViewDetail">{{ $t('storeManagement.labelPrint.labelDetail') }}</Button>
-            <Button type="primary" @click="handlePrint">{{ $t('common.print') }}</Button>
+            <Button @click="handleViewDetail">
+{{
+              $t('storeManagement.labelPrint.labelDetail')
+            }}
+</Button>
+            <Button type="primary" @click="handlePrint">
+{{
+              $t('common.print')
+            }}
+</Button>
           </Space>
 
           <LabelPrintGrid>
@@ -532,7 +635,12 @@ onMounted(() => {
               <!-- 删除 -->
               <Tooltip>
                 <template #title>{{ $t('common.delete') }}</template>
-                <Button type="link" danger class="px-1" @click="handleDeleteRecord(row)">
+                <Button
+                  type="link"
+                  danger
+                  class="px-1"
+                  @click="handleDeleteRecord(row)"
+                >
                   <Icon
                     icon="mdi:delete-forever-outline"
                     class="inline-block align-middle text-2xl"
@@ -551,7 +659,10 @@ onMounted(() => {
             <FormItem :label="$t('storeManagement.labelPrint.materialCode')">
               <Input
                 v-model:value="labelQueryParams.materialCode"
-                :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.materialCode')"
+                :placeholder="
+                  $t('common.pleaseEnter') +
+                  $t('storeManagement.labelPrint.materialCode')
+                "
                 allow-clear
                 style="width: 150px"
               />
@@ -559,15 +670,23 @@ onMounted(() => {
             <FormItem :label="$t('storeManagement.labelPrint.materialName')">
               <Input
                 v-model:value="labelQueryParams.materialName"
-                :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.materialName')"
+                :placeholder="
+                  $t('common.pleaseEnter') +
+                  $t('storeManagement.labelPrint.materialName')
+                "
                 allow-clear
                 style="width: 150px"
               />
             </FormItem>
-            <FormItem :label="$t('storeManagement.labelPrint.manufacturerName')">
+            <FormItem
+              :label="$t('storeManagement.labelPrint.manufacturerName')"
+            >
               <Input
                 v-model:value="labelQueryParams.manufacturerName"
-                :placeholder="$t('common.pleaseEnter') + $t('storeManagement.labelPrint.manufacturerName')"
+                :placeholder="
+                  $t('common.pleaseEnter') +
+                  $t('storeManagement.labelPrint.manufacturerName')
+                "
                 allow-clear
                 style="width: 150px"
               />
@@ -588,15 +707,38 @@ onMounted(() => {
               <Select
                 v-model:value="labelQueryParams.statusList"
                 mode="multiple"
-                :placeholder="$t('common.pleaseSelect') + $t('storeManagement.labelPrint.status')"
+                :placeholder="
+                  $t('common.pleaseSelect') +
+                  $t('storeManagement.labelPrint.status')
+                "
                 allow-clear
                 style="width: 200px"
               >
-                <SelectOption value="1">{{ $t('storeManagement.labelPrint.pendingInspection') }}</SelectOption>
-                <SelectOption value="2">{{ $t('storeManagement.labelPrint.pendingWarehouse') }}</SelectOption>
-                <SelectOption value="3">{{ $t('storeManagement.labelPrint.warehoused') }}</SelectOption>
-                <SelectOption value="4">{{ $t('storeManagement.labelPrint.outOfStock') }}</SelectOption>
-                <SelectOption value="5">{{ $t('storeManagement.labelPrint.pendingReturn') }}</SelectOption>
+                <SelectOption value="1">
+{{
+                  $t('storeManagement.labelPrint.pendingInspection')
+                }}
+</SelectOption>
+                <SelectOption value="2">
+{{
+                  $t('storeManagement.labelPrint.pendingWarehouse')
+                }}
+</SelectOption>
+                <SelectOption value="3">
+{{
+                  $t('storeManagement.labelPrint.warehoused')
+                }}
+</SelectOption>
+                <SelectOption value="4">
+{{
+                  $t('storeManagement.labelPrint.outOfStock')
+                }}
+</SelectOption>
+                <SelectOption value="5">
+{{
+                  $t('storeManagement.labelPrint.pendingReturn')
+                }}
+</SelectOption>
               </Select>
             </FormItem>
             <FormItem>
@@ -612,8 +754,21 @@ onMounted(() => {
 
         <Card class="mt-4">
           <Space class="mb-4">
-            <Button type="primary" @click="handlePrint">{{ $t('common.print') }}</Button>
-            <Button type="primary" danger @click="() => message.warning($t('storeManagement.labelPrint.selectDeleteLabel'))">
+            <Button type="primary" @click="handlePrint">
+{{
+              $t('common.print')
+            }}
+</Button>
+            <Button
+              type="primary"
+              danger
+              @click="
+                () =>
+                  message.warning(
+                    $t('storeManagement.labelPrint.selectDeleteLabel'),
+                  )
+              "
+            >
               {{ $t('common.delete') }}
             </Button>
             <Button type="primary" @click="handleEnterWarehouse">
@@ -622,7 +777,11 @@ onMounted(() => {
             <Button type="primary" @click="handleJudgeReturn">
               {{ $t('storeManagement.labelPrint.judgeReturnWarehouse') }}
             </Button>
-            <Button type="primary" @click="handleExport">{{ $t('common.export') }}</Button>
+            <Button type="primary" @click="handleExport">
+{{
+              $t('common.export')
+            }}
+</Button>
           </Space>
 
           <LabelQueryGrid>
