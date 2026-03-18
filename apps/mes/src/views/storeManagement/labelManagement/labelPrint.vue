@@ -606,15 +606,11 @@ onMounted(() => {
               {{ $t('common.add') }}
             </Button>
             <Button @click="handleViewDetail">
-{{
-              $t('storeManagement.labelPrint.labelDetail')
-            }}
-</Button>
+              {{ $t('storeManagement.labelPrint.labelDetail') }}
+            </Button>
             <Button type="primary" @click="handlePrint">
-{{
-              $t('common.print')
-            }}
-</Button>
+              {{ $t('common.print') }}
+            </Button>
           </Space>
 
           <LabelPrintGrid>
@@ -715,30 +711,20 @@ onMounted(() => {
                 style="width: 200px"
               >
                 <SelectOption value="1">
-{{
-                  $t('storeManagement.labelPrint.pendingInspection')
-                }}
-</SelectOption>
+                  {{ $t('storeManagement.labelPrint.pendingInspection') }}
+                </SelectOption>
                 <SelectOption value="2">
-{{
-                  $t('storeManagement.labelPrint.pendingWarehouse')
-                }}
-</SelectOption>
+                  {{ $t('storeManagement.labelPrint.pendingWarehouse') }}
+                </SelectOption>
                 <SelectOption value="3">
-{{
-                  $t('storeManagement.labelPrint.warehoused')
-                }}
-</SelectOption>
+                  {{ $t('storeManagement.labelPrint.warehoused') }}
+                </SelectOption>
                 <SelectOption value="4">
-{{
-                  $t('storeManagement.labelPrint.outOfStock')
-                }}
-</SelectOption>
+                  {{ $t('storeManagement.labelPrint.outOfStock') }}
+                </SelectOption>
                 <SelectOption value="5">
-{{
-                  $t('storeManagement.labelPrint.pendingReturn')
-                }}
-</SelectOption>
+                  {{ $t('storeManagement.labelPrint.pendingReturn') }}
+                </SelectOption>
               </Select>
             </FormItem>
             <FormItem>
@@ -755,10 +741,8 @@ onMounted(() => {
         <Card class="mt-4">
           <Space class="mb-4">
             <Button type="primary" @click="handlePrint">
-{{
-              $t('common.print')
-            }}
-</Button>
+              {{ $t('common.print') }}
+            </Button>
             <Button
               type="primary"
               danger
@@ -778,10 +762,8 @@ onMounted(() => {
               {{ $t('storeManagement.labelPrint.judgeReturnWarehouse') }}
             </Button>
             <Button type="primary" @click="handleExport">
-{{
-              $t('common.export')
-            }}
-</Button>
+              {{ $t('common.export') }}
+            </Button>
           </Space>
 
           <LabelQueryGrid>

@@ -325,25 +325,17 @@ function handleClose() {
   >
     <Space class="mb-4">
       <Button type="primary" @click="handlePrint">
-{{
-        $t('common.print')
-      }}
-</Button>
+        {{ $t('common.print') }}
+      </Button>
       <Button type="primary" danger @click="handleDelete">
-{{
-        $t('common.delete')
-      }}
-</Button>
+        {{ $t('common.delete') }}
+      </Button>
       <Button type="primary" @click="handleEnterWarehouse">
-{{
-        $t('storeManagement.labelPrint.judgeWarehouse')
-      }}
-</Button>
+        {{ $t('storeManagement.labelPrint.judgeWarehouse') }}
+      </Button>
       <Button type="primary" @click="handleJudgeReturn">
-{{
-        $t('storeManagement.labelPrint.judgeReturnWarehouse')
-      }}
-</Button>
+        {{ $t('storeManagement.labelPrint.judgeReturnWarehouse') }}
+      </Button>
     </Space>
     <Grid>
       <template #status="{ row }">

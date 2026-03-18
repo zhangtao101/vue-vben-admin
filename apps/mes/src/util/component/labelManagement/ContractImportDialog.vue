@@ -307,10 +307,8 @@ function handleClose() {
       </FormItem>
       <FormItem>
         <Button type="primary" @click="handleQuery">
-{{
-          $t('common.search')
-        }}
-</Button>
+          {{ $t('common.search') }}
+        </Button>
       </FormItem>
     </Form>
 

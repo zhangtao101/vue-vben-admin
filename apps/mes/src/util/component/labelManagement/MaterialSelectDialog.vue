@@ -10,7 +10,18 @@ import { reactive, ref, watch } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, Checkbox, Col, Form, FormItem, Input, message, Modal, Row, Tree } from 'ant-design-vue';
+import {
+  Button,
+  Checkbox,
+  Col,
+  Form,
+  FormItem,
+  Input,
+  message,
+  Modal,
+  Row,
+  Tree,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -250,10 +261,8 @@ function handleClose() {
           </FormItem>
           <FormItem>
             <Button type="primary" @click="handleQuery">
-{{
-              $t('common.search')
-            }}
-</Button>
+              {{ $t('common.search') }}
+            </Button>
           </FormItem>
         </Form>
 
