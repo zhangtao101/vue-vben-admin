@@ -63,7 +63,9 @@ const monthGridOptions: VxeGridProps<any> = {
   stripe: true,
 };
 
-const [MonthGrid, monthGridApi] = useVbenVxeGrid({ gridOptions: monthGridOptions });
+const [MonthGrid, monthGridApi] = useVbenVxeGrid({
+  gridOptions: monthGridOptions,
+});
 
 // endregion 月度汇总表格配置
 
@@ -98,7 +100,9 @@ const productGridOptions: VxeGridProps<any> = {
   stripe: true,
 };
 
-const [ProductGrid, productGridApi] = useVbenVxeGrid({ gridOptions: productGridOptions });
+const [ProductGrid, productGridApi] = useVbenVxeGrid({
+  gridOptions: productGridOptions,
+});
 
 // endregion 产品汇总表格配置
 
@@ -219,7 +223,9 @@ let processId = '';
 // 表单验证规则
 const rules: any = {
   month: [{ required: true, message: '请选择月份', trigger: 'change' }],
-  processCode: [{ required: true, message: '请选择报工工序', trigger: 'change' }],
+  processCode: [
+    { required: true, message: '请选择报工工序', trigger: 'change' },
+  ],
 };
 
 // endregion 状态定义
@@ -295,9 +301,7 @@ function loadMonthData() {
     .then((data: any) => {
       // 动态生成列
       const columns = data.column || [];
-      const cols: any[] = [
-        { field: 'node1', title: '', width: 80 },
-      ];
+      const cols: any[] = [{ field: 'node1', title: '', width: 80 }];
 
       columns.forEach((col: any) => {
         if (col.prop === 'sum') {
@@ -355,7 +359,9 @@ function handleProductQuery({ page, pageSize }: any) {
               minWidth: 80,
               slots: { default: 'sum' },
             });
-          } else if (!['part_code', 'part_name', 'part_or_product'].includes(col.prop)) {
+          } else if (
+            !['part_code', 'part_name', 'part_or_product'].includes(col.prop)
+          ) {
             cols.push({
               field: col.prop,
               title: col.label.slice(8, 10),
@@ -641,7 +647,11 @@ onMounted(() => {
       title="报工明细"
       width="90%"
     >
-      <Button type="primary" style="margin-bottom: 16px" @click="handleExportDetail">
+      <Button
+        type="primary"
+        style="margin-bottom: 16px"
+        @click="handleExportDetail"
+      >
         <Icon icon="mdi:export" class="mr-1" />
         导出
       </Button>

@@ -63,7 +63,9 @@ const monthGridOptions: VxeGridProps<any> = {
   stripe: true,
 };
 
-const [MonthGrid, monthGridApi] = useVbenVxeGrid({ gridOptions: monthGridOptions });
+const [MonthGrid, monthGridApi] = useVbenVxeGrid({
+  gridOptions: monthGridOptions,
+});
 
 // endregion 月度汇总表格配置
 
@@ -98,7 +100,9 @@ const planGridOptions: VxeGridProps<any> = {
   stripe: true,
 };
 
-const [PlanGrid, planGridApi] = useVbenVxeGrid({ gridOptions: planGridOptions });
+const [PlanGrid, planGridApi] = useVbenVxeGrid({
+  gridOptions: planGridOptions,
+});
 
 // endregion 计划汇总表格配置
 
@@ -221,7 +225,9 @@ let processId = '';
 // 表单验证规则
 const rules: any = {
   month: [{ required: true, message: '请选择月份', trigger: 'change' }],
-  processCode: [{ required: true, message: '请选择报工工序', trigger: 'change' }],
+  processCode: [
+    { required: true, message: '请选择报工工序', trigger: 'change' },
+  ],
 };
 
 // endregion 状态定义
@@ -297,9 +303,7 @@ function loadMonthData() {
     .then((data: any) => {
       // 动态生成列
       const columns = data.column || [];
-      const cols: any[] = [
-        { field: 'node1', title: '', width: 80 },
-      ];
+      const cols: any[] = [{ field: 'node1', title: '', width: 80 }];
 
       columns.forEach((col: any) => {
         if (col.prop === 'sum') {
@@ -359,9 +363,12 @@ function handlePlanQuery({ page, pageSize }: any) {
               slots: { default: 'sum' },
             });
           } else if (
-            !['part_code', 'part_name', 'part_or_product', 'plan_code'].includes(
-              col.prop,
-            )
+            ![
+              'part_code',
+              'part_name',
+              'part_or_product',
+              'plan_code',
+            ].includes(col.prop)
           ) {
             cols.push({
               field: col.prop,
@@ -658,7 +665,11 @@ onMounted(() => {
       title="报工明细"
       width="90%"
     >
-      <Button type="primary" style="margin-bottom: 16px" @click="handleExportDetail">
+      <Button
+        type="primary"
+        style="margin-bottom: 16px"
+        @click="handleExportDetail"
+      >
         <Icon icon="mdi:export" class="mr-1" />
         导出
       </Button>
