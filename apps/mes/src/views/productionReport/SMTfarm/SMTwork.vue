@@ -50,12 +50,12 @@ import {
 const mainColumns: any[] = [
   { title: '序号', type: 'seq', width: 50 },
   { field: 'lineName', title: '任务线别', minWidth: 100 },
-  { field: 'processName', title: '报工工序', minWidth: 100 },
+  { field: 'processName', title: '报工工序', minWidth: 150 },
   {
     field: 'workSheetCode',
     slots: { default: 'workSheetCode' },
     title: '工单编号',
-    minWidth: 120,
+    minWidth: 150,
   },
   { field: 'subProductCode', title: '部件编号', minWidth: 80 },
   {
@@ -111,6 +111,7 @@ const gridOptions: VxeGridProps<any> = {
       },
     },
   },
+  showOverflow: 'tooltip',
   stripe: true,
 };
 
@@ -126,10 +127,10 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 const detailColumns: any[] = [
   { title: '序号', type: 'seq', width: 50 },
   { field: 'taskLine', title: '任务线别', minWidth: 100 },
-  { field: 'processName', title: '报工工序', minWidth: 100 },
-  { field: 'workSheetCode', title: '工单编号', minWidth: 100 },
+  { field: 'processName', title: '报工工序', minWidth: 200 },
+  { field: 'workSheetCode', title: '工单编号', minWidth: 150 },
   { field: 'partCode', title: '部件编号', minWidth: 80 },
-  { field: 'partName', title: '部件名称', minWidth: 130 },
+  { field: 'partName', title: '部件名称', minWidth: 200 },
   {
     field: 'partOrProduct',
     slots: { default: 'partOrProduct' },
@@ -152,8 +153,8 @@ const detailColumns: any[] = [
   { field: 'partPlanCode', title: '部件计划号', minWidth: 100 },
   { field: 'partPlanNumber', title: '计划完成数', minWidth: 100 },
   { field: 'partPlanFinishNumber', title: '计划已完成数', minWidth: 100 },
-  { field: 'productName', title: '产品名称', minWidth: 100 },
-  { field: 'productPlanCode', title: '产品计划号', minWidth: 100 },
+  { field: 'productName', title: '产品名称', minWidth: 180 },
+  { field: 'productPlanCode', title: '产品计划号', minWidth: 150 },
   { field: 'createTime', title: '操作时间', minWidth: 160 },
   { field: 'createUserName', title: '操作人', minWidth: 80 },
   {
@@ -175,6 +176,7 @@ const detailGridOptions: VxeGridProps<any> = {
     pageSize: 20,
     pageSizes: [10, 20, 50],
   },
+  showOverflow: 'tooltip',
   stripe: true,
 };
 

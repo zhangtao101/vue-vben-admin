@@ -3,6 +3,7 @@ export * from './energyConsumptionCollectionDetails.service';
 export * from './productionFeedAudit.service';
 export * from './productionMonitoring';
 export * from './productRed.service';
+export * from './SMTgeneral.service';
 export * from './SMTPlantAdd.service';
 export * from './SMTwork.service';
 export * from './supplementaryFeedingOperation.service';
