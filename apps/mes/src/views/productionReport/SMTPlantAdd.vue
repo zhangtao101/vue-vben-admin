@@ -225,21 +225,21 @@ const [DetailGrid, detailGridApi] = useVbenVxeGrid({
  */
 const workorderColumns: any[] = [
   { type: 'checkbox', width: 55 },
-  { field: 'workSheetCode', title: '工单编号', minWidth: 150, },
-  { field: 'sideNo', title: '面号', minWidth: 150, },
+  { field: 'workSheetCode', title: '工单编号', minWidth: 150 },
+  { field: 'sideNo', title: '面号', minWidth: 150 },
   {
     field: 'subProductName',
     title: '部件名称',
     minWidth: 150,
   },
-  { field: 'subPlanCode', title: '部件计划号', minWidth: 150, },
+  { field: 'subPlanCode', title: '部件计划号', minWidth: 150 },
   {
     field: 'isProductPlan',
     slots: { default: 'isProductPlan' },
     title: '部件/产品',
     minWidth: 80,
   },
-  { field: 'planDateStart', title: '工单日期', minWidth: 150, },
+  { field: 'planDateStart', title: '工单日期', minWidth: 150 },
 ];
 
 const workorderGridOptions: VxeGridProps<any> = {
@@ -367,7 +367,9 @@ let processId = '';
 const rules: any = {
   reportDate: [{ required: true, message: '此项为必填项', trigger: 'change' }],
   processCode: [{ required: true, message: '此项为必填项', trigger: 'change' }],
-  taskLineCode: [{ required: true, message: '此项为必填项', trigger: 'change' }],
+  taskLineCode: [
+    { required: true, message: '此项为必填项', trigger: 'change' },
+  ],
 };
 
 const dialogRules: any = {
@@ -473,7 +475,7 @@ function handleDetail(row: any) {
 /**
  * Tab 切换
  */
-function handleTabChange(key: number | string ) {
+function handleTabChange(key: number | string) {
   activeTab.value = String(key);
   detailColumns.value = key === 'first' ? readCodeColumns : manualReportColumns;
   if (key === 'first') {
@@ -590,12 +592,12 @@ function handleWorkorderSelect({ checked, row }: any) {
     workorderGridApi.grid.clearCheckboxRow();
     workorderGridApi.grid.setCheckboxRow(row, true);
     selectedWorkorder.value = row;
-  popData.workSheetCode = row.workSheetCode;
-  popData.workSheetPlanNumber = row.workSheetPlanNumber;
-  popData.workSheetFinishNumber = row.workSheetFinishNumber;
-  popData.subPlanNumber = row.subPlanNumber;
-  popData.produceNotFinishNumber = row.produceNotFinishNumber;
-  popData.subPlanFinishNumber =
+    popData.workSheetCode = row.workSheetCode;
+    popData.workSheetPlanNumber = row.workSheetPlanNumber;
+    popData.workSheetFinishNumber = row.workSheetFinishNumber;
+    popData.subPlanNumber = row.subPlanNumber;
+    popData.produceNotFinishNumber = row.produceNotFinishNumber;
+    popData.subPlanFinishNumber =
       row.subPlanNumber - row.produceNotFinishNumber;
   } else {
     selectedWorkorder.value = null;
@@ -738,11 +740,20 @@ onMounted(() => {
         </FormItem>
         <FormItem>
           <Space>
-            <Button type="primary" :disabled="!canSearchOrExport" @click="handleSearch">
+            <Button
+              type="primary"
+              :disabled="!canSearchOrExport"
+              @click="handleSearch"
+            >
               <Icon icon="mdi:search" class="mr-1" />
               查询
             </Button>
-            <Button v-if="exportShow" type="primary" :disabled="!canSearchOrExport" @click="handleExport">
+            <Button
+              v-if="exportShow"
+              type="primary"
+              :disabled="!canSearchOrExport"
+              @click="handleExport"
+            >
               <Icon icon="mdi:export" class="mr-1" />
               导出
             </Button>
@@ -768,7 +779,11 @@ onMounted(() => {
         </template>
         <template #productPlan="{ row }">
           <span>{{
-            row.productPlan === false ? '部件' : row.productPlan === true ? '产品' : ''
+            row.productPlan === false
+              ? '部件'
+              : row.productPlan === true
+                ? '产品'
+                : ''
           }}</span>
         </template>
       </Grid>
@@ -788,7 +803,11 @@ onMounted(() => {
           <DetailGrid>
             <template #partOrProduct="{ row }">
               <span>{{
-                row.partOrProduct === 1 ? '部件' : row.partOrProduct === 2 ? '产品' : ''
+                row.partOrProduct === 1
+                  ? '部件'
+                  : row.partOrProduct === 2
+                    ? '产品'
+                    : ''
               }}</span>
             </template>
             <template #isLater="{ row }">
@@ -798,11 +817,7 @@ onMounted(() => {
             </template>
             <template #dataType="{ row }">
               <span>{{
-                row.dataType === 1
-                  ? '读码'
-                  : row.dataType === 2
-                    ? '冲红'
-                    : ''
+                row.dataType === 1 ? '读码' : row.dataType === 2 ? '冲红' : ''
               }}</span>
             </template>
           </DetailGrid>
@@ -811,7 +826,11 @@ onMounted(() => {
           <DetailGrid>
             <template #partOrProduct="{ row }">
               <span>{{
-                row.partOrProduct === 1 ? '部件' : row.partOrProduct === 2 ? '产品' : ''
+                row.partOrProduct === 1
+                  ? '部件'
+                  : row.partOrProduct === 2
+                    ? '产品'
+                    : ''
               }}</span>
             </template>
             <template #isLater="{ row }">
@@ -821,11 +840,7 @@ onMounted(() => {
             </template>
             <template #dataType="{ row }">
               <span>{{
-                row.dataType === 1
-                  ? '读码'
-                  : row.dataType === 2
-                    ? '冲红'
-                    : ''
+                row.dataType === 1 ? '读码' : row.dataType === 2 ? '冲红' : ''
               }}</span>
             </template>
           </DetailGrid>
@@ -881,7 +896,11 @@ onMounted(() => {
           <WorkorderGrid>
             <template #isProductPlan="{ row }">
               <span>{{
-                row.isProductPlan === false ? '部件' : row.isProductPlan === true ? '产品' : ''
+                row.isProductPlan === false
+                  ? '部件'
+                  : row.isProductPlan === true
+                    ? '产品'
+                    : ''
               }}</span>
             </template>
           </WorkorderGrid>

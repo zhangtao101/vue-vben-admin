@@ -228,12 +228,10 @@ const areaCodeList = ref<any>([]);
  * @param option 下拉框选项对象
  */
 const filterOption = (input: string, option: any) => {
-  const str = displaysTheOutboundOperation.value ?
-    `${option.labelCode.toLowerCase()}${option.labelCode.toLowerCase()}` :
-    `${option.storageCode.toLowerCase()}${option.storageName.toLowerCase()}`;
-  return str.includes(
-    input.toLowerCase(),
-  );
+  const str = displaysTheOutboundOperation.value
+    ? `${option.labelCode.toLowerCase()}${option.labelCode.toLowerCase()}`
+    : `${option.storageCode.toLowerCase()}${option.storageName.toLowerCase()}`;
+  return str.includes(input.toLowerCase());
 };
 
 /**
