@@ -207,12 +207,12 @@ function loadDetail() {
     .then((data: any) => {
       Object.assign(formData, data);
       formData.labelList.forEach((item: any) => {
-        if (!item.contractDetailId) {
-          item.addDisabled = item.status !== 1;
-          item.deleteDisabled = item.status !== 1;
-        } else {
+        if (item.contractDetailId) {
           item.addDisabled = true;
           item.deleteDisabled = item.status === 1;
+        } else {
+          item.addDisabled = item.status !== 1;
+          item.deleteDisabled = item.status !== 1;
         }
       });
       dialogStatus.value = 'update';
