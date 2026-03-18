@@ -81,7 +81,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: mainColumns,
-  height: 500,
+  height: 300,
   pagerConfig: {
     enabled: true,
     pageSize: 10,
@@ -89,10 +89,9 @@ const gridOptions: VxeGridProps<any> = {
   },
   proxyConfig: {
     ajax: {
-      query: async ({ page }: any) => {
-        return await fetchList({
-          ...listQuery,
-          pageNum: page.currentPage,
+      query: async ({ page }) => {
+        return await handleMainTableQuery({
+          page: page.currentPage,
           pageSize: page.pageSize,
         });
       },
@@ -203,7 +202,7 @@ const detailGridOptions: VxeGridProps<any> = {
   border: true,
   columns: detailColumns.value,
   data: [],
-  height: 500,
+  height: 300,
   pagerConfig: {
     enabled: true,
     pageSize: 20,
@@ -252,6 +251,9 @@ const workorderGridOptions: VxeGridProps<any> = {
   },
   data: [],
   height: 300,
+  pagerConfig: {
+    enabled: false,
+  },
   rowConfig: {
     isCurrent: true,
   },
@@ -385,6 +387,37 @@ const dialogRules: any = {
 // region 方法定义
 
 /**
+ * 主表格查询
+ */
+function handleMainTableQuery({ page, pageSize }: any) {
+   return new Promise((resolve, reject) => {
+    if (!canSearchOrExport.value) {
+      resolve({
+          total: 0,
+          items: [],
+      });
+      return;
+    }
+    const params: any = { ...listQuery };
+    fetchList({
+      ...params, // 展开 queryParams.value 对象，包含所有查询参数。
+      pageNum: page, // 当前页码。
+      pageSize, // 每页显示的数据条数。
+    })
+      .then(({ total, list }) => {
+        // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
+        resolve({
+          total,
+          items: list,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+
+/**
  * 查询工序列表
  */
 function getProcessList() {
@@ -514,7 +547,7 @@ function loadManualData() {
   };
   fetchDetailByName(params)
     .then((data: any) => {
-      detailGridApi.grid.reloadData(data.list);
+      detailGridApi.grid.reloadData(data.results);
     })
     .catch((error: any) => {
       message.error(error.message || '加载人工报工数据失败');
@@ -851,6 +884,7 @@ onMounted(() => {
     <!-- 新增报工记录弹窗 -->
     <Drawer
       v-model:open="dialogFormVisible"
+      :footer-style="{ textAlign: 'right' }"
       :mask-closable="false"
       title="新增报工记录"
       width="90%"
