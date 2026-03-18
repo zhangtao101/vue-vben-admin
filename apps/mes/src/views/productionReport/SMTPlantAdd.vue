@@ -390,11 +390,11 @@ const dialogRules: any = {
  * 主表格查询
  */
 function handleMainTableQuery({ page, pageSize }: any) {
-   return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (!canSearchOrExport.value) {
       resolve({
-          total: 0,
-          items: [],
+        total: 0,
+        items: [],
       });
       return;
     }
