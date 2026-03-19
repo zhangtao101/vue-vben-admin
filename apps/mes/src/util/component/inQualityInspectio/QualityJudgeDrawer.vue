@@ -213,8 +213,8 @@ watch(visible, (val) => {
         receiveNumber: res.receiveNumber,
         qualifiedNumber: res.qualifiedNumber || res.checkNumber,
         judgeTime: res.judgeTime
-          ? res.judgeTime.substring(0, 10)
-          : new Date().toISOString().substring(0, 10),
+          ? res.judgeTime.slice(0, 10)
+          : new Date().toISOString().slice(0, 10),
       };
       detailList.value = res.labelList || [];
       if (gridApi.grid) {
@@ -373,7 +373,10 @@ watch(visible, (val) => {
         <template #unqualifiedNumber="{ row }">
           <span
             :style="{
-              color: row.sendNumber - row.qualifiedNumber > 0 ? '#ff4d4f' : '#52c41a',
+              color:
+                row.sendNumber - row.qualifiedNumber > 0
+                  ? '#ff4d4f'
+                  : '#52c41a',
               fontWeight: 'bold',
             }"
           >
@@ -386,7 +389,11 @@ watch(visible, (val) => {
     <template #footer>
       <Space>
         <Button @click="visible = false">{{ $t('common.cancel') }}</Button>
-        <Button type="primary" @click="handleSave">{{ $t('common.save') }}</Button>
+        <Button type="primary" @click="handleSave">
+{{
+          $t('common.save')
+        }}
+</Button>
       </Space>
     </template>
   </Drawer>

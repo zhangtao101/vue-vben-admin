@@ -89,7 +89,10 @@ watch(visible, (val) => {
     width="500"
   >
     <Form layout="vertical">
-      <FormItem :label="$t('storeManagement.inspectionSlip.checkResult')" required>
+      <FormItem
+        :label="$t('storeManagement.inspectionSlip.checkResult')"
+        required
+      >
         <Select
           v-model:value="formData.checkResult"
           :placeholder="$t('common.pleaseSelect')"

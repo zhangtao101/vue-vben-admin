@@ -168,28 +168,28 @@ watch(visible, (val) => {
 }
 
 .print-header {
-  text-align: center;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .company-name {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
   font-size: 22px;
   font-weight: bold;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
   border-bottom: 1px solid #333;
 }
 
 .print-title {
-  font-size: 18px;
   margin-top: 8px;
+  font-size: 18px;
 }
 
 .print-footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
   padding-top: 10px;
+  margin-top: 20px;
 }
 
 .footer-item {

@@ -67,10 +67,16 @@ const statusOptions = [
   { label: $t('storeManagement.inspectionSlip.pendingInspection'), value: '1' },
   { label: $t('storeManagement.inspectionSlip.pendingReturn'), value: '5' },
   { label: $t('storeManagement.inspectionSlip.pendingWarehouse'), value: '2' },
-  { label: $t('storeManagement.inspectionSlip.pendingReturnWarehouse'), value: '25' },
+  {
+    label: $t('storeManagement.inspectionSlip.pendingReturnWarehouse'),
+    value: '25',
+  },
   { label: $t('storeManagement.inspectionSlip.warehoused'), value: '3' },
   { label: $t('storeManagement.inspectionSlip.returned'), value: '6' },
-  { label: $t('storeManagement.inspectionSlip.warehousedReturned'), value: '36' },
+  {
+    label: $t('storeManagement.inspectionSlip.warehousedReturned'),
+    value: '36',
+  },
 ];
 
 // 选中的行
@@ -127,38 +133,139 @@ const gridOptions: VxeGridProps<any> = {
       width: 100,
       slots: { default: 'labelStatus' },
     },
-    { field: 'materialCode', title: $t('storeManagement.labelPrint.materialCode'), width: 120 },
-    { field: 'materialName', title: $t('storeManagement.labelPrint.materialName'), minWidth: 150 },
+    {
+      field: 'materialCode',
+      title: $t('storeManagement.labelPrint.materialCode'),
+      width: 120,
+    },
+    {
+      field: 'materialName',
+      title: $t('storeManagement.labelPrint.materialName'),
+      minWidth: 150,
+    },
     { field: 'unit', title: $t('storeManagement.labelPrint.unit'), width: 60 },
-    { field: 'receiveNumber', title: $t('storeManagement.inspectionSlip.arrivalNumber'), width: 80 },
-    { field: 'manufacturerName', title: $t('storeManagement.labelPrint.manufacturerName'), minWidth: 150 },
+    {
+      field: 'receiveNumber',
+      title: $t('storeManagement.inspectionSlip.arrivalNumber'),
+      width: 80,
+    },
+    {
+      field: 'manufacturerName',
+      title: $t('storeManagement.labelPrint.manufacturerName'),
+      minWidth: 150,
+    },
     {
       field: 'checkResult',
       title: $t('storeManagement.inspectionSlip.checkResult'),
       width: 100,
       slots: { default: 'checkResult' },
     },
-    { field: 'pasDescribe', title: $t('storeManagement.inspectionSlip.pasDescribe'), width: 100 },
-    { field: 'toCheckReason', title: $t('storeManagement.inspectionSlip.toCheckReason'), minWidth: 150 },
-    { field: 'checkUsername', title: $t('storeManagement.inspectionSlip.checkUsername'), width: 100 },
-    { field: 'judgeTime', title: $t('storeManagement.inspectionSlip.judgeTime'), width: 100, slots: { default: 'judgeTime' } },
-    { field: 'formCode', title: $t('storeManagement.labelPrint.formCode'), width: 130 },
-    { field: 'sendDate', title: $t('storeManagement.inspectionSlip.sendDate'), width: 100 },
-    { field: 'sendOrgName', title: $t('storeManagement.inspectionSlip.sendOrgName'), width: 120 },
-    { field: 'sendUsername', title: $t('storeManagement.inspectionSlip.sendUsername'), width: 100 },
-    { field: 'labelCode', title: $t('storeManagement.labelPrint.labelCode'), width: 150 },
-    { field: 'formType', title: $t('storeManagement.labelPrint.formType'), width: 80 },
-    { field: 'contractCode', title: $t('storeManagement.labelPrint.contractCode'), width: 120 },
-    { field: 'checkNumber', title: $t('storeManagement.inspectionSlip.checkNumber'), width: 80 },
-    { field: 'enterWarehouseNumber', title: $t('storeManagement.inspectionSlip.enterWarehouseNumber'), width: 80 },
-    { field: 'rejectNumber', title: $t('storeManagement.inspectionSlip.rejectNumber'), width: 80 },
-    { field: 'checkRemark', title: $t('storeManagement.inspectionSlip.checkRemark'), width: 100 },
-    { field: 'warehouseName', title: $t('storeManagement.inspectionSlip.warehouseName'), width: 100 },
-    { field: 'wareLocationName', title: $t('storeManagement.inspectionSlip.wareLocationName'), width: 100 },
-    { field: 'validDate', title: $t('storeManagement.labelPrint.validDate'), width: 100 },
-    { field: 'batchCode', title: $t('storeManagement.labelPrint.batchCode'), width: 120 },
-    { field: 'produceDate', title: $t('storeManagement.labelPrint.produceDate'), width: 100 },
-    { field: 'remark', title: $t('storeManagement.labelPrint.remark'), width: 120 },
+    {
+      field: 'pasDescribe',
+      title: $t('storeManagement.inspectionSlip.pasDescribe'),
+      width: 100,
+    },
+    {
+      field: 'toCheckReason',
+      title: $t('storeManagement.inspectionSlip.toCheckReason'),
+      minWidth: 150,
+    },
+    {
+      field: 'checkUsername',
+      title: $t('storeManagement.inspectionSlip.checkUsername'),
+      width: 100,
+    },
+    {
+      field: 'judgeTime',
+      title: $t('storeManagement.inspectionSlip.judgeTime'),
+      width: 100,
+      slots: { default: 'judgeTime' },
+    },
+    {
+      field: 'formCode',
+      title: $t('storeManagement.labelPrint.formCode'),
+      width: 130,
+    },
+    {
+      field: 'sendDate',
+      title: $t('storeManagement.inspectionSlip.sendDate'),
+      width: 100,
+    },
+    {
+      field: 'sendOrgName',
+      title: $t('storeManagement.inspectionSlip.sendOrgName'),
+      width: 120,
+    },
+    {
+      field: 'sendUsername',
+      title: $t('storeManagement.inspectionSlip.sendUsername'),
+      width: 100,
+    },
+    {
+      field: 'labelCode',
+      title: $t('storeManagement.labelPrint.labelCode'),
+      width: 150,
+    },
+    {
+      field: 'formType',
+      title: $t('storeManagement.labelPrint.formType'),
+      width: 80,
+    },
+    {
+      field: 'contractCode',
+      title: $t('storeManagement.labelPrint.contractCode'),
+      width: 120,
+    },
+    {
+      field: 'checkNumber',
+      title: $t('storeManagement.inspectionSlip.checkNumber'),
+      width: 80,
+    },
+    {
+      field: 'enterWarehouseNumber',
+      title: $t('storeManagement.inspectionSlip.enterWarehouseNumber'),
+      width: 80,
+    },
+    {
+      field: 'rejectNumber',
+      title: $t('storeManagement.inspectionSlip.rejectNumber'),
+      width: 80,
+    },
+    {
+      field: 'checkRemark',
+      title: $t('storeManagement.inspectionSlip.checkRemark'),
+      width: 100,
+    },
+    {
+      field: 'warehouseName',
+      title: $t('storeManagement.inspectionSlip.warehouseName'),
+      width: 100,
+    },
+    {
+      field: 'wareLocationName',
+      title: $t('storeManagement.inspectionSlip.wareLocationName'),
+      width: 100,
+    },
+    {
+      field: 'validDate',
+      title: $t('storeManagement.labelPrint.validDate'),
+      width: 100,
+    },
+    {
+      field: 'batchCode',
+      title: $t('storeManagement.labelPrint.batchCode'),
+      width: 120,
+    },
+    {
+      field: 'produceDate',
+      title: $t('storeManagement.labelPrint.produceDate'),
+      width: 100,
+    },
+    {
+      field: 'remark',
+      title: $t('storeManagement.labelPrint.remark'),
+      width: 120,
+    },
   ],
   height: 500,
   pagerConfig: {
@@ -349,7 +456,10 @@ onMounted(() => {
     <!-- 搜索 -->
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <FormItem :label="$t('storeManagement.inspectionSlip.formCode')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.formCode')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.formCode"
             :placeholder="$t('common.pleaseEnter')"
@@ -357,14 +467,20 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.sendDate')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.sendDate')"
+          style="margin-bottom: 1em"
+        >
           <DatePicker.RangePicker
             v-model:value="dateRange"
             style="width: 240px"
             @change="handleDateChange"
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.materialName')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.materialName')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.materialName"
             :placeholder="$t('common.pleaseEnter')"
@@ -372,7 +488,10 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.materialCode')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.materialCode')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.materialCode"
             :placeholder="$t('common.pleaseEnter')"
@@ -380,7 +499,10 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.labelPrint.manufacturerName')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.labelPrint.manufacturerName')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.manufacturerName"
             :placeholder="$t('common.pleaseEnter')"
@@ -388,7 +510,10 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.toCheckReason')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.toCheckReason')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.toCheckReason"
             :placeholder="$t('common.pleaseEnter')"
@@ -396,15 +521,26 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.status')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.status')"
+          style="margin-bottom: 1em"
+        >
           <CheckboxGroup v-model:value="queryParams.statusList">
-            <Checkbox v-for="item in statusOptions" :key="item.value" :value="item.value">
+            <Checkbox
+              v-for="item in statusOptions"
+              :key="item.value"
+              :value="item.value"
+            >
               {{ item.label }}
             </Checkbox>
           </CheckboxGroup>
         </FormItem>
         <FormItem style="margin-bottom: 1em">
-          <Button type="primary" @click="handleQuery">{{ $t('common.search') }}</Button>
+          <Button type="primary" @click="handleQuery">
+{{
+            $t('common.search')
+          }}
+</Button>
         </FormItem>
       </Form>
     </Card>
@@ -414,25 +550,53 @@ onMounted(() => {
       <Grid>
         <template #toolbar-tools>
           <Space>
-            <Button v-if="permissions.judge" type="primary" @click="handleJudge">
+            <Button
+              v-if="permissions.judge"
+              type="primary"
+              @click="handleJudge"
+            >
               {{ $t('storeManagement.inspectionSlip.qualityJudge') }}
             </Button>
-            <Button v-if="permissions.batchJudge" type="primary" @click="handleBatchJudge">
+            <Button
+              v-if="permissions.batchJudge"
+              type="primary"
+              @click="handleBatchJudge"
+            >
               {{ $t('storeManagement.inspectionSlip.batchJudge') }}
             </Button>
-            <Button v-if="permissions.noJudgeReason" type="primary" @click="handleToCheckReason">
+            <Button
+              v-if="permissions.noJudgeReason"
+              type="primary"
+              @click="handleToCheckReason"
+            >
               {{ $t('storeManagement.inspectionSlip.noJudgeReason') }}
             </Button>
-            <Button v-if="permissions.cancelJudge" type="primary" @click="handleCancelJudge">
+            <Button
+              v-if="permissions.cancelJudge"
+              type="primary"
+              @click="handleCancelJudge"
+            >
               {{ $t('storeManagement.inspectionSlip.cancelJudge') }}
             </Button>
-            <Button v-if="permissions.judgeDetail" type="primary" @click="handleJudgeDetail">
+            <Button
+              v-if="permissions.judgeDetail"
+              type="primary"
+              @click="handleJudgeDetail"
+            >
               {{ $t('storeManagement.inspectionSlip.qualityJudgeDetail') }}
             </Button>
-            <Button v-if="permissions.print" type="primary" @click="handlePrint">
+            <Button
+              v-if="permissions.print"
+              type="primary"
+              @click="handlePrint"
+            >
               {{ $t('common.print') }}
             </Button>
-            <Button v-if="permissions.export" type="primary" @click="handleExport">
+            <Button
+              v-if="permissions.export"
+              type="primary"
+              @click="handleExport"
+            >
               {{ $t('common.export') }}
             </Button>
           </Space>
@@ -480,9 +644,6 @@ onMounted(() => {
     />
 
     <!-- 打印 -->
-    <PrintDrawer
-      v-model:visible="printVisible"
-      :ids="selectedIds"
-    />
+    <PrintDrawer v-model:visible="printVisible" :ids="selectedIds" />
   </Page>
 </template>

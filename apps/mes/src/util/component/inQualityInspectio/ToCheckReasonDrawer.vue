@@ -66,7 +66,10 @@ watch(visible, (val) => {
     width="500"
   >
     <Form layout="vertical">
-      <FormItem :label="$t('storeManagement.inspectionSlip.toCheckReason')" required>
+      <FormItem
+        :label="$t('storeManagement.inspectionSlip.toCheckReason')"
+        required
+      >
         <Input.TextArea
           v-model:value="toCheckReason"
           :placeholder="$t('common.pleaseEnter')"
