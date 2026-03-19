@@ -390,10 +390,8 @@ watch(visible, (val) => {
       <Space>
         <Button @click="visible = false">{{ $t('common.cancel') }}</Button>
         <Button type="primary" @click="handleSave">
-{{
-          $t('common.save')
-        }}
-</Button>
+          {{ $t('common.save') }}
+        </Button>
       </Space>
     </template>
   </Drawer>
