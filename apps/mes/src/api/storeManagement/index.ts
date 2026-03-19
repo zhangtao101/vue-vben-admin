@@ -1,4 +1,5 @@
 export * from './batchLock.service';
+export * from './inQualityInspectio.service';
 export * from './labelPrint.service';
 export * from './materialInspectionSlip.service';
 export * from './materialManagement';
