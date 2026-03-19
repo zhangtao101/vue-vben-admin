@@ -177,3 +177,54 @@ export async function fetchToReceivePlanList(materialCode: string) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/materialPlan/getToReceivePlanList/${materialCode}`,
   );
 }
+
+/**
+ * 查询材料批次导入列表
+ */
+export async function fetchMaterialBatchList(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/label/searchMaterial?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 根据ID删除标签
+ */
+export async function deleteLabelById(id: string) {
+  return requestClient.delete<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/label/deleteLabelById/${id}`,
+  );
+}
+
+/**
+ * 上传材料Excel导入
+ */
+export async function uploadMaterialExcel(data: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/label/uploadMaterialExcel`,
+    data,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  );
+}
+
+/**
+ * 查询标签副本列表
+ */
+export async function fetchLabelReplicaList(params: any, formTypes: string) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/labelReplica/search?formTypes=${formTypes}&${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 删除标签副本
+ */
+export async function deleteLabelReplica(id: string) {
+  return requestClient.delete<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/labelReplica/delete/${id}`,
+  );
+}

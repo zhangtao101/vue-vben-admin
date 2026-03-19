@@ -165,6 +165,9 @@ const gridOptions: VxeGridProps<any> = {
   footerData: [{ labelType: $t('storeManagement.labelPrint.total') }],
   height: 300,
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 1 }],
+  pagerConfig: {
+    enabled: false,
+  },
   showFooter: true,
   showOverflow: 'tooltip',
   stripe: true,
