@@ -587,28 +587,20 @@ onMounted(() => {
         >
           <RadioGroup v-model:value="queryParams.finishStatus">
             <Radio value="2">
-{{
-              $t('storeManagement.inspectionSlip.all')
-            }}
-</Radio>
+              {{ $t('storeManagement.inspectionSlip.all') }}
+            </Radio>
             <Radio value="0">
-{{
-              $t('storeManagement.inspectionSlip.inProgress')
-            }}
-</Radio>
+              {{ $t('storeManagement.inspectionSlip.inProgress') }}
+            </Radio>
             <Radio value="1">
-{{
-              $t('storeManagement.inspectionSlip.completed')
-            }}
-</Radio>
+              {{ $t('storeManagement.inspectionSlip.completed') }}
+            </Radio>
           </RadioGroup>
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button type="primary" @click="handleQuery">
-{{
-            $t('common.search')
-          }}
-</Button>
+            {{ $t('common.search') }}
+          </Button>
         </FormItem>
       </Form>
     </Card>
@@ -704,10 +696,8 @@ onMounted(() => {
             </Tooltip>
             <Tooltip v-if="permissions.urgent && row.status !== 3">
               <template #title>
-{{
-                $t('storeManagement.inspectionSlip.urgent')
-              }}
-</template>
+                {{ $t('storeManagement.inspectionSlip.urgent') }}
+              </template>
               <Button
                 type="link"
                 danger
@@ -758,15 +748,11 @@ onMounted(() => {
       <template #footer>
         <Space>
           <Button @click="suspendVisible = false">
-{{
-            $t('common.cancel')
-          }}
-</Button>
+            {{ $t('common.cancel') }}
+          </Button>
           <Button type="primary" @click="confirmSuspend">
-{{
-            $t('common.confirm')
-          }}
-</Button>
+            {{ $t('common.confirm') }}
+          </Button>
         </Space>
       </template>
     </Drawer>

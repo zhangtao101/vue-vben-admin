@@ -96,15 +96,11 @@ watch(visible, (val) => {
   >
     <div class="mb-4">
       <Button type="primary" @click="visible = false">
-{{
-        $t('common.back')
-      }}
-</Button>
+        {{ $t('common.back') }}
+      </Button>
       <Button type="primary" class="ml-2" @click="handlePrint">
-{{
-        $t('common.print')
-      }}
-</Button>
+        {{ $t('common.print') }}
+      </Button>
     </div>
 
     <div class="p-4">

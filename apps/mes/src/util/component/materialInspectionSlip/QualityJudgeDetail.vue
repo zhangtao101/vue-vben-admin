@@ -287,7 +287,7 @@ watch(visible, (val) => {
         <template #qualifiedNumber="{ row }">
           <span
             v-if="row.qualifiedNumber != null"
-            style=" font-weight: bold;color: #52c41a"
+            style="font-weight: bold; color: #52c41a"
           >
             {{ row.qualifiedNumber }}
           </span>
@@ -313,10 +313,8 @@ watch(visible, (val) => {
       <Space>
         <Button @click="visible = false">{{ $t('common.cancel') }}</Button>
         <Button type="primary" @click="visible = false">
-{{
-          $t('common.close')
-        }}
-</Button>
+          {{ $t('common.close') }}
+        </Button>
       </Space>
     </template>
   </Drawer>

@@ -438,25 +438,19 @@ watch(visible, (val) => {
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleLabelQuery">
-{{
-            $t('common.search')
-          }}
-</Button>
+            {{ $t('common.search') }}
+          </Button>
         </FormItem>
       </Form>
       <LabelGrid />
       <template #footer>
         <Space>
           <Button @click="labelImportVisible = false">
-{{
-            $t('common.cancel')
-          }}
-</Button>
+            {{ $t('common.cancel') }}
+          </Button>
           <Button type="primary" @click="confirmLabelImport">
-{{
-            $t('common.confirm')
-          }}
-</Button>
+            {{ $t('common.confirm') }}
+          </Button>
         </Space>
       </template>
     </Drawer>
@@ -555,10 +549,8 @@ watch(visible, (val) => {
       <Space>
         <Button @click="visible = false">{{ $t('common.cancel') }}</Button>
         <Button type="primary" @click="handleSave">
-{{
-          $t('common.save')
-        }}
-</Button>
+          {{ $t('common.save') }}
+        </Button>
       </Space>
     </template>
   </Drawer>

@@ -311,10 +311,8 @@ function handleDelete(row: any) {
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button type="primary" @click="handleQuery">
-{{
-            $t('common.search')
-          }}
-</Button>
+            {{ $t('common.search') }}
+          </Button>
         </FormItem>
       </Form>
     </Card>
@@ -337,10 +335,8 @@ function handleDelete(row: any) {
               <Button type="primary">{{ $t('common.import') }}</Button>
             </Upload>
             <Button type="primary" @click="handlePrint">
-{{
-              $t('common.print')
-            }}
-</Button>
+              {{ $t('common.print') }}
+            </Button>
           </Space>
         </template>
         <template #enterWarehouseTime="{ row }">

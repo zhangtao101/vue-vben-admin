@@ -352,15 +352,11 @@ onMounted(() => {
         >
           <CheckboxGroup v-model:value="formTypes">
             <Checkbox value="1">
-{{
-              $t('storeManagement.labelPrint.outboundOrder')
-            }}
-</Checkbox>
+              {{ $t('storeManagement.labelPrint.outboundOrder') }}
+            </Checkbox>
             <Checkbox value="2">
-{{
-              $t('storeManagement.labelPrint.transferOrder')
-            }}
-</Checkbox>
+              {{ $t('storeManagement.labelPrint.transferOrder') }}
+            </Checkbox>
           </CheckboxGroup>
         </FormItem>
         <FormItem style="margin-bottom: 1em">
@@ -381,10 +377,8 @@ onMounted(() => {
         <template #toolbar-tools>
           <Space v-if="author.includes('打印')">
             <Button type="primary" @click="handlePrint">
-{{
-              $t('common.print')
-            }}
-</Button>
+              {{ $t('common.print') }}
+            </Button>
           </Space>
         </template>
         <template #isPrint="{ row }">
