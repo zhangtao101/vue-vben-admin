@@ -19,10 +19,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  exportMaterialInputList,
-  fetchMaterialInputList,
-} from '#/api';
+import { exportMaterialInputList, fetchMaterialInputList } from '#/api';
 import { queryAuth } from '#/util';
 import ReturnRemarkDrawer from '#/util/component/materialInputList/ReturnRemarkDrawer.vue';
 
@@ -85,8 +82,16 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('storeManagement.materialInputList.inputDate'),
       width: 170,
     },
-    { field: 'materialCode', title: $t('storeManagement.labelPrint.materialCode'), width: 120 },
-    { field: 'materialName', title: $t('storeManagement.labelPrint.materialName'), minWidth: 150 },
+    {
+      field: 'materialCode',
+      title: $t('storeManagement.labelPrint.materialCode'),
+      width: 120,
+    },
+    {
+      field: 'materialName',
+      title: $t('storeManagement.labelPrint.materialName'),
+      minWidth: 150,
+    },
     { field: 'unit', title: $t('storeManagement.labelPrint.unit'), width: 60 },
     {
       field: 'packageNumber',
@@ -98,8 +103,16 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('storeManagement.materialInputList.inputNumber'),
       width: 140,
     },
-    { field: 'manufacturerName', title: $t('storeManagement.labelPrint.manufacturerName'), minWidth: 150 },
-    { field: 'labelCode', title: $t('storeManagement.labelPrint.labelCode'), width: 150 },
+    {
+      field: 'manufacturerName',
+      title: $t('storeManagement.labelPrint.manufacturerName'),
+      minWidth: 150,
+    },
+    {
+      field: 'labelCode',
+      title: $t('storeManagement.labelPrint.labelCode'),
+      width: 150,
+    },
     {
       field: 'enterOut',
       title: $t('storeManagement.materialInputList.inputCategory'),
@@ -189,15 +202,21 @@ function queryData({ page, pageSize }: any) {
               break;
             }
             case 2: {
-              checkResultName = $t('storeManagement.inspectionSlip.unqualified');
+              checkResultName = $t(
+                'storeManagement.inspectionSlip.unqualified',
+              );
               break;
             }
             case 3: {
-              checkResultName = $t('storeManagement.inspectionSlip.concessionAccept');
+              checkResultName = $t(
+                'storeManagement.inspectionSlip.concessionAccept',
+              );
               break;
             }
             case 4: {
-              checkResultName = $t('storeManagement.inspectionSlip.emergencyRelease');
+              checkResultName = $t(
+                'storeManagement.inspectionSlip.emergencyRelease',
+              );
               break;
             }
           }
@@ -289,7 +308,10 @@ onMounted(() => {
     <!-- 搜索 -->
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <FormItem :label="$t('storeManagement.materialInputList.inputFormCode')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.materialInputList.inputFormCode')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.formCode"
             :placeholder="$t('common.pleaseEnter')"
@@ -297,14 +319,20 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.materialInputList.inputDate')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.materialInputList.inputDate')"
+          style="margin-bottom: 1em"
+        >
           <DatePicker.RangePicker
             v-model:value="dateRange"
             style="width: 240px"
             @change="handleDateChange"
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.materialName')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.materialName')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.materialName"
             :placeholder="$t('common.pleaseEnter')"
@@ -312,7 +340,10 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.materialCode')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.materialCode')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.materialCode"
             :placeholder="$t('common.pleaseEnter')"
@@ -321,7 +352,11 @@ onMounted(() => {
           />
         </FormItem>
         <FormItem style="margin-bottom: 1em">
-          <Button type="primary" @click="handleQuery">{{ $t('common.search') }}</Button>
+          <Button type="primary" @click="handleQuery">
+{{
+            $t('common.search')
+          }}
+</Button>
         </FormItem>
       </Form>
     </Card>
@@ -331,13 +366,21 @@ onMounted(() => {
       <Grid>
         <template #toolbar-tools>
           <Space>
-            <Button v-if="permissions.print" type="primary" @click="handlePrint">
+            <Button
+              v-if="permissions.print"
+              type="primary"
+              @click="handlePrint"
+            >
               {{ $t('common.print') }}
             </Button>
             <Button type="primary" @click="handleExport">
               {{ $t('common.export') }}
             </Button>
-            <Button v-if="permissions.returnRemark" type="primary" @click="handleReturnRemark">
+            <Button
+              v-if="permissions.returnRemark"
+              type="primary"
+              @click="handleReturnRemark"
+            >
               {{ $t('storeManagement.materialInputList.inputReturnRemark') }}
             </Button>
           </Space>

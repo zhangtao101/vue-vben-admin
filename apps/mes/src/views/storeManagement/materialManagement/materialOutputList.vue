@@ -19,10 +19,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  exportMaterialOutputList,
-  fetchMaterialOutputList,
-} from '#/api';
+import { exportMaterialOutputList, fetchMaterialOutputList } from '#/api';
 import { queryAuth } from '#/util';
 
 // 权限
@@ -77,8 +74,16 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('storeManagement.materialOutputList.outputDate'),
       width: 100,
     },
-    { field: 'materialCode', title: $t('storeManagement.labelPrint.materialCode'), width: 120 },
-    { field: 'materialName', title: $t('storeManagement.labelPrint.materialName'), minWidth: 200 },
+    {
+      field: 'materialCode',
+      title: $t('storeManagement.labelPrint.materialCode'),
+      width: 120,
+    },
+    {
+      field: 'materialName',
+      title: $t('storeManagement.labelPrint.materialName'),
+      minWidth: 200,
+    },
     { field: 'unit', title: $t('storeManagement.labelPrint.unit'), width: 60 },
     {
       field: 'number',
@@ -131,7 +136,11 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('storeManagement.materialOutputList.outputLocation'),
       width: 100,
     },
-    { field: 'manufacturerName', title: $t('storeManagement.labelPrint.manufacturerName'), minWidth: 150 },
+    {
+      field: 'manufacturerName',
+      title: $t('storeManagement.labelPrint.manufacturerName'),
+      minWidth: 150,
+    },
     {
       field: 'validDate',
       title: $t('storeManagement.materialOutputList.validDate'),
@@ -275,7 +284,10 @@ onMounted(() => {
     <!-- 搜索 -->
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <FormItem :label="$t('storeManagement.materialOutputList.outputFormCode')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.materialOutputList.outputFormCode')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.formCode"
             :placeholder="$t('common.pleaseEnter')"
@@ -283,14 +295,20 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.materialOutputList.outputDate')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.materialOutputList.outputDate')"
+          style="margin-bottom: 1em"
+        >
           <DatePicker.RangePicker
             v-model:value="dateRange"
             style="width: 240px"
             @change="handleDateChange"
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.materialName')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.materialName')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.materialName"
             :placeholder="$t('common.pleaseEnter')"
@@ -298,7 +316,10 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('storeManagement.inspectionSlip.materialCode')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('storeManagement.inspectionSlip.materialCode')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.materialCode"
             :placeholder="$t('common.pleaseEnter')"
@@ -307,7 +328,11 @@ onMounted(() => {
           />
         </FormItem>
         <FormItem style="margin-bottom: 1em">
-          <Button type="primary" @click="handleQuery">{{ $t('common.search') }}</Button>
+          <Button type="primary" @click="handleQuery">
+{{
+            $t('common.search')
+          }}
+</Button>
         </FormItem>
       </Form>
     </Card>
@@ -317,7 +342,11 @@ onMounted(() => {
       <Grid>
         <template #toolbar-tools>
           <Space>
-            <Button v-if="author.includes('打印')" type="primary" @click="handlePrint">
+            <Button
+              v-if="author.includes('打印')"
+              type="primary"
+              @click="handlePrint"
+            >
               {{ $t('common.print') }}
             </Button>
             <Button type="primary" @click="handleExport">
