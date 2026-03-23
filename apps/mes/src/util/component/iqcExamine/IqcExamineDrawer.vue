@@ -30,14 +30,11 @@ import { auditIqc, fetchIqcDetail } from '#/api';
 
 // Props
 interface Props {
-  visible: boolean;
-  id: string;
+  visible?: boolean;
+  id?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-  id: '',
-});
+const props = defineProps<Props>();
 
 // Emits
 const emit = defineEmits<{
@@ -230,6 +227,9 @@ watch(drawerVisible, (val) => {
 
 // 加载详情
 function loadDetail() {
+  if (!props.id) {
+    return;
+  }
   fetchIqcDetail(props.id).then((res: any) => {
     formData.value = Object.assign({}, res);
 
@@ -279,6 +279,9 @@ function loadDetail() {
 
 // 通过
 function handlePass() {
+  if (!props.id) {
+    return;
+  }
   Modal.confirm({
     title: $t('common.prompt'),
     content: $t('storeManagement.iqcExamine.confirmPass'),
@@ -297,6 +300,9 @@ function handlePass() {
 
 // 不通过
 function handleNoPass() {
+  if (!props.id) {
+    return;
+  }
   Modal.confirm({
     title: $t('common.prompt'),
     content: $t('storeManagement.iqcExamine.confirmNoPass'),
