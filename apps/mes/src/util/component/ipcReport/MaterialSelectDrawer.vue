@@ -286,10 +286,8 @@ function handleConfirm() {
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button type="primary" @click="handleQuery">
-{{
-            $t('common.search')
-          }}
-</Button>
+            {{ $t('common.search') }}
+          </Button>
         </FormItem>
       </Form>
     </Card>
@@ -299,10 +297,8 @@ function handleConfirm() {
     <template #footer>
       <Space style="float: right">
         <Button type="primary" @click="handleConfirm">
-{{
-          $t('common.confirm')
-        }}
-</Button>
+          {{ $t('common.confirm') }}
+        </Button>
         <Button @click="handleClose">{{ $t('common.cancel') }}</Button>
       </Space>
     </template>

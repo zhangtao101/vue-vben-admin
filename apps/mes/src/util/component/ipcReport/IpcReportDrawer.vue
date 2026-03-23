@@ -564,10 +564,8 @@ const itemColumns = [
   >
     <Spin :spinning="loading">
       <Divider orientation="left">
-{{
-        $t('storeManagement.ipcReport.iqcInfo')
-      }}
-</Divider>
+        {{ $t('storeManagement.ipcReport.iqcInfo') }}
+      </Divider>
       <Form
         :model="formData"
         :label-col="{ span: 6 }"
@@ -697,10 +695,8 @@ const itemColumns = [
       </Form>
 
       <Divider orientation="left">
-{{
-        $t('storeManagement.ipcReport.iqcDetail')
-      }}
-</Divider>
+        {{ $t('storeManagement.ipcReport.iqcDetail') }}
+      </Divider>
       <Table
         :columns="detailColumns"
         :data-source="formData.detailList"
@@ -728,10 +724,8 @@ const itemColumns = [
       </Table>
 
       <Divider orientation="left">
-{{
-        $t('storeManagement.ipcReport.sampleStandard')
-      }}
-</Divider>
+        {{ $t('storeManagement.ipcReport.sampleStandard') }}
+      </Divider>
       <Form
         :model="formData.iqcFlaw"
         :label-col="{ span: 6 }"
@@ -746,15 +740,11 @@ const itemColumns = [
                 @change="handleStandardChange"
               >
                 <Radio :value="1">
-{{
-                  $t('storeManagement.ipcReport.gbStandard')
-                }}
-</Radio>
+                  {{ $t('storeManagement.ipcReport.gbStandard') }}
+                </Radio>
                 <Radio :value="0">
-{{
-                  $t('storeManagement.ipcReport.other')
-                }}
-</Radio>
+                  {{ $t('storeManagement.ipcReport.other') }}
+                </Radio>
               </RadioGroup>
             </FormItem>
           </Col>
@@ -860,20 +850,14 @@ const itemColumns = [
                 @change="handleSampleStandardChange"
               >
                 <Checkbox :value="1">
-{{
-                  $t('storeManagement.ipcReport.iqcStandard')
-                }}
-</Checkbox>
+                  {{ $t('storeManagement.ipcReport.iqcStandard') }}
+                </Checkbox>
                 <Checkbox :value="2">
-{{
-                  $t('storeManagement.ipcReport.pasStandard')
-                }}
-</Checkbox>
+                  {{ $t('storeManagement.ipcReport.pasStandard') }}
+                </Checkbox>
                 <Checkbox :value="3">
-{{
-                  $t('storeManagement.ipcReport.sample')
-                }}
-</Checkbox>
+                  {{ $t('storeManagement.ipcReport.sample') }}
+                </Checkbox>
               </Checkbox.Group>
             </FormItem>
           </Col>
@@ -881,10 +865,8 @@ const itemColumns = [
       </Form>
 
       <Divider orientation="left">
-{{
-        $t('storeManagement.ipcReport.checkItem')
-      }}
-</Divider>
+        {{ $t('storeManagement.ipcReport.checkItem') }}
+      </Divider>
       <Table
         :columns="itemColumns"
         :data-source="formData.itemResults"
@@ -922,10 +904,8 @@ const itemColumns = [
       </Table>
 
       <Divider orientation="left">
-{{
-        $t('storeManagement.ipcReport.attachment')
-      }}
-</Divider>
+        {{ $t('storeManagement.ipcReport.attachment') }}
+      </Divider>
       <Upload
         v-model:file-list="uploadFileList"
         :action="uploadAction"
