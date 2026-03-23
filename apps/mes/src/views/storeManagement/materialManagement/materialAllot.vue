@@ -42,7 +42,7 @@ const queryParams = ref<Record<string, any>>({
 const dateRange = ref<any>(null);
 const warehouseOptions = ref<{ label: string; value: string }[]>([]);
 
-function formatCheckResult(val: number | undefined | null) {
+function formatCheckResult(val: null | number | undefined) {
   if (val === 1) return $t('storeManagement.inspectionSlip.qualified');
   if (val === 2) return $t('storeManagement.inspectionSlip.unqualified');
   if (val === 3) return $t('storeManagement.inspectionSlip.concessionAccept');
@@ -50,7 +50,7 @@ function formatCheckResult(val: number | undefined | null) {
   return '';
 }
 
-function formatDateOnly(val: string | null | undefined) {
+function formatDateOnly(val: null | string | undefined) {
   if (!val) return '';
   return val.length >= 10 ? val.slice(0, 10) : val;
 }
