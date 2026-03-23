@@ -6,6 +6,32 @@
     "responsibleWorkshop": "责任车间"
   },
   "qualityCheck": {
+    "qualityEntering": {
+      "title": "质检录入",
+      "formCode": "表单编号",
+      "formName": "表单名称",
+      "formTypeName": "表单类型",
+      "productReferenceName": "产品相关",
+      "recordCode": "录入编号",
+      "worksheetCode": "工单编号",
+      "productCode": "产品编号",
+      "productName": "产品名称",
+      "planCode": "计划号",
+      "subProductCode": "部件编号",
+      "checkTime": "检验时间",
+      "judgeResult": "判定结果",
+      "sendNumber": "送检数量",
+      "preparationNumber": "抽检数量",
+      "qualifiedNumber": "合格数量/不合格数量",
+      "recordStatus": "表单状态",
+      "auditType": "审核状态",
+      "operateUserName": "操作人",
+      "operateTime": "操作时间",
+      "dateRange": "日期",
+      "enter": "录入",
+      "dataAction": "数据操作",
+      "formAction": "表单操作"
+    },
     "qualityBaseSet": {
       "specialMaintain": {
         "name": "特殊特性名称",
