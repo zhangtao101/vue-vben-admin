@@ -6,6 +6,7 @@ export * from './labelPrint.service';
 export * from './materialAllot.service';
 export * from './materialInputList.service';
 export * from './materialInspectionSlip.service';
+export * from './materialInventory.service';
 export * from './materialManagement';
 export * from './materialOutputList.service';
 export * from './physicalStore.service';

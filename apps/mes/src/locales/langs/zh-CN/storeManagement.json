@@ -414,5 +414,29 @@
     "sum": "合计",
     "selectPrintRows": "请选择需要打印的单据",
     "sameTransferFormOnly": "请选择同一张调拨单号的数据"
+  },
+  "materialInventory": {
+    "formCode": "盘点单号",
+    "inventoryDate": "盘点日期",
+    "remark": "备注说明",
+    "operatorName": "操作人名",
+    "operateDate": "操作时间",
+    "materialCode": "材料编号",
+    "materialName": "材料名称",
+    "unit": "单位",
+    "labelCode": "条码编号",
+    "wareLocation": "库位号",
+    "logicalWarehouse": "所属仓库",
+    "stockQty": "账面库存",
+    "realQty": "实际库存",
+    "profitLossQty": "盈亏数量",
+    "inventoryDetail": "盘点明细",
+    "profitLossDetail": "盈亏明细",
+    "issue": "签发",
+    "cancelIssue": "取消签发",
+    "toProfitLoss": "转盈亏单",
+    "selectData": "请选择数据",
+    "selectOneData": "请选择一条数据",
+    "todoFeature": "该功能正在迁移中"
   }
 }

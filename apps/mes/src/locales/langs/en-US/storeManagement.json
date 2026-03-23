@@ -414,5 +414,29 @@
     "sum": "Total",
     "selectPrintRows": "Please select rows to print",
     "sameTransferFormOnly": "Please select rows of the same transfer form only"
+  },
+  "materialInventory": {
+    "formCode": "Inventory Form No.",
+    "inventoryDate": "Inventory Date",
+    "remark": "Remark",
+    "operatorName": "Operator",
+    "operateDate": "Operate Time",
+    "materialCode": "Material Code",
+    "materialName": "Material Name",
+    "unit": "Unit",
+    "labelCode": "Barcode",
+    "wareLocation": "Location",
+    "logicalWarehouse": "Logical Warehouse",
+    "stockQty": "Book Qty",
+    "realQty": "Actual Qty",
+    "profitLossQty": "Profit/Loss Qty",
+    "inventoryDetail": "Inventory Details",
+    "profitLossDetail": "Profit/Loss Details",
+    "issue": "Issue",
+    "cancelIssue": "Cancel Issue",
+    "toProfitLoss": "To Profit/Loss",
+    "selectData": "Please select data",
+    "selectOneData": "Please select one row",
+    "todoFeature": "This feature is being migrated"
   }
 }
