@@ -346,15 +346,11 @@ function queryOutAreaCode() {
     ...queryParams.value,
     formCode: details.value.formCode, // 单据编码
     materialDescriptionId: jobData.value.materialDescriptionId, // 物料特征ID
-  }
-    // 处理时间范围查询
+  };
+  // 处理时间范围查询
   if (params.searchTime && params.searchTime.length === 2) {
-    params.startTime = params.searchTime[0].format(
-      'YYYY-MM-DD',
-    );
-    params.endTime = params.searchTime[1].format(
-      'YYYY-MM-DD',
-    );
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
     delete params.searchTime;
   }
   getDetailOutTaskEnout(params).then((res) => {
@@ -423,23 +419,16 @@ defineExpose({
       </Col>
     </Row>
 
-
     <!-- region 顶部搜索区域（仅出库时显示） -->
     <div v-if="details.taskType === 2 && details.enterOut === -1" class="!my-4">
       <Form :model="queryParams" layout="inline">
         <!-- 工单号 -->
-        <FormItem
-          label="工单号"
-          style="margin-bottom: 1em"
-        >
+        <FormItem label="工单号" style="margin-bottom: 1em">
           <Input v-model:value="queryParams.worksheetCode" />
         </FormItem>
 
         <!-- 批次号 -->
-        <FormItem
-          label="批次号"
-          style="margin-bottom: 1em"
-        >
+        <FormItem label="批次号" style="margin-bottom: 1em">
           <Input v-model:value="queryParams.batchCode" />
         </FormItem>
 
@@ -452,18 +441,12 @@ defineExpose({
         </FormItem>
 
         <!-- 班别 -->
-        <FormItem
-          label="班别"
-          style="margin-bottom: 1em"
-        >
+        <FormItem label="班别" style="margin-bottom: 1em">
           <Input v-model:value="queryParams.classType" />
         </FormItem>
 
         <!-- 线别 -->
-        <FormItem
-          label="线别"
-          style="margin-bottom: 1em"
-        >
+        <FormItem label="线别" style="margin-bottom: 1em">
           <Input v-model:value="queryParams.lineType" />
         </FormItem>
       </Form>
