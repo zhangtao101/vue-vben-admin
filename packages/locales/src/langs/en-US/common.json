@@ -101,5 +101,12 @@
   "nextStep": "Next Step",
   "imageGeneration": "Image Generation",
   "imageGenerationSuccess": "Image Generation Successful",
-  "imageGenerationFailure": "Image Generation Failed, Please Try Again Later"
+  "imageGenerationFailure": "Image Generation Failed, Please Try Again Later",
+  "operation": "Operation",
+  "deleteFailed": "Delete Failed",
+  "operationFailed": "Operation Failed",
+  "exportFailed": "Export Failed",
+  "pleaseEnter": "Please Enter",
+  "pleaseSelect": "Please Select",
+  "unknown": "Unknown"
 }

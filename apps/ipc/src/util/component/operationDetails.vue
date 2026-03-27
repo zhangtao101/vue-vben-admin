@@ -14,6 +14,7 @@ import {
   FormItem,
   Input,
   message,
+  RangePicker,
   Row,
   Select,
   Space,
@@ -174,8 +175,8 @@ function queryDetails(row: any) {
     gridApi.grid.loadData([]); // 先清空数据
     gridApi.grid.insert(res); // 将查询结果插入表格
 
+    clearTimeout(timeoutId);
     if (visible.value) {
-      clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         queryDetails(row);
       }, 1000 * 30);
@@ -209,6 +210,13 @@ function submit() {
 
 // region 手动作业功能
 
+const queryParams = ref<any>({
+  worksheetCode: '', // 工单号
+  batchCode: '', // 批次号
+  searchTime: [], // 时间范围（格式化为 yyyy-MM-dd）
+  classType: '', // 班别
+  lineType: '', // 线别
+});
 /**
  * 作业数据对象
  * 存储当前执行作业的物料信息和操作参数
@@ -263,6 +271,7 @@ function startTheAssignment(row: any) {
 function closeTheAssignment() {
   displaysTheOutboundOperation.value = false; // 隐藏出库操作界面
   displaysTheInboundOperation.value = false; // 隐藏入库操作界面
+  queryParams.value = {};
   jobData.value = {}; // 清空作业数据
 }
 
@@ -333,10 +342,18 @@ const displaysTheOutboundOperation = ref(false);
  * 根据单据编码和物料特征ID查询可用的出库储位
  */
 function queryOutAreaCode() {
-  getDetailOutTaskEnout({
+  const params = {
+    ...queryParams.value,
     formCode: details.value.formCode, // 单据编码
     materialDescriptionId: jobData.value.materialDescriptionId, // 物料特征ID
-  }).then((res) => {
+  };
+  // 处理时间范围查询
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    delete params.searchTime;
+  }
+  getDetailOutTaskEnout(params).then((res) => {
     areaCodeList.value = res; // 设置储位选择列表
   });
 }
@@ -401,6 +418,40 @@ defineExpose({
         <span class="mr-4 text-xl">{{ details?.operateDate || '-' }}</span>
       </Col>
     </Row>
+
+    <!-- region 顶部搜索区域（仅出库时显示） -->
+    <div v-if="details.taskType === 2 && details.enterOut === -1" class="!my-4">
+      <Form :model="queryParams" layout="inline">
+        <!-- 工单号 -->
+        <FormItem label="工单号" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.worksheetCode" />
+        </FormItem>
+
+        <!-- 批次号 -->
+        <FormItem label="批次号" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.batchCode" />
+        </FormItem>
+
+        <!-- 时间范围 -->
+        <FormItem
+          :label="$t('useEnergyThroughoutTheEntireSection.timeFrame')"
+          style="margin-bottom: 1em"
+        >
+          <RangePicker v-model:value="queryParams.searchTime" />
+        </FormItem>
+
+        <!-- 班别 -->
+        <FormItem label="班别" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.classType" />
+        </FormItem>
+
+        <!-- 线别 -->
+        <FormItem label="线别" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.lineType" />
+        </FormItem>
+      </Form>
+    </div>
+    <!-- endregion -->
 
     <!-- 物料明细表格区域 -->
     <div v-if="Grid && visible">

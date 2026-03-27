@@ -6,6 +6,32 @@
     "responsibleWorkshop": "Responsible Workshop"
   },
   "qualityCheck": {
+    "qualityEntering": {
+      "title": "Quality Entry",
+      "formCode": "Form Code",
+      "formName": "Form Name",
+      "formTypeName": "Form Type",
+      "productReferenceName": "Product Reference",
+      "recordCode": "Record Code",
+      "worksheetCode": "Worksheet Code",
+      "productCode": "Product Code",
+      "productName": "Product Name",
+      "planCode": "Plan Code",
+      "subProductCode": "Sub Product Code",
+      "checkTime": "Check Time",
+      "judgeResult": "Judge Result",
+      "sendNumber": "Send Number",
+      "preparationNumber": "Preparation Number",
+      "qualifiedNumber": "Qualified/Disqualified Number",
+      "recordStatus": "Record Status",
+      "auditType": "Audit Status",
+      "operateUserName": "Operator",
+      "operateTime": "Operate Time",
+      "dateRange": "Date Range",
+      "enter": "Entry",
+      "dataAction": "Data Action",
+      "formAction": "Form Action"
+    },
     "qualityBaseSet": {
       "specialMaintain": {
         "name": "Special Characteristic Name",
