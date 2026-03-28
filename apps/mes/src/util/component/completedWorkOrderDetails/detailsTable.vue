@@ -339,7 +339,7 @@ onMounted(() => {
       </Button>
     </FormItem>
   </Form>
-  <Grid class="mt-4" v-if="showTable">
+  <Grid class="!mt-4" v-if="showTable">
     <template #toolbar-tools>
       <!-- 投料 -->
       <Button type="primary" @click="exportExcel()">

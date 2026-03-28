@@ -144,7 +144,7 @@ onMounted(() => {
   <Spin :spinning="spinning">
     <template v-if="details">
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 当前工单 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentWorkOrder') }}：
@@ -153,7 +153,7 @@ onMounted(() => {
             {{ details.worksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.productName') }}：
@@ -162,7 +162,7 @@ onMounted(() => {
             {{ details.productName || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 产品编号 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.productNumber') }}：
@@ -171,7 +171,7 @@ onMounted(() => {
             {{ details.productCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 计划数量 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.plannedQuantity') }}：
@@ -180,7 +180,7 @@ onMounted(() => {
             {{ details.planNumber || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 累计完成数量 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.cumulativeCompletedQuantity') }}：
@@ -189,7 +189,7 @@ onMounted(() => {
             {{ details.finishNumber || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 累计不良数量 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.cumulativeNumberOfDefects') }}：
@@ -200,7 +200,7 @@ onMounted(() => {
         </div>
       </div>
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 良品数量 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.quantityOfGoodProducts') }}：
@@ -211,7 +211,7 @@ onMounted(() => {
             min="0"
           />
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 不良品数量 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.quantityOfDefectiveProducts') }}：
@@ -222,7 +222,7 @@ onMounted(() => {
             min="0"
           />
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <Button type="primary" @click="submit">
             {{ $t('common.submit') }}
           </Button>

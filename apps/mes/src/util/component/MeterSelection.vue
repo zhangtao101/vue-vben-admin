@@ -57,14 +57,14 @@ const rule = ref<any>({
       <Button
         @click="addAMeter(parent)"
         v-if="parent.level < 3"
-        class="mr-4 mt-4"
+        class="mr-4 !mt-4"
       >
         {{ $t('unitAreaManagement.addSublevel') }}
       </Button>
       <Button
         danger
         @click="removeFun('key', parent.key)"
-        class="mr-4 mt-4"
+        class="mr-4 !mt-4"
         v-if="parent.level > 1"
       >
         {{ $t('common.delete') }}

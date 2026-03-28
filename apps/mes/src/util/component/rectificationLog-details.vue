@@ -36,7 +36,7 @@ function getResultText(type: number) {
     :column="2"
     bordered
     :title="$t('hiddenDangerRectification.rectificationOfHiddenDangers')"
-    class="mt-4"
+    class="!mt-4"
   >
     <!-- 原因分析 -->
     <DescriptionsItem
@@ -131,7 +131,7 @@ function getResultText(type: number) {
     :title="
       $t('hiddenDangerRectification.implementationOfHiddenDangerRectification')
     "
-    class="mt-4"
+    class="!mt-4"
   >
     <!-- 整改情况 -->
     <DescriptionsItem
@@ -200,7 +200,7 @@ function getResultText(type: number) {
     :title="
       $t('hiddenDangerRectification.hiddenDangerRectificationAndAcceptance')
     "
-    class="mt-4"
+    class="!mt-4"
   >
     <!-- 验收结果 -->
     <DescriptionsItem

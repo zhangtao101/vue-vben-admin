@@ -151,7 +151,7 @@ onBeforeUnmount(() => {
   <Spin :spinning="spinning">
     <template v-if="details">
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 当前工单 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentWorkOrder') }}：
@@ -160,7 +160,7 @@ onBeforeUnmount(() => {
             {{ details.currentJobId || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentProductName') }}：
@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.implementationStatus') }}：
@@ -183,7 +183,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.productName') }}：
@@ -192,7 +192,7 @@ onBeforeUnmount(() => {
             {{ details.productName || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 当前工单 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentWorkOrder') }}：
@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
             {{ details.currentJobId || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 产品编号 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.productNumber') }}：
@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 设备状态 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.deviceStatus') }}：

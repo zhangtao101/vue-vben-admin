@@ -28,7 +28,7 @@ function fetchData() {
           下面的按钮点击后会发起请求，接口返回的JSON数据中的id字段是超出整数范围的数字，已自动将其解析为字符串
         </template>
       </Alert>
-      <Button class="mt-4" type="primary" @click="fetchData">发起请求</Button>
+      <Button class="!mt-4" type="primary" @click="fetchData">发起请求</Button>
       <div>
         <pre>
         {{ response }}

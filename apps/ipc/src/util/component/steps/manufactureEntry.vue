@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Grid class="mt-4">
+  <Grid class="!mt-4">
     <template #action="{ row }">
       <!-- 进站 -->
       <Tooltip>

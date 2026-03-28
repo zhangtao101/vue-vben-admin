@@ -488,7 +488,7 @@ onMounted(() => {
           <div>
             <Button
               v-if="addButton"
-              class="mb-4"
+              class="!mb-4"
               type="primary"
               @click="showDrawer = true"
             >

@@ -30,7 +30,7 @@ const defaultProps = defineProps({
   details: {
     default: () => [],
     required: false,
-    type: Array<Object>,
+    type: Array<object>,
   },
   /**
    * 定义一个名为 isOpen 的 prop。
@@ -569,7 +569,7 @@ function submit() {
       <!-- 动态渲染操作详情配置项 -->
       <template v-for="(item, index) of operationDetails" :key="index">
         <!-- 单个操作配置卡片容器，带阴影和圆角样式 -->
-        <div class="mb-4 rounded-xl border-2 p-4 shadow-lg shadow-blue-200">
+        <div class="!mb-4 rounded-xl border-2 p-4 shadow-lg shadow-blue-200">
           <!-- 操作类型选择器 -->
           <FormItem
             :rules="{

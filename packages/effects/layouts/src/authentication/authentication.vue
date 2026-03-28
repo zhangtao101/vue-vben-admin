@@ -86,7 +86,7 @@ const logoSrc = computed(() => {
         @click="clickLogo"
       >
         <div
-          class="mt-4 ml-4 flex flex-1 items-center text-foreground sm:top-6 sm:left-6 lg:text-foreground"
+          class="!mt-4 ml-4 flex flex-1 items-center text-foreground sm:top-6 sm:left-6 lg:text-foreground"
         >
           <img
             v-if="logoSrc"

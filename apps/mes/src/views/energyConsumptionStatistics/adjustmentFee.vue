@@ -231,7 +231,7 @@ onMounted(() => {
           'energyConsumption.energyConsumptionStatistics.powerRegulationCharge',
         )
       "
-      class="mb-4"
+      class="!mb-4"
     >
       <Form :model="queryParams" layout="inline">
         <!-- 时间粒度选择器 -->
@@ -270,7 +270,7 @@ onMounted(() => {
     <!-- region 基本信息统计区域 -->
     <Card>
       <!-- region 电费相关统计信息 -->
-      <Flex class="mb-4">
+      <Flex class="!mb-4">
         <!--region 无功罚款统计卡片 -->
         <div class="flex-1 border-2 p-4">
           <Row>
@@ -284,7 +284,7 @@ onMounted(() => {
               </span>
             </Col>
           </Row>
-          <Row class="mt-4" :gutter="24">
+          <Row class="!mt-4" :gutter="24">
             <Col :span="8" class="text-center">
               <!-- 年累计无功罚款金额 -->
               <Statistic
@@ -334,7 +334,7 @@ onMounted(() => {
               </span>
             </Col>
           </Row>
-          <Row class="mt-4" :gutter="24">
+          <Row class="!mt-4" :gutter="24">
             <Col :span="8" class="text-center">
               <!-- 功率因数KPI值 -->
               <Statistic
@@ -395,7 +395,7 @@ onMounted(() => {
       <!-- endregion -->
 
       <!-- region 图表展示区域 -->
-      <Row :gutter="10" class="mt-4" v-show="selectShowType === 'chart'">
+      <Row :gutter="10" class="!mt-4" v-show="selectShowType === 'chart'">
         <Col :span="24">
           <!-- 力调电费/功率因数趋势图表 -->
           <Card

@@ -498,7 +498,12 @@ onMounted(() => {
     <Card>
       <div>
         <!-- 新增按钮 -->
-        <Button v-if="addButton" class="mb-4" type="primary" @click="editRow()">
+        <Button
+          v-if="addButton"
+          class="!mb-4"
+          type="primary"
+          @click="editRow()"
+        >
           {{ $t('common.add') }}
         </Button>
       </div>

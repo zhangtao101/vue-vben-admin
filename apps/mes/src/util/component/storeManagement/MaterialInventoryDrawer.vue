@@ -396,7 +396,7 @@ function handleMaterialDialogClose() {
     :footer-style="{ textAlign: 'right' }"
     @close="handleDrawerClose"
   >
-    <div v-if="props.status === 'edit'" class="mb-4">
+    <div v-if="props.status === 'edit'" class="!mb-4">
       <Space>
         <Button v-if="!importButtonVisible" @click="importButtonVisible = true">
           库存导入
@@ -420,7 +420,7 @@ function handleMaterialDialogClose() {
     </div>
 
     <Form :model="formData" label-width="100px">
-      <div class="flex gap-8 mb-4">
+      <div class="flex gap-8 !mb-4">
         <FormItem label="盘点单号：">
           <Input v-model:value="formData.formCode" disabled />
         </FormItem>
@@ -510,7 +510,7 @@ function handleMaterialDialogClose() {
         />
       </div>
       <div class="flex-1">
-        <Card class="mb-4">
+        <Card class="!mb-4">
           <Space>
             <Input
               v-model:value="materialListQuery.materialCode"

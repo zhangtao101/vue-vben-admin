@@ -465,7 +465,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 当前工单 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.currentWorkOrder') }}：
@@ -474,7 +474,7 @@ onBeforeUnmount(() => {
         {{ details?.currentJobId || $t('productionOperation.none') }}
       </span>
     </div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 产品名称 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.currentProductName') }}：
@@ -485,7 +485,7 @@ onBeforeUnmount(() => {
     </div>
   </div>
   <div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 前工步执行状况 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.implementationStatus') }}：
@@ -495,7 +495,7 @@ onBeforeUnmount(() => {
         {{ details?.lastFeedFlagName || $t('productionOperation.none') }}
       </span>
     </div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 当前设备投料模式 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.currentDeviceFeedingMode') }}：

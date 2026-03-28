@@ -1107,7 +1107,7 @@ onMounted(() => {
         :key="item.id"
         :memo="item.id"
         :value="item.description"
-        class="mb-4"
+        class="!mb-4"
         :class="{
           '!border-4 !border-green-500 shadow-lg':
             detailsState.materialDescriptionId === item.id,

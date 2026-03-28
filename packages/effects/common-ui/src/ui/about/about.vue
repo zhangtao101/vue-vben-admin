@@ -125,7 +125,7 @@ const devDependenciesItems = Object.keys(devDependencies).map((key) => ({
       <div>
         <h5 class="text-lg text-foreground">基本信息</h5>
       </div>
-      <div class="mt-4">
+      <div class="!mt-4">
         <dl class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <template v-for="item in vbenDescriptionItems" :key="item.title">
             <div class="border-t border-border px-4 py-6 sm:col-span-1 sm:px-0">
@@ -145,7 +145,7 @@ const devDependenciesItems = Object.keys(devDependencies).map((key) => ({
       <div>
         <h5 class="text-lg text-foreground">生产环境依赖</h5>
       </div>
-      <div class="mt-4">
+      <div class="!mt-4">
         <dl class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <template v-for="item in dependenciesItems" :key="item.title">
             <div class="border-t border-border px-4 py-3 sm:col-span-1 sm:px-0">
@@ -164,7 +164,7 @@ const devDependenciesItems = Object.keys(devDependencies).map((key) => ({
       <div>
         <h5 class="text-lg text-foreground">开发环境依赖</h5>
       </div>
-      <div class="mt-4">
+      <div class="!mt-4">
         <dl class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <template v-for="item in devDependenciesItems" :key="item.title">
             <div class="border-t border-border px-4 py-3 sm:col-span-1 sm:px-0">

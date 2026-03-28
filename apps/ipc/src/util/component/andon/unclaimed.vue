@@ -781,7 +781,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <Form layout="inline" :model="queryParams" class="mb-4">
+  <Form layout="inline" :model="queryParams" class="!mb-4">
     <!--工单编号 -->
     <FormItem :label="$t('andon.workOrderNumber')" class="!mb-4">
       <div class="flex">

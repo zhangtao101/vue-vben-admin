@@ -970,7 +970,7 @@ onMounted(() => {
       </Form>
 
       <!-- 添加 -->
-      <Button v-if="!isShowStatus" class="mb-4" type="primary" @click="addRow">
+      <Button v-if="!isShowStatus" class="!mb-4" type="primary" @click="addRow">
         {{ $t('common.add') }}
       </Button>
       <Table

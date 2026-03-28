@@ -572,7 +572,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 设备数量信息 -->
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <!-- 设备总数 -->
       <Statistic
         :title="$t('equip.Total')"
@@ -606,7 +606,7 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
     <!-- region 搜索 -->
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 系统编号 -->
         <FormItem :label="$t('equip.systemNumber')" style="margin-bottom: 1em">
@@ -843,7 +843,11 @@ onMounted(() => {
       <CheckboxGroup v-model:value="checkedRow.equipmentCode">
         <Row>
           <template v-for="item of meterList" :key="item.value">
-            <Col :span="24" class="mt-4" v-show="item.label.includes(meterKey)">
+            <Col
+              :span="24"
+              class="!mt-4"
+              v-show="item.label.includes(meterKey)"
+            >
               <Checkbox :value="item.value">
                 {{ item.label }}
               </Checkbox>

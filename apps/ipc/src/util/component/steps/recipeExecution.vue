@@ -530,7 +530,7 @@ onBeforeUnmount(() => {
             {{ details.feedStatus?.tempUnit }}
           </FormItem>
           <FormItem label="设备参数">
-            <div class="mt-4 rounded-sm bg-yellow-200 p-4">
+            <div class="!mt-4 rounded-sm bg-yellow-200 p-4">
               <FormItem label="压力">
                 {{ details.deviceControl?.deviceParameters.压力 }}
                 <Icon
@@ -621,7 +621,7 @@ onBeforeUnmount(() => {
         </DescriptionsItem>
       </Descriptions>
 
-      <Descriptions title="设备控制" bordered :column="2" class="mt-4">
+      <Descriptions title="设备控制" bordered :column="2" class="!mt-4">
         <DescriptionsItem label="搅拌机控制" :span="2">
           <Space>
             <Button type="primary">启动</Button>

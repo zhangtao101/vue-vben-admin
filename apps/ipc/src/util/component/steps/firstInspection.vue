@@ -227,7 +227,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 任务状态 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.taskStatus') }}：
@@ -237,7 +237,7 @@ onMounted(() => {
         {{ details?.lastFeedFlagName || $t('productionOperation.none') }}
       </span>
     </div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 任务类型 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.taskType') }}：

@@ -537,7 +537,7 @@ onMounted(() => {
             />
             <TimeRangePicker
               v-model:value="editItem[`${item}_time`]"
-              class="mt-4"
+              class="!mt-4"
               v-if="editItem[item] === 2"
             />
           </FormItem>

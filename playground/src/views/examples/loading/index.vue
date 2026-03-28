@@ -23,7 +23,7 @@ const loadingV = refAutoReset(false, 3000);
       </Spin>
     </Card>
 
-    <Card title="Vben Loading" v-loading="loadingV" class="mt-4">
+    <Card title="Vben Loading" v-loading="loadingV" class="!mt-4">
       <template #extra>
         <Button type="primary" @click="loadingV = true">
           v-loading 指令
@@ -70,7 +70,7 @@ const loadingV = refAutoReset(false, 3000);
     <Card
       title="Vben Spinner"
       v-spinning="spinningV"
-      class="mt-4 overflow-hidden"
+      class="!mt-4 overflow-hidden"
       :body-style="{
         position: 'relative',
         overflow: 'hidden',

@@ -150,7 +150,7 @@ onBeforeUnmount(() => {
       <Col :span="24" class="pt-10">
         <!-- region 工单编号 -->
         <!-- 显示工单编号的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示工单编号标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.workOrderNumber') }}：
@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
         </div>
         <!-- region 产品名称 -->
         <!-- 显示产品名称的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示产品名称标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.productName') }}：
@@ -177,7 +177,7 @@ onBeforeUnmount(() => {
       <Col :span="24" class="pt-4">
         <!-- region 单件SN码 -->
         <!-- 显示单件 SN 码的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示单件 SN 码标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.singlePieceSNCode') }}：
@@ -189,7 +189,7 @@ onBeforeUnmount(() => {
         </div>
         <!-- region 测试结果 -->
         <!-- 显示测试结果的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示测试结果标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.testResult') }}：
@@ -204,7 +204,7 @@ onBeforeUnmount(() => {
       <Col :span="24" class="pt-4">
         <!-- region 已生产数量 -->
         <!-- 显示已生产数量的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示已生产数量标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.producedQuantity') }}：

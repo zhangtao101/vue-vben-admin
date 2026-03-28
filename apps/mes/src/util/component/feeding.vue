@@ -823,7 +823,7 @@ function queryAuditByRecord() {
     :title="$t('supplementaryFeedingOperation.supplementaryFeeding')"
     @close="close"
   >
-    <Grid class="mt-4">
+    <Grid class="!mt-4">
       <template #toolbar-tools>
         <!-- 投料 -->
         <Button
@@ -1031,7 +1031,7 @@ function queryAuditByRecord() {
         </Col>
       </Row>
       <template v-for="(item, index) of formState" :key="index">
-        <div class="mb-4 rounded-lg border-2 border-red-600 p-2">
+        <div class="!mb-4 rounded-lg border-2 border-red-600 p-2">
           <Space direction="vertical">
             <Row
               v-if="

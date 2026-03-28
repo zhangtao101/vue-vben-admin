@@ -742,7 +742,7 @@ onMounted(() => {
       :footer-style="{ textAlign: 'right' }"
       width="400"
     >
-      <p class="mb-4">
+      <p class="!mb-4">
         {{ $t('storeManagement.inspectionSlip.confirmSuspend') }}
       </p>
       <template #footer>

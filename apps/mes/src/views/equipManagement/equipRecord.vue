@@ -312,7 +312,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 搜索 -->
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 设备编号 -->
         <FormItem

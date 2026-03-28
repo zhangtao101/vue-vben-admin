@@ -407,7 +407,7 @@ watch(visible, (val) => {
       :footer-style="{ textAlign: 'right' }"
       width="70%"
     >
-      <Form layout="inline" class="mb-4">
+      <Form layout="inline" class="!mb-4">
         <FormItem :label="$t('storeManagement.inspectionSlip.barCode')">
           <Input
             v-model:value="labelQueryParams.labelCode"
@@ -456,7 +456,7 @@ watch(visible, (val) => {
     </Drawer>
 
     <Form :model="formData" layout="vertical">
-      <div class="mb-4">
+      <div class="!mb-4">
         <Button
           v-if="status === 'create'"
           type="primary"

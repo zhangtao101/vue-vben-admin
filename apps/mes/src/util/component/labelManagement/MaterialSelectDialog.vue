@@ -238,7 +238,7 @@ function handleClose() {
         />
       </Col>
       <Col :span="18">
-        <Form layout="inline" class="mb-4">
+        <Form layout="inline" class="!mb-4">
           <FormItem :label="$t('storeManagement.labelPrint.materialName')">
             <Input
               v-model:value="queryParams.materialName"

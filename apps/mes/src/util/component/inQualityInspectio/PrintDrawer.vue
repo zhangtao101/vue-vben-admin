@@ -108,7 +108,7 @@ watch(visible, (val) => {
     :footer-style="{ textAlign: 'right' }"
     width="60%"
   >
-    <div class="print-actions mb-4 no-print">
+    <div class="print-actions !mb-4 no-print">
       <Button type="primary" @click="visible = false">
         {{ $t('common.back') }}
       </Button>

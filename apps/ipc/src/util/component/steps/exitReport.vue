@@ -366,7 +366,7 @@ onBeforeUnmount(() => {
     <Row>
       <Col :span="24" class="pt-5">
         <!-- region 工单编号 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.workOrderNumber') }}：
           </span>
@@ -375,7 +375,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         <!-- region 产品名称 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.productName') }}：
           </span>
@@ -384,7 +384,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         <!-- region 计划数量 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.plannedQuantity') }}：
           </span>
@@ -395,7 +395,7 @@ onBeforeUnmount(() => {
       </Col>
       <Col :span="24" class="pt-5">
         <!-- region 人时 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.whenPeopleArePresent') }}：
           </span>
@@ -409,7 +409,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         <!-- region 机时 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.whenTheMachineIsAvailable') }}：
           </span>
@@ -423,7 +423,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         <!-- region 班别 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.classPlease') }}：
           </span>
@@ -441,7 +441,7 @@ onBeforeUnmount(() => {
     <Row class="border">
       <Col :span="24">
         <!-- region 实时数采 -->
-        <div class="mb-4 inline-block">
+        <div class="!mb-4 inline-block">
           <span :class="getLabelClass()" class="font-black">
             {{ $t('productionOperation.realTimeDataAcquisition') }}：
           </span>
@@ -451,7 +451,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <div class="inline-block">
           <!-- region 期初数值 -->
-          <div class="mb-4 mr-8 inline-block">
+          <div class="!mb-4 mr-8 inline-block">
             <span :class="getLabelClass()">
               {{ $t('productionOperation.initialValue') }}：
             </span>
@@ -461,7 +461,7 @@ onBeforeUnmount(() => {
           </div>
           <!-- endregion -->
           <!-- region 期末数值 -->
-          <div class="mb-4 mr-8 inline-block">
+          <div class="!mb-4 mr-8 inline-block">
             <span :class="getLabelClass()">
               {{ $t('productionOperation.endOfTermValue') }}：
             </span>

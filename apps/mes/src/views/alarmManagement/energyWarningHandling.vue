@@ -589,7 +589,7 @@ onMounted(() => {
     </Row>
     <!-- endregion -->
     <!-- region 搜索 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <Form :model="queryParams" layout="inline">
         <!-- 仪表编号 -->
         <FormItem

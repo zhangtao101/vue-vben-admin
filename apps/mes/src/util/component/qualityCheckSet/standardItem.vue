@@ -488,7 +488,7 @@ defineExpose({
     </Descriptions>
 
     <!-- 查询表单 -->
-    <Form :model="queryParams" layout="inline" class="mt-4">
+    <Form :model="queryParams" layout="inline" class="!mt-4">
       <!-- 产品编号输入框 -->
       <FormItem
         :label="

@@ -94,7 +94,7 @@ watch(visible, (val) => {
     :footer-style="{ textAlign: 'right' }"
     width="60%"
   >
-    <div class="mb-4">
+    <div class="!mb-4">
       <Button type="primary" @click="visible = false">
         {{ $t('common.back') }}
       </Button>
@@ -110,11 +110,11 @@ watch(visible, (val) => {
         嘉兴祺旺电子科技有限公司
       </div>
       <div
-        class="text-center text-lg font-bold border-b border-gray-300 pb-2 mb-4"
+        class="text-center text-lg font-bold border-b border-gray-300 pb-2 !mb-4"
       >
         退货单
       </div>
-      <div class="mb-4">
+      <div class="!mb-4">
         <span>供应厂商: {{ printData.manufacturerName }}</span>
         <span class="float-right">送检日期：{{ printData.sendDate }}</span>
       </div>
@@ -125,7 +125,7 @@ watch(visible, (val) => {
         row-key="id"
         bordered
       />
-      <div class="mt-4">
+      <div class="!mt-4">
         <span>打印人：{{ printData.userName }}</span>
         <span class="ml-40">经手人：</span>
         <span class="float-right">打印日期：{{ printDate }}</span>

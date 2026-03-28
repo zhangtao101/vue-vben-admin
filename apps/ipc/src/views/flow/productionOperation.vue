@@ -617,7 +617,7 @@ onBeforeUnmount(() => {
       <template #workstation>
         <!-- region 工作站查询信息 -->
         <!-- 行容器，用于布局工作站查询相关元素 -->
-        <Row class="mb-4 mt-4">
+        <Row class="!mb-4 !mt-4">
           <!-- 列容器，占据 23 格宽度 -->
           <Col :span="24" class="flex">
             <!-- 显示工作站标题，带有蓝色边框 -->
@@ -641,7 +641,7 @@ onBeforeUnmount(() => {
             </div>
           </Col>
           <!-- 列容器，占据 23 格宽度 -->
-          <Col :span="24" class="mt-4 flex">
+          <Col :span="24" class="!mt-4 flex">
             <!-- 显示工作站标题，带有蓝色边框 -->
             <span class="w-36 pl-4 text-right text-xl font-black">
               {{ $t('productionOperation.equipment') }}
@@ -817,7 +817,7 @@ onBeforeUnmount(() => {
         <!-- 加载状态组件，当工艺路线列表加载时显示加载动画 -->
         <Spin :spinning="processRouteListLoading">
           <!-- 横向滚动容器，用于显示工艺路线项 -->
-          <div class="mt-4 w-full">
+          <div class="!mt-4 w-full">
             <!-- 循环渲染工艺路线项 -->
             <template v-for="item of processRouteList" :key="item.processCode">
               <!-- 单个工艺路线项容器 -->
@@ -914,7 +914,7 @@ onBeforeUnmount(() => {
       <template #workstation>
         <!-- region 工作站查询信息 -->
         <!-- 行容器，用于布局工作站查询相关元素 -->
-        <Row class="mb-4">
+        <Row class="!mb-4">
           <!-- 列容器，占据 23 格宽度 -->
           <Col :span="24" class="flex">
             <!-- 显示工作站标题，带有蓝色边框 -->
@@ -998,7 +998,7 @@ onBeforeUnmount(() => {
           </Col>
         </Row>
         <!-- 分割线 -->
-        <hr class="mb-4" />
+        <hr class="!mb-4" />
         <!-- endregion -->
       </template>
       <template #jobInformationC>

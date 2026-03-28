@@ -1049,7 +1049,7 @@ onMounted(async () => {
         layout="inline"
       >
         <Row>
-          <Col :span="24" class="mb-4">
+          <Col :span="24" class="!mb-4">
             <!--            <Button class="mr-4" type="primary">计划导入</Button>-->
             <Button type="primary" @click="addRow">增加</Button>
           </Col>

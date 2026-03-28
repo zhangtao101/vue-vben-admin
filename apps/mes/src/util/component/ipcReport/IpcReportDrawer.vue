@@ -925,7 +925,7 @@ const itemColumns = [
       </Upload>
 
       <!-- 文件列表 -->
-      <div v-if="uploadFileList.length > 0" class="mt-4">
+      <div v-if="uploadFileList.length > 0" class="!mt-4">
         <Table
           :columns="[
             { title: '文件名', dataIndex: 'name', width: 200 },

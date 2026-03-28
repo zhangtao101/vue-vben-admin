@@ -351,7 +351,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- 搜索表单区域，用于工艺路线名称筛选 -->
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 工艺路线名称输入框 -->
         <FormItem

@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
     <!--    <Row v-if="[39].includes(showTypeNumber)">
       <Col span="24">
         &lt;!&ndash; 正在执行的工单编号 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 正在执行的工单编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.workOrderNumberInExecution') }}：
@@ -149,7 +149,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 正在执行的产品编号 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 正在执行的产品编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNumberInExecution') }}：
@@ -160,7 +160,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 正在执行的产品名称 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 正在执行的产品名称 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNameInExecution') }}：
@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 正在执行的产品型号 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 正在执行的产品型号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productModelInExecution') }}：
@@ -193,7 +193,7 @@ onBeforeUnmount(() => {
         <!-- region 工位编号 -->
         <!-- 根据展示类型显示工位编号输入框和扫码组件 -->
         <div
-          class="mb-4 mr-8 flex"
+          class="!mb-4 mr-8 flex"
           v-if="[32, 33, 39].includes(showTypeNumber)"
         >
           <!-- 显示工位编号标签 -->
@@ -207,7 +207,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 单件SN码 -->
         <!-- 显示单件 SN 码输入框和扫码组件 -->
-        <div class="mb-4 mr-8 flex items-center">
+        <div class="!mb-4 mr-8 flex items-center">
           <!-- 显示单件 SN 码标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.singlePieceSNCode') }}：
@@ -219,7 +219,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 校验结果 -->
         <!-- 显示校验结果 -->
-        <div class="mb-4 mr-8 flex">
+        <div class="!mb-4 mr-8 flex">
           <!-- 显示校验结果标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.verificationResult') }}：
@@ -232,7 +232,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 工单编号 -->
         <!-- 根据展示类型显示工单编号 -->
-        <div class="mb-4 mr-8 flex">
+        <div class="!mb-4 mr-8 flex">
           <!-- 显示工单编号标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.workOrderNumber') }}：
@@ -246,7 +246,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 测试结果 -->
         <!-- 根据展示类型显示测试结果 -->
-        <div class="mb-4 mr-8 flex">
+        <div class="!mb-4 mr-8 flex">
           <!-- 显示测试结果标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.testResult') }}：
@@ -259,7 +259,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 已生产数量 -->
         <!-- 显示已生产数量 -->
-        <div class="mb-4 mr-8 flex">
+        <div class="!mb-4 mr-8 flex">
           <!-- 显示已生产数量标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.producedQuantity') }}：

@@ -597,7 +597,7 @@ onMounted(() => {});
     <!-- endregion -->
 
     <!--- region 处理  -->
-    <Row class="mb-4">
+    <Row class="!mb-4">
       <Col :span="4">
         <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
           {{ $t('badJudgment.poorHandling') }}

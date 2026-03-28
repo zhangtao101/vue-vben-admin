@@ -385,7 +385,7 @@ function selectMaterialCharacteristics(materialDescriptionId: number) {
     <!-- 主页面卡片容器，显示出库拣货相关操作 -->
     <Card :title="$t('ctuCartonPicking.packingAndPicking')">
       <!-- 查询表单区域，用于输入箱码和控制出库拣货操作 -->
-      <Form layout="inline" :model="queryParams" class="mb-4">
+      <Form layout="inline" :model="queryParams" class="!mb-4">
         <!-- 箱码输入框，支持回车键触发查询 -->
         <FormItem :label="$t('ctuCartonPicking.boxCode')">
           <Input
@@ -572,7 +572,7 @@ function selectMaterialCharacteristics(materialDescriptionId: number) {
         :key="item.id"
         :memo="item.id"
         :value="item.description"
-        class="mb-4"
+        class="!mb-4"
         :class="{
           '!border-4 !border-green-500 shadow-lg':
             editedInformation.materialDescriptionId === item.id,

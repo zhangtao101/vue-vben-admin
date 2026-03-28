@@ -40,7 +40,7 @@ onUnmounted(() => {
         {{ $t('authentication.welcomeTips') }}
       </div>
       <!-- 时间显示 -->
-      <div class="mt-4 text-2xl font-bold">
+      <div class="!mt-4 text-2xl font-bold">
         {{ currentTime.format('YYYY-MM-DD HH:mm:ss') }}
       </div>
     </Card>

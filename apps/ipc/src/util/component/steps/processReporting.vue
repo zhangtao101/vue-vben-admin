@@ -334,7 +334,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 工单编号 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.workOrderNumber') }}：
@@ -343,7 +343,7 @@ onBeforeUnmount(() => {
         {{ details?.currentJobId || $t('productionOperation.none') }}
       </span>
     </div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 产品名称 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.productName') }}：
@@ -352,7 +352,7 @@ onBeforeUnmount(() => {
         {{ details?.productName || $t('productionOperation.none') }}
       </span>
     </div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 累计数量 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.cumulativeQuantity') }}：
@@ -361,7 +361,7 @@ onBeforeUnmount(() => {
         {{ details?.totalReportNumber || 0 }}
       </span>
     </div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 累计重量 -->
       <span :class="getLabelClass()">
         {{ $t('productionOperation.accumulatedWeight') }}：

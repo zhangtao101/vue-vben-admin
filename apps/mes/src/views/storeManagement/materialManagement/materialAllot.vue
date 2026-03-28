@@ -287,7 +287,7 @@ onMounted(() => {
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
         <FormItem
-          class="mb-4"
+          class="!mb-4"
           :label="$t('storeManagement.materialAllot.transferFormCode')"
         >
           <Input
@@ -298,7 +298,7 @@ onMounted(() => {
           />
         </FormItem>
         <FormItem
-          class="mb-4"
+          class="!mb-4"
           :label="$t('storeManagement.labelPrint.materialCode')"
         >
           <Input
@@ -309,7 +309,7 @@ onMounted(() => {
           />
         </FormItem>
         <FormItem
-          class="mb-4"
+          class="!mb-4"
           :label="$t('storeManagement.labelPrint.materialName')"
         >
           <Input
@@ -320,7 +320,7 @@ onMounted(() => {
           />
         </FormItem>
         <FormItem
-          class="mb-4"
+          class="!mb-4"
           :label="$t('storeManagement.materialAllot.outWarehouseCode')"
         >
           <Select
@@ -332,7 +332,7 @@ onMounted(() => {
           />
         </FormItem>
         <FormItem
-          class="mb-4"
+          class="!mb-4"
           :label="$t('storeManagement.materialAllot.enterWarehouseCode')"
         >
           <Select
@@ -344,7 +344,7 @@ onMounted(() => {
           />
         </FormItem>
         <FormItem
-          class="mb-4"
+          class="!mb-4"
           :label="$t('storeManagement.materialAllot.allotDate')"
         >
           <DatePicker.RangePicker
@@ -353,7 +353,7 @@ onMounted(() => {
             @change="handleDateChange"
           />
         </FormItem>
-        <FormItem class="mb-4">
+        <FormItem class="!mb-4">
           <Button type="primary" @click="handleQuery">
             {{ $t('common.search') }}
           </Button>

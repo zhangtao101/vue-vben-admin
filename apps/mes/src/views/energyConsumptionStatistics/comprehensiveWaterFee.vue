@@ -228,7 +228,7 @@ onMounted(() => {
       :title="
         $t('energyConsumption.energyConsumptionStatistics.combinedWaterCharge')
       "
-      class="mb-4"
+      class="!mb-4"
     >
       <Form :model="queryParams" layout="inline">
         <!-- 时间粒度选择器 -->
@@ -269,7 +269,7 @@ onMounted(() => {
       <!-- region 水费相关统计信息 -->
       <Row>
         <!-- 水费统计卡片 -->
-        <Col span="8" class="mb-4 border-2">
+        <Col span="8" class="!mb-4 border-2">
           <Row>
             <Col span="24" offset="1" class="text-center">
               <span class="text-2xl text-lg font-semibold">
@@ -281,7 +281,7 @@ onMounted(() => {
               </span>
             </Col>
           </Row>
-          <Row class="mt-4" :gutter="24">
+          <Row class="!mt-4" :gutter="24">
             <Col :span="12" class="text-center">
               <!-- 水费金额统计 -->
               <Statistic
@@ -317,7 +317,7 @@ onMounted(() => {
       <!-- endregion -->
 
       <!-- region 图表展示区域 -->
-      <Row :gutter="10" class="mt-4" v-show="selectShowType === 'chart'">
+      <Row :gutter="10" class="!mt-4" v-show="selectShowType === 'chart'">
         <Col :span="24">
           <!-- 水费水量趋势图表 -->
           <Card

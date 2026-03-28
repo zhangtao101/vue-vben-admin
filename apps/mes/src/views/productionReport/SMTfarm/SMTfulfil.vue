@@ -618,7 +618,7 @@ onMounted(() => {
 
     <!-- 月度汇总表格 -->
     <Card v-show="tableShow" style="margin-top: 16px">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between !mb-4">
         <h3 class="text-xl font-bold">月度汇总</h3>
         <Button type="primary" @click="handleExportMonth">
           <Icon icon="mdi:export" class="mr-1" />
@@ -630,7 +630,7 @@ onMounted(() => {
 
     <!-- 计划汇总表格 -->
     <Card v-show="tableShow" style="margin-top: 16px">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between !mb-4">
         <h3 class="text-xl font-bold">计划汇总</h3>
         <Button type="primary" @click="handleExportPlan">
           <Icon icon="mdi:export" class="mr-1" />

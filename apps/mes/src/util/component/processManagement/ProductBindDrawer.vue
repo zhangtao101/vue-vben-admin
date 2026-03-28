@@ -280,7 +280,7 @@ defineExpose({
     title="产品绑定"
     @close="closeDrawer()"
   >
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <FormItem label="产品编号" style="margin-bottom: 1em">
           <Input
@@ -351,7 +351,7 @@ defineExpose({
       width="900px"
     >
       <!-- 产品绑定表单 -->
-      <Card class="mb-4">
+      <Card class="!mb-4">
         <Form ref="productFormRef" :model="productFormData" layout="inline">
           <FormItem label="工艺路线编号" style="margin-bottom: 1em">
             <Input v-model:value="productFormData.routeCode" readonly />
@@ -368,7 +368,7 @@ defineExpose({
         </Form>
       </Card>
 
-      <Card class="mb-4">
+      <Card class="!mb-4">
         <Form :model="productSelectQuery" layout="inline">
           <FormItem label="产品编号" style="margin-bottom: 1em">
             <Input

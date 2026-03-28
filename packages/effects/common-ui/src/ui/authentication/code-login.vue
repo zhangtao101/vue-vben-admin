@@ -117,7 +117,7 @@ defineExpose({
     </VbenButton>
     <VbenButton
       v-if="showBack"
-      class="mt-4 w-full"
+      class="!mt-4 w-full"
       variant="outline"
       @click="goToLogin()"
     >

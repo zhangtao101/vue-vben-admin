@@ -566,7 +566,7 @@ function downloadTemplate() {
       <Col :lg="18" :md="16" :sm="20" :xl="20" :xs="14">
         <Card>
           <!-- 操作按钮区域 -->
-          <Row class="mb-4" :gutter="8">
+          <Row class="!mb-4" :gutter="8">
             <Col>
               <Upload
                 v-if="author.includes('编辑')"

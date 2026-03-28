@@ -327,7 +327,7 @@ function submit() {
 <template>
   <Page>
     <!--- region 物料处理  -->
-    <Row class="mb-4 items-center">
+    <Row class="!mb-4 items-center">
       <Col :span="4">
         <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
           {{ $t('rework.materialHandling') }}
@@ -343,7 +343,7 @@ function submit() {
     </Row>
     <!-- endregion -->
     <!--- region 是否开立返工工单  -->
-    <Row class="mb-4 items-center">
+    <Row class="!mb-4 items-center">
       <Col :span="4">
         <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
           {{ $t('rework.openingTitle') }}
@@ -360,7 +360,7 @@ function submit() {
     <!-- endregion -->
 
     <!--- region 返工工序  -->
-    <Row class="mb-4 items-center">
+    <Row class="!mb-4 items-center">
       <Col :span="4">
         <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
           {{ $t('rework.reworkProcess') }}
@@ -421,7 +421,7 @@ function submit() {
 
     <!-- region 投料 -->
 
-    <Row class="mb-4 items-center">
+    <Row class="!mb-4 items-center">
       <Col :span="4">
         <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
           {{ $t('rework.feedingMaterials') }}
@@ -445,7 +445,7 @@ function submit() {
           @click="submit"
           :loading="submitLoading"
           :disabled="currentRow.length === 0"
-          class="mr-4 mt-4 w-48"
+          class="mr-4 !mt-4 w-48"
         >
           {{ $t('common.confirm') }}
         </Button>

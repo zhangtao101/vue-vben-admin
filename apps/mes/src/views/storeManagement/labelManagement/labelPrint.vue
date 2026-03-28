@@ -599,8 +599,8 @@ onMounted(() => {
           </Form>
         </Card>
 
-        <Card class="mt-4">
-          <Space class="mb-4">
+        <Card class="!mt-4">
+          <Space class="!mb-4">
             <Button type="primary" @click="handleCreate">
               <Icon icon="mdi:plus" class="mr-1" />
               {{ $t('common.add') }}
@@ -651,7 +651,7 @@ onMounted(() => {
       <!-- 标签查询标签页 -->
       <TabPane key="second" :tab="$t('storeManagement.labelPrint.labelQuery')">
         <Card>
-          <Form layout="inline" class="mb-4">
+          <Form layout="inline" class="!mb-4">
             <FormItem :label="$t('storeManagement.labelPrint.materialCode')">
               <Input
                 v-model:value="labelQueryParams.materialCode"
@@ -738,8 +738,8 @@ onMounted(() => {
           </Form>
         </Card>
 
-        <Card class="mt-4">
-          <Space class="mb-4">
+        <Card class="!mt-4">
+          <Space class="!mb-4">
             <Button type="primary" @click="handlePrint">
               {{ $t('common.print') }}
             </Button>

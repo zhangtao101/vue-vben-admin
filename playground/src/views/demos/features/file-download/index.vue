@@ -94,7 +94,7 @@ function getResponse() {
       <Button type="primary" class="ml-4" @click="getResponse">
         获取Response
       </Button>
-      <div class="mt-4">{{ downloadResult }}</div>
+      <div class="!mt-4">{{ downloadResult }}</div>
     </Card>
   </Page>
 </template>

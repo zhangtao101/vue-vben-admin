@@ -192,7 +192,7 @@ onBeforeUnmount(() => {
   <Spin :spinning="spinning">
     <template v-if="details">
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 当前工单 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentWorkOrder') }}：
@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
             {{ details.currentJobId || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentProductName') }}：
@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.implementationStatus') }}
@@ -224,7 +224,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 当前模式 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentMode') }}：
@@ -233,7 +233,7 @@ onBeforeUnmount(() => {
             {{ details.feedModelName || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 模式切换次数 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.modeSwitchingTimes') }}：
@@ -245,7 +245,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 前设备投料 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.preEquipmentFeeding') }}：
@@ -254,7 +254,7 @@ onBeforeUnmount(() => {
             {{ details.lastFeedFlagName || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 前设备堵料设置 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.frontDevicePlugSetting') }}：
@@ -268,7 +268,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 后级设备入料允许 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.feedIsAllowedForPostStageEquipment') }}：
@@ -277,7 +277,7 @@ onBeforeUnmount(() => {
             {{ details.nextFeedFlagName || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 后级设备工单 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.postEquipmentWorkOrder') }}：
@@ -286,7 +286,7 @@ onBeforeUnmount(() => {
             {{ details.nextWorksheetCode || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 后级设备状态 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.statusOfTheLastDevice') }}：
@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 当前设备投料状态 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentDeviceFeedingStatus') }}：
@@ -309,7 +309,10 @@ onBeforeUnmount(() => {
             {{ details.machineStatusName || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block" v-if="details.feedBottonFlag === 1">
+        <div
+          class="!mb-4 mr-8 inline-block"
+          v-if="details.feedBottonFlag === 1"
+        >
           <Button type="primary" @click="submit">
             {{ $t('productionOperation.endOfFeeding') }}
           </Button>

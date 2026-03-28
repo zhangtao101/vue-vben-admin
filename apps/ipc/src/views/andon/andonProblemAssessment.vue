@@ -68,7 +68,7 @@ function query() {
 <template>
   <Page id="page">
     <Card>
-      <Tabs :value="checkedType" @change="tabsChange" class="mb-4">
+      <Tabs :value="checkedType" @change="tabsChange" class="!mb-4">
         <TabPane key="4">
           <template #tab>
             <MdiHome class="inline-block" />

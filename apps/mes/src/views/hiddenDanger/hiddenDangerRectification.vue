@@ -903,7 +903,7 @@ onMounted(() => {
         :column="2"
         bordered
         :title="$t('hiddenDangerRectification.hiddenDangerIdentification')"
-        class="mt-4"
+        class="!mt-4"
       >
         <!-- 隐患专业 -->
         <DescriptionsItem
