@@ -12,6 +12,7 @@
 - `BOMManagement/` - BOM管理
 - `materialBaseManagement/` - 物料基础管理
 - `productManagement/` - 产品管理
+- `preOperation/` - 前置作业
 
 ### 资源管理
 
