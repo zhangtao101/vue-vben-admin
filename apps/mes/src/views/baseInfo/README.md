@@ -12,7 +12,6 @@
 - `BOMManagement/` - BOM管理
 - `materialBaseManagement/` - 物料基础管理
 - `productManagement/` - 产品管理
-- `preOperation/` - 前置作业
 
 ### 资源管理
 
@@ -26,7 +25,7 @@
 - `printTemplateMaintenance.vue` - 打印模板维护
 - `controlSet.vue` - 控制设置
 - `interactionPoint.vue` - 交互点维护
-- `scheduling/` - 排程管理
+- `scheduling.vue` - 排程管理
 
 ### 能源相关参数
 

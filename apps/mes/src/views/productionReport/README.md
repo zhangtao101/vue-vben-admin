@@ -32,5 +32,4 @@
 
 - `crossSystemInteractionWorkOrderLockList.vue` - 跨系统交互工单锁定列表,管理跨系统工单锁定
 - `materialOffset.vue` - 物料冲销,处理物料冲销业务
-- `schedulePlanning.vue` - 计划排产,进行生产计划的排产安排
 - `workOrderParams.vue` - 工单参数,设置和管理工单参数
