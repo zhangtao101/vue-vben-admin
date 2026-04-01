@@ -609,6 +609,10 @@ function print() {
         <FormItem :label="$t('ctuCartonPicking.lotNumber')">
           <Input v-model:value="editedInformation.batchCode" />
         </FormItem>
+        <!-- 备注 -->
+        <FormItem :label="$t('ctuCartonPicking.remark')">
+          <Input v-model:value="editedInformation.remark" />
+        </FormItem>
       </Form>
 
       <!-- 拣货抽屉底部操作按钮区域 -->
