@@ -196,7 +196,7 @@ onBeforeUnmount(() => {
   <Spin :spinning="spinning">
     <template v-if="details">
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 当前工单 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentWorkOrder') }}：
@@ -205,7 +205,7 @@ onBeforeUnmount(() => {
             {{ details.currentJobId || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentProductName') }}：
@@ -216,7 +216,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.implementationStatus') }}：
@@ -228,7 +228,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清空模式 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.emptyMode') }}：
@@ -237,7 +237,7 @@ onBeforeUnmount(() => {
             {{ details.clearModel === 1 ? '自动' : '手动' }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清空状态 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.emptyState') }}：
@@ -246,7 +246,7 @@ onBeforeUnmount(() => {
             {{ details.clearlinessFlagName || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清空计时 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.emptyTimer') }}：
@@ -257,7 +257,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清空超时 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.emptyTimeout') }}：
@@ -266,7 +266,7 @@ onBeforeUnmount(() => {
             {{ details.clearOverTimeFlag === 1 ? '超时' : '未超时' }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 超时时才会出现 -->
           <Button
             type="primary"

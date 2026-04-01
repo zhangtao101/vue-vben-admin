@@ -335,7 +335,7 @@ onMounted(() => {
   <Page>
     <!-- region 查询条件区域 -->
     <!-- 用水量数据查询条件卡片 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <Form :model="queryParams" layout="inline">
         <!-- 水表设备选择器 -->
         <FormItem
@@ -402,14 +402,14 @@ onMounted(() => {
     <!-- endregion -->
 
     <!-- region 图表展示区域 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <!-- 用水量趋势图表容器 -->
       <div id="lineChart"></div>
     </Card>
     <!-- endregion -->
 
     <!-- region 表格展示区域 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <!-- region 数据表格 -->
       <BasicTblae
         :columns="columns"

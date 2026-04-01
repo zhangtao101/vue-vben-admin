@@ -185,7 +185,7 @@ function onClose() {
     <!-- region 表格主体 -->
     <Card>
       <div>
-        <Button class="mb-4" type="primary" @click="showDrawer = true">
+        <Button class="!mb-4" type="primary" @click="showDrawer = true">
           {{ $t('common.add') }}
         </Button>
       </div>

@@ -36,7 +36,7 @@ watchEffect(() => {
         <Radio value="indices">indices</Radio>
         <Radio value="repeat">repeat</Radio>
       </RadioGroup>
-      <div class="mt-4 flex flex-col gap-4">
+      <div class="!mt-4 flex flex-col gap-4">
         <div>
           <h3>需要提交的参数</h3>
           <div>{{ JSON.stringify(params, null, 2) }}</div>

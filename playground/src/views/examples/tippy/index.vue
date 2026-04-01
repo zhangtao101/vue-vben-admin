@@ -251,7 +251,7 @@ function goDoc() {
       </div>
     </template>
     <Card title="指令形式使用">
-      <p class="mb-4">
+      <p class="!mb-4">
         指令形式使用比较简洁，直接在需要展示tooltip的组件上用v-tippy传递配置，适用于固定内容的工具提示。
       </p>
       <Flex warp="warp" gap="20" align="center">
@@ -281,14 +281,14 @@ function goDoc() {
         </Button>
       </Flex>
     </Card>
-    <Card title="组件形式使用" class="mt-4">
+    <Card title="组件形式使用" class="!mt-4">
       <div class="flex w-full justify-center">
         <Tippy v-bind="tippyProps">
           <Button>鼠标移到这个组件上来体验效果</Button>
         </Tippy>
       </div>
 
-      <Form class="mt-4" />
+      <Form class="!mt-4" />
       <template #actions>
         <p
           class="cursor-default text-secondary-foreground hover:text-secondary-foreground"

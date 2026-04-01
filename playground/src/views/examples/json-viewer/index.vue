@@ -27,7 +27,7 @@ function handleCopied(_event: JsonViewerAction) {
     <Card title="默认配置">
       <JsonViewer :value="json1" />
     </Card>
-    <Card title="可复制、默认展开3层、显示边框、事件处理" class="mt-4">
+    <Card title="可复制、默认展开3层、显示边框、事件处理" class="!mt-4">
       <JsonViewer
         :value="json2"
         :expand-depth="3"
@@ -39,7 +39,7 @@ function handleCopied(_event: JsonViewerAction) {
         boxed
       />
     </Card>
-    <Card title="预览模式" class="mt-4">
+    <Card title="预览模式" class="!mt-4">
       <JsonViewer
         :value="json2"
         copyable

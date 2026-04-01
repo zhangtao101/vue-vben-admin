@@ -289,7 +289,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 查询条件区域 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <Form :model="queryParams" layout="inline">
         <!-- 仪表类型 -->
         <FormItem
@@ -366,7 +366,7 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
     <!-- region 主要内容区域 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <Empty v-if="!(details.sumcurrent >= 0)" />
       <template v-else>
         <Row>

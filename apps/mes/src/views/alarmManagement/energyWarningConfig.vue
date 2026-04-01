@@ -405,7 +405,7 @@ onMounted(() => {
               show-search
               allow-clear
               :filter-option="filterOption"
-              class="mb-4 !w-48"
+              class="!mb-4 !w-48"
             />
             <!-- 编辑按钮 ="{ row }" -->
             <Tooltip v-if="author.includes('编辑')">

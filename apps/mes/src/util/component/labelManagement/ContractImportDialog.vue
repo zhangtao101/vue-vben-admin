@@ -275,7 +275,7 @@ function handleClose() {
     @ok="handleOk"
     @cancel="handleClose"
   >
-    <Form layout="inline" class="mb-4">
+    <Form layout="inline" class="!mb-4">
       <FormItem :label="$t('storeManagement.labelPrint.billCode')">
         <Input
           v-model:value="queryParams.code"

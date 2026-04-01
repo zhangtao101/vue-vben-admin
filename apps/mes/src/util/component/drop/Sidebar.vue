@@ -45,7 +45,7 @@ onMounted(() => {
   <aside
     class="overflow-y-auto border-r-[1px] border-solid border-white bg-[#10b981bf] px-[10px] py-[15px] font-[700] text-white shadow-md"
   >
-    <div class="mb-4 text-xl">节点列表</div>
+    <div class="!mb-4 text-xl">节点列表</div>
 
     <div class="grid grid-cols-2 gap-4 font-[500]">
       <div

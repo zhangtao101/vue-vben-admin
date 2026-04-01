@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
         <!-- region 单件SN码 -->
         <!-- 根据展示类型决定是否显示单件 SN 码区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="showType[showTypeNumber].includes('singlePieceSNCode')"
         >
           <!-- 显示单件 SN 码标签 -->
@@ -237,7 +237,7 @@ onBeforeUnmount(() => {
         <!-- region 工单编号 -->
         <!-- 根据展示类型决定是否显示工单编号区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="showType[showTypeNumber].includes('workOrderNumber')"
         >
           <!-- 显示工单编号标签 -->
@@ -253,7 +253,7 @@ onBeforeUnmount(() => {
         <!-- region 设备联锁 -->
         <!-- 根据展示类型决定是否显示设备联锁区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="showType[showTypeNumber].includes('equipmentInterlocking')"
         >
           <!-- 显示设备联锁标签 -->
@@ -269,7 +269,7 @@ onBeforeUnmount(() => {
         <!-- region 加工状态 -->
         <!-- 根据展示类型决定是否显示加工状态区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="showType[showTypeNumber].includes('processingStatus')"
         >
           <!-- 显示加工状态标签 -->
@@ -285,7 +285,7 @@ onBeforeUnmount(() => {
         <!-- region 已生产数量 -->
         <!-- 根据展示类型决定是否显示已生产数量区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="showType[showTypeNumber].includes('producedQuantity')"
         >
           <!-- 显示已生产数量标签 -->
@@ -301,7 +301,7 @@ onBeforeUnmount(() => {
         <!-- region 已检测数量 -->
         <!-- 根据展示类型决定是否显示已检测数量区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="showType[showTypeNumber].includes('detectedQuantity')"
         >
           <!-- 显示已检测数量标签 -->
@@ -317,7 +317,7 @@ onBeforeUnmount(() => {
         <!-- region 外观检验 -->
         <!-- 根据展示类型决定是否显示外观检验区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="showType[showTypeNumber].includes('appearanceInspection')"
         >
           <!-- 显示外观检验标签 -->
@@ -333,7 +333,7 @@ onBeforeUnmount(() => {
         <!-- region 检验结论 -->
         <!-- 根据展示类型决定是否显示检验结论区域 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="showType[showTypeNumber].includes('testConclusion')"
         >
           <!-- 显示检验结论标签 -->
@@ -352,7 +352,7 @@ onBeforeUnmount(() => {
         <!-- region 资源校验 -->
         <!-- 根据展示类型决定是否显示资源校验区域 -->
         <div
-          class="mb-4"
+          class="!mb-4"
           v-if="showType[showTypeNumber].includes('resourceVerification')"
         >
           <!-- 显示资源校验标签 -->
@@ -382,7 +382,7 @@ onBeforeUnmount(() => {
         <!-- region 工序校验 -->
         <!-- 根据展示类型决定是否显示工序校验区域 -->
         <div
-          class="mb-4"
+          class="!mb-4"
           v-if="showType[showTypeNumber].includes('processVerification')"
         >
           <!-- 显示工序校验标签 -->
@@ -412,7 +412,7 @@ onBeforeUnmount(() => {
         <!-- region 工单绑定 -->
         <!-- 根据展示类型决定是否显示工单绑定区域 -->
         <div
-          class="mb-4"
+          class="!mb-4"
           v-if="showType[showTypeNumber].includes('workOrderBinding')"
         >
           <!-- 显示工单绑定标签 -->
@@ -442,7 +442,7 @@ onBeforeUnmount(() => {
         <!-- region 参数判异 -->
         <!-- 根据展示类型决定是否显示参数判异区域 -->
         <div
-          class="mb-4"
+          class="!mb-4"
           v-if="showType[showTypeNumber].includes('parameterDiscrimination')"
         >
           <!-- 显示参数判异标签 -->
@@ -472,7 +472,7 @@ onBeforeUnmount(() => {
         <!-- region 参数绑定 -->
         <!-- 根据展示类型决定是否显示参数绑定区域 -->
         <div
-          class="mb-4"
+          class="!mb-4"
           v-if="showType[showTypeNumber].includes('parameterBinding')"
         >
           <!-- 显示参数绑定标签 -->
@@ -502,7 +502,7 @@ onBeforeUnmount(() => {
         <!-- region 设备联锁 -->
         <!-- 根据展示类型决定是否显示设备联锁区域 -->
         <div
-          class="mb-4"
+          class="!mb-4"
           v-if="showType[showTypeNumber].includes('equipmentInterlockingR')"
         >
           <!-- 显示设备联锁标签 -->

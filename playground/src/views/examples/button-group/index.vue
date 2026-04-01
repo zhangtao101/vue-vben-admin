@@ -149,7 +149,7 @@ function onBtnClick(value: any) {
       <template #extra>
         <Button type="primary" @click="resetValues">清空值</Button>
       </template>
-      <p class="mt-4">按钮组：</p>
+      <p class="!mt-4">按钮组：</p>
       <div class="mt-2 flex flex-col gap-2">
         <VbenButtonGroup v-bind="compProps" border>
           <VbenButton
@@ -172,7 +172,7 @@ function onBtnClick(value: any) {
           </VbenButton>
         </VbenButtonGroup>
       </div>
-      <p class="mt-4">单选：{{ radioValue }}</p>
+      <p class="!mt-4">单选：{{ radioValue }}</p>
       <div class="mt-2 flex flex-col gap-2">
         <VbenCheckButtonGroup
           v-model="radioValue"
@@ -180,7 +180,7 @@ function onBtnClick(value: any) {
           v-bind="compProps"
         />
       </div>
-      <p class="mt-4">单选插槽：{{ radioValue }}</p>
+      <p class="!mt-4">单选插槽：{{ radioValue }}</p>
       <div class="mt-2 flex flex-col gap-2">
         <VbenCheckButtonGroup
           v-model="radioValue"
@@ -196,7 +196,7 @@ function onBtnClick(value: any) {
           </template>
         </VbenCheckButtonGroup>
       </div>
-      <p class="mt-4">多选{{ checkValue }}</p>
+      <p class="!mt-4">多选{{ checkValue }}</p>
       <div class="mt-2 flex flex-col gap-2">
         <VbenCheckButtonGroup
           v-model="checkValue"
@@ -205,7 +205,7 @@ function onBtnClick(value: any) {
           v-bind="compProps"
         />
       </div>
-      <p class="mt-4">自定义图标{{ checkValue }}</p>
+      <p class="!mt-4">自定义图标{{ checkValue }}</p>
       <div class="mt-2 flex flex-col gap-2">
         <VbenCheckButtonGroup
           v-model="checkValue"
@@ -222,7 +222,7 @@ function onBtnClick(value: any) {
       </div>
     </Card>
 
-    <Card title="设置" class="mt-4">
+    <Card title="设置" class="!mt-4">
       <Form />
     </Card>
   </Page>

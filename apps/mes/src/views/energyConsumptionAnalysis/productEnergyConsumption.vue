@@ -373,7 +373,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 查询条件区域 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <Form :model="queryParams" layout="inline">
         <!-- 数据类型 -->
         <FormItem
@@ -444,7 +444,7 @@ onMounted(() => {
     />
     <!-- endregion -->
     <!-- region 数据展示区域 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <div id="container" v-show="'chart' === selectShowType"></div>
       <template v-if="'table' === selectShowType">
         <!-- region 表格-日 -->

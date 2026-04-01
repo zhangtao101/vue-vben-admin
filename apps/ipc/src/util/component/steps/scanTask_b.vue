@@ -193,7 +193,7 @@ onBeforeUnmount(() => {
       <Col :span="24" class="pt-10">
         <!-- region 实时扫码 -->
         <!-- 显示单件 实时扫码输入框和扫码组件的容器 -->
-        <div class="mb-4 mr-8 flex items-center" v-if="showTypeNumber !== 37">
+        <div class="!mb-4 mr-8 flex items-center" v-if="showTypeNumber !== 37">
           <!-- 显示单件 实时扫码 码标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.realTimeScanningCode') }}：
@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
       <Col :span="24">
         <!-- region 单件SN码 -->
         <!-- 显示单件 SN 码输入框和扫码组件的容器 -->
-        <div class="mb-4 mr-8 flex items-center">
+        <div class="!mb-4 mr-8 flex items-center">
           <!-- 显示单件 SN 码标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.singlePieceSNCode') }}：
@@ -260,7 +260,7 @@ onBeforeUnmount(() => {
 
         <!-- region 校验结果 -->
         <!-- 显示校验结果的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示校验结果标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.verificationResult') }}：
@@ -283,7 +283,7 @@ onBeforeUnmount(() => {
       <Col :span="24">
         <!-- region 工单编号 -->
         <!-- 显示工单编号的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示工单编号标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.workOrderNumber') }}：
@@ -296,7 +296,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 产品名称 -->
         <!-- 显示产品名称的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示产品名称标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.productName') }}：
@@ -309,7 +309,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 测试结果 -->
         <!-- 显示测试结果的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示测试结果标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.testResult') }}：

@@ -412,7 +412,7 @@ function detailsClose() {
     :title="`${$t('workOrderParams.parameterBinding')}___${equipMessage.equipName}(${equipMessage.equipCode})`"
     @close="detailsClose"
   >
-    <Descriptions bordered class="mb-4">
+    <Descriptions bordered class="!mb-4">
       <DescriptionsItem :label="$t('workOrderParams.equipmentName')">
         {{ equipMessage.equipName }}
       </DescriptionsItem>

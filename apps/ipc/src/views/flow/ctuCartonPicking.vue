@@ -420,7 +420,7 @@ function print() {
     <!-- 主页面卡片容器，显示拣货相关操作 -->
     <Card :title="$t('ctuCartonPicking.packingAndPicking')">
       <!-- 查询表单区域，用于输入箱码和控制拣货操作 -->
-      <Form layout="inline" :model="queryParams" class="mb-4">
+      <Form layout="inline" :model="queryParams" class="!mb-4">
         <!-- 箱码输入框，支持回车键触发查询 -->
         <FormItem :label="$t('ctuCartonPicking.boxCode')">
           <Input
@@ -609,6 +609,10 @@ function print() {
         <FormItem :label="$t('ctuCartonPicking.lotNumber')">
           <Input v-model:value="editedInformation.batchCode" />
         </FormItem>
+        <!-- 备注 -->
+        <FormItem :label="$t('ctuCartonPicking.remark')">
+          <Input v-model:value="editedInformation.remark" />
+        </FormItem>
       </Form>
 
       <!-- 拣货抽屉底部操作按钮区域 -->
@@ -642,7 +646,7 @@ function print() {
         :key="item.id"
         :memo="item.id"
         :value="item.description"
-        class="mb-4"
+        class="!mb-4"
         :class="{
           '!border-4 !border-green-500 shadow-lg':
             editedInformation.materialDescriptionId === item.id,

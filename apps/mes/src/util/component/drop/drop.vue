@@ -564,7 +564,7 @@ defineExpose({
                 <InputNumber v-model:value="row.paramInitvalue" />
               </template>
             </BasicTblae>
-            <div class="mb-4 flex justify-end">
+            <div class="!mb-4 flex justify-end">
               <Button danger size="small" @click="confirmDelete(Number(index))">
                 {{ $t('common.delete') }}
               </Button>

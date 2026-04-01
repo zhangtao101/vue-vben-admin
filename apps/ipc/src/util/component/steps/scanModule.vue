@@ -387,7 +387,7 @@ onBeforeUnmount(() => {
       <Col :span="12" class="pt-10">
         <!-- region 单件SN码 -->
         <!-- 显示单件 SN 码输入框和扫码组件 -->
-        <div class="mb-4 mr-8 flex items-center">
+        <div class="!mb-4 mr-8 flex items-center">
           <!-- 显示单件 SN 码标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.singlePieceSNCode') }}：
@@ -435,7 +435,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 校验结果 -->
         <!-- 显示校验结果 -->
-        <div class="mb-4 mr-8 flex">
+        <div class="!mb-4 mr-8 flex">
           <!-- 显示校验结果标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.verificationResult') }}：
@@ -449,7 +449,7 @@ onBeforeUnmount(() => {
         <!-- region 工位编号 -->
         <!-- 根据展示类型显示工位编号输入框和扫码组件 -->
         <div
-          class="mb-4 mr-8 flex"
+          class="!mb-4 mr-8 flex"
           v-if="[32, 33, 39].includes(showTypeNumber)"
         >
           <!-- 显示工位编号标签 -->
@@ -483,7 +483,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 测试结果 -->
         <!-- 根据展示类型显示测试结果 -->
-        <div class="mb-4 mr-8 flex" v-if="[35].includes(showTypeNumber)">
+        <div class="!mb-4 mr-8 flex" v-if="[35].includes(showTypeNumber)">
           <!-- 显示测试结果标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.testResult') }}：
@@ -496,7 +496,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 已生产数量 -->
         <!-- 显示已生产数量 -->
-        <div class="mb-4 mr-8 flex">
+        <div class="!mb-4 mr-8 flex">
           <!-- 显示已生产数量标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.producedQuantity') }}：
@@ -509,7 +509,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 清空 -->
         <!-- 显示清空按钮 -->
-        <div class="mb-4 mr-8 flex" v-if="[32, 33].includes(showTypeNumber)">
+        <div class="!mb-4 mr-8 flex" v-if="[32, 33].includes(showTypeNumber)">
           <span :class="getLabelClass()"></span>
           <!-- 显示清空按钮 -->
           <span :class="getValueClass()" class="border-0">

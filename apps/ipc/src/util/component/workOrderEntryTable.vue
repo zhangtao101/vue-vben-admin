@@ -464,7 +464,7 @@ defineExpose({
   <!-- 卡片组件，用于包裹表格 -->
   <Card class="mb-5">
     <!-- 渲染 VxeGrid 表格 -->
-    <Grid class="mt-4">
+    <Grid class="!mt-4">
       <!-- 自定义工具栏工具 -->
       <template #toolbar-tools>
         <!-- 当工单列表类型为待执行列表时，显示进站按钮 -->

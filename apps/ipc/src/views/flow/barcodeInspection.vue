@@ -227,7 +227,7 @@ function queryLog(row: any) {
 
 <template>
   <Page id="page">
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <Form layout="inline" :model="queryParams">
         <!--条码 -->
         <FormItem
@@ -263,7 +263,7 @@ function queryLog(row: any) {
     </Card>
     <!-- region 表格内容 -->
     <Card class="mb-5">
-      <Grid class="mt-4">
+      <Grid class="!mt-4">
         <template #toolbar-tools> </template>
         <template #taskLine="{ row }">
           {{

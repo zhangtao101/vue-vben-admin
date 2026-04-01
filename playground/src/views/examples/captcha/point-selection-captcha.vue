@@ -50,7 +50,7 @@ const handleClick = (point: CaptchaPoint) => {
     :description="$t('examples.captcha.pageDescription')"
     :title="$t('examples.captcha.pageTitle')"
   >
-    <Card :title="$t('examples.captcha.basic')" class="mb-4 overflow-x-auto">
+    <Card :title="$t('examples.captcha.basic')" class="!mb-4 overflow-x-auto">
       <div class="mb-3 flex items-center justify-start">
         <Input
           v-model:value="params.title"

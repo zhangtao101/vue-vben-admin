@@ -482,7 +482,7 @@ onBeforeUnmount(() => {
     <!--    <Row>
       <Col span="24">
         &lt;!&ndash; 显示工单编号的容器 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 工单编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.workOrderNumberInExecution') }}：
@@ -493,7 +493,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 显示产品编号的容器 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 产品编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNumberInExecution') }}：
@@ -504,7 +504,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 显示产品名称的容器 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 产品名称 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNameInExecution') }}：
@@ -515,7 +515,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 显示产品名称的容器 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 产品名称 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productModelInExecution') }}：

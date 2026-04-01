@@ -299,7 +299,7 @@ function orderSubmit() {
 
 <template>
   <!-- region 工作站查询信息 -->
-  <Card class="mb-5">
+  <Card class="!mb-5">
     <Form layout="inline" :model="queryParams">
       <!--计划编号 -->
       <FormItem :label="$t('dispatchHomework.planNumber')">

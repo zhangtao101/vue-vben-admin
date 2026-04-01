@@ -449,7 +449,7 @@ onMounted(() => {
         />
       </label>
     </Card>
-    <Row :gutter="20" class="mb-4 mt-4">
+    <Row :gutter="20" class="!mb-4 !mt-4">
       <Col :span="12">
         <Card title="分项用能对比">
           <div id="energyContrast" class="min-h-[300px]"></div>

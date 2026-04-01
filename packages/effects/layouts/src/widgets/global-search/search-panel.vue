@@ -229,7 +229,7 @@ onMounted(() => {
         v-if="keyword && searchResults.length === 0"
         class="text-center text-muted-foreground"
       >
-        <SearchX class="mx-auto mt-4 size-12" />
+        <SearchX class="mx-auto !mt-4 size-12" />
         <p class="mt-6 mb-10 text-xs">
           {{ $t('ui.widgets.search.noResults') }}
           <span class="text-sm font-medium text-foreground">

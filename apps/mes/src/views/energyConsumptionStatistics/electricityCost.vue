@@ -645,7 +645,7 @@ onMounted(() => {
       :title="
         $t('energyConsumption.energyConsumptionStatistics.wattHourCharge')
       "
-      class="mb-4"
+      class="!mb-4"
     >
       <Form :model="queryParams" layout="inline" ref="ref1">
         <!-- 时间粒度选择器 -->
@@ -684,7 +684,7 @@ onMounted(() => {
     <!-- region 电费信息统计区域 -->
     <Card>
       <!-- region 分时电价基本信息展示 -->
-      <Flex class="mb-4" ref="ref2">
+      <Flex class="!mb-4" ref="ref2">
         <!-- 动态渲染各时段电价信息卡片 -->
         <div
           class="flex-1 border-2 p-4"
@@ -711,7 +711,7 @@ onMounted(() => {
             </Col>
           </Row>
           <!-- 时段统计信息 -->
-          <Row class="mt-4">
+          <Row class="!mt-4">
             <Col :span="8" :offset="2" class="text-center">
               <!-- 电费金额统计 -->
               <Statistic
@@ -752,7 +752,7 @@ onMounted(() => {
       <Row
         ref="ref4"
         :gutter="10"
-        class="mt-4"
+        class="!mt-4"
         v-show="selectShowType === 'chart'"
       >
         <!-- 电费占比分析图表 - 左侧占40%宽度 -->

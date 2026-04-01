@@ -51,7 +51,7 @@ defineEmits(['click']);
             />
             <span class="ml-4 text-lg font-medium">{{ item.title }}</span>
           </div>
-          <div class="mt-4 flex h-10 text-foreground/80">
+          <div class="!mt-4 flex h-10 text-foreground/80">
             {{ item.content }}
           </div>
           <div class="flex justify-between text-foreground/80">

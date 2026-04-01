@@ -36,7 +36,7 @@ const surfaceClass = 'surface';
     </div>
 
     <!-- 数值 -->
-    <p class="mt-4 text-4xl font-bold text-gray-900">{{ value }}</p>
+    <p class="!mt-4 text-4xl font-bold text-gray-900">{{ value }}</p>
   </div>
 </template>
 

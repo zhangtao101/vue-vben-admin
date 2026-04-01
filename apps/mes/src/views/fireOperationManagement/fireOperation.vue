@@ -913,7 +913,7 @@ onMounted(() => {
       @ok="statusChange"
     >
       <div>
-        <span class="mb-4 inline-block w-24">
+        <span class="!mb-4 inline-block w-24">
           {{ $t('fireOperation.targetStatus') }}：
         </span>
         <RadioGroup v-model:value="statusItem.state" class="inline-block">
@@ -922,7 +922,7 @@ onMounted(() => {
         </RadioGroup>
       </div>
       <div v-if="statusItem.state === 0">
-        <span class="mb-4 inline-block w-24">
+        <span class="!mb-4 inline-block w-24">
           {{ $t('fireOperation.unfinishedReason') }}：
         </span>
         <Input v-model:value="statusItem.reason" class="w-48" />

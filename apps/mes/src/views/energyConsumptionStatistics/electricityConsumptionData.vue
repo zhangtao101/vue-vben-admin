@@ -16,8 +16,12 @@ import { Chart } from '@antv/g2';
 import {
   Button,
   Card,
+  Checkbox,
+  Drawer,
   Form,
   FormItem,
+  message,
+  Modal,
   RadioButton,
   RadioGroup,
   RangePicker,
@@ -28,6 +32,7 @@ import {
 import dayjs from 'dayjs';
 
 import {
+  exportEnergy,
   gaugeDropDownBox,
   getDayYBList,
   getHourYBList,
@@ -421,6 +426,114 @@ function queryMeterData() {
 
 // endregion
 
+// region 导出功能
+/**
+ * 导出抽屉显示状态
+ */
+const showExportDrawer = ref(false);
+
+/**
+ * 导出表单数据
+ */
+const exportForm = ref<any>({
+  equipmentList: [], // 选中的设备列表
+});
+
+/**
+ * 导出确认对话框
+ */
+function showExportConfirm() {
+  Modal.confirm({
+    title: '确认导出',
+    content: '确定要导出选中设备的数据吗?',
+    okText: '确认',
+    cancelText: '取消',
+    onOk: handleExport,
+  });
+}
+
+/**
+ * 处理导出操作
+ */
+function handleExport() {
+  // 构建导出参数
+  const params: any = {
+    type: queryParams.value.timeType, // 导出类型：1小时 2日 3月 4年
+  };
+
+  // 处理时间范围参数
+  if (queryParams.value.searchTime && queryParams.value.searchTime.length > 0) {
+    params.startTime = queryParams.value.searchTime[0].format(
+      timeFormatList.value[queryParams.value.timeType],
+    );
+    params.endTime = queryParams.value.searchTime[1].format(
+      timeFormatList.value[queryParams.value.timeType],
+    );
+  }
+
+  // 添加设备列表
+  if (
+    exportForm.value.equipmentList &&
+    exportForm.value.equipmentList.length > 0
+  ) {
+    params.equipmentList = exportForm.value.equipmentList;
+  }
+
+  // 调用导出接口
+  exportEnergy(params)
+    .then((res: any) => {
+      if (res) {
+        window.open(res, '_blank');
+        message.success('导出成功!');
+        showExportDrawer.value = false;
+      }
+    })
+    .catch((error: any) => {
+      message.error('导出失败: ' + (error.message || '未知错误'));
+    });
+}
+
+/**
+ * 打开导出抽屉
+ */
+function openExportDrawer() {
+  showExportDrawer.value = true;
+  // 默认选中当前查询的设备
+  if (queryParams.value.equipmentCode) {
+    exportForm.value.equipmentList = [queryParams.value.equipmentCode];
+  }
+}
+
+/**
+ * 全选/取消全选
+ */
+function checkAllChange(e: any) {
+  exportForm.value.equipmentList = e.target.checked
+    ? equipmentOptions.value.map((item: any) => item.value)
+    : [];
+}
+
+/**
+ * 检查是否全选
+ */
+const isAllChecked = ref(false);
+
+/**
+ * 检查是否半选（部分选中）
+ */
+const isIndeterminate = ref(false);
+
+/**
+ * 监听设备选择变化
+ */
+function watchEquipmentListChange() {
+  const total = equipmentOptions.value.length;
+  const selected = exportForm.value.equipmentList.length;
+  isIndeterminate.value = selected > 0 && selected < total;
+  isAllChecked.value = selected === total;
+}
+// endregion
+
 // region 生命周期初始化
 /**
  * 组件挂载后的初始化操作
@@ -439,7 +552,7 @@ onMounted(() => {
   <Page>
     <!-- region 查询条件区域 -->
     <!-- 用电量数据查询条件卡片 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <Form :model="queryParams" layout="inline">
         <!-- 电表设备选择器 -->
         <FormItem
@@ -510,12 +623,19 @@ onMounted(() => {
             {{ $t('common.search') }}
           </Button>
         </FormItem>
+
+        <!-- 导出按钮 -->
+        <FormItem style="margin-bottom: 1em">
+          <Button type="primary" @click="openExportDrawer">
+            {{ $t('common.export') }}
+          </Button>
+        </FormItem>
       </Form>
     </Card>
     <!-- endregion -->
 
     <!-- region 图表展示区域 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <!-- 使用Tabs组件展示三个独立图表 -->
       <Tabs v-model:active-key="activeTab" @change="handleTabChange">
         <TabPane key="0" :tab="chartTitles[0]">
@@ -532,7 +652,7 @@ onMounted(() => {
     <!-- endregion -->
 
     <!-- region 表格展示区域 -->
-    <Card class="mb-4 mt-4">
+    <Card class="!mb-4 !mt-4">
       <!-- region 数据表格 -->
       <BasicTblae
         :columns="columns"
@@ -541,6 +661,86 @@ onMounted(() => {
       />
       <!-- endregion -->
     </Card>
+    <!-- endregion -->
+
+    <!-- region 导出抽屉 -->
+    <Drawer
+      v-model:open="showExportDrawer"
+      :footer-style="{ textAlign: 'right' }"
+      :width="500"
+      placement="right"
+      title="导出数据"
+    >
+      <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+        <!-- 时间类型 -->
+        <FormItem label="导出类型">
+          <Select
+            :value="queryParams.timeType"
+            disabled
+            :options="[
+              { label: '小时', value: 1 },
+              { label: '日', value: 2 },
+              { label: '月', value: 3 },
+              { label: '年', value: 4 },
+            ]"
+          />
+        </FormItem>
+
+        <!-- 时间范围 -->
+        <FormItem label="时间范围">
+          <div
+            v-if="queryParams.searchTime && queryParams.searchTime.length === 2"
+          >
+            {{
+              queryParams.searchTime[0].format(
+                timeFormatList[queryParams.timeType],
+              )
+            }}
+            至
+            {{
+              queryParams.searchTime[1].format(
+                timeFormatList[queryParams.timeType],
+              )
+            }}
+          </div>
+          <div v-else>未设置时间范围</div>
+        </FormItem>
+
+        <!-- 设备选择 -->
+        <FormItem label="选择设备">
+          <div class="mb-2">
+            <Checkbox
+              v-model:checked="isAllChecked"
+              :indeterminate="isIndeterminate"
+              @change="checkAllChange"
+            >
+              全选
+            </Checkbox>
+          </div>
+          <Checkbox.Group
+            v-model:value="exportForm.equipmentList"
+            @change="watchEquipmentListChange"
+          >
+            <div
+              v-for="item in equipmentOptions"
+              :key="item.value"
+              class="mb-2"
+            >
+              <Checkbox :value="item.value">
+                {{ item.label }}
+              </Checkbox>
+            </div>
+          </Checkbox.Group>
+        </FormItem>
+      </Form>
+
+      <template #footer>
+        <div class="text-right">
+          <Button @click="showExportDrawer = false" class="mr-2"> 取消 </Button>
+          <Button type="primary" @click="showExportConfirm"> 确认导出 </Button>
+        </div>
+      </template>
+    </Drawer>
     <!-- endregion -->
   </Page>
 </template>

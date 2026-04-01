@@ -146,7 +146,7 @@ defineExpose({
 
     <div
       v-if="showCodeLogin || showQrcodeLogin"
-      class="mt-4 mb-2 flex items-center justify-between"
+      class="!mt-4 mb-2 flex items-center justify-between"
     >
       <VbenButton
         v-if="showCodeLogin"

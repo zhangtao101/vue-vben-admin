@@ -559,7 +559,7 @@ onMounted(() => {
       </BadgeRibbon>
     </div>
     <hr class="mb-2" />
-    <div class="mb-4 flex">
+    <div class="!mb-4 flex">
       <span
         class="border-l-4 border-sky-500 pl-4 text-2xl font-black leading-[4rem]"
       >
@@ -645,7 +645,7 @@ onMounted(() => {
         </FormItem>
       </Form>
 
-      <Grid class="mt-4">
+      <Grid class="!mt-4">
         <template #toolbar-tools> </template>
         <template #action="{ row }">
           <!-- 领取 -->

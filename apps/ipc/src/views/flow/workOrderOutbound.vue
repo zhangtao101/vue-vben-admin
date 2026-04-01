@@ -396,7 +396,7 @@ onMounted(() => {
 
 <template>
   <Page id="page">
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <Form layout="inline" :model="queryParams">
         <!--工作中心 -->
         <FormItem :label="$t('workOrderEntry.workCenter')" class="!mb-4 w-full">
@@ -434,7 +434,7 @@ onMounted(() => {
     </Card>
     <!-- region 表格内容 -->
     <Card class="mb-5">
-      <Grid class="mt-4">
+      <Grid class="!mt-4">
         <template #toolbar-tools> </template>
         <template #action="{ row }">
           <!-- 出站 ="{ row }"-->
@@ -498,7 +498,7 @@ onMounted(() => {
       <span class="border-l-4 border-sky-500 pl-4 text-2xl font-black">
         {{ $t('workOrderEntry.workOrderInformation') }}
       </span>
-      <Descriptions bordered :column="2" class="mb-4 mt-4">
+      <Descriptions bordered :column="2" class="!mb-4 !mt-4">
         <!-- 工单编号 -->
         <DescriptionsItem :label="$t('workOrderEntry.workOrderNumber')">
           {{ editItem.worksheetCode }}
@@ -552,7 +552,7 @@ onMounted(() => {
             validator: valueValidator,
           }"
           name="qualityNumber"
-          class="mb-4 mt-4 w-[40%]"
+          class="!mb-4 !mt-4 w-[40%]"
         >
           <InputNumber v-model:value="formData.qualityNumber" :min="0" />
         </FormItem>
@@ -565,7 +565,7 @@ onMounted(() => {
             validator: valueValidator,
           }"
           name="unqualityNumber"
-          class="mb-4 mt-4 w-[40%]"
+          class="!mb-4 !mt-4 w-[40%]"
         >
           <InputNumber v-model:value="formData.unqualityNumber" :min="0" />
         </FormItem>
@@ -578,7 +578,7 @@ onMounted(() => {
             validator: valueValidator,
           }"
           name="personTime"
-          class="mb-4 mt-4 w-[40%]"
+          class="!mb-4 !mt-4 w-[40%]"
         >
           <InputNumber v-model:value="formData.personTime" :min="0" />
         </FormItem>
@@ -591,7 +591,7 @@ onMounted(() => {
             validator: valueValidator,
           }"
           name="equipTime"
-          class="mb-4 mt-4 w-[40%]"
+          class="!mb-4 !mt-4 w-[40%]"
         >
           <InputNumber v-model:value="formData.equipTime" :min="0" />
         </FormItem>

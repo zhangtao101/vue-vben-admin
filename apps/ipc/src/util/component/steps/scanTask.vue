@@ -551,7 +551,7 @@ onBeforeUnmount(() => {
     <!--    <Row>
       <Col span="24">
         &lt;!&ndash; 显示工单编号的容器 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 工单编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.workOrderNumberInExecution') }}：
@@ -562,7 +562,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 显示产品编号的容器 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 产品编号 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNumberInExecution') }}：
@@ -573,7 +573,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 显示产品名称的容器 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 产品名称 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productNameInExecution') }}：
@@ -584,7 +584,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         &lt;!&ndash; 显示产品名称的容器 &ndash;&gt;
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           &lt;!&ndash; 产品名称 &ndash;&gt;
           <span :class="getLabelClass()" class="w-48">
             {{ $t('productionOperation.productModelInExecution') }}：
@@ -601,7 +601,7 @@ onBeforeUnmount(() => {
       <Col :span="24">
         <!-- region SN扫码 -->
         <!-- 显示工单编号的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示工SN码标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.snCode') }}：
@@ -630,7 +630,7 @@ onBeforeUnmount(() => {
         <!-- region 工位扫码 -->
         <!-- 显示工位扫码的容器 -->
         <div
-          class="mb-4 mr-8 inline-block"
+          class="!mb-4 mr-8 inline-block"
           v-if="multiStationList.includes(showTypeNumber)"
         >
           <!-- 显示工SN码标签 -->
@@ -659,7 +659,7 @@ onBeforeUnmount(() => {
       <Col :span="24">
         <!-- region 工单编号 -->
         <!-- 显示工单编号的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示工单编号标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.workOrderNumber') }}：
@@ -672,7 +672,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 产品名称 -->
         <!-- 显示产品名称的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示产品名称标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.productName') }}：
@@ -687,7 +687,7 @@ onBeforeUnmount(() => {
 
         <!-- region 已生产数量 -->
         <!-- 显示已生产数量 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示已生产数量标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.producedQuantity') }}：
@@ -704,7 +704,7 @@ onBeforeUnmount(() => {
       <Col :span="24">
         <!-- region SN扫码 -->
         <!-- 显示工单编号的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示工SN码标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.snCode') }}：
@@ -717,7 +717,7 @@ onBeforeUnmount(() => {
         <!-- endregion -->
         <!-- region 工位扫码 -->
         <!-- 显示工位扫码的容器 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 显示工SN码标签 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.workstationNumber') }}：
@@ -741,7 +741,7 @@ onBeforeUnmount(() => {
         <Col :span="24">
           <!-- region  SN校验 -->
           <!-- 显示 SN校验的容器 -->
-          <div class="mb-4 mr-8 inline-block">
+          <div class="!mb-4 mr-8 inline-block">
             <!-- 显示 SN校验 标签 -->
             <span :class="getLabelClass()">
               {{ $t('productionOperation.snVerification') }}：
@@ -754,7 +754,7 @@ onBeforeUnmount(() => {
           <!-- endregion -->
           <!-- region 工位校验 -->
           <!-- 显示 工位校验 的容器 -->
-          <div class="mb-4 mr-8 inline-block">
+          <div class="!mb-4 mr-8 inline-block">
             <!-- 显示工位校验标签 -->
             <span :class="getLabelClass()">
               {{ $t('productionOperation.workstationVerification') }}：
@@ -768,7 +768,7 @@ onBeforeUnmount(() => {
 
           <!-- region 设备联锁 -->
           <!-- 显示设备联锁 -->
-          <div class="mb-4 mr-8 inline-block">
+          <div class="!mb-4 mr-8 inline-block">
             <!-- 显示设备联锁标签 -->
             <span :class="getLabelClass()">
               {{ $t('productionOperation.equipmentInterlocking') }}：
@@ -783,7 +783,7 @@ onBeforeUnmount(() => {
           <!-- region 设备联锁 -->
           <!-- 控制 -->
           <div
-            class="mb-4 mr-8 inline-block"
+            class="!mb-4 mr-8 inline-block"
             v-if="hcStationList.includes(showTypeNumber)"
           >
             <!-- 显示设备联锁标签 -->

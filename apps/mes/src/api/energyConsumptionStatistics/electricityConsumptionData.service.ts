@@ -37,3 +37,12 @@ export async function getYearYBList(params: any) {
     `${import.meta.env.VITE_GLOB_MES_ENERGY}/PowerData/getYearYBList?${qs.stringify(params)}`,
   );
 }
+/**
+ * 导出
+ */
+export async function exportEnergy(params: any) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_ENERGY}/PowerData/getExportUrl`,
+    params,
+  );
+}

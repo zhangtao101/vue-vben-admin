@@ -198,7 +198,7 @@ const webPermissionConfiguration = ref(false);
 // web权限数据
 const webPermission = ref<any[]>([{ childrens: [], code: '', name: 'root' }]);
 // 选中的web权限列表
-const selectedWebPermissionCodes = ref<string[]>([]);
+const selectedWebPermissionCodes = ref<string[]>([]); // 选中的web权限列表
 // web权限加载情况
 const webLoading = ref(false);
 
@@ -498,7 +498,12 @@ onMounted(() => {
     <Card>
       <div>
         <!-- 新增按钮 -->
-        <Button v-if="addButton" class="mb-4" type="primary" @click="editRow()">
+        <Button
+          v-if="addButton"
+          class="!mb-4"
+          type="primary"
+          @click="editRow()"
+        >
           {{ $t('common.add') }}
         </Button>
       </div>

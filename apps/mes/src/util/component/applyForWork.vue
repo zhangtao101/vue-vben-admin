@@ -458,7 +458,7 @@ onMounted(() => {});
 <template>
   <!-- region 表格主体展示区域 -->
   <!-- 只有在工单编码存在时才显示表格组件 -->
-  <Card class="mt-4" v-if="workSheetCode">
+  <Card class="!mt-4" v-if="workSheetCode">
     <Grid>
       <!-- 各种能耗数据的编辑模板插槽 -->
       <!-- 能耗电量编辑模板 -->
@@ -576,7 +576,7 @@ onMounted(() => {});
       <!-- 遍历每个报工记录，显示详细信息 -->
       <div v-for="item of editDetails" :key="item.id" class="!mb-8">
         <!-- 报工基本信息描述列表 -->
-        <Descriptions bordered :column="2" class="mb-4">
+        <Descriptions bordered :column="2" class="!mb-4">
           <DescriptionsItem label="报工总数" :span="2">
             {{ item.reportNumber }}
           </DescriptionsItem>
@@ -667,7 +667,7 @@ onMounted(() => {});
             <!-- 遍历具体的报工人员数据 -->
             <Descriptions
               bordered
-              class="mb-4"
+              class="!mb-4"
               v-for="i of item.editDetails"
               :column="2"
               :key="i.id"

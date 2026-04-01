@@ -40,7 +40,7 @@ function getValueClass() {
 
 <template>
   <div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 设备可用 -->
       <span :class="getLabelClass()">
         {{ $t('equipmentOperationStatus.equipmentAvailable') }}：
@@ -57,14 +57,14 @@ function getValueClass() {
     </div>
   </div>
   <div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 设备堵料 -->
       <span :class="getLabelClass()">
         {{ $t('equipmentOperationStatus.equipmentPlugging') }}：
       </span>
       <span :class="getValueClass()">2222</span>
     </div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 堵料原因 -->
       <span :class="getLabelClass()">
         {{ $t('equipmentOperationStatus.cloggingCause') }}：
@@ -73,7 +73,7 @@ function getValueClass() {
     </div>
   </div>
   <div>
-    <div class="mb-4 mr-8 inline-block">
+    <div class="!mb-4 mr-8 inline-block">
       <!-- 设备状态 -->
       <span :class="getLabelClass()">
         {{ $t('equipmentOperationStatus.deviceStatus') }}：

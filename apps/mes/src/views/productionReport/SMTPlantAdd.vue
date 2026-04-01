@@ -797,7 +797,7 @@ onMounted(() => {
 
     <!-- 主表格 -->
     <Card v-show="tableShow" style="margin-top: 16px">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between !mb-4">
         <h3 class="text-xl font-bold">本日计划与完成情况一览</h3>
         <Button v-if="addShow" type="primary" @click="handleCreate">
           <Icon icon="mdi:plus" class="mr-1" />
@@ -824,7 +824,7 @@ onMounted(() => {
 
     <!-- 详情表格 -->
     <Card v-if="detailShow" style="margin-top: 16px">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between !mb-4">
         <h3 class="text-xl font-bold">报工明细</h3>
         <Button v-if="exportShow" type="primary" @click="handleExportDetail">
           <Icon icon="mdi:export" class="mr-1" />

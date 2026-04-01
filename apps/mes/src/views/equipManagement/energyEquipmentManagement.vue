@@ -91,6 +91,12 @@ const gridOptions: VxeGridProps<any> = {
       visible: true,
     },
     {
+      field: 'orderNum',
+      title: '顺序',
+      minWidth: 80,
+      visible: true,
+    },
+    {
       title: '启用状态',
       fixed: 'right',
       minWidth: 150,
@@ -428,7 +434,7 @@ onMounted(() => {
 <template>
   <Page>
     <!-- region 设备数量信息 -->
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <!-- 设备总数 -->
       <Statistic
         :title="$t('equip.Total')"
@@ -462,7 +468,7 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
     <!-- region 搜索 -->
-    <Card class="mb-4">
+    <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 电表类型 -->
         <FormItem :label="$t('equip.meterType')" style="margin-bottom: 1em">
@@ -664,6 +670,10 @@ onMounted(() => {
           v-if="checkedRow.equipType === 1"
         >
           <InputNumber v-model:value="checkedRow.bl" :min="0" />
+        </FormItem>
+        <!-- 顺序 -->
+        <FormItem :label="$t('equip.orderNum')" name="orderNum">
+          <InputNumber v-model:value="checkedRow.orderNum" :min="0" />
         </FormItem>
       </Form>
 

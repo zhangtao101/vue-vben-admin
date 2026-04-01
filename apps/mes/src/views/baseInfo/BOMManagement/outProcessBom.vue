@@ -394,17 +394,17 @@ function closePrint() {
           name="file"
           @change="handleChange"
         >
-          <Button class="mb-4" type="primary">
+          <Button class="!mb-4" type="primary">
             {{ $t('common.import') }}
           </Button>
         </Upload>
         <!-- 导出 -->
-        <Button class="mb-4" type="primary">
+        <Button class="!mb-4" type="primary">
           {{ $t('common.export') }}
         </Button>
         <!-- 模板下载 -->
         <Button
-          class="mb-4"
+          class="!mb-4"
           href="/static/downLoad/外加工物料导入格式.xls"
           type="link"
         >

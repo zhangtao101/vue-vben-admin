@@ -579,7 +579,7 @@ onMounted(() => {
                 <!-- waterState -->
                 <Spin :spinning="materialLoading">
                   <template v-for="(item, index) of formState[i]" :key="index">
-                    <div class="mb-4 border border-cyan-400 p-3">
+                    <div class="!mb-4 border border-cyan-400 p-3">
                       <Row class="w-full">
                         <Col :span="8" class="mb-2">
                           <!-- 批次号 -->

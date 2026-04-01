@@ -482,7 +482,7 @@ function handleClose() {
         </Col>
       </Row>
 
-      <Space class="mb-4">
+      <Space class="!mb-4">
         <Button type="primary" @click="handleShowImport">
           {{ $t('common.import') }}
         </Button>
@@ -500,7 +500,7 @@ function handleClose() {
       </Space>
 
       <!-- 导入选项 -->
-      <div v-if="importVisible" class="mb-4 p-2 bg-gray-100">
+      <div v-if="importVisible" class="!mb-4 p-2 bg-gray-100">
         <Space>
           <Button type="primary" @click="handleContractImport">
             {{ $t('storeManagement.labelPrint.contractImport') }}

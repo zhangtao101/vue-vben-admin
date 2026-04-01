@@ -10,6 +10,7 @@
   "brandModel": "Brand Model",
   "magnification": "Magnification",
   "installationAddress": "Installation Address",
+  "orderNum": "Order",
   "systemNumber": "System Number",
   "systemName": "System Name",
   "systemType": "System Type",

@@ -10,5 +10,6 @@
   "materialCharacteristics": "Material Characteristics",
   "quantity": "Quantity",
   "unit": "Unit",
-  "materialLabel": "Material Label"
+  "materialLabel": "Material Label",
+  "remark": "Remark"
 }

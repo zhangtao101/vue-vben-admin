@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
   <Spin :spinning="spinning">
     <template v-if="details">
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 当前工单 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentWorkOrder') }}：
@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
             {{ details.currentJobId || $t('productionOperation.none') }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 产品名称 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentProductName') }}：
@@ -221,7 +221,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 前工步执行状况 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.implementationStatus') }}：
@@ -233,7 +233,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清洁模式 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.cleaningMode') }}：
@@ -242,7 +242,7 @@ onBeforeUnmount(() => {
             {{ details.cleanModel === 1 ? '自动' : '手动' }}
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清洁状态 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.cleanCondition') }}
@@ -253,7 +253,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清洁计时 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.cleaningTimer') }}：
@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
             {{ details.setMinute || 0 }}分钟
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清洁设置时长 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.cleaningSettingDuration') }}：
@@ -271,7 +271,7 @@ onBeforeUnmount(() => {
             {{ details.cleanMinute || 0 }}分钟
           </span>
         </div>
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <!-- 清洁超时 -->
           <span :class="getLabelClass()">
             {{ $t('productionOperation.cleaningTimeout') }}：
@@ -285,7 +285,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
         <div
-          class="float-right mb-4 mr-8 inline-block"
+          class="float-right !mb-4 mr-8 inline-block"
           v-if="details.overTimeFlag === 1"
         >
           <!-- 超时时才会出现  v-if="details.overTimeFlag === 1" -->

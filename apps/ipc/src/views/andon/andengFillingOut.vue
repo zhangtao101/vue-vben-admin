@@ -114,7 +114,7 @@ function submit() {
 <template>
   <Page id="page">
     <Card>
-      <Tabs :value="checkedType" @change="tabsChange" class="mb-4">
+      <Tabs :value="checkedType" @change="tabsChange" class="!mb-4">
         <TabPane key="1">
           <template #tab>
             <MdiHome class="inline-block" />
@@ -128,7 +128,7 @@ function submit() {
             :place="3"
           />
 
-          <div class="float-right mt-4">
+          <div class="float-right !mt-4">
             <!-- 暂存 -->
             <Button type="primary" class="mr-4" @click="saveDraft()">
               {{ $t('common.temporaryStorage') }}

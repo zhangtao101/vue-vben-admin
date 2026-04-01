@@ -1077,7 +1077,7 @@ onMounted(async () => {
         <!-- 工作站类型 -->
         <FormItem
           :label="$t('basic.workStationMaintenance.workstationType')"
-          class="mb-4 w-80"
+          class="!mb-4 w-80"
           name="workstationType"
         >
           <Select
@@ -1090,7 +1090,7 @@ onMounted(async () => {
         <!-- 对应工序 -->
         <FormItem
           :label="$t('basic.workStationMaintenance.correspondingOperation')"
-          class="mb-4 w-80"
+          class="!mb-4 w-80"
         >
           <Select
             v-model:value="checkedRow.correspondingOperation"
@@ -1107,7 +1107,7 @@ onMounted(async () => {
       <!-- 添加 -->
       <Button
         :disabled="isShowStatus"
-        class="mb-4"
+        class="!mb-4"
         type="primary"
         @click="addWorkStationDetail"
       >

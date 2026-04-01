@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
       <slot name="workstation"></slot>
       <!--- region 作业信息 -->
       <!-- 行容器，用于布局作业信息标题和收缩按钮 -->
-      <Row class="mb-4">
+      <Row class="!mb-4">
         <!-- 列容器，占据 23 格宽度，显示作业信息标题 -->
         <Col :span="24">
           <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
@@ -216,12 +216,12 @@ onBeforeUnmount(() => {
         <slot name="jobInformationC"></slot>
       </Card>
       <!-- 分割线 -->
-      <hr class="mb-4" />
+      <hr class="!mb-4" />
       <!--- endregion -->
 
       <!--- region 工艺路线 -->
       <!-- 行容器，用于布局工艺路线标题和收缩按钮 -->
-      <Row class="mb-4">
+      <Row class="!mb-4">
         <!-- 列容器，占据 23 格宽度，显示工艺路线标题 -->
         <Col :span="24">
           <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">
@@ -252,12 +252,12 @@ onBeforeUnmount(() => {
         <slot name="processRouteC"></slot>
       </Card>
       <!-- 分割线 -->
-      <hr class="mb-4" />
+      <hr class="!mb-4" />
       <!--- endregion -->
 
       <!--- region 操作事项  -->
       <!-- 行容器，用于布局操作事项标题和操作事项选择器 -->
-      <Row class="mb-4">
+      <Row class="!mb-4">
         <!-- 列容器，占据 23 格宽度，显示操作事项标题和选择器 -->
         <Col :span="24">
           <!-- 显示操作事项标题，带有蓝色边框 -->
@@ -291,7 +291,7 @@ onBeforeUnmount(() => {
         <slot name="operationEventC"></slot>
       </Card>
       <!-- 分割线 -->
-      <hr class="mb-4" />
+      <hr class="!mb-4" />
       <!--- endregion -->
 
       <!--- region 工步执行  -->
@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
           'h-full overflow-y-auto pb-8': isItFullScreen,
         }"
       >
-        <Row class="mb-4">
+        <Row class="!mb-4">
           <!-- 列容器，占据 4 格宽度，显示工步执行标题 -->
           <Col :span="24">
             <span class="border-l-4 border-sky-500 pl-4 text-xl font-black">

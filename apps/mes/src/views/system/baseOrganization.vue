@@ -551,7 +551,7 @@ onMounted(() => {
               <Button
                 v-if="addButton"
                 :disabled="!selectedKey"
-                class="mb-4"
+                class="!mb-4"
                 type="primary"
                 @click="showAdd"
               >

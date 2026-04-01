@@ -323,7 +323,7 @@ function handleClose() {
     :footer-style="{ textAlign: 'right' }"
     @close="handleClose"
   >
-    <Space class="mb-4">
+    <Space class="!mb-4">
       <Button type="primary" @click="handlePrint">
         {{ $t('common.print') }}
       </Button>

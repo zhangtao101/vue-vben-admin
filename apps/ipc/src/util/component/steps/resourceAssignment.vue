@@ -178,7 +178,7 @@ onMounted(() => {
     <Row>
       <Col :span="24">
         <!-- region 工单号 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.currentWorkOrder') }}：
           </span>
@@ -188,7 +188,7 @@ onMounted(() => {
         </div>
         <!-- endregion-->
         <!-- region 设备编号 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.equipmentNumber') }}：
           </span>
@@ -206,7 +206,7 @@ onMounted(() => {
         </div>
         <!-- endregion-->
         <!-- region 允许调整 -->
-        <div class="mb-4 mr-8 inline-block">
+        <div class="!mb-4 mr-8 inline-block">
           <span :class="getLabelClass()">
             {{ $t('productionOperation.allowForAdjustment') }}：
           </span>
