@@ -243,18 +243,15 @@ function getChildrenByKey(
   tree: TreeProps['treeData'],
 ): any {
   if (!tree) {
-    return undefined;
+    return [];
   }
 
   for (const node of tree) {
+    if (node.code === key) {
+      return node.childrens || [];
+    }
     if (node.childrens) {
-      if (node.code === key) {
-        return node.childrens;
-      }
-      const result = getChildrenByKey(key, node.childrens);
-      if (result) {
-        return result;
-      }
+      getChildrenByKey(key, node.childrens);
     }
   }
 
@@ -298,8 +295,8 @@ watch(
     addButton.value = author.value.includes('新增');
     editButton.value = author.value.includes('编辑');
     delButton.value = author.value.includes('删除');
-    if (author.value.includes('拖拽完成') && gridOptions.columns) {
-      gridOptions.columns[1]!.dragSort = true;
+    if (author.value.includes('拖拽完成') && gridOptions.columns && gridOptions.columns[1]) {
+      gridOptions.columns[1].dragSort = true;
       gridApi.grid.reloadColumn(gridOptions.columns as any);
     }
   },
