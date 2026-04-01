@@ -295,7 +295,11 @@ watch(
     addButton.value = author.value.includes('新增');
     editButton.value = author.value.includes('编辑');
     delButton.value = author.value.includes('删除');
-    if (author.value.includes('拖拽完成') && gridOptions.columns && gridOptions.columns[1]) {
+    if (
+      author.value.includes('拖拽完成') &&
+      gridOptions.columns &&
+      gridOptions.columns[1]
+    ) {
       gridOptions.columns[1].dragSort = true;
       gridApi.grid.reloadColumn(gridOptions.columns as any);
     }
