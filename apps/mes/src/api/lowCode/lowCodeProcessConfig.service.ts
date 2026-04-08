@@ -6,7 +6,7 @@ import { requestClient } from '#/api/request';
 /**
  * 条件查询流程定义列表（分页）
  */
-export async function queryFlowDefinitionList(params: any) {
+export async function queryFlowDefinitionListDefinition(params: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/listByParam?${qs.stringify(params)}`,
   );
@@ -15,7 +15,7 @@ export async function queryFlowDefinitionList(params: any) {
 /**
  * 获取流程定义列表（不分页）
  */
-export async function getFlowDefinitionList() {
+export async function getFlowDefinitionListDefinition() {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/list`,
   );
@@ -24,7 +24,7 @@ export async function getFlowDefinitionList() {
 /**
  * 获取流程定义详情
  */
-export async function getFlowDefinitionById(id: number) {
+export async function getFlowDefinitionByIdDefinition(id: number) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/get/${id}`,
   );
@@ -33,7 +33,7 @@ export async function getFlowDefinitionById(id: number) {
 /**
  * 保存/更新流程定义
  */
-export async function saveFlowDefinition(params: any) {
+export async function saveFlowDefinitionDefinition(params: any) {
   return requestClient.post<any>(
     `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/save`,
     params,
@@ -43,7 +43,7 @@ export async function saveFlowDefinition(params: any) {
 /**
  * 删除流程定义
  */
-export async function deleteFlowDefinition(id: number) {
+export async function deleteFlowDefinitionDefinition(id: number) {
   return requestClient.delete<any>(
     `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/delete/${id}`,
   );
@@ -52,7 +52,10 @@ export async function deleteFlowDefinition(id: number) {
 /**
  * 启停用流程定义
  */
-export async function enableFlowDefinition(id: number, status: number) {
+export async function enableFlowDefinitionDefinition(
+  id: number,
+  status: number,
+) {
   return requestClient.post<any>(
     `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/enable/${id}?status=${status}`,
   );
@@ -61,19 +64,16 @@ export async function enableFlowDefinition(id: number, status: number) {
 /**
  * 获取可用参数
  */
-export async function getAvailableParams(
-  flowDefId: number,
-  currentNodeId: string,
-) {
+export async function getAvailableParamsDefinition(functionTypes: string) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/availableParams?${qs.stringify({ flowDefId, currentNodeId })}`,
+    `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/availableParamsByType?functionTypes=${functionTypes}`,
   );
 }
 
 /**
  * 获取所有工步列表
  */
-export async function listOpFunctionType() {
+export async function listOpFunctionTypeDefinition() {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_EASYCODE}/process/flowDefinition/listOpFunctionType`,
   );

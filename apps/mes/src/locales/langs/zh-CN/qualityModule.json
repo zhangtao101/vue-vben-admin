@@ -30,7 +30,9 @@
       "dateRange": "日期",
       "enter": "录入",
       "dataAction": "数据操作",
-      "formAction": "表单操作"
+      "formAction": "表单操作",
+      "pleaseSelectCheckTime": "请选择检验时间",
+      "pleaseEnterWorksheetCode": "请填写工单编号"
     },
     "qualityBaseSet": {
       "specialMaintain": {

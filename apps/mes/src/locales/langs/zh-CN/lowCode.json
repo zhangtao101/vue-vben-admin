@@ -1,3 +1,12 @@
 {
-  "processName": "流程名称"
+  "processName": "流程名称",
+  "lowCodeProcessConfig": {
+    "name": "名称",
+    "version": "版本号",
+    "addFlow": "新增流程",
+    "editFlow": "编辑流程",
+    "enterFlowName": "请输入流程名称",
+    "configFlow": "配置流程",
+    "draft": "草稿"
+  }
 }

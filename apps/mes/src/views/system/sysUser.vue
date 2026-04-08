@@ -567,9 +567,9 @@ onMounted(() => {
     >
       <Form
         ref="editForm"
-        :label-col="{ span: 8 }"
         :model="checkedRow"
         :rules="editRules"
+        :label-col="{ span: 8 }"
         :wrapper-col="{ span: 16 }"
         autocomplete="off"
         name="editMessageForm"

@@ -15,6 +15,7 @@ import {
   Form,
   FormItem,
   Input,
+  InputNumber,
   message,
   Modal,
   Select,
@@ -22,13 +23,20 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
+// eslint-disable-next-line n/no-extraneous-import
+import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  createQcRecord,
   deleteQcRecord,
   exportQcRecord,
+  fetchQcEnableConfig,
   fetchRecordList,
+  fetchWorksheetInfo,
+  fetchWorksheetList,
   submitQcAudit,
+  updateQcRecord,
 } from '#/api';
 
 import QualityItemsDrawer from './QualityItemsDrawer.vue';
@@ -211,6 +219,29 @@ const recordFormVisible = ref(false);
 const recordFormStatus = ref<'create' | 'enter' | 'update' | 'view'>('create');
 const currentRecord = ref<any>(null);
 
+// 表单数据
+const popData = ref<any>({});
+
+// 工单编号列表
+const workSheetCodeList = ref<any[]>([]);
+
+// 送检是否启用
+const sendNumberEnable = ref<boolean | undefined>(undefined);
+
+// 抽检是否启用
+const preparationNumberEnable = ref<boolean | undefined>(undefined);
+
+// 是否显示送检和抽检数量
+const isShow = ref(false);
+
+// 表单验证规则
+const rules = ref<any>({
+  checkTime: [{ required: true, message: '此项为必填项', trigger: 'change' }],
+});
+
+// 显示工单编号必填图标
+const showIcon = ref(true);
+
 // 质检项表格抽屉
 const itemsDrawerVisible = ref(false);
 const itemsDrawerStatus = ref<'enter' | 'view'>('view');
@@ -306,13 +337,6 @@ function handleQuery() {
   gridApi.reload();
 }
 
-// 新增
-function handleAdd() {
-  recordFormStatus.value = 'create';
-  currentRecord.value = null;
-  recordFormVisible.value = true;
-}
-
 // 导出
 function handleExport() {
   const params = {
@@ -341,13 +365,6 @@ function handleEnter(row: any) {
   itemsDrawerVisible.value = true;
 }
 
-// 编辑
-function handleEdit(row: any) {
-  recordFormStatus.value = 'update';
-  currentRecord.value = row;
-  recordFormVisible.value = true;
-}
-
 // 删除
 function handleDelete(row: any) {
   Modal.confirm({
@@ -373,6 +390,123 @@ function handleSubmit(row: any) {
         gridApi.reload();
       });
     },
+  });
+}
+
+// 重置表单数据
+function rement() {
+  for (const i in popData.value) {
+    popData.value[i] = undefined;
+  }
+}
+
+// 获取工单编号列表
+const getWorkSheetCode = debounce((query: string) => {
+  if (query) {
+    workSheetCodeList.value = [];
+    const params = {
+      worksheetCode: query,
+    };
+    fetchWorksheetList(params).then((response: any) => {
+      if (response) {
+        workSheetCodeList.value = response;
+      }
+    });
+  } else {
+    workSheetCodeList.value = [];
+  }
+}, 300);
+
+// 根据工单编号查询相关信息
+function gdbhChange(worksheetCode: any) {
+  const params = {
+    worksheetCode,
+  };
+  fetchWorksheetInfo(params).then((response: any) => {
+    if (response) {
+      popData.value.subProductCode = response.subProductCode;
+      popData.value.productCode = response.productCode;
+      popData.value.productName = response.productName;
+      popData.value.planCode = response.planCode;
+    }
+  });
+}
+
+// 新增记录
+function handleAdd() {
+  if (props.formData?.formCode) {
+    const qcFormCode = {
+      qcFormCode: props.formData.formCode,
+    };
+    fetchQcEnableConfig(qcFormCode).then((response: any) => {
+      if (response) {
+        sendNumberEnable.value = response.sendNumberEnable;
+        preparationNumberEnable.value = response.preparationNumberEnable;
+        isShow.value = sendNumberEnable.value ? true : false;
+      }
+    });
+  }
+
+  showIcon.value = true;
+  rement();
+  recordFormStatus.value = 'create';
+  currentRecord.value = null;
+  recordFormVisible.value = true;
+}
+
+// 编辑记录
+function handleEdit(row: any) {
+  showIcon.value = true;
+  popData.value = { ...row };
+  if (row.checkTime) {
+    popData.value.checkTime = dayjs(row.checkTime);
+  }
+  recordFormStatus.value = 'update';
+  currentRecord.value = row;
+  recordFormVisible.value = true;
+}
+
+// 保存表单数据
+function confirmData() {
+  // 简单验证
+  if (!popData.value.checkTime) {
+    message.warning(
+      $t('qualityModule.qualityCheck.qualityEntering.pleaseSelectCheckTime'),
+    );
+    return;
+  }
+
+  if (
+    showIcon.value &&
+    (!popData.value.worksheetCode || popData.value.worksheetCode === '')
+  ) {
+    message.warning(
+      $t('qualityModule.qualityCheck.qualityEntering.pleaseEnterWorksheetCode'),
+    );
+    return;
+  }
+
+  let ob: any;
+  const params = {
+    ...popData.value,
+  };
+  if (params.checkTime) {
+    params.checkTime = params.checkTime.format('YYYY-MM-DD HH:mm:ss');
+  }
+  if (recordFormStatus.value === 'create') {
+    params.qcFormCode = props.formData?.formCode;
+    ob = createQcRecord(params);
+  } else if (recordFormStatus.value === 'update') {
+    ob = updateQcRecord(params);
+  }
+  ob.then(() => {
+    message.success(
+      recordFormStatus.value === 'create'
+        ? $t('common.createSuccess')
+        : $t('common.updateSuccess'),
+    );
+    gridApi.reload();
+    recordFormVisible.value = false;
   });
 }
 
@@ -530,12 +664,17 @@ function handleClose() {
                 />
               </Button>
             </Tooltip>
-            <Tooltip v-if="row.showEnter">
+            <Tooltip>
               <template #title>
                 {{ $t('qualityModule.qualityCheck.qualityEntering.enter') }}
               </template>
 
-              <Button type="link" class="px-1" @click="handleEnter(row)">
+              <Button
+                type="link"
+                class="px-1"
+                :disabled="!row.showEnter"
+                @click="handleEnter(row)"
+              >
                 <Icon
                   icon="mdi:pencil"
                   class="inline-block align-middle text-2xl"
@@ -546,21 +685,27 @@ function handleClose() {
         </template>
         <template #formAction="{ row }">
           <Space>
-            <Tooltip v-if="row.showEdit">
+            <Tooltip>
               <template #title>{{ $t('common.edit') }}</template>
-              <Button type="link" class="px-1" @click="handleEdit(row)">
+              <Button
+                type="link"
+                class="px-1"
+                :disabled="!row.showEdit"
+                @click="handleEdit(row)"
+              >
                 <Icon
                   icon="mdi:pencil"
                   class="inline-block align-middle text-2xl"
                 />
               </Button>
             </Tooltip>
-            <Tooltip v-if="row.showDelete">
+            <Tooltip>
               <template #title>{{ $t('common.delete') }}</template>
               <Button
                 type="link"
                 class="px-1"
                 style="color: #ff4d4f"
+                :disabled="!row.showDelete"
                 @click="handleDelete(row)"
               >
                 <Icon
@@ -569,9 +714,14 @@ function handleClose() {
                 />
               </Button>
             </Tooltip>
-            <Tooltip v-if="row.showSubmit">
-              <template #title>提交审核</template>
-              <Button type="link" class="px-1" @click="handleSubmit(row)">
+            <Tooltip>
+              <template #title>{{ $t('common.submit') }}</template>
+              <Button
+                type="link"
+                class="px-1"
+                :disabled="!row.showSubmit"
+                @click="handleSubmit(row)"
+              >
                 <Icon
                   icon="mdi:check"
                   class="inline-block align-middle text-2xl"
@@ -596,5 +746,104 @@ function handleClose() {
       :record-data="currentItemsRecord"
       @success="handleFormSuccess"
     />
+
+    <!-- 记录表单抽屉 -->
+    <Drawer
+      v-model:open="recordFormVisible"
+      :title="
+        recordFormStatus === 'create' ? $t('common.add') : $t('common.edit')
+      "
+      width="60%"
+      :footer-style="{ textAlign: 'right' }"
+    >
+      <Form :model="popData" :rules="rules" layout="vertical">
+        <FormItem
+          :label="`${$t('qualityModule.qualityCheck.qualityEntering.recordCode')}：`"
+        >
+          <Input v-model:value="popData.qcFormCode" disabled />
+        </FormItem>
+        <FormItem
+          :label="`${$t(
+            'qualityModule.qualityCheck.qualityEntering.worksheetCode',
+          )}：`"
+          :required="true"
+        >
+          <Select
+            v-model:value="popData.worksheetCode"
+            show-search
+            :placeholder="$t('common.pleaseEnter')"
+            style="width: 100%"
+            :default-active-first-option="false"
+            :show-arrow="false"
+            :filter-option="false"
+            :not-found-content="null"
+            :options="
+              workSheetCodeList.map((item) => ({ value: item, label: item }))
+            "
+            @search="getWorkSheetCode"
+            @change="gdbhChange"
+          />
+        </FormItem>
+        <FormItem
+          :label="`${$t(
+            'qualityModule.qualityCheck.qualityEntering.subProductCode',
+          )}：`"
+        >
+          <Input v-model:value="popData.subProductCode" disabled />
+        </FormItem>
+        <FormItem
+          :label="`${$t('qualityModule.qualityCheck.qualityEntering.productCode')}：`"
+        >
+          <Input v-model:value="popData.productCode" disabled />
+        </FormItem>
+        <FormItem
+          :label="`${$t('qualityModule.qualityCheck.qualityEntering.productName')}：`"
+        >
+          <Input v-model:value="popData.productName" disabled />
+        </FormItem>
+        <FormItem
+          :label="`${$t('qualityModule.qualityCheck.qualityEntering.planCode')}：`"
+        >
+          <Input v-model:value="popData.planCode" disabled />
+        </FormItem>
+        <FormItem
+          :label="`${$t('qualityModule.qualityCheck.qualityEntering.checkTime')}：`"
+          required
+        >
+          <DatePicker
+            v-model:value="popData.checkTime"
+            show-time
+            type="datetime"
+            :placeholder="$t('common.chooseDateTime')"
+            style="width: 100%"
+          />
+        </FormItem>
+        <FormItem
+          v-if="isShow"
+          :label="`${$t('qualityModule.qualityCheck.qualityEntering.sendNumber')}：`"
+        >
+          <InputNumber v-model:value="popData.sendNumber" style="width: 100%" />
+        </FormItem>
+        <FormItem
+          v-if="isShow"
+          :label="`${$t(
+            'qualityModule.qualityCheck.qualityEntering.preparationNumber',
+          )}：`"
+        >
+          <InputNumber
+            v-model:value="popData.preparationNumber"
+            style="width: 100%"
+          />
+        </FormItem>
+      </Form>
+      <template #footer>
+        <Button type="primary" @click="confirmData">
+          {{ $t('common.save') }}
+        </Button>
+        <Button @click="recordFormVisible = false">
+          {{ $t('common.cancel') }}
+        </Button>
+      </template>
+    </Drawer>
   </Drawer>
 </template>

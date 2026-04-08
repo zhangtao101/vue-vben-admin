@@ -26,6 +26,7 @@
   "edit": "修改",
   "add": "新增",
   "save": "保存",
+  "status": "状态",
   "templateEdit": "模板编辑",
   "configurationDetails": "配置详情",
   "delete": "删除",
@@ -113,5 +114,9 @@
   "exportFailed": "导出失败",
   "pleaseEnter": "请输入",
   "pleaseSelect": "请选择",
-  "unknown": "未知"
+  "unknown": "未知",
+  "createSuccess": "创建成功",
+  "updateSuccess": "更新成功",
+  "chooseDateTime": "选择日期时间",
+  "action": "操作"
 }
