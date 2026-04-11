@@ -81,6 +81,7 @@ const {
   description,
   destroyOnClose,
   draggable,
+  overflow,
   footer: showFooter,
   footerClass,
   fullscreen,
@@ -122,6 +123,7 @@ const { dragging, transform } = useModalDraggable(
   shouldDraggable,
   getAppendTo,
   shouldCentered,
+  overflow,
 );
 
 const firstOpened = ref(false);
@@ -240,13 +242,14 @@ function handleClosed() {
       :append-to="getAppendTo"
       :class="
         cn(
-          'inset-x-0 top-[10vh] mx-auto flex max-h-[80%] w-[520px] flex-col p-0',
+          'inset-x-0 top-[10vh] mx-auto flex max-h-[80%] w-130 flex-col p-0',
           shouldFullscreen ? 'sm:rounded-none' : 'sm:rounded-(--radius)',
           modalClass,
           {
             'border border-border': bordered,
             'shadow-3xl': !bordered,
-            'top-0 left-0 size-full max-h-full translate-0!': shouldFullscreen,
+            'top-0 left-0 size-full max-h-full transform-[translate(0,0)]!':
+              shouldFullscreen,
             'top-1/2': centered && !shouldFullscreen,
             'duration-300': !dragging,
             hidden: isClosed,
