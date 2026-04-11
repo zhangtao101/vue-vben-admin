@@ -317,7 +317,7 @@ function submit() {
           );
         }
 
-        ob = ob = formState.value.id
+        ob = formState.value.id
           ? acceptanceUpdate(params)
           : acceptanceInsert(params);
       }

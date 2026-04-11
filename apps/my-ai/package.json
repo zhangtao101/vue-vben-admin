@@ -37,9 +37,13 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
+    "ant-design-x-vue": "^1.6.0",
     "dayjs": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "unplugin-vue-components": "^32.0.0"
   }
 }

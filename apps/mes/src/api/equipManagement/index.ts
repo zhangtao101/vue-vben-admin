@@ -3,4 +3,5 @@ export * from './equipMaintenance.service';
 export * from './equipmentInfo.service';
 export * from './equipNameMaintain.service';
 export * from './equipRecord.service';
+export * from './repairRequest.service';
 export * from './subsystem.service';

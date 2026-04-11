@@ -402,6 +402,7 @@ onMounted(() => {
       :title="$t('lowCode.lowCodeProcessConfig.configFlow')"
       placement="top"
       height="80%"
+      :mask-closable="false"
       :footer-style="{ textAlign: 'right' }"
     >
       <DropLowCode

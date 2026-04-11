@@ -146,14 +146,14 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 班组名称 -->
+        <!-- 产品编号 -->
         <FormItem
-          :label="$t('basic.productBom.productNumber')"
+          :label="$t('basic.productInform.productNumber')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.producNo" />
         </FormItem>
-        <!-- 班组编号 -->
+        <!-- 设备编号 -->
         <FormItem
           :label="$t('basic.productBom.deviceNumber')"
           style="margin-bottom: 1em"

@@ -30,7 +30,7 @@ const props = defineProps({
     default: () => ({
       params: [],
       conditions: [],
-      logicType: 'and',
+      logicType: 'AND',
     }),
   },
 });
@@ -45,28 +45,29 @@ const logicType = ref('and');
 watch(
   () => props.open,
   (val) => {
+    console.log(props.data);
     if (val) {
       conditions.value =
         props.data.conditions?.length > 0
           ? [...props.data.conditions]
-          : [{ field: undefined, operator: undefined, value: '' }];
-      logicType.value = props.data.logicType || 'and';
+          : [{ param: undefined, op: undefined, value: '' }];
+      logicType.value = props.data.logicType || 'AND';
     }
   },
   { immediate: true },
 );
 
-// 监听条件列表，字段变更时清空 operator
+// 监听条件列表，字段变更时清空 op
 watch(
   conditions,
   () => {
     conditions.value.forEach((condition: any) => {
-      if (condition._operatorWatched) return;
-      condition._operatorWatched = true;
+      if (condition._opWatched) return;
+      condition._opWatched = true;
       watch(
-        () => condition.field,
+        () => condition.param,
         () => {
-          condition.operator = undefined;
+          condition.op = undefined;
         },
       );
     });
@@ -92,7 +93,7 @@ function getFieldType(fieldName: string): string {
 
 // 根据字段类型获取操作符列表
 function getOperatorsByFieldType(condition: any): any[] {
-  const fieldType = getFieldType(condition.field);
+  const fieldType = getFieldType(condition.param);
   if (fieldType === 'string') {
     return operatorOptions.filter((op) => ['!=', '=='].includes(op.value));
   }
@@ -101,7 +102,7 @@ function getOperatorsByFieldType(condition: any): any[] {
 
 // 添加条件
 function addCondition() {
-  conditions.value.push({ field: undefined, operator: undefined, value: '' });
+  conditions.value.push({ param: undefined, op: undefined, value: '' });
 }
 
 // 删除条件
@@ -119,11 +120,11 @@ function handleSave() {
   // 验证每个条件都有值
   for (let i = 0; i < conditions.value.length; i++) {
     const condition = conditions.value[i];
-    if (!condition.field) {
+    if (!condition.param) {
       message.warning(`第 ${i + 1} 行条件：请选择字段`);
       return;
     }
-    if (!condition.operator) {
+    if (!condition.op) {
       message.warning(`第 ${i + 1} 行条件：请选择操作符`);
       return;
     }
@@ -139,11 +140,7 @@ function handleSave() {
   // 生成返回数据
   const result = {
     logic: logicType.value.toUpperCase(),
-    conditions: conditions.value.map((c: any) => ({
-      param: c.field,
-      op: c.operator,
-      value: c.value,
-    })),
+    conditions: conditions.value,
   };
   emit('save', result);
 }
@@ -161,8 +158,8 @@ function handleSave() {
       <!-- 逻辑关系 -->
       <FormItem label="条件判断逻辑">
         <RadioGroup v-model:value="logicType">
-          <RadioButton value="and">AND (并且)</RadioButton>
-          <RadioButton value="or">OR (或者)</RadioButton>
+          <RadioButton value="AND">AND (并且)</RadioButton>
+          <RadioButton value="OR">OR (或者)</RadioButton>
         </RadioGroup>
       </FormItem>
 
@@ -177,7 +174,7 @@ function handleSave() {
             <Row :gutter="8" align="middle">
               <Col :span="8">
                 <Select
-                  v-model:value="condition.field"
+                  v-model:value="condition.param"
                   placeholder="选择字段"
                   style="width: 100%"
                   :options="data.params"
@@ -186,7 +183,7 @@ function handleSave() {
               </Col>
               <Col :span="4">
                 <Select
-                  v-model:value="condition.operator"
+                  v-model:value="condition.op"
                   style="width: 100%"
                   :options="getOperatorsByFieldType(condition)"
                   :field-names="{ label: 'label', value: 'value' }"

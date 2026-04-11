@@ -12,6 +12,7 @@ import SimpleNode from '#/util/component/nodes/SimpleNode.vue';
 import { useLayout } from '#/util/useLayout';
 
 import useDragAndDrop from '../drop/useDnD';
+import ApproveDrawer from './ApproveDrawer.vue';
 import ConditionDrawer from './ConditionDrawer.vue';
 import DropzoneBackground from './DropzoneBackground.vue';
 import Sidebar from './Sidebar.vue';
@@ -33,6 +34,14 @@ const conditionDrawerData = ref<any>({
   logicType: 'and',
 });
 const currentEditingRow = ref<any>(null); // 当前正在编辑的行
+
+// 审批配置抽屉
+const approveDrawerVisible = ref(false);
+const approveDrawerData = ref<any>({
+  handlers: [],
+  passVoteCount: 1,
+});
+const currentApproveNodeId = ref<null | string>(null); // 当前正在编辑的审批节点 ID
 
 // region 节点操作
 
@@ -176,29 +185,34 @@ function openOperationSettings(row: any): void {
     return;
   }
 
-  // 获取对应的节点
-  const targetNode = findNode(row.elId);
+  // 获取对应的节点ID（保存ID而不是引用）
+  const targetNodeId = row.elId;
 
   // 获取 trueNext 和 falseNext（从 edges 中获取连接到当前节点"是/否"输出的目标节点）
-  const outEdges = edges.value.filter((edge: any) => edge.source === row.elId);
-  let trueNext: null | string = null;
-  let falseNext: null | string = null;
+  const outEdges = edges.value.filter(
+    (edge: any) => edge.source === targetNodeId,
+  );
+  // 收集所有连接到"是"和"否"的目标节点 ID
+  const trueNextIds: string[] = [];
+  const falseNextIds: string[] = [];
   outEdges.forEach((edge: any) => {
     if (edge.sourceHandle === 'yes') {
-      trueNext = edge.target;
+      trueNextIds.push(edge.target);
     } else if (edge.sourceHandle === 'no') {
-      falseNext = edge.target;
+      falseNextIds.push(edge.target);
     }
   });
 
-  // 保存当前编辑的行
-  currentEditingRow.value = targetNode;
+  // 保存当前编辑的节点ID
+  currentEditingRow.value = { id: targetNodeId };
 
   // 获取上一级节点的 type，去重后拼接调用接口
   const functionTypes = [
     ...new Set(previousNodes.map((node: any) => node.data.type)),
   ].join(',');
   getAvailableParamsDefinition(functionTypes).then((res: any) => {
+    // 每次从最新的 nodes 中查找节点
+    const targetNode = findNode(targetNodeId);
     conditionDrawerData.value.params = res || [];
     // 初始化 conditions 和 logicType
     const existingConditions = targetNode?.data?.conditions;
@@ -209,11 +223,14 @@ function openOperationSettings(row: any): void {
       conditionDrawerData.value.conditions = [];
       conditionDrawerData.value.logicType = 'and';
     }
-    // 初始化 trueNext 和 falseNext
-    conditionDrawerData.value.trueNext =
-      trueNext || targetNode?.data?.trueNext || null;
+    // 初始化 trueNext 和 falseNext（显示节点 label，多个用逗号分隔）
+    const getNodeLabels = (ids: string[]) => {
+      if (ids.length === 0) return '';
+      return ids.map((id) => findNode(id)?.data?.label || id).join('，');
+    };
+    conditionDrawerData.value.trueNext = getNodeLabels(trueNextIds) || '未连接';
     conditionDrawerData.value.falseNext =
-      falseNext || targetNode?.data?.falseNext || null;
+      getNodeLabels(falseNextIds) || '未连接';
     conditionDrawerVisible.value = true;
   });
 }
@@ -225,9 +242,65 @@ function handleConditionDrawerClose() {
 }
 
 // 保存条件配置
-function handleConditionSave(_data: any) {
+function handleConditionSave(data: any) {
+  // 通过节点ID从最新的 nodes 中查找并更新
+  const nodeId = currentEditingRow.value?.id;
+  if (nodeId) {
+    const node = findNode(nodeId);
+    if (node) {
+      node.data.conditions = {
+        conditions: data.conditions,
+        logic: data.logic,
+      };
+    }
+  }
   // trueNext 和 falseNext 在 cleanAndCheckGraph 中从 edges 动态计算
   handleConditionDrawerClose();
+}
+
+// 打开审批设置
+function openApproveSettings(row: any): void {
+  if (props.isRouter) {
+    message.error('当前为路由模式');
+    return;
+  }
+
+  const nodeId = row.elId;
+  const node = findNode(nodeId);
+  if (!node) {
+    message.error('节点不存在');
+    return;
+  }
+
+  currentApproveNodeId.value = nodeId;
+  // 初始化审批数据
+  const approveData = node.data.approveConfig;
+  approveDrawerData.value = {
+    handlers: approveData?.handlers || [],
+    passVoteCount: approveData?.passVoteCount || 1,
+  };
+  approveDrawerVisible.value = true;
+}
+
+// 关闭审批编辑抽屉
+function handleApproveDrawerClose() {
+  approveDrawerVisible.value = false;
+  currentApproveNodeId.value = null;
+}
+
+// 保存审批配置
+function handleApproveSave(data: any) {
+  const nodeId = currentApproveNodeId.value;
+  if (nodeId) {
+    const node = findNode(nodeId);
+    if (node) {
+      node.data.approveConfig = {
+        handlers: data.handlers,
+        passVoteCount: data.passVoteCount,
+      };
+    }
+  }
+  handleApproveDrawerClose();
 }
 
 // endregion
@@ -301,7 +374,7 @@ defineExpose({
           :id="p.id"
           :data="p.data"
           @del-node="delNode"
-          @update="openOperationSettings"
+          @update="openApproveSettings"
           :hide-options="!isUpdate"
         />
       </template>
@@ -323,6 +396,14 @@ defineExpose({
       :data="conditionDrawerData"
       @close="handleConditionDrawerClose"
       @save="handleConditionSave"
+    />
+
+    <!-- 审批配置抽屉 -->
+    <ApproveDrawer
+      v-model:open="approveDrawerVisible"
+      :data="approveDrawerData"
+      @close="handleApproveDrawerClose"
+      @save="handleApproveSave"
     />
   </div>
 </template>
