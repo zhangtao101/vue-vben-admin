@@ -251,10 +251,8 @@ function handleSubmit() {
         <Space>
           <Button @click="handleClose">{{ $t('common.cancel') }}</Button>
           <Button type="primary" @click="handleSubmit">
-{{
-            $t('common.confirm')
-          }}
-</Button>
+            {{ $t('common.confirm') }}
+          </Button>
         </Space>
       </div>
     </template>
