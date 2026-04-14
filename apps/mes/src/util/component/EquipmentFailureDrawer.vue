@@ -278,9 +278,11 @@ function handleSubmit() {
       <div class="flex justify-end">
         <Space>
           <Button @click="handleClose">{{ $t('common.cancel') }}</Button>
-          <Button type="primary" @click="handleSubmit">{{
+          <Button type="primary" @click="handleSubmit">
+{{
             $t('common.confirm')
-          }}</Button>
+          }}
+</Button>
         </Space>
       </div>
     </template>
