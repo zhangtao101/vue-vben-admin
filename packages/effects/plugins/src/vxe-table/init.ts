@@ -130,7 +130,7 @@ export function setupVbenVxeTable(setupOptions: SetupVxeTable) {
       VxeUI.setTheme(isDarkValue ? 'dark' : 'light');
       // 确保 localeValue 在 localMap 中存在
       const localeData = localMap[localeValue] || localMap['zh-CN'];
-      VxeUI.setI18n(localeValue, localeData.default);
+      VxeUI.setI18n(localeValue, localeData);
       VxeUI.setLanguage(localeValue);
     },
     {
