@@ -13,7 +13,12 @@ import {
   Space,
 } from 'ant-design-vue';
 
-import { createRepairKnowledge, getRepairKnowledgeById, searchBaseConfig, updateRepairKnowledge } from '#/api';
+import {
+  createRepairKnowledge,
+  getRepairKnowledgeById,
+  searchBaseConfig,
+  updateRepairKnowledge,
+} from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({
@@ -166,9 +171,7 @@ function handleSubmit() {
   formRef.value
     .validate()
     .then(() => {
-      const api = props.row?.id
-        ? updateRepairKnowledge
-        : createRepairKnowledge;
+      const api = props.row?.id ? updateRepairKnowledge : createRepairKnowledge;
       const params: any = {
         ...formData.value,
         ...(props.row?.id ? { id: props.row.id } : {}),

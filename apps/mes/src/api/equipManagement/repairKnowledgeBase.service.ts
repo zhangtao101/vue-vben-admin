@@ -69,7 +69,9 @@ export async function getRepairKnowledgeList(params?: {
 /**
  * 按设备组查询知识
  */
-export async function getRepairKnowledgeByEquipmentGroup(equipmentGroup: string) {
+export async function getRepairKnowledgeByEquipmentGroup(
+  equipmentGroup: string,
+) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/knowledge/by-equipment-group/${equipmentGroup}`,
   );

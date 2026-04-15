@@ -32,7 +32,10 @@ function getId() {
  * 兼容不支持 crypto.randomUUID 的浏览器和环境
  */
 function generateUUID(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+  if (
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
+  ) {
     return crypto.randomUUID();
   }
   // Fallback: 使用 Math.random 生成 UUID

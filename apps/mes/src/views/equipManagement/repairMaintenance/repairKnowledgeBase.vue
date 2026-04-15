@@ -58,10 +58,26 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'seq', width: 60, title: '序号' },
-    { field: 'pmCode', title: $t('repair.repairKnowledgeBase.pmCode'), minWidth: 120 },
-    { field: 'title', title: $t('repair.repairKnowledgeBase.titleField'), minWidth: 200 },
-    { field: 'source', title: $t('repair.repairKnowledgeBase.source'), minWidth: 120 },
-    { field: 'equipmentGroup', title: $t('repair.repairKnowledgeBase.equipmentGroup'), minWidth: 120 },
+    {
+      field: 'pmCode',
+      title: $t('repair.repairKnowledgeBase.pmCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'title',
+      title: $t('repair.repairKnowledgeBase.titleField'),
+      minWidth: 200,
+    },
+    {
+      field: 'source',
+      title: $t('repair.repairKnowledgeBase.source'),
+      minWidth: 120,
+    },
+    {
+      field: 'equipmentGroup',
+      title: $t('repair.repairKnowledgeBase.equipmentGroup'),
+      minWidth: 120,
+    },
     {
       field: 'status',
       title: $t('repair.repairKnowledgeBase.status'),
@@ -69,8 +85,16 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'status' },
       fixed: 'right',
     },
-    { field: 'createdBy', title: $t('repair.repairKnowledgeBase.createdBy'), minWidth: 100 },
-    { field: 'updatedTime', title: $t('repair.repairKnowledgeBase.updatedTime'), minWidth: 170 },
+    {
+      field: 'createdBy',
+      title: $t('repair.repairKnowledgeBase.createdBy'),
+      minWidth: 100,
+    },
+    {
+      field: 'updatedTime',
+      title: $t('repair.repairKnowledgeBase.updatedTime'),
+      minWidth: 170,
+    },
     {
       field: 'action',
       title: $t('common.action'),
@@ -173,7 +197,8 @@ function handleEdit(row: any) {
 
 // 启用/禁用
 function handleToggleStatus(row: any) {
-  const action = row.status === 'NORMAL' ? disableRepairKnowledge : enableRepairKnowledge;
+  const action =
+    row.status === 'NORMAL' ? disableRepairKnowledge : enableRepairKnowledge;
   const actionText = row.status === 'NORMAL' ? '禁用' : '启用';
 
   Modal.confirm({
@@ -213,41 +238,65 @@ function handleDelete(row: any) {
     <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 知识编码 -->
-        <FormItem :label="$t('repair.repairKnowledgeBase.pmCode')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairKnowledgeBase.pmCode')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.pmCode"
-            :placeholder="`请输入${ $t('repair.repairKnowledgeBase.pmCode')}`"
+            :placeholder="`请输入${$t('repair.repairKnowledgeBase.pmCode')}`"
             allow-clear
             style="width: 160px"
           />
         </FormItem>
 
         <!-- 标题 -->
-        <FormItem :label="$t('repair.repairKnowledgeBase.title')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairKnowledgeBase.title')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.title"
-            :placeholder="`请输入${ $t('repair.repairKnowledgeBase.title')}`"
+            :placeholder="`请输入${$t('repair.repairKnowledgeBase.title')}`"
             allow-clear
             style="width: 160px"
           />
         </FormItem>
 
         <!-- 设备组 -->
-        <FormItem :label="$t('repair.repairKnowledgeBase.equipmentGroup')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairKnowledgeBase.equipmentGroup')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.equipmentGroup"
-            :placeholder="`请输入${ $t('repair.repairKnowledgeBase.equipmentGroup')}`"
+            :placeholder="`请输入${$t('repair.repairKnowledgeBase.equipmentGroup')}`"
             allow-clear
             style="width: 160px"
           />
         </FormItem>
 
         <!-- 状态 -->
-        <FormItem :label="$t('repair.repairKnowledgeBase.status')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairKnowledgeBase.status')"
+          style="margin-bottom: 0"
+        >
           <RadioGroup v-model:value="queryParams.status">
-            <RadioButton :value="undefined">{{ $t('repair.repairKnowledgeBase.all') }}</RadioButton>
-            <RadioButton value="NORMAL">{{ $t('repair.repairKnowledgeBase.active') }}</RadioButton>
-            <RadioButton value="DISABLED">{{ $t('repair.repairKnowledgeBase.disabled') }}</RadioButton>
+            <RadioButton :value="undefined">
+{{
+              $t('repair.repairKnowledgeBase.all')
+            }}
+</RadioButton>
+            <RadioButton value="NORMAL">
+{{
+              $t('repair.repairKnowledgeBase.active')
+            }}
+</RadioButton>
+            <RadioButton value="DISABLED">
+{{
+              $t('repair.repairKnowledgeBase.disabled')
+            }}
+</RadioButton>
           </RadioGroup>
         </FormItem>
 
@@ -293,19 +342,28 @@ function handleDelete(row: any) {
             <Tooltip>
               <template #title>{{ $t('common.view') }}</template>
               <Button type="link" @click="handleDetail(row)">
-                <Icon icon="mdi:eye-outline" class="inline-block align-middle text-2xl" />
+                <Icon
+                  icon="mdi:eye-outline"
+                  class="inline-block align-middle text-2xl"
+                />
               </Button>
             </Tooltip>
             <Tooltip v-if="author.includes('编辑')">
               <template #title>{{ $t('common.edit') }}</template>
               <Button type="link" @click="handleEdit(row)">
-                <Icon icon="mdi:pencil-outline" class="inline-block align-middle text-2xl" />
+                <Icon
+                  icon="mdi:pencil-outline"
+                  class="inline-block align-middle text-2xl"
+                />
               </Button>
             </Tooltip>
             <Tooltip v-if="author.includes('删除')">
               <template #title>{{ $t('common.delete') }}</template>
               <Button type="link" danger @click="handleDelete(row)">
-                <Icon icon="mdi:delete-outline" class="inline-block align-middle text-2xl" />
+                <Icon
+                  icon="mdi:delete-outline"
+                  class="inline-block align-middle text-2xl"
+                />
               </Button>
             </Tooltip>
           </Space>
