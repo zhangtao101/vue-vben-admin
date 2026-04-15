@@ -62,5 +62,22 @@
     "confirmDelete": "确认删除",
     "active": "启用",
     "inactive": "禁用"
+  },
+  "repairKnowledgeBase": {
+    "title": "维修知识库",
+    "pmCode": "知识编码",
+    "titleField": "标题",
+    "source": "来源",
+    "content": "内容",
+    "equipmentGroup": "设备组",
+    "status": "状态",
+    "createdBy": "创建人",
+    "createdTime": "创建时间",
+    "updatedTime": "更新时间",
+    "active": "启用",
+    "disabled": "停用",
+    "all": "全部",
+    "addTitle": "新增知识",
+    "editTitle": "编辑知识"
   }
 }

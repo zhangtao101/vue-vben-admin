@@ -62,5 +62,22 @@
     "confirmDelete": "Confirm Delete",
     "active": "Active",
     "inactive": "Inactive"
+  },
+  "repairKnowledgeBase": {
+    "title": "Repair Knowledge Base",
+    "pmCode": "Knowledge Code",
+    "titleField": "Title",
+    "source": "Source",
+    "content": "Content",
+    "equipmentGroup": "Equipment Group",
+    "status": "Status",
+    "createdBy": "Created By",
+    "createdTime": "Created Time",
+    "updatedTime": "Updated Time",
+    "active": "Enabled",
+    "disabled": "Disabled",
+    "all": "All",
+    "addTitle": "Add Knowledge",
+    "editTitle": "Edit Knowledge"
   }
 }

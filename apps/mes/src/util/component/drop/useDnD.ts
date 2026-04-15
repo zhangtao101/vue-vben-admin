@@ -28,6 +28,22 @@ function getId() {
 }
 
 /**
+ * 生成兼容的 UUID
+ * 兼容不支持 crypto.randomUUID 的浏览器和环境
+ */
+function generateUUID(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  // Fallback: 使用 Math.random 生成 UUID
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replaceAll(/[xy]/g, (c) => {
+    const r = Math.trunc(Math.random() * 16);
+    const v = c === 'x' ? r : Math.trunc((r & 0x3) | 0x8);
+    return v.toString(16);
+  });
+}
+
+/**
  * 全局拖拽状态
  * 注意：在实际生产环境中，应避免在全局作用域创建ref，因为它们可能无法正确清理
  * @type {{draggedType: Ref<string|null>, isDragOver: Ref<boolean>, isDragging: Ref<boolean>, nodeData: Ref<any>}}
@@ -142,7 +158,7 @@ export default function useDragAndDrop() {
 
     // 创建新节点对象
     const newNode: any = {
-      id: nodeData.value.id || crypto.randomUUID(),
+      id: nodeData.value.id || generateUUID(),
       type: draggedType.value,
       position,
       data: {

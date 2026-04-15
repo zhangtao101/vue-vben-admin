@@ -201,9 +201,9 @@ function handleSubmit() {
       :model="formData"
       :rules="rules"
     >
-      <FormItem label="父节点">
+      <!-- <FormItem label="父节点">
         <Input :value="props.parentName || props.parentId" disabled />
-      </FormItem>
+      </FormItem> -->
 
       <FormItem
         :label="$t('repair.equipmentFailure.equipmentGroupCode')"
