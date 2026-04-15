@@ -283,20 +283,14 @@ function handleDelete(row: any) {
         >
           <RadioGroup v-model:value="queryParams.status">
             <RadioButton :value="undefined">
-{{
-              $t('repair.repairKnowledgeBase.all')
-            }}
-</RadioButton>
+              {{ $t('repair.repairKnowledgeBase.all') }}
+            </RadioButton>
             <RadioButton value="NORMAL">
-{{
-              $t('repair.repairKnowledgeBase.active')
-            }}
-</RadioButton>
+              {{ $t('repair.repairKnowledgeBase.active') }}
+            </RadioButton>
             <RadioButton value="DISABLED">
-{{
-              $t('repair.repairKnowledgeBase.disabled')
-            }}
-</RadioButton>
+              {{ $t('repair.repairKnowledgeBase.disabled') }}
+            </RadioButton>
           </RadioGroup>
         </FormItem>
 
