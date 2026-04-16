@@ -88,14 +88,7 @@ watch(
   () => props.row,
   (newRow) => {
     if (newRow?.id) {
-      formData.value = {
-        configCode: newRow.configCode || '',
-        configName: newRow.configName || '',
-        configType: newRow.configType || '',
-        repairGroupCode: newRow.repairGroupCode || '',
-        sortOrder: newRow.sortOrder,
-        remark: newRow.remark || '',
-      };
+      formData.value = { ...newRow };
     } else {
       resetForm(props.configType);
     }

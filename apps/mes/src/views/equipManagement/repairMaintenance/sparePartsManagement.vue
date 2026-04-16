@@ -26,7 +26,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteSparePart, getSparePartPage, searchBaseConfig } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
-import SparePartDrawer from '#/util/component/SparePartDrawer.vue';
+import SparePartDrawer from '#/util/component/repairMaintenance/SparePartDrawer.vue';
 
 // ========== 权限 ==========
 const route = useRoute();

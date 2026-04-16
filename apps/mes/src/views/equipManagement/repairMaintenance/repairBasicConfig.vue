@@ -31,7 +31,7 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
-import RepairBasicConfigDrawer from '#/util/component/RepairBasicConfigDrawer.vue';
+import RepairBasicConfigDrawer from '#/util/component/repairMaintenance/RepairBasicConfigDrawer.vue';
 
 // ========== 查询参数 ==========
 const queryParams = ref({

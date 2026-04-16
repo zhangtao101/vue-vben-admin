@@ -32,7 +32,7 @@ import {
 } from '#/api/equipManagement/repairKnowledgeBase.service';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
-import RepairKnowledgeDrawer from '#/util/component/RepairKnowledgeDrawer.vue';
+import RepairKnowledgeDrawer from '#/util/component/repairMaintenance/RepairKnowledgeDrawer.vue';
 
 // ========== 权限 ==========
 const route = useRoute();

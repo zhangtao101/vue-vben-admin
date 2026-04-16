@@ -7,5 +7,6 @@ export * from './equipRecord.service';
 export * from './repairBasicConfig.service';
 export * from './repairKnowledgeBase.service';
 export * from './repairRequest.service';
+export * from './sparePartsIoManagement.service';
 export * from './sparePartsManagement.service';
 export * from './subsystem.service';

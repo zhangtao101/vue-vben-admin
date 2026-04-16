@@ -111,13 +111,7 @@ watch(
   () => props.row,
   (newRow) => {
     if (newRow?.id) {
-      formData.value = {
-        pmCode: newRow.pmCode || '',
-        title: newRow.title || '',
-        source: newRow.source || '',
-        equipmentGroup: newRow.equipmentGroup,
-        content: newRow.content || '',
-      };
+      formData.value = { ...newRow };
     } else {
       resetForm();
     }
@@ -133,13 +127,7 @@ watch(
       if (props.row?.id) {
         // 查看模式：调用接口获取详情
         getRepairKnowledgeById(props.row.id).then((res: any) => {
-          formData.value = {
-            pmCode: res.pmCode || '',
-            title: res.title || '',
-            source: res.source || '',
-            equipmentGroup: res.equipmentGroup,
-            content: res.content || '',
-          };
+          formData.value = { ...res };
         });
       } else if (!props.row?.id) {
         resetForm();

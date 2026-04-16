@@ -100,16 +100,7 @@ watch(
   () => props.row,
   (newRow) => {
     if (newRow?.id) {
-      formData.value = {
-        equipmentGroup: newRow.equipmentGroup || '',
-        faultCode: newRow.faultCode || '',
-        faultName: newRow.faultName || '',
-        faultLevelCode: newRow.faultLevelCode || undefined,
-        faultDescription: newRow.faultDescription || '',
-        solution: newRow.solution || '',
-        sortOrder: newRow.sortOrder,
-        parentId: props.parentId,
-      };
+      formData.value = { ...newRow };
     } else {
       resetForm();
     }

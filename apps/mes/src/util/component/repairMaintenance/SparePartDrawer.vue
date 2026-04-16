@@ -123,13 +123,7 @@ watch(
   () => props.row,
   (newRow) => {
     if (newRow?.id) {
-      formData.value = {
-        spareCode: newRow.spareCode || '',
-        spareName: newRow.spareName || '',
-        spareType: newRow.spareType,
-        spareModel: newRow.spareModel || '',
-        equipmentGroup: newRow.equipmentGroup,
-      };
+      formData.value = { ...newRow };
     } else {
       resetForm();
     }
@@ -145,13 +139,7 @@ watch(
       if (props.row?.id) {
         // 查看模式：调用接口获取详情
         getSparePartById(props.row.id).then((res: any) => {
-          formData.value = {
-            spareCode: res.spareCode || '',
-            spareName: res.spareName || '',
-            spareType: res.spareType,
-            spareModel: res.spareModel || '',
-            equipmentGroup: res.equipmentGroup,
-          };
+          formData.value = { ...res };
         });
       } else if (!props.row?.id) {
         resetForm();

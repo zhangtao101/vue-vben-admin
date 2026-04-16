@@ -32,7 +32,7 @@ import {
 } from '#/api/equipManagement/equipmentFailure.service';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
-import EquipmentFailureDrawer from '#/util/component/EquipmentFailureDrawer.vue';
+import EquipmentFailureDrawer from '#/util/component/repairMaintenance/EquipmentFailureDrawer.vue';
 
 // ========== 权限 ==========
 const route = useRoute();
