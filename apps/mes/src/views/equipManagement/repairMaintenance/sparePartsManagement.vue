@@ -23,11 +23,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteSparePart,
-  getSparePartPage,
-  searchBaseConfig,
-} from '#/api';
+import { deleteSparePart, getSparePartPage, searchBaseConfig } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 import SparePartDrawer from '#/util/component/SparePartDrawer.vue';
