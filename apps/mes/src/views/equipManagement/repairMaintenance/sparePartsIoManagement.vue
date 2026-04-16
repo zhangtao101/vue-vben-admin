@@ -335,8 +335,15 @@ function canApprove(row: any) {
           :label="$t('repair.spareOrder.orderType')"
           style="margin-bottom: 0"
         >
-          <RadioGroup v-model:value="queryParams.orderType" button-style="solid">
-            <Radio v-for="item in orderTypeOptions" :key="item.value" :value="item.value">
+          <RadioGroup
+            v-model:value="queryParams.orderType"
+            button-style="solid"
+          >
+            <Radio
+              v-for="item in orderTypeOptions"
+              :key="item.value"
+              :value="item.value"
+            >
               {{ item.label }}
             </Radio>
           </RadioGroup>
@@ -348,14 +355,21 @@ function canApprove(row: any) {
           style="margin-bottom: 0"
         >
           <RadioGroup v-model:value="queryParams.status" button-style="solid">
-            <Radio v-for="item in statusOptions" :key="item.value" :value="item.value">
+            <Radio
+              v-for="item in statusOptions"
+              :key="item.value"
+              :value="item.value"
+            >
               {{ item.label }}
             </Radio>
           </RadioGroup>
         </FormItem>
 
         <!-- 日期范围 -->
-        <FormItem :label="$t('repair.spareOrder.orderDate')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.spareOrder.orderDate')"
+          style="margin-bottom: 0"
+        >
           <DatePicker.RangePicker
             v-model:value="queryDateRange"
             format="YYYY-MM-DD"
@@ -433,7 +447,10 @@ function canApprove(row: any) {
                 />
               </Button>
             </Tooltip>
-            <Divider type="vertical" v-if="author.includes('审核') && canApprove(row)" />
+            <Divider
+              type="vertical"
+              v-if="author.includes('审核') && canApprove(row)"
+            />
             <Tooltip v-if="author.includes('审批') && canApprove(row)">
               <template #title>{{ $t('repair.spareOrder.approve') }}</template>
               <Button type="link" @click="handleApprove(row)">

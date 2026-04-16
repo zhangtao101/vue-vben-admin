@@ -159,7 +159,9 @@ function removeDetail(index: number) {
 }
 
 function onSpareChange(index: number, spareCode: string) {
-  const option = sparePartOptions.value.find((item) => item.value === spareCode);
+  const option = sparePartOptions.value.find(
+    (item) => item.value === spareCode,
+  );
   if (option) {
     details.value[index].spareName = option.spareName;
     details.value[index].spareModel = option.spareModel;
@@ -179,7 +181,9 @@ function handleSave() {
 
   const params = {
     ...formData.value,
-    orderDate: dayjs.isDayjs(formData.value.orderDate) ? formData.value.orderDate.format('YYYY-MM-DD') : formData.value.orderDate || '',
+    orderDate: dayjs.isDayjs(formData.value.orderDate)
+      ? formData.value.orderDate.format('YYYY-MM-DD')
+      : formData.value.orderDate || '',
     details: validDetails.map((d: any) => ({
       spareCode: d.spareCode,
       quantity: d.quantity,
@@ -234,13 +238,19 @@ function filterOption(input: string, option: any) {
     width="700"
     :destroy-on-close="true"
   >
-    <div v-if="drawerLoading && mode === 'view'" class="flex justify-center py-8">
+    <div
+      v-if="drawerLoading && mode === 'view'"
+      class="flex justify-center py-8"
+    >
       <Icon icon="mdi:loading" class="animate-spin text-3xl" />
     </div>
     <div v-else>
       <Form layout="vertical">
         <Descriptions :column="2" bordered size="small">
-          <DescriptionsItem :label="$t('repair.spareOrder.orderName')" :span="2">
+          <DescriptionsItem
+            :label="$t('repair.spareOrder.orderName')"
+            :span="2"
+          >
             <Input
               v-if="mode !== 'view'"
               v-model:value="formData.orderName"
@@ -293,7 +303,11 @@ function filterOption(input: string, option: any) {
 
       <!-- 明细表格 -->
       <Table :data-source="details" :pagination="false" size="small" bordered>
-        <TableColumn :title="$t('repair.spareOrder.spareCode')" data-index="spareCode" width="180">
+        <TableColumn
+          :title="$t('repair.spareOrder.spareCode')"
+          data-index="spareCode"
+          width="180"
+        >
           <template #default="{ index }">
             <Select
               v-if="mode !== 'view'"
@@ -302,7 +316,6 @@ function filterOption(input: string, option: any) {
               :filter-option="filterOption"
               class="w-24"
               :dropdown-match-select-width="false"
-
               @change="(val: any) => onSpareChange(index, val)"
             >
               <SelectOption
@@ -317,10 +330,26 @@ function filterOption(input: string, option: any) {
             <span v-else>{{ details[index].spareCode }}</span>
           </template>
         </TableColumn>
-        <TableColumn :title="$t('repair.spareOrder.spareName')" data-index="spareName" width="120" />
-        <TableColumn :title="$t('repair.spareOrder.spareModel')" data-index="spareModel" width="120" />
-        <TableColumn :title="$t('repair.spareOrder.equipmentGroup')" data-index="equipmentGroup" width="120" />
-        <TableColumn :title="$t('repair.spareOrder.quantity')" data-index="quantity" width="120">
+        <TableColumn
+          :title="$t('repair.spareOrder.spareName')"
+          data-index="spareName"
+          width="120"
+        />
+        <TableColumn
+          :title="$t('repair.spareOrder.spareModel')"
+          data-index="spareModel"
+          width="120"
+        />
+        <TableColumn
+          :title="$t('repair.spareOrder.equipmentGroup')"
+          data-index="equipmentGroup"
+          width="120"
+        />
+        <TableColumn
+          :title="$t('repair.spareOrder.quantity')"
+          data-index="quantity"
+          width="120"
+        >
           <template #default="{ index }">
             <InputNumber
               v-if="mode !== 'view'"
@@ -332,16 +361,31 @@ function filterOption(input: string, option: any) {
             <span v-else>{{ details[index].quantity }}</span>
           </template>
         </TableColumn>
-        <TableColumn v-if="mode !== 'view'" :title="$t('common.action')" width="80">
+        <TableColumn
+          v-if="mode !== 'view'"
+          :title="$t('common.action')"
+          width="80"
+        >
           <template #default="{ index }">
-            <Button type="link" danger size="small" @click="removeDetail(index)">
+            <Button
+              type="link"
+              danger
+              size="small"
+              @click="removeDetail(index)"
+            >
               <Icon icon="mdi:delete-outline" />
             </Button>
           </template>
         </TableColumn>
       </Table>
 
-      <Button v-if="mode !== 'view'" type="dashed" block class="mt-2" @click="addDetail">
+      <Button
+        v-if="mode !== 'view'"
+        type="dashed"
+        block
+        class="mt-2"
+        @click="addDetail"
+      >
         <Icon icon="mdi:plus" class="inline-block align-middle" />
         添加明细
       </Button>
@@ -353,7 +397,12 @@ function filterOption(input: string, option: any) {
           <Button @click="drawerVisible = false">
             {{ $t('common.cancel') }}
           </Button>
-          <Button v-if="mode !== 'view'" type="primary" :loading="drawerLoading" @click="handleSave">
+          <Button
+            v-if="mode !== 'view'"
+            type="primary"
+            :loading="drawerLoading"
+            @click="handleSave"
+          >
             {{ $t('common.save') }}
           </Button>
         </Space>
