@@ -79,5 +79,29 @@
     "all": "All",
     "addTitle": "Add Knowledge",
     "editTitle": "Edit Knowledge"
+  },
+  "sparePart": {
+    "title": "Spare Part Management",
+    "spareCode": "Spare Code",
+    "spareName": "Spare Name",
+    "spareType": "Spare Type",
+    "spareModel": "Spare Model",
+    "equipmentGroup": "Equipment Group",
+    "unit": "Unit",
+    "price": "Price",
+    "safetyStock": "Safety Stock",
+    "currentStock": "Current Stock",
+    "storageLocation": "Storage Location",
+    "supplier": "Supplier",
+    "remark": "Remark",
+    "status": "Status",
+    "active": "Active",
+    "disabled": "Disabled",
+    "addTitle": "Add Spare Part",
+    "editTitle": "Edit Spare Part",
+    "detailTitle": "Spare Part Detail",
+    "confirmDelete": "Confirm Delete",
+    "deleteMessage": "Are you sure to delete spare part \"{name}\"?",
+    "all": "All"
   }
 }

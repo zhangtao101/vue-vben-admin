@@ -79,5 +79,29 @@
     "all": "全部",
     "addTitle": "新增知识",
     "editTitle": "编辑知识"
+  },
+  "sparePart": {
+    "title": "备件管理",
+    "spareCode": "备件编码",
+    "spareName": "备件名称",
+    "spareType": "备件类型",
+    "spareModel": "备件型号",
+    "equipmentGroup": "适用设备组",
+    "unit": "单位",
+    "price": "单价",
+    "safetyStock": "安全库存",
+    "currentStock": "当前库存",
+    "storageLocation": "存放位置",
+    "supplier": "供应商",
+    "remark": "备注",
+    "status": "状态",
+    "active": "启用",
+    "disabled": "停用",
+    "addTitle": "新增备件",
+    "editTitle": "编辑备件",
+    "detailTitle": "备件详情",
+    "confirmDelete": "确认删除",
+    "deleteMessage": "确定要删除备件「{name}」吗？",
+    "all": "全部"
   }
 }
