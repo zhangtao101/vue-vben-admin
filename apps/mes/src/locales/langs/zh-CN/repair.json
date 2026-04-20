@@ -138,5 +138,31 @@
     "equipmentGroup": "设备组",
     "quantity": "数量",
     "confirmDeleteDetail": "确认删除明细"
+  },
+  "spareInventory": {
+    "title": "备件库存管理",
+    "spareCode": "备件编码",
+    "spareName": "备件名称",
+    "spareModel": "备件型号",
+    "spareType": "备件类型",
+    "spareTypePlaceholder": "请选择备件类型",
+    "equipmentGroup": "设备组",
+    "equipmentGroupPlaceholder": "请选择设备组",
+    "storageArea": "存放区域",
+    "stockQuantity": "库存数量",
+    "unit": "单位",
+    "scrapRecord": "报废记录",
+    "adjust": "调整库存",
+    "adjustTitle": "调整库存",
+    "scrap": "报废",
+    "scrapTitle": "报废备件",
+    "currentStock": "当前库存",
+    "scrapQuantity": "报废数量",
+    "scrapReason": "报废原因",
+    "scrapReasonPlaceholder": "请输入报废原因",
+    "scrapQuantityWarning": "报废数量必须大于0",
+    "noStockWarning": "库存数量为0，无法报废",
+    "scrapBy": "报废人",
+    "scrapTime": "报废时间"
   }
 }

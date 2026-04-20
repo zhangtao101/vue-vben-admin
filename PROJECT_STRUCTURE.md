@@ -216,6 +216,17 @@ views/
 ├── equipManagement/         # 设备管理
 │   ├── equipmentCheck/            # 设备点检
 │   ├── equipmentMonitor/          # 设备监控
+│   ├── repairMaintenance/         # 维修维护管理
+│   │   ├── equipmentFailure.vue      # 设备故障管理
+│   │   ├── repairRequest.vue         # 维修申请
+│   │   ├── repairOrderList.vue       # 维修工单列表
+│   │   ├── myRepairTask.vue         # 我的维修任务
+│   │   ├── repairRecordQuery.vue    # 维修记录查询
+│   │   ├── repairBasicConfig.vue    # 维修基础配置
+│   │   ├── repairKnowledgeBase.vue  # 维修知识库
+│   │   ├── sparePartsManagement.vue  # 备件管理
+│   │   ├── sparePartsIoManagement.vue # 备件出入库管理
+│   │   └── sparePartsInventoryMgmt.vue # 备件库存管理
 │   ├── energyEquipmentManagement.vue # 能源设备管理
 │   ├── equipMaintenance.vue       # 设备维护
 │   ├── equipmentRepair.vue       # 设备维修
@@ -271,7 +282,12 @@ views/
 │   ├── sopBinding.vue              # SOP绑定
 │   └── README.md
 ├── productionReport/       # 生产报表
-│   ├── SMTfarm/                   # SMT车间管理(50个页面)
+│   ├── SMTfarm/                   # SMT车间管理
+│   │   ├── SMTwork.vue            # SMT工单报工
+│   │   ├── SMTfulfil.vue          # SMT计划汇总
+│   │   ├── SMTgeneral.vue         # SMT月度汇总
+│   │   ├── productionDaily.vue    # 生产日报
+│   │   └── dailynewspaper/       # 日报管理
 │   ├── SMTPlantAdd.vue            # SMT车间添加
 │   ├── productionQuery/           # 生产查询
 │   ├── completedWorkOrderDetails.vue # 已完工工单明细
@@ -356,9 +372,15 @@ views/
 ```
 util/
 ├── component/              # 公共组件
-│   ├── qualityEntering/     # 质量录入相关组件
-│   └── ...                  # 其他公共组件
-├── ...                     # 工具函数
+│   ├── accidentReporting/    # 事故上报组件
+│   ├── completedWorkOrderDetails/ # 完工工单明细组件
+│   ├── qualityEntering/       # 质量录入组件
+│   ├── qualityCheckSet/      # 质量检验设置组件
+│   ├── repairMaintenance/    # 维修维护组件
+│   │   ├── ScrapRecordDrawer.vue # 报废记录抽屉
+│   ├── materialInputList/    # 物料入库组件
+│   └── ...                   # 其他公共组件
+├── ...                      # 工具函数
 ```
 
 ### locales/ 国际化

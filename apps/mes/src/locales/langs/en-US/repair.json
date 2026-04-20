@@ -138,5 +138,31 @@
     "equipmentGroup": "Equipment Group",
     "quantity": "Quantity",
     "confirmDeleteDetail": "Confirm Delete Detail"
+  },
+  "spareInventory": {
+    "title": "Spare Parts Inventory Management",
+    "spareCode": "Spare Code",
+    "spareName": "Spare Name",
+    "spareModel": "Spare Model",
+    "spareType": "Spare Type",
+    "spareTypePlaceholder": "Select Spare Type",
+    "equipmentGroup": "Equipment Group",
+    "equipmentGroupPlaceholder": "Select Equipment Group",
+    "storageArea": "Storage Area",
+    "stockQuantity": "Stock Quantity",
+    "unit": "Unit",
+    "scrapRecord": "Scrap Record",
+    "adjust": "Adjust Stock",
+    "adjustTitle": "Adjust Stock",
+    "scrap": "Scrap",
+    "scrapTitle": "Scrap Spare",
+    "currentStock": "Current Stock",
+    "scrapQuantity": "Scrap Quantity",
+    "scrapReason": "Scrap Reason",
+    "scrapReasonPlaceholder": "Enter scrap reason",
+    "scrapQuantityWarning": "Scrap quantity must be greater than 0",
+    "noStockWarning": "Stock quantity is 0, cannot scrap",
+    "scrapBy": "Scrap By",
+    "scrapTime": "Scrap Time"
   }
 }

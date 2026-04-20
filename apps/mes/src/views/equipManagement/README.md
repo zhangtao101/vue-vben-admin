@@ -25,6 +25,10 @@
 - `equipmentRepair.vue` - 设备维修,处理设备故障和维修工作
 - `equipRecord.vue` - 设备记录,记录设备的运行和维修历史
 
+### 维修维护
+
+- `repairMaintenance/` - 维修维护管理,包含设备故障、备件管理等功能
+
 ### 资源消耗
 
 - `resourceConsumptionEntry.vue` - 资源消耗录入,录入设备的资源消耗数据
