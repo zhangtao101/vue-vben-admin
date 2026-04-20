@@ -42,11 +42,11 @@ function addLine() {
 
 /**
  * 删除一行能源消耗记录
- * @param {number} index - 要删除的行索引
+ * @param {any} index - 要删除的行索引
  * @returns {void} 无返回值
  * @since 2026-04-20 15:33:00
  */
-function deleteLine(index: number) {
+function deleteLine(index: any) {
   formData.value.energyList.splice(index, 1);
 }
 
