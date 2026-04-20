@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、dayjs、表单组件
+ * [OUTPUT]: 对外提供报修申请页面组件，含设备信息填写、报修信息填写、图片上传、提交报修功能
+ * [POS]: 维修维护模块 的报修入口页面，供用户提交设备维修申请
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:13:00
+ */
 import { ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
@@ -25,9 +32,11 @@ import {
 import dayjs from 'dayjs';
 
 // 图片上传地址
+/** 故障图片上传接口地址 */
 const uploadUrl = `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/common/file/upload/maintenance-image`;
 
 // 表单初始值
+/** 表单数据初始值 */
 const initFormData = {
   // 设备信息
   equipmentCode: '',
@@ -44,9 +53,11 @@ const initFormData = {
 };
 
 // 表单数据
+/** 当前表单数据对象 */
 const formData = ref<any>({ ...initFormData });
 
 // 报修类型选项
+/** 报修类型下拉/单选选项列表 */
 const repairTypeOptions = [
   { value: 'RT_EMERGENCY_STOP', label: '应急维修(停机)' },
   { value: 'RT_EMERGENCY_NONSTOP', label: '应急维修(非停机)' },
@@ -57,6 +68,7 @@ const repairTypeOptions = [
 ];
 
 // 紧急程度选项
+/** 紧急程度下拉/单选选项列表 */
 const urgencyOptions = [
   { value: 'NORMAL', label: '一般' },
   { value: 'URGENT', label: '紧急' },
@@ -64,19 +76,33 @@ const urgencyOptions = [
 ];
 
 // 提交加载状态
+/** 提交按钮加载状态，防止重复提交 */
 const submitLoading = ref(false);
 
 // 图片上传相关
+/** 已上传的图片列表 */
 const imageList = ref<any[]>([]);
+/** 图片预览弹窗显示状态 */
 const previewVisible = ref(false);
+/** 当前预览的图片地址 */
 const previewImage = ref('');
 
+/**
+ * 处理图片预览。
+ * @param {any} file - 要预览的文件对象。
+ * @returns {void} 无返回值，打开预览弹窗。
+ * @since 2026-04-20 15:13:00
+ */
 function handlePreview(file: any) {
   previewImage.value = file.url || file.response?.data?.url || '';
   previewVisible.value = true;
 }
 
-// 表单验证
+/**
+ * 表单验证函数，校验必填项。
+ * @returns {Promise<boolean>} 验证通过返回 true，否则返回 false。
+ * @since 2026-04-20 15:13:00
+ */
 function validateForm(): Promise<boolean> {
   return new Promise((resolve) => {
     if (!formData.value.equipmentCode) {
@@ -123,7 +149,11 @@ function validateForm(): Promise<boolean> {
   });
 }
 
-// 提交报修
+/**
+ * 处理提交报修表单。
+ * @returns {void} 无返回值，验证通过后提交数据。
+ * @since 2026-04-20 15:13:00
+ */
 function handleSubmit() {
   validateForm().then((isValid) => {
     if (!isValid) {
@@ -151,7 +181,7 @@ function handleSubmit() {
       faultImages: imageUrls,
     };
 
-    console.log('提交参数:', params);
+    console.warn('提交参数:', params);
     // TODO: 调用接口
     // submitRepairRequest(params).then(() => {...})
 
@@ -160,7 +190,11 @@ function handleSubmit() {
   });
 }
 
-// 重置表单
+/**
+ * 处理重置表单按钮点击，弹出确认框后重置表单数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function handleReset() {
   Modal.confirm({
     title: '提示',
@@ -360,7 +394,7 @@ function handleReset() {
 </template>
 
 <style scoped>
-::deep(.row-edit .vxe-body--row) {
+:deep(.row-edit .vxe-body--row) {
   background-color: #fafafa;
 }
 </style>

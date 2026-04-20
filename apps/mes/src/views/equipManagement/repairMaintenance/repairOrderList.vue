@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table、repairRequest.service API
+ * [OUTPUT]: 对外提供维修工单列表页面组件，含工单列表、指派、查看详情、取消功能
+ * [POS]: 维修维护模块 的工单管理页面，管理所有维修工单
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:13:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
@@ -25,6 +32,7 @@ import { getRepairRequestListWithFilter } from '#/api';
 import { $t } from '#/locales';
 
 // 查询参数
+/** 工单列表查询参数，包含设备编码、状态、报修类型、紧急程度 */
 const queryParams = ref<any>({
   equipmentCode: '',
   status: undefined,
@@ -33,6 +41,7 @@ const queryParams = ref<any>({
 });
 
 // 状态下拉选项
+/** 状态下拉选项列表 */
 const statusOptions = [
   { label: $t('repair.repairOrder.pending'), value: 'PENDING' },
   { label: $t('repair.repairOrder.processing'), value: 'PROCESSING' },
@@ -41,6 +50,7 @@ const statusOptions = [
 ];
 
 // 报修类型选项
+/** 报修类型下拉选项列表 */
 const repairTypeOptions = [
   { label: $t('repair.repairOrder.emergencyStop'), value: 'RT_EMERGENCY_STOP' },
   {
@@ -54,6 +64,7 @@ const repairTypeOptions = [
 ];
 
 // 紧急程度选项
+/** 紧急程度下拉选项列表 */
 const urgentLevelOptions = [
   { label: $t('repair.repairOrder.normal'), value: 'NORMAL' },
   { label: $t('repair.repairOrder.urgent'), value: 'URGENT' },
@@ -61,6 +72,7 @@ const urgentLevelOptions = [
 ];
 
 // 状态标签颜色映射
+/** 状态标签颜色映射，用于 Tag 组件的颜色设置 */
 const statusColorMap: Record<string, string> = {
   PENDING: 'default',
   ASSIGNED: 'processing',
@@ -70,6 +82,7 @@ const statusColorMap: Record<string, string> = {
 };
 
 // 状态中文映射
+/** 状态编码到中文名称的映射 */
 const statusLabelMap: Record<string, string> = {
   PENDING: '待处理',
   ASSIGNED: '已指派',
@@ -79,6 +92,7 @@ const statusLabelMap: Record<string, string> = {
 };
 
 // 紧急程度标签颜色映射
+/** 紧急程度标签颜色映射 */
 const urgentLevelColorMap: Record<string, string> = {
   NORMAL: 'green',
   URGENT: 'orange',
@@ -86,6 +100,7 @@ const urgentLevelColorMap: Record<string, string> = {
 };
 
 // 紧急程度中文映射
+/** 紧急程度编码到中文名称的映射 */
 const urgentLevelLabelMap: Record<string, string> = {
   NORMAL: '一般',
   URGENT: '紧急',
@@ -93,6 +108,7 @@ const urgentLevelLabelMap: Record<string, string> = {
 };
 
 // 报修类型中文映射
+/** 报修类型编码到中文名称的映射 */
 const repairTypeLabelMap: Record<string, string> = {
   RT_EMERGENCY_STOP: '应急维修(停机)',
   RT_EMERGENCY_NONSTOP: '应急维修(非停机)',
@@ -103,6 +119,7 @@ const repairTypeLabelMap: Record<string, string> = {
 };
 
 // 表格配置
+/** VXE Grid 表格配置对象 */
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -162,11 +179,19 @@ const gridOptions: VxeGridProps<any> = {
   },
 };
 
+/** VXE Grid 事件监听配置 */
 const gridEvents: VxeGridListeners<any> = {};
 
+/** VXE Grid 组件实例及 API */
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-// 查询数据
+/**
+ * 查询维修工单列表数据。
+ * @param {{ pageNum: number; pageSize: number }} params - 分页参数。
+ * @returns {Promise<{ total: number; items: any[] }>} 包含总数和数据列表的 Promise。
+ * @throws {Error} API 调用失败时返回空数据。
+ * @since 2026-04-20 15:13:00
+ */
 function queryData({
   pageNum,
   pageSize,
@@ -198,20 +223,40 @@ function queryData({
 }
 
 // 详情抽屉
+/** 详情抽屉显示状态 */
 const detailDrawerVisible = ref(false);
+/** 当前操作的行数据 */
 const currentRow = ref<any>(null);
 
+/**
+ * 处理查看详情按钮点击，打开详情抽屉。
+ * @param {any} row - 要查看的行数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function handleDetail(row: any) {
   currentRow.value = row;
   detailDrawerVisible.value = true;
 }
 
+/**
+ * 处理指派按钮点击（待实现）。
+ * @param {any} row - 要指派的行数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function handleAssign(row: any) {
-  console.log('指派', row);
+  console.warn('指派', row);
 }
 
+/**
+ * 处理取消按钮点击（待实现）。
+ * @param {any} row - 要取消的行数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function handleCancel(row: any) {
-  console.log('取消', row);
+  console.warn('取消', row);
 }
 </script>
 

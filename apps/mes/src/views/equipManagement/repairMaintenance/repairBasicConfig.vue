@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table、repairBasicConfig.service API
+ * [OUTPUT]: 对外提供维修基础配置页面组件，含配置列表、新增/编辑/删除、启用禁用功能
+ * [POS]: 维修维护模块 的基础配置页面，管理维修类型、故障等级、设备组、紧急程度等配置
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:13:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
@@ -34,11 +41,13 @@ import { queryAuth } from '#/util';
 import RepairBasicConfigDrawer from '#/util/component/repairMaintenance/RepairBasicConfigDrawer.vue';
 
 // ========== 查询参数 ==========
+/** 配置类型查询参数，默认查询维修类型 */
 const queryParams = ref({
   configType: 'REPAIR_TYPE',
 });
 
 // ========== 维修类型选项 ==========
+/** 配置类型下拉选项列表 */
 const configTypeOptions = [
   { label: $t('repair.repairBasicConfig.repairType'), value: 'REPAIR_TYPE' },
   { label: $t('repair.repairBasicConfig.faultLevel'), value: 'FAULT_LEVEL' },
@@ -50,6 +59,7 @@ const configTypeOptions = [
 ];
 
 // ========== 维修类型映射 ==========
+/** 配置类型编码到中文名称的映射 */
 const configTypeMap: Record<string, string> = {
   REPAIR_TYPE: $t('repair.repairBasicConfig.repairType'),
   FAULT_LEVEL: $t('repair.repairBasicConfig.faultLevel'),
@@ -57,25 +67,44 @@ const configTypeMap: Record<string, string> = {
   URGENT_LEVEL: $t('repair.repairBasicConfig.urgentLevel'),
 };
 
-// ========== 格式化维修类型 ==========
+/**
+ * 格式化配置类型显示文本。
+ * @param {string} value - 配置类型编码。
+ * @returns {string} 配置类型中文名称，若未找到则返回原编码。
+ * @since 2026-04-20 15:13:00
+ */
 function formatConfigType(value: string) {
   return configTypeMap[value] || value;
 }
 
 // ========== 抽屉控制 ==========
+/** 新增/编辑抽屉显示状态 */
 const drawerVisible = ref(false);
+/** 当前操作的行数据，null 表示新增 */
 const currentRow = ref<any>(null);
 
+/**
+ * 打开新增/编辑抽屉。
+ * @param {any} [row] - 可选，要编辑的行数据；不传则表示新增。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function openDrawer(row?: any) {
   currentRow.value = row || null;
   drawerVisible.value = true;
 }
 
+/**
+ * 抽屉操作成功回调，刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function onDrawerSuccess() {
   gridApi.reload();
 }
 
 // ========== 表格配置 ==========
+/** VXE Grid 表格配置对象 */
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -140,11 +169,18 @@ const gridOptions: VxeGridProps<any> = {
   },
 };
 
+/** VXE Grid 事件监听配置 */
 const gridEvents: VxeGridListeners<any> = {};
 
+/** VXE Grid 组件实例及 API */
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-// ========== 数据查询 ==========
+/**
+ * 查询基础配置列表数据。
+ * @returns {Promise<{ total: number; items: any[] }>} 包含总数和数据列表的 Promise。
+ * @throws {Error} API 调用失败时拒绝 Promise。
+ * @since 2026-04-20 15:13:00
+ */
 function queryData() {
   return new Promise((resolve, reject) => {
     getRepairBasicConfigList(queryParams.value)
@@ -160,18 +196,33 @@ function queryData() {
   });
 }
 
-// ========== 状态变更事件 ==========
+/**
+ * 处理配置类型变更事件，刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function onConfigTypeChange() {
   gridApi.reload();
 }
 
 // ========== 操作 ==========
-// 编辑
+/**
+ * 处理编辑按钮点击，打开编辑抽屉。
+ * @param {any} row - 要编辑的行数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function handleEdit(row: any) {
   openDrawer(row);
 }
 
-// 删除
+/**
+ * 处理删除按钮点击，弹出确认框后执行删除。
+ * @param {any} row - 要删除的行数据，需包含 id 和 configName。
+ * @returns {void} 无返回值，删除成功后显示提示并刷新数据。
+ * @throws {Error} 删除操作被取消时不抛出错误。
+ * @since 2026-04-20 15:13:00
+ */
 function handleDelete(row: any) {
   Modal.confirm({
     title: $t('repair.repairBasicConfig.confirmDelete'),
@@ -189,7 +240,13 @@ function handleDelete(row: any) {
   });
 }
 
-// 状态切换
+/**
+ * 处理状态切换按钮点击，启用或禁用配置。
+ * @param {any} row - 要切换状态的行数据，需包含 id 和 status。
+ * @returns {void} 无返回值，切换成功后显示提示并刷新数据。
+ * @throws {Error} API 调用失败时显示错误提示。
+ * @since 2026-04-20 15:13:00
+ */
 function handleStatusChange(row: any) {
   const api =
     row.status === 'ACTIVE'
@@ -201,15 +258,26 @@ function handleStatusChange(row: any) {
   });
 }
 
-// 新增
+/**
+ * 处理新增按钮点击，打开新增抽屉。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 function handleAdd() {
   openDrawer();
 }
 
 // ========== 权限 ==========
+/** 当前路由实例，用于获取权限码 */
 const route = useRoute();
+/** 按钮权限列表，如 ['新增', '编辑', '删除', '状态变更'] */
 const author = ref<string[]>([]);
 
+/**
+ * 组件挂载时执行初始化。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:13:00
+ */
 onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;

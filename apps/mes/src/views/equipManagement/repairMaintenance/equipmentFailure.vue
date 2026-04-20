@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table、repairMaintenance 相关 API
+ * [OUTPUT]: 对外提供设备故障树管理页面组件，含树形结构、故障列表、新增/编辑/删除功能
+ * [POS]: 维修维护模块 的主页面，属于设备故障管理入口
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:10:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
@@ -35,9 +42,16 @@ import { queryAuth } from '#/util';
 import EquipmentFailureDrawer from '#/util/component/repairMaintenance/EquipmentFailureDrawer.vue';
 
 // ========== 权限 ==========
+/** 当前路由实例，用于获取权限码 */
 const route = useRoute();
+/** 按钮权限列表，如 ['新增', '编辑', '删除'] */
 const author = ref<string[]>([]);
 
+/**
+ * 组件挂载时执行初始化。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:10:00
+ */
 onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
@@ -51,9 +65,15 @@ onMounted(() => {
 });
 
 // ========== 树数据 ==========
+/** 故障树数据，用于左侧树形结构展示 */
 const treeData = ref<any[]>([]);
 
-// ========== 加载树数据 ==========
+/**
+ * 加载故障树数据。
+ * @returns {Promise<void>} 无返回值，数据直接赋值给 treeData。
+ * @throws {Error} API 调用失败时抛出错误。
+ * @since 2026-04-20 15:10:00
+ */
 function loadTreeData() {
   getFaultTree().then((res) => {
     // 转换数据格式以适配 Tree 组件
@@ -62,18 +82,26 @@ function loadTreeData() {
 }
 
 // ========== 查询参数 ==========
+/** 故障列表查询参数，包含故障等级编码和父节点ID */
 const queryParams = ref<any>({
   faultLevelCode: undefined,
   equipmentGroup: undefined,
 });
 
 // ========== 故障等级选项 ==========
+/** 故障等级下拉选项，首项为"全部" */
 const faultLevelOptions = ref<any[]>([{ label: '全部', value: undefined }]);
 
 // ========== 故障等级映射 ==========
+/** 故障等级编码到名称的映射，用于表格格式化显示 */
 const faultLevelMap = ref<Record<string, string>>({});
 
-// ========== 加载故障等级选项 ==========
+/**
+ * 加载故障等级选项。
+ * @returns {Promise<void>} 无返回值，数据直接赋值给 faultLevelOptions 和 faultLevelMap。
+ * @throws {Error} API 调用失败时抛出错误。
+ * @since 2026-04-20 15:10:00
+ */
 function loadFaultLevelOptions() {
   searchBaseConfig({ configType: 'FAULT_LEVEL' }).then((res) => {
     const options: any[] = [];
@@ -90,15 +118,26 @@ function loadFaultLevelOptions() {
   });
 }
 
-// ========== 故障等级格式化 ==========
+/**
+ * 格式化故障等级显示文本。
+ * @param {string} levelCode - 故障等级编码。
+ * @returns {string} 故障等级名称，若未找到则返回编码或'-'。
+ * @since 2026-04-20 15:10:00
+ */
 function formatFaultLevel(levelCode: string) {
   return faultLevelMap.value[levelCode] || levelCode || '-';
 }
 
 // ========== 设备组选项 ==========
+/** 设备组下拉选项列表 */
 const equipmentGroupOptions = ref<any[]>([]);
 
-// ========== 加载设备组选项 ==========
+/**
+ * 加载设备组选项。
+ * @returns {Promise<void>} 无返回值，数据直接赋值给 equipmentGroupOptions。
+ * @throws {Error} API 调用失败时抛出错误。
+ * @since 2026-04-20 15:10:00
+ */
 function loadEquipmentGroupOptions() {
   searchBaseConfig({ configType: 'EQUIPMENT_GROUP' }).then((res) => {
     equipmentGroupOptions.value = (res || []).map((item: any) => ({
@@ -109,21 +148,37 @@ function loadEquipmentGroupOptions() {
 }
 
 // ========== 抽屉控制 ==========
+/** 新增/编辑抽屉显示状态 */
 const drawerVisible = ref(false);
+/** 当前操作的行数据，null 表示新增 */
 const currentRow = ref<any>(null);
+/** 选中父节点ID，用于新增时指定父节点 */
 const selectedParentId = ref<string | undefined>(undefined);
+/** 选中父节点名称，用于显示父节点路径 */
 const selectedParentName = ref<string | undefined>(undefined);
 
+/**
+ * 打开新增/编辑抽屉。
+ * @param {any} [row] - 可选，要编辑的行数据；不传则表示新增。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:10:00
+ */
 function openDrawer(row?: any) {
   currentRow.value = row || null;
   drawerVisible.value = true;
 }
 
+/**
+ * 抽屉操作成功回调，刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:10:00
+ */
 function onDrawerSuccess() {
   gridApi.reload();
 }
 
 // ========== 表格配置 ==========
+/** VXE Grid 表格配置对象 */
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -193,11 +248,19 @@ const gridOptions: VxeGridProps<any> = {
   },
 };
 
+/** VXE Grid 事件监听配置 */
 const gridEvents: VxeGridListeners<any> = {};
 
+/** VXE Grid 组件实例及 API */
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-// ========== 数据查询 ==========
+/**
+ * 查询故障列表数据。
+ * @param {{ currentPage: number; pageSize: number }} [page] - 可选，分页参数。
+ * @returns {Promise<{ total: number; items: any[] }>} 包含总数和数据列表的 Promise。
+ * @throws {Error} API 调用失败时拒绝 Promise。
+ * @since 2026-04-20 15:10:00
+ */
 function queryData(page?: { currentPage: number; pageSize: number }) {
   return new Promise((resolve, reject) => {
     const params = {
@@ -218,7 +281,13 @@ function queryData(page?: { currentPage: number; pageSize: number }) {
   });
 }
 
-// ========== 树节点选择 ==========
+/**
+ * 处理树节点选择事件，切换父节点筛选条件并刷新表格。
+ * @param {any} _selectedKeys - 选中的键数组（未使用）。
+ * @param {{ selected: boolean; node: any }} info - 选择信息，包含是否选中和节点数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:10:00
+ */
 function onTreeSelect(_selectedKeys: any, { selected, node }: any) {
   queryParams.value.parentId = selected ? node.id : undefined;
   selectedParentId.value = selected ? node.id : undefined;
@@ -228,12 +297,20 @@ function onTreeSelect(_selectedKeys: any, { selected, node }: any) {
   gridApi.reload();
 }
 
-// ========== 查询 ==========
+/**
+ * 处理查询按钮点击，刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:10:00
+ */
 function handleQuery() {
   gridApi.reload();
 }
 
-// ========== 重置 ==========
+/**
+ * 处理重置按钮点击，清空查询条件并刷新表格。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:10:00
+ */
 function handleReset() {
   queryParams.value = {
     faultLevelCode: undefined,
@@ -243,17 +320,32 @@ function handleReset() {
 }
 
 // ========== 操作 ==========
-// 新增
+/**
+ * 处理新增按钮点击，打开新增抽屉。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:10:00
+ */
 function handleAdd() {
   openDrawer();
 }
 
-// 编辑
+/**
+ * 处理编辑按钮点击，打开编辑抽屉。
+ * @param {any} row - 要编辑的行数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:10:00
+ */
 function handleEdit(row: any) {
   openDrawer(row);
 }
 
-// 删除
+/**
+ * 处理删除按钮点击，弹出确认框后执行删除。
+ * @param {any} row - 要删除的行数据，需包含 id 和 faultName。
+ * @returns {void} 无返回值，删除成功后显示提示并刷新数据。
+ * @throws {Error} 删除操作被取消时不抛出错误。
+ * @since 2026-04-20 15:10:00
+ */
 function handleDelete(row: any) {
   Modal.confirm({
     title: $t('repair.equipmentFailure.confirmDelete'),
