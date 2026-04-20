@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue 的抽屉、表单、表格组件，dayjs 日期库，以及 createSpareOrder、getSpareOrderById、getSparePartList、updateSpareOrder API
+ * [OUTPUT]: 对外提供备件单据抽屉组件
+ * [POS]: 维修维护模块 的备件单据抽屉，支持新增/编辑/查看备件入库单和出库单
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 16:16:00
+ */
 import { ref, watch } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
@@ -74,6 +81,11 @@ watch(drawerVisible, (val) => {
 });
 
 // ========== 表单数据 ==========
+/**
+ * 获取默认表单数据。
+ * @returns {Object} 默认表单数据对象，包含 orderName、orderType、orderDate、recipient 字段
+ * @since 2026-04-20 16:16:00
+ */
 function getDefaultFormData() {
   return {
     orderName: '',
@@ -94,6 +106,11 @@ const orderTypeOptions = [
 ];
 
 // ========== 初始化数据 ==========
+/**
+ * 初始化抽屉数据，根据模式加载备件选项和单据详情。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function initData() {
   loadSparePartOptions();
   if (props.mode === 'view' && props.row?.id) {
@@ -107,6 +124,12 @@ function initData() {
 }
 
 // ========== 加载备件列表 ==========
+/**
+ * 加载备件下拉选项列表。
+ * @returns {void} 无返回值
+ * @throws {Error} 调用 getSparePartList 接口失败时抛出
+ * @since 2026-04-20 16:16:00
+ */
 function loadSparePartOptions() {
   getSparePartList().then((res: any[]) => {
     sparePartOptions.value = (res || []).map((item: any) => ({
@@ -120,6 +143,13 @@ function loadSparePartOptions() {
 }
 
 // ========== 加载单据详情 ==========
+/**
+ * 根据单据 ID 加载单据详情。
+ * @param {number} id - 单据 ID
+ * @returns {void} 无返回值
+ * @throws {Error} 调用 getSpareOrderById 接口失败时抛出
+ * @since 2026-04-20 16:16:00
+ */
 function loadOrderDetail(id: number) {
   drawerLoading.value = true;
   getSpareOrderById(id)
@@ -136,6 +166,11 @@ function loadOrderDetail(id: number) {
 }
 
 // ========== 明细操作 ==========
+/**
+ * 添加一条空明细行。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function addDetail() {
   details.value.push({
     spareCode: undefined,
@@ -146,6 +181,12 @@ function addDetail() {
   });
 }
 
+/**
+ * 删除指定索引的明细行，需二次确认。
+ * @param {number} index - 要删除的明细行索引
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function removeDetail(index: number) {
   Modal.confirm({
     title: $t('repair.spareOrder.confirmDeleteDetail'),
@@ -158,6 +199,13 @@ function removeDetail(index: number) {
   });
 }
 
+/**
+ * 备件选择变更时自动填充相关字段。
+ * @param {number} index - 明细行索引
+ * @param {string} spareCode - 备件编码
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function onSpareChange(index: number, spareCode: string) {
   const option = sparePartOptions.value.find(
     (item) => item.value === spareCode,
@@ -170,6 +218,12 @@ function onSpareChange(index: number, spareCode: string) {
 }
 
 // ========== 保存 ==========
+/**
+ * 保存备件单据，包含数据校验、创建或更新操作。
+ * @returns {void} 无返回值，成功后关闭抽屉并触发 success 事件
+ * @throws {Error} 单据明细为空时提示错误
+ * @since 2026-04-20 16:16:00
+ */
 function handleSave() {
   drawerLoading.value = true;
   const validDetails = details.value.filter((d) => d.spareCode && d.quantity);
@@ -213,6 +267,12 @@ const orderTypeColorMap: Record<string, string> = {
 };
 
 // ========== 状态显示文本 ==========
+/**
+ * 获取单据类型的显示文本。
+ * @param {string} type - 单据类型编码（IN/OUT）
+ * @returns {string} 单据类型的中文显示文本
+ * @since 2026-04-20 16:16:00
+ */
 function getOrderTypeText(type: string) {
   return type === 'IN'
     ? $t('repair.spareOrder.orderTypeIn')
@@ -220,6 +280,13 @@ function getOrderTypeText(type: string) {
 }
 
 // ========== 过滤选项 ==========
+/**
+ * 下拉选项过滤方法，支持拼音首字母搜索。
+ * @param {string} input - 用户输入的搜索关键字
+ * @param {any} option - 下拉选项对象
+ * @returns {boolean} 是否匹配
+ * @since 2026-04-20 16:16:00
+ */
 function filterOption(input: string, option: any) {
   return (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 }

@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue 的抽屉、表单组件，以及 createRepairBasicConfig、updateRepairBasicConfig API
+ * [OUTPUT]: 对外提供维修基础配置抽屉组件
+ * [POS]: 维修维护模块 的维修基础配置抽屉，支持新增/编辑维修类型、故障等级、设备分组等配置
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 16:16:00
+ */
 import { computed, ref, watch } from 'vue';
 
 import {
@@ -72,6 +79,12 @@ const formData = ref({
 });
 
 // ========== 重置表单 ==========
+/**
+ * 重置表单数据为默认值，可指定配置类型。
+ * @param {string} [forceConfigType] - 强制设置的配置类型，默认使用 props.configType
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function resetForm(forceConfigType?: string) {
   formData.value = {
     configCode: '',
@@ -143,12 +156,23 @@ const configTypeLabel = computed(
 );
 
 // ========== 关闭抽屉 ==========
+/**
+ * 关闭抽屉并重置表单。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function handleClose() {
   drawerVisible.value = false;
   resetForm();
 }
 
 // ========== 提交表单 ==========
+/**
+ * 提交表单数据，包含表单验证、创建或更新维修基础配置。
+ * @returns {void} 无返回值，成功后触发 success 事件
+ * @throws {Error} 表单验证失败时不提交
+ * @since 2026-04-20 16:16:00
+ */
 function handleSubmit() {
   formRef.value
     .validate()

@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue 的抽屉、表单、选择器组件，以及 createSparePart、getSparePartById、searchBaseConfig、updateSparePart API
+ * [OUTPUT]: 对外提供备件抽屉组件
+ * [POS]: 维修维护模块 的备件管理抽屉，支持新增/编辑/查看备件信息
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 16:16:00
+ */
 import { computed, onMounted, ref, watch } from 'vue';
 
 import {
@@ -74,6 +81,12 @@ const isEditable = computed(() => props.mode !== 'view');
 const spareTypeOptions = ref<any[]>([]);
 const equipmentGroupOptions = ref<any[]>([]);
 
+/**
+ * 加载备件类型和设备组下拉选项。
+ * @returns {void} 无返回值
+ * @throws {Error} 调用 searchBaseConfig 接口失败时抛出
+ * @since 2026-04-20 16:16:00
+ */
 function loadOptions() {
   searchBaseConfig({ configType: 'SPARE_TYPE' }).then((res: any[]) => {
     spareTypeOptions.value = (res || []).map((item: any) => ({
@@ -94,6 +107,13 @@ onMounted(() => {
 });
 
 // ========== 下拉过滤方法 ==========
+/**
+ * 下拉选项过滤方法，支持拼音首字母搜索。
+ * @param {string} input - 用户输入的搜索关键字
+ * @param {any} option - 下拉选项对象
+ * @returns {boolean} 是否匹配
+ * @since 2026-04-20 16:16:00
+ */
 function filterOption(input: string, option: any) {
   return (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 }
@@ -108,6 +128,11 @@ const formData = ref({
 });
 
 // ========== 重置表单 ==========
+/**
+ * 重置表单数据为默认值。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function resetForm() {
   formData.value = {
     spareCode: '',
@@ -167,12 +192,23 @@ const rules: Record<string, any[]> = {
 const formRef = ref<any>();
 
 // ========== 关闭抽屉 ==========
+/**
+ * 关闭抽屉并重置表单。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function handleClose() {
   drawerVisible.value = false;
   resetForm();
 }
 
 // ========== 提交表单 ==========
+/**
+ * 提交表单数据，包含表单验证、创建或更新备件信息。
+ * @returns {void} 无返回值，成功后触发 success 事件
+ * @throws {Error} 表单验证失败时不提交
+ * @since 2026-04-20 16:16:00
+ */
 function handleSubmit() {
   formRef.value
     .validate()

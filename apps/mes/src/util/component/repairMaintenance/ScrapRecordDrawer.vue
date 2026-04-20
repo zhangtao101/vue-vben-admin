@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、VXE Grid、@iconify/vue，以及 getScrapRecordListPage、searchBaseConfig API
+ * [OUTPUT]: 对外提供备件报废记录抽屉组件
+ * [POS]: 维修维护模块 的备件报废记录抽屉，用于查看备件报废历史
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 16:16:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref, watch } from 'vue';
@@ -34,6 +41,12 @@ const queryDateRange = ref<[any, any]>([undefined, undefined]);
 const spareTypeOptions = ref<any[]>([]);
 
 // 加载备件类型选项
+/**
+ * 加载备件类型下拉选项。
+ * @returns {void} 无返回值
+ * @throws {Error} 调用 searchBaseConfig 接口失败时抛出
+ * @since 2026-04-20 16:16:00
+ */
 function loadSpareTypeOptions() {
   searchBaseConfig({ configType: 'SPARE_TYPE' }).then((res: any[]) => {
     spareTypeOptions.value = (res || []).map((item: any) => ({
@@ -44,6 +57,12 @@ function loadSpareTypeOptions() {
 }
 
 // ========== 格式化函数 ==========
+/**
+ * 根据备件类型编码获取备件类型显示文本。
+ * @param {string} spareType - 备件类型编码
+ * @returns {string} 备件类型显示文本，未找到时返回原编码
+ * @since 2026-04-20 16:16:00
+ */
 function getSpareTypeText(spareType: string) {
   const option = spareTypeOptions.value.find(
     (item) => item.value === spareType,
@@ -144,6 +163,15 @@ const gridEvents: VxeGridListeners<any> = {};
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // ========== 数据查询 ==========
+/**
+ * 查询报废记录数据，支持分页。
+ * @param {Object} [page] - 分页参数
+ * @param {number} [page.currentPage] - 当前页码
+ * @param {number} [page.pageSize] - 每页条数
+ * @returns {Promise<{total: number, items: any[]}>} 包含总数和数据列表的 Promise
+ * @throws {Error} 调用 getScrapRecordListPage 接口失败时抛出
+ * @since 2026-04-20 16:16:00
+ */
 function queryData(page?: { currentPage: number; pageSize: number }) {
   return new Promise((resolve, reject) => {
     const params = {
@@ -167,11 +195,21 @@ function queryData(page?: { currentPage: number; pageSize: number }) {
 }
 
 // ========== 查询 ==========
+/**
+ * 触发查询操作，刷新表格数据。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function handleQuery() {
   gridApi.reload();
 }
 
 // ========== 重置 ==========
+/**
+ * 重置查询条件并刷新表格数据。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function handleReset() {
   queryParams.value = {
     spareCode: undefined,

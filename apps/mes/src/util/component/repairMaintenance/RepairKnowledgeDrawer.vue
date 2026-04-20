@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue 的抽屉、表单组件，以及 createRepairKnowledge、getRepairKnowledgeById、searchBaseConfig、updateRepairKnowledge API
+ * [OUTPUT]: 对外提供维修知识库抽屉组件
+ * [POS]: 维修维护模块 的维修知识库抽屉，支持新增/编辑/查看维修知识条目
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 16:16:00
+ */
 import { computed, onMounted, ref, watch } from 'vue';
 
 import {
@@ -73,6 +80,12 @@ const isEditable = computed(() => props.mode !== 'view');
 // ========== 设备组选项 ==========
 const equipmentGroupOptions = ref<any[]>([]);
 
+/**
+ * 加载设备组下拉选项。
+ * @returns {void} 无返回值
+ * @throws {Error} 调用 searchBaseConfig 接口失败时抛出
+ * @since 2026-04-20 16:16:00
+ */
 function loadEquipmentGroupOptions() {
   searchBaseConfig({ configType: 'EQUIPMENT_GROUP' }).then((res: any[]) => {
     equipmentGroupOptions.value = (res || []).map((item: any) => ({
@@ -96,6 +109,11 @@ const formData = ref({
 });
 
 // ========== 重置表单 ==========
+/**
+ * 重置表单数据为默认值。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function resetForm() {
   formData.value = {
     pmCode: '',
@@ -149,12 +167,23 @@ const rules: Record<string, any[]> = {
 const formRef = ref<any>();
 
 // ========== 关闭抽屉 ==========
+/**
+ * 关闭抽屉并重置表单。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function handleClose() {
   drawerVisible.value = false;
   resetForm();
 }
 
 // ========== 提交表单 ==========
+/**
+ * 提交表单数据，包含表单验证、创建或更新维修知识。
+ * @returns {void} 无返回值，成功后触发 success 事件
+ * @throws {Error} 表单验证失败时不提交
+ * @since 2026-04-20 16:16:00
+ */
 function handleSubmit() {
   formRef.value
     .validate()

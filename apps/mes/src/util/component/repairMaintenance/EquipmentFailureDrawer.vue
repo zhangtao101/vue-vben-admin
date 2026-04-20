@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue 的抽屉、表单组件，以及 createFaultTree、updateFaultTree API
+ * [OUTPUT]: 对外提供设备故障抽屉组件
+ * [POS]: 维修维护模块 的设备故障管理抽屉，支持新增/编辑设备故障树节点
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 16:16:00
+ */
 import { computed, ref, watch } from 'vue';
 
 import {
@@ -82,6 +89,11 @@ const formData = ref({
 });
 
 // ========== 重置表单 ==========
+/**
+ * 重置表单数据为默认值。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function resetForm() {
   formData.value = {
     equipmentGroup: '',
@@ -149,12 +161,23 @@ const rules: Record<string, any[]> = {
 const formRef = ref<any>();
 
 // ========== 关闭抽屉 ==========
+/**
+ * 关闭抽屉并重置表单。
+ * @returns {void} 无返回值
+ * @since 2026-04-20 16:16:00
+ */
 function handleClose() {
   drawerVisible.value = false;
   resetForm();
 }
 
 // ========== 提交表单 ==========
+/**
+ * 提交表单数据，包含表单验证、创建或更新设备故障树节点。
+ * @returns {void} 无返回值，成功后触发 success 和 reloadTree 事件
+ * @throws {Error} 表单验证失败时不提交
+ * @since 2026-04-20 16:16:00
+ */
 function handleSubmit() {
   formRef.value
     .validate()
