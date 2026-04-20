@@ -109,7 +109,9 @@ export async function getStockListPage(params: StockParams) {
 /**
  * 库存全量查询（不分页）
  */
-export async function getStockList(params: Omit<StockParams, 'pageNum' | 'pageSize'>) {
+export async function getStockList(
+  params: Omit<StockParams, 'pageNum' | 'pageSize'>,
+) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/spare-stock/list?${qs.stringify(params)}`,
   );
@@ -156,7 +158,9 @@ export async function getScrapRecordListPage(params: ScrapRecordParams) {
 /**
  * 报废记录全量查询（不分页）
  */
-export async function getScrapRecordList(params: Omit<ScrapRecordParams, 'pageNum' | 'pageSize'>) {
+export async function getScrapRecordList(
+  params: Omit<ScrapRecordParams, 'pageNum' | 'pageSize'>,
+) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/spare-stock/scrap-records?${qs.stringify(params)}`,
   );

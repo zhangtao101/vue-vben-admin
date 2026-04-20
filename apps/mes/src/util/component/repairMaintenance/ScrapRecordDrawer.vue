@@ -5,14 +5,7 @@ import { ref, watch } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-import {
-  Button,
-  Drawer,
-  Form,
-  FormItem,
-  Input,
-  Space,
-} from 'ant-design-vue';
+import { Button, Drawer, Form, FormItem, Input, Space } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getScrapRecordListPage, searchBaseConfig } from '#/api';
@@ -52,7 +45,9 @@ function loadSpareTypeOptions() {
 
 // ========== 格式化函数 ==========
 function getSpareTypeText(spareType: string) {
-  const option = spareTypeOptions.value.find((item) => item.value === spareType);
+  const option = spareTypeOptions.value.find(
+    (item) => item.value === spareType,
+  );
   return option ? option.label : spareType;
 }
 
@@ -200,7 +195,10 @@ function handleReset() {
     <!-- 查询区域 -->
     <Form :model="queryParams" layout="inline">
       <!-- 备件编号 -->
-      <FormItem :label="$t('repair.spareInventory.spareCode')" style="margin-bottom: 0">
+      <FormItem
+        :label="$t('repair.spareInventory.spareCode')"
+        style="margin-bottom: 0"
+      >
         <Input
           v-model:value="queryParams.spareCode"
           :placeholder="`请输入${$t('repair.spareInventory.spareCode')}`"
@@ -210,7 +208,10 @@ function handleReset() {
       </FormItem>
 
       <!-- 备件名称 -->
-      <FormItem :label="$t('repair.spareInventory.spareName')" style="margin-bottom: 0">
+      <FormItem
+        :label="$t('repair.spareInventory.spareName')"
+        style="margin-bottom: 0"
+      >
         <Input
           v-model:value="queryParams.spareName"
           :placeholder="`请输入${$t('repair.spareInventory.spareName')}`"
@@ -220,7 +221,10 @@ function handleReset() {
       </FormItem>
 
       <!-- 报废人 -->
-      <FormItem :label="$t('repair.spareInventory.scrapBy')" style="margin-bottom: 0">
+      <FormItem
+        :label="$t('repair.spareInventory.scrapBy')"
+        style="margin-bottom: 0"
+      >
         <Input
           v-model:value="queryParams.scrapBy"
           :placeholder="`请输入${$t('repair.spareInventory.scrapBy')}`"

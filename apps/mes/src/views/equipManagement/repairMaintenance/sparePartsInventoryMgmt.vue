@@ -25,11 +25,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getStockListPage,
-  scrapSpare,
-  searchBaseConfig,
-} from '#/api';
+import { getStockListPage, scrapSpare, searchBaseConfig } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 import ScrapRecordDrawer from '#/util/component/repairMaintenance/ScrapRecordDrawer.vue';
@@ -67,7 +63,9 @@ function loadSpareTypeOptions() {
 
 // ========== 格式化函数 ==========
 function getSpareTypeText(spareType: string) {
-  const option = spareTypeOptions.value.find((item) => item.value === spareType);
+  const option = spareTypeOptions.value.find(
+    (item) => item.value === spareType,
+  );
   return option ? option.label : spareType;
 }
 
@@ -248,7 +246,10 @@ function submitScrap() {
     <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 备件编号 -->
-        <FormItem :label="$t('repair.spareInventory.spareCode')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.spareInventory.spareCode')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.spareCode"
             :placeholder="`请输入${$t('repair.spareInventory.spareCode')}`"
@@ -258,7 +259,10 @@ function submitScrap() {
         </FormItem>
 
         <!-- 备件名称 -->
-        <FormItem :label="$t('repair.spareInventory.spareName')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.spareInventory.spareName')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.spareName"
             :placeholder="`请输入${$t('repair.spareInventory.spareName')}`"
@@ -268,7 +272,10 @@ function submitScrap() {
         </FormItem>
 
         <!-- 备件类型 -->
-        <FormItem :label="$t('repair.spareInventory.spareType')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.spareInventory.spareType')"
+          style="margin-bottom: 0"
+        >
           <Select
             v-model:value="queryParams.spareType"
             :placeholder="$t('repair.spareInventory.spareTypePlaceholder')"
@@ -276,14 +283,21 @@ function submitScrap() {
             show-search
             style="width: 140px"
           >
-            <SelectOption v-for="item in spareTypeOptions" :key="item.value" :value="item.value">
+            <SelectOption
+              v-for="item in spareTypeOptions"
+              :key="item.value"
+              :value="item.value"
+            >
               {{ item.label }}
             </SelectOption>
           </Select>
         </FormItem>
 
         <!-- 设备组 -->
-        <FormItem :label="$t('repair.spareInventory.equipmentGroup')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.spareInventory.equipmentGroup')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.equipmentGroup"
             :placeholder="`请输入${$t('repair.spareInventory.equipmentGroup')}`"
@@ -310,7 +324,10 @@ function submitScrap() {
         <template #toolbar-tools>
           <Space>
             <Button type="primary" @click="openScrapRecordDrawer">
-              <Icon icon="mdi:file-document-outline" class="inline-block align-middle" />
+              <Icon
+                icon="mdi:file-document-outline"
+                class="inline-block align-middle"
+              />
               {{ $t('repair.spareInventory.scrapRecord') }}
             </Button>
           </Space>
@@ -325,7 +342,11 @@ function submitScrap() {
         <template #action="{ row }">
           <Space :size="0">
             <Tooltip v-if="author.includes('报废')">
-              <template #title>{{ $t('repair.spareInventory.scrap') }}</template>
+              <template #title>
+{{
+                $t('repair.spareInventory.scrap')
+              }}
+</template>
               <Button type="link" danger @click="handleScrap(row)">
                 <Icon
                   icon="mdi:trash-can-outline"
@@ -354,7 +375,10 @@ function submitScrap() {
           <Input :value="scrapRow.spareName" disabled />
         </FormItem>
         <FormItem :label="$t('repair.spareInventory.currentStock')">
-          <Input :value="`${scrapRow.stockQuantity || 0} ${scrapRow.unit || ''}`" disabled />
+          <Input
+            :value="`${scrapRow.stockQuantity || 0} ${scrapRow.unit || ''}`"
+            disabled
+          />
         </FormItem>
         <FormItem :label="$t('repair.spareInventory.scrapQuantity')">
           <InputNumber
