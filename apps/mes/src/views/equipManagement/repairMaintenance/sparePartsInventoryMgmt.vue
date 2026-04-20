@@ -343,10 +343,8 @@ function submitScrap() {
           <Space :size="0">
             <Tooltip v-if="author.includes('报废')">
               <template #title>
-{{
-                $t('repair.spareInventory.scrap')
-              }}
-</template>
+                {{ $t('repair.spareInventory.scrap') }}
+              </template>
               <Button type="link" danger @click="handleScrap(row)">
                 <Icon
                   icon="mdi:trash-can-outline"
