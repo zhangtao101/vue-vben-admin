@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table 的组件，以及 queryScadaEquipNamePage 等 API
+ * [OUTPUT]: 对外提供设备名称维护页面组件
+ * [POS]: 设备管理模块 的设备名称维护页面
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:33:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -177,7 +184,9 @@ function delRow(row: any) {
 }
 
 /**
- * 关闭编辑抽屉
+ * 关闭编辑抽屉，重置表单状态
+ * @returns {void} 无返回值
+ * @since 2026-04-20 15:33:00
  */
 function onClose() {
   checkedRow.value = {};
@@ -186,7 +195,10 @@ function onClose() {
 }
 
 /**
- * 表单提交
+ * 表单提交校验，通过后新增或编辑设备名称数据
+ * @returns {void} 无返回值，成功后关闭抽屉并刷新表格
+ * @throws {Error} 表单校验失败时不提交
+ * @since 2026-04-20 15:33:00
  */
 function submit() {
   editForm.value.validate().then(() => {

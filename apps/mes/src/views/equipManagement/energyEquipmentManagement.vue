@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table 的组件，以及 selectYB、addTheMeter 等 API
+ * [OUTPUT]: 对外提供能源设备管理页面组件
+ * [POS]: 设备管理模块 的能源设备管理页面
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:33:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -169,7 +176,9 @@ const editRules = ref<any>({
 });
 /**
  * 显示是编辑抽屉
- * @param row 表格行数据
+ * @param {any} row - 表格行数据，null 表示新增
+ * @returns {void} 无返回值
+ * @since 2026-04-20 15:33:00
  */
 function editRow(row?: any) {
   checkedRow.value = row
@@ -182,8 +191,10 @@ function editRow(row?: any) {
 }
 
 /**
- * 删除数据
- * @param row
+ * 删除数据，包含确认弹窗
+ * @param {any} row - 表格行数据，包含 id 和 equipmentCode
+ * @returns {void} 无返回值，确认后调用删除接口
+ * @since 2026-04-20 15:33:00
  */
 function delRow(row: any) {
   Modal.confirm({
@@ -207,7 +218,9 @@ function delRow(row: any) {
 }
 
 /**
- * 关闭编辑抽屉
+ * 关闭编辑抽屉，重置表单状态
+ * @returns {void} 无返回值
+ * @since 2026-04-20 15:33:00
  */
 function onClose() {
   checkedRow.value = {};
@@ -216,7 +229,10 @@ function onClose() {
 }
 
 /**
- * 表单提交
+ * 表单提交校验，通过后新增或编辑仪表数据
+ * @returns {void} 无返回值，成功后关闭抽屉并刷新表格
+ * @throws {Error} 表单校验失败时不提交
+ * @since 2026-04-20 15:33:00
  */
 function submit() {
   editForm.value.validate().then(() => {
@@ -238,6 +254,12 @@ function submit() {
 
 // region 更新状态
 
+/**
+ * 更新仪表启用/禁用状态
+ * @param {any} row - 表格行数据，包含 id 和 stat
+ * @returns {void} 无返回值，成功后刷新表格
+ * @since 2026-04-20 15:33:00
+ */
 function updateStatus(row: any) {
   updateStat({
     ids: [row.id],
@@ -256,7 +278,9 @@ function updateStatus(row: any) {
 const listOfUnitPartitions = ref<any>([]);
 
 /**
- * 分区查询
+ * 查询单元分区列表
+ * @returns {void} 无返回值，通过 Promise 异步加载分区数据
+ * @since 2026-04-20 15:33:00
  */
 function queryUnitPartitions() {
   selectFQList().then((data) => {
@@ -270,6 +294,13 @@ function queryUnitPartitions() {
   });
 }
 
+/**
+ * 分区选择变更事件，更新选中行的分区名称
+ * @param {any} _val - 选中值（未使用）
+ * @param {any} item - 选中项，包含 label 和 value
+ * @returns {void} 无返回值
+ * @since 2026-04-20 15:33:00
+ */
 function partitionChange(_val: any, item: any) {
   checkedRow.value.zoningName = item.label;
 }
@@ -315,8 +346,13 @@ const statusOptions = ref([
 ]);
 
 /**
- * 查询数据
- * 这个函数用于向服务器发送请求，获取列表数据，并更新前端的数据显示和分页信息。
+ * 查询仪表列表数据
+ * @param {object} param - 查询参数
+ * @param {number} param.page - 当前页码
+ * @param {number} param.pageSize - 每页条数
+ * @returns {Promise<{total: number, items: any[]}>} 返回包含总数和数据列表的 Promise
+ * @throws {Error} API 请求失败时抛出错误
+ * @since 2026-04-20 15:33:00
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, _reject) => {
@@ -344,6 +380,11 @@ function queryData({ page, pageSize }: any) {
 
 // region 模板下载
 
+/**
+ * 下载仪表批量导入模板
+ * @returns {void} 无返回值，通过 API 获取模板地址并打开新窗口下载
+ * @since 2026-04-20 15:33:00
+ */
 function downloadTemplate() {
   getTheMeterTemplate().then((data: string) => {
     window.open(data, '_blank');
@@ -353,7 +394,9 @@ function downloadTemplate() {
 // endregion
 // region 导出
 /**
- * 导出
+ * 导出仪表数据
+ * @returns {void} 无返回值，通过 API 获取导出地址并打开新窗口下载
+ * @since 2026-04-20 15:33:00
  */
 function exportFile() {
   const params = {
@@ -382,8 +425,10 @@ const action = ref<string>(
 const fileList = ref<any>([]);
 
 /**
- * 处理文件上传状态变化的函数。
- * @param info - 包含文件上传信息的对象。
+ * 处理文件上传状态变化的函数
+ * @param {any} info - 包含文件上传信息的对象，包含 file 和 fileList 属性
+ * @returns {void} 无返回值，根据上传状态显示提示信息
+ * @since 2026-04-20 15:33:00
  */
 function handleChange(info: any) {
   // 检查文件是否上传成功
@@ -414,6 +459,11 @@ const sum = ref<any>({
   on: 0,
   zx: 0,
 });
+/**
+ * 查询设备统计汇总数据（总数、启用数、停用数）
+ * @returns {void} 无返回值，通过 Promise 异步加载统计数据
+ * @since 2026-04-20 15:33:00
+ */
 function querySum() {
   selectZXList().then((data) => {
     sum.value = data;

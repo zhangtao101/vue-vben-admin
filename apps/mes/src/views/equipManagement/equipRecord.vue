@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table 的组件，以及 queryScadaEquipLedgerPage 等 API
+ * [OUTPUT]: 对外提供设备台账管理页面组件
+ * [POS]: 设备管理模块 的设备台账管理页面
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:33:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -147,8 +154,10 @@ function showDetails(row: any) {
 }
 
 /**
- * 删除数据
- * @param row
+ * 删除数据，包含确认弹窗和引用校验
+ * @param {any} row - 表格行数据，包含 id 和 equipmentNameCode
+ * @returns {void} 无返回值，确认后调用删除接口
+ * @since 2026-04-20 15:33:00
  */
 function delRow(row: any) {
   Modal.confirm({
@@ -277,8 +286,10 @@ function queryTheUsageDepartment() {
 }
 
 /**
- * 递归处理部门树，设置 disabled 属性
- * @param org
+ * 递归处理部门树，设置 disabled 属性（公司类型禁用）
+ * @param {any} org - 组织节点，包含 children 属性
+ * @returns {void} 无返回值，递归处理所有子节点
+ * @since 2026-04-20 15:33:00
  */
 function changeStatus(org: any) {
   org.disabled = org.orgType === '公司';

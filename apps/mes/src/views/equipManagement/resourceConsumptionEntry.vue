@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue 的组件，以及 energyInsert、gaugeDropDownBox API
+ * [OUTPUT]: 对外提供能源消耗录入页面组件
+ * [POS]: 设备管理模块 的能源消耗录入页面
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:33:00
+ */
 import { ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
@@ -25,22 +32,29 @@ const formData = ref<any>({
 });
 
 /**
- * 新增一行
+ * 新增一行能源消耗记录
+ * @returns {void} 无返回值
+ * @since 2026-04-20 15:33:00
  */
 function addLine() {
   formData.value.energyList.push({});
 }
 
 /**
- * 删除一行
- * @param index 下标
+ * 删除一行能源消耗记录
+ * @param {number} index - 要删除的行索引
+ * @returns {void} 无返回值
+ * @since 2026-04-20 15:33:00
  */
 function deleteLine(index: number) {
   formData.value.energyList.splice(index, 1);
 }
 
 /**
- * 提交
+ * 提交能源消耗录入数据
+ * @returns {void} 无返回值，校验通过后调用接口提交
+ * @throws {Error} 表单校验失败时不提交
+ * @since 2026-04-20 15:33:00
  */
 function submit() {
   formsRef.value.validate().then(() => {
@@ -77,6 +91,12 @@ const filterOption = (input: string, option: any) => {
     .includes(input.toLowerCase());
 };
 
+/**
+ * 查询指定仪表类型的仪表列表
+ * @param {any} row - 当前行数据，包含 meterType 和 equipmentCode
+ * @returns {function} 返回一个函数，接收参数并查询仪表下拉数据
+ * @since 2026-04-20 15:33:00
+ */
 function queryMeterData(row: any) {
   return (_param: any) => {
     gaugeDropDownBox({
