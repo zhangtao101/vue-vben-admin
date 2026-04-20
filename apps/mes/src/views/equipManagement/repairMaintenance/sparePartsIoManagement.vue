@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table 的组件，以及 getSpareOrderPage、batchApproveSpareOrder 等 API
+ * [OUTPUT]: 对外提供备件出入库管理页面组件
+ * [POS]: 维修维护模块 的备件出入库管理页面
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:23:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
@@ -143,6 +150,15 @@ const gridEvents: VxeGridListeners<any> = {};
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // ========== 数据查询 ==========
+/**
+ * 查询备件出入库单据列表数据。
+ * @param {object} page - 分页参数，包含 currentPage 和 pageSize。
+ * @param {number} page.currentPage - 当前页码，默认1。
+ * @param {number} page.pageSize - 每页条数，默认20。
+ * @returns {Promise<{total: number, items: any[]}>} 返回包含总数和数据列表的 Promise。
+ * @throws {Error} API 请求失败时抛出错误。
+ * @since 2026-04-20 15:23:00
+ */
 function queryData(page?: { currentPage: number; pageSize: number }) {
   return new Promise((resolve, reject) => {
     const params = {
@@ -168,11 +184,21 @@ function queryData(page?: { currentPage: number; pageSize: number }) {
 }
 
 // ========== 查询 ==========
+/**
+ * 执行查询操作，刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function handleQuery() {
   gridApi.reload();
 }
 
 // ========== 重置 ==========
+/**
+ * 重置查询参数和日期范围，然后刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function handleReset() {
   queryParams.value = {
     orderNo: undefined,
@@ -188,28 +214,55 @@ const drawerVisible = ref(false);
 const drawerMode = ref<'add' | 'edit' | 'view'>('add');
 const currentRow = ref<any>(null);
 
+/**
+ * 打开抽屉。
+ * @param {any} row - 当前行数据，null 表示新增。
+ * @param {'add' | 'edit' | 'view'} mode - 抽屉模式：新增/编辑/查看。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function openDrawer(row?: any, mode: 'add' | 'edit' | 'view' = 'add') {
   currentRow.value = row || null;
   drawerMode.value = mode;
   drawerVisible.value = true;
 }
 
+/**
+ * 抽屉操作成功后的回调，刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function onDrawerSuccess() {
   gridApi.reload();
 }
 
 // ========== 操作 ==========
-// 查看详情
+/**
+ * 查看单据详情。
+ * @param {any} row - 当前行数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function handleDetail(row: any) {
   openDrawer(row, 'view');
 }
 
-// 编辑
+/**
+ * 编辑单据。
+ * @param {any} row - 当前行数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function handleEdit(row: any) {
   openDrawer(row, 'edit');
 }
 
-// 删除
+/**
+ * 删除单据，包含确认弹窗。
+ * @param {any} row - 当前行数据，包含 id 和 orderName。
+ * @returns {void} 无返回值，确认后调用删除接口。
+ * @since 2026-04-20 15:23:00
+ */
 function handleDelete(row: any) {
   Modal.confirm({
     title: $t('repair.spareOrder.confirmDelete'),
@@ -225,7 +278,12 @@ function handleDelete(row: any) {
   });
 }
 
-// 审核通过
+/**
+ * 审核通过单据，包含确认弹窗。
+ * @param {any} row - 当前行数据，包含 id 和 orderName。
+ * @returns {void} 无返回值，确认后调用审核接口。
+ * @since 2026-04-20 15:23:00
+ */
 function handleApprove(row: any) {
   Modal.confirm({
     title: $t('repair.spareOrder.approveConfirm'),
@@ -241,7 +299,12 @@ function handleApprove(row: any) {
   });
 }
 
-// 审核不通过
+/**
+ * 驳回单据，包含确认弹窗。
+ * @param {any} row - 当前行数据，包含 id 和 orderName。
+ * @returns {void} 无返回值，确认后调用驳回接口。
+ * @since 2026-04-20 15:23:00
+ */
 function handleReject(row: any) {
   Modal.confirm({
     title: $t('repair.spareOrder.rejectConfirm'),
@@ -257,7 +320,11 @@ function handleReject(row: any) {
   });
 }
 
-// 新增
+/**
+ * 打开发新增单据抽屉。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function handleAdd() {
   openDrawer(null, 'add');
 }
@@ -275,12 +342,24 @@ const statusColorMap: Record<string, string> = {
 };
 
 // ========== 状态显示文本 ==========
+/**
+ * 获取单据类型的显示文本。
+ * @param {string} type - 单据类型编码（IN/OUT）。
+ * @returns {string} 单据类型显示文本。
+ * @since 2026-04-20 15:23:00
+ */
 function getOrderTypeText(type: string) {
   return type === 'IN'
     ? $t('repair.spareOrder.orderTypeIn')
     : $t('repair.spareOrder.orderTypeOut');
 }
 
+/**
+ * 获取审核状态的显示文本。
+ * @param {string} status - 审核状态编码（PENDING/APPROVED/REJECTED）。
+ * @returns {string} 审核状态显示文本，未知状态返回原始值。
+ * @since 2026-04-20 15:23:00
+ */
 function getStatusText(status: string) {
   switch (status) {
     case 'APPROVED': {
@@ -299,14 +378,32 @@ function getStatusText(status: string) {
 }
 
 // ========== 判断操作是否可用 ==========
+/**
+ * 判断当前单据是否可编辑（待审核或已驳回状态可编辑）。
+ * @param {any} row - 当前行数据。
+ * @returns {boolean} 是否可编辑。
+ * @since 2026-04-20 15:23:00
+ */
 function canEdit(row: any) {
   return row.status === 'PENDING' || row.status === 'REJECTED';
 }
 
+/**
+ * 判断当前单据是否可删除（待审核或已驳回状态可删除）。
+ * @param {any} row - 当前行数据。
+ * @returns {boolean} 是否可删除。
+ * @since 2026-04-20 15:23:00
+ */
 function canDelete(row: any) {
   return row.status === 'PENDING' || row.status === 'REJECTED';
 }
 
+/**
+ * 判断当前单据是否可审批（仅待审核状态可审批）。
+ * @param {any} row - 当前行数据。
+ * @returns {boolean} 是否可审批。
+ * @since 2026-04-20 15:23:00
+ */
 function canApprove(row: any) {
   return row.status === 'PENDING';
 }

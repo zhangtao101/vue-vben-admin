@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table 的组件，以及 getStockListPage、scrapSpare、searchBaseConfig API
+ * [OUTPUT]: 对外提供备件库存管理页面组件
+ * [POS]: 维修维护模块 的备件库存管理页面
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-20 15:23:00
+ */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
@@ -52,6 +59,11 @@ const queryParams = ref<any>({
 const spareTypeOptions = ref<any[]>([]);
 
 // 加载下拉选项
+/**
+ * 加载备件类型下拉选项。
+ * @returns {void} 无返回值，通过 Promise 异步加载数据。
+ * @since 2026-04-20 15:23:00
+ */
 function loadSpareTypeOptions() {
   searchBaseConfig({ configType: 'SPARE_TYPE' }).then((res: any[]) => {
     spareTypeOptions.value = (res || []).map((item: any) => ({
@@ -62,6 +74,12 @@ function loadSpareTypeOptions() {
 }
 
 // ========== 格式化函数 ==========
+/**
+ * 根据备件类型编码获取对应的显示文本。
+ * @param {string} spareType - 备件类型编码。
+ * @returns {string} 备件类型显示文本，未找到时返回原始编码。
+ * @since 2026-04-20 15:23:00
+ */
 function getSpareTypeText(spareType: string) {
   const option = spareTypeOptions.value.find(
     (item) => item.value === spareType,
@@ -153,6 +171,15 @@ const gridEvents: VxeGridListeners<any> = {};
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // ========== 数据查询 ==========
+/**
+ * 查询备件库存列表数据。
+ * @param {object} page - 分页参数，包含 currentPage 和 pageSize。
+ * @param {number} page.currentPage - 当前页码，默认1。
+ * @param {number} page.pageSize - 每页条数，默认20。
+ * @returns {Promise<{total: number, items: any[]}>} 返回包含总数和数据列表的 Promise。
+ * @throws {Error} API 请求失败时抛出错误。
+ * @since 2026-04-20 15:23:00
+ */
 function queryData(page?: { currentPage: number; pageSize: number }) {
   return new Promise((resolve, reject) => {
     const params = {
@@ -177,11 +204,21 @@ function queryData(page?: { currentPage: number; pageSize: number }) {
 }
 
 // ========== 查询 ==========
+/**
+ * 执行查询操作，刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function handleQuery() {
   gridApi.reload();
 }
 
 // ========== 重置 ==========
+/**
+ * 重置查询参数并刷新表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function handleReset() {
   queryParams.value = {
     spareCode: undefined,
@@ -195,6 +232,11 @@ function handleReset() {
 // ========== 抽屉控制 ==========
 const scrapRecordDrawerVisible = ref(false);
 
+/**
+ * 打开报废记录抽屉。
+ * @returns {void} 无返回值。
+ * @since 2026-04-20 15:23:00
+ */
 function openScrapRecordDrawer() {
   scrapRecordDrawerVisible.value = true;
 }
@@ -207,6 +249,12 @@ const scrapFormData = ref({
   scrapReason: '',
 });
 
+/**
+ * 打开报废弹窗。
+ * @param {any} row - 当前行数据，包含备件信息。
+ * @returns {void} 无返回值，库存不足时提示警告。
+ * @since 2026-04-20 15:23:00
+ */
 function handleScrap(row: any) {
   if (!row.stockQuantity || row.stockQuantity <= 0) {
     message.warning($t('repair.spareInventory.noStockWarning'));
@@ -220,6 +268,12 @@ function handleScrap(row: any) {
   scrapVisible.value = true;
 }
 
+/**
+ * 提交报废表单。
+ * @returns {void} 无返回值，成功后关闭弹窗并刷新表格。
+ * @throws {Error} 提交失败时提示错误信息。
+ * @since 2026-04-20 15:23:00
+ */
 function submitScrap() {
   if (!scrapRow.value?.id) {
     return;
