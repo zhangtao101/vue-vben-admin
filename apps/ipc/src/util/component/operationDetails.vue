@@ -449,6 +449,11 @@ defineExpose({
         <FormItem label="线别" style="margin-bottom: 1em">
           <Input v-model:value="queryParams.lineType" />
         </FormItem>
+
+        <!-- 备注 -->
+        <FormItem label="备注" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.ramark" />
+        </FormItem>
       </Form>
     </div>
     <!-- endregion -->
