@@ -93,5 +93,14 @@
     "url": "url",
     "isEnable": "状态",
     "description": "描述"
+  },
+  "resourceMgmt": {
+    "name": "资源名称",
+    "alink": "资源链接",
+    "tenantCode": "用户编号",
+    "tenantName": "用户名称",
+    "tenant": "用户",
+    "createBy": "创建人",
+    "createTime": "创建时间"
   }
 }

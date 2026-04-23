@@ -93,5 +93,14 @@
     "url": "URL",
     "isEnable": "Enabled",
     "description": "Description"
+  },
+  "resourceMgmt": {
+    "name": "ResourceName",
+    "alink": "ResourceLink",
+    "tenantCode": "TenantCode",
+    "tenantName": "TenantName",
+    "tenant": "Tenant",
+    "createBy": "Creator",
+    "createTime": "CreateTime"
   }
 }

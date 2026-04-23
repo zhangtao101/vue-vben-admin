@@ -1,7 +1,7 @@
 import { requestClient } from '#/api/request';
 
 /**
- * 查询设备
+ * 查询外链
  */
 export async function queryIframeUrl(key: any) {
   return requestClient.get<any>(
