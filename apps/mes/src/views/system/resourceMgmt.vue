@@ -16,7 +16,20 @@ import { useAccessStore } from '@vben/stores';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
-import { Button, Card, Drawer, Form, FormItem, Input, message, Modal, Select, SelectOption, Space, Tooltip } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Drawer,
+  Form,
+  FormItem,
+  Input,
+  message,
+  Modal,
+  Select,
+  SelectOption,
+  Space,
+  Tooltip,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -66,7 +79,9 @@ const queryParams = ref<any>({
 function formatTenantCell(row: any) {
   const tenants = row.tenants || [];
   if (tenants.length === 0) return '-';
-  return tenants.map((t: any) => `${t.tenantCode} - ${t.tenantName}`).join('；');
+  return tenants
+    .map((t: any) => `${t.tenantCode} - ${t.tenantName}`)
+    .join('；');
 }
 
 const gridOptions: VxeGridProps<any> = {
@@ -82,8 +97,16 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 200,
       slots: { default: 'tenant' },
     },
-    { field: 'createBy', title: $t('system.resourceMgmt.createBy'), minWidth: 100 },
-    { field: 'createTime', title: $t('system.resourceMgmt.createTime'), minWidth: 160 },
+    {
+      field: 'createBy',
+      title: $t('system.resourceMgmt.createBy'),
+      minWidth: 100,
+    },
+    {
+      field: 'createTime',
+      title: $t('system.resourceMgmt.createTime'),
+      minWidth: 160,
+    },
     {
       field: 'action',
       title: $t('common.action'),
@@ -127,7 +150,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
  * @param {number} params.pageSize - 每页条数
  * @returns {Promise<{total: number, items: any[]}>} 分页数据
  */
-function queryData({ pageNum, pageSize }: { pageNum: number; pageSize: number }) {
+function queryData({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
   return new Promise((resolve) => {
     const params = {
       ...queryParams.value,
@@ -254,23 +283,27 @@ function searchTenant(keyword: string) {
     );
     return;
   }
-  listSysPerson({ perName: keyword, pageNum: 1, pageSize: 50 }).then((res: any) => {
-    const list = res.list || res || [];
-    const searchResults = list.map((item: any) => ({
-      label: `${item.workNumber} - ${item.perName}`,
-      value: item.workNumber,
-      tenantName: item.perName,
-    }));
-    // 合并已选中选项和新搜索结果，去重
-    const existingValues = new Set(tenantOptions.value.map((item) => item.value));
-    const mergedOptions = [...tenantOptions.value];
-    searchResults.forEach((item: any) => {
-      if (!existingValues.has(item.value)) {
-        mergedOptions.push(item);
-      }
-    });
-    tenantOptions.value = mergedOptions;
-  });
+  listSysPerson({ perName: keyword, pageNum: 1, pageSize: 50 }).then(
+    (res: any) => {
+      const list = res.list || res || [];
+      const searchResults = list.map((item: any) => ({
+        label: `${item.workNumber} - ${item.perName}`,
+        value: item.workNumber,
+        tenantName: item.perName,
+      }));
+      // 合并已选中选项和新搜索结果，去重
+      const existingValues = new Set(
+        tenantOptions.value.map((item) => item.value),
+      );
+      const mergedOptions = [...tenantOptions.value];
+      searchResults.forEach((item: any) => {
+        if (!existingValues.has(item.value)) {
+          mergedOptions.push(item);
+        }
+      });
+      tenantOptions.value = mergedOptions;
+    },
+  );
 }
 
 /**
@@ -315,9 +348,27 @@ function handleOpenBiScreen() {
 
 // ========== 表单验证规则 ==========
 const rules: Record<string, any[]> = {
-  name: [{ required: true, message: `请输入${$t('system.resourceMgmt.name')}`, trigger: 'blur' }],
-  alink: [{ required: true, message: `请输入${$t('system.resourceMgmt.alink')}`, trigger: 'blur' }],
-  selectedTenants: [{ required: true, message: `请选择${$t('system.resourceMgmt.tenant')}`, trigger: 'change' }],
+  name: [
+    {
+      required: true,
+      message: `请输入${$t('system.resourceMgmt.name')}`,
+      trigger: 'blur',
+    },
+  ],
+  alink: [
+    {
+      required: true,
+      message: `请输入${$t('system.resourceMgmt.alink')}`,
+      trigger: 'blur',
+    },
+  ],
+  selectedTenants: [
+    {
+      required: true,
+      message: `请选择${$t('system.resourceMgmt.tenant')}`,
+      trigger: 'change',
+    },
+  ],
 };
 
 // ========== 监听抽屉打开 ==========
@@ -394,7 +445,10 @@ onMounted(() => {
     <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 资源名称 -->
-        <FormItem :label="$t('system.resourceMgmt.name')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('system.resourceMgmt.name')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.name"
             :placeholder="`请输入${$t('system.resourceMgmt.name')}`"
@@ -426,7 +480,10 @@ onMounted(() => {
               数据报表
             </Button>
             <Button @click="handleOpenBiScreen">
-              <Icon icon="mdi:television-classic" class="inline-block align-middle" />
+              <Icon
+                icon="mdi:television-classic"
+                class="inline-block align-middle"
+              />
               数据大屏
             </Button>
             <Button v-if="addButton" type="primary" @click="handleAdd">
@@ -452,7 +509,10 @@ onMounted(() => {
                 class="px-1"
                 @click="handleEdit(row)"
               >
-                <Icon icon="mdi:pencil-outline" class="inline-block align-middle text-lg" />
+                <Icon
+                  icon="mdi:pencil-outline"
+                  class="inline-block align-middle text-lg"
+                />
               </Button>
             </Tooltip>
 
@@ -465,7 +525,10 @@ onMounted(() => {
                 class="px-1"
                 @click="handleDelete(row)"
               >
-                <Icon icon="mdi:delete-outline" class="inline-block align-middle text-lg" />
+                <Icon
+                  icon="mdi:delete-outline"
+                  class="inline-block align-middle text-lg"
+                />
               </Button>
             </Tooltip>
           </Space>
@@ -502,7 +565,10 @@ onMounted(() => {
           />
         </FormItem>
 
-        <FormItem :label="$t('system.resourceMgmt.tenant')" name="selectedTenants">
+        <FormItem
+          :label="$t('system.resourceMgmt.tenant')"
+          name="selectedTenants"
+        >
           <Select
             v-model:value="formData.selectedTenants"
             mode="multiple"
