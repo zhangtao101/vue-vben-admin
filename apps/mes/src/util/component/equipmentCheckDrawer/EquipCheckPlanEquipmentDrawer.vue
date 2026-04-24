@@ -13,6 +13,11 @@ defineOptions({
   name: 'EquipCheckPlanEquipmentDrawer',
 });
 
+interface Props {
+  visible?: boolean;
+  schemeId?: number | string;
+}
+
 const props = withDefaults(defineProps<Props>(), {
   visible: false,
   schemeId: '',
@@ -21,11 +26,6 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   'update:visible': [value: boolean];
 }>();
-
-interface Props {
-  visible?: boolean;
-  schemeId?: number | string;
-}
 
 // ========== 抽屉控制 ==========
 const drawerVisible = ref(props.visible);
