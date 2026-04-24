@@ -313,10 +313,8 @@ function handleConfirm() {
     <template #footer>
       <Space class="w-full justify-end">
         <Button @click="handleClose">
-{{
-          $t('equipmentSpotCheckScheme.equipmentSelectDrawer.cancel')
-        }}
-</Button>
+          {{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.cancel') }}
+        </Button>
         <Button type="primary" @click="handleConfirm">
           <Icon icon="mdi:check" class="inline-block align-middle" />
           {{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.confirm') }}

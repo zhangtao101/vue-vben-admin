@@ -233,12 +233,12 @@ function handleDelete(row: InspectionScheme) {
 function handleStatusChange(row: InspectionScheme) {
   const api =
     row.status === 'ACTIVE' ? disableInspectionScheme : enableInspectionScheme;
-    if(row.id) {
-      api(row.id).then(() => {
-        message.success($t('common.successfulOperation'));
-        gridApi.reload();
-      });
-    }
+  if (row.id) {
+    api(row.id).then(() => {
+      message.success($t('common.successfulOperation'));
+      gridApi.reload();
+    });
+  }
 }
 </script>
 
