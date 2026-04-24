@@ -1,4 +1,5 @@
 export * from './energyEquipmentManagement.service';
+export * from './equipCheckPlan.service';
 export * from './equipMaintenance.service';
 export * from './equipmentFailure.service';
 export * from './equipmentInfo.service';

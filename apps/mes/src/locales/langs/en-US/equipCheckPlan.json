@@ -1,0 +1,38 @@
+{
+  "planName": "Plan Name",
+  "schemeName": "Scheme",
+  "inspectionType": "Inspection Type",
+  "equipmentGroup": "Equipment Group",
+  "equipmentCount": "Equipment Count",
+  "equipmentCodes": "Bound Equipment",
+  "firstExecuteTime": "First Execute Time",
+  "frequencyValue": "Frequency Value",
+  "frequencyUnit": "Frequency Unit",
+  "effectiveDate": "Effective Date",
+  "endDate": "End Date",
+  "status": "Status",
+  "remark": "Remark",
+  "keyword": "Keyword",
+  "keywordPlaceholder": "Please enter plan name",
+  "inspectionTypePlaceholder": "Please select inspection type",
+  "statusPlaceholder": "Please select status",
+  "inspectionTypeOptions": {
+    "INSPECTION": "Inspection",
+    "PATROL": "Patrol"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "Day",
+    "WEEK": "Week",
+    "MONTH": "Month"
+  },
+  "statusOptions": {
+    "ACTIVE": "Active",
+    "DISABLED": "Disabled"
+  },
+  "confirmDelete": "Are you sure to delete this inspection plan?",
+  "viewTitle": "View Inspection Plan",
+  "addTitle": "Add Inspection Plan",
+  "editTitle": "Edit Inspection Plan",
+  "viewEquipment": "View Equipment",
+  "viewItem": "View Check Items"
+}

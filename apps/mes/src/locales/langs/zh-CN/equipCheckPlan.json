@@ -1,0 +1,38 @@
+{
+  "planName": "计划名称",
+  "schemeName": "关联方案",
+  "inspectionType": "点巡检类型",
+  "equipmentGroup": "设备组",
+  "equipmentCount": "设备数量",
+  "equipmentCodes": "绑定设备",
+  "firstExecuteTime": "首次执行时间",
+  "frequencyValue": "频率值",
+  "frequencyUnit": "频率单位",
+  "effectiveDate": "生效日期",
+  "endDate": "结束日期",
+  "status": "状态",
+  "remark": "备注",
+  "keyword": "关键词",
+  "keywordPlaceholder": "请输入计划名称",
+  "inspectionTypePlaceholder": "请选择点巡检类型",
+  "statusPlaceholder": "请选择状态",
+  "inspectionTypeOptions": {
+    "INSPECTION": "点检",
+    "PATROL": "巡检"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "天",
+    "WEEK": "周",
+    "MONTH": "月"
+  },
+  "statusOptions": {
+    "ACTIVE": "启用",
+    "DISABLED": "停用"
+  },
+  "confirmDelete": "确定删除该点检计划吗？",
+  "viewTitle": "查看点检计划",
+  "addTitle": "新增点检计划",
+  "editTitle": "编辑点检计划",
+  "viewEquipment": "查看绑定设备",
+  "viewItem": "查看点检项"
+}
