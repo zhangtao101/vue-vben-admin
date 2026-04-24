@@ -42,12 +42,30 @@ export function queryScadaEquipLedgerById(query: any) {
 }
 
 /**
- * 根据设备编号查询设备台账详情
- * @param query 需包含设备编号
+ * 设备台账详情
  */
-export function queryScadaEquipLedgerByCode(query: any) {
-  return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentLedger/selectByCode?${qs.stringify(query)}`,
+export interface EquipmentLedgerInfo {
+  /** 主键ID */
+  id?: number;
+  /** 设备编码 */
+  equipmentCode?: string;
+  /** 设备名称 */
+  equipmentName?: string;
+  /** 型号 */
+  model?: string;
+  /** 位置 */
+  location?: string;
+  /** 使用部门 */
+  useDepartmentName?: string;
+}
+
+/**
+ * 根据设备编号查询设备台账详情
+ * @param code 设备编码
+ */
+export function queryScadaEquipLedgerByCode(code: string) {
+  return requestClient.get<EquipmentLedgerInfo>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentLedger/selectByCode?code=${code}`,
   );
 }
 
