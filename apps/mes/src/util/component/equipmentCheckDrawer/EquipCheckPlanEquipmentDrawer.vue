@@ -3,7 +3,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref, watch } from 'vue';
 
-import { Drawer } from 'ant-design-vue';
+import { Drawer, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getInspectionSchemeById, queryScadaEquipLedgerByCode } from '#/api';
@@ -136,9 +136,8 @@ function handleClose() {
     :destroy-on-close="true"
     @close="handleClose"
   >
-    <div v-if="loading" class="flex items-center justify-center p-8">
-      <span>加载中...</span>
-    </div>
-    <Grid v-else />
+    <Spin :spinning="loading">
+      <Grid />
+    </Spin>
   </Drawer>
 </template>
