@@ -213,15 +213,17 @@ function handleDelete(row: InspectionScheme) {
     okButtonProps: { danger: true },
     onOk() {
       return new Promise((resolve) => {
-        deleteInspectionScheme(row.id)
-          .then(() => {
-            message.success($t('common.successfulOperation'));
-            gridApi.reload();
-            resolve(true);
-          })
-          .catch(() => {
-            resolve(false);
-          });
+        if (row.id) {
+          deleteInspectionScheme(row.id)
+            .then(() => {
+              message.success($t('common.successfulOperation'));
+              gridApi.reload();
+              resolve(true);
+            })
+            .catch(() => {
+              resolve(false);
+            });
+        }
       });
     },
   });
@@ -231,10 +233,12 @@ function handleDelete(row: InspectionScheme) {
 function handleStatusChange(row: InspectionScheme) {
   const api =
     row.status === 'ACTIVE' ? disableInspectionScheme : enableInspectionScheme;
-  api(row.id).then(() => {
-    message.success($t('common.successfulOperation'));
-    gridApi.reload();
-  });
+    if(row.id) {
+      api(row.id).then(() => {
+        message.success($t('common.successfulOperation'));
+        gridApi.reload();
+      });
+    }
 }
 </script>
 
