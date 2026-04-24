@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+/**
+ * 设备保养方案-保养项选择抽屉
+ */
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref, watch } from 'vue';
@@ -20,7 +23,7 @@ import { getEquipCheckItemList } from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({
-  name: 'EquipCheckItemSelectDrawer',
+  name: 'TallyMaintenanceItemSelectDrawer',
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,7 +37,7 @@ const emit = defineEmits<{
 }>();
 
 interface Props {
-  visible: boolean;
+  visible?: boolean;
   selectedRows?: any[];
 }
 
@@ -156,7 +159,7 @@ function queryData({
   return new Promise((resolve) => {
     const params = {
       ...queryParams.value,
-      maintenanceTag: 2,
+      maintenanceTag: 1, // 保养项
       pageNum,
       pageSize,
     };
@@ -212,7 +215,7 @@ function handleClose() {
 <template>
   <Drawer
     v-model:open="drawerVisible"
-    :title="$t('equipmentSpotCheckScheme.selectCheckItem')"
+    :title="$t('tallyScheme.selectMaintenanceItem')"
     width="800"
     :destroy-on-close="true"
     @close="handleClose"
@@ -226,9 +229,7 @@ function handleClose() {
         >
           <Input
             v-model:value="queryParams.checkItemCode"
-            :placeholder="
-              $t('equipmentSpotCheckScheme.checkItemCodePlaceholder')
-            "
+            :placeholder="$t('equipmentSpotCheckScheme.checkItemCodePlaceholder')"
             allow-clear
             style="width: 150px"
           />
@@ -240,9 +241,7 @@ function handleClose() {
         >
           <Input
             v-model:value="queryParams.checkItemName"
-            :placeholder="
-              $t('equipmentSpotCheckScheme.checkItemNamePlaceholder')
-            "
+            :placeholder="$t('equipmentSpotCheckScheme.checkItemNamePlaceholder')"
             allow-clear
             style="width: 150px"
           />

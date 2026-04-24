@@ -2,7 +2,8 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { InspectionScheme } from '#/api';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
@@ -32,11 +33,20 @@ import {
   getInspectionSchemePage,
 } from '#/api';
 import { $t } from '#/locales';
+import { queryAuth } from '#/util';
 import EquipmentSpotCheckSchemeDrawer from '#/util/component/equipmentCheckDrawer/EquipmentSpotCheckSchemeDrawer.vue';
 
 defineOptions({
   name: 'EquipmentSpotCheckScheme',
 });
+
+// ========== 路由和权限 ==========
+const route = useRoute();
+
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
+
+// endregion
 
 // ========== 查询参数 ==========
 const queryParams = ref({
@@ -240,6 +250,14 @@ function handleStatusChange(row: InspectionScheme) {
     });
   }
 }
+
+// ========== 页面加载 ==========
+onMounted(() => {
+  // 查询权限
+  queryAuth(route.meta.code as string).then((data) => {
+    author.value = data;
+  });
+});
 </script>
 
 <template>
@@ -329,7 +347,11 @@ function handleStatusChange(row: InspectionScheme) {
     <Card>
       <Grid>
         <template #toolbar-tools>
-          <Button type="primary" @click="handleAdd">
+          <Button
+            v-if="author.includes('新增')"
+            type="primary"
+            @click="handleAdd"
+          >
             <Icon icon="mdi:plus" class="inline-block align-middle" />
             {{ $t('common.add') }}
           </Button>
@@ -356,6 +378,7 @@ function handleStatusChange(row: InspectionScheme) {
             :checked-text="$t('equipmentSpotCheckScheme.statusActive')"
             :un-checked-text="$t('equipmentSpotCheckScheme.statusDisabled')"
             size="small"
+            :disabled="!author.includes('状态变更')"
             @change="handleStatusChange(row)"
           />
         </template>
@@ -373,7 +396,7 @@ function handleStatusChange(row: InspectionScheme) {
               </Button>
             </Tooltip>
 
-            <Tooltip>
+            <Tooltip v-if="author.includes('编辑')">
               <template #title>{{ $t('common.edit') }}</template>
               <Button type="link" class="px-1" @click="handleEdit(row)">
                 <Icon
@@ -383,7 +406,7 @@ function handleStatusChange(row: InspectionScheme) {
               </Button>
             </Tooltip>
 
-            <Tooltip>
+            <Tooltip v-if="author.includes('删除')">
               <template #title>{{ $t('common.delete') }}</template>
               <Button
                 type="link"

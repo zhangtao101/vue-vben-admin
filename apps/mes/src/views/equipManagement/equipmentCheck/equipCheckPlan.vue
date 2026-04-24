@@ -9,7 +9,8 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import type { InspectionPlan } from '#/api';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
@@ -39,11 +40,20 @@ import {
   getInspectionPlanPage,
 } from '#/api';
 import { $t } from '#/locales';
+import { queryAuth } from '#/util';
 import EquipCheckPlanDrawer from '#/util/component/equipmentCheckDrawer/EquipCheckPlanDrawer.vue';
 
 defineOptions({
   name: 'EquipCheckPlan',
 });
+
+// ========== 路由和权限 ==========
+const route = useRoute();
+
+// 当前页面按钮权限列表
+const author = ref<string[]>([]);
+
+// endregion
 
 // ========== 查询参数 ==========
 const queryParams = ref({
@@ -173,7 +183,7 @@ function queryData({
   pageSize: number;
 }) {
   return new Promise((resolve) => {
-    const params = {
+    const params: any = {
       ...queryParams.value,
       pageNum,
       pageSize,
@@ -273,6 +283,14 @@ function formatFrequency(row: any) {
   const unit = $t(`equipCheckPlan.frequencyUnitOptions.${row.frequencyUnit}`);
   return `${value} ${unit}`;
 }
+
+// ========== 页面加载 ==========
+onMounted(() => {
+  // 查询权限
+  queryAuth(route.meta.code as string).then((data) => {
+    author.value = data;
+  });
+});
 </script>
 
 <template>
@@ -346,7 +364,11 @@ function formatFrequency(row: any) {
     <Card>
       <Grid>
         <template #toolbar-tools>
-          <Button type="primary" @click="handleAdd">
+          <Button
+            v-if="author.includes('新增')"
+            type="primary"
+            @click="handleAdd"
+          >
             <Icon icon="mdi:plus" class="inline-block align-middle" />
             {{ $t('common.add') }}
           </Button>
@@ -379,6 +401,7 @@ function formatFrequency(row: any) {
             :checked-text="$t('equipCheckPlan.statusOptions.ACTIVE')"
             :un-checked-text="$t('equipCheckPlan.statusOptions.DISABLED')"
             size="small"
+            :disabled="!author.includes('状态变更')"
             @change="handleStatusChange(row)"
           />
         </template>
@@ -396,7 +419,7 @@ function formatFrequency(row: any) {
               </Button>
             </Tooltip>
 
-            <Tooltip>
+            <Tooltip v-if="author.includes('编辑')">
               <template #title>{{ $t('common.edit') }}</template>
               <Button type="link" class="px-1" @click="handleEdit(row)">
                 <Icon
@@ -406,7 +429,7 @@ function formatFrequency(row: any) {
               </Button>
             </Tooltip>
 
-            <Tooltip>
+            <Tooltip v-if="author.includes('删除')">
               <template #title>{{ $t('common.delete') }}</template>
               <Button
                 type="link"

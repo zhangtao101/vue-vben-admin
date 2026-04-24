@@ -1,0 +1,43 @@
+{
+  "schemeName": "方案名称",
+  "planType": "保养类型",
+  "isStopMachine": "是否停机",
+  "equipmentGroup": "设备组",
+  "equipmentCodes": "绑定设备",
+  "equipmentCount": "设备数量",
+  "itemCount": "保养项目数量",
+  "status": "状态",
+  "operator": "负责人",
+  "remark": "备注",
+  "keyword": "关键词",
+  "keywordPlaceholder": "请输入方案名称",
+  "planTypePlaceholder": "请选择保养类型",
+  "statusPlaceholder": "请选择状态",
+  "planTypeOptions": {
+    "REGULAR": "定期保养",
+    "CONDITIONAL": "条件保养"
+  },
+  "statusOptions": {
+    "ACTIVE": "启用",
+    "DISABLED": "停用"
+  },
+  "confirmDelete": "确定删除该保养方案吗？",
+  "viewTitle": "查看保养方案",
+  "addTitle": "新增保养方案",
+  "editTitle": "编辑保养方案",
+  "viewEquipment": "查看绑定设备",
+  "viewItem": "查看保养项目",
+  "isStopMachineYes": "是",
+  "isStopMachineNo": "否",
+  "maintenanceItem": "保养项",
+  "selectMaintenanceItem": "选择保养项",
+  "addItem": "添加保养项",
+  "pleaseAddItem": "请添加保养项",
+  "sequenceNo": "序号",
+  "itemCode": "保养项编码",
+  "itemName": "保养项名称",
+  "itemRequirement": "保养要求",
+  "itemStandard": "保养标准",
+  "itemRequirementPlaceholder": "请输入保养要求",
+  "itemStandardPlaceholder": "请输入保养标准"
+}

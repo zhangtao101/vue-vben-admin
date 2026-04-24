@@ -1,0 +1,43 @@
+{
+  "schemeName": "Scheme Name",
+  "planType": "Maintenance Type",
+  "isStopMachine": "Stop Machine Required",
+  "equipmentGroup": "Equipment Group",
+  "equipmentCodes": "Bound Equipment",
+  "equipmentCount": "Equipment Count",
+  "itemCount": "Item Count",
+  "status": "Status",
+  "operator": "Operator",
+  "remark": "Remark",
+  "keyword": "Keyword",
+  "keywordPlaceholder": "Please enter scheme name",
+  "planTypePlaceholder": "Please select maintenance type",
+  "statusPlaceholder": "Please select status",
+  "planTypeOptions": {
+    "REGULAR": "Regular Maintenance",
+    "CONDITIONAL": "Conditional Maintenance"
+  },
+  "statusOptions": {
+    "ACTIVE": "Active",
+    "DISABLED": "Disabled"
+  },
+  "confirmDelete": "Are you sure to delete this maintenance scheme?",
+  "viewTitle": "View Maintenance Scheme",
+  "addTitle": "Add Maintenance Scheme",
+  "editTitle": "Edit Maintenance Scheme",
+  "viewEquipment": "View Bound Equipment",
+  "viewItem": "View Maintenance Items",
+  "isStopMachineYes": "Yes",
+  "isStopMachineNo": "No",
+  "maintenanceItem": "Maintenance Items",
+  "selectMaintenanceItem": "Select Maintenance Items",
+  "addItem": "Add Items",
+  "pleaseAddItem": "Please add maintenance items",
+  "sequenceNo": "No.",
+  "itemCode": "Item Code",
+  "itemName": "Item Name",
+  "itemRequirement": "Requirement",
+  "itemStandard": "Standard",
+  "itemRequirementPlaceholder": "Please enter requirement",
+  "itemStandardPlaceholder": "Please enter standard"
+}

@@ -13,3 +13,4 @@ export * from './sparePartsInventoryMgmt.service';
 export * from './sparePartsIoManagement.service';
 export * from './sparePartsManagement.service';
 export * from './subsystem.service';
+export * from './tallyScheme.service';
