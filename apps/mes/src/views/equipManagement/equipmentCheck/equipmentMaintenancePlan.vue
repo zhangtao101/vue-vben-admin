@@ -75,8 +75,14 @@ const planTypeOptions = [
 ];
 
 const statusOptions = [
-  { label: $t('equipmentMaintenancePlan.statusOptions.ACTIVE'), value: 'ACTIVE' },
-  { label: $t('equipmentMaintenancePlan.statusOptions.DISABLED'), value: 'DISABLED' },
+  {
+    label: $t('equipmentMaintenancePlan.statusOptions.ACTIVE'),
+    value: 'ACTIVE',
+  },
+  {
+    label: $t('equipmentMaintenancePlan.statusOptions.DISABLED'),
+    value: 'DISABLED',
+  },
 ];
 
 // ========== 表格配置 ==========
@@ -253,9 +259,7 @@ function handleDelete(row: MaintenancePlan) {
 // ========== 启用/停用 ==========
 function handleStatusChange(row: MaintenancePlan) {
   const api =
-    row.status === 'ACTIVE'
-      ? disableMaintenancePlan
-      : enableMaintenancePlan;
+    row.status === 'ACTIVE' ? disableMaintenancePlan : enableMaintenancePlan;
   if (row.id) {
     api(row.id).then(() => {
       message.success($t('common.successfulOperation'));
@@ -292,7 +296,10 @@ function formatUnit(unit?: string) {
     <!-- 查询区域 -->
     <Card class="!mb-4">
       <Form layout="inline">
-        <FormItem :label="$t('equipmentMaintenancePlan.planName')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('equipmentMaintenancePlan.planName')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.keyword"
             :placeholder="$t('equipmentMaintenancePlan.keywordPlaceholder')"
@@ -320,7 +327,10 @@ function formatUnit(unit?: string) {
           </Select>
         </FormItem>
 
-        <FormItem :label="$t('equipmentMaintenancePlan.status')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('equipmentMaintenancePlan.status')"
+          style="margin-bottom: 1em"
+        >
           <Select
             v-model:value="queryParams.status"
             allow-clear
@@ -381,7 +391,9 @@ function formatUnit(unit?: string) {
           <Switch
             :checked="row.status === 'ACTIVE'"
             :checked-text="$t('equipmentMaintenancePlan.statusOptions.ACTIVE')"
-            :un-checked-text="$t('equipmentMaintenancePlan.statusOptions.DISABLED')"
+            :un-checked-text="
+              $t('equipmentMaintenancePlan.statusOptions.DISABLED')
+            "
             size="small"
             :disabled="!author.includes('状态变更')"
             @change="handleStatusChange(row)"
