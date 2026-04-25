@@ -13,10 +13,7 @@ import { ref, watch } from 'vue';
 import { Drawer, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getMaintenanceSchemeById,
-  queryScadaEquipLedgerByCode,
-} from '#/api';
+import { getMaintenanceSchemeById, queryScadaEquipLedgerByCode } from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({
@@ -67,16 +64,12 @@ const gridOptions: VxeGridProps<any> = {
     { type: 'seq', width: 60, title: '序号' },
     {
       field: 'equipmentCode',
-      title: $t(
-        'equipmentMaintenancePlan.bindEquipmentDrawer.equipmentCode',
-      ),
+      title: $t('equipmentMaintenancePlan.bindEquipmentDrawer.equipmentCode'),
       minWidth: 140,
     },
     {
       field: 'equipmentName',
-      title: $t(
-        'equipmentMaintenancePlan.bindEquipmentDrawer.equipmentName',
-      ),
+      title: $t('equipmentMaintenancePlan.bindEquipmentDrawer.equipmentName'),
       minWidth: 160,
     },
     {

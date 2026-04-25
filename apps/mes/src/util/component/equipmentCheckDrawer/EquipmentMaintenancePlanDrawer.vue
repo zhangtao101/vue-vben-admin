@@ -321,7 +321,9 @@ function handleClose() {
  */
 function formatFrequency(row: any) {
   const value = row.frequencyValue || '';
-  const unit = $t(`equipmentMaintenancePlan.frequencyUnitOptions.${row.frequencyUnit}`);
+  const unit = $t(
+    `equipmentMaintenancePlan.frequencyUnitOptions.${row.frequencyUnit}`,
+  );
   return `${value} ${unit}`;
 }
 
@@ -358,25 +360,39 @@ const drawerTitle = computed(() => {
                 : $t('equipmentMaintenancePlan.statusOptions.DISABLED')
             }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('equipmentMaintenancePlan.schemeName')" :span="2">
+          <DescriptionsItem
+            :label="$t('equipmentMaintenancePlan.schemeName')"
+            :span="2"
+          >
             {{ props.row.schemeName }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('equipmentMaintenancePlan.equipmentCount')">
+          <DescriptionsItem
+            :label="$t('equipmentMaintenancePlan.equipmentCount')"
+          >
             {{ props.row.equipmentCount }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('equipmentMaintenancePlan.frequencyValue')">
+          <DescriptionsItem
+            :label="$t('equipmentMaintenancePlan.frequencyValue')"
+          >
             {{ formatFrequency(props.row) }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('equipmentMaintenancePlan.firstExecuteTime')">
+          <DescriptionsItem
+            :label="$t('equipmentMaintenancePlan.firstExecuteTime')"
+          >
             {{ props.row.firstExecuteTime }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('equipmentMaintenancePlan.effectiveDate')">
+          <DescriptionsItem
+            :label="$t('equipmentMaintenancePlan.effectiveDate')"
+          >
             {{ props.row.effectiveDate }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipmentMaintenancePlan.endDate')">
             {{ props.row.endDate }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('equipmentMaintenancePlan.remark')" :span="2">
+          <DescriptionsItem
+            :label="$t('equipmentMaintenancePlan.remark')"
+            :span="2"
+          >
             {{ props.row.remark }}
           </DescriptionsItem>
         </Descriptions>
@@ -400,82 +416,34 @@ const drawerTitle = computed(() => {
         </div>
       </div>
 
-      <Form
-        v-else
-        ref="formRef"
-        layout="vertical"
-        :model="formData"
-      >
-      <FormItem :label="$t('equipmentMaintenancePlan.planName')" name="planName">
-        <Input
-          v-model:value="formData.planName"
-          :disabled="mode === 'view'"
-          :placeholder="$t('equipmentMaintenancePlan.keywordPlaceholder')"
-        />
-      </FormItem>
-
-      <FormItem :label="$t('equipmentMaintenancePlan.schemeName')" name="schemeId">
-        <Select
-          v-model:value="formData.schemeId"
-          :disabled="mode === 'view'"
-          :filter-option="false"
-          :not-found-content="fetching ? '加载中...' : '无匹配结果'"
-          show-search
-          style="width: 100%"
-          @search="handleSchemeSearch"
-          @change="handleSchemeChange"
-        >
-          <SelectOption
-            v-for="item in schemeOptions"
-            :key="item.value"
-            :value="item.value"
-          >
-            {{ item.label }}
-          </SelectOption>
-        </Select>
-      </FormItem>
-
-      <!-- 查看绑定设备和保养项按钮 -->
-      <div v-if="formData.schemeId" class="mb-4 flex gap-2">
-        <Button type="link" @click="equipmentDrawerVisible = true">
-          <Icon
-            icon="mdi:format-list-bulleted"
-            class="inline-block align-middle"
-          />
-          {{ $t('equipmentMaintenancePlan.bindEquipment') }}
-        </Button>
-        <Button type="link" @click="itemDrawerVisible = true">
-          <Icon
-            icon="mdi:clipboard-check-outline"
-            class="inline-block align-middle"
-          />
-          {{ $t('equipmentMaintenancePlan.maintenanceItem') }}
-        </Button>
-      </div>
-
-      <FormItem
-        :label="$t('equipmentMaintenancePlan.firstExecuteTime')"
-        name="firstExecuteTime"
-      >
-        <DatePicker
-          v-model:value="formData.firstExecuteTime"
-          show-time
-          format="YYYY-MM-DD HH:mm:ss"
-          style="width: 100%"
-        />
-      </FormItem>
-
-      <div class="flex gap-4">
+      <Form v-else ref="formRef" layout="vertical" :model="formData">
         <FormItem
-          :label="$t('equipmentMaintenancePlan.frequencyValue')"
-          class="flex-1"
+          :label="$t('equipmentMaintenancePlan.planName')"
+          name="planName"
         >
-          <Input v-model:value="formData.frequencyValue" type="number" />
+          <Input
+            v-model:value="formData.planName"
+            :disabled="mode === 'view'"
+            :placeholder="$t('equipmentMaintenancePlan.keywordPlaceholder')"
+          />
         </FormItem>
-        <FormItem :label="$t('equipmentMaintenancePlan.frequencyUnit')" class="flex-1">
-          <Select v-model:value="formData.frequencyUnit">
+
+        <FormItem
+          :label="$t('equipmentMaintenancePlan.schemeName')"
+          name="schemeId"
+        >
+          <Select
+            v-model:value="formData.schemeId"
+            :disabled="mode === 'view'"
+            :filter-option="false"
+            :not-found-content="fetching ? '加载中...' : '无匹配结果'"
+            show-search
+            style="width: 100%"
+            @search="handleSchemeSearch"
+            @change="handleSchemeChange"
+          >
             <SelectOption
-              v-for="item in frequencyUnitOptions"
+              v-for="item in schemeOptions"
               :key="item.value"
               :value="item.value"
             >
@@ -483,43 +451,98 @@ const drawerTitle = computed(() => {
             </SelectOption>
           </Select>
         </FormItem>
-      </div>
 
-      <div class="flex gap-4">
+        <!-- 查看绑定设备和保养项按钮 -->
+        <div v-if="formData.schemeId" class="mb-4 flex gap-2">
+          <Button type="link" @click="equipmentDrawerVisible = true">
+            <Icon
+              icon="mdi:format-list-bulleted"
+              class="inline-block align-middle"
+            />
+            {{ $t('equipmentMaintenancePlan.bindEquipment') }}
+          </Button>
+          <Button type="link" @click="itemDrawerVisible = true">
+            <Icon
+              icon="mdi:clipboard-check-outline"
+              class="inline-block align-middle"
+            />
+            {{ $t('equipmentMaintenancePlan.maintenanceItem') }}
+          </Button>
+        </div>
+
         <FormItem
-          :label="$t('equipmentMaintenancePlan.effectiveDate')"
-          class="flex-1"
+          :label="$t('equipmentMaintenancePlan.firstExecuteTime')"
+          name="firstExecuteTime"
         >
           <DatePicker
-            v-model:value="formData.effectiveDate"
-            format="YYYY-MM-DD"
+            v-model:value="formData.firstExecuteTime"
+            show-time
+            format="YYYY-MM-DD HH:mm:ss"
             style="width: 100%"
           />
         </FormItem>
-        <FormItem :label="$t('equipmentMaintenancePlan.endDate')" class="flex-1">
-          <DatePicker
-            v-model:value="formData.endDate"
-            format="YYYY-MM-DD"
-            style="width: 100%"
-          />
-        </FormItem>
-      </div>
 
-      <FormItem :label="$t('equipmentMaintenancePlan.status')">
-        <Select v-model:value="formData.status">
-          <SelectOption
-            v-for="item in statusOptions"
-            :key="item.value"
-            :value="item.value"
+        <div class="flex gap-4">
+          <FormItem
+            :label="$t('equipmentMaintenancePlan.frequencyValue')"
+            class="flex-1"
           >
-            {{ item.label }}
-          </SelectOption>
-        </Select>
-      </FormItem>
+            <Input v-model:value="formData.frequencyValue" type="number" />
+          </FormItem>
+          <FormItem
+            :label="$t('equipmentMaintenancePlan.frequencyUnit')"
+            class="flex-1"
+          >
+            <Select v-model:value="formData.frequencyUnit">
+              <SelectOption
+                v-for="item in frequencyUnitOptions"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ item.label }}
+              </SelectOption>
+            </Select>
+          </FormItem>
+        </div>
 
-      <FormItem :label="$t('equipmentMaintenancePlan.remark')">
-        <Textarea v-model:value="formData.remark" :rows="3" />
-      </FormItem>
+        <div class="flex gap-4">
+          <FormItem
+            :label="$t('equipmentMaintenancePlan.effectiveDate')"
+            class="flex-1"
+          >
+            <DatePicker
+              v-model:value="formData.effectiveDate"
+              format="YYYY-MM-DD"
+              style="width: 100%"
+            />
+          </FormItem>
+          <FormItem
+            :label="$t('equipmentMaintenancePlan.endDate')"
+            class="flex-1"
+          >
+            <DatePicker
+              v-model:value="formData.endDate"
+              format="YYYY-MM-DD"
+              style="width: 100%"
+            />
+          </FormItem>
+        </div>
+
+        <FormItem :label="$t('equipmentMaintenancePlan.status')">
+          <Select v-model:value="formData.status">
+            <SelectOption
+              v-for="item in statusOptions"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </SelectOption>
+          </Select>
+        </FormItem>
+
+        <FormItem :label="$t('equipmentMaintenancePlan.remark')">
+          <Textarea v-model:value="formData.remark" :rows="3" />
+        </FormItem>
       </Form>
     </Spin>
 

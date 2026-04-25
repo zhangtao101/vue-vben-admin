@@ -74,9 +74,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'itemStandard',
-      title: $t(
-        'equipmentMaintenancePlan.maintenanceItemDrawer.itemStandard',
-      ),
+      title: $t('equipmentMaintenancePlan.maintenanceItemDrawer.itemStandard'),
       minWidth: 180,
     },
     {

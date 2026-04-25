@@ -1,0 +1,50 @@
+{
+  "listTitle": "设备保养计划",
+  "addTitle": "新增设备保养计划",
+  "editTitle": "编辑设备保养计划",
+  "viewTitle": "查看设备保养计划",
+  "planName": "计划名称",
+  "schemeName": "关联方案",
+  "planType": "保养类型",
+  "equipmentGroup": "设备组",
+  "equipmentCodes": "设备编码",
+  "equipmentCount": "设备数量",
+  "firstExecuteTime": "首次执行时间",
+  "frequency": "保养周期",
+  "frequencyValue": "周期值",
+  "frequencyUnit": "周期单位",
+  "effectiveDate": "生效日期",
+  "endDate": "结束日期",
+  "status": "状态",
+  "remark": "备注",
+  "keywordPlaceholder": "请输入计划名称",
+  "bindEquipment": "查看绑定设备",
+  "maintenanceItem": "查看保养项",
+  "statusOptions": {
+    "ACTIVE": "启用",
+    "DISABLED": "停用"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "天",
+    "WEEK": "周",
+    "MONTH": "月"
+  },
+  "planTypeOptions": {
+    "REGULAR": "例行保养",
+    "CONDITIONAL": "条件触发"
+  },
+  "bindEquipmentDrawer": {
+    "title": "绑定设备列表",
+    "equipmentCode": "设备编码",
+    "equipmentName": "设备名称",
+    "equipGroupName": "设备组",
+    "location": "位置"
+  },
+  "maintenanceItemDrawer": {
+    "title": "保养项列表",
+    "itemCode": "保养项编码",
+    "itemName": "保养项名称",
+    "itemStandard": "保养标准",
+    "itemRequirement": "保养要求"
+  }
+}

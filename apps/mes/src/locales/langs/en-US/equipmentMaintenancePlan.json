@@ -1,0 +1,50 @@
+{
+  "listTitle": "Equipment Maintenance Plan",
+  "addTitle": "Add Equipment Maintenance Plan",
+  "editTitle": "Edit Equipment Maintenance Plan",
+  "viewTitle": "View Equipment Maintenance Plan",
+  "planName": "Plan Name",
+  "schemeName": "Associated Scheme",
+  "planType": "Maintenance Type",
+  "equipmentGroup": "Equipment Group",
+  "equipmentCodes": "Equipment Code",
+  "equipmentCount": "Equipment Count",
+  "firstExecuteTime": "First Execute Time",
+  "frequency": "Maintenance Cycle",
+  "frequencyValue": "Frequency Value",
+  "frequencyUnit": "Frequency Unit",
+  "effectiveDate": "Effective Date",
+  "endDate": "End Date",
+  "status": "Status",
+  "remark": "Remark",
+  "keywordPlaceholder": "Please enter plan name",
+  "bindEquipment": "View Equipment",
+  "maintenanceItem": "View Maintenance Items",
+  "statusOptions": {
+    "ACTIVE": "Active",
+    "DISABLED": "Disabled"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "Day",
+    "WEEK": "Week",
+    "MONTH": "Month"
+  },
+  "planTypeOptions": {
+    "REGULAR": "Regular",
+    "CONDITIONAL": "Conditional"
+  },
+  "bindEquipmentDrawer": {
+    "title": "Equipment List",
+    "equipmentCode": "Equipment Code",
+    "equipmentName": "Equipment Name",
+    "equipGroupName": "Equipment Group",
+    "location": "Location"
+  },
+  "maintenanceItemDrawer": {
+    "title": "Maintenance Items",
+    "itemCode": "Item Code",
+    "itemName": "Item Name",
+    "itemStandard": "Standard",
+    "itemRequirement": "Requirement"
+  }
+}

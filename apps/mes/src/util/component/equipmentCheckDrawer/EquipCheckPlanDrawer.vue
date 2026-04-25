@@ -351,131 +351,85 @@ const drawerTitle = computed(() => {
   >
     <Spin :spinning="loading">
       <template v-if="mode === 'view' && props.row">
-      <Descriptions :column="2" bordered>
-        <DescriptionsItem :label="$t('equipCheckPlan.planName')">
-          {{ props.row.planName }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.status')">
-          {{
-            props.row.status === 'ACTIVE'
-              ? $t('equipCheckPlan.statusOptions.ACTIVE')
-              : $t('equipCheckPlan.statusOptions.DISABLED')
-          }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.schemeName')" :span="2">
-          {{ props.row.schemeName }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.inspectionType')">
-          {{
-            props.row.inspectionType === 'INSPECTION'
-              ? $t('equipCheckPlan.inspectionTypeOptions.INSPECTION')
-              : $t('equipCheckPlan.inspectionTypeOptions.PATROL')
-          }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.equipmentGroup')">
-          {{ props.row.equipmentGroup }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.equipmentCount')">
-          {{ props.row.equipmentCount }}
-        </DescriptionsItem>
-        <DescriptionsItem
-          :label="$t('equipCheckPlan.equipmentCodes')"
-          :span="2"
-        >
-          {{ props.row.equipmentCodes }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.firstExecuteTime')">
-          {{ props.row.firstExecuteTime }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.frequencyValue')">
-          {{ formatFrequency(props.row) }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.effectiveDate')">
-          {{ props.row.effectiveDate }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.endDate')">
-          {{ props.row.endDate }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.remark')" :span="2">
-          {{ props.row.remark }}
-        </DescriptionsItem>
-      </Descriptions>
-    </template>
-
-    <Form
-      v-else
-      ref="formRef"
-      layout="vertical"
-      :model="formData"
-      :rules="rules"
-    >
-      <FormItem :label="$t('equipCheckPlan.planName')" name="planName">
-        <Input
-          v-model:value="formData.planName"
-          :disabled="mode === 'view'"
-          :placeholder="$t('equipCheckPlan.keywordPlaceholder')"
-        />
-      </FormItem>
-
-      <FormItem :label="$t('equipCheckPlan.schemeName')" name="schemeId">
-        <Select
-          v-model:value="formData.schemeId"
-          :disabled="mode === 'view'"
-          :filter-option="false"
-          :not-found-content="fetching ? '加载中...' : '无匹配结果'"
-          show-search
-          style="width: 100%"
-          @search="handleSchemeSearch"
-          @change="handleSchemeChange"
-        >
-          <SelectOption
-            v-for="item in schemeOptions"
-            :key="item.value"
-            :value="item.value"
+        <Descriptions :column="2" bordered>
+          <DescriptionsItem :label="$t('equipCheckPlan.planName')">
+            {{ props.row.planName }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.status')">
+            {{
+              props.row.status === 'ACTIVE'
+                ? $t('equipCheckPlan.statusOptions.ACTIVE')
+                : $t('equipCheckPlan.statusOptions.DISABLED')
+            }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.schemeName')" :span="2">
+            {{ props.row.schemeName }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.inspectionType')">
+            {{
+              props.row.inspectionType === 'INSPECTION'
+                ? $t('equipCheckPlan.inspectionTypeOptions.INSPECTION')
+                : $t('equipCheckPlan.inspectionTypeOptions.PATROL')
+            }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.equipmentGroup')">
+            {{ props.row.equipmentGroup }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.equipmentCount')">
+            {{ props.row.equipmentCount }}
+          </DescriptionsItem>
+          <DescriptionsItem
+            :label="$t('equipCheckPlan.equipmentCodes')"
+            :span="2"
           >
-            {{ item.label }}
-          </SelectOption>
-        </Select>
-      </FormItem>
+            {{ props.row.equipmentCodes }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.firstExecuteTime')">
+            {{ props.row.firstExecuteTime }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.frequencyValue')">
+            {{ formatFrequency(props.row) }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.effectiveDate')">
+            {{ props.row.effectiveDate }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.endDate')">
+            {{ props.row.endDate }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipCheckPlan.remark')" :span="2">
+            {{ props.row.remark }}
+          </DescriptionsItem>
+        </Descriptions>
+      </template>
 
-      <!-- 查看绑定设备和点检项按钮 -->
-      <div v-if="formData.schemeId" class="mb-4 flex gap-2">
-        <Button type="link" @click="equipmentDrawerVisible = true">
-          <Icon
-            icon="mdi:format-list-bulleted"
-            class="inline-block align-middle"
-          />
-          {{ $t('equipCheckPlan.viewEquipment') }}
-        </Button>
-        <Button type="link" @click="itemDrawerVisible = true">
-          <Icon
-            icon="mdi:clipboard-check-outline"
-            class="inline-block align-middle"
-          />
-          {{ $t('equipCheckPlan.viewItem') }}
-        </Button>
-      </div>
-
-      <FormItem
-        :label="$t('equipCheckPlan.firstExecuteTime')"
-        name="firstExecuteTime"
+      <Form
+        v-else
+        ref="formRef"
+        layout="vertical"
+        :model="formData"
+        :rules="rules"
       >
-        <DatePicker
-          v-model:value="formData.firstExecuteTime"
-          show-time
-          format="YYYY-MM-DD HH:mm:ss"
-          style="width: 100%"
-        />
-      </FormItem>
-
-      <div class="flex gap-4">
-        <FormItem :label="$t('equipCheckPlan.frequencyValue')" class="flex-1">
-          <Input v-model:value="formData.frequencyValue" type="number" />
+        <FormItem :label="$t('equipCheckPlan.planName')" name="planName">
+          <Input
+            v-model:value="formData.planName"
+            :disabled="mode === 'view'"
+            :placeholder="$t('equipCheckPlan.keywordPlaceholder')"
+          />
         </FormItem>
-        <FormItem :label="$t('equipCheckPlan.frequencyUnit')" class="flex-1">
-          <Select v-model:value="formData.frequencyUnit">
+
+        <FormItem :label="$t('equipCheckPlan.schemeName')" name="schemeId">
+          <Select
+            v-model:value="formData.schemeId"
+            :disabled="mode === 'view'"
+            :filter-option="false"
+            :not-found-content="fetching ? '加载中...' : '无匹配结果'"
+            show-search
+            style="width: 100%"
+            @search="handleSchemeSearch"
+            @change="handleSchemeChange"
+          >
             <SelectOption
-              v-for="item in frequencyUnitOptions"
+              v-for="item in schemeOptions"
               :key="item.value"
               :value="item.value"
             >
@@ -483,45 +437,91 @@ const drawerTitle = computed(() => {
             </SelectOption>
           </Select>
         </FormItem>
-      </div>
 
-      <div class="flex gap-4">
+        <!-- 查看绑定设备和点检项按钮 -->
+        <div v-if="formData.schemeId" class="mb-4 flex gap-2">
+          <Button type="link" @click="equipmentDrawerVisible = true">
+            <Icon
+              icon="mdi:format-list-bulleted"
+              class="inline-block align-middle"
+            />
+            {{ $t('equipCheckPlan.viewEquipment') }}
+          </Button>
+          <Button type="link" @click="itemDrawerVisible = true">
+            <Icon
+              icon="mdi:clipboard-check-outline"
+              class="inline-block align-middle"
+            />
+            {{ $t('equipCheckPlan.viewItem') }}
+          </Button>
+        </div>
+
         <FormItem
-          :label="$t('equipCheckPlan.effectiveDate')"
-          name="effectiveDate"
-          class="flex-1"
+          :label="$t('equipCheckPlan.firstExecuteTime')"
+          name="firstExecuteTime"
         >
           <DatePicker
-            v-model:value="formData.effectiveDate"
-            format="YYYY-MM-DD"
+            v-model:value="formData.firstExecuteTime"
+            show-time
+            format="YYYY-MM-DD HH:mm:ss"
             style="width: 100%"
           />
         </FormItem>
-        <FormItem :label="$t('equipCheckPlan.endDate')" class="flex-1">
-          <DatePicker
-            v-model:value="formData.endDate"
-            format="YYYY-MM-DD"
-            style="width: 100%"
-          />
-        </FormItem>
-      </div>
 
-      <FormItem :label="$t('equipCheckPlan.status')">
-        <Select v-model:value="formData.status">
-          <SelectOption
-            v-for="item in statusOptions"
-            :key="item.value"
-            :value="item.value"
+        <div class="flex gap-4">
+          <FormItem :label="$t('equipCheckPlan.frequencyValue')" class="flex-1">
+            <Input v-model:value="formData.frequencyValue" type="number" />
+          </FormItem>
+          <FormItem :label="$t('equipCheckPlan.frequencyUnit')" class="flex-1">
+            <Select v-model:value="formData.frequencyUnit">
+              <SelectOption
+                v-for="item in frequencyUnitOptions"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ item.label }}
+              </SelectOption>
+            </Select>
+          </FormItem>
+        </div>
+
+        <div class="flex gap-4">
+          <FormItem
+            :label="$t('equipCheckPlan.effectiveDate')"
+            name="effectiveDate"
+            class="flex-1"
           >
-            {{ item.label }}
-          </SelectOption>
-        </Select>
-      </FormItem>
+            <DatePicker
+              v-model:value="formData.effectiveDate"
+              format="YYYY-MM-DD"
+              style="width: 100%"
+            />
+          </FormItem>
+          <FormItem :label="$t('equipCheckPlan.endDate')" class="flex-1">
+            <DatePicker
+              v-model:value="formData.endDate"
+              format="YYYY-MM-DD"
+              style="width: 100%"
+            />
+          </FormItem>
+        </div>
 
-      <FormItem :label="$t('equipCheckPlan.remark')">
-        <Textarea v-model:value="formData.remark" :rows="3" />
-      </FormItem>
-    </Form>
+        <FormItem :label="$t('equipCheckPlan.status')">
+          <Select v-model:value="formData.status">
+            <SelectOption
+              v-for="item in statusOptions"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </SelectOption>
+          </Select>
+        </FormItem>
+
+        <FormItem :label="$t('equipCheckPlan.remark')">
+          <Textarea v-model:value="formData.remark" :rows="3" />
+        </FormItem>
+      </Form>
     </Spin>
 
     <!-- 底部按钮 -->
