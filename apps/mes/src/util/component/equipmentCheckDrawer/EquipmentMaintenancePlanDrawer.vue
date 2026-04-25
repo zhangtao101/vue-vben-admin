@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 /**
- * [INPUT]: 依赖 ant-design-vue、dayjs、@iconify/vue-iconify、#/api（createInspectionPlan、getInspectionPlanById、getInspectionSchemeList、updateInspectionPlan）、#/locales、./EquipCheckPlanEquipmentDrawer.vue、./EquipCheckPlanItemDrawer.vue
- * [OUTPUT]: 对外提供 EquipCheckPlanDrawer 组件，支持新增/编辑/查看设备点检计划
- * [POS]: 设备点检管理模块 的 点检计划抽屉组件，被设备点检计划页面引用
+ * [INPUT]: 依赖 ant-design-vue、dayjs、@iconify/vue-iconify、#/api（createMaintenancePlan、getMaintenancePlanById、getMaintenanceSchemeList、updateMaintenancePlan）、#/locales、./EquipmentMaintenancePlanEquipmentDrawer.vue、./EquipmentMaintenancePlanItemDrawer.vue
+ * [OUTPUT]: 对外提供 EquipmentMaintenancePlanDrawer 组件，支持新增/编辑/查看设备保养计划
+ * [POS]: 设备点检管理模块 的 保养计划抽屉组件，被 equipmentMaintenancePlan.vue 引用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * [TIME]: 2026-04-25 10:17:00
  */
-import type { Rule } from 'ant-design-vue/es/form';
-
-import type { InspectionPlan } from '#/api';
+import type { MaintenancePlan } from '#/api';
 
 import { computed, ref, watch } from 'vue';
 
@@ -33,20 +31,20 @@ import {
 import dayjs from 'dayjs';
 
 import {
-  createInspectionPlan,
-  getInspectionPlanById,
-  getInspectionSchemeList,
-  updateInspectionPlan,
+  createMaintenancePlan,
+  getMaintenancePlanById,
+  getMaintenanceSchemeList,
+  updateMaintenancePlan,
 } from '#/api';
 import { $t } from '#/locales';
 
-import EquipCheckPlanEquipmentDrawer from './EquipCheckPlanEquipmentDrawer.vue';
-import EquipCheckPlanItemDrawer from './EquipCheckPlanItemDrawer.vue';
+import EquipmentMaintenancePlanEquipmentDrawer from './EquipmentMaintenancePlanEquipmentDrawer.vue';
+import EquipmentMaintenancePlanItemDrawer from './EquipmentMaintenancePlanItemDrawer.vue';
 
 interface Props {
   visible: boolean;
   mode: 'add' | 'edit' | 'view';
-  row?: InspectionPlan | null;
+  row?: MaintenancePlan | null;
 }
 
 interface Emits {
@@ -55,7 +53,7 @@ interface Emits {
 }
 
 defineOptions({
-  name: 'EquipCheckPlanDrawer',
+  name: 'EquipmentMaintenancePlanDrawer',
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -77,15 +75,17 @@ const fetching = ref(false);
 const searchKeyword = ref('');
 
 // ========== 表单数据 ==========
-// 点检计划表单数据：包含计划名称、方案ID、首次执行时间、频率、有效期等
+// 表单实例引用，用于表单验证
+const formRef = ref<any>();
+// 保养计划表单数据：包含计划名称、方案ID、首次执行时间、频率、有效期等
 const formData = ref<any>({
   planName: '',
-  schemeId: '',
-  firstExecuteTime: undefined,
-  frequencyValue: 1,
+  schemeId: undefined,
+  firstExecuteTime: '',
+  frequencyValue: undefined,
   frequencyUnit: 'DAY',
-  effectiveDate: undefined,
-  endDate: undefined,
+  effectiveDate: '',
+  endDate: '',
   status: 'ACTIVE',
   remark: '',
 });
@@ -97,45 +97,41 @@ const schemeOptions = ref<Array<{ label: string; value: number }>>([]);
 const selectedSchemeName = ref('');
 
 // ========== 查看抽屉状态 ==========
-// 绑定设备抽屉可见性：控制 EquipCheckPlanEquipmentDrawer 显示
+// 绑定设备抽屉可见性：控制 EquipmentMaintenancePlanEquipmentDrawer 显示
 const equipmentDrawerVisible = ref(false);
-// 点检项抽屉可见性：控制 EquipCheckPlanItemDrawer 显示
+// 保养项抽屉可见性：控制 EquipmentMaintenancePlanItemDrawer 显示
 const itemDrawerVisible = ref(false);
 
 // ========== 下拉选项 ==========
+// 频率单位选项：DAY-天、WEEK-周、MONTH-月
 const frequencyUnitOptions = [
-  { label: $t('equipCheckPlan.frequencyUnitOptions.DAY'), value: 'DAY' },
-  { label: $t('equipCheckPlan.frequencyUnitOptions.WEEK'), value: 'WEEK' },
-  { label: $t('equipCheckPlan.frequencyUnitOptions.MONTH'), value: 'MONTH' },
+  {
+    label: $t('equipmentMaintenancePlan.frequencyUnitOptions.DAY'),
+    value: 'DAY',
+  },
+  {
+    label: $t('equipmentMaintenancePlan.frequencyUnitOptions.WEEK'),
+    value: 'WEEK',
+  },
+  {
+    label: $t('equipmentMaintenancePlan.frequencyUnitOptions.MONTH'),
+    value: 'MONTH',
+  },
 ];
 
 const statusOptions = [
-  { label: $t('equipCheckPlan.statusOptions.ACTIVE'), value: 'ACTIVE' },
-  { label: $t('equipCheckPlan.statusOptions.DISABLED'), value: 'DISABLED' },
+  {
+    label: $t('equipmentMaintenancePlan.statusOptions.ACTIVE'),
+    value: 'ACTIVE',
+  },
+  {
+    label: $t('equipmentMaintenancePlan.statusOptions.DISABLED'),
+    value: 'DISABLED',
+  },
 ];
 
-// ========== 表单验证 ==========
-const formRef = ref();
-
-const rules: Record<string, Rule[]> = {
-  planName: [
-    { required: true, message: `请输入${$t('equipCheckPlan.planName')}` },
-  ],
-  schemeId: [
-    { required: true, message: `请选择${$t('equipCheckPlan.schemeName')}` },
-  ],
-  firstExecuteTime: [
-    {
-      required: true,
-      message: `请选择${$t('equipCheckPlan.firstExecuteTime')}`,
-    },
-  ],
-  effectiveDate: [
-    { required: true, message: `请选择${$t('equipCheckPlan.effectiveDate')}` },
-  ],
-};
-
 // ========== 监听 ==========
+// 监听抽屉可见性变化，打开时加载数据，新增时重置表单
 watch(
   () => props.visible,
   (val) => {
@@ -155,7 +151,7 @@ watch(
 let searchTimer: null | ReturnType<typeof setTimeout> = null;
 
 /**
- * 加载点检方案下拉列表，支持关键字过滤。
+ * 加载保养方案下拉列表，支持关键字过滤。
  * @param {string} keyword - 搜索关键字，用于过滤方案名称。
  * @returns {void} 无返回值，结果更新到 schemeOptions。
  * @throws 无。
@@ -163,7 +159,7 @@ let searchTimer: null | ReturnType<typeof setTimeout> = null;
  */
 function loadSchemeOptions(keyword: string) {
   fetching.value = true;
-  getInspectionSchemeList({ keyword })
+  getMaintenanceSchemeList({ keyword })
     .then((res: any) => {
       schemeOptions.value = res.map((item: any) => ({
         label: item.schemeName,
@@ -208,7 +204,7 @@ function handleSchemeChange(value: any) {
 
 // ========== 加载详情 ==========
 /**
- * 加载点检计划详情数据，填充表单用于编辑或查看。
+ * 加载保养计划详情数据，填充表单用于编辑或查看。
  * @returns {void} 无返回值，成功后更新 formData 和 selectedSchemeName。
  * @throws 无。
  * @since 2026-04-25 10:17:00
@@ -216,7 +212,7 @@ function handleSchemeChange(value: any) {
 function loadDetail() {
   if (!props.row?.id) return;
   loading.value = true;
-  getInspectionPlanById(props.row.id)
+  getMaintenancePlanById(props.row.id)
     .then((res: any) => {
       const data = res || {};
       formData.value = {
@@ -225,7 +221,7 @@ function loadDetail() {
         firstExecuteTime: data.firstExecuteTime
           ? dayjs(data.firstExecuteTime)
           : '',
-        frequencyValue: data.frequencyValue || 1,
+        frequencyValue: data.frequencyValue || '',
         frequencyUnit: data.frequencyUnit || 'DAY',
         effectiveDate: data.effectiveDate ? dayjs(data.effectiveDate) : '',
         endDate: data.endDate ? dayjs(data.endDate) : '',
@@ -251,11 +247,11 @@ function loadDetail() {
 function resetForm() {
   formData.value = {
     planName: '',
-    schemeId: '',
-    firstExecuteTime: undefined,
-    frequencyValue: 1,
+    schemeId: undefined,
+    firstExecuteTime: '',
+    frequencyValue: '',
     frequencyUnit: 'DAY',
-    effectiveDate: undefined,
+    effectiveDate: '',
     endDate: '',
     status: 'ACTIVE',
     remark: '',
@@ -271,15 +267,15 @@ function resetForm() {
  */
 function handleSubmit() {
   formRef.value
-    ?.validate()
+    .validate()
     .then(() => {
       submitting.value = true;
       const api =
         props.mode === 'edit' && props.row?.id
-          ? updateInspectionPlan
-          : createInspectionPlan;
+          ? updateMaintenancePlan
+          : createMaintenancePlan;
 
-      const params = {
+      const params: any = {
         ...formData.value,
         firstExecuteTime:
           formData.value.firstExecuteTime?.format('YYYY-MM-DD HH:mm:ss') || '',
@@ -289,7 +285,7 @@ function handleSubmit() {
         ...(props.mode === 'edit' ? { id: props.row?.id } : {}),
       };
 
-      api(params as any)
+      api(params)
         .then(() => {
           message.success($t('common.successfulOperation'));
           emit('update:visible', false);
@@ -317,7 +313,7 @@ function handleClose() {
 
 // ========== 格式化频率 ==========
 /**
- * 格式化点检频率显示，将数值和单位组合为可读字符串。
+ * 格式化保养频率显示，将数值和单位组合为可读字符串。
  * @param {any} row - 包含 frequencyValue 和 frequencyUnit 的行数据对象。
  * @returns {string} 格式化的频率字符串，如 "3 天"。
  * @throws 无。
@@ -325,17 +321,17 @@ function handleClose() {
  */
 function formatFrequency(row: any) {
   const value = row.frequencyValue || '';
-  const unit = $t(`equipCheckPlan.frequencyUnitOptions.${row.frequencyUnit}`);
+  const unit = $t(`equipmentMaintenancePlan.frequencyUnitOptions.${row.frequencyUnit}`);
   return `${value} ${unit}`;
 }
 
 // ========== 标题 ==========
-// 抽屉标题：根据 mode 动态切换"新增点检计划"、"编辑点检计划"、"点检计划详情"
+// 抽屉标题：根据 mode 动态切换"新增保养计划"、"编辑保养计划"、"保养计划详情"
 const drawerTitle = computed(() => {
   const titles: Record<string, string> = {
-    add: $t('equipCheckPlan.addTitle'),
-    edit: $t('equipCheckPlan.editTitle'),
-    view: $t('equipCheckPlan.viewTitle'),
+    add: $t('equipmentMaintenancePlan.addTitle'),
+    edit: $t('equipmentMaintenancePlan.editTitle'),
+    view: $t('equipmentMaintenancePlan.viewTitle'),
   };
   return titles[props.mode] || '';
 });
@@ -350,74 +346,75 @@ const drawerTitle = computed(() => {
     @update:open="(val) => emit('update:visible', val)"
   >
     <Spin :spinning="loading">
-      <template v-if="mode === 'view' && props.row">
-      <Descriptions :column="2" bordered>
-        <DescriptionsItem :label="$t('equipCheckPlan.planName')">
-          {{ props.row.planName }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.status')">
-          {{
-            props.row.status === 'ACTIVE'
-              ? $t('equipCheckPlan.statusOptions.ACTIVE')
-              : $t('equipCheckPlan.statusOptions.DISABLED')
-          }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.schemeName')" :span="2">
-          {{ props.row.schemeName }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.inspectionType')">
-          {{
-            props.row.inspectionType === 'INSPECTION'
-              ? $t('equipCheckPlan.inspectionTypeOptions.INSPECTION')
-              : $t('equipCheckPlan.inspectionTypeOptions.PATROL')
-          }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.equipmentGroup')">
-          {{ props.row.equipmentGroup }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.equipmentCount')">
-          {{ props.row.equipmentCount }}
-        </DescriptionsItem>
-        <DescriptionsItem
-          :label="$t('equipCheckPlan.equipmentCodes')"
-          :span="2"
-        >
-          {{ props.row.equipmentCodes }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.firstExecuteTime')">
-          {{ props.row.firstExecuteTime }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.frequencyValue')">
-          {{ formatFrequency(props.row) }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.effectiveDate')">
-          {{ props.row.effectiveDate }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.endDate')">
-          {{ props.row.endDate }}
-        </DescriptionsItem>
-        <DescriptionsItem :label="$t('equipCheckPlan.remark')" :span="2">
-          {{ props.row.remark }}
-        </DescriptionsItem>
-      </Descriptions>
-    </template>
+      <div v-if="mode === 'view' && props.row">
+        <Descriptions :column="2" bordered>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.planName')">
+            {{ props.row.planName }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.status')">
+            {{
+              props.row.status === 'ACTIVE'
+                ? $t('equipmentMaintenancePlan.statusOptions.ACTIVE')
+                : $t('equipmentMaintenancePlan.statusOptions.DISABLED')
+            }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.schemeName')" :span="2">
+            {{ props.row.schemeName }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.equipmentCount')">
+            {{ props.row.equipmentCount }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.frequencyValue')">
+            {{ formatFrequency(props.row) }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.firstExecuteTime')">
+            {{ props.row.firstExecuteTime }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.effectiveDate')">
+            {{ props.row.effectiveDate }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.endDate')">
+            {{ props.row.endDate }}
+          </DescriptionsItem>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.remark')" :span="2">
+            {{ props.row.remark }}
+          </DescriptionsItem>
+        </Descriptions>
 
-    <Form
-      v-else
-      ref="formRef"
-      layout="vertical"
-      :model="formData"
-      :rules="rules"
-    >
-      <FormItem :label="$t('equipCheckPlan.planName')" name="planName">
+        <!-- 查看模式下显示查看按钮 -->
+        <div class="mt-4 flex gap-2">
+          <Button type="primary" @click="equipmentDrawerVisible = true">
+            <Icon
+              icon="mdi:format-list-bulleted"
+              class="inline-block align-middle"
+            />
+            {{ $t('equipmentMaintenancePlan.bindEquipment') }}
+          </Button>
+          <Button type="primary" @click="itemDrawerVisible = true">
+            <Icon
+              icon="mdi:clipboard-check-outline"
+              class="inline-block align-middle"
+            />
+            {{ $t('equipmentMaintenancePlan.maintenanceItem') }}
+          </Button>
+        </div>
+      </div>
+
+      <Form
+        v-else
+        ref="formRef"
+        layout="vertical"
+        :model="formData"
+      >
+      <FormItem :label="$t('equipmentMaintenancePlan.planName')" name="planName">
         <Input
           v-model:value="formData.planName"
           :disabled="mode === 'view'"
-          :placeholder="$t('equipCheckPlan.keywordPlaceholder')"
+          :placeholder="$t('equipmentMaintenancePlan.keywordPlaceholder')"
         />
       </FormItem>
 
-      <FormItem :label="$t('equipCheckPlan.schemeName')" name="schemeId">
+      <FormItem :label="$t('equipmentMaintenancePlan.schemeName')" name="schemeId">
         <Select
           v-model:value="formData.schemeId"
           :disabled="mode === 'view'"
@@ -438,26 +435,26 @@ const drawerTitle = computed(() => {
         </Select>
       </FormItem>
 
-      <!-- 查看绑定设备和点检项按钮 -->
+      <!-- 查看绑定设备和保养项按钮 -->
       <div v-if="formData.schemeId" class="mb-4 flex gap-2">
         <Button type="link" @click="equipmentDrawerVisible = true">
           <Icon
             icon="mdi:format-list-bulleted"
             class="inline-block align-middle"
           />
-          {{ $t('equipCheckPlan.viewEquipment') }}
+          {{ $t('equipmentMaintenancePlan.bindEquipment') }}
         </Button>
         <Button type="link" @click="itemDrawerVisible = true">
           <Icon
             icon="mdi:clipboard-check-outline"
             class="inline-block align-middle"
           />
-          {{ $t('equipCheckPlan.viewItem') }}
+          {{ $t('equipmentMaintenancePlan.maintenanceItem') }}
         </Button>
       </div>
 
       <FormItem
-        :label="$t('equipCheckPlan.firstExecuteTime')"
+        :label="$t('equipmentMaintenancePlan.firstExecuteTime')"
         name="firstExecuteTime"
       >
         <DatePicker
@@ -469,10 +466,13 @@ const drawerTitle = computed(() => {
       </FormItem>
 
       <div class="flex gap-4">
-        <FormItem :label="$t('equipCheckPlan.frequencyValue')" class="flex-1">
+        <FormItem
+          :label="$t('equipmentMaintenancePlan.frequencyValue')"
+          class="flex-1"
+        >
           <Input v-model:value="formData.frequencyValue" type="number" />
         </FormItem>
-        <FormItem :label="$t('equipCheckPlan.frequencyUnit')" class="flex-1">
+        <FormItem :label="$t('equipmentMaintenancePlan.frequencyUnit')" class="flex-1">
           <Select v-model:value="formData.frequencyUnit">
             <SelectOption
               v-for="item in frequencyUnitOptions"
@@ -487,8 +487,7 @@ const drawerTitle = computed(() => {
 
       <div class="flex gap-4">
         <FormItem
-          :label="$t('equipCheckPlan.effectiveDate')"
-          name="effectiveDate"
+          :label="$t('equipmentMaintenancePlan.effectiveDate')"
           class="flex-1"
         >
           <DatePicker
@@ -497,7 +496,7 @@ const drawerTitle = computed(() => {
             style="width: 100%"
           />
         </FormItem>
-        <FormItem :label="$t('equipCheckPlan.endDate')" class="flex-1">
+        <FormItem :label="$t('equipmentMaintenancePlan.endDate')" class="flex-1">
           <DatePicker
             v-model:value="formData.endDate"
             format="YYYY-MM-DD"
@@ -506,7 +505,7 @@ const drawerTitle = computed(() => {
         </FormItem>
       </div>
 
-      <FormItem :label="$t('equipCheckPlan.status')">
+      <FormItem :label="$t('equipmentMaintenancePlan.status')">
         <Select v-model:value="formData.status">
           <SelectOption
             v-for="item in statusOptions"
@@ -518,10 +517,10 @@ const drawerTitle = computed(() => {
         </Select>
       </FormItem>
 
-      <FormItem :label="$t('equipCheckPlan.remark')">
+      <FormItem :label="$t('equipmentMaintenancePlan.remark')">
         <Textarea v-model:value="formData.remark" :rows="3" />
       </FormItem>
-    </Form>
+      </Form>
     </Spin>
 
     <!-- 底部按钮 -->
@@ -539,13 +538,13 @@ const drawerTitle = computed(() => {
   </Drawer>
 
   <!-- 查看绑定设备抽屉 -->
-  <EquipCheckPlanEquipmentDrawer
+  <EquipmentMaintenancePlanEquipmentDrawer
     v-model:visible="equipmentDrawerVisible"
     :scheme-id="formData.schemeId"
   />
 
-  <!-- 查看点检项抽屉 -->
-  <EquipCheckPlanItemDrawer
+  <!-- 查看保养项抽屉 -->
+  <EquipmentMaintenancePlanItemDrawer
     v-model:visible="itemDrawerVisible"
     :scheme-id="formData.schemeId"
   />

@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 /**
- * 设备保养方案-保养项选择抽屉
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue-iconify、#/adapter/vxe-table、#/api（getEquipCheckItemList）、#/locales
+ * [OUTPUT]: 对外提供 TallyMaintenanceItemSelectDrawer 组件，用于选择保养项（支持多选，maintenanceTag=1）
+ * [POS]: 设备点检管理模块 的 保养项选择抽屉，被 TallySchemeDrawer.vue 引用
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-25 10:17:00
  */
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
@@ -42,6 +46,7 @@ interface Props {
 }
 
 // ========== 抽屉控制 ==========
+// 抽屉内部可见性状态：与 props.visible 双向绑定
 const drawerVisible = ref(props.visible);
 
 // 用于存储已选中的 checkItemCode，用于在表格加载后恢复选中状态
@@ -72,6 +77,7 @@ watch(drawerVisible, (val) => {
 });
 
 // ========== 查询参数 ==========
+// 保养项查询参数：包含点检项编码和名称
 const queryParams = ref({
   checkItemCode: '',
   checkItemName: '',
@@ -128,7 +134,12 @@ const gridOptions: VxeGridProps<any> = {
 };
 
 // ========== 监听表格事件 ==========
-// 在表格数据加载完成后，恢复已选中的行
+/**
+ * 表格数据加载完成后恢复已选中的行。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleGridLoadEvent() {
   if (selectedCodes.value.length > 0) {
     const grid = (gridApi as any).grid;
@@ -149,6 +160,15 @@ function handleGridLoadEvent() {
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents: {}, gridOptions });
 
 // ========== 数据查询 ==========
+/**
+ * 查询保养项列表数据（maintenanceTag=1）。
+ * @param {object} params - 包含 pageNum 和 pageSize 的分页参数。
+ * @param {number} params.pageNum - 当前页码。
+ * @param {number} params.pageSize - 每页条数。
+ * @returns {Promise<{total: number, items: any[]}>} 返回包含总数和数据列表的 Promise。
+ * @throws 查询异常时返回空数据。
+ * @since 2026-04-25 10:17:00
+ */
 function queryData({
   pageNum,
   pageSize,
@@ -185,11 +205,23 @@ function queryData({
 }
 
 // ========== 查询 ==========
+/**
+ * 触发查询操作，刷新表格数据。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleQuery() {
   gridApi.reload();
 }
 
 // ========== 重置 ==========
+/**
+ * 重置查询参数并刷新表格。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleReset() {
   queryParams.value = {
     checkItemCode: '',
@@ -199,6 +231,12 @@ function handleReset() {
 }
 
 // ========== 确认选择 ==========
+/**
+ * 确认选择，触发 emit 事件返回选中的保养项列表并关闭抽屉。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleConfirm() {
   const selectedRecords = (gridApi as any).grid.getCheckboxRecords();
   emit('select', selectedRecords);
@@ -206,6 +244,12 @@ function handleConfirm() {
 }
 
 // ========== 关闭抽屉 ==========
+/**
+ * 关闭抽屉，通过 emit 触发父组件更新 visible 状态。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleClose() {
   drawerVisible.value = false;
   emit('update:visible', false);

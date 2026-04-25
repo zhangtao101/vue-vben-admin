@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue-iconify、#/api（createInspectionScheme、getInspectionSchemeById、queryScadaEquipLedgerByCode、searchBaseConfig、updateInspectionScheme）、#/locales、./EquipCheckItemSelectDrawer.vue、./EquipmentSelectDrawer.vue
+ * [OUTPUT]: 对外提供 EquipmentSpotCheckSchemeDrawer 组件，支持新增/编辑/查看设备点检方案
+ * [POS]: 设备点检管理模块 的 点检方案抽屉组件，被点检方案管理页面引用
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-25 10:17:00
+ */
 import type { InspectionScheme, InspectionSchemeSubmit } from '#/api';
 
 import { ref, watch } from 'vue';
@@ -58,6 +65,7 @@ interface Props {
 }
 
 // ========== 抽屉控制 ==========
+// 抽屉内部可见性状态：与 props.visible 双向绑定
 const drawerVisible = ref(props.visible);
 
 // 监听 props 变化
@@ -74,6 +82,7 @@ watch(drawerVisible, (val) => {
 });
 
 // ========== 下拉选项 ==========
+// 点检类型选项：INSPECTION-点检、PATROL-巡检
 const inspectionTypeOptions = [
   {
     label: $t('equipmentSpotCheckScheme.inspectionTypeInspection'),
@@ -91,10 +100,14 @@ const statusOptions = [
 ];
 
 // ========== 设备组下拉选项 ==========
+// 设备组下拉选项列表：从基础配置接口获取
 const equipmentGroupOptions = ref<any[]>([]);
 
 /**
  * 加载设备组下拉选项。
+ * @returns {void} 无返回值，结果更新到 equipmentGroupOptions。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
  */
 function loadEquipmentGroupOptions() {
   searchBaseConfig({ configType: 'EQUIPMENT_GROUP' }).then((res: any[]) => {
@@ -106,7 +119,9 @@ function loadEquipmentGroupOptions() {
 }
 
 // ========== 表单数据 ==========
+// 表单实例引用，用于表单验证
 const formRef = ref<any>();
+// 点检方案表单数据：包含方案名称、点检类型、设备组、设备编码、点检项明细等
 const formData = ref<InspectionSchemeSubmit>({
   schemeName: '',
   inspectionType: 'INSPECTION',
@@ -154,6 +169,7 @@ const rules: any = {
 };
 
 // ========== 监听抽屉打开并加载数据 ==========
+// 监听抽屉可见性变化，打开时根据 mode 加载数据或重置表单
 watch(
   () => props.visible,
   (val) => {
@@ -219,11 +235,23 @@ watch(
 );
 
 // ========== 关闭抽屉 ==========
+/**
+ * 关闭抽屉，通过 emit 触发父组件更新 visible 状态。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleClose() {
   drawerVisible.value = false;
 }
 
 // ========== 提交表单 ==========
+/**
+ * 提交表单，包含前置校验与错误捕获。根据 mode 调用新增或更新接口。
+ * @returns {void} 无返回值，成功后关闭抽屉并刷新列表。
+ * @throws {Error} 表单校验失败时不抛出异常。
+ * @since 2026-04-25 10:17:00
+ */
 function handleSubmit() {
   formRef.value
     .validate()
@@ -243,6 +271,13 @@ function handleSubmit() {
 }
 
 // ========== 点巡检项操作 ==========
+/**
+ * 删除指定索引的点巡检项，并重新排序序号。
+ * @param {number} index - 要删除的项索引。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function removeDetailItem(index: number) {
   formData.value.details = formData.value.details.filter((_, i) => i !== index);
   // 重新排序
@@ -253,11 +288,18 @@ function removeDetailItem(index: number) {
 }
 
 // ========== 点检项选择抽屉 ==========
+// 点检项选择抽屉可见性：控制 EquipCheckItemSelectDrawer 显示
 const checkItemDrawerVisible = ref(false);
 
 // 已选中的点检项列表（用于在抽屉中显示已选项）
 const selectedCheckItems = ref<any[]>([]);
 
+/**
+ * 打开点检项选择抽屉，同步当前已选项。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function openCheckItemDrawer() {
   // 打开抽屉前，同步已选项到 selectedCheckItems
   selectedCheckItems.value =
@@ -268,6 +310,13 @@ function openCheckItemDrawer() {
   checkItemDrawerVisible.value = true;
 }
 
+/**
+ * 处理点检项选择回调，重新生成 details 列表并覆盖现有选项。
+ * @param {any[]} items - 选中的点检项数组。
+ * @returns {void} 无返回值，结果更新到 formData.details。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleCheckItemSelect(items: any[]) {
   // 直接覆盖：重新生成 details 列表
   const newDetails = items.map((item, index) => ({
@@ -281,15 +330,29 @@ function handleCheckItemSelect(items: any[]) {
 }
 
 // ========== 设备选择抽屉 ==========
+// 设备选择抽屉可见性：控制 EquipmentSelectDrawer 显示
 const equipmentDrawerVisible = ref(false);
 
 // 已选中的设备列表
 const selectedEquipments = ref<any[]>([]);
 
+/**
+ * 打开设备选择抽屉。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function openEquipmentDrawer() {
   equipmentDrawerVisible.value = true;
 }
 
+/**
+ * 处理设备选择回调，更新已选设备列表和设备编码字段。
+ * @param {any[]} equipments - 选中的设备数组。
+ * @returns {void} 无返回值，结果更新到 selectedEquipments 和 formData.equipmentCodes。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleEquipmentSelect(equipments: any[]) {
   // 直接覆盖
   selectedEquipments.value = equipments;
@@ -299,6 +362,13 @@ function handleEquipmentSelect(equipments: any[]) {
     .join(',');
 }
 
+/**
+ * 移除指定索引的设备。
+ * @param {number} index - 要移除的设备索引。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function removeEquipment(index: number) {
   selectedEquipments.value.splice(index, 1);
   formData.value.equipmentCodes = (selectedEquipments.value || [])

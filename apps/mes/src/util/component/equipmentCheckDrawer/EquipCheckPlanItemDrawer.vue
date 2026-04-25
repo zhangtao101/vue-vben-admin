@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+/**
+ * [INPUT]: 依赖 ant-design-vue、#/adapter/vxe-table、#/api（getInspectionSchemeById）、#/locales
+ * [OUTPUT]: 对外提供 EquipCheckPlanItemDrawer 组件，用于查看点检计划关联的点检项列表
+ * [POS]: 设备点检管理模块 的 点检计划点检项查看抽屉，被 EquipCheckPlanDrawer.vue 引用
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-25 10:17:00
+ */
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref, watch } from 'vue';
@@ -28,8 +35,11 @@ interface Props {
 }
 
 // ========== 抽屉控制 ==========
+// 抽屉内部可见性状态：与 props.visible 双向绑定
 const drawerVisible = ref(props.visible);
+// 加载状态：控制表格区域的 Spin 显示
 const loading = ref(false);
+// 方案名称：用于抽屉标题显示
 const schemeName = ref('');
 
 watch(
@@ -83,6 +93,12 @@ const gridOptions: VxeGridProps<any> = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 // ========== 加载数据 ==========
+/**
+ * 加载点检方案关联的点检项列表。
+ * @returns {void} 无返回值，成功后更新 schemeName 和表格数据。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function loadData() {
   if (!props.schemeId) return;
   loading.value = true;
@@ -99,6 +115,12 @@ function loadData() {
 }
 
 // ========== 关闭 ==========
+/**
+ * 关闭抽屉，通过 emit 触发父组件更新 visible 状态。
+ * @returns {void} 无返回值。
+ * @throws 无。
+ * @since 2026-04-25 10:17:00
+ */
 function handleClose() {
   drawerVisible.value = false;
 }

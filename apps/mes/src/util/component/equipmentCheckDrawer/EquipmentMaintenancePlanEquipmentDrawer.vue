@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 /**
- * [INPUT]: 依赖 ant-design-vue、#/adapter/vxe-table、#/api（getInspectionSchemeById、queryScadaEquipLedgerByCode）、#/locales
- * [OUTPUT]: 对外提供 EquipCheckPlanEquipmentDrawer 组件，用于查看点检计划绑定的设备列表
- * [POS]: 设备点检管理模块 的 点检计划绑定设备查看抽屉，被 EquipCheckPlanDrawer.vue 引用
+ * [INPUT]: 依赖 ant-design-vue、#/adapter/vxe-table、#/api（getMaintenanceSchemeById、queryScadaEquipLedgerByCode）、#/locales
+ * [OUTPUT]: 对外提供 EquipmentMaintenancePlanEquipmentDrawer 组件，用于查看保养计划绑定的设备列表
+ * [POS]: 设备点检管理模块 的 保养计划绑定设备查看抽屉，被 EquipmentMaintenancePlanDrawer.vue 引用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * [TIME]: 2026-04-25 10:17:00
  */
@@ -13,11 +13,14 @@ import { ref, watch } from 'vue';
 import { Drawer, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getInspectionSchemeById, queryScadaEquipLedgerByCode } from '#/api';
+import {
+  getMaintenanceSchemeById,
+  queryScadaEquipLedgerByCode,
+} from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({
-  name: 'EquipCheckPlanEquipmentDrawer',
+  name: 'EquipmentMaintenancePlanEquipmentDrawer',
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -64,24 +67,26 @@ const gridOptions: VxeGridProps<any> = {
     { type: 'seq', width: 60, title: '序号' },
     {
       field: 'equipmentCode',
-      title: $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentCode'),
+      title: $t(
+        'equipmentMaintenancePlan.bindEquipmentDrawer.equipmentCode',
+      ),
       minWidth: 140,
     },
     {
       field: 'equipmentName',
-      title: $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentName'),
+      title: $t(
+        'equipmentMaintenancePlan.bindEquipmentDrawer.equipmentName',
+      ),
       minWidth: 160,
     },
     {
       field: 'equipGroupName',
-      title: $t(
-        'equipmentSpotCheckScheme.equipmentSelectDrawer.equipGroupName',
-      ),
+      title: $t('equipmentMaintenancePlan.bindEquipmentDrawer.equipGroupName'),
       minWidth: 120,
     },
     {
       field: 'location',
-      title: $t('equipmentSpotCheckScheme.equipmentSelectDrawer.location'),
+      title: $t('equipmentMaintenancePlan.bindEquipmentDrawer.location'),
       minWidth: 140,
     },
   ],
@@ -96,7 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 // ========== 加载数据 ==========
 /**
- * 加载点检方案绑定的设备列表。根据方案ID获取设备编码列表，再逐个查询设备详情并渲染表格。
+ * 加载保养方案绑定的设备列表。根据方案ID获取设备编码列表，再逐个查询设备详情并渲染表格。
  * @returns {void} 无返回值，成功后更新 schemeName 和表格数据。
  * @throws 无。
  * @since 2026-04-25 10:17:00
@@ -104,7 +109,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 function loadData() {
   if (!props.schemeId) return;
   loading.value = true;
-  getInspectionSchemeById(Number(props.schemeId))
+  getMaintenanceSchemeById(Number(props.schemeId))
     .then((res: any) => {
       schemeName.value = res?.schemeName || '';
       // 从 equipmentCodes 解析设备列表并查询详情
@@ -151,14 +156,14 @@ function handleClose() {
     v-model:open="drawerVisible"
     :title="
       schemeName
-        ? `${$t('equipCheckPlan.viewEquipment')} - ${schemeName}`
-        : $t('equipCheckPlan.viewEquipment')
+        ? `${$t('equipmentMaintenancePlan.bindEquipment')} - ${schemeName}`
+        : $t('equipmentMaintenancePlan.bindEquipment')
     "
     width="800"
     :destroy-on-close="true"
     @close="handleClose"
   >
-    <Spin :spinning="loading">
+    <Spin :spinning="loading" class="h-full">
       <Grid />
     </Spin>
   </Drawer>

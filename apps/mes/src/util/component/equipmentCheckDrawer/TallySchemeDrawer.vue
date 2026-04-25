@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 /**
- * 设备保养方案抽屉组件
+ * [INPUT]: 依赖 ant-design-vue、@iconify/vue-iconify、#/api（createMaintenanceScheme、getMaintenanceSchemeById、queryScadaEquipLedgerByCode、searchBaseConfig、updateMaintenanceScheme）、#/locales、./EquipmentSelectDrawer.vue、./TallyMaintenanceItemSelectDrawer.vue
+ * [OUTPUT]: 对外提供 TallySchemeDrawer 组件，支持新增/编辑/查看设备保养方案
+ * [POS]: 设备点检管理模块 的 保养方案抽屉组件，被保养方案管理页面引用
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-04-25 10:30:00
  */
 import type { MaintenanceScheme, MaintenanceSchemeSubmit } from '#/api';
 
@@ -54,7 +58,7 @@ const emit = defineEmits<{
   'update:visible': [value: boolean];
 }>();
 
-// Props 定义
+// Props 定义：接收父组件传递的属性
 interface Props {
   visible: boolean;
   mode: 'add' | 'edit' | 'view';
@@ -62,6 +66,7 @@ interface Props {
 }
 
 // ========== 抽屉控制 ==========
+// 抽屉内部可见性状态：与 props.visible 双向绑定
 const drawerVisible = ref(props.visible);
 
 // 监听 props 变化
@@ -78,6 +83,7 @@ watch(drawerVisible, (val) => {
 });
 
 // ========== 下拉选项 ==========
+// 计划类型选项：REGULAR-常规、CONDITIONAL-条件
 const planTypeOptions = [
   {
     label: $t('tallyScheme.planTypeOptions.REGULAR'),
@@ -95,10 +101,15 @@ const statusOptions = [
 ];
 
 // ========== 设备组下拉选项 ==========
+// 设备组下拉选项列表：从基础配置接口获取
 const equipmentGroupOptions = ref<any[]>([]);
 
 /**
  * 加载设备组下拉选项。
+ * 从基础配置接口获取设备组列表，映射为 Select 组件所需的 label/value 格式。
+ * @returns {void} 无返回值，结果直接赋值给 equipmentGroupOptions。
+ * @throws 无异常抛出，接口错误时 equipmentGroupOptions 为空数组。
+ * @since 2026-04-25 10:30:00
  */
 function loadEquipmentGroupOptions() {
   searchBaseConfig({ configType: 'EQUIPMENT_GROUP' }).then((res: any[]) => {
@@ -110,7 +121,9 @@ function loadEquipmentGroupOptions() {
 }
 
 // ========== 表单数据 ==========
+// 表单实例引用
 const formRef = ref<any>();
+// 表单数据模型：包含方案名称、计划类型、停机标识、设备组、设备编码列表、状态、备注、明细列表
 const formData = ref<MaintenanceSchemeSubmit>({
   schemeName: '',
   planType: 'REGULAR',
@@ -122,9 +135,11 @@ const formData = ref<MaintenanceSchemeSubmit>({
   details: [],
 });
 
+/** 查看/编辑模式下的当前行数据：从接口获取完整数据用于展示 */
 const currentRow = ref<MaintenanceScheme | null>(null);
 
 // ========== 表单验证规则 ==========
+/** 表单验证规则：方案名称、计划类型、状态为必填项，明细列表至少包含一项 */
 const rules: any = {
   schemeName: [
     {
@@ -226,11 +241,24 @@ watch(
 );
 
 // ========== 关闭抽屉 ==========
+/**
+ * 关闭抽屉。
+ * 将抽屉内部可见性状态设为 false，触发 emit('update:visible') 同步外部状态。
+ * @returns {void} 无返回值。
+ * @since 2026-04-25 10:30:00
+ */
 function handleClose() {
   drawerVisible.value = false;
 }
 
 // ========== 提交表单 ==========
+/**
+ * 提交表单，包含前置校验与错误捕获。
+ * 根据 mode 调用新增或编辑接口，成功后提示并关闭抽屉，触发 refresh 事件。
+ * @returns {Promise<void>} 无返回值，成功后触发 success 提示。
+ * @throws 表单验证失败时 Promise 被拒绝，但不抛出异常。
+ * @since 2026-04-25 10:30:00
+ */
 function handleSubmit() {
   formRef.value
     .validate()
@@ -268,6 +296,13 @@ function handleSubmit() {
 }
 
 // ========== 保养项操作 ==========
+/**
+ * 删除保养项明细。
+ * 根据索引移除指定保养项，并重新生成序号确保连续性。
+ * @param {number} index - 要删除的保养项在列表中的索引，从 0 开始。
+ * @returns {void} 无返回值，直接修改 formData.value.details。
+ * @since 2026-04-25 10:30:00
+ */
 function removeDetailItem(index: number) {
   formData.value.details = formData.value.details.filter((_, i) => i !== index);
   // 重新排序
@@ -283,6 +318,12 @@ const maintenanceItemDrawerVisible = ref(false);
 // 已选中的保养项列表（用于在抽屉中显示已选项）
 const selectedMaintenanceItems = ref<any[]>([]);
 
+/**
+ * 打开保养项选择抽屉。
+ * 同步当前表单中的保养项到已选项列表，然后打开抽屉。
+ * @returns {void} 无返回值。
+ * @since 2026-04-25 10:30:00
+ */
 function openMaintenanceItemDrawer() {
   // 打开抽屉前，同步已选项到 selectedMaintenanceItems
   selectedMaintenanceItems.value =
@@ -293,6 +334,13 @@ function openMaintenanceItemDrawer() {
   maintenanceItemDrawerVisible.value = true;
 }
 
+/**
+ * 处理保养项选择回调。
+ * 将选择的保养项列表直接覆盖到表单明细中，自动生成序号。
+ * @param {any[]} items - 选择的保养项数组，每项包含 checkItemCode 和 checkItemName。
+ * @returns {void} 无返回值，直接替换 formData.value.details。
+ * @since 2026-04-25 10:30:00
+ */
 function handleMaintenanceItemSelect(items: any[]) {
   // 直接覆盖：重新生成 details 列表
   const newDetails = items.map((item, index) => ({
@@ -311,10 +359,22 @@ const equipmentDrawerVisible = ref(false);
 // 已选中的设备列表
 const selectedEquipments = ref<any[]>([]);
 
+/**
+ * 打开设备选择抽屉。
+ * @returns {void} 无返回值。
+ * @since 2026-04-25 10:30:00
+ */
 function openEquipmentDrawer() {
   equipmentDrawerVisible.value = true;
 }
 
+/**
+ * 处理设备选择回调。
+ * 将选择的设备列表更新到已选设备列表，并同步更新表单中的设备编码字段（逗号分隔）。
+ * @param {any[]} equipments - 选择的设备数组，每项包含 equipmentCode 等属性。
+ * @returns {void} 无返回值，直接更新 selectedEquipments 和 formData.value.equipmentCodes。
+ * @since 2026-04-25 10:30:00
+ */
 function handleEquipmentSelect(equipments: any[]) {
   // 直接覆盖
   selectedEquipments.value = equipments;
@@ -324,6 +384,13 @@ function handleEquipmentSelect(equipments: any[]) {
     .join(',');
 }
 
+/**
+ * 删除已选设备。
+ * 根据索引移除设备，并重新计算表单中的设备编码字段。
+ * @param {number} index - 要删除的设备在已选列表中的索引，从 0 开始。
+ * @returns {void} 无返回值，直接修改 selectedEquipments 和 formData.value.equipmentCodes。
+ * @since 2026-04-25 10:30:00
+ */
 function removeEquipment(index: number) {
   selectedEquipments.value.splice(index, 1);
   formData.value.equipmentCodes = (selectedEquipments.value || [])
