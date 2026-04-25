@@ -229,7 +229,9 @@ function handleClose() {
         >
           <Input
             v-model:value="queryParams.checkItemCode"
-            :placeholder="$t('equipmentSpotCheckScheme.checkItemCodePlaceholder')"
+            :placeholder="
+              $t('equipmentSpotCheckScheme.checkItemCodePlaceholder')
+            "
             allow-clear
             style="width: 150px"
           />
@@ -241,7 +243,9 @@ function handleClose() {
         >
           <Input
             v-model:value="queryParams.checkItemName"
-            :placeholder="$t('equipmentSpotCheckScheme.checkItemNamePlaceholder')"
+            :placeholder="
+              $t('equipmentSpotCheckScheme.checkItemNamePlaceholder')
+            "
             allow-clear
             style="width: 150px"
           />

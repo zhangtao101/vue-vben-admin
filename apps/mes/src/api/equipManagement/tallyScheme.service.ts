@@ -85,7 +85,9 @@ export async function getMaintenanceSchemeList(params?: {
 /**
  * 设备保养方案分页查询
  */
-export async function getMaintenanceSchemePage(params: MaintenanceSchemeParams) {
+export async function getMaintenanceSchemePage(
+  params: MaintenanceSchemeParams,
+) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/plan/maintenance-scheme/list-page?${qs.stringify(params)}`,
   );

@@ -253,7 +253,9 @@ function handleDelete(row: MaintenanceScheme) {
 // ========== 启用/停用 ==========
 function handleStatusChange(row: MaintenanceScheme) {
   const api =
-    row.status === 'ACTIVE' ? disableMaintenanceScheme : enableMaintenanceScheme;
+    row.status === 'ACTIVE'
+      ? disableMaintenanceScheme
+      : enableMaintenanceScheme;
   if (row.id) {
     api(row.id).then(() => {
       message.success($t('common.successfulOperation'));
@@ -276,10 +278,7 @@ onMounted(() => {
     <!-- 查询区域 -->
     <Card class="!mb-4">
       <Form layout="inline">
-        <FormItem
-          :label="$t('tallyScheme.keyword')"
-          style="margin-bottom: 1em"
-        >
+        <FormItem :label="$t('tallyScheme.keyword')" style="margin-bottom: 1em">
           <Input
             v-model:value="queryParams.keyword"
             :placeholder="$t('tallyScheme.keywordPlaceholder')"
@@ -308,10 +307,7 @@ onMounted(() => {
           </Select>
         </FormItem>
 
-        <FormItem
-          :label="$t('tallyScheme.status')"
-          style="margin-bottom: 1em"
-        >
+        <FormItem :label="$t('tallyScheme.status')" style="margin-bottom: 1em">
           <Select
             v-model:value="queryParams.status"
             :placeholder="$t('tallyScheme.statusPlaceholder')"
@@ -354,11 +350,7 @@ onMounted(() => {
 
         <!-- 保养类型插槽 -->
         <template #planType="{ row }">
-          <Tag
-            :color="
-              row.planType === 'REGULAR' ? 'processing' : 'warning'
-            "
-          >
+          <Tag :color="row.planType === 'REGULAR' ? 'processing' : 'warning'">
             {{
               row.planType === 'REGULAR'
                 ? $t('tallyScheme.planTypeOptions.REGULAR')
@@ -370,7 +362,11 @@ onMounted(() => {
         <!-- 是否停机插槽 -->
         <template #isStopMachine="{ row }">
           <Tag :color="row.isStopMachine ? 'error' : 'default'">
-            {{ row.isStopMachine ? $t('tallyScheme.isStopMachineYes') : $t('tallyScheme.isStopMachineNo') }}
+            {{
+              row.isStopMachine
+                ? $t('tallyScheme.isStopMachineYes')
+                : $t('tallyScheme.isStopMachineNo')
+            }}
           </Tag>
         </template>
 

@@ -252,7 +252,9 @@ function handleSubmit() {
       }
 
       const api =
-        props.mode === 'add' ? createMaintenanceScheme : updateMaintenanceScheme;
+        props.mode === 'add'
+          ? createMaintenanceScheme
+          : updateMaintenanceScheme;
 
       api(params as any).then(() => {
         message.success($t('common.successfulOperation'));
@@ -380,7 +382,9 @@ function removeEquipment(index: number) {
 
       <!-- 保养项明细 -->
       <div class="mt-4">
-        <h4 class="mb-2 font-medium">{{ $t('tallyScheme.maintenanceItem') }}</h4>
+        <h4 class="mb-2 font-medium">
+          {{ $t('tallyScheme.maintenanceItem') }}
+        </h4>
         <table class="detail-table">
           <thead>
             <tr>
@@ -412,10 +416,7 @@ function removeEquipment(index: number) {
       <Form ref="formRef" :model="formData" :rules="rules" layout="vertical">
         <Row :gutter="16">
           <Col :span="12">
-            <FormItem
-              :label="$t('tallyScheme.schemeName')"
-              name="schemeName"
-            >
+            <FormItem :label="$t('tallyScheme.schemeName')" name="schemeName">
               <Input
                 v-model:value="formData.schemeName"
                 :placeholder="`请输入${$t('tallyScheme.schemeName')}`"
@@ -482,12 +483,16 @@ function removeEquipment(index: number) {
           </Col>
           <Col :span="12">
             <FormItem
-              :label="$t('equipmentSpotCheckScheme.equipmentSelectDrawer.title')"
+              :label="
+                $t('equipmentSpotCheckScheme.equipmentSelectDrawer.title')
+              "
             >
               <Button type="dashed" block @click="openEquipmentDrawer">
                 <Icon icon="mdi:plus" class="inline-block align-middle" />
                 {{
-                  $t('equipmentSpotCheckScheme.equipmentSelectDrawer.selectEquipment')
+                  $t(
+                    'equipmentSpotCheckScheme.equipmentSelectDrawer.selectEquipment',
+                  )
                 }}
               </Button>
             </FormItem>
@@ -506,17 +511,23 @@ function removeEquipment(index: number) {
           >
             <Col :span="6">
               <span class="font-medium">{{
-                $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentCode')
+                $t(
+                  'equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentCode',
+                )
               }}</span>
             </Col>
             <Col :span="6">
               <span class="font-medium">{{
-                $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentName')
+                $t(
+                  'equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentName',
+                )
               }}</span>
             </Col>
             <Col :span="6">
               <span class="font-medium">{{
-                $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipGroupName')
+                $t(
+                  'equipmentSpotCheckScheme.equipmentSelectDrawer.equipGroupName',
+                )
               }}</span>
             </Col>
             <Col :span="5">
