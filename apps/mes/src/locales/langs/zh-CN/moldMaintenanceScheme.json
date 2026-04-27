@@ -1,0 +1,58 @@
+{
+  "listTitle": "模具保养方案",
+  "addTitle": "新增模具保养方案",
+  "editTitle": "编辑模具保养方案",
+  "viewTitle": "查看模具保养方案",
+  "schemeName": "方案名称",
+  "planType": "保养类型",
+  "status": "状态",
+  "moldCategoryName": "模具组",
+  "moldCodes": "模具编码",
+  "moldCount": "模具数量",
+  "itemCount": "保养项数量",
+  "isStopMachine": "是否停机",
+  "operator": "负责人",
+  "remark": "备注",
+  "keywordPlaceholder": "请输入方案名称",
+  "planTypePlaceholder": "请选择保养类型",
+  "moldCategoryPlaceholder": "请输入模具组",
+  "moldCodesPlaceholder": "请输入模具编码，多个用逗号分隔",
+  "statusPlaceholder": "请选择状态",
+  "confirmDelete": "确定删除该保养方案吗？",
+  "maintenanceItems": "保养项明细",
+  "statusOptions": {
+    "ACTIVE": "启用",
+    "DISABLED": "停用"
+  },
+  "planTypeOptions": {
+    "REGULAR": "定期保养",
+    "CONDITIONAL": "条件保养"
+  },
+  "itemDrawer": {
+    "title": "保养项列表",
+    "selectTitle": "选择保养项",
+    "addItem": "添加保养项",
+    "itemCode": "保养项编码",
+    "itemName": "保养项名称",
+    "itemStandard": "保养标准",
+    "itemRequirement": "保养要求",
+    "sequenceNo": "序号",
+    "itemCodePlaceholder": "请输入保养项编码",
+    "itemNamePlaceholder": "请输入保养项名称",
+    "itemRequirementPlaceholder": "请输入保养要求",
+    "itemStandardPlaceholder": "请输入保养标准"
+  },
+  "moldSelectDrawer": {
+    "title": "选择模具",
+    "selectMold": "选择模具",
+    "moldCode": "模具编码",
+    "moldName": "模具名称",
+    "moldCategoryCode": "模具组编码",
+    "moldCategoryName": "模具组名称",
+    "moldCodePlaceholder": "请输入模具编码",
+    "moldNamePlaceholder": "请输入模具名称",
+    "moldCategoryCodePlaceholder": "请输入模具组编码",
+    "cancel": "取消",
+    "confirm": "确认"
+  }
+}

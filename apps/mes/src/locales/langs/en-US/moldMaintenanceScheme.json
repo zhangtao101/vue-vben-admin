@@ -1,0 +1,58 @@
+{
+  "listTitle": "Mold Maintenance Scheme",
+  "addTitle": "Add Mold Maintenance Scheme",
+  "editTitle": "Edit Mold Maintenance Scheme",
+  "viewTitle": "View Mold Maintenance Scheme",
+  "schemeName": "Scheme Name",
+  "planType": "Maintenance Type",
+  "status": "Status",
+  "moldCategoryName": "Mold Group",
+  "moldCodes": "Mold Code",
+  "moldCount": "Mold Count",
+  "itemCount": "Item Count",
+  "isStopMachine": "Stop Machine",
+  "operator": "Operator",
+  "remark": "Remark",
+  "keywordPlaceholder": "Please enter scheme name",
+  "planTypePlaceholder": "Please select maintenance type",
+  "moldCategoryPlaceholder": "Please enter mold group",
+  "moldCodesPlaceholder": "Please enter mold codes, separated by commas",
+  "statusPlaceholder": "Please select status",
+  "confirmDelete": "Are you sure to delete this maintenance scheme?",
+  "maintenanceItems": "Maintenance Items",
+  "statusOptions": {
+    "ACTIVE": "Active",
+    "DISABLED": "Disabled"
+  },
+  "planTypeOptions": {
+    "REGULAR": "Regular",
+    "CONDITIONAL": "Conditional"
+  },
+  "itemDrawer": {
+    "title": "Maintenance Items",
+    "selectTitle": "Select Maintenance Items",
+    "addItem": "Add Items",
+    "itemCode": "Item Code",
+    "itemName": "Item Name",
+    "itemStandard": "Standard",
+    "itemRequirement": "Requirement",
+    "sequenceNo": "No.",
+    "itemCodePlaceholder": "Please enter item code",
+    "itemNamePlaceholder": "Please enter item name",
+    "itemRequirementPlaceholder": "Please enter requirement",
+    "itemStandardPlaceholder": "Please enter standard"
+  },
+  "moldSelectDrawer": {
+    "title": "Select Mold",
+    "selectMold": "Select Mold",
+    "moldCode": "Mold Code",
+    "moldName": "Mold Name",
+    "moldCategoryCode": "Mold Group Code",
+    "moldCategoryName": "Mold Group Name",
+    "moldCodePlaceholder": "Please enter mold code",
+    "moldNamePlaceholder": "Please enter mold name",
+    "moldCategoryCodePlaceholder": "Please enter mold group code",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  }
+}

@@ -489,12 +489,16 @@ function removeEquipment(index: number) {
                 :placeholder="`请输入${$t('tallyScheme.schemeName')}`"
                 :maxlength="100"
                 show-count
+                :disabled="mode === 'edit'"
               />
             </FormItem>
           </Col>
           <Col :span="12">
             <FormItem :label="$t('tallyScheme.planType')" name="planType">
-              <Select v-model:value="formData.planType">
+              <Select
+                v-model:value="formData.planType"
+                :disabled="mode === 'edit'"
+              >
                 <SelectOption
                   v-for="item in planTypeOptions"
                   :key="item.value"

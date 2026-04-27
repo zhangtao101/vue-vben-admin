@@ -28,8 +28,12 @@ async function initApplication() {
   const { bootstrap } = await import('./bootstrap');
   await bootstrap(namespace);
 
-  // 移除并销毁loading
-  unmountGlobalLoading();
+  try {
+    // 移除并销毁loading
+    unmountGlobalLoading();
+  } catch (error) {
+    console.warn(error);
+  }
 }
 
 initApplication();

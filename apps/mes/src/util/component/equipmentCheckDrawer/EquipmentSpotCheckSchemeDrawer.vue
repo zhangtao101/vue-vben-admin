@@ -478,6 +478,7 @@ function removeEquipment(index: number) {
                 "
                 :maxlength="100"
                 show-count
+                :disabled="mode === 'edit'"
               />
             </FormItem>
           </Col>
@@ -491,6 +492,7 @@ function removeEquipment(index: number) {
                 :placeholder="
                   $t('equipmentSpotCheckScheme.inspectionTypePlaceholder')
                 "
+                :disabled="mode === 'edit'"
               >
                 <SelectOption
                   v-for="item in inspectionTypeOptions"

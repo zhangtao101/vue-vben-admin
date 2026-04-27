@@ -1,0 +1,60 @@
+{
+  "listTitle": "模具保养计划",
+  "addTitle": "新增模具保养计划",
+  "editTitle": "编辑模具保养计划",
+  "viewTitle": "查看模具保养计划",
+  "planName": "计划名称",
+  "schemeName": "关联方案",
+  "planType": "保养类型",
+  "equipmentGroup": "模具组",
+  "moldCount": "模具数量",
+  "firstExecuteTime": "首次执行时间",
+  "frequency": "保养周期",
+  "frequencyValue": "周期值",
+  "frequencyUnit": "周期单位",
+  "effectiveDate": "生效日期",
+  "endDate": "结束日期",
+  "status": "状态",
+  "remark": "备注",
+  "keywordPlaceholder": "请输入计划名称",
+  "equipmentGroupPlaceholder": "请输入模具组",
+  "confirmDelete": "确定删除该保养计划吗？",
+  "conditionTrigger": "触发条件",
+  "conditionDimension": "条件维度",
+  "compareOperator": "比较方式",
+  "triggerValue": "触发值",
+  "bindMold": "查看绑定模具",
+  "maintenanceItem": "查看保养项",
+  "statusOptions": {
+    "ACTIVE": "启用",
+    "DISABLED": "停用"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "天",
+    "WEEK": "周",
+    "MONTH": "月"
+  },
+  "planTypeOptions": {
+    "REGULAR": "定期保养",
+    "CONDITIONAL": "条件保养"
+  },
+  "conditionDimensionOptions": {
+    "LIFESPAN": "使用寿命",
+    "USE_COUNT": "使用次数"
+  },
+  "compareOperatorOptions": {
+    "LT": "低于",
+    "LTE": "低于等于"
+  },
+  "moldDrawer": {
+    "moldCode": "模具编码",
+    "moldName": "模具名称",
+    "moldCategoryName": "模具组"
+  },
+  "maintenanceItemDrawer": {
+    "itemCode": "保养项编码",
+    "itemName": "保养项名称",
+    "itemStandard": "保养标准",
+    "itemRequirement": "保养要求"
+  }
+}

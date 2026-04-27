@@ -1,0 +1,60 @@
+{
+  "listTitle": "Mold Maintenance Plan",
+  "addTitle": "Add Mold Maintenance Plan",
+  "editTitle": "Edit Mold Maintenance Plan",
+  "viewTitle": "View Mold Maintenance Plan",
+  "planName": "Plan Name",
+  "schemeName": "Associated Scheme",
+  "planType": "Maintenance Type",
+  "equipmentGroup": "Mold Group",
+  "moldCount": "Mold Count",
+  "firstExecuteTime": "First Execute Time",
+  "frequency": "Maintenance Cycle",
+  "frequencyValue": "Frequency Value",
+  "frequencyUnit": "Frequency Unit",
+  "effectiveDate": "Effective Date",
+  "endDate": "End Date",
+  "status": "Status",
+  "remark": "Remark",
+  "keywordPlaceholder": "Please enter plan name",
+  "equipmentGroupPlaceholder": "Please enter mold group",
+  "confirmDelete": "Are you sure to delete this maintenance plan?",
+  "conditionTrigger": "Trigger Condition",
+  "conditionDimension": "Condition Dimension",
+  "compareOperator": "Compare Operator",
+  "triggerValue": "Trigger Value",
+  "bindMold": "View Mold",
+  "maintenanceItem": "View Maintenance Items",
+  "statusOptions": {
+    "ACTIVE": "Active",
+    "DISABLED": "Disabled"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "Day",
+    "WEEK": "Week",
+    "MONTH": "Month"
+  },
+  "planTypeOptions": {
+    "REGULAR": "Regular",
+    "CONDITIONAL": "Conditional"
+  },
+  "conditionDimensionOptions": {
+    "LIFESPAN": "Lifespan",
+    "USE_COUNT": "Usage Count"
+  },
+  "compareOperatorOptions": {
+    "LT": "Less Than",
+    "LTE": "Less Than or Equal"
+  },
+  "moldDrawer": {
+    "moldCode": "Mold Code",
+    "moldName": "Mold Name",
+    "moldCategoryName": "Mold Group"
+  },
+  "maintenanceItemDrawer": {
+    "itemCode": "Item Code",
+    "itemName": "Item Name",
+    "itemStandard": "Standard",
+    "itemRequirement": "Requirement"
+  }
+}
