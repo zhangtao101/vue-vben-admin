@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import type { Rule } from 'ant-design-vue/es/form';
+
+import { computed, ref, watch } from 'vue';
+
 import {
   Button,
   Drawer,
@@ -9,20 +13,10 @@ import {
   message,
   Space,
 } from 'ant-design-vue';
-import type { Rule } from 'ant-design-vue/es/form';
-
-import { computed, ref, watch } from 'vue';
 
 defineOptions({
   name: 'RepairBasicConfigDrawer',
 });
-
-// ========== Props & Emits ==========
-interface Props {
-  open: boolean;
-  configType: string;
-  row?: any;
-}
 
 const props = withDefaults(defineProps<Props>(), {
   open: false,
@@ -31,9 +25,16 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  'update:open': [value: boolean];
   success: [];
+  'update:open': [value: boolean];
 }>();
+
+// ========== Props & Emits ==========
+interface Props {
+  open: boolean;
+  configType: string;
+  row?: any;
+}
 
 // ========== 抽屉可见性 ==========
 const drawerVisible = ref(props.open);
@@ -138,28 +139,28 @@ function handleSubmit() {
     @close="handleClose"
   >
     <Form ref="formRef" :model="formData" :rules="rules" layout="vertical">
-      <FormItem :label="'配置编码'" name="configCode">
+      <FormItem label="配置编码" name="configCode">
         <Input
           v-model:value="formData.configCode"
           placeholder="请输入配置编码"
         />
       </FormItem>
 
-      <FormItem :label="'配置名称'" name="configName">
+      <FormItem label="配置名称" name="configName">
         <Input
           v-model:value="formData.configName"
           placeholder="请输入配置名称"
         />
       </FormItem>
 
-      <FormItem v-if="showRepairGroupCode" :label="'维修组编码'">
+      <FormItem v-if="showRepairGroupCode" label="维修组编码">
         <Input
           v-model:value="formData.repairGroupCode"
           placeholder="请输入维修组编码"
         />
       </FormItem>
 
-      <FormItem :label="'排序号'">
+      <FormItem label="排序号">
         <InputNumber
           v-model:value="formData.sortOrder"
           :min="0"
@@ -168,7 +169,7 @@ function handleSubmit() {
         />
       </FormItem>
 
-      <FormItem :label="'备注'">
+      <FormItem label="备注">
         <Input.TextArea
           v-model:value="formData.remark"
           :rows="3"
