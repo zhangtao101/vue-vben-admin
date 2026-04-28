@@ -142,6 +142,12 @@ onMounted(() => {
   ) {
     pitStopParameters.value.equipCode = props.details.equipCodes[0] || '';
   }
+  setTimeout(() => {
+    if (props.details && props.details.worksheetCode) {
+      pitStopParameters.value.worksheetCode = props.details.worksheetCode;
+      pitStop();
+    }
+  }, 500);
 });
 </script>
 
