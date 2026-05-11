@@ -5,7 +5,33 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  conflicts_@iconify/json_h2_2_417:
+    '@iconify/json':
+      specifier: ^2.2.417
+      version: 2.2.458
+  conflicts_@types/qs_h6_9_18:
+    '@types/qs':
+      specifier: ^6.9.18
+      version: 6.15.0
+  conflicts_@types/sortablejs_h1_15_8:
+    '@types/sortablejs':
+      specifier: ^1.15.8
+      version: 1.15.9
+  conflicts_qs_h6_13_1:
+    qs:
+      specifier: ^6.13.1
+      version: 6.15.0
+  conflicts_sortablejs_h1_15_6:
+    sortablejs:
+      specifier: ^1.15.6
+      version: 1.15.7
   default:
+    '@antv/data-set':
+      specifier: ^0.11.8
+      version: 0.11.8
+    '@antv/g2':
+      specifier: ^5.2.11
+      version: 5.4.8
     '@changesets/changelog-github':
       specifier: ^0.6.0
       version: 0.6.0
@@ -120,12 +146,18 @@ catalogs:
     '@types/html-minifier-terser':
       specifier: ^7.0.2
       version: 7.0.2
+    '@types/jquery':
+      specifier: ^3.5.32
+      version: 3.5.34
     '@types/json-bigint':
       specifier: ^1.0.4
       version: 1.0.4
     '@types/jsonwebtoken':
       specifier: ^9.0.10
       version: 9.0.10
+    '@types/lodash-es':
+      specifier: ^4.17.12
+      version: 4.17.12
     '@types/lodash.clonedeep':
       specifier: ^4.5.9
       version: 4.5.9
@@ -177,6 +209,12 @@ catalogs:
     '@vueuse/motion':
       specifier: ^3.0.3
       version: 3.0.3
+    '@vxe-ui/plugin-export-xlsx':
+      specifier: ^4.2.0
+      version: 4.5.1
+    '@zxing/library':
+      specifier: ^0.21.3
+      version: 0.21.3
     ant-design-vue:
       specifier: ^4.2.6
       version: 4.2.6
@@ -219,6 +257,9 @@ catalogs:
     cspell:
       specifier: ^9.7.0
       version: 9.7.0
+    cssnano:
+      specifier: ^7.0.6
+      version: 7.1.4
     cz-git:
       specifier: ^1.12.0
       version: 1.12.0
@@ -243,6 +284,9 @@ catalogs:
     element-plus:
       specifier: ^2.13.6
       version: 2.13.6
+    enum-plus:
+      specifier: ^2.2.9
+      version: 2.4.3
     es-toolkit:
       specifier: ^1.45.1
       version: 1.45.1
@@ -279,6 +323,9 @@ catalogs:
     eslint-plugin-yml:
       specifier: ^3.3.1
       version: 3.3.1
+    exceljs:
+      specifier: ^4.4.0
+      version: 4.4.0
     execa:
       specifier: ^9.6.1
       version: 9.6.1
@@ -312,6 +359,9 @@ catalogs:
     lefthook:
       specifier: ^2.1.4
       version: 2.1.4
+    lodash-es:
+      specifier: ^4.17.21
+      version: 4.17.23
     lodash.clonedeep:
       specifier: ^4.5.0
       version: 4.5.0
@@ -495,6 +545,9 @@ catalogs:
     vue-json-viewer:
       specifier: ^3.0.4
       version: 3.0.4
+    vue-qrcode-reader:
+      specifier: ^5.7.2
+      version: 5.7.3
     vue-router:
       specifier: ^5.0.4
       version: 5.0.4
@@ -513,6 +566,9 @@ catalogs:
     watermark-js-plus:
       specifier: ^1.6.3
       version: 1.6.3
+    xe-utils:
+      specifier: ^3.7.9
+      version: 3.9.1
     yaml-eslint-parser:
       specifier: ^2.0.0
       version: 2.0.0
@@ -535,58 +591,58 @@ importers:
   .:
     dependencies:
       '@antv/data-set':
-        specifier: ^0.11.8
+        specifier: 'catalog:'
         version: 0.11.8
       '@antv/g2':
-        specifier: ^5.2.11
+        specifier: 'catalog:'
         version: 5.4.8
       '@iconify/json':
-        specifier: ^2.2.417
+        specifier: catalog:conflicts_@iconify/json_h2_2_417
         version: 2.2.458
       '@iconify/vue':
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.0.0(vue@3.5.32(typescript@6.0.2))
       '@types/jquery':
-        specifier: ^3.5.32
+        specifier: 'catalog:'
         version: 3.5.34
       '@types/lodash-es':
-        specifier: ^4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       '@types/sortablejs':
-        specifier: ^1.15.8
+        specifier: catalog:conflicts_@types/sortablejs_h1_15_8
         version: 1.15.9
       '@vxe-ui/plugin-export-xlsx':
-        specifier: ^4.2.0
+        specifier: 'catalog:'
         version: 4.5.1(vxe-table@4.18.10(vue@3.5.32(typescript@6.0.2)))
       '@zxing/library':
-        specifier: ^0.21.3
+        specifier: 'catalog:'
         version: 0.21.3
       enum-plus:
-        specifier: ^2.2.9
+        specifier: 'catalog:'
         version: 2.4.3
       eslint-plugin-vue:
         specifier: 'catalog:'
         version: 10.8.0(@typescript-eslint/parser@8.58.0(eslint@10.1.0(jiti@2.6.1))(typescript@6.0.2))(eslint@10.1.0(jiti@2.6.1))(vue-eslint-parser@10.4.0(eslint@10.1.0(jiti@2.6.1)))
       exceljs:
-        specifier: ^4.4.0
+        specifier: 'catalog:'
         version: 4.4.0
       lodash-es:
-        specifier: ^4.17.21
+        specifier: 'catalog:'
         version: 4.17.23
       qs:
-        specifier: ^6.13.1
+        specifier: catalog:conflicts_qs_h6_13_1
         version: 6.15.0
       sass:
         specifier: 'catalog:'
         version: 1.98.0
       sortablejs:
-        specifier: ^1.15.6
+        specifier: catalog:conflicts_sortablejs_h1_15_6
         version: 1.15.7
       vue-qrcode-reader:
-        specifier: ^5.7.2
+        specifier: 'catalog:'
         version: 5.7.3
       xe-utils:
-        specifier: ^3.7.9
+        specifier: 'catalog:'
         version: 3.9.1
     devDependencies:
       '@changesets/changelog-github':
@@ -605,7 +661,7 @@ importers:
         specifier: 'catalog:'
         version: 25.5.0
       '@types/qs':
-        specifier: ^6.9.18
+        specifier: catalog:conflicts_@types/qs_h6_9_18
         version: 6.15.0
       '@vben/commitlint-config':
         specifier: workspace:*
@@ -653,7 +709,7 @@ importers:
         specifier: 'catalog:'
         version: 9.7.0
       cssnano:
-        specifier: ^7.0.6
+        specifier: 'catalog:'
         version: 7.1.4(postcss@8.5.8)
       happy-dom:
         specifier: 'catalog:'
