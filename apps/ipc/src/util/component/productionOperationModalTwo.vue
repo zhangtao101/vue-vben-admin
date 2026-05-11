@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -154,6 +154,27 @@ onMounted(() => {
     }
   }, 500);
 });
+
+// 监听 props.details.worksheetCode 变化，ispitStop 为 false 时自动进站
+watch(
+  () => props.details?.worksheetCode,
+  (newVal) => {
+    if (!ispitStop.value && newVal) {
+      if (
+        props.details.equipCodes.length > 0 &&
+        !pitStopParameters.value.equipCode
+      ) {
+        pitStopParameters.value.equipCode = props.details.equipCodes[0] || '';
+      }
+      setTimeout(() => {
+        if (props.details && props.details.worksheetCode) {
+          pitStopParameters.value.worksheetCode = newVal;
+          pitStop();
+        }
+      }, 500);
+    }
+  },
+);
 </script>
 
 <template>
