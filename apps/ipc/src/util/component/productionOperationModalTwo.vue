@@ -24,6 +24,9 @@ import StepExecution from '#/util/component/stepExecution.vue';
 
 const props = defineProps(['details']);
 
+// 抛给父组件
+const emit = defineEmits(['updateIspitStop']);
+
 // region 进站
 // 参数
 const pitStopParameters = ref<any>({});
@@ -53,6 +56,7 @@ function pitStop() {
   inReportByScanCode(params)
     .then(() => {
       ispitStop.value = true;
+      emit('updateIspitStop', true);
     })
     .finally(() => {
       isPush.value = false;
@@ -130,6 +134,7 @@ function handleFullscreenChange() {
 function reset() {
   pitStopParameters.value.worksheetCode = '';
   ispitStop.value = false;
+      emit('updateIspitStop', false);
 }
 
 // endregion
