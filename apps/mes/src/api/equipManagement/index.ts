@@ -12,6 +12,7 @@ export * from './moldMaintenancePlan.service';
 export * from './moldMaintenanceScheme.service';
 export * from './repairBasicConfig.service';
 export * from './repairKnowledgeBase.service';
+export * from './repairProcessConfig.service';
 export * from './repairRequest.service';
 export * from './sparePartsInventoryMgmt.service';
 export * from './sparePartsIoManagement.service';
