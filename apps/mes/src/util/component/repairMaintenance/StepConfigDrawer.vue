@@ -7,6 +7,8 @@
  * [TIME]: 2026-05-13 08:38:00
  */
 
+import type { FlowStep, HandlerOptions } from '#/api';
+
 import { computed, onMounted, ref, watch } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
@@ -28,8 +30,12 @@ import {
   Switch,
 } from 'ant-design-vue';
 
-import { getFlowConfigById, getHandlerOptions, saveFlowConfig, searchBaseConfig } from '#/api';
-import type { FlowStep, HandlerOptions } from '#/api';
+import {
+  getFlowConfigById,
+  getHandlerOptions,
+  saveFlowConfig,
+  searchBaseConfig,
+} from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({
@@ -446,10 +452,8 @@ onMounted(() => {
                 <Icon icon="mdi:arrow-down" class="inline-block text-xl" />
               </Button>
             </Space>
-            <span class="font-medium ml-2"
-              >{{ $t('repair.repairProcessConfig.step') }}
-              {{ ruleConfigIndex + 1 }}</span
-            >
+            <span class="font-medium ml-2">{{ $t('repair.repairProcessConfig.step') }}
+              {{ ruleConfigIndex + 1 }}</span>
             <Button
               type="link"
               danger
