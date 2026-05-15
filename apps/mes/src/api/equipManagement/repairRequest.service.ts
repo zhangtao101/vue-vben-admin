@@ -145,12 +145,17 @@ export async function deleteRepairRequest(id: number) {
  * @param requestId 报修单ID
  * @param cancelReason 取消原因
  */
-export async function cancelRepairRequest(requestId: number, cancelReason: string) {
+export async function cancelRepairRequest(
+  requestId: number,
+  cancelReason: string,
+) {
   return requestClient.post<{ code: number; msg: string }>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/cancel?${qs.stringify({
-      requestId,
-      cancelReason,
-    })}`,
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/cancel?${qs.stringify(
+      {
+        requestId,
+        cancelReason,
+      },
+    )}`,
   );
 }
 
@@ -159,7 +164,9 @@ export async function cancelRepairRequest(requestId: number, cancelReason: strin
  * @param params 查询参数
  * @returns 报修单分页列表
  */
-export async function getRepairRequestPageList(params: RepairRequestListParams) {
+export async function getRepairRequestPageList(
+  params: RepairRequestListParams,
+) {
   return requestClient.get<RepairRequestPageResponse>(
     `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/list-page?${qs.stringify(params)}`,
   );

@@ -283,7 +283,11 @@ const taskColumns = [
       );
     },
   },
-  { title: () => $t('repair.repairRequestDetail.repairBy'), dataIndex: 'repairBy', width: 100 },
+  {
+    title: () => $t('repair.repairRequestDetail.repairBy'),
+    dataIndex: 'repairBy',
+    width: 100,
+  },
   {
     title: () => $t('repair.repairRequestDetail.status'),
     dataIndex: 'status',
@@ -293,27 +297,64 @@ const taskColumns = [
       return h(Tag, { color }, () => formatStatus(text));
     },
   },
-  { title: () => $t('repair.repairRequestDetail.repairResult'), dataIndex: 'repairResult', width: 100 },
-  { title: () => $t('repair.repairRequestDetail.startTime'), dataIndex: 'repairStartTime', width: 160 },
-  { title: () => $t('repair.repairRequestDetail.endTime'), dataIndex: 'repairEndTime', width: 160 },
+  {
+    title: () => $t('repair.repairRequestDetail.repairResult'),
+    dataIndex: 'repairResult',
+    width: 100,
+  },
+  {
+    title: () => $t('repair.repairRequestDetail.startTime'),
+    dataIndex: 'repairStartTime',
+    width: 160,
+  },
+  {
+    title: () => $t('repair.repairRequestDetail.endTime'),
+    dataIndex: 'repairEndTime',
+    width: 160,
+  },
 ];
 
 /** 通知记录列定义 */
 const notificationColumns = [
-  { title: () => $t('repair.repairRequestDetail.notifyType'), dataIndex: 'notifyType', width: 100 },
-  { title: () => $t('repair.repairRequestDetail.channel'), dataIndex: 'notifyChannel', width: 100 },
-  { title: () => $t('repair.repairRequestDetail.receiver'), dataIndex: 'notifyUserNames', width: 100 },
+  {
+    title: () => $t('repair.repairRequestDetail.notifyType'),
+    dataIndex: 'notifyType',
+    width: 100,
+  },
+  {
+    title: () => $t('repair.repairRequestDetail.channel'),
+    dataIndex: 'notifyChannel',
+    width: 100,
+  },
+  {
+    title: () => $t('repair.repairRequestDetail.receiver'),
+    dataIndex: 'notifyUserNames',
+    width: 100,
+  },
   {
     title: () => $t('repair.repairRequestDetail.status'),
     dataIndex: 'status',
     width: 80,
     customRender: ({ text }: { text: string }) => {
-      const color = text === 'COMPLETED' ? 'success' : (text === 'CANCELLED' ? 'error' : 'processing');
+      const color =
+        text === 'COMPLETED'
+          ? 'success'
+          : (text === 'CANCELLED'
+            ? 'error'
+            : 'processing');
       return h(Tag, { color }, () => formatNotifyStatus(text));
     },
   },
-  { title: () => $t('repair.repairRequestDetail.sendTime'), dataIndex: 'sendTime', width: 160 },
-  { title: () => $t('repair.repairRequestDetail.failReason'), dataIndex: 'failReason', width: 120 },
+  {
+    title: () => $t('repair.repairRequestDetail.sendTime'),
+    dataIndex: 'sendTime',
+    width: 160,
+  },
+  {
+    title: () => $t('repair.repairRequestDetail.failReason'),
+    dataIndex: 'failReason',
+    width: 120,
+  },
 ];
 </script>
 
@@ -369,7 +410,11 @@ const notificationColumns = [
       </Descriptions>
 
       <!-- 维修记录 & 通知记录 -->
-      <Tabs v-model:active-key="activeTab" @change="handleTabChange" style="margin-top: 16px">
+      <Tabs
+        v-model:active-key="activeTab"
+        @change="handleTabChange"
+        style="margin-top: 16px"
+      >
         <TabPane key="repair" :tab="$t('repair.repairOrder.repairRecord')">
           <Spin :spinning="taskLoading">
             <Table
@@ -383,7 +428,10 @@ const notificationColumns = [
           </Spin>
         </TabPane>
 
-        <TabPane key="notification" :tab="$t('repair.repairOrder.notificationRecord')">
+        <TabPane
+          key="notification"
+          :tab="$t('repair.repairOrder.notificationRecord')"
+        >
           <Spin :spinning="notificationLoading">
             <Table
               :data-source="notificationList"

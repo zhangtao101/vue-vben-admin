@@ -15,12 +15,7 @@ import type {
 
 import { ref, watch } from 'vue';
 
-import {
-  Descriptions,
-  DescriptionsItem,
-  Drawer,
-  Spin,
-} from 'ant-design-vue';
+import { Descriptions, DescriptionsItem, Drawer, Spin } from 'ant-design-vue';
 
 import { getProcessRecordById } from '#/api';
 import { $t } from '#/locales';
@@ -170,62 +165,130 @@ watch(
         <DescriptionsItem :label="$t('repair.processRecordDetail.actionTime')">
           {{ detailData.actionTime }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('repair.processRecordDetail.beforeStatus')">
-          <span :style="{ color: statusColorMap[detailData.beforeStatus] ? undefined : '#666' }">
+        <DescriptionsItem
+          :label="$t('repair.processRecordDetail.beforeStatus')"
+        >
+          <span
+            :style="{
+              color: statusColorMap[detailData.beforeStatus]
+                ? undefined
+                : '#666',
+            }"
+          >
             {{ formatStatus(detailData.beforeStatus) }}
           </span>
         </DescriptionsItem>
         <DescriptionsItem :label="$t('repair.processRecordDetail.afterStatus')">
-          <span :style="{ color: statusColorMap[detailData.afterStatus] ? undefined : '#666' }">
+          <span
+            :style="{
+              color: statusColorMap[detailData.afterStatus]
+                ? undefined
+                : '#666',
+            }"
+          >
             {{ formatStatus(detailData.afterStatus) }}
           </span>
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('repair.processRecordDetail.processRemark')">
+        <DescriptionsItem
+          :label="$t('repair.processRecordDetail.processRemark')"
+        >
           {{ detailData.remark || '-' }}
         </DescriptionsItem>
 
         <!-- 转交详情 -->
-        <template v-if="detailData.actionType === 'TRANSFER' && (detailData.detailData as TransferDetailData)">
+        <template
+          v-if="
+            detailData.actionType === 'TRANSFER' &&
+            (detailData.detailData as TransferDetailData)
+          "
+        >
           <DescriptionsItem :label="$t('repair.processRecordDetail.fromUser')">
             {{ (detailData.detailData as TransferDetailData).fromUser || '-' }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('repair.processRecordDetail.toUser')">
             {{ (detailData.detailData as TransferDetailData).toUser || '-' }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('repair.processRecordDetail.transferReason')">
-            {{ (detailData.detailData as TransferDetailData).transferReason || '-' }}
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.transferReason')"
+          >
+            {{
+              (detailData.detailData as TransferDetailData).transferReason ||
+              '-'
+            }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('repair.processRecordDetail.transferRemark')">
-            {{ (detailData.detailData as TransferDetailData).transferRemark || '-' }}
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.transferRemark')"
+          >
+            {{
+              (detailData.detailData as TransferDetailData).transferRemark ||
+              '-'
+            }}
           </DescriptionsItem>
         </template>
 
         <!-- 填报详情 -->
-        <template v-if="detailData.actionType === 'REPORT' && (detailData.detailData as ReportDetailData)">
-          <DescriptionsItem :label="$t('repair.processRecordDetail.repairResult')">
-            {{ (detailData.detailData as ReportDetailData).repairResult || '-' }}
+        <template
+          v-if="
+            detailData.actionType === 'REPORT' &&
+            (detailData.detailData as ReportDetailData)
+          "
+        >
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.repairResult')"
+          >
+            {{
+              (detailData.detailData as ReportDetailData).repairResult || '-'
+            }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('repair.processRecordDetail.hasReplacedParts')">
-            {{ (detailData.detailData as ReportDetailData).hasReplacedParts ? $t('common.yes') : $t('common.no') }}
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.hasReplacedParts')"
+          >
+            {{
+              (detailData.detailData as ReportDetailData).hasReplacedParts
+                ? $t('common.yes')
+                : $t('common.no')
+            }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('repair.processRecordDetail.replacedParts')">
-            {{ (detailData.detailData as ReportDetailData).replacedParts || '-' }}
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.replacedParts')"
+          >
+            {{
+              (detailData.detailData as ReportDetailData).replacedParts || '-'
+            }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('repair.processRecordDetail.rootCauseCategory')">
-            {{ (detailData.detailData as ReportDetailData).rootCauseCategory || '-' }}
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.rootCauseCategory')"
+          >
+            {{
+              (detailData.detailData as ReportDetailData).rootCauseCategory ||
+              '-'
+            }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('repair.processRecordDetail.rootCauseDetail')">
-            {{ (detailData.detailData as ReportDetailData).rootCauseDetail || '-' }}
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.rootCauseDetail')"
+          >
+            {{
+              (detailData.detailData as ReportDetailData).rootCauseDetail || '-'
+            }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('repair.processRecordDetail.repairMethod')">
-            {{ (detailData.detailData as ReportDetailData).repairMethod || '-' }}
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.repairMethod')"
+          >
+            {{
+              (detailData.detailData as ReportDetailData).repairMethod || '-'
+            }}
           </DescriptionsItem>
-          <DescriptionsItem :label="$t('repair.processRecordDetail.repairContent')" :span="1">
-            {{ (detailData.detailData as ReportDetailData).repairContent || '-' }}
+          <DescriptionsItem
+            :label="$t('repair.processRecordDetail.repairContent')"
+            :span="1"
+          >
+            {{
+              (detailData.detailData as ReportDetailData).repairContent || '-'
+            }}
           </DescriptionsItem>
         </template>
       </Descriptions>
-      <div v-else style="text-align: center; color: #999; padding: 32px;">
+      <div v-else style=" padding: 32px; color: #999;text-align: center">
         {{ $t('repair.processRecordDetail.noData') }}
       </div>
     </Spin>

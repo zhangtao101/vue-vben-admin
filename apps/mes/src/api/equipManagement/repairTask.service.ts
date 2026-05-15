@@ -215,10 +215,12 @@ export async function claimRepairTask(taskId: number) {
  */
 export async function assignRepairTask(taskId: number, assignedTo: string) {
   return requestClient.post<{ code: number; msg: string }>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/task/assign?${qs.stringify({
-      taskId,
-      assignedTo,
-    })}`,
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/task/assign?${qs.stringify(
+      {
+        taskId,
+        assignedTo,
+      },
+    )}`,
   );
 }
 
@@ -240,10 +242,12 @@ export async function pauseRepairTask(params: PauseTaskParams) {
  */
 export async function resumeRepairTask(taskId: number, resumeRemark?: string) {
   return requestClient.post<{ code: number; msg: string }>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/task/resume?${qs.stringify({
-      taskId,
-      resumeRemark,
-    })}`,
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/task/resume?${qs.stringify(
+      {
+        taskId,
+        resumeRemark,
+      },
+    )}`,
   );
 }
 
@@ -338,8 +342,12 @@ export interface AssignableUserItem {
  * @param excludeSelf 是否排除当前登录用户（指派时不传或传false，转派时传true）
  * @returns 可指派/转派的维修人员列表
  */
-export async function getAssignableUsers(taskId: number, excludeSelf?: boolean) {
-  const params = excludeSelf === undefined ? '' : `?${qs.stringify({ excludeSelf })}`;
+export async function getAssignableUsers(
+  taskId: number,
+  excludeSelf?: boolean,
+) {
+  const params =
+    excludeSelf === undefined ? '' : `?${qs.stringify({ excludeSelf })}`;
   return requestClient.get<AssignableUserItem[]>(
     `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/task/assignable-users/${taskId}?${params}`,
   );

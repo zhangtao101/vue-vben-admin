@@ -248,7 +248,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
  * @param pageSize - 每页条数
  * @returns 包含总数和数据列表的 Promise
  */
-function queryData({ pageNum, pageSize }: { pageNum: number; pageSize: number }) {
+function queryData({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
   return new Promise((resolve, reject) => {
     const params = {
       ...queryParams.value,
@@ -287,11 +293,10 @@ function handleReset() {
  * @param {any} row - 行数据
  */
 function handleReceive(row: any) {
-  claimRepairTask(row.id)
-    .then(() => {
-      message.success($t('common.successfulOperation'));
-      gridApi.reload();
-    });
+  claimRepairTask(row.id).then(() => {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+  });
 }
 
 // ========== 指派 ==========
@@ -411,14 +416,15 @@ const rootCauseOptions = ref<{ label: string; value: string }[]>([]);
  * 获取根因大类选项列表。
  */
 function fetchRootCauseOptions() {
-  getRepairBasicConfigList({ configType: 'FAULT_ROOT_CAUSE', status: 'ACTIVE' }).then(
-    (data) => {
-      rootCauseOptions.value = (data || []).map((item: any) => ({
-        label: item.configName,
-        value: item.configName,
-      }));
-    },
-  );
+  getRepairBasicConfigList({
+    configType: 'FAULT_ROOT_CAUSE',
+    status: 'ACTIVE',
+  }).then((data) => {
+    rootCauseOptions.value = (data || []).map((item: any) => ({
+      label: item.configName,
+      value: item.configName,
+    }));
+  });
 }
 
 /**
@@ -469,9 +475,12 @@ function confirmComplete() {
     repairResult: completeState.result,
     hasReplacedParts: completeState.hasReplacedParts,
     // 将配件数组转为逗号分隔的字符串
-    replacedParts: completeState.replacedParts.length > 0
-      ? completeState.replacedParts.map((r: any) => r.spareName || r).join(',')
-      : undefined,
+    replacedParts:
+      completeState.replacedParts.length > 0
+        ? completeState.replacedParts
+            .map((r: any) => r.spareName || r)
+            .join(',')
+        : undefined,
     rootCauseCategory: completeState.rootCauseCategory || undefined,
     rootCauseDetail: completeState.rootCauseDetail || undefined,
     repairMethod: completeState.repairMethod || undefined,
@@ -602,7 +611,10 @@ onMounted(async () => {
     <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 报修单号 -->
-        <FormItem :label="$t('repair.repairTask.requestNo')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairTask.requestNo')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.requestNo"
             :placeholder="$t('repair.repairTask.requestNoPlaceholder')"
@@ -612,7 +624,10 @@ onMounted(async () => {
         </FormItem>
 
         <!-- 设备编码 -->
-        <FormItem :label="$t('repair.repairTask.equipmentCode')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairTask.equipmentCode')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.equipmentCode"
             :placeholder="$t('repair.repairTask.equipmentCodePlaceholder')"
@@ -680,7 +695,10 @@ onMounted(async () => {
             <Tooltip>
               <template #title>{{ $t('repair.myRepairTask.detail') }}</template>
               <Button type="link" @click="handleDetail(row)" class="px-1">
-                <Icon icon="mdi:eye-outline" class="inline-block align-middle text-xl" />
+                <Icon
+                  icon="mdi:eye-outline"
+                  class="inline-block align-middle text-xl"
+                />
               </Button>
             </Tooltip>
 
@@ -689,13 +707,19 @@ onMounted(async () => {
               <Tooltip v-if="author.includes('领取')">
                 <template #title>领取</template>
                 <Button type="link" @click="handleReceive(row)" class="px-1">
-                  <Icon icon="mdi:hand-front-right-outline" class="inline-block align-middle text-xl" />
+                  <Icon
+                    icon="mdi:hand-front-right-outline"
+                    class="inline-block align-middle text-xl"
+                  />
                 </Button>
               </Tooltip>
               <Tooltip v-if="author.includes('指派')">
                 <template #title>指派</template>
                 <Button type="link" @click="handleAssign(row)" class="px-1">
-                  <Icon icon="mdi:account-arrow-right-outline" class="inline-block align-middle text-xl" />
+                  <Icon
+                    icon="mdi:account-arrow-right-outline"
+                    class="inline-block align-middle text-xl"
+                  />
                 </Button>
               </Tooltip>
             </template>
@@ -703,21 +727,42 @@ onMounted(async () => {
             <!-- 处理中状态：暂停、完成、转交按钮 -->
             <template v-if="row.status === 'PROCESSING' && row.isCurrentUser">
               <Tooltip v-if="author.includes('暂停')">
-                <template #title>{{ $t('repair.myRepairTask.pause') }}</template>
+                <template #title>
+{{
+                  $t('repair.myRepairTask.pause')
+                }}
+</template>
                 <Button type="link" @click="handlePause(row)" class="px-1">
-                  <Icon icon="mdi:pause-circle-outline" class="inline-block align-middle text-xl" />
+                  <Icon
+                    icon="mdi:pause-circle-outline"
+                    class="inline-block align-middle text-xl"
+                  />
                 </Button>
               </Tooltip>
               <Tooltip v-if="author.includes('完成')">
-                <template #title>{{ $t('repair.myRepairTask.complete') }}</template>
+                <template #title>
+{{
+                  $t('repair.myRepairTask.complete')
+                }}
+</template>
                 <Button type="link" @click="handleComplete(row)" class="px-1">
-                  <Icon icon="mdi:check-circle-outline" class="inline-block align-middle text-xl" />
+                  <Icon
+                    icon="mdi:check-circle-outline"
+                    class="inline-block align-middle text-xl"
+                  />
                 </Button>
               </Tooltip>
               <Tooltip v-if="author.includes('转交')">
-                <template #title>{{ $t('repair.myRepairTask.transfer') }}</template>
+                <template #title>
+{{
+                  $t('repair.myRepairTask.transfer')
+                }}
+</template>
                 <Button type="link" @click="handleTransfer(row)" class="px-1">
-                  <Icon icon="mdi:account-switch-outline" class="inline-block align-middle text-xl" />
+                  <Icon
+                    icon="mdi:account-switch-outline"
+                    class="inline-block align-middle text-xl"
+                  />
                 </Button>
               </Tooltip>
             </template>
@@ -727,7 +772,10 @@ onMounted(async () => {
               <Tooltip v-if="author.includes('恢复')">
                 <template #title>恢复</template>
                 <Button type="link" @click="handleResume(row)" class="px-1">
-                  <Icon icon="mdi:play-circle-outline" class="inline-block align-middle text-xl" />
+                  <Icon
+                    icon="mdi:play-circle-outline"
+                    class="inline-block align-middle text-xl"
+                  />
                 </Button>
               </Tooltip>
             </template>
@@ -737,19 +785,34 @@ onMounted(async () => {
     </Card>
 
     <!-- 详情抽屉 -->
-    <RepairTaskDetailDrawer v-model:visible="detailDrawerVisible" :task-id="detailTaskId" />
+    <RepairTaskDetailDrawer
+      v-model:visible="detailDrawerVisible"
+      :task-id="detailTaskId"
+    />
 
     <!-- 指派 Modal -->
-    <Modal v-model:open="assignModalVisible" :title="$t('repair.myRepairTask.assign')" @ok="confirmAssign">
+    <Modal
+      v-model:open="assignModalVisible"
+      :title="$t('repair.myRepairTask.assign')"
+      @ok="confirmAssign"
+    >
       <Form>
         <FormItem label="维修人" required>
-          <Select v-model:value="assignRepairBy" placeholder="请选择维修人" :options="assignUserOptions" />
+          <Select
+            v-model:value="assignRepairBy"
+            placeholder="请选择维修人"
+            :options="assignUserOptions"
+          />
         </FormItem>
       </Form>
     </Modal>
 
     <!-- 暂停 Modal -->
-    <Modal v-model:open="pauseModalVisible" :title="$t('repair.myRepairTask.pause')" @ok="confirmPause">
+    <Modal
+      v-model:open="pauseModalVisible"
+      :title="$t('repair.myRepairTask.pause')"
+      @ok="confirmPause"
+    >
       <Form>
         <FormItem label="暂停原因" required>
           <Input v-model:value="pauseReason" placeholder="请输入暂停原因" />
@@ -777,22 +840,86 @@ onMounted(async () => {
         <div class="mb-6">
           <div class="text-base font-medium mb-3 border-b pb-2">基本信息</div>
           <Descriptions :column="2" bordered size="small">
-            <DescriptionsItem label="报修单号">{{ completeState.detail.requestNo || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="维修单号">{{ completeState.detail.repairNo || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="设备编码">{{ completeState.detail.equipmentCode || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="设备名称">{{ completeState.detail.equipmentName || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="报修类型">{{ completeState.detail.repairType || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="紧急程度">{{ completeState.detail.urgentLevel || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="报修人">{{ completeState.detail.reportBy || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="维修人">{{ completeState.detail.repairBy || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="故障名称">{{ completeState.detail.faultName || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="故障代码">{{ completeState.detail.faultCode || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="报修时间">{{ completeState.detail.reportTime || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="维修开始时间">{{ completeState.detail.repairStartTime || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="维修结束时间">{{ completeState.detail.repairEndTime || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="响应时长(分钟)">{{ completeState.detail.responseDuration || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="维修时长(分钟)">{{ completeState.detail.repairDuration || '-' }}</DescriptionsItem>
-            <DescriptionsItem label="暂停时长(分钟)">{{ completeState.detail.pauseDuration || '-' }}</DescriptionsItem>
+            <DescriptionsItem label="报修单号">
+{{
+              completeState.detail.requestNo || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="维修单号">
+{{
+              completeState.detail.repairNo || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="设备编码">
+{{
+              completeState.detail.equipmentCode || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="设备名称">
+{{
+              completeState.detail.equipmentName || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="报修类型">
+{{
+              completeState.detail.repairType || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="紧急程度">
+{{
+              completeState.detail.urgentLevel || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="报修人">
+{{
+              completeState.detail.reportBy || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="维修人">
+{{
+              completeState.detail.repairBy || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="故障名称">
+{{
+              completeState.detail.faultName || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="故障代码">
+{{
+              completeState.detail.faultCode || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="报修时间">
+{{
+              completeState.detail.reportTime || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="维修开始时间">
+{{
+              completeState.detail.repairStartTime || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="维修结束时间">
+{{
+              completeState.detail.repairEndTime || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="响应时长(分钟)">
+{{
+              completeState.detail.responseDuration || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="维修时长(分钟)">
+{{
+              completeState.detail.repairDuration || '-'
+            }}
+</DescriptionsItem>
+            <DescriptionsItem label="暂停时长(分钟)">
+{{
+              completeState.detail.pauseDuration || '-'
+            }}
+</DescriptionsItem>
           </Descriptions>
         </div>
 
@@ -813,13 +940,20 @@ onMounted(async () => {
             <FormItem v-if="completeState.hasReplacedParts" label="配件选择">
               <div class="flex items-center gap-2">
                 <Input
-                  :value="completeState.replacedParts.map((r: any) => r.spareName || r).join(', ')"
+                  :value="
+                    completeState.replacedParts
+                      .map((r: any) => r.spareName || r)
+                      .join(', ')
+                  "
                   placeholder="请选择配件"
                   readonly
                 />
                 <Button
                   type="primary"
-                  @click="sparePartsDrawerVisible = true; sparePartsSelectedRows = [...completeState.replacedParts]"
+                  @click="
+                    sparePartsDrawerVisible = true;
+                    sparePartsSelectedRows = [...completeState.replacedParts];
+                  "
                 >
                   选择配件
                 </Button>
@@ -834,13 +968,23 @@ onMounted(async () => {
               />
             </FormItem>
             <FormItem label="原因说明">
-              <Input v-model:value="completeState.rootCauseDetail" placeholder="请输入原因说明" />
+              <Input
+                v-model:value="completeState.rootCauseDetail"
+                placeholder="请输入原因说明"
+              />
             </FormItem>
             <FormItem label="处理方式">
-              <Input v-model:value="completeState.repairMethod" placeholder="请输入处理方式" />
+              <Input
+                v-model:value="completeState.repairMethod"
+                placeholder="请输入处理方式"
+              />
             </FormItem>
             <FormItem label="维修内容" required>
-              <Input.TextArea v-model:value="completeState.content" :rows="4" placeholder="请输入维修内容" />
+              <Input.TextArea
+                v-model:value="completeState.content"
+                :rows="4"
+                placeholder="请输入维修内容"
+              />
             </FormItem>
           </Form>
         </div>
@@ -859,29 +1003,57 @@ onMounted(async () => {
       v-model:visible="sparePartsDrawerVisible"
       :equipment-code="completeState.detail?.equipmentCode"
       :selected-rows="sparePartsSelectedRows"
-      @confirm="(rows) => { completeState.replacedParts = rows; }"
+      @confirm="
+        (rows) => {
+          completeState.replacedParts = rows;
+        }
+      "
     />
 
     <!-- 恢复 Modal -->
-    <Modal v-model:open="resumeModalVisible" :title="$t('repair.myRepairTask.resume')" @ok="confirmResume">
+    <Modal
+      v-model:open="resumeModalVisible"
+      :title="$t('repair.myRepairTask.resume')"
+      @ok="confirmResume"
+    >
       <Form>
         <FormItem label="恢复说明">
-          <Input.TextArea v-model:value="resumeRemark" :rows="2" placeholder="请输入恢复说明（可选）" />
+          <Input.TextArea
+            v-model:value="resumeRemark"
+            :rows="2"
+            placeholder="请输入恢复说明（可选）"
+          />
         </FormItem>
       </Form>
     </Modal>
 
     <!-- 转交 Modal -->
-    <Modal v-model:open="transferModalVisible" :title="$t('repair.myRepairTask.transfer')" @ok="confirmTransfer">
+    <Modal
+      v-model:open="transferModalVisible"
+      :title="$t('repair.myRepairTask.transfer')"
+      @ok="confirmTransfer"
+    >
       <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
         <FormItem label="转交人" required>
-          <Select v-model:value="transferTo" placeholder="请选择转交人" :options="transferUserOptions" />
+          <Select
+            v-model:value="transferTo"
+            placeholder="请选择转交人"
+            :options="transferUserOptions"
+          />
         </FormItem>
         <FormItem label="转交原因" required>
-          <Input.TextArea v-model:value="transferReason" :rows="2" placeholder="请输入转交原因" />
+          <Input.TextArea
+            v-model:value="transferReason"
+            :rows="2"
+            placeholder="请输入转交原因"
+          />
         </FormItem>
         <FormItem label="备注">
-          <Input.TextArea v-model:value="transferRemark" :rows="2" placeholder="请输入备注（可选）" />
+          <Input.TextArea
+            v-model:value="transferRemark"
+            :rows="2"
+            placeholder="请输入备注（可选）"
+          />
         </FormItem>
       </Form>
     </Modal>

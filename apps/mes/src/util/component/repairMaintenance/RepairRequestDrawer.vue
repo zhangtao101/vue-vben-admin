@@ -96,11 +96,30 @@ const formData = ref({
 // ========== 表单验证规则 ==========
 /** 表单验证规则 */
 const rules: Record<string, any[]> = {
-  equipmentCode: [{ required: true, message: $t('repair.repairRequest.equipmentCodeRequired') }],
-  repairType: [{ required: true, message: $t('repair.repairRequest.repairTypeRequired') }],
-  urgentLevel: [{ required: true, message: $t('repair.repairRequest.urgentLevelRequired') }],
-  repairContent: [{ required: true, message: $t('repair.repairRequest.repairContentRequired') }],
-  acceptPeriod: [{ required: true, message: $t('repair.repairRequest.acceptPeriodRequired') }],
+  equipmentCode: [
+    {
+      required: true,
+      message: $t('repair.repairRequest.equipmentCodeRequired'),
+    },
+  ],
+  repairType: [
+    { required: true, message: $t('repair.repairRequest.repairTypeRequired') },
+  ],
+  urgentLevel: [
+    { required: true, message: $t('repair.repairRequest.urgentLevelRequired') },
+  ],
+  repairContent: [
+    {
+      required: true,
+      message: $t('repair.repairRequest.repairContentRequired'),
+    },
+  ],
+  acceptPeriod: [
+    {
+      required: true,
+      message: $t('repair.repairRequest.acceptPeriodRequired'),
+    },
+  ],
 };
 
 // ========== 下拉选项 ==========
@@ -120,7 +139,7 @@ const urgentLevelOptions = ref<{ label: string; value: string }[]>([]);
 
 /** 设备列表选项 */
 const equipmentOptions = ref<
-  { equipmentName?: string; label: string; value: string; }[]
+  { equipmentName?: string; label: string; value: string }[]
 >([]);
 
 // ========== 初始化下拉选项 ==========
@@ -319,7 +338,11 @@ initOptions();
 <template>
   <Drawer
     v-model:open="drawerVisible"
-    :title="isEdit ? $t('repair.repairRequest.editTitle') : $t('repair.repairRequest.title')"
+    :title="
+      isEdit
+        ? $t('repair.repairRequest.editTitle')
+        : $t('repair.repairRequest.title')
+    "
     width="600"
     :destroy-on-close="true"
     :footer-style="{ textAlign: 'right' }"
@@ -333,7 +356,10 @@ initOptions();
       :wrapper-col="{ span: 16 }"
     >
       <!-- 设备编码 -->
-      <FormItem :label="$t('repair.repairOrder.equipmentCode')" name="equipmentCode">
+      <FormItem
+        :label="$t('repair.repairOrder.equipmentCode')"
+        name="equipmentCode"
+      >
         <Select
           v-model:value="formData.equipmentCode"
           show-search
@@ -363,7 +389,10 @@ initOptions();
       </FormItem>
 
       <!-- 紧急程度 -->
-      <FormItem :label="$t('repair.repairOrder.urgentLevel')" name="urgentLevel">
+      <FormItem
+        :label="$t('repair.repairOrder.urgentLevel')"
+        name="urgentLevel"
+      >
         <Select
           v-model:value="formData.urgentLevel"
           :placeholder="$t('repair.repairRequest.urgentLevelPlaceholder')"
@@ -382,7 +411,10 @@ initOptions();
       </FormItem>
 
       <!-- 维修内容 -->
-      <FormItem :label="$t('repair.repairRequest.repairContent')" name="repairContent">
+      <FormItem
+        :label="$t('repair.repairRequest.repairContent')"
+        name="repairContent"
+      >
         <Input.TextArea
           v-model:value="formData.repairContent"
           :placeholder="$t('repair.repairRequest.repairContentPlaceholder')"
@@ -393,7 +425,10 @@ initOptions();
       </FormItem>
 
       <!-- 接收时限 -->
-      <FormItem :label="$t('repair.repairRequest.acceptPeriod')" name="acceptPeriod">
+      <FormItem
+        :label="$t('repair.repairRequest.acceptPeriod')"
+        name="acceptPeriod"
+      >
         <InputNumber
           v-model:value="formData.acceptPeriod"
           :min="1"

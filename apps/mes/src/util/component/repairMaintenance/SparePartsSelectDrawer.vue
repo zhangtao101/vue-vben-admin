@@ -47,10 +47,22 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'checkbox', width: 50 },
     { field: 'spareCode', title: $t('repair.sparePart.spareCode'), width: 120 },
-    { field: 'spareName', title: $t('repair.sparePart.spareName'), minWidth: 180 },
-    { field: 'spareModel', title: $t('repair.sparePart.spareModel'), minWidth: 150 },
+    {
+      field: 'spareName',
+      title: $t('repair.sparePart.spareName'),
+      minWidth: 180,
+    },
+    {
+      field: 'spareModel',
+      title: $t('repair.sparePart.spareModel'),
+      minWidth: 150,
+    },
     { field: 'unit', title: $t('repair.sparePart.unit'), width: 80 },
-    { field: 'currentStock', title: $t('repair.sparePart.currentStock'), width: 100 },
+    {
+      field: 'currentStock',
+      title: $t('repair.sparePart.currentStock'),
+      width: 100,
+    },
   ],
   height: 450,
   pagerConfig: {

@@ -337,7 +337,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
  * @returns 包含总数和数据列表的 Promise
  * @since 2026-05-14 08:41:00
  */
-function queryData({ pageNum, pageSize }: { pageNum: number; pageSize: number }) {
+function queryData({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
   return new Promise((resolve, reject) => {
     const params = {
       ...queryParams.value,
@@ -400,7 +406,10 @@ onMounted(async () => {
     <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <!-- 报修单号 -->
-        <FormItem :label="$t('repair.repairOrder.requestNo')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairOrder.requestNo')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.requestNo"
             :placeholder="$t('repair.repairOrder.requestNoPlaceholder')"
@@ -410,7 +419,10 @@ onMounted(async () => {
         </FormItem>
 
         <!-- 设备编码 -->
-        <FormItem :label="$t('repair.repairOrder.equipmentCode')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairOrder.equipmentCode')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.equipmentCode"
             :placeholder="$t('repair.repairOrder.equipmentCodePlaceholder')"
@@ -420,7 +432,10 @@ onMounted(async () => {
         </FormItem>
 
         <!-- 设备名称 -->
-        <FormItem :label="$t('repair.repairOrder.equipmentName')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairOrder.equipmentName')"
+          style="margin-bottom: 0"
+        >
           <Input
             v-model:value="queryParams.equipmentName"
             :placeholder="$t('repair.repairOrder.equipmentNamePlaceholder')"
@@ -441,7 +456,10 @@ onMounted(async () => {
         </FormItem>
 
         <!-- 报修类型 -->
-        <FormItem :label="$t('repair.repairOrder.repairType')" style="margin-bottom: 0">
+        <FormItem
+          :label="$t('repair.repairOrder.repairType')"
+          style="margin-bottom: 0"
+        >
           <Select
             v-model:value="queryParams.repairType"
             :placeholder="$t('repair.repairOrder.repairTypePlaceholder')"
@@ -470,26 +488,34 @@ onMounted(async () => {
     <!-- 表格区域 -->
     <Card>
       <Grid>
-      <!-- 表格工具栏工具区域，显示切换和添加按钮 -->
-      <template #toolbar-tools>
-        <Space>
-          <Button
-            v-if="author.includes('新增')"
-            type="primary"
-            @click="openRepairRequestDrawer"
-          >
-            <Icon icon="mdi:plus" class="inline-block align-middle" />
-            {{ $t('repair.repairOrder.add') }}
-          </Button>
-        </Space>
-      </template>
+        <!-- 表格工具栏工具区域，显示切换和添加按钮 -->
+        <template #toolbar-tools>
+          <Space>
+            <Button
+              v-if="author.includes('新增')"
+              type="primary"
+              @click="openRepairRequestDrawer"
+            >
+              <Icon icon="mdi:plus" class="inline-block align-middle" />
+              {{ $t('repair.repairOrder.add') }}
+            </Button>
+          </Space>
+        </template>
         <template #repairType="{ row }">
           <Tag :color="repairTypeColorMap[row.repairType] || 'default'">
             {{ formatRepairType(row.repairType) }}
           </Tag>
         </template>
         <template #urgentLevel="{ row }">
-          <Tag :color="row.urgentLevel === 'CRITICAL' ? 'red' : row.urgentLevel === 'URGENT' ? 'orange' : 'default'">
+          <Tag
+            :color="
+              row.urgentLevel === 'CRITICAL'
+                ? 'red'
+                : row.urgentLevel === 'URGENT'
+                  ? 'orange'
+                  : 'default'
+            "
+          >
             {{ formatUrgentLevel(row.urgentLevel) }}
           </Tag>
         </template>
@@ -509,9 +535,18 @@ onMounted(async () => {
                 />
               </Button>
             </Tooltip>
-            <Tooltip v-if="author.includes('编辑') && (row.status === 'DRAFT' || row.status === 'CANCELLED')">
+            <Tooltip
+              v-if="
+                author.includes('编辑') &&
+                (row.status === 'DRAFT' || row.status === 'CANCELLED')
+              "
+            >
               <template #title>{{ $t('common.edit') }}</template>
-              <Button type="link" @click="openEditRepairDrawer(row)" class="px-1">
+              <Button
+                type="link"
+                @click="openEditRepairDrawer(row)"
+                class="px-1"
+              >
                 <Icon
                   icon="mdi:pencil-outline"
                   class="inline-block align-middle text-xl"
@@ -520,7 +555,12 @@ onMounted(async () => {
             </Tooltip>
             <Tooltip v-if="author.includes('取消') && row.status === 'PENDING'">
               <template #title>{{ $t('repair.repairOrder.cancel') }}</template>
-              <Button type="link" danger @click="openCancelDrawer(row)" class="px-1">
+              <Button
+                type="link"
+                danger
+                @click="openCancelDrawer(row)"
+                class="px-1"
+              >
                 <Icon
                   icon="mdi:close-circle-outline"
                   class="inline-block align-middle text-xl"

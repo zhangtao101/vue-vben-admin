@@ -285,7 +285,10 @@ watch(
             <DescriptionsItem :label="$t('repair.repairTask.faultName')">
               {{ detailData.faultName }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.repairTask.repairContent')" :span="2">
+            <DescriptionsItem
+              :label="$t('repair.repairTask.repairContent')"
+              :span="2"
+            >
               {{ detailData.repairContent }}
             </DescriptionsItem>
             <DescriptionsItem :label="$t('repair.repairTask.repairStartTime')">
@@ -295,58 +298,114 @@ watch(
               {{ detailData.repairEndTime }}
             </DescriptionsItem>
             <DescriptionsItem :label="$t('repair.repairTask.repairDuration')">
-              {{ detailData.repairDuration ? `${detailData.repairDuration} ${$t('repair.repairTaskDetail.minutes')}` : '-' }}
+              {{
+                detailData.repairDuration
+                  ? `${detailData.repairDuration} ${$t('repair.repairTaskDetail.minutes')}`
+                  : '-'
+              }}
             </DescriptionsItem>
             <DescriptionsItem :label="$t('repair.repairTask.responseDuration')">
-              {{ detailData.responseDuration ? `${detailData.responseDuration} ${$t('repair.repairTaskDetail.minutes')}` : '-' }}
+              {{
+                detailData.responseDuration
+                  ? `${detailData.responseDuration} ${$t('repair.repairTaskDetail.minutes')}`
+                  : '-'
+              }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.repairTask.repairResult')" :span="2">
+            <DescriptionsItem
+              :label="$t('repair.repairTask.repairResult')"
+              :span="2"
+            >
               {{ detailData.repairResult }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.repairTask.repairParts')" :span="2">
+            <DescriptionsItem
+              :label="$t('repair.repairTask.repairParts')"
+              :span="2"
+            >
               {{ detailData.repairParts }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.repairTask.faultRootCause')" :span="2">
+            <DescriptionsItem
+              :label="$t('repair.repairTask.faultRootCause')"
+              :span="2"
+            >
               {{ detailData.faultRootCause }}
             </DescriptionsItem>
           </Descriptions>
         </TabPane>
 
-        <TabPane key="process" :tab="$t('repair.repairTaskDetail.processRecord')">
+        <TabPane
+          key="process"
+          :tab="$t('repair.repairTaskDetail.processRecord')"
+        >
           <Spin :spinning="processLoading">
-            <Timeline v-if="processRecords.length > 0" mode="alternate" class="!mt-4">
+            <Timeline
+              v-if="processRecords.length > 0"
+              mode="alternate"
+              class="!mt-4"
+            >
               <TimelineItem
                 v-for="record in processRecords"
                 :key="record.id"
-                :color="record.actionType === 'COMPLETE' || record.actionType === 'CANCEL' ? 'green' : 'blue'"
+                :color="
+                  record.actionType === 'COMPLETE' ||
+                  record.actionType === 'CANCEL'
+                    ? 'green'
+                    : 'blue'
+                "
               >
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div
+                  style="
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: space-between;
+                  "
+                >
                   <div>
-                    <div style="font-weight: 500;">
+                    <div style="font-weight: 500">
                       {{ formatActionType(record.actionType) }}
-                      <Tag :color="statusColorMap[record.afterStatus] || 'default'" style="margin-left: 8px;">
+                      <Tag
+                        :color="statusColorMap[record.afterStatus] || 'default'"
+                        style="margin-left: 8px"
+                      >
                         {{ formatStatus(record.afterStatus) }}
                       </Tag>
                     </div>
-                    <div style="color: #888; margin-top: 4px;">
-                      {{ $t('repair.repairTaskDetail.operator') }}：{{ record.operator }}
+                    <div style=" margin-top: 4px;color: #888">
+                      {{ $t('repair.repairTaskDetail.operator') }}：{{
+                        record.operator
+                      }}
                     </div>
-                    <div v-if="record.remark" style="color: #666; margin-top: 4px;">
+                    <div
+                      v-if="record.remark"
+                      style=" margin-top: 4px;color: #666"
+                    >
                       {{ record.remark }}
                     </div>
                   </div>
-                  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
-                    <div style="color: #888; font-size: 12px; white-space: nowrap;">
+                  <div
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      gap: 4px;
+                      align-items: flex-end;
+                    "
+                  >
+                    <div
+                      style=" font-size: 12px;color: #888; white-space: nowrap"
+                    >
                       {{ record.actionTime }}
                     </div>
-                    <Button type="link" size="small" @click="handleViewDetail(record.id)">
+                    <Button
+                      type="link"
+                      size="small"
+                      @click="handleViewDetail(record.id)"
+                    >
                       {{ $t('repair.repairTaskDetail.viewDetail') }}
                     </Button>
                   </div>
                 </div>
               </TimelineItem>
             </Timeline>
-            <div v-else style="color: #999; text-align: center; padding: 16px;">
+            <div v-else style=" padding: 16px;color: #999; text-align: center">
               {{ $t('repair.repairTaskDetail.noProcessRecord') }}
             </div>
           </Spin>
