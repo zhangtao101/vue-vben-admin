@@ -3,347 +3,164 @@ import qs from 'qs';
 
 import { requestClient } from '#/api/request';
 
-// ========== 报修单相关 ==========
+// ========== 响应类型定义 ==========
 
-/**
- * 查询报修单列表
- */
-export async function getRepairRequestList(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/list?${qs.stringify(params)}`,
-  );
+/** 报修单保存结果 */
+export interface RepairRequestSaveResult {
+  id: number;
+  requestNo: string;
+  status: string;
 }
 
-/**
- * 分页查询报修单列表
- */
-export async function getRepairRequestPageList(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/list-page?${qs.stringify(params)}`,
-  );
+/** 报修单详情 */
+export interface RepairRequestDetail {
+  id: number;
+  requestNo: string;
+  equipmentCode: string;
+  equipmentName: string;
+  repairType: string;
+  urgentLevel: string;
+  reportBy: string;
+  reportTime: string;
+  faultTime?: null | string;
+  status: string;
+  isDowntime?: null | number;
+  repairContent: string;
+  faultName?: string;
+  relatedTaskId?: null | number;
+  relatedTaskType?: null | string;
+  cancelReason?: null | string;
+  cancelTime?: null | string;
+  repairConclusion?: string;
 }
 
-/**
- * 扩展查询报修单列表（支持更多筛选条件）
- */
-export async function getRepairRequestListWithFilter(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/list-filter?${qs.stringify(params)}`,
-  );
+/** 报修单列表项 */
+export interface RepairRequestListItem {
+  id: number;
+  requestNo: string;
+  equipmentCode: string;
+  equipmentName: string;
+  repairType: string;
+  urgentLevel: string;
+  status: string;
+  faultName?: string;
+  reportTime: string;
 }
 
+/** 报修单分页列表响应 */
+export interface RepairRequestPageResponse {
+  results: RepairRequestListItem[];
+  total?: number;
+  count?: number;
+}
+
+/** 保存报修单草稿请求参数 */
+export interface SaveRepairRequestParams {
+  id?: null | number;
+  equipmentCode: string;
+  equipmentName?: null | string;
+  repairType: string;
+  urgentLevel: string;
+  repairContent: string;
+  faultName?: null | string;
+  relatedTaskId?: null | number;
+  acceptPeriod: number;
+}
+
+/** 提交报修单请求参数 */
+export interface SubmitRepairRequestParams {
+  id?: null | number;
+  equipmentCode: string;
+  equipmentName?: null | string;
+  repairType: string;
+  urgentLevel: string;
+  repairContent: string;
+  faultName?: null | string;
+  relatedTaskId?: null | number;
+  acceptPeriod: number;
+}
+
+/** 报修单列表查询参数 */
+export interface RepairRequestListParams {
+  requestNo?: string;
+  equipmentCode?: string;
+  equipmentName?: string;
+  status?: string;
+  repairType?: string;
+  startTime?: string;
+  endTime?: string;
+  pageNum: number;
+  pageSize: number;
+}
+
+// ========== 接口定义 ==========
+
 /**
- * 查询报修单详情
+ * 保存报修单草稿
+ * @param params 保存报修单草稿请求参数
+ * @returns 报修单保存结果
  */
-export async function getRepairRequestById(id: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/${id}`,
+export async function saveRepairRequest(params: SaveRepairRequestParams) {
+  return requestClient.post<RepairRequestSaveResult>(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/save`,
+    params,
   );
 }
 
 /**
  * 提交报修单
+ * @param params 提交报修单请求参数
+ * @returns 报修单提交结果
  */
-export async function submitRepairRequest(params: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/submit`,
+export async function submitRepairRequest(params: SubmitRepairRequestParams) {
+  return requestClient.post<RepairRequestSaveResult>(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/submit`,
     params,
+  );
+}
+
+/**
+ * 获取报修单详情
+ * @param id 报修单ID
+ * @returns 报修单详情
+ */
+export async function getRepairRequestById(id: number) {
+  return requestClient.get<RepairRequestDetail>(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/${id}`,
+  );
+}
+
+/**
+ * 删除报修单草稿
+ * @param id 报修单ID
+ */
+export async function deleteRepairRequest(id: number) {
+  return requestClient.delete<{ code: number; msg: string }>(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/${id}`,
   );
 }
 
 /**
  * 取消报修单
+ * @param requestId 报修单ID
+ * @param cancelReason 取消原因
  */
-export async function cancelRepairRequest(requestId: any, params: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/cancel?${qs.stringify({ requestId, ...params })}`,
+export async function cancelRepairRequest(requestId: number, cancelReason: string) {
+  return requestClient.post<{ code: number; msg: string }>(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/cancel?${qs.stringify({
+      requestId,
+      cancelReason,
+    })}`,
   );
 }
 
 /**
- * 指派报修单给维修人员
+ * 分页查询报修单列表
+ * @param params 查询参数
+ * @returns 报修单分页列表
  */
-export async function assignRepairRequest(requestId: any, assignedTo: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/assign?${qs.stringify({ requestId, assignedTo })}`,
-  );
-}
-
-/**
- * 维修人员自己领取任务（抢单模式）
- */
-export async function selfAssignRepairRequest(requestId: any, repairBy: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/self-assign?${qs.stringify({ requestId, repairBy })}`,
-  );
-}
-
-/**
- * 开始维修任务
- */
-export async function startRepair(params: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/start`,
-    params,
-  );
-}
-
-/**
- * 完成维修任务
- */
-export async function completeRepair(params: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/complete`,
-    params,
-  );
-}
-
-/**
- * 评价报修单
- */
-export async function rateRepairRequest(
-  id: any,
-  rating: any,
-  ratingContent?: any,
-) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/rate/${id}?${qs.stringify({ rating, ratingContent })}`,
-  );
-}
-
-// ========== 任务查询 ==========
-
-/**
- * 查询我的任务列表
- */
-export async function getMyRepairTasks(assignedTo: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/my-tasks?${qs.stringify({ assignedTo })}`,
-  );
-}
-
-/**
- * 查询待执行任务列表
- */
-export async function getPendingRepairTasks() {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/pending`,
-  );
-}
-
-/**
- * 查询可领取的任务列表
- */
-export async function getAssignableRepairTasks() {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/assignable`,
-  );
-}
-
-/**
- * 按报修类型统计数量（接单大厅顶部统计）
- */
-export async function getRepairStatisticsByType(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/statistics?${qs.stringify(params)}`,
-  );
-}
-
-/**
- * 维修看板统计
- */
-export async function getRepairDashboard() {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/dashboard`,
-  );
-}
-
-// ========== 维修记录 ==========
-
-/**
- * 查询维修记录列表
- */
-export async function getRepairRecordList(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/record/list?${qs.stringify(params)}`,
-  );
-}
-
-/**
- * 分页查询维修记录列表
- */
-export async function getRepairRecordPageList(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/record/list-page?${qs.stringify(params)}`,
-  );
-}
-
-/**
- * 查询维修记录详情
- */
-export async function getRepairRecordById(id: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/record/${id}`,
-  );
-}
-
-/**
- * 根据报修单ID查询维修记录
- */
-export async function getRepairRecordByRequestId(requestId: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/record/by-request/${requestId}`,
-  );
-}
-
-// ========== 停机相关 ==========
-
-/**
- * 设置停机状态
- */
-export async function setEquipmentDowntime(id: any, isDowntime: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/downtime/${id}?${qs.stringify({ isDowntime })}`,
-  );
-}
-
-/**
- * 停机统计
- */
-export async function getDowntimeStatistics(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/downtime/statistics?${qs.stringify(params)}`,
-  );
-}
-
-/**
- * 评价统计
- */
-export async function getRatingStatistics(params: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/rate/statistics?${qs.stringify(params)}`,
-  );
-}
-
-/**
- * 查询报修单通知记录
- */
-export async function getRepairNotifications(requestId: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/notification/${requestId}`,
-  );
-}
-
-// ========== 流程配置 ==========
-
-/**
- * 查询流程配置列表
- */
-export async function getRepairConfigList() {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/config/list`,
-  );
-}
-
-/**
- * 查询流程配置详情
- */
-export async function getRepairConfigById(id: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/config/${id}`,
-  );
-}
-
-/**
- * 查询当前启用的流程配置
- */
-export async function getCurrentRepairConfig() {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/config/current`,
-  );
-}
-
-/**
- * 保存流程配置
- */
-export async function saveRepairConfig(params: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/config/save`,
-    params,
-  );
-}
-
-/**
- * 启用流程配置
- */
-export async function enableRepairConfig(id: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/config/enable/${id}`,
-  );
-}
-
-/**
- * 审核流程配置
- */
-export async function auditRepairConfig(id: any, auditBy: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/config/audit/${id}?${qs.stringify({ auditBy })}`,
-  );
-}
-
-// ========== 通知配置 ==========
-
-/**
- * 查询通知配置列表
- */
-export async function getNotifyConfigList() {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/notify-config/list`,
-  );
-}
-
-/**
- * 查询通知配置详情
- */
-export async function getNotifyConfigById(id: any) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/notify-config/${id}`,
-  );
-}
-
-/**
- * 查询当前启用的通知配置
- */
-export async function getCurrentNotifyConfig() {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/notify-config/current`,
-  );
-}
-
-/**
- * 保存通知配置
- */
-export async function saveNotifyConfig(params: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/notify-config/save`,
-    params,
-  );
-}
-
-/**
- * 启用通知配置
- */
-export async function enableNotifyConfig(id: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/notify-config/enable/${id}`,
-  );
-}
-
-/**
- * 审核通知配置
- */
-export async function auditNotifyConfig(id: any, auditBy: any) {
-  return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/notify-config/audit/${id}?${qs.stringify({ auditBy })}`,
+export async function getRepairRequestPageList(params: RepairRequestListParams) {
+  return requestClient.get<RepairRequestPageResponse>(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/repair/request/list-page?${qs.stringify(params)}`,
   );
 }
