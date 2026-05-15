@@ -728,10 +728,8 @@ onMounted(async () => {
             <template v-if="row.status === 'PROCESSING' && row.isCurrentUser">
               <Tooltip v-if="author.includes('暂停')">
                 <template #title>
-{{
-                  $t('repair.myRepairTask.pause')
-                }}
-</template>
+                  {{ $t('repair.myRepairTask.pause') }}
+                </template>
                 <Button type="link" @click="handlePause(row)" class="px-1">
                   <Icon
                     icon="mdi:pause-circle-outline"
@@ -741,10 +739,8 @@ onMounted(async () => {
               </Tooltip>
               <Tooltip v-if="author.includes('完成')">
                 <template #title>
-{{
-                  $t('repair.myRepairTask.complete')
-                }}
-</template>
+                  {{ $t('repair.myRepairTask.complete') }}
+                </template>
                 <Button type="link" @click="handleComplete(row)" class="px-1">
                   <Icon
                     icon="mdi:check-circle-outline"
@@ -754,10 +750,8 @@ onMounted(async () => {
               </Tooltip>
               <Tooltip v-if="author.includes('转交')">
                 <template #title>
-{{
-                  $t('repair.myRepairTask.transfer')
-                }}
-</template>
+                  {{ $t('repair.myRepairTask.transfer') }}
+                </template>
                 <Button type="link" @click="handleTransfer(row)" class="px-1">
                   <Icon
                     icon="mdi:account-switch-outline"
@@ -841,85 +835,53 @@ onMounted(async () => {
           <div class="text-base font-medium mb-3 border-b pb-2">基本信息</div>
           <Descriptions :column="2" bordered size="small">
             <DescriptionsItem label="报修单号">
-{{
-              completeState.detail.requestNo || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.requestNo || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="维修单号">
-{{
-              completeState.detail.repairNo || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.repairNo || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="设备编码">
-{{
-              completeState.detail.equipmentCode || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.equipmentCode || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="设备名称">
-{{
-              completeState.detail.equipmentName || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.equipmentName || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="报修类型">
-{{
-              completeState.detail.repairType || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.repairType || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="紧急程度">
-{{
-              completeState.detail.urgentLevel || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.urgentLevel || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="报修人">
-{{
-              completeState.detail.reportBy || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.reportBy || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="维修人">
-{{
-              completeState.detail.repairBy || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.repairBy || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="故障名称">
-{{
-              completeState.detail.faultName || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.faultName || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="故障代码">
-{{
-              completeState.detail.faultCode || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.faultCode || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="报修时间">
-{{
-              completeState.detail.reportTime || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.reportTime || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="维修开始时间">
-{{
-              completeState.detail.repairStartTime || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.repairStartTime || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="维修结束时间">
-{{
-              completeState.detail.repairEndTime || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.repairEndTime || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="响应时长(分钟)">
-{{
-              completeState.detail.responseDuration || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.responseDuration || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="维修时长(分钟)">
-{{
-              completeState.detail.repairDuration || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.repairDuration || '-' }}
+            </DescriptionsItem>
             <DescriptionsItem label="暂停时长(分钟)">
-{{
-              completeState.detail.pauseDuration || '-'
-            }}
-</DescriptionsItem>
+              {{ completeState.detail.pauseDuration || '-' }}
+            </DescriptionsItem>
           </Descriptions>
         </div>
 

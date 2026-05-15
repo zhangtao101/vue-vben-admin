@@ -288,7 +288,7 @@ watch(
           </DescriptionsItem>
         </template>
       </Descriptions>
-      <div v-else style=" padding: 32px; color: #999;text-align: center">
+      <div v-else style="padding: 32px; color: #999; text-align: center">
         {{ $t('repair.processRecordDetail.noData') }}
       </div>
     </Spin>

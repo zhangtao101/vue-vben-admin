@@ -369,14 +369,14 @@ watch(
                         {{ formatStatus(record.afterStatus) }}
                       </Tag>
                     </div>
-                    <div style=" margin-top: 4px;color: #888">
+                    <div style="margin-top: 4px; color: #888">
                       {{ $t('repair.repairTaskDetail.operator') }}：{{
                         record.operator
                       }}
                     </div>
                     <div
                       v-if="record.remark"
-                      style=" margin-top: 4px;color: #666"
+                      style="margin-top: 4px; color: #666"
                     >
                       {{ record.remark }}
                     </div>
@@ -390,7 +390,7 @@ watch(
                     "
                   >
                     <div
-                      style=" font-size: 12px;color: #888; white-space: nowrap"
+                      style="font-size: 12px; color: #888; white-space: nowrap"
                     >
                       {{ record.actionTime }}
                     </div>
@@ -405,7 +405,7 @@ watch(
                 </div>
               </TimelineItem>
             </Timeline>
-            <div v-else style=" padding: 16px;color: #999; text-align: center">
+            <div v-else style="padding: 16px; color: #999; text-align: center">
               {{ $t('repair.repairTaskDetail.noProcessRecord') }}
             </div>
           </Spin>
