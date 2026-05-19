@@ -413,3 +413,21 @@ export async function deleteMoldArchiveById(id: number) {
     `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/mold/base/${id}`,
   );
 }
+
+/**
+ * 模具档案下拉选择列表
+ * @description 用于下拉选择场景，返回 moldCode、moldName 字段
+ * @param params - 查询参数：keyword（模具编码/模具名称关键字）、status（状态，默认启用）
+ */
+export async function getMoldArchiveSelectList(params?: {
+  keyword?: string;
+  status?: string;
+}) {
+  return requestClient.get<
+    Array<{ id: number; moldCode: string; moldName: string }>
+  >(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/mold/base/list?${qs.stringify(
+      { ...params, status: params?.status || 'ACTIVE' },
+    )}`,
+  );
+}

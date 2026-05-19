@@ -32,6 +32,12 @@ export interface RepairRequestDetail {
   cancelReason?: null | string;
   cancelTime?: null | string;
   repairConclusion?: string;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
+  /** 模具编码（模具报修单） */
+  moldCode?: string;
+  /** 模具名称（模具报修单） */
+  moldName?: string;
 }
 
 /** 报修单列表项 */
@@ -45,6 +51,12 @@ export interface RepairRequestListItem {
   status: string;
   faultName?: string;
   reportTime: string;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
+  /** 模具编码（模具报修单） */
+  moldCode?: string;
+  /** 模具名称（模具报修单） */
+  moldName?: string;
 }
 
 /** 报修单分页列表响应 */
@@ -65,6 +77,8 @@ export interface SaveRepairRequestParams {
   faultName?: null | string;
   relatedTaskId?: null | number;
   acceptPeriod: number;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
 }
 
 /** 提交报修单请求参数 */
@@ -78,6 +92,8 @@ export interface SubmitRepairRequestParams {
   faultName?: null | string;
   relatedTaskId?: null | number;
   acceptPeriod: number;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
 }
 
 /** 报修单列表查询参数 */
@@ -89,6 +105,12 @@ export interface RepairRequestListParams {
   repairType?: string;
   startTime?: string;
   endTime?: string;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
+  /** 模具编码（模具报修单查询） */
+  moldCode?: string;
+  /** 模具名称（模具报修单查询） */
+  moldName?: string;
   pageNum: number;
   pageSize: number;
 }

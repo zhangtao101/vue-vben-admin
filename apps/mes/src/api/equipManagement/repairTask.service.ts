@@ -26,6 +26,12 @@ export interface RepairTaskListItem {
   urgentLevel: string;
   status: string;
   reportTime: string;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
+  /** 模具编码（模具维修任务） */
+  moldCode?: string;
+  /** 模具名称（模具维修任务） */
+  moldName?: string;
 }
 
 /** 维修任务分页列表响应 */
@@ -62,6 +68,12 @@ export interface RepairTaskDetail {
   repairDuration?: number;
   pauseDuration?: number;
   requestId?: number;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
+  /** 模具编码（模具维修任务） */
+  moldCode?: string;
+  /** 模具名称（模具维修任务） */
+  moldName?: string;
 }
 
 /** 可领取任务项 */
@@ -73,6 +85,12 @@ export interface AssignableTaskItem {
   repairType: string;
   urgentLevel: string;
   repairContent: string;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
+  /** 模具编码（模具维修任务） */
+  moldCode?: string;
+  /** 模具名称（模具维修任务） */
+  moldName?: string;
 }
 
 /** 报修关联维修任务项 */
@@ -132,6 +150,12 @@ export interface ProcessRecordDetail {
 export interface RepairTaskListParams {
   equipmentCode?: string;
   status?: string;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
+  /** 模具编码（模具维修任务查询） */
+  moldCode?: string;
+  /** 模具名称（模具维修任务查询） */
+  moldName?: string;
   pageNum: number;
   pageSize: number;
 }
@@ -141,6 +165,12 @@ export interface MyTaskParams {
   status?: string;
   equipmentCode?: string;
   requestNo?: string;
+  /** 资产类型，EQUIPMENT-设备，MOLD-模具 */
+  assetType?: string;
+  /** 模具编码（模具维修任务查询） */
+  moldCode?: string;
+  /** 模具名称（模具维修任务查询） */
+  moldName?: string;
   pageNum: number;
   pageSize: number;
 }

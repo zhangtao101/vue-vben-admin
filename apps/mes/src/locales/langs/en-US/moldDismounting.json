@@ -1,0 +1,21 @@
+{
+  "title": "Mold Dismounting",
+  "equipmentScan": "Equipment Scan",
+  "equipmentScanPlaceholder": "Please scan or enter equipment code",
+  "equipmentName": "Equipment Name",
+  "process": "Process",
+  "moldCurrentInfo": "Current Mold On Equipment",
+  "moldCode": "Mold Code",
+  "moldName": "Mold Name",
+  "workOrderNo": "Work Order",
+  "installTime": "Install Time",
+  "querying": "Querying mold info...",
+  "noMoldOnEquipment": "No mold on this equipment",
+  "reset": "Reset",
+  "confirmDismount": "Confirm Dismount",
+  "querySuccess": "Query successful",
+  "equipmentQuerySuccess": "Equipment info query successful",
+  "equipmentQueryFail": "Equipment info query failed",
+  "dismountSuccess": "Mold dismounted successfully",
+  "dismountFail": "Mold dismount failed"
+}

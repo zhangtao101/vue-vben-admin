@@ -113,3 +113,32 @@ export async function getMoldCategoryPage(params: MoldCategoryParams) {
     `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/mold/category/list-page?${qs.stringify(params)}`,
   );
 }
+
+// ========== 设备绑定相关 ==========
+
+/** 设备绑定信息响应 */
+export interface EquipBindingInfo {
+  /** 设备编号 */
+  equipCode: string;
+  /** 设备名称 */
+  equipName: string;
+  /** 工序编号 */
+  processCode: string;
+  /** 工序名称 */
+  processName: string;
+}
+
+/**
+ * 根据设备编码获取设备信息和工序
+ * @param equipCode 设备编号
+ * @returns 设备绑定信息
+ */
+export async function getEquipBindingByCode(equipCode: string) {
+  return requestClient.get<{
+    code: number;
+    data: EquipBindingInfo;
+    msg: string;
+  }>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getEquipBindingByCode?${qs.stringify({ equipCode })}`,
+  );
+}

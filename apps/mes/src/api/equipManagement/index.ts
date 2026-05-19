@@ -13,6 +13,7 @@ export * from './moldBase.service';
 export * from './moldCategoryMgmt.service';
 export * from './moldMaintenancePlan.service';
 export * from './moldMaintenanceScheme.service';
+export * from './moldMounting.service';
 export * from './notification.service';
 export * from './repairBasicConfig.service';
 export * from './repairKnowledgeBase.service';

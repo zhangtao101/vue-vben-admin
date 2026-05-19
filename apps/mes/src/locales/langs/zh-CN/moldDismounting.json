@@ -1,0 +1,21 @@
+{
+  "title": "模具下模填报",
+  "equipmentScan": "设备扫码",
+  "equipmentScanPlaceholder": "请扫描或输入设备编码",
+  "equipmentName": "设备名称",
+  "process": "工序",
+  "moldCurrentInfo": "当前在机模具信息",
+  "moldCode": "模具编码",
+  "moldName": "模具名称",
+  "workOrderNo": "工单号",
+  "installTime": "上模时间",
+  "querying": "正在查询在机模具信息...",
+  "noMoldOnEquipment": "该设备暂无在机模具",
+  "reset": "重置",
+  "confirmDismount": "确认下模",
+  "querySuccess": "查询成功",
+  "equipmentQuerySuccess": "设备信息查询成功",
+  "equipmentQueryFail": "设备信息查询失败",
+  "dismountSuccess": "下模成功",
+  "dismountFail": "下模失败"
+}

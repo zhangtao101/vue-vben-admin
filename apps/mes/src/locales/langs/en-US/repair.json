@@ -380,5 +380,15 @@
     "noStockWarning": "Stock quantity is 0, cannot scrap",
     "scrapBy": "Scrap By",
     "scrapTime": "Scrap Time"
+  },
+  "moldRepair": {
+    "title": "Mold Repair Request",
+    "editTitle": "Edit Mold Repair Request",
+    "add": "Add Repair Request",
+    "moldCode": "Mold Code",
+    "moldCodePlaceholder": "Enter mold code",
+    "moldName": "Mold Name",
+    "moldNamePlaceholder": "Enter mold name",
+    "moldCodeRequired": "Please select mold"
   }
 }

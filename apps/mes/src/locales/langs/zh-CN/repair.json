@@ -380,5 +380,15 @@
     "noStockWarning": "库存数量为0，无法报废",
     "scrapBy": "报废人",
     "scrapTime": "报废时间"
+  },
+  "moldRepair": {
+    "title": "模具报修单申请",
+    "editTitle": "编辑模具报修单",
+    "add": "新增报修单",
+    "moldCode": "模具编码",
+    "moldCodePlaceholder": "请输入模具编码",
+    "moldName": "模具名称",
+    "moldNamePlaceholder": "请输入模具名称",
+    "moldCodeRequired": "请选择模具"
   }
 }
