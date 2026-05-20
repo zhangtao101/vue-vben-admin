@@ -1,0 +1,20 @@
+{
+  "title": "模具变更记录",
+  "equipmentCode": "设备编码",
+  "equipmentCodePlaceholder": "请输入设备编码",
+  "operationType": "操作类型",
+  "operationTypePlaceholder": "请选择操作类型",
+  "operationTypeInstall": "上模",
+  "operationTypeRemove": "下模",
+  "timeRange": "时间范围",
+  "reset": "重置",
+  "search": "查询",
+  "operationTypeName": "操作类型",
+  "moldCode": "模具编码",
+  "moldName": "模具名称",
+  "workOrderNo": "工单号",
+  "operator": "操作人",
+  "operationTime": "操作时间",
+  "keyword": "关键词",
+  "keywordPlaceholder": "请输入模具编码/名称"
+}

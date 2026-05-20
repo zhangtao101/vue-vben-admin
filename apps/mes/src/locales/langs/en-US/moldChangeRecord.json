@@ -1,0 +1,20 @@
+{
+  "title": "Mold Change Record",
+  "equipmentCode": "Equipment Code",
+  "equipmentCodePlaceholder": "Please enter equipment code",
+  "operationType": "Operation Type",
+  "operationTypePlaceholder": "Please select operation type",
+  "operationTypeInstall": "Mount",
+  "operationTypeRemove": "Dismount",
+  "timeRange": "Time Range",
+  "reset": "Reset",
+  "search": "Search",
+  "operationTypeName": "Operation Type",
+  "moldCode": "Mold Code",
+  "moldName": "Mold Name",
+  "workOrderNo": "Work Order",
+  "operator": "Operator",
+  "operationTime": "Operation Time",
+  "keyword": "Keyword",
+  "keywordPlaceholder": "Please enter mold code/name"
+}
