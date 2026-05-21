@@ -8,6 +8,8 @@ export * from './equipmentMaintenancePlan.service';
 export * from './equipmentSpotCheckScheme.service';
 export * from './equipNameMaintain.service';
 export * from './equipRecord.service';
+export * from './maintenanceAlert.service';
+export * from './maintenanceTask.service';
 export * from './moldArchiveMgmt.service';
 export * from './moldBase.service';
 export * from './moldCategoryMgmt.service';

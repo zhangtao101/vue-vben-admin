@@ -9,6 +9,10 @@ import type { Dayjs } from 'dayjs';
  * [TIME]: 2026-05-20 13:20:00
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+import type {
+  MoldOperationListParams,
+  MoldOperationRecord,
+} from '#/api/equipManagement/moldMounting.service';
 
 import { ref } from 'vue';
 
@@ -28,7 +32,6 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMoldOperationListPage } from '#/api/equipManagement/moldMounting.service';
-import type { MoldOperationListParams, MoldOperationRecord } from '#/api/equipManagement/moldMounting.service';
 import { $t } from '#/locales';
 
 // ========== 查询参数 ==========
