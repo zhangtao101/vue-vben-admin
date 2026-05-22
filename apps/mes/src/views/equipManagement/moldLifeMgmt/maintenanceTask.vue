@@ -319,7 +319,7 @@ function handleExecuteSubmit() {
 
   executeLoading.value = true;
   const params: MaintenanceExecuteParams = {
-    recordId: executeRow.value?.id || '',
+    recordId: executeRow.value?.id || 0,
     executeTime: executeForm.value.executeTime.format('YYYY-MM-DD HH:mm:ss'),
     maintenanceResult: executeForm.value.maintenanceResult,
     executeRemark: executeForm.value.executeRemark,
