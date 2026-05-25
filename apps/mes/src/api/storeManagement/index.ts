@@ -1,5 +1,6 @@
 export * from './batchLock.service';
 export * from './inQualityInspectio.service';
+export * from './inventoryPlanMgmt.service';
 export * from './ipcReport.service';
 export * from './iqcExamine.service';
 export * from './labelPrint.service';
