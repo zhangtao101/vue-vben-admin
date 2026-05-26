@@ -207,7 +207,9 @@ export async function fetchWarehouseList() {
  * @param warehouseCodeList 仓库编号数组
  * @returns 料号列表
  */
-export async function fetchStocktakingMaterialList(warehouseCodeList: string[]) {
+export async function fetchStocktakingMaterialList(
+  warehouseCodeList: string[],
+) {
   return requestClient.get<MaterialItem[]>(
     `${import.meta.env.VITE_GLOB_MES_WMS}/wms/stocktaking/listMaterialByWarehouseCode`,
     { params: { warehouseCodeList: `[${warehouseCodeList.join(',')}]` } },

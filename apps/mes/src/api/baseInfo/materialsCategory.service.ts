@@ -148,3 +148,55 @@ export function updatePASFile(data: any) {
     },
   );
 }
+
+// ==================== MSD 信息相关 ====================
+
+/** MSD 信息 */
+export interface MSDInfo {
+  /** MSD信息ID */
+  id: number;
+  /** 料号 */
+  materialCode: string;
+  /** MSD等级 */
+  msdLevel: number;
+  /** 检测周期（单位月） */
+  checkCycle: number;
+}
+
+/** MSD 信息保存参数 */
+export interface MSDInfoSaveParams {
+  /** MSD信息ID，新增时传 null */
+  id: null | number;
+  /** 料号 */
+  materialCode: string;
+  /** MSD等级 */
+  msdLevel: number;
+  /** 检测周期（单位月） */
+  checkCycle: number;
+}
+
+/**
+ * 根据料号查看MSD信息
+ * @param params 包含 materialCode 的查询参数
+ * @returns MSD信息
+ * @since 2026-05-26 09:38:00
+ */
+export async function queryMSDInfo(params: { materialCode?: string }) {
+  return requestClient.get<MSDInfo>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/base/materialInfo/queryMSDinfo`,
+    { params },
+  );
+}
+
+/**
+ * 保存MSD信息（新增/修改）
+ * @param data MSD信息保存参数
+ * @returns 操作结果
+ * @since 2026-05-26 09:38:00
+ */
+export async function saveMSDInfo(data: MSDInfoSaveParams) {
+  return requestClient.post<null>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/base/materialInfo/saveMSDInfo`,
+    data,
+  );
+}

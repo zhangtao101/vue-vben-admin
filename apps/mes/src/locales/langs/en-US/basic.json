@@ -31,6 +31,14 @@
       "files": "files",
       "productReference": "productReference",
       "productDescription": "productDescription"
+    },
+    "msd": {
+      "title": "View MSD",
+      "materialCode": "Material Code",
+      "msdLevel": "MSD Level",
+      "checkCycle": "Check Cycle (Month)",
+      "selectMsdLevel": "Please select MSD Level",
+      "saveSuccess": "Saved successfully"
     }
   },
   "factoryCalendar": {

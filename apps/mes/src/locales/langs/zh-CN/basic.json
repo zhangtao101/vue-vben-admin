@@ -34,6 +34,14 @@
       "files": "文件",
       "productReference": "产品引用",
       "productDescription": "产品描述"
+    },
+    "msd": {
+      "title": "查看MSD",
+      "materialCode": "料号",
+      "msdLevel": "MSD 等级",
+      "checkCycle": "检测周期(月)",
+      "selectMsdLevel": "请选择 MSD 等级",
+      "saveSuccess": "保存成功"
     }
   },
   "factoryCalendar": {

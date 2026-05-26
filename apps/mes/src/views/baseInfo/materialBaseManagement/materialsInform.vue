@@ -46,6 +46,7 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import MSDDrawer from '#/util/component/MSDDrawer.vue';
 
 // region 表格操作
 
@@ -466,6 +467,27 @@ function eyeClose() {
 
 // endregion
 
+// region 查看MSD
+
+/** MSD 抽屉是否显示 */
+const showMSDDrawer = ref(false);
+/** 当前查看的材料编码 */
+const msdMaterialCode = ref('');
+/** 当前查看的材料名称 */
+const msdMaterialName = ref('');
+
+/**
+ * 显示 MSD 抽屉
+ * @param row
+ */
+function showMSD(row: any) {
+  msdMaterialCode.value = row.materialCode;
+  msdMaterialName.value = row.materialName;
+  showMSDDrawer.value = true;
+}
+
+// endregion
+
 // region 权限查询
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
@@ -660,6 +682,22 @@ function downloadTemplate() {
                   @click="showEye(row)"
                 />
               </Tooltip>
+
+              <!-- 查看MSD -->
+              <Tooltip v-if="author.includes('MSD')">
+                <template #title>{{ $t('basic.bomManagement.msd.title') }}</template>
+                <Button
+                  type="link"
+                  :icon="
+                    h(Icon, {
+                      icon: 'mdi:shield-half-full',
+                      class: 'inline-block size-5',
+                    })
+                  "
+                  class="mx-1"
+                  @click="showMSD(row)"
+                />
+              </Tooltip>
             </template>
             <template #selectedState="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
@@ -840,6 +878,16 @@ function downloadTemplate() {
         </Space>
       </template>
     </Drawer>
+    <!-- endregion -->
+
+    <!-- region 查看MSD -->
+    <MSDDrawer
+      v-model:visible="showMSDDrawer"
+      :material-code="msdMaterialCode"
+      :material-name="msdMaterialName"
+      :has-permission="author.includes('MSD')"
+      @refresh="gridApi.reload()"
+    />
     <!-- endregion -->
   </Page>
 </template>
