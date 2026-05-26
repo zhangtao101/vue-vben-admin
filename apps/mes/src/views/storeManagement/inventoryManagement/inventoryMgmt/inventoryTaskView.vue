@@ -232,15 +232,36 @@ const materialGridOptions: VxeGridProps<any> = {
   stripe: true,
   rowConfig: {
     isCurrent: true,
-    isHover: true
+    isHover: true,
   },
   columns: [
     { type: 'seq', width: 50, title: '序号' },
-    { field: 'materialCode', title: $t('inventoryTaskView.materialCode'), minWidth: 120 },
-    { field: 'materialName', title: $t('inventoryTaskView.materialName'), minWidth: 120 },
-    { field: 'stockNumber', title: $t('inventoryTaskView.stockNumber'), width: 100 },
-    { field: 'checkNumber', title: $t('inventoryTaskView.checkNumber'), width: 100 },
-    { field: 'checkStateName', title: $t('inventoryTaskView.checkState'), width: 100, slots: { default: 'materialCheckState' } },
+    {
+      field: 'materialCode',
+      title: $t('inventoryTaskView.materialCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'materialName',
+      title: $t('inventoryTaskView.materialName'),
+      minWidth: 120,
+    },
+    {
+      field: 'stockNumber',
+      title: $t('inventoryTaskView.stockNumber'),
+      width: 100,
+    },
+    {
+      field: 'checkNumber',
+      title: $t('inventoryTaskView.checkNumber'),
+      width: 100,
+    },
+    {
+      field: 'checkStateName',
+      title: $t('inventoryTaskView.checkState'),
+      width: 100,
+      slots: { default: 'materialCheckState' },
+    },
   ],
   data: [],
   height: 250,
@@ -263,13 +284,42 @@ const detailGridOptions: VxeGridProps<any> = {
   stripe: true,
   columns: [
     { type: 'seq', width: 50, title: '序号' },
-    { field: 'labelCode', title: $t('inventoryTaskView.labelCode'), minWidth: 150 },
-    { field: 'materialCode', title: $t('inventoryTaskView.materialCode'), width: 100 },
-    { field: 'materialName', title: $t('inventoryTaskView.materialName'), minWidth: 120 },
-    { field: 'storageCode', title: $t('inventoryTaskView.storageCode'), minWidth: 160 },
-    { field: 'stockNumber', title: $t('inventoryTaskView.stockNumber'), width: 100 },
-    { field: 'checkNumber', title: $t('inventoryTaskView.checkNumber'), width: 100 },
-    { field: 'checkState', title: $t('inventoryTaskView.checkState'), width: 100, slots: { default: 'detailCheckState' } },
+    {
+      field: 'labelCode',
+      title: $t('inventoryTaskView.labelCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'materialCode',
+      title: $t('inventoryTaskView.materialCode'),
+      width: 100,
+    },
+    {
+      field: 'materialName',
+      title: $t('inventoryTaskView.materialName'),
+      minWidth: 120,
+    },
+    {
+      field: 'storageCode',
+      title: $t('inventoryTaskView.storageCode'),
+      minWidth: 160,
+    },
+    {
+      field: 'stockNumber',
+      title: $t('inventoryTaskView.stockNumber'),
+      width: 100,
+    },
+    {
+      field: 'checkNumber',
+      title: $t('inventoryTaskView.checkNumber'),
+      width: 100,
+    },
+    {
+      field: 'checkState',
+      title: $t('inventoryTaskView.checkState'),
+      width: 100,
+      slots: { default: 'detailCheckState' },
+    },
   ],
   data: [],
   height: 250,
@@ -277,7 +327,9 @@ const detailGridOptions: VxeGridProps<any> = {
   showOverflow: 'tooltip',
 };
 
-const [DetailGrid, detailGridApi] = useVbenVxeGrid({ gridOptions: detailGridOptions });
+const [DetailGrid, detailGridApi] = useVbenVxeGrid({
+  gridOptions: detailGridOptions,
+});
 
 /**
  * 加载盘点料号清单。
@@ -577,7 +629,9 @@ onMounted(() => {
       <!-- 盘点明细 -->
       <div v-if="selectedMaterialCode" class="mt-4">
         <h4 class="mb-2 text-base font-medium">
-          {{ $t('inventoryTaskView.detailListTitle') }}（{{ selectedMaterialCode }}）
+          {{ $t('inventoryTaskView.detailListTitle') }}（{{
+            selectedMaterialCode
+          }}）
         </h4>
         <DetailGrid>
           <template #detailCheckState="{ row }">

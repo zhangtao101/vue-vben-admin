@@ -162,7 +162,10 @@ function handleClose() {
       layout="horizontal"
     >
       <!-- 料号 -->
-      <FormItem :label="$t('basic.bomManagement.msd.materialCode')" name="materialCode">
+      <FormItem
+        :label="$t('basic.bomManagement.msd.materialCode')"
+        name="materialCode"
+      >
         <Input v-model:value="formData.materialCode" disabled />
       </FormItem>
 
@@ -192,7 +195,10 @@ function handleClose() {
       </FormItem>
 
       <!-- 检测周期（单位月） -->
-      <FormItem :label="$t('basic.bomManagement.msd.checkCycle')" name="checkCycle">
+      <FormItem
+        :label="$t('basic.bomManagement.msd.checkCycle')"
+        name="checkCycle"
+      >
         <InputNumber
           v-model:value="formData.checkCycle"
           :disabled="!hasPermission"

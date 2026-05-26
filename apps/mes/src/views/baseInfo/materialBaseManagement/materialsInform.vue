@@ -685,7 +685,11 @@ function downloadTemplate() {
 
               <!-- 查看MSD -->
               <Tooltip v-if="author.includes('MSD')">
-                <template #title>{{ $t('basic.bomManagement.msd.title') }}</template>
+                <template #title>
+{{
+                  $t('basic.bomManagement.msd.title')
+                }}
+</template>
                 <Button
                   type="link"
                   :icon="
