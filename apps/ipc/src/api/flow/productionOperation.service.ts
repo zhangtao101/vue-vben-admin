@@ -493,3 +493,34 @@ export function mrlCheckResult(params: any) {
     params,
   );
 }
+
+/**
+ * 贴片投料查询
+ * @param params 参数
+ */
+export function listSmtFeed(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listSmtFeed?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 投料标签码校验
+ * @param params 参数
+ */
+export function checkSmtFeed(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/checkSmtFeed?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 工单快速切换
+ * @param params 参数
+ */
+export function changeMaterialStationByWorksheetCode(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/human/patch/changeMaterialStationByWorksheetCode`,
+    params,
+  );
+}

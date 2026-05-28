@@ -25,6 +25,7 @@ import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import ScanTask from '#/util/component/steps/scanTask.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
 import SingleStationScan from '#/util/component/steps/singleStationScan.vue';
+import SmtFeeding from '#/util/component/steps/smtFeeding.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
 
 /**
@@ -432,6 +433,15 @@ defineProps({
       :function-id="step.id"
       :show-type-number="step.type"
       v-if="step.type === 99"
+    />
+    <!-- 贴片机投料：根据工步类型为 51 时，渲染贴片投料组件，并传递相关参数 -->
+    <SmtFeeding
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 51"
     />
     <!-- 配方执行 - 和城：根据工步类型为 101 时，渲染配方执行组件，并传递相关参数 -->
     <RecipeExecution

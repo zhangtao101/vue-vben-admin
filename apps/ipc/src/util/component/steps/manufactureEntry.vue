@@ -10,7 +10,7 @@ import { Icon } from '@iconify/vue';
 import { Button, message, Modal, Tooltip } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { inReport, listByInReport } from '#/api';
+import { changeMaterialStationByWorksheetCode, inReport, listByInReport } from '#/api';
 import useWebSocket from '#/util/websocket-util';
 
 const props = defineProps({
@@ -84,7 +84,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       title: '操作',
-      minWidth: 120,
+      minWidth: 180,
       fixed: 'right',
       slots: {
         default: 'action',
@@ -197,6 +197,32 @@ function pullIn(row: any) {
   });
 }
 
+/**
+ * 工单快速切换
+ * @param row - 包含工单号等信息的行数据对象
+ */
+function quickSwitch(row: any) {
+  Modal.confirm({
+    cancelText: '取消',
+    okText: '确认',
+    okType: 'danger',
+    onCancel() {
+      message.warning('已取消!');
+    },
+    onOk() {
+      changeMaterialStationByWorksheetCode({
+        bindingId: props.bindingId,
+        worksheetCode: row.worksheetCode,
+        workstationCode: props.workstationCode,
+      }).then(() => {
+        message.success($t('common.successfulOperation'));
+        reload();
+      });
+    },
+    title: '是否确认快速切换工单?',
+  });
+}
+
 // endregion
 
 // region websocket
@@ -231,6 +257,7 @@ onBeforeUnmount(() => {
 
 <template>
   <Grid class="!mt-4">
+    <template #toolbar-tools></template>
     <template #action="{ row }">
       <!-- 进站 -->
       <Tooltip>
@@ -238,6 +265,16 @@ onBeforeUnmount(() => {
         <Button type="link" @click="pullIn(row)">
           <Icon
             icon="mdi:login-variant"
+            class="inline-block align-middle text-2xl"
+          />
+        </Button>
+      </Tooltip>
+      <!-- 快速切换 -->
+      <Tooltip v-if="row.fastChangeFlag === 1">
+        <template #title>快速切换</template>
+        <Button type="link" @click="quickSwitch(row)">
+          <Icon
+            icon="mdi:swap-horizontal-bold"
             class="inline-block align-middle text-2xl"
           />
         </Button>
