@@ -347,7 +347,10 @@ onBeforeUnmount(() => {
       </FormItem>
       <!-- 投入量 -->
       <FormItem label="投入量" name="feedNumber">
-        <InputNumber v-model:value="editMessage.feedNumber" :addon-after="editMessage.unit || ''" />
+        <InputNumber
+          v-model:value="editMessage.feedNumber"
+          :addon-after="editMessage.unit || ''"
+        />
       </FormItem>
     </Form>
 
