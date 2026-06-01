@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
           <Icon
             icon="mdi:arrow-right"
             class="align--center ml-4 mr-4 inline-block text-4xl"
-            v-if="index > 0"
+            v-if="index as number > 0"
           />
           <!-- 步骤块，点击可切换当前步骤 -->
           <div
@@ -244,7 +244,7 @@ onBeforeUnmount(() => {
               // 当步骤为当前步骤时，显示蓝色边框和阴影
               'border-4 border-sky-500 shadow-xl': current === index,
             }"
-            @click="current = index"
+            @click="current = index as number"
           >
             <!-- 显示步骤名称 -->
             <div class="font-black">{{ item.title }}</div>
@@ -270,7 +270,7 @@ onBeforeUnmount(() => {
               // 当步骤为当前步骤时，显示蓝色边框和阴影
               'border-4 border-sky-300 shadow-xl': current === index,
             }"
-            @click="current = index"
+            @click="current = index as number"
           >
             <!-- 显示步骤名称 -->
             <div class="font-black">{{ item.title }}</div>
@@ -324,12 +324,12 @@ onBeforeUnmount(() => {
           }"
           @click="
             () => {
-              current = index;
+              current = index as number;
             }
           "
         >
           <div class="inline-block h-8 w-8 rounded-full border-2">
-            {{ index + 1 }}
+            {{ index as number + 1 }}
           </div>
           <div>{{ item.title }}</div>
         </div>

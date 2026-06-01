@@ -524,3 +524,22 @@ export function changeMaterialStationByWorksheetCode(params: any) {
     params,
   );
 }
+/**
+ * 查询余料记录明细
+ * @param params 参数
+ */
+export function getRemainingFeedListByCode(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/getRemainingFeedListByCode?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 余料下料
+ * @param params 参数
+ */
+export function materialDown(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/human/feed/materialDown`,
+    params,
+  );
+}
