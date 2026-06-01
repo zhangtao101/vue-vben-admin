@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
           <Icon
             icon="mdi:arrow-right"
             class="align--center ml-4 mr-4 inline-block text-4xl"
-            v-if="index as number > 0"
+            v-if="(index as number) > 0"
           />
           <!-- 步骤块，点击可切换当前步骤 -->
           <div
@@ -329,7 +329,7 @@ onBeforeUnmount(() => {
           "
         >
           <div class="inline-block h-8 w-8 rounded-full border-2">
-            {{ index as number + 1 }}
+            {{ (index as number) + 1 }}
           </div>
           <div>{{ item.title }}</div>
         </div>

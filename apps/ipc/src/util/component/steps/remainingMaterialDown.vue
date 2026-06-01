@@ -195,9 +195,7 @@ function submitAllDown() {
   }
 
   // 校验下料数量不超过可下料数量
-  const invalidRow = tableData.find(
-    (row: any) => row._downNumber > row.number,
-  );
+  const invalidRow = tableData.find((row: any) => row._downNumber > row.number);
   if (invalidRow) {
     message.warning(
       `"${invalidRow.materialName}" 下料数量不能超过可下料数量(${invalidRow.number})`,
@@ -210,12 +208,14 @@ function submitAllDown() {
     content: `确认下料共 ${downList.length} 条记录吗？`,
     onOk: () => {
       submitting.value = true;
-      materialDown(downList).then(() => {
-        message.success($t('common.successfulOperation'));
-        gridApi.reload();
-      }).finally(() => {
-        submitting.value = false;
-      });
+      materialDown(downList)
+        .then(() => {
+          message.success($t('common.successfulOperation'));
+          gridApi.reload();
+        })
+        .finally(() => {
+          submitting.value = false;
+        });
     },
   });
 }
@@ -251,11 +251,7 @@ onBeforeUnmount(() => {
 <template>
   <Grid>
     <template #toolbar-tools>
-      <Button
-        type="primary"
-        :loading="submitting"
-        @click="submitAllDown"
-      >
+      <Button type="primary" :loading="submitting" @click="submitAllDown">
         下料
       </Button>
     </template>
