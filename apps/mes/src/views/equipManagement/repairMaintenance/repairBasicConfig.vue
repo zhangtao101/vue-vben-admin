@@ -8,10 +8,11 @@
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { useAccessStore } from '@vben/stores';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -27,6 +28,7 @@ import {
   Space,
   Switch,
   Tooltip,
+  Upload,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -56,6 +58,19 @@ const configTypeOptions = [
     value: 'EQUIPMENT_GROUP',
   },
   { label: $t('repair.repairBasicConfig.urgentLevel'), value: 'URGENT_LEVEL' },
+  { label: $t('repair.repairBasicConfig.faultType'), value: 'FAULT_TYPE' },
+  {
+    label: $t('repair.repairBasicConfig.equipFaultCause'),
+    value: 'EQUIP_FAULT_CAUSE',
+  },
+  {
+    label: $t('repair.repairBasicConfig.repairPauseReason'),
+    value: 'REPAIR_PAUSE_REASON',
+  },
+  {
+    label: $t('repair.repairBasicConfig.equipmentOeeReason'),
+    value: 'EQUIPMENT_OEE_REASON',
+  },
 ];
 
 // ========== 维修类型映射 ==========
@@ -205,6 +220,39 @@ function onConfigTypeChange() {
   gridApi.reload();
 }
 
+// ========== 导入 ==========
+const accessStore = useAccessStore();
+const importFile = ref<any>([]);
+
+/** 支持导入功能的配置类型 */
+const importConfigTypes = new Set([
+  'EQUIP_FAULT_CAUSE',
+  'EQUIPMENT_GROUP',
+  'EQUIPMENT_OEE_REASON',
+  'FAULT_TYPE',
+  'REPAIR_PAUSE_REASON',
+]);
+
+/** 当前选中类型是否支持导入 */
+const showImportButton = computed(() =>
+  importConfigTypes.has(queryParams.value.configType),
+);
+
+function getImportUrl() {
+  return `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/import/base-config`;
+}
+
+function handleImportChange(info: any) {
+  const { file } = info;
+  if (file.status === 'done') {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+    importFile.value = [];
+  } else if (file.status === 'error') {
+    message.error($t('common.operationFailure'));
+  }
+}
+
 // ========== 操作 ==========
 /**
  * 处理编辑按钮点击，打开编辑抽屉。
@@ -322,6 +370,27 @@ onMounted(() => {
             <Icon icon="mdi:plus" class="inline-block align-middle" />
             {{ $t('common.add') }}
           </Button>
+          <Upload
+            v-if="author.includes('新增') && showImportButton"
+            v-model:file-list="importFile"
+            name="files"
+            accept=".xlsx,.xls"
+            :multiple="false"
+            :action="getImportUrl()"
+            :headers="{ Authorization: `${accessStore.accessToken}` }"
+            :data="{ configType: queryParams.configType }"
+            :show-upload-list="false"
+            @change="handleImportChange"
+            class="ml-4!"
+          >
+            <Button>
+              <Icon
+                icon="mdi:cloud-upload"
+                class="inline-block align-middle text-xl text-[#5085ff]"
+              />
+              {{ $t('common.import') }}
+            </Button>
+          </Upload>
         </template>
         <template #configType="{ row }">
           {{ formatConfigType(row.configType) }}

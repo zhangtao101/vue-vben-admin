@@ -219,13 +219,9 @@ const rules: Record<string, any[]> = {
     { required: true, message: '此项为必填项', trigger: 'change' },
   ],
   itemType: [{ required: true, message: '此项为必填项', trigger: 'change' }],
-  isSpecial: [
-    { required: true, message: '此项为必填项', trigger: 'change' },
-  ],
+  isSpecial: [{ required: true, message: '此项为必填项', trigger: 'change' }],
   equipName: [{ required: false, message: '此项为必填项', trigger: 'change' }],
-  dailyTag: [
-    { required: true, message: '此项为必填项', trigger: 'change' },
-  ],
+  dailyTag: [{ required: true, message: '此项为必填项', trigger: 'change' }],
   maintenanceTag: [
     { required: true, message: '此项为必填项', trigger: 'change' },
   ],
@@ -467,12 +463,7 @@ onMounted(() => {
       :destroy-on-close="true"
       :footer-style="{ textAlign: 'right' }"
     >
-      <Form
-        ref="formRef"
-        :model="formData"
-        :rules="rules"
-        layout="vertical"
-      >
+      <Form ref="formRef" :model="formData" :rules="rules" layout="vertical">
         <!-- 点检项编号 -->
         <FormItem label="点检项编号：" name="checkItemCode">
           <Input

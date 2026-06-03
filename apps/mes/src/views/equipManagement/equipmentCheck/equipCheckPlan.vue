@@ -13,6 +13,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { useAccessStore } from '@vben/stores';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -30,6 +31,7 @@ import {
   Switch,
   Tag,
   Tooltip,
+  Upload,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -284,6 +286,26 @@ function formatFrequency(row: any) {
   return `${value} ${unit}`;
 }
 
+// ========== 导入 ==========
+const accessStore = useAccessStore();
+const importFile = ref<any>([]);
+
+function getImportUrl() {
+  return `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/import/inspection-plan`;
+}
+
+function handleImportChange(info: any) {
+  const { file } = info;
+  if (file.status === 'done') {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+    // 清空文件列表
+    importFile.value = [];
+  } else if (file.status === 'error') {
+    message.error($t('common.operationFailure'));
+  }
+}
+
 // ========== 页面加载 ==========
 onMounted(() => {
   // 查询权限
@@ -372,6 +394,26 @@ onMounted(() => {
             <Icon icon="mdi:plus" class="inline-block align-middle" />
             {{ $t('common.add') }}
           </Button>
+          <Upload
+            v-if="author.includes('新增')"
+            v-model:file-list="importFile"
+            name="files"
+            accept=".xlsx,.xls"
+            :multiple="false"
+            :action="getImportUrl()"
+            :headers="{ Authorization: `${accessStore.accessToken}` }"
+            :show-upload-list="false"
+            @change="handleImportChange"
+            class="ml-4!"
+          >
+            <Button>
+              <Icon
+                icon="mdi:cloud-upload"
+                class="inline-block align-middle text-xl text-[#5085ff]"
+              />
+              {{ $t('common.import') }}
+            </Button>
+          </Upload>
         </template>
 
         <!-- 点巡检类型插槽 -->

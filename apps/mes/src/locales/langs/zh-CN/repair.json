@@ -213,6 +213,10 @@
     "faultLevel": "故障等级",
     "equipmentGroup": "设备分组",
     "urgentLevel": "紧急程度",
+    "faultType": "故障现象类别",
+    "equipFaultCause": "设备故障根因",
+    "repairPauseReason": "维修暂停原因",
+    "equipmentOeeReason": "设备稼动设定",
     "repairGroupCode": "维修组编码",
     "drawerAddTitle": "新增配置",
     "drawerEditTitle": "编辑配置"

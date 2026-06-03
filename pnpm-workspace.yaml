@@ -21,6 +21,7 @@ overrides:
   vue: 'catalog:'
 
 catalog:
+  '@ant-design/icons-vue': ^7.0.1
   '@antv/data-set': ^0.11.8
   '@antv/g2': ^5.2.11
   '@ast-grep/napi': ^0.42.0
@@ -101,6 +102,7 @@ catalog:
   archiver: ^7.0.1
   axios: ^1.14.0
   axios-mock-adapter: ^2.1.0
+  bwip-js: ^4.8.0
   cac: ^7.0.0
   chalk: ^5.6.2
   cheerio: ^1.2.0
@@ -154,6 +156,7 @@ catalog:
   lodash-es: ^4.17.21
   lodash.clonedeep: ^4.5.0
   lucide-vue-next: ^0.577.0
+  maotu: 0.6.5-beta1
   medium-zoom: ^1.1.0
   mpegts.js: ^1.8.0
   mqtt: ^5.14.1
@@ -226,6 +229,7 @@ catalog:
   vue-tippy: ^6.7.1
   vue-tsc: ^3.2.6
   vue3-json-viewer: ^2.4.1
+  vue3-marquee: ^4.2.2
   vue3-menus: ^1.1.2
   vxe-pc-ui: ^4.13.20
   vxe-table: ^4.18.10
