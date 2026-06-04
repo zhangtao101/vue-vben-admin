@@ -477,7 +477,7 @@ onMounted(() => {
             <DirectoryTree
               v-model:expanded-keys="expandedKeys"
               v-model:selected-keys="selectedKeys"
-              :auto-expand-parent="true"
+              :auto-expand-parent="false"
               :field-names="{
                 children: 'children',
                 title: 'wordName',

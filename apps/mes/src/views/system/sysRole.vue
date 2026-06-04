@@ -705,7 +705,7 @@ onMounted(() => {
       >
         <Tree
           v-model:checked-keys="selectedWebPermissionCodes"
-          :auto-expand-parent="true"
+          :auto-expand-parent="false"
           :field-names="{ children: 'childrens', title: 'name', key: 'code' }"
           :tree-data="webPermission"
           checkable
@@ -724,7 +724,7 @@ onMounted(() => {
       >
         <Tree
           v-model:checked-keys="selectedPdaPermissionCodes"
-          :auto-expand-parent="true"
+          :auto-expand-parent="false"
           :field-names="{ children: 'childrens', title: 'name', key: 'code' }"
           :tree-data="pdaPermission"
           checkable

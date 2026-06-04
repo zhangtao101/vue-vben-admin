@@ -135,7 +135,6 @@ function queryAllMaterialTree() {
   queryMaterialTree().then((response: any) => {
     // 根据响应结构获取数据
     const data = response.data || response;
-    console.log('物料类别树数据:', data);
     // 检查返回的数据是否存在且长度大于0
     if (data) {
       // 将数据赋值给根节点的childs
@@ -219,7 +218,7 @@ onMounted(() => {
           <DirectoryTree
             v-model:expanded-keys="expandedKeys"
             v-model:selected-keys="selectedKeys"
-            :auto-expand-parent="true"
+            :auto-expand-parent="false"
             :default-expand-all="true"
             :field-names="{
               children: 'childs',

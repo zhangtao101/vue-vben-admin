@@ -392,7 +392,7 @@ onMounted(() => {
 
           <Tree
             v-model:selected-keys="selectedKeys"
-            :auto-expand-parent="true"
+            :auto-expand-parent="false"
             :expanded-keys="expandedKeys"
             :field-names="{ children: 'childrens', title: 'name', key: 'code' }"
             :tree-data="treeData"
