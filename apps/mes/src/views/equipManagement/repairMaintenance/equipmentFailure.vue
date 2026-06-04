@@ -389,7 +389,7 @@ function handleDelete(row: any) {
   <Page>
     <div class="flex gap-4">
       <!-- 左侧：设备组树 -->
-      <Card class="w-[300px] flex-shrink-0">
+      <Card class="w-[300px] flex-shrink-0 max-h-[650px] overflow-y-auto">
         <Tree
           :tree-data="treeData"
           :show-icon="true"
