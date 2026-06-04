@@ -185,6 +185,25 @@ watch(
         currentRow.value = props.row;
         getMaintenanceSchemeById(props.row.id).then((res: any) => {
           currentRow.value = res;
+          // 加载已选设备
+          if (res.equipmentCodes) {
+            const codes = res.equipmentCodes.split(',').filter(Boolean);
+            Promise.all(
+              codes.map((code: string) => queryScadaEquipLedgerByCode(code)),
+            ).then((results: any[]) => {
+              selectedEquipments.value = results
+                .filter(Boolean)
+                .map((r: any) => ({
+                  equipGroupCode: r.equipGroupCode,
+                  equipGroupName: r.equipGroupName,
+                  equipmentCode: r.equipmentCode,
+                  equipmentName: r.equipmentName,
+                  location: r.location,
+                  model: r.model,
+                  useDepartmentName: r.useDepartmentName,
+                }));
+            });
+          }
         });
       } else if (props.mode === 'edit' && props.row?.id) {
         // 编辑模式：加载详情并填充表单
@@ -427,9 +446,7 @@ function removeEquipment(index: number) {
           }}
         </DescriptionsItem>
         <DescriptionsItem :label="$t('tallyScheme.isStopMachine')">
-          <Checkbox :checked="currentRow.isStopMachine" disabled>
-            {{ $t('tallyScheme.isStopMachine') }}
-          </Checkbox>
+          {{ currentRow.isStopMachine ? $t('common.yes') : $t('common.no') }}
         </DescriptionsItem>
         <DescriptionsItem :label="$t('tallyScheme.equipmentGroup')">
           {{ currentRow.equipmentGroup || '-' }}
@@ -446,6 +463,34 @@ function removeEquipment(index: number) {
           {{ currentRow.remark || '-' }}
         </DescriptionsItem>
       </Descriptions>
+
+      <!-- 已选设备展示区域 -->
+      <div
+        v-if="selectedEquipments.length > 0"
+        class="mt-4 p-3 border border-gray-200 rounded bg-gray-50"
+      >
+        <h4 class="mb-2 font-medium">
+          {{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.selectEquipment') }}
+        </h4>
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>{{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentCode') }}</th>
+              <th>{{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentName') }}</th>
+              <th>{{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipGroupName') }}</th>
+              <th>{{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.location') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in selectedEquipments" :key="item.equipmentCode">
+              <td>{{ item.equipmentCode }}</td>
+              <td>{{ item.equipmentName }}</td>
+              <td>{{ item.equipGroupName || '-' }}</td>
+              <td>{{ item.location || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- 保养项明细 -->
       <div class="mt-4">
