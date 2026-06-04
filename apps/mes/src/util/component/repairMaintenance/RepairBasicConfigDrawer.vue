@@ -145,9 +145,11 @@ const configTypeMap: Record<string, string> = {
   URGENT_LEVEL: $t('repair.repairBasicConfig.urgentLevel'),
 };
 
-// ========== 是否显示维修组编码（仅设备分组时显示） ==========
-const showRepairGroupCode = computed(
-  () => props.configType === 'EQUIPMENT_GROUP',
+// ========== 是否显示维修组编码（设备分组、设备稼动设定、稼动原因时显示） ==========
+const showRepairGroupCode = computed(() =>
+  ['EQUIPMENT_GROUP', 'EQUIPMENT_OEE_REASON', 'OEE_REASON'].includes(
+    props.configType,
+  ),
 );
 
 // ========== 配置类型显示文本 ==========

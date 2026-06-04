@@ -470,15 +470,39 @@ function removeEquipment(index: number) {
         class="mt-4 p-3 border border-gray-200 rounded bg-gray-50"
       >
         <h4 class="mb-2 font-medium">
-          {{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.selectEquipment') }}
+          {{
+            $t('equipmentSpotCheckScheme.equipmentSelectDrawer.selectEquipment')
+          }}
         </h4>
         <table class="detail-table">
           <thead>
             <tr>
-              <th>{{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentCode') }}</th>
-              <th>{{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentName') }}</th>
-              <th>{{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.equipGroupName') }}</th>
-              <th>{{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.location') }}</th>
+              <th>
+                {{
+                  $t(
+                    'equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentCode',
+                  )
+                }}
+              </th>
+              <th>
+                {{
+                  $t(
+                    'equipmentSpotCheckScheme.equipmentSelectDrawer.equipmentName',
+                  )
+                }}
+              </th>
+              <th>
+                {{
+                  $t(
+                    'equipmentSpotCheckScheme.equipmentSelectDrawer.equipGroupName',
+                  )
+                }}
+              </th>
+              <th>
+                {{
+                  $t('equipmentSpotCheckScheme.equipmentSelectDrawer.location')
+                }}
+              </th>
             </tr>
           </thead>
           <tbody>
