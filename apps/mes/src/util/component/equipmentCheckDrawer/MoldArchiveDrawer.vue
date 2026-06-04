@@ -261,6 +261,17 @@ function loadSupplierOptions(keyword: string = '') {
 }
 
 /**
+ * 供应商远程搜索（防抖）。
+ */
+let supplierSearchTimer: null | ReturnType<typeof setTimeout> = null;
+function handleSupplierSearch(keyword: string) {
+  if (supplierSearchTimer) clearTimeout(supplierSearchTimer);
+  supplierSearchTimer = setTimeout(() => {
+    loadSupplierOptions(keyword);
+  }, 300);
+}
+
+/**
  * 供应商选择变化。
  */
 function handleSupplierChange(value: any) {
@@ -662,6 +673,7 @@ function handleSubmit() {
             show-search
             :filter-option="false"
             placeholder="请输入供应商名称搜索"
+            @search="handleSupplierSearch"
             @change="handleSupplierChange"
           />
         </FormItem>

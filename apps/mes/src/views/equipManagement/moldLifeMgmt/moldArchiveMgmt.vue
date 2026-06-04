@@ -263,9 +263,19 @@ function handleDelete(row: any) {
 // region 导入
 const accessStore = useAccessStore();
 const importFile = ref<any>([]);
+const importProductMoldFile = ref<any>([]);
+const importSupplierBindingFile = ref<any>([]);
 
 function getImportUrl() {
   return `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/mold/import/mold-base`;
+}
+
+function getProductMoldImportUrl() {
+  return `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/mold/import/product-mold`;
+}
+
+function getSupplierBindingImportUrl() {
+  return `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/mold/import/supplier-binding`;
 }
 
 function handleImportChange(info: any) {
@@ -274,6 +284,28 @@ function handleImportChange(info: any) {
     message.success($t('common.successfulOperation'));
     gridApi.reload();
     importFile.value = [];
+  } else if (file.status === 'error') {
+    message.error($t('common.operationFailure'));
+  }
+}
+
+function handleProductMoldImportChange(info: any) {
+  const { file } = info;
+  if (file.status === 'done') {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+    importProductMoldFile.value = [];
+  } else if (file.status === 'error') {
+    message.error($t('common.operationFailure'));
+  }
+}
+
+function handleSupplierBindingImportChange(info: any) {
+  const { file } = info;
+  if (file.status === 'done') {
+    message.success($t('common.successfulOperation'));
+    gridApi.reload();
+    importSupplierBindingFile.value = [];
   } else if (file.status === 'error') {
     message.error($t('common.operationFailure'));
   }
@@ -470,7 +502,47 @@ onMounted(() => {
                 icon="mdi:cloud-upload"
                 class="inline-block align-middle text-xl text-[#5085ff]"
               />
-              {{ $t('common.import') }}
+              {{ $t('moldArchiveMgmt.importMoldInfo') }}
+            </Button>
+          </Upload>
+          <Upload
+            v-if="author.includes('新增')"
+            v-model:file-list="importProductMoldFile"
+            name="files"
+            accept=".xlsx,.xls"
+            :multiple="false"
+            :action="getProductMoldImportUrl()"
+            :headers="{ Authorization: `${accessStore.accessToken}` }"
+            :show-upload-list="false"
+            @change="handleProductMoldImportChange"
+            class="ml-4!"
+          >
+            <Button>
+              <Icon
+                icon="mdi:cloud-upload"
+                class="inline-block align-middle text-xl text-[#5085ff]"
+              />
+              {{ $t('moldArchiveMgmt.importProductMold') }}
+            </Button>
+          </Upload>
+          <Upload
+            v-if="author.includes('新增')"
+            v-model:file-list="importSupplierBindingFile"
+            name="files"
+            accept=".xlsx,.xls"
+            :multiple="false"
+            :action="getSupplierBindingImportUrl()"
+            :headers="{ Authorization: `${accessStore.accessToken}` }"
+            :show-upload-list="false"
+            @change="handleSupplierBindingImportChange"
+            class="ml-4!"
+          >
+            <Button>
+              <Icon
+                icon="mdi:cloud-upload"
+                class="inline-block align-middle text-xl text-[#5085ff]"
+              />
+              {{ $t('moldArchiveMgmt.importSupplierBinding') }}
             </Button>
           </Upload>
         </template>

@@ -74,6 +74,9 @@
   "editProductRelation": "编辑产品绑定",
   "deleteSuccess": "删除成功",
   "exportSuccess": "导出成功",
+  "importMoldInfo": "模具信息导入",
+  "importProductMold": "模具产品导入",
+  "importSupplierBinding": "供应商导入",
   "detail": {
     "baseInfo": "基本信息",
     "lifespanInfo": "寿命信息",

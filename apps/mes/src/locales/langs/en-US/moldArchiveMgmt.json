@@ -74,6 +74,9 @@
   "editProductRelation": "Edit Product Binding",
   "deleteSuccess": "Delete successful",
   "exportSuccess": "Export successful",
+  "importMoldInfo": "Import Mold Info",
+  "importProductMold": "Import Product Mold",
+  "importSupplierBinding": "Import Supplier Binding",
   "detail": {
     "baseInfo": "Basic Info",
     "lifespanInfo": "Lifespan Info",

@@ -217,6 +217,7 @@
     "equipFaultCause": "Equipment Fault Cause",
     "repairPauseReason": "Repair Pause Reason",
     "equipmentOeeReason": "Equipment OEE Reason",
+    "oeeReason": "OEE Reason",
     "repairGroupCode": "Repair Group Code",
     "drawerAddTitle": "Add Config",
     "drawerEditTitle": "Edit Config"

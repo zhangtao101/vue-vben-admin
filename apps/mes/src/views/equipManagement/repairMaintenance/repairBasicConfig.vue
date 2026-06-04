@@ -23,8 +23,7 @@ import {
   FormItem,
   message,
   Modal,
-  RadioButton,
-  RadioGroup,
+  Select,
   Space,
   Switch,
   Tooltip,
@@ -71,6 +70,7 @@ const configTypeOptions = [
     label: $t('repair.repairBasicConfig.equipmentOeeReason'),
     value: 'EQUIPMENT_OEE_REASON',
   },
+  { label: $t('repair.repairBasicConfig.oeeReason'), value: 'OEE_REASON' },
 ];
 
 // ========== 维修类型映射 ==========
@@ -230,6 +230,7 @@ const importConfigTypes = new Set([
   'EQUIPMENT_GROUP',
   'EQUIPMENT_OEE_REASON',
   'FAULT_TYPE',
+  'OEE_REASON',
   'REPAIR_PAUSE_REASON',
 ]);
 
@@ -342,18 +343,12 @@ onMounted(() => {
           :label="$t('repair.repairBasicConfig.configType')"
           style="margin-bottom: 0"
         >
-          <RadioGroup
+          <Select
             v-model:value="queryParams.configType"
+            :options="configTypeOptions"
+            style="width: 200px"
             @change="onConfigTypeChange"
-          >
-            <RadioButton
-              v-for="item in configTypeOptions"
-              :key="item.value"
-              :value="item.value"
-            >
-              {{ item.label }}
-            </RadioButton>
-          </RadioGroup>
+          />
         </FormItem>
       </Form>
     </Card>

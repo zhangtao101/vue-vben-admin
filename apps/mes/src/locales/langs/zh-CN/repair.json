@@ -217,6 +217,7 @@
     "equipFaultCause": "设备故障根因",
     "repairPauseReason": "维修暂停原因",
     "equipmentOeeReason": "设备稼动设定",
+    "oeeReason": "稼动原因",
     "repairGroupCode": "维修组编码",
     "drawerAddTitle": "新增配置",
     "drawerEditTitle": "编辑配置"
