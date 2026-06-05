@@ -14,6 +14,7 @@ export type BaseFormComponentType =
   | 'DefaultButton'
   | 'PrimaryButton'
   | 'VbenCheckbox'
+  | 'VbenFormFieldArray'
   | 'VbenInput'
   | 'VbenInputPassword'
   | 'VbenPinInput'
@@ -85,16 +86,19 @@ export type FormSchemaRuleType =
 type FormItemDependenciesCondition<T = boolean | PromiseLike<boolean>> = (
   value: Partial<Record<string, any>>,
   actions: FormActions,
+  controller: ExtendedFormApi, // 在 dependencies 里提供访问extendApi的能力
 ) => T;
 
 type FormItemDependenciesConditionWithRules = (
   value: Partial<Record<string, any>>,
   actions: FormActions,
+  controller: ExtendedFormApi, // 在 dependencies 里提供访问extendApi的能力
 ) => FormSchemaRuleType | PromiseLike<FormSchemaRuleType>;
 
 type FormItemDependenciesConditionWithProps = (
   value: Partial<Record<string, any>>,
   actions: FormActions,
+  controller: ExtendedFormApi, // 在 dependencies 里提供访问extendApi的能力
 ) => MaybeComponentProps | PromiseLike<MaybeComponentProps>;
 
 export interface FormItemDependencies {
@@ -146,6 +150,11 @@ type ComponentProps =
 
 export interface FormCommonConfig {
   /**
+   * 是否可折叠的
+   * @default false
+   */
+  collapsible?: boolean;
+  /**
    * 在Label后显示一个冒号
    */
   colon?: boolean;
@@ -157,6 +166,11 @@ export interface FormCommonConfig {
    * 所有表单项的控件样式
    */
   controlClass?: string;
+  /**
+   * 默认折叠
+   * @default false
+   */
+  defaultCollapsed?: boolean;
   /**
    * 所有表单项的禁用状态
    * @default false
@@ -228,6 +242,19 @@ type MappedComponentProps<P> =
     ) => P & Record<string, any>)
   | (P & Record<string, any>);
 
+/**
+ * 格式化 `getValues()` 输出中的当前字段值。
+ * - 返回 `undefined`：保留当前字段已被移除的状态，通常配合 `setValue(key, nextValue)`
+ *   把一个字段拆分写入到其他字段，例如 `startTime` / `endTime`
+ * - 返回其他值：会将当前字段恢复/写回为该返回值
+ * - `setValue` 回调签名为 `(key, nextValue) => void`
+ */
+export type FormValueFormat = (
+  value: any,
+  setValue: (fieldName: string, value: any) => void,
+  values: Record<string, any>,
+) => any;
+
 interface FormSchemaBody extends Omit<FormCommonConfig, 'componentProps'> {
   /** 默认值 */
   defaultValue?: any;
@@ -249,6 +276,12 @@ interface FormSchemaBody extends Omit<FormCommonConfig, 'componentProps'> {
   rules?: FormSchemaRuleType;
   /** 后缀 */
   suffix?: CustomRenderType;
+  /**
+   * 获取表单值时格式化当前字段。
+   * - 返回值不为 `undefined` 时，会回写到当前 fieldName
+   * - 返回值为 `undefined` 时，可通过 setValue 写入一个或多个目标字段
+   */
+  valueFormat?: FormValueFormat;
 }
 
 type FormSchemaDiscriminated<
@@ -274,6 +307,32 @@ export type FormSchema<
   T extends BaseFormComponentType = BaseFormComponentType,
   P extends Record<string, any> = Record<never, never>,
 > = FormSchemaDiscriminated<T, P> | FormSchemaFallback<T>;
+
+/**
+ * 数组编辑器（VbenFormFieldArray）的组件参数
+ */
+export interface VbenFormFieldArrayProps<
+  T extends BaseFormComponentType = BaseFormComponentType,
+  P extends Record<string, any> = Record<never, never>,
+> {
+  /** 操作列表头文案 */
+  actionText?: string;
+  /** 「添加」按钮文案 */
+  addButtonText?: string;
+  /** 新增一行时生成的默认数据；缺省时按列定义的 fieldName 生成空对象 */
+  createRow?: () => Record<string, any>;
+  disabled?: boolean;
+  /** 空数据文案 */
+  emptyText?: string;
+  /** 最多行数 */
+  max?: number;
+  /** 最少行数 */
+  min?: number;
+  /** 列定义，每一列是一个子字段（复用 FormSchema） */
+  schema: FormSchema<T, P>[];
+  /** 是否显示序号列 */
+  showIndex?: boolean;
+}
 
 export type HandleSubmitFn = (
   values: Record<string, any>,
