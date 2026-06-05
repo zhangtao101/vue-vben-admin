@@ -170,6 +170,7 @@ const gridBottomOptions: VxeGridProps<any> = {
     { field: 'batchCode', title: '供应商批次号', minWidth: 120 },
     { field: 'produceDate', title: '制造日期', minWidth: 90 },
     { field: 'contractCode', title: '单据号', minWidth: 100 },
+    { field: 'remark', title: '备注', minWidth: 150 },
   ],
   height: 300,
   stripe: true,
