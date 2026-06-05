@@ -80,10 +80,7 @@ vue-vben-admin/
 8. **ipc/** - IPC应用
    - 桌面端IPC通信相关应用
 
-9. **my-ai/** - AI相关应用
-   - 集成AI功能的应用
-
-10. **playground/** - 演示和测试
+9. **playground/** - 演示和测试
     - 用于演示功能和测试新特性
 
 ---

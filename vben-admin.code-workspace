@@ -13,10 +13,6 @@
       "path": "apps/mes"
     },
     {
-      "name": "@vben/my-ai",
-      "path": "apps/my-ai"
-    },
-    {
       "name": "@vben/web-antd",
       "path": "apps/web-antd"
     },
