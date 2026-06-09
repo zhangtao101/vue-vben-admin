@@ -200,7 +200,7 @@ export async function fetchQcDetailByItemCode(params: any) {
  */
 export async function uploadFile(data: FormData) {
   return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/common/upload/upload`,
+    `/${import.meta.env.VITE_GLOB_MES_FILE}/file/upload`,
     data,
   );
 }
@@ -210,17 +210,17 @@ export async function uploadFile(data: FormData) {
  */
 export async function insertFile(data: any) {
   return requestClient.post<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/common/insertFile`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/file/insertFlowFile`,
     data,
   );
 }
 
 /**
- * 删除文件
+ * 删除文件记录（按ID）
  */
 export async function deleteFile(fileId: string) {
   return requestClient.delete<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/common/deleteFile/${fileId}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/file/deleteFlowFile/${fileId}`,
   );
 }
 
@@ -229,7 +229,7 @@ export async function deleteFile(fileId: string) {
  */
 export async function fetchFileList(params: any) {
   return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/common/getFileList`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/file/listFlowFile`,
     { params },
   );
 }

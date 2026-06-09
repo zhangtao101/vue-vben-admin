@@ -395,5 +395,12 @@
     "moldName": "模具名称",
     "moldNamePlaceholder": "请输入模具名称",
     "moldCodeRequired": "请选择模具"
+  },
+  "equipmentRepairAction": {
+    "manualCode": "手册编码",
+    "manualName": "手册名称",
+    "faultTreeName": "故障现象名称",
+    "manualContent": "维修措施内容",
+    "remark": "备注"
   }
 }

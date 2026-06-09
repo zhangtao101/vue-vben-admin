@@ -634,11 +634,11 @@ defineExpose({
           </template>
         </RadioGroup>
       </FormItem>
-      <!-- 质检项（当标准类型为专用时显示） -->
+      <!-- 产品编号（当标准类型为专用时显示） -->
       <FormItem
         :label="
           $t(
-            'qualityModule.qualityCheck.qualityBaseSet.formQualityCheckItem.name',
+            'qualityModule.qualityCheck.qualityBaseSet.standardItem.code',
           )
         "
         name="productCode"

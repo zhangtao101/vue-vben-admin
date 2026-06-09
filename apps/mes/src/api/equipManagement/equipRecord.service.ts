@@ -90,3 +90,4 @@ export function insertScadaEquipLedger(data: any) {
     data,
   );
 }
+

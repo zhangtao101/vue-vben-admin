@@ -395,5 +395,12 @@
     "moldName": "Mold Name",
     "moldNamePlaceholder": "Enter mold name",
     "moldCodeRequired": "Please select mold"
+  },
+  "equipmentRepairAction": {
+    "manualCode": "Manual Code",
+    "manualName": "Manual Name",
+    "faultTreeName": "Fault Phenomenon Name",
+    "manualContent": "Repair Measure Content",
+    "remark": "Remark"
   }
 }
