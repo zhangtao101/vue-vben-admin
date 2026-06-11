@@ -108,6 +108,13 @@ const isShowDetails = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
+  equipmentName: [
+    {
+      message: '此项为必填项',
+      required: true,
+      trigger: 'change',
+    },
+  ],
   equipmentCode: [
     {
       message: '此项为必填项',
@@ -359,11 +366,11 @@ onMounted(() => {
             :disabled="isShowDetails"
           />
         </FormItem>
-        <!-- 设备名称编号 -->
-        <FormItem :label="$t('equip.equipNameCode')" name="equipmentNameCode">
+        <!-- 设备名称编号（后台生成，仅显示） -->
+        <FormItem :label="$t('equip.equipNameCode')">
           <Input
             v-model:value="checkedRow.equipmentNameCode"
-            :disabled="checkedRow.id"
+            disabled
           />
         </FormItem>
         <!-- 备注 -->
