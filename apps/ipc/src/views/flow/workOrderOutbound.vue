@@ -266,7 +266,7 @@ const title = ref('');
  */
 function show(row: any, type: number) {
   reportingTypeOfWork.value = type;
-  editItem.value = row;
+  editItem .value = row ? { ...row } : null;
   downlineDrawer.value = true;
   setTimeout(() => {
     reportForgridApi.grid.loadData(row.reports);

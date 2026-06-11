@@ -90,7 +90,7 @@ const currentRow = ref<any>(null);
  * @since 2026-05-12 12:52:00
  */
 function openDrawer(row?: any) {
-  currentRow.value = row;
+  currentRow.value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 

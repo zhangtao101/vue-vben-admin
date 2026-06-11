@@ -218,7 +218,7 @@ const cancelReason = ref('');
  * @since 2026-05-14 08:41:00
  */
 function openCancelDrawer(row: any) {
-  cancelRow.value = row;
+  cancelRow .value = row ? { ...row } : null;
   cancelReason.value = '';
   cancelDrawerVisible.value = true;
 }

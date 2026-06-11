@@ -362,7 +362,7 @@ function handleCreate() {
 // 编辑
 function handleEdit(row: any) {
   formStatus.value = 'update';
-  formRow.value = row;
+  formRow .value = row ? { ...row } : null;
   formVisible.value = true;
 }
 

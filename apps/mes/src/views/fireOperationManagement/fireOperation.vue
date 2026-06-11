@@ -383,7 +383,7 @@ const statusItem = ref<any>({});
  * @param row
  */
 function showStatusChangeModal(row: any) {
-  statusItem.value = row;
+  statusItem .value = row ? { ...row } : null;
   statusModal.value = true;
 }
 

@@ -591,7 +591,7 @@ function handleWorkorderSelect({ checked, row }: any) {
     // 清除其他选择，只保留当前选择
     workorderGridApi.grid.clearCheckboxRow();
     workorderGridApi.grid.setCheckboxRow(row, true);
-    selectedWorkorder.value = row;
+    selectedWorkorder .value = row ? { ...row } : null;
     popData.workSheetCode = row.workSheetCode;
     popData.workSheetPlanNumber = row.workSheetPlanNumber;
     popData.workSheetFinishNumber = row.workSheetFinishNumber;

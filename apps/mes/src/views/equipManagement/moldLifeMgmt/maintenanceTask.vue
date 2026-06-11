@@ -280,7 +280,7 @@ const executeForm = ref({
  * @since 2026-05-21 10:15:00
  */
 function handleExecute(row: MaintenanceTaskRecord) {
-  executeRow.value = row;
+  executeRow .value = row ? { ...row } : null;
   executeForm.value = {
     details: [],
     executeTime: undefined,
@@ -362,7 +362,7 @@ const verifyForm = ref({
  * @since 2026-05-21 10:15:00
  */
 function handleVerify(row: any) {
-  verifyRow.value = row;
+  verifyRow .value = row ? { ...row } : null;
   verifyForm.value = {
     verificationResult: 'PASS' as MaintenanceResult,
     verifyComment: '',

@@ -160,7 +160,7 @@ function openDrawer(row: any, showOptions = false) {
   });
 
   visible.value = true; // 显示抽屉
-  details.value = row; // 设置单据详情数据
+  details .value = row ? { ...row } : null; // 设置单据详情数据
   queryDetails(row); // 查询物料明细
 }
 

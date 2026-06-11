@@ -124,7 +124,7 @@ function queryData({ page, pageSize }: any) {
 
 // 查看详情
 function handleView(row: any) {
-  currentForm.value = row;
+  currentForm .value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 

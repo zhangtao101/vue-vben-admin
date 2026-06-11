@@ -218,6 +218,8 @@
     "repairPauseReason": "维修暂停原因",
     "equipmentOeeReason": "设备稼动设定",
     "oeeReason": "稼动原因",
+    "moldMaintenanceItem": "模具保养项目",
+    "moldAbnormalReason": "异常原因维护",
     "repairGroupCode": "维修组编码",
     "drawerAddTitle": "新增配置",
     "drawerEditTitle": "编辑配置"

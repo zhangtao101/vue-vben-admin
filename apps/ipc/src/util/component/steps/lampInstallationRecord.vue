@@ -373,7 +373,7 @@ const formRef = ref();
  */
 function showViewDrawerFun(row: any) {
   showViewDrawer.value = true;
-  editItem.value = row;
+  editItem .value = row ? { ...row } : null;
 }
 /**
  * 关闭安灯评价抽屉

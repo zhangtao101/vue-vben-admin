@@ -231,13 +231,13 @@ function handleAdd() {
 
 function handleEdit(row: InspectionPlan) {
   drawerMode.value = 'edit';
-  currentRow.value = row;
+  currentRow .value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 
 function handleView(row: InspectionPlan) {
   drawerMode.value = 'view';
-  currentRow.value = row;
+  currentRow .value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 

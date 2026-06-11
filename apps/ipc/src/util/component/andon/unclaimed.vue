@@ -331,7 +331,7 @@ const theSignInObjectOfTheEditor = ref<any>({});
 function showTheSignInDrawer(row: any) {
   queryUserCode(row.id);
   signInDrawerDisplay.value = true;
-  theSignInObjectOfTheEditor.value = row;
+  theSignInObjectOfTheEditor .value = row ? { ...row } : null;
 }
 
 /**

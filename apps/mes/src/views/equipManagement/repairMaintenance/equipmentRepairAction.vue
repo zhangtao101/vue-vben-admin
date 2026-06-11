@@ -18,13 +18,18 @@ import {
   Input,
   message,
   Modal,
+  Select,
   Space,
+  Spin,
   Textarea,
   Tooltip,
   Upload,
 } from 'ant-design-vue';
+// eslint-disable-next-line n/no-extraneous-import
+import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getFaultTreeList } from '#/api/equipManagement/equipmentFailure.service';
 import {
   createEquipFaultManual,
   deleteEquipFaultManual,
@@ -184,9 +189,28 @@ const drawerForm = ref();
 const formRules = ref<any>({
   manualCode: [{ required: true, message: '请输入手册编码', trigger: 'change' }],
   manualName: [{ required: true, message: '请输入手册名称', trigger: 'change' }],
-  faultTreeName: [{ required: true, message: '请输入故障现象名称', trigger: 'change' }],
+  faultTreeName: [{ required: true, message: '请选择故障现象名称', trigger: 'change' }],
   manualContent: [{ required: true, message: '请输入维修措施内容', trigger: 'change' }],
 });
+
+// ========== 故障现象远程搜索 ==========
+const faultTreeOptions = ref<{ label: string; value: string }[]>([]);
+const faultTreeLoading = ref(false);
+
+const handleFaultTreeSearch = debounce((val: string) => {
+  faultTreeLoading.value = true;
+  getFaultTreeList({ keyword: val })
+    .then((data: any) => {
+      const list = data?.results || data || [];
+      faultTreeOptions.value = list.map((item: any) => ({
+        label: item.faultName || item.name || item.label,
+        value: item.faultName || item.name || item.label,
+      }));
+    })
+    .finally(() => {
+      faultTreeLoading.value = false;
+    });
+}, 500);
 
 /**
  * 打开新增抽屉。
@@ -201,6 +225,7 @@ function handleAdd() {
     remark: '',
   };
   drawerVisible.value = true;
+  handleFaultTreeSearch('');
 }
 
 /**
@@ -212,6 +237,7 @@ function handleEdit(row: any) {
     dialogStatus.value = 'update';
     currentRow.value = data || {};
     drawerVisible.value = true;
+    handleFaultTreeSearch('');
   });
 }
 
@@ -418,10 +444,21 @@ function handleSubmit() {
           />
         </FormItem>
         <FormItem label="故障现象名称" name="faultTreeName">
-          <Input
+          <Select
             v-model:value="currentRow.faultTreeName"
-            placeholder="请输入故障现象名称"
-          />
+            :options="faultTreeOptions"
+            :filter-option="false"
+            :not-found-content="faultTreeLoading ? undefined : null"
+            :default-active-first-option="false"
+            show-search
+            placeholder="请输入故障现象名称搜索"
+            class="!w-full"
+            @search="handleFaultTreeSearch"
+          >
+            <template v-if="faultTreeLoading" #notFoundContent>
+              <Spin size="small" />
+            </template>
+          </Select>
         </FormItem>
         <FormItem label="维修措施内容" name="manualContent">
           <Textarea

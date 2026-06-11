@@ -166,7 +166,7 @@ const selectedParentName = ref<string | undefined>(undefined);
  * @since 2026-04-20 15:10:00
  */
 function openDrawer(row?: any) {
-  currentRow.value = row || null;
+  currentRow.value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 

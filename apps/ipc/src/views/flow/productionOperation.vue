@@ -299,7 +299,7 @@ function setRadioByKey(worksheetCode: string = '') {
       // 设置表格的选中行
       gridApi.grid.setRadioRow(row);
       // 更新选中的工单信息
-      theSelectedWorkOrder.value = row;
+      theSelectedWorkOrder .value = row ? { ...row } : null;
       // 根据选中的工单号查询工艺路线
       queryProcess(selectedWorkstation.value, row.worksheetCode);
     }

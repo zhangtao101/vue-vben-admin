@@ -234,13 +234,13 @@ function handleAdd() {
 
 function handleEdit(row: MoldMaintenanceScheme) {
   drawerMode.value = 'edit';
-  currentRow.value = row;
+  currentRow .value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 
 function handleView(row: MoldMaintenanceScheme) {
   drawerMode.value = 'view';
-  currentRow.value = row;
+  currentRow .value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 

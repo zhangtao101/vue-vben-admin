@@ -492,7 +492,7 @@ const details = ref<any>(undefined);
  * @param row
  */
 function showDetails(row: any) {
-  details.value = row;
+  details .value = row ? { ...row } : null;
   isShow.value = true;
 }
 // endregion

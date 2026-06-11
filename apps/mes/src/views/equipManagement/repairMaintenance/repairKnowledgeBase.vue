@@ -212,7 +212,7 @@ const currentRow = ref<any>(null);
  * @since 2026-04-20 15:13:00
  */
 function openDrawer(row?: any, mode: 'add' | 'edit' | 'view' = 'add') {
-  currentRow.value = row || null;
+  currentRow.value = row ? { ...row } : null;
   drawerMode.value = mode;
   drawerVisible.value = true;
 }

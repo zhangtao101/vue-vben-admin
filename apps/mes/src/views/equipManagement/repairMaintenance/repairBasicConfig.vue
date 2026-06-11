@@ -71,6 +71,14 @@ const configTypeOptions = [
     value: 'EQUIPMENT_OEE_REASON',
   },
   { label: $t('repair.repairBasicConfig.oeeReason'), value: 'OEE_REASON' },
+  {
+    label: $t('repair.repairBasicConfig.moldMaintenanceItem'),
+    value: 'MOLD_MAINTENANCE_ITEM',
+  },
+  {
+    label: $t('repair.repairBasicConfig.moldAbnormalReason'),
+    value: 'MOLD_ABNORMAL_REASON',
+  },
 ];
 
 // ========== 维修类型映射 ==========
@@ -105,7 +113,7 @@ const currentRow = ref<any>(null);
  * @since 2026-04-20 15:13:00
  */
 function openDrawer(row?: any) {
-  currentRow.value = row || null;
+  currentRow.value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 
@@ -230,6 +238,8 @@ const importConfigTypes = new Set([
   'EQUIPMENT_GROUP',
   'EQUIPMENT_OEE_REASON',
   'FAULT_TYPE',
+  'MOLD_ABNORMAL_REASON',
+  'MOLD_MAINTENANCE_ITEM',
   'OEE_REASON',
   'REPAIR_PAUSE_REASON',
 ]);

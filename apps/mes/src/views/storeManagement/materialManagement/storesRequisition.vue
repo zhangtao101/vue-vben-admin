@@ -543,7 +543,7 @@ const selectedMaterial = ref<any>({});
  */
 function showSelectMaterial(row: any) {
   selectMaterialDrawer.value = true;
-  selectMaterialMessage.value = row;
+  selectMaterialMessage .value = row ? { ...row } : null;
 }
 
 /**

@@ -354,14 +354,14 @@ function handleExport() {
 // 查看
 function handleView(row: any) {
   itemsDrawerStatus.value = 'view';
-  currentItemsRecord.value = row;
+  currentItemsRecord .value = row ? { ...row } : null;
   itemsDrawerVisible.value = true;
 }
 
 // 录入
 function handleEnter(row: any) {
   itemsDrawerStatus.value = 'enter';
-  currentItemsRecord.value = row;
+  currentItemsRecord .value = row ? { ...row } : null;
   itemsDrawerVisible.value = true;
 }
 
@@ -462,7 +462,7 @@ function handleEdit(row: any) {
     popData.value.checkTime = dayjs(row.checkTime);
   }
   recordFormStatus.value = 'update';
-  currentRecord.value = row;
+  currentRecord .value = row ? { ...row } : null;
   recordFormVisible.value = true;
 }
 

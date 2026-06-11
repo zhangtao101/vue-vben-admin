@@ -326,7 +326,7 @@ const isOpen = ref(false);
  * @param row 选中的行
  */
 function showDrawer(row: any) {
-  editItem.value = row;
+  editItem .value = row ? { ...row } : null;
   selectedRoute.value = editItem.value.routeCode;
   isOpen.value = true;
   queryProcessRoute();

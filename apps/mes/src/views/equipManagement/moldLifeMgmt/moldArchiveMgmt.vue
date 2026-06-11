@@ -220,7 +220,7 @@ function handleAdd() {
  */
 function handleEdit(row: any) {
   drawerMode.value = 'edit';
-  currentRow.value = row;
+  currentRow .value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 
@@ -230,7 +230,7 @@ function handleEdit(row: any) {
  */
 function handleView(row: any) {
   drawerMode.value = 'view';
-  currentRow.value = row;
+  currentRow .value = row ? { ...row } : null;
   drawerVisible.value = true;
 }
 

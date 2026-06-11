@@ -361,7 +361,7 @@ function handleQualifiedNumberChange() {
 function handleEnterItem(row: any, index: number) {
   if (row.measureMethodTypeName === '录入型') {
     currentRowIndex.value = index;
-    currentRowData.value = row;
+    currentRowData .value = row ? { ...row } : null;
 
     // 加载质检项下拉列表
     fetchQcDetailByItemCode({ itemCode: row.itemCode }).then((res: any) => {

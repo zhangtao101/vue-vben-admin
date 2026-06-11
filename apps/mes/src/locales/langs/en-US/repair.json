@@ -218,6 +218,8 @@
     "repairPauseReason": "Repair Pause Reason",
     "equipmentOeeReason": "Equipment OEE Reason",
     "oeeReason": "OEE Reason",
+    "moldMaintenanceItem": "Mold Maintenance Item",
+    "moldAbnormalReason": "Abnormal Reason",
     "repairGroupCode": "Repair Group Code",
     "drawerAddTitle": "Add Config",
     "drawerEditTitle": "Edit Config"

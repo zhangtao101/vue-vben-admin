@@ -99,7 +99,7 @@ const editItem = ref<any>({});
 
 function showEdit(row: any) {
   isShow.value = true;
-  editItem.value = row;
+  editItem .value = row ? { ...row } : null;
 }
 
 /**
@@ -211,7 +211,7 @@ const optionType = ref(0);
  * 刷新表格数据
  */
 const open = ({ row, type }: any) => {
-  editReverse.value = row;
+  editReverse .value = row ? { ...row } : null;
   optionType.value = type;
   queryParams.value.worksheetCode = row.worksheetCode;
 

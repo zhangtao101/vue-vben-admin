@@ -213,7 +213,7 @@ const detailRow = ref<MaintenanceAlertRecord | null>(null);
  * @since 2026-05-21 10:15:00
  */
 function handleDetail(row: MaintenanceAlertRecord) {
-  detailRow.value = row;
+  detailRow .value = row ? { ...row } : null;
   detailVisible.value = true;
 }
 
