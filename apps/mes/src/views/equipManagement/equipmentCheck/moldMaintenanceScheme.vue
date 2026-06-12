@@ -92,6 +92,11 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'seq', width: 60, title: '序号' },
     {
+      field: 'schemeCode',
+      title: '方案编号',
+      minWidth: 150,
+    },
+    {
       field: 'schemeName',
       title: $t('moldMaintenanceScheme.schemeName'),
       minWidth: 180,

@@ -88,6 +88,11 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'seq', width: 60, title: '序号' },
     {
+      field: 'planCode',
+      title: $t('equipCheckPlan.planCode'),
+      minWidth: 150,
+    },
+    {
       field: 'planName',
       title: $t('equipCheckPlan.planName'),
       minWidth: 160,

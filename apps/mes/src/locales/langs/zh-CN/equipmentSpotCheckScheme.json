@@ -1,5 +1,6 @@
 {
   "inspectionScheme": "点巡检方案",
+  "schemeCode": "方案编号",
   "schemeName": "方案名称",
   "schemeNamePlaceholder": "请输入方案名称",
   "inspectionType": "点巡检类型",

@@ -61,6 +61,7 @@ export interface MoldMaintenancePlan {
  */
 export interface MoldMaintenancePlanDetail {
   id?: number;
+  planCode?: string;
   planName?: string;
   schemeId?: number;
   schemeName?: string;

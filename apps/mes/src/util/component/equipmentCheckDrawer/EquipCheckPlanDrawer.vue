@@ -79,6 +79,7 @@ const searchKeyword = ref('');
 // ========== 表单数据 ==========
 // 点检计划表单数据：包含计划名称、方案ID、首次执行时间、频率、有效期等
 const formData = ref<any>({
+  planCode: '',
   planName: '',
   schemeId: '',
   firstExecuteTime: undefined,
@@ -220,6 +221,7 @@ function loadDetail() {
     .then((res: any) => {
       const data = res || {};
       formData.value = {
+        planCode: data.planCode || '',
         planName: data.planName || '',
         schemeId: data.schemeId || '',
         firstExecuteTime: data.firstExecuteTime
@@ -250,6 +252,7 @@ function loadDetail() {
  */
 function resetForm() {
   formData.value = {
+    planCode: '',
     planName: '',
     schemeId: '',
     firstExecuteTime: undefined,
@@ -279,13 +282,21 @@ function handleSubmit() {
           ? updateInspectionPlan
           : createInspectionPlan;
 
+      const firstExecuteTime = formData.value.firstExecuteTime
+        ? formData.value.firstExecuteTime.format('YYYY-MM-DD HH:mm:ss')
+        : '';
+      const effectiveDate = formData.value.effectiveDate
+        ? formData.value.effectiveDate.format('YYYY-MM-DD 00:00:00')
+        : '';
+      const endDate = formData.value.endDate
+        ? formData.value.endDate.format('YYYY-MM-DD 23:59:59')
+        : '';
+
       const params = {
         ...formData.value,
-        firstExecuteTime:
-          formData.value.firstExecuteTime?.format('YYYY-MM-DD HH:mm:ss') || '',
-        effectiveDate:
-          formData.value.effectiveDate?.format('YYYY-MM-DD 00:00:00') || '',
-        endDate: formData.value.endDate?.format('YYYY-MM-DD 23:59:59') || '',
+        firstExecuteTime,
+        effectiveDate,
+        endDate,
         ...(props.mode === 'edit' ? { id: props.row?.id } : {}),
       };
 
@@ -352,6 +363,9 @@ const drawerTitle = computed(() => {
     <Spin :spinning="loading">
       <template v-if="mode === 'view' && props.row">
         <Descriptions :column="2" bordered>
+          <DescriptionsItem :label="$t('equipCheckPlan.planCode')">
+            {{ props.row.planCode || '-' }}
+          </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.planName')">
             {{ props.row.planName }}
           </DescriptionsItem>
@@ -409,6 +423,13 @@ const drawerTitle = computed(() => {
         :model="formData"
         :rules="rules"
       >
+        <FormItem
+          v-if="mode !== 'add'"
+          :label="$t('equipCheckPlan.planCode')"
+        >
+          <Input v-model:value="formData.planCode" disabled />
+        </FormItem>
+
         <FormItem :label="$t('equipCheckPlan.planName')" name="planName">
           <Input
             v-model:value="formData.planName"

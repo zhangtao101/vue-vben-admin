@@ -1,4 +1,5 @@
 {
+  "planCode": "计划编号",
   "planName": "计划名称",
   "schemeName": "关联方案",
   "inspectionType": "点巡检类型",

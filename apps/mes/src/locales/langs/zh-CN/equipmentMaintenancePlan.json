@@ -3,6 +3,7 @@
   "addTitle": "新增设备保养计划",
   "editTitle": "编辑设备保养计划",
   "viewTitle": "查看设备保养计划",
+  "planCode": "计划编号",
   "planName": "计划名称",
   "schemeName": "关联方案",
   "planType": "保养类型",

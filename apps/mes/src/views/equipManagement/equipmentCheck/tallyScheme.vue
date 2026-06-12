@@ -88,6 +88,11 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'seq', width: 60, title: '序号' },
     {
+      field: 'schemeCode',
+      title: $t('tallyScheme.schemeCode'),
+      minWidth: 150,
+    },
+    {
       field: 'schemeName',
       title: $t('tallyScheme.schemeName'),
       minWidth: 160,

@@ -45,6 +45,8 @@ export interface InspectionSchemeParams {
 export interface InspectionScheme {
   /** 方案ID */
   id?: number;
+  /** 方案编号 */
+  schemeCode?: string;
   /** 方案名称 */
   schemeName?: string;
   /** 点巡检类型 */
@@ -77,6 +79,8 @@ export interface InspectionScheme {
 export interface InspectionSchemeSubmit {
   /** 方案ID（编辑时传；新增不传） */
   id?: number;
+  /** 方案编号 */
+  schemeCode?: string;
   /** 方案名称 */
   schemeName: string;
   /** 点巡检类型 */

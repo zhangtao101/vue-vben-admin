@@ -244,8 +244,22 @@ function loadCategoryOptions() {
     categoryOptions.value = (res || []).map((item: any) => ({
       label: item.categoryName,
       value: item.id,
+      blockThreshold: item.blockThreshold,
+      warningThreshold: item.warningThreshold,
+      recoveryMode: item.recoveryMode,
     }));
   });
+}
+
+/**
+ * 模具类别变更时，自动回填阈值和恢复模式。
+ */
+function handleCategoryChange(_value: any, option: any) {
+  if (option) {
+    currentRow.value.blockThreshold = option.blockThreshold;
+    currentRow.value.warningThreshold = option.warningThreshold;
+    currentRow.value.recoveryMode = option.recoveryMode;
+  }
 }
 
 /**
@@ -549,7 +563,7 @@ function handleSubmit() {
               {{ currentRow?.moldName }}
             </DescriptionsItem>
             <DescriptionsItem :label="$t('moldArchiveMgmt.moldGroupName')">
-              {{ currentRow?.moldGroupName || '-' }}
+              {{ currentRow?.categoryName || '-' }}
             </DescriptionsItem>
             <DescriptionsItem :label="$t('moldArchiveMgmt.location')">
               {{ currentRow?.location || '-' }}
@@ -656,6 +670,7 @@ function handleSubmit() {
             :options="categoryOptions"
             allow-clear
             :placeholder="$t('moldArchiveMgmt.categoryPlaceholder')"
+            @change="handleCategoryChange"
           />
         </FormItem>
 

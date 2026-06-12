@@ -1,4 +1,5 @@
 {
+  "schemeCode": "方案编号",
   "schemeName": "方案名称",
   "planType": "保养类型",
   "isStopMachine": "是否停机",

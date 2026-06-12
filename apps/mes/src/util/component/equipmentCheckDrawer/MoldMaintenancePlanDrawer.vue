@@ -72,9 +72,35 @@ const submitting = ref(false);
 const fetching = ref(false);
 const searchKeyword = ref('');
 
+// ========== 表单验证 ==========
+const planRules = ref<any>({
+  planName: [
+    {
+      required: true,
+      message: $t('moldMaintenancePlan.planNameRequired'),
+      trigger: 'change',
+    },
+  ],
+  schemeId: [
+    {
+      required: true,
+      message: $t('moldMaintenancePlan.schemeIdRequired'),
+      trigger: 'change',
+    },
+  ],
+  planType: [
+    {
+      required: true,
+      message: $t('moldMaintenancePlan.planTypeRequired'),
+      trigger: 'change',
+    },
+  ],
+});
+
 // ========== 表单数据 ==========
 const formRef = ref<any>();
 const formData = ref<any>({
+  planCode: '',
   planName: '',
   schemeId: undefined,
   planType: 'REGULAR',
@@ -223,6 +249,7 @@ function loadDetail() {
   getMoldMaintenancePlanById(props.row.id)
     .then((res: MoldMaintenancePlanDetail) => {
       formData.value = {
+        planCode: res.planCode || '',
         planName: res.planName || '',
         schemeId: res.schemeId || '',
         planType: res.planType || 'REGULAR',
@@ -250,6 +277,7 @@ function loadDetail() {
 // ========== 重置表单 ==========
 function resetForm() {
   formData.value = {
+    planCode: '',
     planName: '',
     schemeId: undefined,
     planType: 'REGULAR',
@@ -273,14 +301,22 @@ function handleSubmit() {
     .validate()
     .then(() => {
       submitting.value = true;
+      const firstExecuteTime = formData.value.firstExecuteTime
+        ? formData.value.firstExecuteTime.format('YYYY-MM-DD HH:mm:ss')
+        : '';
+      const effectiveDate = formData.value.effectiveDate
+        ? formData.value.effectiveDate.format('YYYY-MM-DD 00:00:00')
+        : '';
+      const endDate = formData.value.endDate
+        ? formData.value.endDate.format('YYYY-MM-DD 23:59:59')
+        : '';
+
       const params: any = {
         plan: {
           planName: formData.value.planName,
           schemeId: formData.value.schemeId,
           planType: formData.value.planType,
-          firstExecuteTime:
-            formData.value.firstExecuteTime?.format('YYYY-MM-DD HH:mm:ss') ||
-            '',
+          firstExecuteTime,
           frequencyValue: formData.value.frequencyValue || undefined,
           frequencyUnit: formData.value.frequencyUnit,
           conditionDimension:
@@ -299,9 +335,8 @@ function handleSubmit() {
             formData.value.planType === 'CONDITIONAL'
               ? formData.value.triggerUnit
               : undefined,
-          effectiveDate:
-            formData.value.effectiveDate?.format('YYYY-MM-DD 00:00:00') || '',
-          endDate: formData.value.endDate?.format('YYYY-MM-DD 23:59:59') || '',
+          effectiveDate,
+          endDate,
           status: formData.value.status,
         },
         details: [],
@@ -321,9 +356,7 @@ function handleSubmit() {
           submitting.value = false;
         });
     })
-    .catch(() => {
-      // 验证失败
-    });
+    .catch(() => {});
 }
 
 // ========== 关闭 ==========
@@ -380,6 +413,9 @@ const detailData = computed(() => {
       <!-- 查看模式 -->
       <div v-if="mode === 'view' && detailData">
         <Descriptions :column="2" bordered>
+          <DescriptionsItem :label="$t('moldMaintenancePlan.planCode')">
+            {{ detailData.planCode || '-' }}
+          </DescriptionsItem>
           <DescriptionsItem :label="$t('moldMaintenancePlan.planName')">
             {{ detailData.planName }}
           </DescriptionsItem>
@@ -452,7 +488,14 @@ const detailData = computed(() => {
       </div>
 
       <!-- 新增/编辑模式 -->
-      <Form v-else ref="formRef" layout="vertical" :model="formData">
+      <Form v-else ref="formRef" layout="vertical" :model="formData" :rules="planRules">
+        <FormItem
+          v-if="mode !== 'add'"
+          :label="$t('moldMaintenancePlan.planCode')"
+        >
+          <Input v-model:value="formData.planCode" disabled />
+        </FormItem>
+
         <FormItem :label="$t('moldMaintenancePlan.planName')" name="planName">
           <Input
             v-model:value="formData.planName"
@@ -497,7 +540,7 @@ const detailData = computed(() => {
           </div>
         </FormItem>
 
-        <FormItem :label="$t('moldMaintenancePlan.planType')">
+        <FormItem :label="$t('moldMaintenancePlan.planType')" name="planType">
           <Select v-model:value="formData.planType">
             <SelectOption
               v-for="item in planTypeOptions"

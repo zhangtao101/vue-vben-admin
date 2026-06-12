@@ -84,6 +84,7 @@ const selectedMolds = ref<any[]>([]);
 // ========== 表单数据 ==========
 const formRef = ref<any>();
 const formData = ref<any>({
+  schemeCode: '',
   schemeName: '',
   planType: 'REGULAR',
   isStopMachine: false,
@@ -180,6 +181,7 @@ function loadDetail() {
   getMoldMaintenanceSchemeById(props.row.id)
     .then((res: any) => {
       formData.value = {
+        schemeCode: res.schemeCode || '',
         schemeName: res.schemeName || '',
         planType: res.planType || 'REGULAR',
         isStopMachine: res.isStopMachine || false,
@@ -215,6 +217,7 @@ function loadDetail() {
 // ========== 重置表单 ==========
 function resetForm() {
   formData.value = {
+    schemeCode: '',
     schemeName: '',
     planType: 'REGULAR',
     isStopMachine: false,
@@ -322,6 +325,9 @@ const detailData = computed(() => {
       <!-- 查看模式 -->
       <div v-if="mode === 'view' && detailData">
         <Descriptions :column="2" bordered>
+          <DescriptionsItem :label="$t('moldMaintenanceScheme.schemeCode')">
+            {{ detailData.schemeCode || '-' }}
+          </DescriptionsItem>
           <DescriptionsItem :label="$t('moldMaintenanceScheme.schemeName')">
             {{ detailData.schemeName }}
           </DescriptionsItem>
@@ -397,7 +403,15 @@ const detailData = computed(() => {
       <!-- 新增/编辑模式 -->
       <Form v-else ref="formRef" layout="vertical" :model="formData">
         <Row :gutter="16">
-          <Col :span="12">
+          <Col v-if="mode !== 'add'" :span="8">
+            <FormItem :label="$t('moldMaintenanceScheme.schemeCode')">
+              <Input
+                v-model:value="formData.schemeCode"
+                disabled
+              />
+            </FormItem>
+          </Col>
+          <Col :span="mode === 'add' ? 12 : 8">
             <FormItem
               :label="$t('moldMaintenanceScheme.schemeName')"
               name="schemeName"
@@ -409,7 +423,7 @@ const detailData = computed(() => {
               />
             </FormItem>
           </Col>
-          <Col :span="12">
+          <Col :span="mode === 'add' ? 12 : 8">
             <FormItem :label="$t('moldMaintenanceScheme.planType')">
               <Select
                 v-model:value="formData.planType"

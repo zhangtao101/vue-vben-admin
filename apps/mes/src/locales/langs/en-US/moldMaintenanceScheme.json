@@ -3,6 +3,7 @@
   "addTitle": "Add Mold Maintenance Scheme",
   "editTitle": "Edit Mold Maintenance Scheme",
   "viewTitle": "View Mold Maintenance Scheme",
+  "schemeCode": "Scheme Code",
   "schemeName": "Scheme Name",
   "planType": "Maintenance Type",
   "status": "Status",

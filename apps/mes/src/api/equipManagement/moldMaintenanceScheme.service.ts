@@ -33,6 +33,7 @@ export interface MoldMaintenanceItem {
  */
 export interface MoldMaintenanceScheme {
   id?: number;
+  schemeCode?: string;
   schemeName?: string;
   planType?: string;
   isStopMachine?: boolean;

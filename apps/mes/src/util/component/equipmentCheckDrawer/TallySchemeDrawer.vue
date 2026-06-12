@@ -125,6 +125,7 @@ function loadEquipmentGroupOptions() {
 const formRef = ref<any>();
 // 表单数据模型：包含方案名称、计划类型、停机标识、设备组、设备编码列表、状态、备注、明细列表
 const formData = ref<MaintenanceSchemeSubmit>({
+  schemeCode: '',
   schemeName: '',
   planType: 'REGULAR',
   isStopMachine: false,
@@ -211,6 +212,7 @@ watch(
           const details = res.details || [];
           formData.value = {
             id: res.id,
+            schemeCode: res.schemeCode || '',
             schemeName: res.schemeName,
             planType: res.planType,
             isStopMachine: res.isStopMachine || false,
@@ -245,6 +247,7 @@ watch(
         currentRow.value = null;
         selectedEquipments.value = [];
         formData.value = {
+          schemeCode: '',
           schemeName: '',
           planType: 'REGULAR',
           isStopMachine: false,
@@ -435,6 +438,9 @@ function removeEquipment(index: number) {
     <template v-if="mode === 'view' && currentRow">
       <!-- 查看模式 -->
       <Descriptions :column="2" bordered>
+        <DescriptionsItem :label="$t('tallyScheme.schemeCode')">
+          {{ currentRow.schemeCode || '-' }}
+        </DescriptionsItem>
         <DescriptionsItem :label="$t('tallyScheme.schemeName')">
           {{ currentRow.schemeName }}
         </DescriptionsItem>
@@ -551,7 +557,12 @@ function removeEquipment(index: number) {
       <!-- 新增/编辑模式 -->
       <Form ref="formRef" :model="formData" :rules="rules" layout="vertical">
         <Row :gutter="16">
-          <Col :span="12">
+          <Col v-if="mode !== 'add'" :span="8">
+            <FormItem :label="$t('tallyScheme.schemeCode')">
+              <Input v-model:value="formData.schemeCode" disabled />
+            </FormItem>
+          </Col>
+          <Col :span="mode === 'add' ? 12 : 8">
             <FormItem :label="$t('tallyScheme.schemeName')" name="schemeName">
               <Input
                 v-model:value="formData.schemeName"
@@ -562,7 +573,7 @@ function removeEquipment(index: number) {
               />
             </FormItem>
           </Col>
-          <Col :span="12">
+          <Col :span="mode === 'add' ? 12 : 8">
             <FormItem :label="$t('tallyScheme.planType')" name="planType">
               <Select
                 v-model:value="formData.planType"

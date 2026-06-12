@@ -3,6 +3,7 @@
   "addTitle": "Add Equipment Maintenance Plan",
   "editTitle": "Edit Equipment Maintenance Plan",
   "viewTitle": "View Equipment Maintenance Plan",
+  "planCode": "Plan Code",
   "planName": "Plan Name",
   "schemeName": "Associated Scheme",
   "planType": "Maintenance Type",

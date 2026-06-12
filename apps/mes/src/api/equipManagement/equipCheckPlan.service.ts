@@ -36,6 +36,7 @@ export interface InspectionPlanParams {
  */
 export interface InspectionPlan {
   id?: number;
+  planCode?: string;
   planName?: string;
   schemeId?: number;
   schemeName?: string;

@@ -21,6 +21,7 @@ export interface MaintenancePlanParams {
  */
 export interface MaintenancePlan {
   id?: number;
+  planCode?: string;
   planName?: string;
   schemeId?: number;
   schemeName?: string;

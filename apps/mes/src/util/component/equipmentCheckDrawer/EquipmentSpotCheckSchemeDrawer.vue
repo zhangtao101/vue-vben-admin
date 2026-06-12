@@ -123,6 +123,7 @@ function loadEquipmentGroupOptions() {
 const formRef = ref<any>();
 // 点检方案表单数据：包含方案名称、点检类型、设备组、设备编码、点检项明细等
 const formData = ref<InspectionSchemeSubmit>({
+  schemeCode: '',
   schemeName: '',
   inspectionType: 'INSPECTION',
   equipmentGroup: '',
@@ -207,6 +208,7 @@ watch(
           const details = res.details || [];
           formData.value = {
             id: res.id,
+            schemeCode: res.schemeCode || '',
             schemeName: res.schemeName,
             inspectionType: res.inspectionType,
             equipmentGroup: res.equipmentGroup || '',
@@ -240,6 +242,7 @@ watch(
         currentRow.value = null;
         selectedEquipments.value = [];
         formData.value = {
+          schemeCode: '',
           schemeName: '',
           inspectionType: 'INSPECTION',
           equipmentGroup: '',
@@ -413,6 +416,9 @@ function removeEquipment(index: number) {
     <template v-if="mode === 'view' && currentRow">
       <!-- 查看模式 -->
       <Descriptions :column="2" bordered>
+        <DescriptionsItem :label="$t('equipmentSpotCheckScheme.schemeCode')">
+          {{ currentRow.schemeCode || '-' }}
+        </DescriptionsItem>
         <DescriptionsItem :label="$t('equipmentSpotCheckScheme.schemeName')">
           {{ currentRow.schemeName }}
         </DescriptionsItem>
@@ -537,7 +543,12 @@ function removeEquipment(index: number) {
       <!-- 新增/编辑模式 -->
       <Form ref="formRef" :model="formData" :rules="rules" layout="vertical">
         <Row :gutter="16">
-          <Col :span="12">
+          <Col v-if="mode !== 'add'" :span="8">
+            <FormItem :label="$t('equipmentSpotCheckScheme.schemeCode')">
+              <Input v-model:value="formData.schemeCode" disabled />
+            </FormItem>
+          </Col>
+          <Col :span="mode === 'add' ? 12 : 8">
             <FormItem
               :label="$t('equipmentSpotCheckScheme.schemeName')"
               name="schemeName"
@@ -553,7 +564,7 @@ function removeEquipment(index: number) {
               />
             </FormItem>
           </Col>
-          <Col :span="12">
+          <Col :span="mode === 'add' ? 12 : 8">
             <FormItem
               :label="$t('equipmentSpotCheckScheme.inspectionType')"
               name="inspectionType"

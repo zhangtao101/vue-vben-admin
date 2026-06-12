@@ -33,6 +33,7 @@ export interface MaintenanceItem {
  */
 export interface MaintenanceScheme {
   id?: number;
+  schemeCode?: string;
   schemeName?: string;
   planType?: string;
   isStopMachine?: boolean;
@@ -55,6 +56,7 @@ export interface MaintenanceScheme {
  */
 export interface MaintenanceSchemeSubmit {
   id?: number;
+  schemeCode?: string;
   schemeName: string;
   planType: string;
   isStopMachine?: boolean;

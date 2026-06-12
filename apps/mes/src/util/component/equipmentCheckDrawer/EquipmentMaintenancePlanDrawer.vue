@@ -79,6 +79,7 @@ const searchKeyword = ref('');
 const formRef = ref<any>();
 // 保养计划表单数据：包含计划名称、方案ID、首次执行时间、频率、有效期等
 const formData = ref<any>({
+  planCode: '',
   planName: '',
   schemeId: undefined,
   firstExecuteTime: '',
@@ -216,6 +217,7 @@ function loadDetail() {
     .then((res: any) => {
       const data = res || {};
       formData.value = {
+        planCode: data.planCode || '',
         planName: data.planName || '',
         schemeId: data.schemeId || '',
         firstExecuteTime: data.firstExecuteTime
@@ -246,6 +248,7 @@ function loadDetail() {
  */
 function resetForm() {
   formData.value = {
+    planCode: '',
     planName: '',
     schemeId: undefined,
     firstExecuteTime: '',
@@ -350,6 +353,9 @@ const drawerTitle = computed(() => {
     <Spin :spinning="loading">
       <div v-if="mode === 'view' && props.row">
         <Descriptions :column="2" bordered>
+          <DescriptionsItem :label="$t('equipmentMaintenancePlan.planCode')">
+            {{ props.row.planCode || '-' }}
+          </DescriptionsItem>
           <DescriptionsItem :label="$t('equipmentMaintenancePlan.planName')">
             {{ props.row.planName }}
           </DescriptionsItem>
@@ -417,6 +423,13 @@ const drawerTitle = computed(() => {
       </div>
 
       <Form v-else ref="formRef" layout="vertical" :model="formData">
+        <FormItem
+          v-if="mode !== 'add'"
+          :label="$t('equipmentMaintenancePlan.planCode')"
+        >
+          <Input v-model:value="formData.planCode" disabled />
+        </FormItem>
+
         <FormItem
           :label="$t('equipmentMaintenancePlan.planName')"
           name="planName"
