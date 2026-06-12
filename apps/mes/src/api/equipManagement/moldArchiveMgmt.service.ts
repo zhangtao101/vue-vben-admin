@@ -266,6 +266,8 @@ export interface GlobalMoldStatistics {
 export interface ErpProductParams {
   /** 产品型号 */
   productCode?: string;
+  /** 产品名称 */
+  productName?: string;
   /** 页码 */
   pageNum?: number;
   /** 每页条数 */
@@ -388,7 +390,9 @@ export async function getMoldLifespanStatistics(params?: {
 export async function getErpProductList(params?: ErpProductParams) {
   return requestClient.post<ErpProductResult>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/base/erpProductArchives/getList?${qs.stringify(params)}`,
-    {},
+    {
+      productName: params?.productName,
+    },
   );
 }
 

@@ -25,17 +25,19 @@ import {
   Space,
   Tooltip,
 } from 'ant-design-vue';
+// eslint-disable-next-line n/no-extraneous-import
+import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteQualityCheckStandard,
   exportQualityCheckItem,
+  getErpProductList,
   insertQualityCheckStandard,
   queryMeasureMethodList,
   queryQualityCheckItemStandard,
   queryQualityCheckStandardById,
-  queryStandardProduct,
-  updateQualityCheckStandard,
+  updateQualityCheckStandard
 } from '#/api';
 
 // region 表格
@@ -55,6 +57,7 @@ const gridOptions: VxeGridProps<any> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'standardTypeName', title: '标准类型', minWidth: 100 },
     { field: 'productCode', title: '产品编号', minWidth: 150 },
+    { field: 'productName', title: '产品名称', minWidth: 150 },
     { field: 'itemName', title: '质检项名称', minWidth: 200 },
     { field: 'measureMethodName', title: '测量方法', minWidth: 120 },
     { field: 'measureMethodTypeName', title: '测量类型', minWidth: 80 },
@@ -269,8 +272,14 @@ const numberTypeList = [
 function showEdit(row?: any) {
   if (row) {
     // 编辑模式，根据ID查询详细信息
+    productList.value = [];
     queryQualityCheckStandardById(row.id).then((data) => {
       editMessage.value = { ...data };
+      if (data.productCode) {
+        productList.value = [
+          { label: data.productName || data.productCode, value: data.productCode },
+        ];
+      }
     });
   } else {
     // 新增模式，初始化表单数据
@@ -378,21 +387,23 @@ function queryTheListOfMeasurementMethods() {
 const productList = ref<any>([]);
 
 /**
- * 根据产品编号查询产品信息
- * @param {string} value - 产品编号
+ * 根据产品名称远程搜索产品列表
+ * @param {string} value - 产品名称关键字
  */
-function queryProduct(value: string) {
+const queryProduct = debounce((value: string) => {
   if (value) {
-    queryStandardProduct({
-      productCode: value,
+    getErpProductList({
+      productName: value,
+      pageNum: 1,
+      pageSize: 20,
     }).then((data) => {
-      productList.value = data.map((item: any) => ({
-        label: item,
-        value: item,
+      productList.value = (data.list || []).map((item: any) => ({
+        label: item.productName,
+        value: item.productCode,
       }));
     });
   }
-}
+}, 500);
 
 // endregion
 

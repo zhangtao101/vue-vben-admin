@@ -978,6 +978,7 @@ onMounted(() => {
         :data-source="detailList"
         :scroll="workStationDetailScroll"
         bordered
+        :pagination="false"
       >
         <template #bodyCell="{ column, index, record }">
           <template v-if="column.dataIndex === 'step'">
