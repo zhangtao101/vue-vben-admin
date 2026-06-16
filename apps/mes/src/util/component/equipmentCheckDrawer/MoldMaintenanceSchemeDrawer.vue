@@ -4,12 +4,9 @@
  * [OUTPUT]: 对外提供 MoldMaintenanceSchemeDrawer 组件，支持新增/编辑/查看模具保养方案
  * [POS]: 设备点检管理模块 的 模具保养方案抽屉组件，被 moldMaintenanceScheme.vue 引用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-04-25 15:40:00
+ * [TIME]: 2026-06-16 09:25:00
  */
-import type {
-  MoldMaintenanceItem,
-  MoldMaintenanceScheme,
-} from '#/api/equipManagement/moldMaintenanceScheme.service';
+import type { MoldMaintenanceScheme } from '#/api/equipManagement/moldMaintenanceScheme.service';
 
 import { computed, ref, watch } from 'vue';
 
@@ -43,14 +40,17 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 
+import MoldMaintenanceItemSelectDrawer from './MoldMaintenanceItemSelectDrawer.vue';
 import MoldSelectDrawer from './MoldSelectDrawer.vue';
 
+/** Props 定义：visible(抽屉可见性)、mode(新增/编辑/查看)、row(编辑/查看时传入的行数据) */
 interface Props {
   visible: boolean;
   mode: 'add' | 'edit' | 'view';
   row?: MoldMaintenanceScheme | null;
 }
 
+/** Emits 定义：update:visible(抽屉关闭)、refresh(刷新列表) */
 interface Emits {
   (e: 'update:visible', value: boolean): void;
   (e: 'refresh'): void;
@@ -69,20 +69,29 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 // ========== 状态 ==========
+/** 页面加载状态，控制 Spin 组件 */
 const loading = ref(false);
+/** 提交按钮 loading 状态 */
 const submitting = ref(false);
+/** 模具类别下拉加载状态 */
 const fetching = ref(false);
 
 // ========== 模具类别下拉选项 ==========
+/** 模具类别下拉选项列表 */
 const moldCategoryOptions = ref<Array<{ label: string; value: string }>>([]);
+/** 搜索防抖定时器 */
 let searchTimer: null | ReturnType<typeof setTimeout> = null;
 
 // ========== 模具选择 ==========
+/** 模具选择子抽屉可见性 */
 const moldDrawerVisible = ref(false);
+/** 已选中的模具列表 */
 const selectedMolds = ref<any[]>([]);
 
 // ========== 表单数据 ==========
+/** 表单组件引用，用于提交时调用 validate */
 const formRef = ref<any>();
+/** 表单数据，包含方案基本信息、模具编码和保养项明细 */
 const formData = ref<any>({
   schemeCode: '',
   schemeName: '',
@@ -96,6 +105,7 @@ const formData = ref<any>({
 });
 
 // ========== 下拉选项 ==========
+/** 计划类型选项：定期保养、视情保养 */
 const planTypeOptions = [
   {
     label: $t('moldMaintenanceScheme.planTypeOptions.REGULAR'),
@@ -107,6 +117,7 @@ const planTypeOptions = [
   },
 ];
 
+/** 状态选项：启用、禁用 */
 const statusOptions = [
   {
     label: $t('moldMaintenanceScheme.statusOptions.ACTIVE'),
@@ -119,6 +130,7 @@ const statusOptions = [
 ];
 
 // ========== 监听 ==========
+/** 监听抽屉打开/关闭，打开时加载数据，关闭时清空状态 */
 watch(
   () => props.visible,
   (val) => {
@@ -129,11 +141,33 @@ watch(
       } else {
         resetForm();
       }
+    } else {
+      // 关闭抽屉时清空表单数据和已选项，避免下次打开残留数据
+      formData.value = {
+        schemeCode: '',
+        schemeName: '',
+        planType: 'REGULAR',
+        isStopMachine: false,
+        moldCategoryName: '',
+        moldCodes: '',
+        status: 'ACTIVE',
+        remark: '',
+        details: [],
+      };
+      selectedMolds.value = [];
+      maintenanceItemDrawerVisible.value = false;
+      moldDrawerVisible.value = false;
     }
   },
 );
 
 // ========== 加载模具类别列表 ==========
+/**
+ * 加载模具类别下拉选项（支持关键词搜索）。
+ * @param {string} keyword - 搜索关键词，空字符串表示加载全部。
+ * @returns {void} 无返回值，结果写入 moldCategoryOptions。
+ * @since 2026-06-16 09:25:00
+ */
 function loadMoldCategoryOptions(keyword: string) {
   fetching.value = true;
   getMoldCategoryList({ keyword })
@@ -148,6 +182,12 @@ function loadMoldCategoryOptions(keyword: string) {
     });
 }
 
+/**
+ * 模具类别搜索（300ms 防抖）。
+ * @param {string} value - 搜索输入值。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 09:25:00
+ */
 function handleCategorySearch(value: string) {
   if (searchTimer) {
     clearTimeout(searchTimer);
@@ -158,15 +198,32 @@ function handleCategorySearch(value: string) {
 }
 
 // ========== 模具选择 ==========
+/**
+ * 打开模具选择子抽屉。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 09:25:00
+ */
 function openMoldDrawer() {
   moldDrawerVisible.value = true;
 }
 
+/**
+ * 处理模具选择回调，更新已选模具列表和表单 moldCodes 字段。
+ * @param {any[]} molds - 选中的模具数组，每项含 moldCode、moldName 等字段。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 09:25:00
+ */
 function handleMoldSelect(molds: any[]) {
   selectedMolds.value = molds;
   formData.value.moldCodes = (molds || []).map((m) => m.moldCode).join(',');
 }
 
+/**
+ * 从已选模具列表中移除指定项，并同步更新表单 moldCodes。
+ * @param {number} index - 要移除的模具在列表中的索引。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 09:25:00
+ */
 function removeMold(index: number) {
   selectedMolds.value.splice(index, 1);
   formData.value.moldCodes = (selectedMolds.value || [])
@@ -174,7 +231,53 @@ function removeMold(index: number) {
     .join(',');
 }
 
+// ========== 保养项选择抽屉 ==========
+/** 保养项选择抽屉可见性 */
+const maintenanceItemDrawerVisible = ref(false);
+
+/** 已选中的保养项列表，用于传递到选择抽屉回显 */
+const selectedMaintenanceItems = ref<any[]>([]);
+
+/**
+ * 打开保养项选择抽屉。
+ * 同步当前表单中的保养项到已选项列表，然后打开抽屉。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 09:05:00
+ */
+function openMaintenanceItemDrawer() {
+  selectedMaintenanceItems.value =
+    formData.value.details?.map((item: any) => ({
+      itemCode: item.itemCode,
+      itemName: item.itemName,
+    })) || [];
+  maintenanceItemDrawerVisible.value = true;
+}
+
+/**
+ * 处理保养项选择回调。
+ * 将选择的保养项列表直接覆盖到表单明细中，自动生成序号。
+ * @param {any[]} items - 选择的保养项数组，每项包含 configCode 和 configName。
+ * @returns {void} 无返回值，直接替换 formData.value.details。
+ * @since 2026-06-16 09:05:00
+ */
+function handleMaintenanceItemSelect(items: any[]) {
+  const newDetails = items.map((item, index) => ({
+    sequenceNo: index + 1,
+    itemCode: item.configCode || item.checkItemCode || item.itemCode || '',
+    itemName: item.configName || item.checkItemName || item.itemName || '',
+    itemRequirement: item.itemRequirement || '',
+    itemStandard: item.itemStandard || '',
+  }));
+  formData.value.details = newDetails;
+}
+
 // ========== 加载详情 ==========
+/**
+ * 加载模具保养方案详情（编辑/查看模式）。
+ * 获取方案基本信息后，根据 moldCodes 逐条查询模具详情填充 selectedMolds。
+ * @returns {void} 无返回值，结果写入 formData 和 selectedMolds。
+ * @since 2026-06-16 09:25:00
+ */
 function loadDetail() {
   if (!props.row?.id) return;
   loading.value = true;
@@ -215,6 +318,11 @@ function loadDetail() {
 }
 
 // ========== 重置表单 ==========
+/**
+ * 重置表单数据和已选模具为空（新增模式专用）。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 09:25:00
+ */
 function resetForm() {
   formData.value = {
     schemeCode: '',
@@ -230,19 +338,13 @@ function resetForm() {
   selectedMolds.value = [];
 }
 
-// ========== 手动添加保养项 ==========
-function addDetailItem() {
-  const newItem: MoldMaintenanceItem = {
-    sequenceNo: formData.value.details.length + 1,
-    itemCode: '',
-    itemName: '',
-    itemRequirement: '',
-    itemStandard: '',
-  };
-  formData.value.details.push(newItem);
-}
-
 // ========== 删除保养项 ==========
+/**
+ * 删除指定索引的保养项并重新编号，确保序号连续性。
+ * @param {number} index - 要删除的保养项索引。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 09:25:00
+ */
 function removeDetailItem(index: number) {
   formData.value.details.splice(index, 1);
   // 重新编号
@@ -252,6 +354,12 @@ function removeDetailItem(index: number) {
 }
 
 // ========== 提交 ==========
+/**
+ * 提交表单（新增/编辑），包含前置校验。
+ * 根据 mode 自动调用 create 或 update 接口。
+ * @returns {void} 无返回值，成功后关闭抽屉并触发 refresh。
+ * @since 2026-06-16 09:25:00
+ */
 function handleSubmit() {
   formRef.value
     .validate()
@@ -292,11 +400,17 @@ function handleSubmit() {
 }
 
 // ========== 关闭 ==========
+/**
+ * 关闭抽屉，触发 update:visible 事件。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 09:25:00
+ */
 function handleClose() {
   emit('update:visible', false);
 }
 
 // ========== 标题 ==========
+/** 根据 mode 动态计算抽屉标题 */
 const drawerTitle = computed(() => {
   const titles: Record<string, string> = {
     add: $t('moldMaintenanceScheme.addTitle'),
@@ -307,6 +421,7 @@ const drawerTitle = computed(() => {
 });
 
 // ========== 详情数据 ==========
+/** 查看模式的详情展示数据，基于 formData 计算 */
 const detailData = computed(() => {
   if (props.mode !== 'view' || !props.row) return null;
   return formData.value;
@@ -405,10 +520,7 @@ const detailData = computed(() => {
         <Row :gutter="16">
           <Col v-if="mode !== 'add'" :span="8">
             <FormItem :label="$t('moldMaintenanceScheme.schemeCode')">
-              <Input
-                v-model:value="formData.schemeCode"
-                disabled
-              />
+              <Input v-model:value="formData.schemeCode" disabled />
             </FormItem>
           </Col>
           <Col :span="mode === 'add' ? 12 : 8">
@@ -498,59 +610,46 @@ const detailData = computed(() => {
         </Row>
 
         <!-- 已选模具展示区域 -->
-        <div
-          v-if="selectedMolds.length > 0"
-          class="mb-4 p-3 border border-gray-200 rounded bg-gray-50"
-        >
-          <Row
-            :gutter="8"
-            align="middle"
-            class="pb-2 mb-2 border-b border-gray-200"
-          >
-            <Col :span="8">
-              <span class="font-medium">{{
-                $t('moldMaintenanceScheme.moldSelectDrawer.moldCode')
-              }}</span>
-            </Col>
-            <Col :span="8">
-              <span class="font-medium">{{
-                $t('moldMaintenanceScheme.moldSelectDrawer.moldName')
-              }}</span>
-            </Col>
-            <Col :span="7">
-              <span class="font-medium">{{
-                $t('moldMaintenanceScheme.moldSelectDrawer.moldCategoryName')
-              }}</span>
-            </Col>
-            <Col :span="1" />
-          </Row>
-          <div
-            v-for="(item, index) in selectedMolds"
-            :key="item.moldCode"
-            class="mb-2 last:mb-0"
-          >
-            <Row :gutter="8" align="middle">
-              <Col :span="8">
-                <span>{{ item.moldCode }}</span>
-              </Col>
-              <Col :span="8">
-                <span>{{ item.moldName || '-' }}</span>
-              </Col>
-              <Col :span="7">
-                <span>{{ item.moldCategoryName || '-' }}</span>
-              </Col>
-              <Col :span="1">
-                <Button
-                  type="link"
-                  danger
-                  size="small"
-                  @click="removeMold(index)"
-                >
-                  <Icon icon="mdi:delete" />
-                </Button>
-              </Col>
-            </Row>
-          </div>
+        <div v-if="selectedMolds.length > 0" class="mb-4">
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th class="text-center">
+                  {{ $t('moldMaintenanceScheme.moldSelectDrawer.moldCode') }}
+                </th>
+                <th class="text-center">
+                  {{ $t('moldMaintenanceScheme.moldSelectDrawer.moldName') }}
+                </th>
+                <th class="text-center">
+                  {{
+                    $t(
+                      'moldMaintenanceScheme.moldSelectDrawer.moldCategoryName',
+                    )
+                  }}
+                </th>
+                <th class="text-center">
+                  {{ $t('common.action') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in selectedMolds" :key="item.moldCode">
+                <td>{{ item.moldCode }}</td>
+                <td>{{ item.moldName || '-' }}</td>
+                <td>{{ item.moldCategoryName || '-' }}</td>
+                <td class="text-center">
+                  <Button
+                    type="link"
+                    danger
+                    size="small"
+                    @click="removeMold(index)"
+                  >
+                    <Icon icon="mdi:delete" />
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <FormItem :label="$t('moldMaintenanceScheme.remark')">
@@ -563,94 +662,76 @@ const detailData = computed(() => {
             {{ $t('moldMaintenanceScheme.maintenanceItems') }}
           </h4>
 
-          <!-- 表头 -->
-          <Row
-            :gutter="8"
-            type="flex"
-            justify="center"
-            align="middle"
-            class="pb-2 mb-2 border-b border-gray-200"
-          >
-            <Col :span="2" class="text-center">
-              <span class="font-medium">{{
-                $t('moldMaintenanceScheme.itemDrawer.sequenceNo')
-              }}</span>
-            </Col>
-            <Col :span="4" class="text-center">
-              <span class="font-medium">{{
-                $t('moldMaintenanceScheme.itemDrawer.itemCode')
-              }}</span>
-            </Col>
-            <Col :span="4" class="text-center">
-              <span class="font-medium">{{
-                $t('moldMaintenanceScheme.itemDrawer.itemName')
-              }}</span>
-            </Col>
-            <Col :span="8" class="text-center">
-              <span class="font-medium">{{
-                $t('moldMaintenanceScheme.itemDrawer.itemRequirement')
-              }}</span>
-            </Col>
-            <Col :span="4" class="text-center">
-              <span class="font-medium">{{
-                $t('moldMaintenanceScheme.itemDrawer.itemStandard')
-              }}</span>
-            </Col>
-            <Col :span="2" />
-          </Row>
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th class="text-center">
+                  {{ $t('moldMaintenanceScheme.itemDrawer.sequenceNo') }}
+                </th>
+                <th class="text-center">
+                  {{ $t('moldMaintenanceScheme.itemDrawer.itemCode') }}
+                </th>
+                <th class="text-center">
+                  {{ $t('moldMaintenanceScheme.itemDrawer.itemName') }}
+                </th>
+                <th class="text-center">
+                  {{ $t('moldMaintenanceScheme.itemDrawer.itemRequirement') }}
+                </th>
+                <th class="text-center">
+                  {{ $t('moldMaintenanceScheme.itemDrawer.itemStandard') }}
+                </th>
+                <th class="text-center">
+                  {{ $t('common.action') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in formData.details" :key="index">
+                <td class="text-center">{{ (index as number) + 1 }}</td>
+                <td>{{ item.itemCode }}</td>
+                <td>{{ item.itemName }}</td>
+                <td>
+                  <Input
+                    v-model:value="item.itemRequirement"
+                    :placeholder="
+                      $t(
+                        'moldMaintenanceScheme.itemDrawer.itemRequirementPlaceholder',
+                      )
+                    "
+                    size="small"
+                  />
+                </td>
+                <td>
+                  <Input
+                    v-model:value="item.itemStandard"
+                    :placeholder="
+                      $t(
+                        'moldMaintenanceScheme.itemDrawer.itemStandardPlaceholder',
+                      )
+                    "
+                    size="small"
+                  />
+                </td>
+                <td class="text-center">
+                  <Button
+                    type="link"
+                    danger
+                    size="small"
+                    @click="removeDetailItem(index as number)"
+                  >
+                    <Icon icon="mdi:delete" />
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-          <!-- 数据行 -->
-          <div
-            v-for="(item, index) in formData.details"
-            :key="index"
-            class="mb-2 pb-2 border-b border-dashed border-gray-200 last:mb-0 last:pb-0 last:border-b-0"
+          <Button
+            type="dashed"
+            block
+            @click="openMaintenanceItemDrawer"
+            class="mt-2"
           >
-            <Row :gutter="8" align="middle">
-              <Col :span="2">
-                <span>{{ (index as number) + 1 }}</span>
-              </Col>
-              <Col :span="4">
-                <Input v-model:value="item.itemCode" size="small" />
-              </Col>
-              <Col :span="4">
-                <Input v-model:value="item.itemName" size="small" />
-              </Col>
-              <Col :span="8">
-                <Input
-                  v-model:value="item.itemRequirement"
-                  :placeholder="
-                    $t(
-                      'moldMaintenanceScheme.itemDrawer.itemRequirementPlaceholder',
-                    )
-                  "
-                  size="small"
-                />
-              </Col>
-              <Col :span="4">
-                <Input
-                  v-model:value="item.itemStandard"
-                  :placeholder="
-                    $t(
-                      'moldMaintenanceScheme.itemDrawer.itemStandardPlaceholder',
-                    )
-                  "
-                  size="small"
-                />
-              </Col>
-              <Col :span="2">
-                <Button
-                  type="link"
-                  danger
-                  size="small"
-                  @click="removeDetailItem(index as number)"
-                >
-                  <Icon icon="mdi:delete" />
-                </Button>
-              </Col>
-            </Row>
-          </div>
-
-          <Button type="dashed" block @click="addDetailItem" class="mt-2">
             <Icon icon="mdi:plus" class="inline-block align-middle" />
             {{ $t('moldMaintenanceScheme.itemDrawer.addItem') }}
           </Button>
@@ -682,6 +763,13 @@ const detailData = computed(() => {
     v-model:visible="moldDrawerVisible"
     :selected-rows="selectedMolds"
     @select="handleMoldSelect"
+  />
+
+  <!-- 保养项选择抽屉 -->
+  <MoldMaintenanceItemSelectDrawer
+    v-model:visible="maintenanceItemDrawerVisible"
+    :selected-rows="selectedMaintenanceItems"
+    @select="handleMaintenanceItemSelect"
   />
 </template>
 
