@@ -4,7 +4,7 @@
  * [OUTPUT]: 对外提供维修基础配置页面组件，含配置列表、新增/编辑/删除、启用禁用功能
  * [POS]: 维修维护模块 的基础配置页面，管理维修类型、故障等级、设备组、紧急程度等配置
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-06-16 08:58:00
+ * [TIME]: 2026-06-16 09:53:00
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
@@ -32,6 +32,7 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  batchDeleteRepairBasicConfig,
   deleteRepairBasicConfig,
   disableRepairBasicConfig,
   enableRepairBasicConfig,
@@ -144,6 +145,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
+    { type: 'checkbox', width: 50 },
     { type: 'seq', width: 50, title: '序号' },
     {
       field: 'configCode',
@@ -312,6 +314,38 @@ function handleImportChange(info: any) {
 
 // ========== 操作 ==========
 /**
+ * 处理批量删除按钮点击，获取选中行后弹出确认框执行批量删除。
+ * @returns {void} 无返回值，删除成功后显示提示并刷新数据；失败时显示错误提示。
+ * @throws {Error} 批量删除 API 调用失败时捕获并显示错误提示，不向上抛出。
+ * @since 2026-06-16 09:47:00
+ */
+function handleBatchDelete() {
+  const selectedRows = (gridApi.grid as any)?.getCheckboxRecords() || [];
+  if (selectedRows.length === 0) {
+    message.warning($t('repair.repairBasicConfig.selectRowsFirst'));
+    return;
+  }
+  Modal.confirm({
+    title: $t('repair.repairBasicConfig.confirmBatchDelete'),
+    content: $t('repair.repairBasicConfig.batchDeleteMessage', {
+      count: selectedRows.length,
+    }),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
+    onOk: () => {
+      batchDeleteRepairBasicConfig(selectedRows.map((row: any) => row.id))
+        .then(() => {
+          message.success($t('common.successfulOperation'));
+          gridApi.reload();
+        })
+        .catch(() => {
+          message.error($t('common.operationFailure'));
+        });
+    },
+  });
+}
+
+/**
  * 处理编辑按钮点击，打开编辑抽屉。
  * @param {any} row - 要编辑的行数据。
  * @returns {void} 无返回值。
@@ -420,6 +454,18 @@ onMounted(() => {
           >
             <Icon icon="mdi:plus" class="inline-block align-middle" />
             {{ $t('common.add') }}
+          </Button>
+          <Button
+            v-if="author.includes('删除')"
+            danger
+            @click="handleBatchDelete"
+            class="ml-4!"
+          >
+            <Icon
+              icon="mdi:delete-outline"
+              class="inline-block align-middle"
+            />
+            {{ $t('common.batchDelete') }}
           </Button>
           <Upload
             v-if="author.includes('新增') && showImportButton"
