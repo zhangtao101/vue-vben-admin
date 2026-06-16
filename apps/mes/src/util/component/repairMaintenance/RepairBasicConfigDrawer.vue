@@ -4,7 +4,7 @@
  * [OUTPUT]: 对外提供维修基础配置抽屉组件
  * [POS]: 维修维护模块 的维修基础配置抽屉，支持新增/编辑维修类型、故障等级、设备分组等配置
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-04-20 16:16:00
+ * [TIME]: 2026-06-16 08:58:00
  */
 import { computed, ref, watch } from 'vue';
 
@@ -41,6 +41,7 @@ const emit = defineEmits<{
 }>();
 
 // ========== Props & Emits ==========
+/** 组件 Props 定义：open(抽屉可见性)、configType(配置类型)、row(编辑行数据) */
 interface Props {
   open?: boolean;
   configType?: string;
@@ -48,8 +49,10 @@ interface Props {
 }
 
 // ========== 抽屉可见性 ==========
+/** 抽屉本地可见性状态，与 props.open 双向同步 */
 const drawerVisible = ref(props.open);
 
+/** 监听 props.open 变更，同步更新本地抽屉可见性 */
 watch(
   () => props.open,
   (val) => {
@@ -57,6 +60,7 @@ watch(
   },
 );
 
+/** 监听本地抽屉可见性变更，向外 emit update:open 事件 */
 watch(drawerVisible, (val) => {
   emit('update:open', val);
 });
@@ -74,6 +78,8 @@ const formData = ref({
   configName: '',
   configType: '',
   repairGroupCode: '',
+  itemRequirement: '',
+  itemStandard: '',
   sortOrder: undefined as number | undefined,
   remark: '',
 });
@@ -91,6 +97,8 @@ function resetForm(forceConfigType?: string) {
     configName: '',
     configType: forceConfigType || props.configType,
     repairGroupCode: '',
+    itemRequirement: '',
+    itemStandard: '',
     sortOrder: undefined,
     remark: '',
   };
@@ -120,6 +128,7 @@ watch(
 );
 
 // ========== 表单验证规则 ==========
+/** 表单校验规则：configCode（必填）、configName（必填） */
 const rules: Record<string, any[]> = {
   configCode: [
     {
@@ -135,6 +144,7 @@ const rules: Record<string, any[]> = {
   ],
 };
 
+/** 表单组件引用，用于调用 validate 方法 */
 const formRef = ref<any>();
 
 // ========== 配置类型映射 ==========
@@ -143,6 +153,13 @@ const configTypeMap: Record<string, string> = {
   FAULT_LEVEL: $t('repair.repairBasicConfig.faultLevel'),
   EQUIPMENT_GROUP: $t('repair.repairBasicConfig.equipmentGroup'),
   URGENT_LEVEL: $t('repair.repairBasicConfig.urgentLevel'),
+  FAULT_TYPE: $t('repair.repairBasicConfig.faultType'),
+  EQUIP_FAULT_CAUSE: $t('repair.repairBasicConfig.equipFaultCause'),
+  REPAIR_PAUSE_REASON: $t('repair.repairBasicConfig.repairPauseReason'),
+  EQUIPMENT_OEE_REASON: $t('repair.repairBasicConfig.equipmentOeeReason'),
+  OEE_REASON: $t('repair.repairBasicConfig.oeeReason'),
+  MOLD_MAINTENANCE_ITEM: $t('repair.repairBasicConfig.moldMaintenanceItem'),
+  MOLD_ABNORMAL_REASON: $t('repair.repairBasicConfig.moldAbnormalReason'),
 };
 
 // ========== 是否显示维修组编码（设备分组、设备稼动设定、稼动原因时显示） ==========
@@ -150,6 +167,11 @@ const showRepairGroupCode = computed(() =>
   ['EQUIPMENT_GROUP', 'EQUIPMENT_OEE_REASON', 'OEE_REASON'].includes(
     props.configType,
   ),
+);
+
+// ========== 是否显示保养要求/标准（模具保养项目时显示） ==========
+const isMoldMaintenanceItem = computed(
+  () => props.configType === 'MOLD_MAINTENANCE_ITEM',
 );
 
 // ========== 配置类型显示文本 ==========
@@ -244,6 +266,26 @@ function handleSubmit() {
         <Input
           v-model:value="formData.repairGroupCode"
           :placeholder="`请输入${$t('repair.repairBasicConfig.repairGroupCode')}`"
+        />
+      </FormItem>
+
+      <FormItem
+        v-if="isMoldMaintenanceItem"
+        :label="$t('repair.repairBasicConfig.itemRequirement')"
+      >
+        <Input
+          v-model:value="formData.itemRequirement"
+          :placeholder="`请输入${$t('repair.repairBasicConfig.itemRequirement')}`"
+        />
+      </FormItem>
+
+      <FormItem
+        v-if="isMoldMaintenanceItem"
+        :label="$t('repair.repairBasicConfig.itemStandard')"
+      >
+        <Input
+          v-model:value="formData.itemStandard"
+          :placeholder="`请输入${$t('repair.repairBasicConfig.itemStandard')}`"
         />
       </FormItem>
 

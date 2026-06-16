@@ -220,6 +220,8 @@
     "oeeReason": "稼动原因",
     "moldMaintenanceItem": "模具保养项目",
     "moldAbnormalReason": "异常原因维护",
+    "itemRequirement": "保养要求",
+    "itemStandard": "保养标准",
     "repairGroupCode": "维修组编码",
     "drawerAddTitle": "新增配置",
     "drawerEditTitle": "编辑配置"

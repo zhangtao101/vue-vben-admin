@@ -4,11 +4,11 @@
  * [OUTPUT]: 对外提供维修基础配置页面组件，含配置列表、新增/编辑/删除、启用禁用功能
  * [POS]: 维修维护模块 的基础配置页面，管理维修类型、故障等级、设备组、紧急程度等配置
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-04-20 15:13:00
+ * [TIME]: 2026-06-16 08:58:00
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -88,6 +88,13 @@ const configTypeMap: Record<string, string> = {
   FAULT_LEVEL: $t('repair.repairBasicConfig.faultLevel'),
   EQUIPMENT_GROUP: $t('repair.repairBasicConfig.equipmentGroup'),
   URGENT_LEVEL: $t('repair.repairBasicConfig.urgentLevel'),
+  FAULT_TYPE: $t('repair.repairBasicConfig.faultType'),
+  EQUIP_FAULT_CAUSE: $t('repair.repairBasicConfig.equipFaultCause'),
+  REPAIR_PAUSE_REASON: $t('repair.repairBasicConfig.repairPauseReason'),
+  EQUIPMENT_OEE_REASON: $t('repair.repairBasicConfig.equipmentOeeReason'),
+  OEE_REASON: $t('repair.repairBasicConfig.oeeReason'),
+  MOLD_MAINTENANCE_ITEM: $t('repair.repairBasicConfig.moldMaintenanceItem'),
+  MOLD_ABNORMAL_REASON: $t('repair.repairBasicConfig.moldAbnormalReason'),
 };
 
 /**
@@ -127,6 +134,11 @@ function onDrawerSuccess() {
 }
 
 // ========== 表格配置 ==========
+/** 是否显示模具保养项目专用列 */
+const isMoldMaintenanceItem = computed(
+  () => queryParams.value.configType === 'MOLD_MAINTENANCE_ITEM',
+);
+
 /** VXE Grid 表格配置对象 */
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
@@ -136,7 +148,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'configCode',
       title: $t('repair.repairBasicConfig.configCode'),
-      minWidth: 120,
+      minWidth: 180,
     },
     {
       field: 'configName',
@@ -155,6 +167,16 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 120,
     },
     {
+      field: 'itemRequirement',
+      title: $t('repair.repairBasicConfig.itemRequirement'),
+      minWidth: 150,
+    },
+    {
+      field: 'itemStandard',
+      title: $t('repair.repairBasicConfig.itemStandard'),
+      minWidth: 150,
+    },
+    {
       field: 'status',
       title: $t('common.status'),
       minWidth: 100,
@@ -163,7 +185,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'action',
       title: $t('common.action'),
-      width: 120,
+      width: 160,
       slots: { default: 'action' },
       fixed: 'right',
     },
@@ -223,8 +245,26 @@ function onConfigTypeChange() {
   gridApi.reload();
 }
 
+// ========== 模具保养项目列显隐控制 ==========
+watch(
+  isMoldMaintenanceItem,
+  (visible) => {
+    setTimeout(() => {
+      const grid = gridApi.grid as any;
+      if (!grid?.showColumn || !grid?.hideColumn) return;
+      const fields = ['itemRequirement', 'itemStandard'];
+      fields.forEach((field) => {
+        visible ? grid.showColumn(field) : grid.hideColumn(field);
+      });
+    }, 200)
+  },
+  { immediate: true },
+);
+
 // ========== 导入 ==========
+/** 权限存储实例，用于获取 accessToken 作为上传请求头 */
 const accessStore = useAccessStore();
+/** 导入文件列表绑定值，用于 Upload 组件的 v-model */
 const importFile = ref<any>([]);
 
 /** 支持导入功能的配置类型 */
@@ -244,10 +284,21 @@ const showImportButton = computed(() =>
   importConfigTypes.has(queryParams.value.configType),
 );
 
+/**
+ * 获取导入上传的接口地址。
+ * @returns {string} 基础配置导入的 API URL。
+ * @since 2026-06-16 08:58:00
+ */
 function getImportUrl() {
   return `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/import/base-config`;
 }
 
+/**
+ * 处理文件导入状态变更，成功时刷新表格，失败时提示错误。
+ * @param {any} info - Upload 组件的 change 事件参数，包含 file 对象。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 08:58:00
+ */
 function handleImportChange(info: any) {
   const { file } = info;
   if (file.status === 'done') {

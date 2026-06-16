@@ -220,6 +220,8 @@
     "oeeReason": "OEE Reason",
     "moldMaintenanceItem": "Mold Maintenance Item",
     "moldAbnormalReason": "Abnormal Reason",
+    "itemRequirement": "Maintenance Requirement",
+    "itemStandard": "Maintenance Standard",
     "repairGroupCode": "Repair Group Code",
     "drawerAddTitle": "Add Config",
     "drawerEditTitle": "Edit Config"
