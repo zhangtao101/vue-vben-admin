@@ -123,213 +123,244 @@ const typeOfOperation: {
 }[] = [
   {
     label: '工序过程操作',
-    rules: [
-      {
-        label: '工序记录开停校验',
-        type: 1,
-      },
-    ],
+    rules: [],
     value: 1,
   },
   {
-    label: '投料操作',
-    rules: [
-      {
-        label: '投料类别校验',
-        type: 1,
-      },
-      {
-        label: '投料阈值校验',
-        type: 4,
-      },
-    ],
+    label: '质量检测',
+    rules: [],
     value: 2,
   },
   {
-    label: '领料操作',
-    rules: [
-      {
-        label: '领料类别校验',
-        type: 1,
-      },
-    ],
+    label: 'SOP查看',
+    rules: [],
     value: 3,
   },
   {
-    label: '入库操作',
-    rules: [
-      {
-        label: '入库校验',
-        type: 1,
-      },
-    ],
+    label: '安灯',
+    rules: [],
     value: 4,
   },
   {
-    label: '流转操作',
-    rules: [
-      {
-        label: '流转校验',
-        type: 1,
-      },
-    ],
+    label: '资源指派',
+    rules: [],
     value: 5,
   },
   {
-    label: '工艺配制采集',
-    rules: [
-      {
-        label: '配置校验',
-        type: 1,
-      },
-      {
-        label: '阈值校验',
-        type: 4,
-      },
-    ],
+    label: '设备参数',
+    rules: [],
     value: 6,
   },
-  {
-    label: '工艺过程采集',
-    rules: [
-      {
-        label: '采集类型设置',
-        options: [
-          {
-            label: '周期采集',
-            value: '周期采集',
-          },
-          {
-            label: '启停采集',
-            value: '启停采集',
-          },
-        ],
-        type: 5,
-      },
-      {
-        label: '采集频次设置(分钟)',
-        type: 2,
-      },
-      {
-        label: '采集通知提醒',
-        type: 1,
-      },
-    ],
-    value: 7,
-  },
-  {
-    label: '能源采集',
-    rules: [
-      {
-        label: '采集类型设置',
-        options: [
-          {
-            label: '周期采集',
-            value: '周期采集',
-          },
-          {
-            label: '启停采集',
-            value: '启停采集',
-          },
-          {
-            label: '班次采集',
-            value: '班次采集',
-          },
-          // 则频次设置为班次的开始结束时
-        ],
-        type: 5,
-      },
-      {
-        label: '采集频次设置(分钟)',
-        type: 2,
-      },
-      {
-        label: '采集通知提醒',
-        type: 1,
-      },
-      {
-        label: '采集对象',
-        options: [
-          {
-            label: '电',
-            value: '电',
-          },
-          {
-            label: '天然气',
-            value: '天然气',
-          },
-          {
-            label: '水煤浆',
-            value: '水煤浆',
-          },
-          {
-            label: '焦炉气',
-            value: '焦炉气',
-          },
-        ],
-        type: 6,
-      },
-    ],
-    value: 8,
-  },
-  {
-    label: '报工作业',
-    rules: [
-      {
-        label: '报工类型',
-        options: [
-          {
-            label: '周期报工',
-            value: '周期报工',
-          },
-          {
-            label: '完工报工',
-            value: '完工报工',
-          },
-          {
-            label: '班次报工',
-            value: '班次报工',
-          },
-        ],
-        type: 5,
-      },
-      {
-        label: '报工频次设置(分钟)',
-        type: 2,
-      },
-      {
-        label: '报工通知提醒',
-        type: 1,
-      },
-      {
-        label: '报工内容设置',
-        options: [
-          {
-            label: '产品良品数',
-            value: '产品良品数',
-          },
-          {
-            label: '不良品数',
-            value: '不良品数',
-          },
-          {
-            label: '总数',
-            value: '总数',
-          },
-          {
-            label: '人时',
-            value: '人时',
-          },
-          {
-            label: '机时',
-            value: '机时',
-          },
-        ],
-        type: 6,
-      },
-    ],
-    value: 9,
-  },
+
+  // {
+  //   label: '工序过程操作',
+  //   rules: [
+  //     {
+  //       label: '工序记录开停校验',
+  //       type: 1,
+  //     },
+  //   ],
+  //   value: 1,
+  // },
+  // {
+  //   label: '投料操作',
+  //   rules: [
+  //     {
+  //       label: '投料类别校验',
+  //       type: 1,
+  //     },
+  //     {
+  //       label: '投料阈值校验',
+  //       type: 4,
+  //     },
+  //   ],
+  //   value: 2,
+  // },
+  // {
+  //   label: '领料操作',
+  //   rules: [
+  //     {
+  //       label: '领料类别校验',
+  //       type: 1,
+  //     },
+  //   ],
+  //   value: 3,
+  // },
+  // {
+  //   label: '入库操作',
+  //   rules: [
+  //     {
+  //       label: '入库校验',
+  //       type: 1,
+  //     },
+  //   ],
+  //   value: 4,
+  // },
+  // {
+  //   label: '流转操作',
+  //   rules: [
+  //     {
+  //       label: '流转校验',
+  //       type: 1,
+  //     },
+  //   ],
+  //   value: 5,
+  // },
+  // {
+  //   label: '工艺配制采集',
+  //   rules: [
+  //     {
+  //       label: '配置校验',
+  //       type: 1,
+  //     },
+  //     {
+  //       label: '阈值校验',
+  //       type: 4,
+  //     },
+  //   ],
+  //   value: 6,
+  // },
+  // {
+  //   label: '工艺过程采集',
+  //   rules: [
+  //     {
+  //       label: '采集类型设置',
+  //       options: [
+  //         {
+  //           label: '周期采集',
+  //           value: '周期采集',
+  //         },
+  //         {
+  //           label: '启停采集',
+  //           value: '启停采集',
+  //         },
+  //       ],
+  //       type: 5,
+  //     },
+  //     {
+  //       label: '采集频次设置(分钟)',
+  //       type: 2,
+  //     },
+  //     {
+  //       label: '采集通知提醒',
+  //       type: 1,
+  //     },
+  //   ],
+  //   value: 7,
+  // },
+  // {
+  //   label: '能源采集',
+  //   rules: [
+  //     {
+  //       label: '采集类型设置',
+  //       options: [
+  //         {
+  //           label: '周期采集',
+  //           value: '周期采集',
+  //         },
+  //         {
+  //           label: '启停采集',
+  //           value: '启停采集',
+  //         },
+  //         {
+  //           label: '班次采集',
+  //           value: '班次采集',
+  //         },
+  //         // 则频次设置为班次的开始结束时
+  //       ],
+  //       type: 5,
+  //     },
+  //     {
+  //       label: '采集频次设置(分钟)',
+  //       type: 2,
+  //     },
+  //     {
+  //       label: '采集通知提醒',
+  //       type: 1,
+  //     },
+  //     {
+  //       label: '采集对象',
+  //       options: [
+  //         {
+  //           label: '电',
+  //           value: '电',
+  //         },
+  //         {
+  //           label: '天然气',
+  //           value: '天然气',
+  //         },
+  //         {
+  //           label: '水煤浆',
+  //           value: '水煤浆',
+  //         },
+  //         {
+  //           label: '焦炉气',
+  //           value: '焦炉气',
+  //         },
+  //       ],
+  //       type: 6,
+  //     },
+  //   ],
+  //   value: 8,
+  // },
+  // {
+  //   label: '报工作业',
+  //   rules: [
+  //     {
+  //       label: '报工类型',
+  //       options: [
+  //         {
+  //           label: '周期报工',
+  //           value: '周期报工',
+  //         },
+  //         {
+  //           label: '完工报工',
+  //           value: '完工报工',
+  //         },
+  //         {
+  //           label: '班次报工',
+  //           value: '班次报工',
+  //         },
+  //       ],
+  //       type: 5,
+  //     },
+  //     {
+  //       label: '报工频次设置(分钟)',
+  //       type: 2,
+  //     },
+  //     {
+  //       label: '报工通知提醒',
+  //       type: 1,
+  //     },
+  //     {
+  //       label: '报工内容设置',
+  //       options: [
+  //         {
+  //           label: '产品良品数',
+  //           value: '产品良品数',
+  //         },
+  //         {
+  //           label: '不良品数',
+  //           value: '不良品数',
+  //         },
+  //         {
+  //           label: '总数',
+  //           value: '总数',
+  //         },
+  //         {
+  //           label: '人时',
+  //           value: '人时',
+  //         },
+  //         {
+  //           label: '机时',
+  //           value: '机时',
+  //         },
+  //       ],
+  //       type: 6,
+  //     },
+  //   ],
+  //   value: 9,
+  // },
 ];
 
 // region 查询数据及初始化
