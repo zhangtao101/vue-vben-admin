@@ -1,3 +1,10 @@
+/**
+ * [INPUT]: 依赖 ant-design-vue、@vben/locales、detailsTable 子组件
+ * [OUTPUT]: 对外提供完工工单详情抽屉组件，调用方通过 ref.show(row) 打开
+ * [POS]: 生产执行模块 的完工工单详情展示，展示能耗/报工/投料/入库/参数/压机设置六个 Tab
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-06-16 10:26:00
+ */
 <script setup lang="ts">
 import { ref } from 'vue';
 
@@ -7,33 +14,43 @@ import { Drawer, TabPane, Tabs } from 'ant-design-vue';
 
 import DetailsTable from '#/util/component/completedWorkOrderDetails/detailsTable.vue';
 
-/**
- * 是否显示抽屉
- */
+/** 抽屉显示状态 */
 const showDrawer = ref(false);
-/**
- * 编辑的项
- */
+/** 当前查看的完工工单行数据 */
 const editItem = ref<any>({});
-/**
- * 激活的标签页
- */
+/** 当前激活的标签页 key（1-6 对应能耗/报工/投料/入库/参数/压机设置） */
 const activeKey = ref('1');
+
 /**
- * 显示抽屉
- * @param row
+ * 显示完工工单详情抽屉，设置行数据并打开抽屉。
+ * @param {any} row - 工单行数据，需包含 worksheetCode 和 workstationCode。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 10:26:00
  */
 function show(row: any) {
   editItem.value = row;
   showDrawer.value = true;
 }
 
+// ========== 明细表格 ref 集合 ==========
+/** 能耗明细表格组件实例 */
 const energyConsumptionDetails = ref();
+/** 报工明细表格组件实例 */
 const workReportDetails = ref();
+/** 投料明细表格组件实例 */
 const feedingDetails = ref();
+/** 入库明细表格组件实例 */
 const warehouseEntryDetails = ref();
+/** 参数明细表格组件实例 */
 const parameterDetails = ref();
+/** 参数压机设备设置明细表格组件实例 */
 const detailedSettingsOfTheParameterPressEquipment = ref();
+
+/**
+ * 根据当前激活标签页触发对应明细表格重新加载数据。
+ * @returns {void} 无返回值，通过 setTimeout 延迟 100ms 确保 Tab 切换完成。
+ * @since 2026-06-16 10:26:00
+ */
 function queryTable() {
   setTimeout(() => {
     switch (activeKey.value) {
@@ -66,7 +83,9 @@ function queryTable() {
 }
 
 /**
- * 关闭抽屉
+ * 关闭抽屉并清空行数据。
+ * @returns {void} 无返回值。
+ * @since 2026-06-16 10:26:00
  */
 function close() {
   showDrawer.value = false;
