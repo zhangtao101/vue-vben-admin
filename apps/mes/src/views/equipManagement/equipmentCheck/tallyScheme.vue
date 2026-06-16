@@ -240,13 +240,13 @@ function handleAdd() {
 
 function handleEdit(row: MaintenanceScheme) {
   drawerMode.value = 'edit';
-  currentRow .value = row ? { ...row } : null;
+  currentRow.value = row;
   drawerVisible.value = true;
 }
 
 function handleView(row: MaintenanceScheme) {
   drawerMode.value = 'view';
-  currentRow .value = row ? { ...row } : null;
+  currentRow.value = row;
   drawerVisible.value = true;
 }
 

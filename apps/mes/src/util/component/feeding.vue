@@ -78,7 +78,7 @@ const isAuxiliaryMaterials = ref(false);
  */
 function show(row: any) {
   // 存储当前工位数据
-  editItem .value = row ? { ...row } : null;
+  editItem.value = row;
 
   // 显示主操作抽屉
   showDrawer.value = true;
@@ -360,7 +360,7 @@ function displayFeeding(row?: any) {
   if (row) {
     // 编辑模式：设置现有数据
     isCreate.value = row.isCreate;
-    editFeed .value = row ? { ...row } : null;
+    editFeed.value = row;
 
     // 判断是否处于审核状态，使用相应的详情数据
     formState.value = editFeed.value.overtakingApproval

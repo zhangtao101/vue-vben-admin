@@ -477,7 +477,7 @@ const selectedRow = ref<any>({});
 function showJobFlowConfiguration(row: any) {
   processDrawerDisplay.value = true;
   parentId.value = row.id * 1;
-  selectedRow .value = row ? { ...row } : null;
+  selectedRow.value = row;
 }
 
 // endregion
@@ -661,7 +661,7 @@ const equipCodeList = ref<string[]>([]);
  */
 function showEquipSelect(row: any) {
   equipCodeList.value = row.equipCodeList;
-  selectedRow .value = row ? { ...row } : null;
+  selectedRow .value = row;
   equipDrawer.value = true;
 }
 

@@ -210,13 +210,13 @@ function handleAdd() {
 
 function handleEdit(row: InspectionScheme) {
   drawerMode.value = 'edit';
-  currentRow .value = row ? { ...row } : null;
+  currentRow.value = row;
   drawerVisible.value = true;
 }
 
 function handleView(row: InspectionScheme) {
   drawerMode.value = 'view';
-  currentRow .value = row ? { ...row } : null;
+  currentRow.value = row;
   drawerVisible.value = true;
 }
 

@@ -406,7 +406,7 @@ const editItem = ref<any>({});
  */
 function showDialogBox(row: any) {
   // 保存当前正在编辑的行数据
-  editItem .value = row ? { ...row } : null;
+  editItem.value = row;
   // 显示质检项选择对话框
   displayTheDialogBox.value = true;
 }

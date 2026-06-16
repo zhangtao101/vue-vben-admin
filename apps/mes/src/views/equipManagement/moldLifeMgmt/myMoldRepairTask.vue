@@ -316,7 +316,7 @@ const assignUserOptions = ref<{ label: string; value: string }[]>([]);
  * @param {any} row - 行数据
  */
 function handleAssign(row: any) {
-  assignCurrentRow .value = row ? { ...row } : null;
+  assignCurrentRow.value = row;
   assignRepairBy.value = '';
   // 获取可指派用户列表
   getAssignableUsers(row.id).then((data) => {
@@ -357,7 +357,7 @@ const pauseReason = ref('');
  * @param {any} row - 行数据
  */
 function handlePause(row: any) {
-  pauseCurrentRow .value = row ? { ...row } : null;
+  pauseCurrentRow.value = row;
   pauseReason.value = '';
   pauseModalVisible.value = true;
 }
@@ -511,7 +511,7 @@ const resumeRemark = ref('');
  * @param {any} row - 行数据
  */
 function handleResume(row: any) {
-  resumeCurrentRow .value = row ? { ...row } : null;
+  resumeCurrentRow.value = row;
   resumeRemark.value = '';
   resumeModalVisible.value = true;
 }
@@ -550,7 +550,7 @@ const transferUserOptions = ref<{ label: string; value: string }[]>([]);
  * @param {any} row - 行数据
  */
 function handleTransfer(row: any) {
-  transferCurrentRow .value = row ? { ...row } : null;
+  transferCurrentRow.value = row;
   transferTo.value = '';
   transferReason.value = '';
   transferRemark.value = '';

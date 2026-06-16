@@ -194,7 +194,7 @@ function showEdit(row: any) {
   editDrawer.value = true;
 
   // 将当前行的数据赋值给 editItem，以便在编辑抽屉中使用。
-  editItem .value = row ? { ...row } : null;
+  editItem.value = row;
 
   // 将物料清单的加载状态设置为 true，表示开始加载 BOM 数据。
   bomLoading.value = true;

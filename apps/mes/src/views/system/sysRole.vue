@@ -142,7 +142,7 @@ const editRules = ref<any>({
  * @param row 表格行数据
  */
 function viewRow(row: any) {
-  checkedRow .value = row ? { ...row } : null;
+  checkedRow.value = row;
   showViewDrawer.value = true;
 }
 

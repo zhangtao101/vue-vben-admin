@@ -260,7 +260,7 @@ function handleScrap(row: any) {
     message.warning($t('repair.spareInventory.noStockWarning'));
     return;
   }
-  scrapRow .value = row ? { ...row } : null;
+  scrapRow.value = row;
   scrapFormData.value = {
     scrapQuantity: 1,
     scrapReason: '',

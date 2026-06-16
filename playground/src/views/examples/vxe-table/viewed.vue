@@ -131,7 +131,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 function onEdit(row: RowType) {
-  editRow .value = row ? { ...row } : null;
+  editRow.value = row;
   modalApi.open();
 }
 

@@ -284,7 +284,7 @@ function queryDetailData({
 }
 
 function handleCurrentChange({ row }: { row: any }) {
-  currentRow .value = row ? { ...row } : null;
+  currentRow.value = row;
   detailGridApi.reload();
 }
 

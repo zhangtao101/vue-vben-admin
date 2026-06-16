@@ -246,13 +246,13 @@ function handleAdd() {
 
 function handleEdit(row: MaintenancePlan) {
   drawerMode.value = 'edit';
-  currentRow .value = row ? { ...row } : null;
+  currentRow.value = row;
   drawerVisible.value = true;
 }
 
 function handleView(row: MaintenancePlan) {
   drawerMode.value = 'view';
-  currentRow .value = row ? { ...row } : null;
+  currentRow.value = row;
   drawerVisible.value = true;
 }
 

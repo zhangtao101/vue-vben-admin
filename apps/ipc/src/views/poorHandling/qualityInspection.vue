@@ -462,7 +462,7 @@ const startStatus = ref<any>(false);
  *   - false: 继续现有任务
  */
 function showEditFun(row: any, isStart = false) {
-  editItem .value = row ? { ...row } : null; // 存储当前任务数据
+  editItem.value = row; // 存储当前任务数据
   showEdit.value = true; // 显示抽屉组件
   startStatus.value = isStart; // 设置任务启动状态标识
 }

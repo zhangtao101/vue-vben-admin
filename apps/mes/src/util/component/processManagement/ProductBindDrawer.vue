@@ -124,7 +124,7 @@ function queryProductRouteData({ page, pageSize }: any) {
 }
 
 function openDrawer(row: any) {
-  currentRoute .value = row ? { ...row } : null;
+  currentRoute.value = row;
   queryParams.value.routeCode = row.routeCode;
   showDrawer.value = true;
   productGridApi?.reload();

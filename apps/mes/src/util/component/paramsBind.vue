@@ -43,7 +43,7 @@ const editItem = ref<any>({});
  * @param row
  */
 function show(row: any) {
-  editItem .value = row ? { ...row } : null;
+  editItem.value = row;
   showDrawer.value = true;
   queryDevices();
   setTimeout(() => {
