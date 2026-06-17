@@ -13,6 +13,7 @@ import LampInstallationRecord from '#/util/component/steps/lampInstallationRecor
 import ManufactureEntry from '#/util/component/steps/manufactureEntry.vue';
 import MaterialFeeding from '#/util/component/steps/materialFeeding.vue';
 import MaterialFeedingSlitting from '#/util/component/steps/materialFeedingSlitting.vue';
+import MoldUpInfo from '#/util/component/steps/moldUpInfo.vue';
 import MultiStationScan from '#/util/component/steps/multiStationScan.vue';
 import ParamTemplate from '#/util/component/steps/paramTemplate.vue';
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
@@ -452,6 +453,15 @@ defineProps({
       :binding-id="bindingId"
       :function-id="step.id"
       v-if="step.type === 52"
+    />
+    <!-- 模具上模信息：根据工步类型为 53 时，渲染模具上模信息展示组件，并传递相关参数 -->
+    <MoldUpInfo
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 53"
     />
     <!-- 配方执行 - 和城：根据工步类型为 101 时，渲染配方执行组件，并传递相关参数 -->
     <RecipeExecution

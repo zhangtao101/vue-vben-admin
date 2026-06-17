@@ -365,7 +365,7 @@ onMounted(async () => {});
         >
           <Input
             v-model:value="editMessage.printCode"
-            :disabled="editMessage.id"
+            :disabled="!!editMessage.id"
           />
         </FormItem>
         <!-- 打印模板编号 -->

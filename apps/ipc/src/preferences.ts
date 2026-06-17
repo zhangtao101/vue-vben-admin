@@ -24,7 +24,7 @@ export const overridesPreferences = defineOverridesPreferences({
     mode: 'light',
     builtinType: 'custom',
     colorPrimary: 'hsl(179 90% 39%)',
-    semiDarkHeader: true,
+    semiDarkHeader: false,
     radius: '0.75',
   },
   copyright: {

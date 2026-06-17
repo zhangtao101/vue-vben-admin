@@ -543,3 +543,12 @@ export function materialDown(params: any) {
     params,
   );
 }
+/**
+ * 模具上模信息查询
+ * @param params 参数
+ */
+export function listByMode(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByMode?${qs.stringify(params)}`,
+  );
+}
