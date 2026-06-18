@@ -168,6 +168,7 @@ catalog:
   html2canvas: ^1.4.1
   is-ci: ^4.1.0
   jordium-gantt-vue3: ^1.8.0
+  jsbarcode: ^3.12.3
   json-bigint: ^1.0.0
   jsonwebtoken: ^9.0.3
   knip: ^6.15.0

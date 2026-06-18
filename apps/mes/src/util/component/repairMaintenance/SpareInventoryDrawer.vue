@@ -7,6 +7,7 @@ import {
   Form,
   FormItem,
   InputNumber,
+  message,
   Space,
 } from 'ant-design-vue';
 
@@ -15,7 +16,6 @@ import {
   getStockById,
 } from '#/api/equipManagement/sparePartsInventoryMgmt.service';
 import { $t } from '#/locales';
-import { message } from '#/preferences';
 
 // ========== Props & Emits ==========
 const props = defineProps<{
