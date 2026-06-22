@@ -357,10 +357,10 @@ function queryLabelDetailList({ page, pageSize }: any) {
       pageSize,
     };
     fetchLabelDetailList(params)
-      .then(({ total, results }) => {
+      .then(({ total, list }) => {
         resolve({
           total,
-          items: results,
+          items: list,
         });
       })
       .catch((error) => {
