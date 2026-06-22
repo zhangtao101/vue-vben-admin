@@ -26,6 +26,7 @@ import {
   Input,
   InputNumber,
   Modal,
+  Select,
   Space,
   Tooltip,
 } from 'ant-design-vue';
@@ -49,7 +50,7 @@ function createMockChildren(wo: string, ppo: string, so: string) {
       id: idCounter.value - 1,
       wo: `${wo}-1`,
       ppo,
-      so,
+      so: `${so}-1`,
       quantity: 30,
       deliveryDate: '2026-07-10',
     },
@@ -57,7 +58,7 @@ function createMockChildren(wo: string, ppo: string, so: string) {
       id: idCounter.value,
       wo: `${wo}-2`,
       ppo,
-      so,
+      so: `${so}-2`,
       quantity: 70,
       deliveryDate: '2026-07-20',
     },
@@ -112,6 +113,18 @@ const masterData = ref<any[]>([
 masterData.value.forEach((row) => {
   row.children = createMockChildren(row.wo, row.ppo, row.so);
 });
+// endregion
+
+// region 假SO下拉选项
+const fakeSoOptions = ref<{ label: string; value: string }[]>(
+  Array.from({ length: 20 }, (_, i) => {
+    const n = i + 1;
+    return {
+      label: `SO2406${String(n).padStart(3, '0')}`,
+      value: `SO2406${String(n).padStart(3, '0')}`,
+    };
+  }),
+);
 // endregion
 
 // region 查询参数
@@ -252,173 +265,156 @@ function handleSubWorkOrderClick(row: any) {
 
 // region 工单拆分抽屉
 const splitDrawerVisible = ref(false);
-const splitForm = ref<any>({
-  quantity: undefined,
-  deliveryDate: undefined,
-});
+const currentSplitMainRow = ref<any>(null);
+const splitCount = ref<number | undefined>(undefined);
+const splitRowList = ref<any[]>([]);
 
-/** 当前可拆分的最大数量（主工单数量 - 子工单数量总和） */
-const maxSplitQty = computed(() => {
-  if (!currentMainRow.value) return 0;
-  const childrenTotal = (currentMainRow.value.children || []).reduce(
-    (sum: number, child: any) => sum + (child.quantity || 0),
-    0,
-  );
-  return currentMainRow.value.quantity - childrenTotal;
+/** 最大可拆分数量 = 当前行的子工单数量 */
+const maxSplitCount = computed(() => {
+  if (!currentSplitMainRow.value) return 0;
+  return currentSplitMainRow.value.subWorkOrderQty || 0;
 });
 
 /**
  * 主表格点击拆分，打开拆分抽屉。
  * @param {any} row - 主工单行数据。
- * @since 2026-06-22 14:42:00
+ * @since 2026-06-22 15:43:00
  */
 function handleMainSplit(row: any) {
-  currentMainRow.value = row;
-  splitForm.value = {
-    quantity: undefined,
-    deliveryDate: undefined,
-  };
+  currentSplitMainRow.value = row;
+  splitCount.value = undefined;
+  splitRowList.value = [];
   splitDrawerVisible.value = true;
 }
 
 /**
- * 确认拆分：从主工单拆分出新的子工单。
- * @since 2026-06-22 14:42:00
+ * 根据拆分数量生成空行数据。
+ * @since 2026-06-22 15:43:00
  */
-function handleConfirmSplit() {
-  const { quantity, deliveryDate } = splitForm.value;
-
-  if (!quantity || quantity <= 0) {
+function handleGenerateSplitRows() {
+  const count = splitCount.value;
+  if (!count || count <= 0) {
     Modal.warning({ title: '提示', content: '请输入有效的拆分数量' });
     return;
   }
-  if (quantity > maxSplitQty.value) {
-    Modal.warning({
-      title: '提示',
-      content: `拆分数量不能超过 ${maxSplitQty.value}`,
-    });
-    return;
-  }
-  if (!deliveryDate) {
-    Modal.warning({ title: '提示', content: '请选择新交期' });
+  if (count > maxSplitCount.value) {
+    Modal.warning({ title: '提示', content: `拆分数量不能超过 ${maxSplitCount.value}` });
     return;
   }
 
-  const mainRow = currentMainRow.value;
+  const mainRow = currentSplitMainRow.value;
   if (!mainRow) return;
 
-  // 减少主工单数量
-  mainRow.quantity = mainRow.quantity - quantity;
-
-  // 新增子工单
-  const newChild = {
-    id: genChildId(),
-    wo: mainRow.wo,
-    ppo: mainRow.ppo,
-    so: mainRow.so,
-    quantity,
-    deliveryDate,
-  };
-  if (!mainRow.children) {
-    mainRow.children = [];
+  const rows: any[] = [];
+  for (let i = 0; i < count; i++) {
+    rows.push({
+      id: genChildId(),
+      wo: `${mainRow.wo}-S${i + 1}`,
+      ppo: mainRow.ppo,
+      so: '',
+      quantity: undefined,
+      deliveryDate: undefined,
+    });
   }
-  mainRow.children.push(newChild);
-
-  splitDrawerVisible.value = false;
-  // 刷新主表格
-  gridApi.reload();
-}
-// endregion
-
-// region 子工单编辑/删除
-const editDrawerVisible = ref(false);
-const editForm = ref<any>({
-  quantity: undefined,
-  deliveryDate: undefined,
-});
-const currentChildRow = ref<any>(null);
-const currentChildIndex = ref<number>(-1);
-
-/**
- * 删除子工单。
- * @param {number} index - 子工单索引。
- * @since 2026-06-22 14:42:00
- */
-function handleDeleteChild(index: number) {
-  Modal.confirm({
-    title: '提示',
-    content: '确定删除该子工单？',
-    onOk: () => {
-      subWorkOrderList.value.splice(index, 1);
-      // 同步更新 masterData
-      if (currentMainRow.value) {
-        currentMainRow.value.children = subWorkOrderList.value.map((item: any) => ({
-          ...item,
-        }));
-      }
-      nextTick(() => {
-        subGridApi.reload();
-        gridApi.reload();
-      });
-    },
-  });
-}
-
-/**
- * 打开编辑子工单抽屉。
- * @param {any} row - 子工单行数据。
- * @param {number} index - 行索引。
- * @since 2026-06-22 14:42:00
- */
-function handleEditChild(row: any, index: number) {
-  currentChildRow.value = row;
-  currentChildIndex.value = index;
-  editForm.value = {
-    quantity: row.quantity,
-    deliveryDate: row.deliveryDate,
-  };
-  editDrawerVisible.value = true;
-}
-
-/**
- * 确认编辑子工单。
- * @since 2026-06-22 14:42:00
- */
-function handleConfirmEdit() {
-  const { quantity, deliveryDate } = editForm.value;
-
-  if (!quantity || quantity <= 0) {
-    Modal.warning({ title: '提示', content: '请输入有效的数量' });
-    return;
-  }
-  if (!deliveryDate) {
-    Modal.warning({ title: '提示', content: '请选择交期' });
-    return;
-  }
-
-  const idx = currentChildIndex.value;
-  if (idx < 0) return;
-
-  subWorkOrderList.value[idx].quantity = quantity;
-  subWorkOrderList.value[idx].deliveryDate = deliveryDate;
-
-  // 同步更新 masterData
-  if (currentMainRow.value) {
-    currentMainRow.value.children = subWorkOrderList.value.map((item: any) => ({
-      ...item,
-    }));
-  }
-
-  editDrawerVisible.value = false;
+  splitRowList.value = rows;
   nextTick(() => {
-    subGridApi.reload();
-    gridApi.reload();
+    splitGridApi.reload();
   });
 }
 // endregion
 
-// region 子工单抽屉表格配置
-const subGridOptions: VxeGridProps<any> = {
+// region 绑定SO抽屉
+const bindDrawerVisible = ref(false);
+/** 绑定目标：'sub' 为子工单列表，{ type:'split'; index:number } 为拆分行 */
+const bindTarget = ref<{ index: number; type: 'split' }>({ index: -1, type: 'split' });
+const bindSo = ref<string | undefined>(undefined);
+const bindLoading = ref(false);
+const bindResult = ref<null | { deliveryDate: string; quantity: number }>(null);
+
+/** 可供选择的SO选项（排除已存在于子工单列表中的） */
+const availableSoOptions = computed(() => {
+  return fakeSoOptions.value.filter(
+    (opt) => !subWorkOrderList.value.some((item: any) => item.so === opt.value),
+  );
+});
+
+/**
+ * 模拟根据SO号查询后台获取数量和交期。
+ * @param {string} so - SO号。
+ * @returns {Promise<{ quantity: number; deliveryDate: string }>} 查询结果。
+ * @since 2026-06-22 15:25:00
+ */
+function mockQuerySo(so: string): Promise<{ deliveryDate: string; quantity: number }> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const hash = [...so].reduce((acc, c) => acc + c.codePointAt(0)!, 0);
+      resolve({
+        quantity: 20 + (hash % 80),
+        deliveryDate: `2026-0${7 + (hash % 5)}-${String(10 + (hash % 20)).padStart(2, '0')}`,
+      });
+    }, 300);
+  });
+}
+
+/**
+ * 打开绑定SO抽屉（从拆分表格行）。
+ * @param {any} _row - 拆分行数据。
+ * @param {number} index - 拆分行索引。
+ * @since 2026-06-22 15:43:00
+ */
+function handleSplitRowBind(_row: any, index: number) {
+  bindTarget.value = { type: 'split', index };
+  bindSo.value = undefined;
+  bindResult.value = null;
+  bindDrawerVisible.value = true;
+}
+
+/**
+ * 选择SO后自动查询数量和交期。
+ * @since 2026-06-22 15:43:00
+ */
+function handleQuerySo(value: any) {
+  const soVal = value ? String(value) : '';
+  if (!soVal) {
+    bindResult.value = null;
+    return;
+  }
+  bindLoading.value = true;
+  mockQuerySo(soVal)
+    .then((data) => {
+      bindResult.value = data;
+    })
+    .finally(() => {
+      bindLoading.value = false;
+    });
+}
+
+/**
+ * 确认绑定SO。
+ * @since 2026-06-22 15:25:00
+ */
+function handleConfirmBind() {
+  if (!bindResult.value || !bindSo.value) {
+    Modal.warning({ title: '提示', content: '请先选择SO' });
+    return;
+  }
+
+  const idx = bindTarget.value.index;
+  if (idx >= 0 && idx < splitRowList.value.length) {
+    splitRowList.value[idx].so = bindSo.value;
+    splitRowList.value[idx].quantity = bindResult.value.quantity;
+    splitRowList.value[idx].deliveryDate = bindResult.value.deliveryDate;
+  }
+
+  bindDrawerVisible.value = false;
+  nextTick(() => {
+    splitGridApi.reload();
+  });
+}
+// endregion
+
+// region 拆分表格配置
+const splitGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
@@ -453,9 +449,64 @@ const subGridOptions: VxeGridProps<any> = {
     {
       field: 'action',
       title: $t('basic.workOrderSplit.operation'),
-      width: 140,
+      width: 100,
       fixed: 'right',
       slots: { default: 'action' },
+    },
+  ],
+  height: 250,
+  stripe: true,
+  pagerConfig: {
+    enabled: false,
+  },
+  proxyConfig: {
+    autoLoad: false,
+    ajax: {
+      query: async () => {
+        return {
+          total: splitRowList.value.length,
+          items: splitRowList.value,
+        };
+      },
+    },
+  },
+};
+
+const [SplitGrid, splitGridApi] = useVbenVxeGrid({ gridOptions: splitGridOptions });
+// endregion
+
+// region 子工单抽屉表格配置
+const subGridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { type: 'seq', width: 60, title: $t('basic.laborHourEvaluation.sequence') },
+    {
+      field: 'wo',
+      title: $t('basic.workOrderSplit.wo'),
+      minWidth: 140,
+    },
+    {
+      field: 'ppo',
+      title: $t('basic.workOrderSplit.ppo'),
+      minWidth: 140,
+    },
+    {
+      field: 'so',
+      title: $t('basic.workOrderSplit.so'),
+      minWidth: 140,
+    },
+    {
+      field: 'quantity',
+      title: $t('basic.workOrderSplit.quantity'),
+      width: 100,
+    },
+    {
+      field: 'deliveryDate',
+      title: $t('basic.workOrderSplit.deliveryDate'),
+      width: 120,
+      formatter: ({ cellValue }: any) =>
+        cellValue ? dayjs(cellValue).format('YYYY-MM-DD') : '',
     },
   ],
   height: 300,
@@ -548,7 +599,6 @@ watch(
             {{ row.subWorkOrderQty || 0 }}
           </a>
         </template>
-
         <!-- 操作列拆分按钮 -->
         <template #action="{ row }">
           <Tooltip :title="$t('basic.workOrderSplit.split')">
@@ -569,105 +619,95 @@ watch(
       :destroy-on-close="true"
     >
       <div style="padding: 0 24px">
-        <SubGrid>
-          <template #action="{ row, rowIndex }">
-            <Space>
-              <Tooltip :title="$t('basic.workOrderSplit.edit')">
-                <Button
-                  type="link"
-                  size="small"
-                  @click="handleEditChild(row, rowIndex)"
-                >
-                  <Icon icon="mdi:edit-outline" class="inline-block align-middle text-2xl" />
-                </Button>
-              </Tooltip>
-              <Tooltip :title="$t('basic.workOrderSplit.delete')">
-                <Button
-                  type="link"
-                  size="small"
-                  danger
-                  @click="handleDeleteChild(rowIndex)"
-                >
-                  <Icon icon="mdi-light:delete" class="inline-block align-middle text-2xl" />
-                </Button>
-              </Tooltip>
-            </Space>
-          </template>
-        </SubGrid>
+        <SubGrid />
       </div>
     </Drawer>
 
-    <!-- 拆分修改抽屉 -->
+    <!-- 工单拆分抽屉（上→下） -->
     <Drawer
       v-model:open="splitDrawerVisible"
       :title="$t('basic.workOrderSplit.splitWorkOrder')"
-      width="400"
+      placement="top"
+      height="450"
       :destroy-on-close="true"
-      :footer-style="{ textAlign: 'right' }"
     >
-      <Form layout="vertical">
-        <FormItem :label="$t('basic.workOrderSplit.quantity')">
+      <div style="padding: 0 24px">
+        <Space style="margin-bottom: 16px">
+          <span>{{ $t('basic.workOrderSplit.splitCount') }}</span>
           <InputNumber
-            v-model:value="splitForm.quantity"
+            v-model:value="splitCount"
             :min="1"
-            :max="maxSplitQty"
-            :placeholder="`最大: ${maxSplitQty}`"
-            style="width: 100%"
+            :max="maxSplitCount"
+            :placeholder="`最大: ${maxSplitCount}`"
+            style="width: 200px"
           />
-        </FormItem>
-        <FormItem :label="$t('basic.workOrderSplit.newDeliveryDate')">
-          <DatePicker
-            v-model:value="splitForm.deliveryDate"
-            value-format="YYYY-MM-DD"
-            style="width: 100%"
-          />
-        </FormItem>
-      </Form>
-
-      <template #footer>
-        <Space>
-          <Button @click="splitDrawerVisible = false">
-            {{ $t('common.cancel') }}
-          </Button>
-          <Button type="primary" @click="handleConfirmSplit">
-            {{ $t('basic.workOrderSplit.confirmSplit') }}
+          <Button type="primary" @click="handleGenerateSplitRows">
+            {{ $t('basic.workOrderSplit.generate') }}
           </Button>
         </Space>
-      </template>
+        <SplitGrid v-if="splitRowList.length > 0">
+          <template #action="{ row, rowIndex }">
+            <Tooltip :title="$t('basic.workOrderSplit.bind')">
+              <Button
+                type="link"
+                size="small"
+                @click="handleSplitRowBind(row, rowIndex)"
+              >
+                <Icon icon="mdi:link-variant" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+          </template>
+        </SplitGrid>
+      </div>
     </Drawer>
 
-    <!-- 编辑子工单抽屉 -->
+    <!-- 绑定SO抽屉 -->
     <Drawer
-      v-model:open="editDrawerVisible"
-      :title="$t('basic.workOrderSplit.editSubWorkOrder')"
+      v-model:open="bindDrawerVisible"
+      :title="$t('basic.workOrderSplit.bindSo')"
       width="400"
       :destroy-on-close="true"
       :footer-style="{ textAlign: 'right' }"
     >
       <Form layout="vertical">
-        <FormItem :label="$t('basic.workOrderSplit.quantity')">
-          <InputNumber
-            v-model:value="editForm.quantity"
-            :min="1"
+        <FormItem :label="$t('basic.workOrderSplit.so')">
+          <Select
+            v-model:value="bindSo"
+            :placeholder="$t('basic.workOrderSplit.pleaseInputSo')"
+            :options="availableSoOptions"
+            :loading="bindLoading"
+            allow-clear
+            show-search
             style="width: 100%"
+            @change="handleQuerySo"
           />
         </FormItem>
-        <FormItem :label="$t('basic.workOrderSplit.deliveryDate')">
-          <DatePicker
-            v-model:value="editForm.deliveryDate"
-            value-format="YYYY-MM-DD"
-            style="width: 100%"
-          />
-        </FormItem>
+        <template v-if="bindResult">
+          <FormItem :label="$t('basic.workOrderSplit.quantity')">
+            <InputNumber
+              :value="bindResult.quantity"
+              disabled
+              style="width: 100%"
+            />
+          </FormItem>
+          <FormItem :label="$t('basic.workOrderSplit.deliveryDate')">
+            <DatePicker
+              :value="bindResult.deliveryDate"
+              value-format="YYYY-MM-DD"
+              disabled
+              style="width: 100%"
+            />
+          </FormItem>
+        </template>
       </Form>
 
       <template #footer>
         <Space>
-          <Button @click="editDrawerVisible = false">
+          <Button @click="bindDrawerVisible = false">
             {{ $t('common.cancel') }}
           </Button>
-          <Button type="primary" @click="handleConfirmEdit">
-            {{ $t('common.save') }}
+          <Button type="primary" :disabled="!bindResult" @click="handleConfirmBind">
+            {{ $t('basic.workOrderSplit.confirmBind') }}
           </Button>
         </Space>
       </template>

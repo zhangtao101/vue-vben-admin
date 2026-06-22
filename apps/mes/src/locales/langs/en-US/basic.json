@@ -236,7 +236,12 @@
     "confirmSplit": "Confirm Split",
     "delete": "Delete",
     "edit": "Edit",
-    "editSubWorkOrder": "Edit Sub Work Order"
+    "editSubWorkOrder": "Edit Sub Work Order",
+    "bind": "Bind",
+    "bindSo": "Bind SO",
+    "confirmBind": "Confirm Bind",
+    "splitCount": "Split Count",
+    "generate": "Generate"
   },
   "shortageTracking": {
     "queryTitle": "Shortage Tracking Query",

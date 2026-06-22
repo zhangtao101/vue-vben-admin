@@ -239,7 +239,12 @@
     "confirmSplit": "确认拆分",
     "delete": "删除",
     "edit": "修改",
-    "editSubWorkOrder": "编辑子工单"
+    "editSubWorkOrder": "编辑子工单",
+    "bind": "绑定",
+    "bindSo": "绑定SO",
+    "confirmBind": "确认绑定",
+    "splitCount": "拆分数量",
+    "generate": "生成"
   },
   "shortageTracking": {
     "queryTitle": "缺料追踪查询",

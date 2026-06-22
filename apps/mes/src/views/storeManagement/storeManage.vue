@@ -81,11 +81,11 @@ function queryData({ page, pageSize }: any) {
 
     // 调用 queryLogicalWarehouse 函数查询数据。
     queryLogicalWarehouse(params)
-      .then(({ total, list }) => {
+      .then(({ total, results }) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
           total,
-          items: list,
+          items: results,
         });
       })
       .catch((error) => {
