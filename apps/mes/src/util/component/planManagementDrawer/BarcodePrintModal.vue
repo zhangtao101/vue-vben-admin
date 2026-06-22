@@ -85,7 +85,7 @@ defineExpose({ open });
       <span style="font-family: '宋体'; font-size: 16px">打印日期：{{ nowDate }}</span>
 
       <div style="text-align: center" class="JsBarcode">
-        <svg id="svgcode" />
+        <svg id="svgcode"><div /></svg>
         <div>{{ barCodeDetail.workSheetCode }}</div>
       </div>
 

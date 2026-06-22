@@ -179,7 +179,7 @@ function queryData(pageParams?: { pageNum: number; pageSize: number }) {
           items: list || [],
         });
       })
-      .catch((error) => {
+      .catch((error: any) => {
         reject(error);
       });
   });

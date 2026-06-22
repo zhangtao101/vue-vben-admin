@@ -27,9 +27,9 @@ import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  listWordListByParentCode,
   smtAllLineList,
   smtPlanSituation,
-  smtWorkerTypeList,
   smtWorksheetCreate,
   smtWorksheetDetail,
   smtWorksheetUpdate,
@@ -86,7 +86,7 @@ const innerGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { field: 'planCode', title: '计划号' },
+    { field: 'planCode', title: '计划号', minWidth: 180, },
     {
       field: 'subProductName',
       title: '部件名称',
@@ -121,16 +121,16 @@ const innerGridOptions: VxeGridProps<any> = {
       minWidth: 200,
       slots: { default: 'processTypeCode' },
     },
-    { field: 'productCode', title: '产品编号' },
+    { field: 'productCode', title: '产品编号', minWidth: 180, },
     {
       field: 'productName',
       title: '产品名称',
       minWidth: 180,
       showOverflow: true,
     },
-    { field: 'workSheetCode', title: '工单号', minWidth: 90 },
+    { field: 'workSheetCode', title: '工单号', minWidth: 150 },
     { field: 'workSheetFinishNumber', title: '工单完成数', minWidth: 100 },
-    { field: 'produceWorkshop', title: '生产车间' },
+    { field: 'produceWorkshop', title: '生产车间', minWidth: 100 },
     {
       field: 'remark',
       title: '备注',
@@ -164,7 +164,7 @@ function loadLineOptions() {
 }
 
 function loadWorkerTypeOptions() {
-  smtWorkerTypeList('GDLX').then((res: any) => {
+  listWordListByParentCode('GDLX').then((res: any) => {
     workerTypeOptions.value = Array.isArray(res) ? res : [];
   });
 }
@@ -219,11 +219,12 @@ function handleChoosePlan() {
 }
 
 function handleSubPlanConfirm(records: any[]) {
+  console.log(records);
   const newCodes = records.map((r: any) => r.subPlanCode);
   existingSubPlanCodes.value.push(...newCodes);
   smtPlanSituation({
     partPlanCodeList: newCodes.join(','),
-    processType: 1,
+    processType: subPlanSelectRef.value.queryParams.processType,
     num: workSheetList.value.length,
   })
     .then((res: any) => {
@@ -232,7 +233,7 @@ function handleSubPlanConfirm(records: any[]) {
           workSheetList.value.push(item);
         });
       }
-      innerGridApi.reload(workSheetList.value);
+      innerGridApi.grid.reloadData(workSheetList.value);
     })
     .catch(() => {
       message.error('获取计划情况失败');

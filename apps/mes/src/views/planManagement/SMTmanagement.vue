@@ -47,7 +47,6 @@ import {
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
-import BarcodePrintModal from '../../util/component/planManagementDrawer/BarcodePrintModal.vue';
 import WorkSheetDrawer from '../../util/component/planManagementDrawer/WorkSheetDrawer.vue';
 
 // 路由信息
@@ -93,14 +92,14 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'workSheetCode',
       title: $t('SMTmanagement.workOrderNumber'),
-      minWidth: 100,
+      minWidth: 150,
     },
     {
       field: 'planDateStart',
       title: $t('SMTmanagement.plannedTime'),
       minWidth: 130,
     },
-    { field: 'planCode', title: $t('SMTmanagement.planNumber'), minWidth: 100 },
+    { field: 'planCode', title: $t('SMTmanagement.planNumber'), minWidth: 150 },
     {
       field: 'lineName',
       title: $t('SMTmanagement.taskLine'),
@@ -147,12 +146,12 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'subProductCode',
       title: $t('SMTmanagement.subProductCode'),
-      minWidth: 95,
+      minWidth: 150,
     },
     {
       field: 'subPlanCode',
       title: $t('SMTmanagement.subPlanCode'),
-      minWidth: 110,
+      minWidth: 150,
     },
     {
       field: 'produceUnarrangedNumber',
@@ -331,10 +330,8 @@ function handleDelete(row: any) {
 // endregion
 
 // region 条码打印
-const barcodePrintRef = ref();
-
-function handleBarcodePrint(row: any) {
-  barcodePrintRef.value.open(row);
+function handleBarcodePrint(_row: any) {
+  message.info('打印功能暂未完成');
 }
 // endregion
 
@@ -517,9 +514,6 @@ onMounted(() => {
 
     <!-- 工单抽屉 -->
     <WorkSheetDrawer ref="workSheetDrawerRef" @refresh="() => gridApi.reload()" />
-
-    <!-- 条码打印弹窗 -->
-    <BarcodePrintModal ref="barcodePrintRef" />
   </Page>
 </template>
 
