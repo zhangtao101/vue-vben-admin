@@ -468,7 +468,7 @@ watch(visible, (val) => {
 
       <Row :gutter="24">
         <Col :span="12">
-          <FormItem :label="$t('storeManagement.labelPrint.formCode')">
+          <FormItem :label="$t('storeManagement.inspectionSlip.formCode')">
             <Input v-model:value="formData.formCode" disabled />
           </FormItem>
         </Col>
