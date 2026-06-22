@@ -85,11 +85,4 @@ export async function smtAllLineList(processType: number) {
   );
 }
 
-/**
- * 根据字典编码查询字典信息（如工单单别 GDLX）
- */
-export async function smtWorkerTypeList(parCode: string) {
-  return requestClient.get<any>(
-    `${import.meta.env.VITE_GLOB_MES_USER}/sys/word/listWordListByParCode?parCode=${parCode}`,
-  );
-}
+

@@ -184,7 +184,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       title: $t('common.action'),
       fixed: 'right',
-      minWidth: 250,
+      minWidth: 280,
       slots: { default: 'action' },
     },
   ],

@@ -3,12 +3,12 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 /**
  * [INPUT]: 依赖 #/api (smtWorksheetCreate/smtWorksheetDetail/smtWorksheetUpdate/
- *         smtPlanSituation/smtAllLineList/smtWorkerTypeList)、
+ *         smtPlanSituation/smtAllLineList/listWordListByParentCode)、
  *         #/locales ($t)、SubPlanSelectModal 组件
  * [OUTPUT]: 对外提供 WorkSheetDrawer 抽屉组件，通过 defineExpose({ open }) 暴露 open 方法供父组件调用
  * [POS]: 属于 planManagement 模块的工单新增/编辑/修改时间抽屉子组件
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-06-18 10:43:00
+ * [TIME]: 2026-06-22 14:14:00
  */
 import { computed, ref } from 'vue';
 
@@ -153,6 +153,10 @@ const [InnerGrid, innerGridApi] = useVbenVxeGrid({ gridOptions: innerGridOptions
 // endregion
 
 // region 初始化数据
+/**
+ * 加载线别列表，支持按车间筛选。
+ * @since 2026-06-22 14:14:00
+ */
 function loadLineOptions() {
   smtAllLineList(1).then((res: any) => {
     lineOptions.value = (Array.isArray(res) ? res : []).map((item: any) => ({
@@ -163,6 +167,10 @@ function loadLineOptions() {
   });
 }
 
+/**
+ * 加载工单类型（工单单别）下拉选项，父编码固定为 GDLX。
+ * @since 2026-06-22 14:14:00
+ */
 function loadWorkerTypeOptions() {
   listWordListByParentCode('GDLX').then((res: any) => {
     workerTypeOptions.value = Array.isArray(res) ? res : [];
@@ -174,6 +182,12 @@ loadWorkerTypeOptions();
 // endregion
 
 // region 任务线别变更
+/**
+ * 任务线别选择变更时更新对应行的 lineId 和生产车间。
+ * @param {number} index - 行索引。
+ * @param {string} value - 选中的线别名。
+ * @since 2026-06-22 14:14:00
+ */
 function handleLineChange(index: number, value: string) {
   const item = lineOptions.value.find((opt) => opt.label === value);
   if (item) {
@@ -184,6 +198,11 @@ function handleLineChange(index: number, value: string) {
 // endregion
 
 // region 工单计划数校验
+/**
+ * 工单计划数变更时校验：若超出生产未排数则弹出警告。
+ * @param {any} row - 当前行数据。
+ * @since 2026-06-22 14:14:00
+ */
 function handlePlanNumberChange(row: any) {
   if (row.produceUnarrangedNumber < row.workSheetPlanNumber) {
     barDialogVisible.value = true;
@@ -191,10 +210,18 @@ function handlePlanNumberChange(row: any) {
   }
 }
 
+/**
+ * 确认计划数超出提示弹窗。
+ * @since 2026-06-22 14:14:00
+ */
 function handleBarConfirm() {
   barDialogVisible.value = false;
 }
 
+/**
+ * 取消计划数超出提示弹窗，将所有超出行的工单计划数清空。
+ * @since 2026-06-22 14:14:00
+ */
 function handleBarCancel() {
   barDialogVisible.value = false;
   workSheetList.value.forEach((item: any) => {
@@ -206,6 +233,11 @@ function handleBarCancel() {
 // endregion
 
 // region 删除行
+/**
+ * 删除指定行的工单数据，同步移除对应的子计划编码。
+ * @param {number} index - 行索引。
+ * @since 2026-06-22 14:14:00
+ */
 function deleteRow(index: number) {
   workSheetList.value.splice(index, 1);
   existingSubPlanCodes.value.splice(index, 1);
@@ -214,10 +246,19 @@ function deleteRow(index: number) {
 // endregion
 
 // region 选择子计划
+/**
+ * 打开子计划选择弹窗。
+ * @since 2026-06-22 14:14:00
+ */
 function handleChoosePlan() {
   subPlanSelectRef.value.open();
 }
 
+/**
+ * 子计划选择确认回调，获取计划情况并追加到工单列表。
+ * @param {any[]} records - 选中的子计划记录数组。
+ * @since 2026-06-22 14:14:00
+ */
 function handleSubPlanConfirm(records: any[]) {
   console.log(records);
   const newCodes = records.map((r: any) => r.subPlanCode);
@@ -242,6 +283,11 @@ function handleSubPlanConfirm(records: any[]) {
 // endregion
 
 // region 加载详情（编辑/修改时间）
+/**
+ * 根据工单 ID 加载工单详情数据。
+ * @param {string} id - 工单 ID。
+ * @since 2026-06-22 14:14:00
+ */
 function loadDetail(id: string) {
   smtWorksheetDetail(id).then((data: any) => {
     if (data) {
@@ -255,6 +301,11 @@ function loadDetail(id: string) {
 // endregion
 
 // region 提交
+/**
+ * 提交工单新增/编辑/修改时间请求。
+ * 新增模式调用 smtWorksheetCreate，编辑/修改时间调用 smtWorksheetUpdate。
+ * @since 2026-06-22 14:14:00
+ */
 function handleSubmit() {
   if (workSheetList.value.length === 0) {
     message.warning('请选择计划号');
@@ -303,6 +354,10 @@ function handleSubmit() {
 // endregion
 
 // region 关闭
+/**
+ * 关闭抽屉。
+ * @since 2026-06-22 14:14:00
+ */
 function handleClose() {
   show.value = false;
 }
@@ -315,6 +370,12 @@ const textMap: Record<string, string> = {
   timeChange: '修改时间',
 };
 
+/**
+ * 打开抽屉，支持三种模式：新增/编辑/修改时间。
+ * @param {'create' | 'timeChange' | 'update'} mode - 操作模式。
+ * @param {any} [row] - 编辑/修改时间时传入的行数据。
+ * @since 2026-06-22 14:14:00
+ */
 function open(mode: 'create' | 'timeChange' | 'update', row?: any) {
   currentMode.value = mode;
   workSheetList.value = [];

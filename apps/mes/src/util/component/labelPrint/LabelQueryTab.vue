@@ -5,7 +5,7 @@
  * [OUTPUT]: 对外无 emit，自包含标签明细查询管理功能
  * [POS]: 属于 labelPrint 模块的子组件，被 labelPrint.vue 引用
  * [PROTOCOL]: 变更时更新此头部
- * [TIME]: 2026-06-22 13:56:00
+ * [TIME]: 2026-06-22 14:16:00
  */
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
@@ -209,6 +209,12 @@ const statusColorMap: Record<number, string> = {
 // endregion
 
 // region 方法定义
+/**
+ * 分页查询标签明细列表。
+ * @param {any} param - 分页参数 { page, pageSize }。
+ * @returns {Promise<{ total: number; items: any[] }>} 分页结果。
+ * @since 2026-06-22 14:16:00
+ */
 function queryList({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params = {
@@ -227,6 +233,10 @@ function queryList({ page, pageSize }: any) {
   });
 }
 
+/**
+ * 处理查询按钮，将生成日期/送检日期范围写入 queryParams 后刷新表格。
+ * @since 2026-06-22 14:16:00
+ */
 function handleQuery() {
   if (queryDateRange.value && queryDateRange.value.length === 2) {
     queryParams.recordDateStart = queryDateRange.value[0];
@@ -245,6 +255,10 @@ function handleQuery() {
   gridApi.reload();
 }
 
+/**
+ * 批量打印标签，将选中的标签详情的打印状态设为已打印。
+ * @since 2026-06-22 14:16:00
+ */
 function handlePrint() {
   const selection = gridApi.grid.getCheckboxRecords();
   if (selection.length === 0) {
@@ -262,6 +276,10 @@ function handlePrint() {
     });
 }
 
+/**
+ * 判定入库，批量将选中标签状态设为待入库。
+ * @since 2026-06-22 14:16:00
+ */
 function handleEnterWarehouse() {
   const selection = gridApi.grid.getCheckboxRecords();
   if (selection.length === 0) {
@@ -279,6 +297,10 @@ function handleEnterWarehouse() {
     });
 }
 
+/**
+ * 判定退库，批量将选中标签状态设为待退库。
+ * @since 2026-06-22 14:16:00
+ */
 function handleJudgeReturn() {
   const selection = gridApi.grid.getCheckboxRecords();
   if (selection.length === 0) {
@@ -296,6 +318,10 @@ function handleJudgeReturn() {
     });
 }
 
+/**
+ * 导出标签明细数据，以当前查询条件生成 Excel 并触发下载。
+ * @since 2026-06-22 14:16:00
+ */
 function handleExport() {
   const params = {
     ...queryParams,

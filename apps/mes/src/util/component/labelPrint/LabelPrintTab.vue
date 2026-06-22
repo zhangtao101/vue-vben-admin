@@ -6,13 +6,13 @@
  * [OUTPUT]: 对外无 emit，自包含标签打印记录管理功能
  * [POS]: 属于 labelPrint 模块的子组件，被 labelPrint.vue 引用
  * [PROTOCOL]: 变更时更新此头部
- * [TIME]: 2026-06-22 13:56:00
+ * [TIME]: 2026-06-22 14:16:00
  */
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { reactive, ref } from 'vue';
 
-/* eslint-disable perfectionist/sort-imports */
+// eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
 import {
   Button,
@@ -28,7 +28,6 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-
 import { deleteLabelRecord, fetchLabelList, setRecordPrint } from '#/api';
 import { $t } from '#/locales';
 
@@ -125,6 +124,12 @@ const editRecordId = ref<null | string>(null);
 // endregion
 
 // region 方法定义
+/**
+ * 分页查询标签打印记录列表。
+ * @param {any} param - 分页参数 { page, pageSize }。
+ * @returns {Promise<{ total: number; items: any[] }>} 分页结果。
+ * @since 2026-06-22 14:16:00
+ */
 function queryList({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params = {
@@ -142,6 +147,10 @@ function queryList({ page, pageSize }: any) {
   });
 }
 
+/**
+ * 处理查询按钮，将日期范围写入 queryParams 后刷新表格。
+ * @since 2026-06-22 14:16:00
+ */
 function handleQuery() {
   if (dateRange.value && dateRange.value.length === 2) {
     queryParams.recordDateStart = dateRange.value[0];
@@ -153,6 +162,10 @@ function handleQuery() {
   gridApi.reload();
 }
 
+/**
+ * 查看标签明细，校验仅限选中一条记录后打开详情抽屉。
+ * @since 2026-06-22 14:16:00
+ */
 function handleViewDetail() {
   const selection = gridApi.grid.getCheckboxRecords();
   if (selection.length !== 1) {
@@ -163,6 +176,11 @@ function handleViewDetail() {
   labelDetailVisible.value = true;
 }
 
+/**
+ * 删除标签打印记录，需二次确认。
+ * @param {any} row - 当前行数据。
+ * @since 2026-06-22 14:16:00
+ */
 function handleDeleteRecord(row: any) {
   Modal.confirm({
     title: $t('storeManagement.labelPrint.confirmDelete'),
@@ -182,6 +200,10 @@ function handleDeleteRecord(row: any) {
   });
 }
 
+/**
+ * 批量打印标签，将选中记录的打印状态设为已打印。
+ * @since 2026-06-22 14:16:00
+ */
 function handlePrint() {
   const selection = gridApi.grid.getCheckboxRecords();
   if (selection.length === 0) {
@@ -199,20 +221,37 @@ function handlePrint() {
     });
 }
 
+/**
+ * 打开新增标签打印记录对话框。
+ * @since 2026-06-22 14:16:00
+ */
 function handleCreate() {
   editRecordId.value = null;
   formDialogVisible.value = true;
 }
 
+/**
+ * 打开编辑标签打印记录对话框。
+ * @param {any} row - 当前行数据。
+ * @since 2026-06-22 14:16:00
+ */
 function handleUpdate(row: any) {
   editRecordId.value = row.id;
   formDialogVisible.value = true;
 }
 
+/**
+ * 标签明细抽屉操作后刷新列表。
+ * @since 2026-06-22 14:16:00
+ */
 function handleLabelDetailRefresh() {
   gridApi.reload();
 }
 
+/**
+ * 新增/编辑表单成功后刷新列表。
+ * @since 2026-06-22 14:16:00
+ */
 function handleFormSuccess() {
   gridApi.reload();
 }
