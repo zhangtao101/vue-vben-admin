@@ -44,6 +44,7 @@
     "deselectAll": "Deselect All",
     "to": "to",
     "noTimeRange": "No time range set",
-    "confirmExport": "Confirm Export"
+    "confirmExport": "Confirm Export",
+    "downloadTemplate": "Download Template"
   }
 }

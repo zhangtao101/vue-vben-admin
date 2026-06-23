@@ -633,7 +633,7 @@ function addFeedLine() {
  * 删除一行
  * @param index
  */
-function delFeedLine(index: number) {
+function delFeedLine(index: any) {
   Modal.confirm({
     title: '确定删除吗？',
     onOk() {

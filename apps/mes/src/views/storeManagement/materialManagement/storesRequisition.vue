@@ -59,6 +59,7 @@ import {
   TYPE_OF_MATERIAL_REQUISITION_PROGRESS,
 } from '#/util';
 import MaterialSelection from '#/util/component/materialSelection.vue';
+import ErpDocument from '#/util/component/storesRequisitionDrawer/ErpDocument.vue';
 
 // 路由信息
 const route = useRoute();
@@ -135,6 +136,9 @@ const gridOptions: VxeGridProps<any> = {
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
+
+// ERP单据抽屉引用
+const erpDocumentRef = ref();
 
 // 查询参数
 const queryParams = ref<any>({
@@ -797,9 +801,8 @@ onMounted(async () => {
     <Card>
       <Grid>
         <template #toolbar-tools>
-          <Space>
-            <!-- 打印按钮 -->
-            <Button type="primary" @click="printFile()">
+          <!-- 打印按钮 -->
+            <Button type="primary" @click="printFile()" class="mr-4!">
               {{ $t('common.print') }}
             </Button>
             <!-- 新增按钮 -->
@@ -807,6 +810,7 @@ onMounted(async () => {
               v-if="author.includes('新增')"
               type="primary"
               @click="editRow()"
+              class="mr-4!"
             >
               {{ $t('common.add') }}
             </Button>
@@ -816,53 +820,56 @@ onMounted(async () => {
               type="primary"
               danger
               @click="deleteTheEntireDisplay = true"
+              class="mr-4!"
             >
               {{ $t('common.blockDeletion') }}
             </Button>
             <!-- 锁定按钮 -->
-            <Button v-if="author.includes('锁定')" @click="lock(true)">
+            <Button v-if="author.includes('锁定')" @click="lock(true)" class="mr-4!">
               {{ $t('common.lock') }}
             </Button>
             <!-- 签发按钮 -->
-            <Button v-if="author.includes('签发')" @click="signAndIssue(true)">
+            <Button v-if="author.includes('签发')" @click="signAndIssue(true)" class="mr-4!">
               {{ $t('common.signAndIssue') }}
             </Button>
             <!-- 取消锁定按钮 -->
-            <Button v-if="author.includes('取消锁定')" @click="lock()">
+            <Button v-if="author.includes('取消锁定')" @click="lock()" class="mr-4!">
               {{ $t('common.unlock') }}
             </Button>
             <!-- 取消签发按钮 -->
-            <Button v-if="author.includes('取消签发')" @click="signAndIssue()">
+            <Button v-if="author.includes('取消签发')" @click="signAndIssue()" class="mr-4!">
               {{ $t('common.cancelIssuance') }}
             </Button>
             <!-- 中止按钮 -->
-            <Button v-if="author.includes('中止')" @click="abort()">
+            <Button v-if="author.includes('中止')" @click="abort()" class="mr-4!">
               {{ $t('common.abort') }}
             </Button>
             <!-- 取消中止按钮 -->
             <Button
               v-if="author.includes('中止')"
               @click="storeRequisitionCancelSuspend()"
+              class="mr-4!"
             >
               {{ $t('common.cancelAbort') }}
             </Button>
-            <!-- ERP单据按钮 暂时不需要-->
-            <!--            <Button
+            <!-- ERP单据按钮 -->
+            <Button
               v-if="author.includes('ERP单据')"
               type="primary"
-              @click="editRow()"
+              @click="() => erpDocumentRef.open()"
+              class="mr-4!"
             >
-              {{ $t('common.erpDocument') }}
-            </Button>-->
+              {{ $t('storesRequisition.erpDocument') }}
+            </Button>
             <!-- 导出按钮 -->
             <Button
               v-if="author.includes('导出')"
               type="primary"
               @click="editRow()"
+              class="mr-4!"
             >
               {{ $t('common.export') }}
             </Button>
-          </Space>
         </template>
         <template #selectedState="{ row, column }">
           <Checkbox v-model:checked="row[column.field]" disabled />
@@ -1164,6 +1171,9 @@ onMounted(async () => {
     >
       <Input v-model:value="oddNumber" />
     </Modal>
+
+    <!-- ERP单据 -->
+    <ErpDocument ref="erpDocumentRef" />
   </Page>
 </template>
 

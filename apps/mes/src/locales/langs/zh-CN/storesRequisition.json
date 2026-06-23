@@ -49,5 +49,12 @@
   "lineSideWarehouseAllocation": "线边仓调拨",
   "templateParseFailed": "模板解析失败",
   "unitPiece": "片",
-  "dateFormat": "YYYY年MM月DD日"
+  "dateFormat": "YYYY年MM月DD日",
+  "productName": "产品名称",
+  "customerContractCode": "客户合约号",
+  "applyClass": "申请班组",
+  "erpDocument": "ERP单据",
+  "print2428": "24*28打印",
+  "print2414": "24*14打印",
+  "printFeatureNotCompleted": "打印功能暂未完成"
 }

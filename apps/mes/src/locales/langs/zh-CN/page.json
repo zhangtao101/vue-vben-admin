@@ -44,6 +44,7 @@
     "deselectAll": "全不选",
     "to": "至",
     "noTimeRange": "未设置时间范围",
-    "confirmExport": "确认导出"
+    "confirmExport": "确认导出",
+    "downloadTemplate": "模板下载"
   }
 }

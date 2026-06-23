@@ -86,7 +86,11 @@ function bind() {
     </Tooltip>
   </NodeToolbar>
 
-  <div>
+  <div
+    :class="{
+        'text-black!': !['start', 'end'].includes(id),
+      }"
+  >
     {{ data.label }}
   </div>
 

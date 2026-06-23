@@ -146,3 +146,33 @@ export function wholeOrderDelete(applyCode: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/WholeOrderDelete?applyCode=${applyCode}`,
   );
 }
+
+/**
+ * ERP单据列表查询
+ * @param params
+ */
+export function fetchERPList(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/erp/list/search?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * ERP打印汇总数据
+ * @param params
+ */
+export function ERPmp(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/ERPprint?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 导出
+ * @param params
+ */
+export function exportStoreRequisitionList(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/export?${qs.stringify(params)}`,
+  );
+}

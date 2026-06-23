@@ -30,11 +30,11 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'printCode', title: '打印模板编号', minWidth: 150 },
+    { field: 'printCode', title: $t('basic.printTemplate.printTemplateCode'), minWidth: 150 },
     {
       field: 'printState',
       slots: { default: 'printState' },
-      title: '打印状态',
+      title: $t('basic.printTemplate.printStatus'),
       minWidth: 150,
     },
     /* {
@@ -47,7 +47,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.action'),
       minWidth: 220,
     },
   ],
@@ -88,13 +88,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getPrintStateText(state: number): string {
   switch (state) {
     case 1: {
-      return '启用'; // 状态码为 1 表示启用
+      return $t('basic.printTemplate.enable');
     }
     case 2: {
-      return '停用'; // 状态码为 2 表示停用
+      return $t('basic.printTemplate.forbidden');
     }
     default: {
-      return '未定义的状态'; // 其他状态码表示未定义的状态
+      return $t('basic.printTemplate.undefinedStatus');
     }
   }
 }
@@ -107,10 +107,10 @@ function getPrintStateText(state: number): string {
 function getPrintTypeText(state: number): string {
   switch (state) {
     case 1: {
-      return '含水率打印模板'; // 类型码为 1 表示含水率打印模板
+      return $t('basic.printTemplate.moisturePrintTemplate');
     }
     default: {
-      return '未定义的打印类型'; // 其他类型码表示未定义的打印类型
+      return $t('basic.printTemplate.undefinedPrintType');
     }
   }
 }
@@ -167,11 +167,11 @@ const editRules = ref({
 // 打印状态
 const statusOptions = [
   {
-    label: '启用',
+    label: $t('basic.printTemplate.enable'),
     value: 1,
   },
   {
-    label: '停用',
+    label: $t('basic.printTemplate.forbidden'),
     value: 2,
   },
 ];

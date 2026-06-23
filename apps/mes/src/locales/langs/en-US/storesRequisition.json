@@ -49,5 +49,12 @@
   "lineSideWarehouseAllocation": "Line Side Warehouse Allocation",
   "templateParseFailed": "Template parsing failed",
   "unitPiece": "Piece",
-  "dateFormat": "MM/DD/YYYY"
+  "dateFormat": "MM/DD/YYYY",
+  "productName": "Product Name",
+  "customerContractCode": "Customer Contract Code",
+  "applyClass": "Application Class",
+  "erpDocument": "ERP Document",
+  "print2428": "24*28 Print",
+  "print2414": "24*14 Print",
+  "printFeatureNotCompleted": "Print feature is not yet implemented"
 }

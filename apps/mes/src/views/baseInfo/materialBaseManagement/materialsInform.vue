@@ -609,7 +609,7 @@ function downloadTemplate() {
                 type="primary"
                 @click="downloadTemplate"
               >
-                模板下载
+                {{ $t('page.common.downloadTemplate') }}
               </Button>
             </Col>
           </Row>

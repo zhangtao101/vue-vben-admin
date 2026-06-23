@@ -129,7 +129,12 @@
   "printTemplate": {
     "printTemplateCode": "打印模板编号",
     "printStatus": "打印状态",
-    "printType": "打印类型"
+    "printType": "打印类型",
+    "enable": "启用",
+    "forbidden": "停用",
+    "undefinedStatus": "未定义的状态",
+    "moisturePrintTemplate": "含水率打印模板",
+    "undefinedPrintType": "未定义的打印类型"
   },
   "workStationMaintenance": {
     "workStationNumber": "工作站编号",

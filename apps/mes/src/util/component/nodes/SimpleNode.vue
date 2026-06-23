@@ -30,7 +30,7 @@ function handleDelete() {
     </Tooltip>
   </NodeToolbar>
 
-  <div>
+  <div class="text-black!">
     {{ data.label }}
   </div>
 

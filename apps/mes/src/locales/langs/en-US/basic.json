@@ -124,9 +124,14 @@
     "theNumberOfPanels": "panelQty"
   },
   "printTemplate": {
-    "printTemplateCode": "printTemplateCode",
-    "printStatus": "printStatus",
-    "printType": "printType"
+    "printTemplateCode": "print Template Code",
+    "printStatus": "Print Status",
+    "printType": "Print Type",
+    "enable": "Enable",
+    "forbidden": "Disable",
+    "undefinedStatus": "Undefined Status",
+    "moisturePrintTemplate": "Moisture Print Template",
+    "undefinedPrintType": "Undefined Print Type"
   },
   "workStationMaintenance": {
     "workStationNumber": "workStationNumber",
