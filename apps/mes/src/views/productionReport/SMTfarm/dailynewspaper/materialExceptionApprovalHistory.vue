@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -27,69 +27,69 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
     {
       field: 'checkCode',
-      title: '物料投料校验异常编号',
+      title: $t('productionDaily.CodeMaterialException'),
       minWidth: 150,
     },
     {
       field: 'worksheetCode',
-      title: '工单号',
+      title: $t('productionDaily.WorkOrder_1'),
       minWidth: 150,
     },
     {
       field: 'productName',
-      title: '产品名称',
+      title: $t('productionDaily.NameProduct'),
       minWidth: 150,
     },
     {
       field: 'materialCode',
-      title: '料号',
+      title: $t('productionDaily.materialNo'),
       minWidth: 150,
     },
     {
       field: 'materialName',
-      title: '物料名称',
+      title: $t('productionDaily.NameMaterial'),
       minWidth: 150,
     },
     {
       field: 'useNumber',
-      title: '投入量',
+      title: $t('productionDaily.Input'),
       minWidth: 150,
     },
     {
       field: 'standardNumber',
-      title: '标准用量上限',
+      title: $t('productionDaily.StandardUpperLimitUsage'),
       minWidth: 150,
     },
     {
       field: 'createTime',
-      title: '创建时间',
+      title: $t('productionDaily.Time_1'),
       minWidth: 150,
     },
     {
       field: 'remark',
-      title: '备注',
+      title: $t('productionDaily.Remark'),
       minWidth: 150,
     },
     {
       field: 'auditStateName',
-      title: '审核状态名称',
+      title: $t('productionDaily.NameStatus'),
       minWidth: 150,
     },
     {
       field: 'auditUser',
-      title: '审核人',
+      title: $t('productionDaily.reviewer'),
       minWidth: 150,
     },
     {
       field: 'auditTime',
-      title: '审核时间',
+      title: $t('productionDaily.Time_5'),
       minWidth: 150,
     },
   ],

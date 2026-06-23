@@ -9,8 +9,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import { onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-
-/* eslint-disable perfectionist/sort-imports */
+import { $t } from '@vben/locales';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -30,7 +29,6 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-
 import {
   detaiCalender,
   detail,
@@ -48,47 +46,47 @@ import {
  * 显示工单列表
  */
 const mainColumns: any[] = [
-  { title: '序号', type: 'seq', width: 50 },
-  { field: 'lineName', title: '任务线别', minWidth: 100 },
-  { field: 'processName', title: '报工工序', minWidth: 150 },
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+  { field: 'lineName', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
+  { field: 'processName', title: $t('SMTPlantAdd.processName'), minWidth: 150 },
   {
     field: 'workSheetCode',
     slots: { default: 'workSheetCode' },
-    title: '工单编号',
+    title: $t('SMTPlantAdd.workSheetCode'),
     minWidth: 150,
   },
-  { field: 'subProductCode', title: '部件编号', minWidth: 80 },
+  { field: 'subProductCode', title: $t('SMTPlantAdd.subProductCode'), minWidth: 80 },
   {
     field: 'subProductName',
-    title: '部件名称',
+    title: $t('SMTPlantAdd.subProductName'),
     minWidth: 200,
   },
   {
     field: 'isProductPlan',
     slots: { default: 'isProductPlan' },
-    title: '部件/产品',
+    title: $t('SMTPlantAdd.isProductPlan'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: '下发日期', minWidth: 120 },
-  { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: '工单完成数', minWidth: 100 },
+  { field: 'planDateStart', title: $t('SMTPlantAdd.planDateStart'), minWidth: 120 },
+  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workSheetPlanNumber'), minWidth: 100 },
+  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workSheetFinishNumber'), minWidth: 100 },
   {
     field: 'status',
     slots: { default: 'status' },
-    title: '工单状态',
+    title: $t('SMTPlantAdd.workSheetStatus'),
     minWidth: 80,
   },
-  { field: 'onTimeFinishNumber', title: '下发日完成数', minWidth: 100 },
+  { field: 'onTimeFinishNumber', title: $t('SMTPlantAdd.onTimeFinishNumber'), minWidth: 100 },
   {
     field: 'delayStatus',
     slots: { default: 'delayStatus' },
-    title: '延时状态',
+    title: $t('SMTPlantAdd.delayStatus'),
     minWidth: 80,
   },
-  { field: 'delayFinishNumber', title: '延时完成数', minWidth: 100 },
-  { field: 'subPlanCode', title: '部件计划号', minWidth: 100 },
-  { field: 'updateTime', title: '操作时间', minWidth: 120 },
-  { field: 'updateUsername', title: '操作人', minWidth: 80 },
+  { field: 'delayFinishNumber', title: $t('SMTPlantAdd.delayFinishNumber'), minWidth: 100 },
+  { field: 'subPlanCode', title: $t('SMTPlantAdd.subPlanCode'), minWidth: 100 },
+  { field: 'updateTime', title: $t('SMTPlantAdd.updateTime'), minWidth: 120 },
+  { field: 'updateUsername', title: $t('SMTPlantAdd.updateUsername'), minWidth: 80 },
 ];
 
 const gridOptions: VxeGridProps<any> = {
@@ -125,42 +123,42 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
  * 人工报工明细表格配置
  */
 const detailColumns: any[] = [
-  { title: '序号', type: 'seq', width: 50 },
-  { field: 'taskLine', title: '任务线别', minWidth: 100 },
-  { field: 'processName', title: '报工工序', minWidth: 200 },
-  { field: 'workSheetCode', title: '工单编号', minWidth: 150 },
-  { field: 'partCode', title: '部件编号', minWidth: 80 },
-  { field: 'partName', title: '部件名称', minWidth: 200 },
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+  { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
+  { field: 'processName', title: $t('SMTPlantAdd.processName'), minWidth: 200 },
+  { field: 'workSheetCode', title: $t('SMTPlantAdd.workSheetCode'), minWidth: 150 },
+  { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
+  { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 200 },
   {
     field: 'partOrProduct',
     slots: { default: 'partOrProduct' },
-    title: '部件/产品',
+    title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: '下发日期', minWidth: 100 },
-  { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: '工单完成数', minWidth: 100 },
+  { field: 'planDateStart', title: $t('SMTPlantAdd.planDateStart'), minWidth: 100 },
+  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workSheetPlanNumber'), minWidth: 100 },
+  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workSheetFinishNumber'), minWidth: 100 },
   {
     field: 'isLater',
     slots: { default: 'isLater' },
-    title: '延时',
+    title: $t('SMTPlantAdd.isLater'),
     minWidth: 100,
   },
-  { field: 'reportDate', title: '报工日期', minWidth: 90 },
-  { field: 'reportTimeQuantum', title: '报工时段', minWidth: 120 },
-  { field: 'qcCode', title: '二维码', minWidth: 130 },
-  { field: 'reportNumber', title: '报工数', minWidth: 80 },
-  { field: 'partPlanCode', title: '部件计划号', minWidth: 100 },
-  { field: 'partPlanNumber', title: '计划完成数', minWidth: 100 },
-  { field: 'partPlanFinishNumber', title: '计划已完成数', minWidth: 100 },
-  { field: 'productName', title: '产品名称', minWidth: 180 },
-  { field: 'productPlanCode', title: '产品计划号', minWidth: 150 },
-  { field: 'createTime', title: '操作时间', minWidth: 160 },
-  { field: 'createUserName', title: '操作人', minWidth: 80 },
+  { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
+  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeQuantum'), minWidth: 120 },
+  { field: 'qcCode', title: $t('SMTPlantAdd.qcCode'), minWidth: 130 },
+  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
+  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 100 },
+  { field: 'partPlanNumber', title: $t('SMTPlantAdd.partPlanNumber'), minWidth: 100 },
+  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.partPlanFinishNumber'), minWidth: 100 },
+  { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 180 },
+  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 150 },
+  { field: 'createTime', title: $t('SMTPlantAdd.createTime'), minWidth: 160 },
+  { field: 'createUserName', title: $t('SMTPlantAdd.createUserName'), minWidth: 80 },
   {
     field: 'dataType',
     slots: { default: 'dataType' },
-    title: '数据来源',
+    title: $t('SMTPlantAdd.dataType'),
     minWidth: 80,
   },
 ];
@@ -193,26 +191,26 @@ const activeTab = ref<string>('second');
 
 // 工单状态选项
 const workSheetStatusOptions = [
-  { type: '0', label: '已完成' },
-  { type: '1', label: '未生产' },
-  { type: '2', label: '生产中' },
-  { type: '3', label: '足额完成' },
-  { type: '4', label: '欠额完成' },
-  { type: '5', label: '未完成' },
-  { type: '6', label: '超额完成' },
+  { type: '0', label: $t('SMTPlantAdd.completed') },
+  { type: '1', label: $t('SMTPlantAdd.notProduced') },
+  { type: '2', label: $t('SMTPlantAdd.inProduction') },
+  { type: '3', label: $t('SMTPlantAdd.fullyCompleted') },
+  { type: '4', label: $t('SMTPlantAdd.underCompleted') },
+  { type: '5', label: $t('SMTPlantAdd.notCompleted') },
+  { type: '6', label: $t('SMTPlantAdd.overCompleted') },
 ];
 
 // 部件/产品选项
 const productOptions = [
-  { value: '1', label: '部件' },
-  { value: '2', label: '产品' },
+  { value: '1', label: $t('SMTPlantAdd.part') },
+  { value: '2', label: $t('SMTPlantAdd.product') },
 ];
 
 // 延时状态选项
 const delayStatusOptions = [
-  { value: '1', label: '延时欠额' },
-  { value: '3', label: '延时足额' },
-  { value: '2', label: '延时超额' },
+  { value: '1', label: $t('SMTPlantAdd.delayUnderCompleted') },
+  { value: '3', label: $t('SMTPlantAdd.delayFullyCompleted') },
+  { value: '2', label: $t('SMTPlantAdd.delayOverCompleted') },
 ];
 
 // 日期范围
@@ -248,7 +246,7 @@ let processId = '';
 
 // 表单验证规则
 const rules: any = {
-  startDate: [{ required: true, message: '请选择日期', trigger: 'change' }],
+  startDate: [{ required: true, message: $t('SMTPlantAdd.pleaseSelectDate'), trigger: 'change' }],
 };
 
 // endregion 状态定义
@@ -300,7 +298,7 @@ function getDefaultDateRange() {
       listQuery.endDate = endDate;
     })
     .catch((error: any) => {
-      message.error(error.message || '获取日期范围失败');
+      message.error(error.message || $t('SMTPlantAdd.loadCalendarDataFailed'));
     });
 }
 
@@ -314,7 +312,7 @@ function getProcessList() {
       planProcess.value = data;
     })
     .catch((error: any) => {
-      message.error(error.message || '获取工序列表失败');
+      message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
     });
 }
 
@@ -332,13 +330,13 @@ function handleProcessChange() {
     }
   });
 
-  if (processId) {
+      if (processId) {
     fetchLineById(processId)
       .then((data: any) => {
         taskLineList.value = data;
       })
       .catch((error: any) => {
-        message.error(error.message || '获取产线列表失败');
+        message.error(error.message || $t('SMTPlantAdd.getLineListFailed'));
       });
   }
 }
@@ -361,7 +359,7 @@ function handleDateRangeChange() {
  */
 function handleSearch() {
   if (!listQuery.startDate || !listQuery.endDate) {
-    message.warning('请选择日期');
+    message.warning($t('SMTPlantAdd.pleaseSelectDate'));
     return;
   }
   gridApi.reload();
@@ -377,7 +375,7 @@ function handleExport() {
       window.open(url);
     })
     .catch((error: any) => {
-      message.error(error.message || '导出失败');
+      message.error(error.message || $t('SMTPlantAdd.exportFailed'));
     });
 }
 
@@ -406,7 +404,7 @@ function loadDetailData() {
       detailGridApi.grid.reloadData(data.list);
     })
     .catch((error: any) => {
-      message.error(error.message || '加载报工明细失败');
+      message.error(error.message || $t('SMTPlantAdd.loadDetailDataFailed'));
     });
 }
 
@@ -422,7 +420,7 @@ function handleExportDetail() {
       window.open(url);
     })
     .catch((error: any) => {
-      message.error(error.message || '导出失败');
+      message.error(error.message || $t('SMTPlantAdd.exportFailed'));
     });
 }
 
@@ -452,29 +450,29 @@ onMounted(() => {
     <!-- 查询表单 -->
     <Card>
       <Form :model="listQuery" :rules="rules" layout="inline">
-        <FormItem label="日期" name="startDate" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.selectDate')" name="startDate" class="!my-2">
           <DatePicker.RangePicker
             v-model:value="dateRange"
-            :placeholder="['开始日期', '结束日期']"
+            :placeholder="[$t('SMTPlantAdd.startDate'), $t('SMTPlantAdd.endDate')]"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             style="width: 230px"
             @change="handleDateRangeChange"
           />
         </FormItem>
-        <FormItem label="工单编号" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.workOrderCodeQuery')" class="!my-2">
           <Input
             v-model:value="listQuery.workSheetCode"
             allow-clear
-            placeholder="请输入工单编号"
+            :placeholder="$t('SMTPlantAdd.pleaseInputWorkOrderCode')"
             class="!w-48"
           />
         </FormItem>
-        <FormItem label="报工工序" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.selectProcess')" class="!my-2">
           <Select
             v-model:value="listQuery.processCode"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
             @change="handleProcessChange"
           >
@@ -487,11 +485,11 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="选择任务线" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.pleaseSelectTaskLine')" class="!my-2">
           <Select
             v-model:value="listQuery.taskLineCode"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
           >
             <SelectOption
@@ -503,11 +501,11 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="工单状态" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.workOrderStatusQuery')" class="!my-2">
           <Select
             v-model:value="listQuery.workSheetStatus"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
           >
             <SelectOption
@@ -519,19 +517,19 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="部件名称" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.partNameQuery')" class="!my-2">
           <Input
             v-model:value="listQuery.partName"
             allow-clear
-            placeholder="请输入部件名称"
+            :placeholder="$t('SMTPlantAdd.pleaseInputPartName')"
             class="!w-48"
           />
         </FormItem>
-        <FormItem label="部件/产品" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.partOrProductQuery')" class="!my-2">
           <Select
             v-model:value="listQuery.partOrProduct"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
           >
             <SelectOption
@@ -543,11 +541,11 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="延时状态" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.delayStatusQuery')" class="!my-2">
           <Select
             v-model:value="listQuery.laterStatus"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
           >
             <SelectOption
@@ -563,7 +561,7 @@ onMounted(() => {
           <Space>
             <Button type="primary" @click="handleSearch">
               <Icon icon="mdi:search" class="mr-1" />
-              查询
+              {{ $t('SMTPlantAdd.query') }}
             </Button>
           </Space>
         </FormItem>
@@ -573,10 +571,10 @@ onMounted(() => {
     <!-- 主表格 -->
     <Card style="margin-top: 16px">
       <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">工单列表</h3>
+        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.workOrderList') }}</h3>
         <Button type="primary" @click="handleExport">
           <Icon icon="mdi:export" class="mr-1" />
-          导出
+          {{ $t('SMTPlantAdd.export') }}
         </Button>
       </div>
       <Grid>
@@ -591,39 +589,39 @@ onMounted(() => {
         <template #isProductPlan="{ row }">
           <span>{{
             row.isProductPlan === false
-              ? '部件'
+              ? $t('SMTPlantAdd.part')
               : row.isProductPlan === true
-                ? '产品'
+                ? $t('SMTPlantAdd.product')
                 : ''
           }}</span>
         </template>
         <template #status="{ row }">
           <span>{{
             row.status === 0
-              ? '已完成'
+              ? $t('SMTPlantAdd.completed')
               : row.status === 1
-                ? '未生产'
+                ? $t('SMTPlantAdd.notProduced')
                 : row.status === 2
-                  ? '生产中'
+                  ? $t('SMTPlantAdd.inProduction')
                   : row.status === 3
-                    ? '足额完成'
+                    ? $t('SMTPlantAdd.fullyCompleted')
                     : row.status === 4
-                      ? '欠额完成'
+                      ? $t('SMTPlantAdd.underCompleted')
                       : row.status === 5
-                        ? '未完成'
+                        ? $t('SMTPlantAdd.notCompleted')
                         : row.status === 6
-                          ? '超额完成'
+                          ? $t('SMTPlantAdd.overCompleted')
                           : ''
           }}</span>
         </template>
         <template #delayStatus="{ row }">
           <span>{{
             row.delayStatus === 1
-              ? '延时欠额'
+              ? $t('SMTPlantAdd.delayUnderCompleted')
               : row.delayStatus === 2
-                ? '延时超额'
+                ? $t('SMTPlantAdd.delayOverCompleted')
                 : row.delayStatus === 3
-                  ? '延时足额'
+                  ? $t('SMTPlantAdd.delayFullyCompleted')
                   : ''
           }}</span>
         </template>
@@ -633,35 +631,35 @@ onMounted(() => {
     <!-- 详情表格 -->
     <Card v-if="detailShow" style="margin-top: 16px">
       <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">报工明细</h3>
+        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.reportDetails') }}</h3>
         <Button type="primary" @click="handleExportDetail">
           <Icon icon="mdi:export" class="mr-1" />
-          导出
+          {{ $t('SMTPlantAdd.export') }}
         </Button>
       </div>
       <Tabs v-model:active-key="activeTab" @change="handleTabChange">
-        <TabPane key="second" tab="人工报工">
+        <TabPane key="second" :tab="$t('SMTPlantAdd.manualReport')">
           <DetailGrid @page-change="handlePageChange">
             <template #partOrProduct="{ row }">
               <span>{{
                 row.partOrProduct === 1
-                  ? '部件'
+                  ? $t('SMTPlantAdd.part')
                   : row.partOrProduct === 2
-                    ? '产品'
+                    ? $t('SMTPlantAdd.product')
                     : ''
               }}</span>
             </template>
             <template #isLater="{ row }">
               <span>{{
-                row.isLater === 2 ? '是' : row.isLater === 1 ? '否' : ''
+                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
               }}</span>
             </template>
             <template #dataType="{ row }">
               <span>{{
                 row.dataType === 1
-                  ? '读码'
+                  ? $t('SMTPlantAdd.readCode')
                   : row.dataType === 2
-                    ? '冲红'
+                    ? $t('SMTPlantAdd.redFlush')
                     : row.dataType === 3
                       ? ''
                       : ''

@@ -45,70 +45,70 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'taskCode', title: '任务号', minWidth: 200 },
+    { field: 'taskCode', title: $t('energyConsumption.energyConsumptionCollectionDetails.taskNumber'), minWidth: 200 },
     {
       field: 'type',
-      title: '采集模式',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectionMode'),
       minWidth: 200,
       slots: {
         default: 'type',
       },
     },
-    { field: 'workstationName', title: '工作站名称', minWidth: 250 },
-    { field: 'energyEquipCode', title: '采集仪表编号', minWidth: 200 },
+    { field: 'workstationName', title: $t('energyConsumption.energyConsumptionCollectionDetails.workstationName'), minWidth: 250 },
+    { field: 'energyEquipCode', title: $t('energyConsumption.energyConsumptionCollectionDetails.collectTheInstrumentNumber'), minWidth: 200 },
     {
       field: 'energyEquipName',
-      title: '采集仪表名称',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectTheInstrumentName'),
       minWidth: 200,
     },
     {
       field: 'startTime',
-      title: '采集开始时间',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectionStartTime'),
       minWidth: 200,
     },
     {
       field: 'startValue',
-      title: '采集开始读数',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.startReadingCollection'),
       minWidth: 200,
     },
     {
       field: 'endTime',
-      title: '采集结束时间',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectionEndTime'),
       minWidth: 200,
     },
     {
       field: 'endValue',
-      title: '采集结束读数',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.readingAtTheEndOfCollection'),
       minWidth: 200,
     },
     {
       field: 'energyValue',
-      title: '采集总能耗',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectTheTotalEnergyConsumption'),
       minWidth: 200,
     },
     {
       field: 'catchUser',
-      title: '采集人',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.catchUser'),
       minWidth: 200,
     },
     {
       field: 'errorName',
-      title: '异常类型',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.exceptionType'),
       minWidth: 200,
     },
     {
       field: 'remark',
-      title: '备注',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.remark'),
       minWidth: 200,
     },
     {
       field: 'action',
-      title: '操作',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.action'),
       minWidth: 100,
       fixed: 'right',
       slots: {
@@ -155,19 +155,19 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getTypeText(state: number) {
   switch (state * 1) {
     case 1: {
-      return '天然气';
+      return $t('energyConsumption.energyConsumptionCollectionDetails.naturalGas');
     }
     case 2: {
-      return '电';
+      return $t('energyConsumption.energyConsumptionCollectionDetails.electricity');
     }
     case 3: {
-      return '水煤浆';
+      return $t('energyConsumption.energyConsumptionCollectionDetails.waterCoalSlurry');
     }
     case 4: {
-      return '焦炉气';
+      return $t('energyConsumption.energyConsumptionCollectionDetails.cokeOvenGas');
     }
     default: {
-      return '未定义的类型';
+      return $t('energyConsumption.energyConsumptionStatistics.undefinedType');
     }
   }
 }
@@ -248,15 +248,15 @@ const editForm = ref<any>();
 // form表单规则验证
 const editRules = ref<any>({
   energyEquipCode: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
-  type: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  type: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
   collectionTime: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
-  startValue: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  endValue: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  energyValue: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  startValue: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  endValue: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  energyValue: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**

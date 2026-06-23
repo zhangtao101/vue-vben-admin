@@ -79,7 +79,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'categoryCode',
       title: $t('moldCategoryMgmt.categoryCode'),
@@ -123,7 +123,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       width: 200,
     },
   ],
@@ -548,7 +548,7 @@ const route = useRoute();
             v-model:value="queryParams.status"
             :options="statusOptions"
             allow-clear
-            placeholder="请选择状态"
+            :placeholder="$t('moldCategoryMgmt.statusPlaceholder')"
             style="width: 120px"
           />
         </FormItem>
@@ -562,7 +562,7 @@ const route = useRoute();
             v-model:value="queryParams.categorySource"
             :options="sourceOptions"
             allow-clear
-            placeholder="请选择来源"
+            :placeholder="$t('moldCategoryMgmt.sourcePlaceholder')"
             style="width: 120px"
           />
         </FormItem>
@@ -643,8 +643,8 @@ const route = useRoute();
           <Switch
             :disabled="!author.includes('状态变更')"
             :checked="row.status === 'ACTIVE'"
-            checked-children="启用"
-            un-checked-children="停用"
+            :checked-children="$t('moldCategoryMgmt.statusActive')"
+            :un-checked-children="$t('moldCategoryMgmt.statusDisabled')"
             @change="
               () =>
                 row.status === 'ACTIVE' ? handleDisable(row) : handleEnable(row)
@@ -740,7 +740,7 @@ const route = useRoute();
             v-model:value="currentRow.categorySource"
             :disabled="isViewDetails"
             :options="sourceOptions"
-            placeholder="请选择类别来源"
+            :placeholder="$t('moldCategoryMgmt.categorySourcePlaceholder')"
           />
         </FormItem>
 
@@ -751,7 +751,7 @@ const route = useRoute();
             :disabled="isViewDetails"
             :options="equipmentGroupOptions"
             allow-clear
-            placeholder="请选择设备组"
+            :placeholder="$t('moldCategoryMgmt.equipmentGroupPlaceholder')"
           />
         </FormItem>
 
@@ -792,7 +792,7 @@ const route = useRoute();
             v-model:value="currentRow.recoveryMode"
             :disabled="isViewDetails"
             :options="recoveryModeOptions"
-            placeholder="请选择恢复模式"
+            :placeholder="$t('moldCategoryMgmt.recoveryModePlaceholder')"
           />
         </FormItem>
 

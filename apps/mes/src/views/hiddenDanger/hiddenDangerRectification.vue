@@ -57,23 +57,23 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'reportCode', title: '隐患编号', minWidth: 150 },
-    { field: 'discoverer', title: '发现人', minWidth: 150 },
-    { field: 'discoverTime', title: '发现时间', minWidth: 150 },
-    { field: 'hazardType', title: '隐患种类', minWidth: 150 },
-    { field: 'location', title: '区域', minWidth: 150 },
-    { field: 'description', title: '描述', minWidth: 150 },
-    { field: 'hazardSource', title: '隐患来源', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'reportCode', title: $t('hiddenDangerRectification.HiddenDangerNumber'), minWidth: 150 },
+    { field: 'discoverer', title: $t('hiddenDangerRectification.discoverer'), minWidth: 150 },
+    { field: 'discoverTime', title: $t('hiddenDangerRectification.DiscoveryTime'), minWidth: 150 },
+    { field: 'hazardType', title: $t('hiddenDangerRectification.hazardType'), minWidth: 150 },
+    { field: 'location', title: $t('hiddenDangerRectification.Location'), minWidth: 150 },
+    { field: 'description', title: $t('hiddenDangerRectification.description'), minWidth: 150 },
+    { field: 'hazardSource', title: $t('hiddenDangerRectification.HiddenDangerSource'), minWidth: 150 },
     {
       field: 'level',
-      title: '隐患等级',
+      title: $t('hiddenDangerRectification.HiddenDangerLevel'),
       minWidth: 150,
       slots: { default: 'level' },
     },
     {
       field: 'state',
-      title: '状态',
+      title: $t('hiddenDangerRectification.state'),
       minWidth: 150,
       slots: { default: 'status' },
     },
@@ -81,7 +81,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'valid',
       fixed: 'right',
       slots: { default: 'valid' },
-      title: '有效性',
+      title: $t('status.effective'),
       width: 150,
     },
     {
@@ -89,7 +89,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       width: 270,
     },
   ],
@@ -284,11 +284,11 @@ const queryParams = ref<any>({
 // 类型
 const typeList = [
   {
-    label: '隐患',
+    label: $t('hiddenDangerRectification.hiddenDanger'),
     value: 1,
   },
   {
-    label: '风险',
+    label: $t('hiddenDangerRectification.risk'),
     value: 2,
   },
 ];
@@ -297,23 +297,23 @@ const typeList = [
  */
 const levelOptions = ref([
   {
-    label: '全部',
+    label: $t('page.common.all'),
     value: -1,
   },
   {
-    label: '一般隐患',
+    label: $t('hiddenDangerRectification.generalHazard'),
     value: 1,
   },
   {
-    label: '严重隐患',
+    label: $t('hiddenDangerRectification.seriousHazard'),
     value: 2,
   },
   {
-    label: '较大隐患',
+    label: $t('hiddenDangerRectification.majorHazard'),
     value: 3,
   },
   {
-    label: '重大隐患',
+    label: $t('hiddenDangerRectification.criticalHazard'),
     value: 4,
   },
 ]);
@@ -322,27 +322,27 @@ const levelOptions = ref([
  */
 const statusOptions = ref([
   {
-    label: '全部',
+    label: $t('page.common.all'),
     value: -1,
   },
   {
-    label: '已完成',
+    label: $t('hiddenDangerInspectionTask.wasDone'),
     value: 0,
   },
   {
-    label: '隐患上报',
+    label: $t('hiddenDangerRectification.hazardReported'),
     value: 1,
   },
   {
-    label: '问题已确认',
+    label: $t('hiddenDangerRectification.issueConfirmed'),
     value: 2,
   },
   {
-    label: '已组织整改',
+    label: $t('hiddenDangerRectification.rectificationOrganized'),
     value: 3,
   },
   {
-    label: '已整改实施',
+    label: $t('hiddenDangerRectification.rectificationImplemented'),
     value: 4,
   },
 ]);
@@ -394,22 +394,22 @@ function getStatusText(status: number) {
   //  1隐患上报  2问题已确认  3已组织整改  4已整改实施
   switch (status) {
     case 0: {
-      return '已完成';
+      return $t('hiddenDangerInspectionTask.wasDone');
     }
     case 1: {
-      return '隐患上报';
+      return $t('hiddenDangerRectification.hazardReported');
     }
     case 2: {
-      return '问题已确认';
+      return $t('hiddenDangerRectification.issueConfirmed');
     }
     case 3: {
-      return '已组织整改';
+      return $t('hiddenDangerRectification.rectificationOrganized');
     }
     case 4: {
-      return '已整改实施';
+      return $t('hiddenDangerRectification.rectificationImplemented');
     }
   }
-  return '未定义的状态';
+  return $t('hiddenDangerRectification.undefinedStatus');
 }
 
 /**

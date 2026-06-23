@@ -13,7 +13,7 @@
 
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -81,23 +81,23 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'formCode', title: '单据编号', minWidth: 150 },
-    { field: 'operateDate', title: '单据日期', minWidth: 150 },
-    { field: 'operatorName', title: '创建人', minWidth: 150 },
-    { field: 'enterOut', title: '单据类型', minWidth: 150 },
-    { field: 'enterOutName', title: '单据类型说明', minWidth: 150 },
-    { field: 'outType', title: '操作类型', minWidth: 150 },
-    { field: 'outTypeName', title: '操作类型说明', minWidth: 150 },
-    { field: 'formStateName', title: '单据执行状态', minWidth: 150 },
-    { field: 'auditStateName', title: '审核状态', minWidth: 150 },
-    { field: 'auditUser', title: '审核人', minWidth: 150 },
-    { field: 'auditTime', title: '审核时间', minWidth: 150 },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
+    { field: 'formCode', title: $t('storeManagement.ioBillManagement.formCode'), minWidth: 150 },
+    { field: 'operateDate', title: $t('storeManagement.ioBillManagement.operateDate'), minWidth: 150 },
+    { field: 'operatorName', title: $t('storeManagement.ioBillManagement.operatorName'), minWidth: 150 },
+    { field: 'enterOut', title: $t('storeManagement.ioBillManagement.type'), minWidth: 150 },
+    { field: 'enterOutName', title: $t('storeManagement.ioBillManagement.enterOutName'), minWidth: 150 },
+    { field: 'outType', title: $t('storeManagement.ioBillManagement.opType'), minWidth: 150 },
+    { field: 'outTypeName', title: $t('storeManagement.ioBillManagement.outTypeName'), minWidth: 150 },
+    { field: 'formStateName', title: $t('storeManagement.ioBillManagement.formStateName'), minWidth: 150 },
+    { field: 'auditStateName', title: $t('storeManagement.ioBillManagement.auditStateName'), minWidth: 150 },
+    { field: 'auditUser', title: $t('storeManagement.ioBillManagement.auditUser'), minWidth: 150 },
+    { field: 'auditTime', title: $t('storeManagement.ioBillManagement.auditTime'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       width: 300,
     },
   ],
@@ -161,28 +161,28 @@ const showEditDrawer = ref(false);
  * 单据类型选项配置
  * 1-入库单，2-出库单
  */
-const documentType = [
-  { label: '入库单', value: 1 },
-  { label: '出库单', value: -1 },
-];
+const documentType = computed(() => [
+  { label: $t('storeManagement.ioBillManagement.inboundOrder'), value: 1 },
+  { label: $t('storeManagement.ioBillManagement.outboundOrder'), value: -1 },
+]);
 
 /**
  * 入库单操作类型选项
  * 1-正常入库，-1-退库
  */
-const operateType1 = [
-  { label: '正常入库', value: 1 },
-  { label: '退库', value: -1 },
-];
+const operateType1 = computed(() => [
+  { label: $t('storeManagement.ioBillManagement.normalInbound'), value: 1 },
+  { label: $t('storeManagement.ioBillManagement.returnToStock'), value: -1 },
+]);
 
 /**
  * 出库单操作类型选项
  * 1-正常出库，2-退货
  */
-const operateType2 = [
-  { label: '正常出库', value: 1 },
-  { label: '退货', value: 2 },
-];
+const operateType2 = computed(() => [
+  { label: $t('storeManagement.ioBillManagement.normalOutbound'), value: 1 },
+  { label: $t('storeManagement.ioBillManagement.returnGoods'), value: 2 },
+]);
 
 /**
  * 编辑表单引用对象
@@ -193,9 +193,9 @@ const editForm = ref();
  * 表单验证规则
  */
 const editRules = ref<any>({
-  operateDate: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  enterType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  outType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  operateDate: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  enterType: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  outType: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -228,11 +228,11 @@ function editRow(row?: any, isShow = false) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('common.cancelOperation'));
     },
     onOk() {
       inboundAndOutboundDocumentsAreDeleted({
@@ -242,7 +242,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('basic.confirmDeleteTitle'),
   });
 }
 
@@ -299,18 +299,18 @@ const addGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'materialCode', title: '料号', minWidth: 150 },
-    { field: 'materialName', title: '物料名称', minWidth: 150 },
-    { field: 'materialDescriptionId', title: '物料特征ID', minWidth: 150 },
-    { field: 'number', title: '数量', minWidth: 150 },
-    { field: 'manufacturerName', title: '供应商名称', minWidth: 150 },
-    { field: 'contractCode', title: '绑定单号', minWidth: 150 },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
+    { field: 'materialCode', title: $t('storeManagement.ioBillManagement.materialCode'), minWidth: 150 },
+    { field: 'materialName', title: $t('storeManagement.ioBillManagement.materialName'), minWidth: 150 },
+    { field: 'materialDescriptionId', title: $t('storeManagement.ioBillManagement.materialFeatureId'), minWidth: 150 },
+    { field: 'number', title: $t('storeManagement.ioBillManagement.number'), minWidth: 150 },
+    { field: 'manufacturerName', title: $t('storeManagement.ioBillManagement.supplierName'), minWidth: 150 },
+    { field: 'contractCode', title: $t('storeManagement.ioBillManagement.bindBillCode'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       width: 220,
     },
   ],
@@ -378,14 +378,14 @@ const detailsRef = ref<any>();
  */
 const detailsRules = ref<any>({
   materialCode: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('basic.requiredField'), required: true, trigger: 'change' },
   ],
   materialDescriptionId: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('basic.requiredField'), required: true, trigger: 'change' },
   ],
-  number: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  number: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
   contractCode: [
-    { message: '此项为必填项', required: false, trigger: 'change' },
+    { message: $t('basic.requiredField'), required: false, trigger: 'change' },
   ],
 });
 
@@ -418,17 +418,17 @@ function closeEditDrawer() {
  */
 function delDetails(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('common.cancelOperation'));
     },
     onOk() {
       addGridApi.grid.remove(row);
       message.success($t('common.successfulOperation'));
     },
-    title: '是否确认删除该条数据?',
+    title: $t('basic.confirmDeleteTitle'),
   });
 }
 
@@ -499,7 +499,7 @@ function listOfMaterialNumbersSearch(val: string) {
         } else {
           listOfMaterialNumbers.value = [
             {
-              title: '未查询到相关物料号',
+              title: $t('storeManagement.ioBillManagement.noMaterialFound'),
               disabled: true,
             },
           ];
@@ -598,20 +598,11 @@ const queryParams = ref<any>({
  * 单据类型筛选选项
  * 用于顶部搜索栏的类型筛选
  */
-const outType = [
-  {
-    label: '全部',
-    value: -99,
-  },
-  {
-    label: '入库',
-    value: 1,
-  },
-  {
-    label: '出库',
-    value: -1,
-  },
-];
+const outType = computed(() => [
+  { label: $t('storeManagement.ioBillManagement.all'), value: -99 },
+  { label: $t('storeManagement.ioBillManagement.inbound'), value: 1 },
+  { label: $t('storeManagement.ioBillManagement.outbound'), value: -1 },
+]);
 
 /**
  * 主表格数据查询函数
@@ -665,12 +656,12 @@ function queryData({ page, pageSize }: any) {
  * @param isPass 审核结果：true-通过，false-不通过
  */
 function handleAudit(row: any, isPass: boolean) {
-  const title = isPass ? '是否确认通过该条数据?' : '是否确认不通过该条数据?';
+  const title = isPass ? $t('storeManagement.ioBillManagement.auditConfirmPass') : $t('storeManagement.ioBillManagement.auditConfirmNoPass');
   const statusCode = isPass ? 1 : 2; // 1-通过，2-不通过
 
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'primary',
     title,
 
@@ -860,7 +851,7 @@ onMounted(() => {
       height="80%"
       class="custom-class"
       placement="top"
-      title="基本信息"
+      :title="$t('storeManagement.ioBillManagement.basicInfo')"
       @close="onClose"
     >
       <Form
@@ -1007,7 +998,7 @@ onMounted(() => {
       :width="500"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('storeManagement.ioBillManagement.infoEdit')"
       @close="closeEditDrawer"
     >
       <Form
@@ -1100,7 +1091,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="特性选择"
+      :title="$t('storeManagement.ioBillManagement.featureSelection')"
     >
       <JsonViewer
         v-for="item of materialCharacteristics"

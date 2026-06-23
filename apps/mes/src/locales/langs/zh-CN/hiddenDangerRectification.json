@@ -41,6 +41,20 @@
   "notAccepted": "未验收",
   "retracement": "回退",
   "title": "选择派发人员",
-  "type": "类型"
-
+  "type": "类型",
+  "discoverer": "发现人",
+  "hazardType": "隐患种类",
+  "description": "描述",
+  "generalHazard": "一般隐患",
+  "seriousHazard": "严重隐患",
+  "majorHazard": "较大隐患",
+  "criticalHazard": "重大隐患",
+  "hazardReported": "隐患上报",
+  "issueConfirmed": "问题已确认",
+  "rectificationOrganized": "已组织整改",
+  "rectificationImplemented": "已整改实施",
+  "undefinedStatus": "未定义的状态",
+  "hiddenDanger": "隐患",
+  "risk": "风险",
+  "selectHazardLevel": "请选择隐患的等级!"
 }

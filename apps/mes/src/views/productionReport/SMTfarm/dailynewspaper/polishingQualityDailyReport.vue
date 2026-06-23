@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,167 +34,167 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'scline', title: '生产线', minWidth: 200 },
-    { field: 'class', title: '班次', minWidth: 200 },
-    { field: 'productName', title: '产品名称', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'lineName', title: '产品批号', minWidth: 200 },
-    { field: 'size', title: '面积', minWidth: 200 },
+    { field: 'day', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'scline', title: $t('productionDaily.Line'), minWidth: 200 },
+    { field: 'class', title: $t('productionDaily.Shift'), minWidth: 200 },
+    { field: 'productName', title: $t('productionDaily.NameProduct'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.CodeProduct_1'), minWidth: 200 },
+    { field: 'lineName', title: $t('productionDaily.Product'), minWidth: 200 },
+    { field: 'size', title: $t('productionDaily.Area'), minWidth: 200 },
     {
       field: 'inReportNumber',
-      title: '投入量(片)',
+      title: $t('productionDaily.InputPiece'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'inReportNumberM2',
-      title: '投入量(M2)',
+      title: $t('productionDaily.InputM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'outReportNumber',
-      title: '产出量(片)',
+      title: $t('productionDaily.OutputPiece'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'outReportNumberM2',
-      title: '产出量(M2)',
+      title: $t('productionDaily.OutputM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'qpssum',
-      title: '前破碎合计(片)',
+      title: $t('productionDaily.PreBrokenTotalPiece'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'qpssumM2',
-      title: '前破碎合计(M2)',
+      title: $t('productionDaily.PreBrokenTotalM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'hpssum',
-      title: '后破碎合计(片)',
+      title: $t('productionDaily.PostBrokenTotalPiece'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'hpssumM2',
-      title: '后破碎合计(M2)',
+      title: $t('productionDaily.PostBrokenTotalM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'pssum',
-      title: '破碎合计(片)',
+      title: $t('productionDaily.TotalBrokenPiece'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'pssumM2',
-      title: '破碎合计(M2)',
+      title: $t('productionDaily.TotalBrokenM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      title: '入库PA率(PA量/入库量)',
+      title: $t('productionDaily.InboundRate'),
       children: [
         {
           field: 'inMBPA',
-          title: '目标',
+          title: $t('productionDaily.target'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'inSJPA',
-          title: '实际',
+          title: $t('productionDaily.Actual'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '破损率',
+      title: $t('productionDaily.Rate'),
       children: [
         {
           field: 'ylqpsl',
-          title: '前破碎',
+          title: $t('productionDaily.PreBroken'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'hqpsl',
-          title: '后破碎',
+          title: $t('productionDaily.PostBroken'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '缺陷率（缺陷量/入库量）',
+      title: $t('productionDaily.InboundDefectRate'),
       children: [
         {
           field: 'qxwl',
-          title: '洞孔，釉粒，破釉，凹坑，不料不均，混料，色差，阴阳面，线条',
+          title: $t('productionDaily.ColorDiffPitGlaze'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxel',
-          title: '平整度超标，凹超，凸超，翘角，塌角，玻浪型超标',
+          title: $t('productionDaily.flatnessExceeded'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxtl',
-          title: '色点，杂质，混料',
+          title: $t('productionDaily.colorSpotImpurityMixed'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxfl',
-          title: '二等色点，杂质，混料',
+          title: $t('productionDaily.secondGradeDefects'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxyl',
-          title: '表面分层，开裂，侧面分层，毛口',
+          title: $t('productionDaily.BurrDelamSurfaceSide'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxll',
-          title: '色差，阴阳面，平整度',
+          title: $t('productionDaily.ColorDiff'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxol',
-          title: '洞孔，釉粒，破釉，凹坑，喷釉不均，线条',
+          title: $t('productionDaily.PitGlaze'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxpl',
-          title: '缺角，对角线',
+          title: $t('productionDaily.chippedCornerDiagonal'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '入库量分布',
+      title: $t('productionDaily.Inbound_2'),
       children: [
         {
           field: 'qxwin',
@@ -212,145 +212,145 @@ const gridOptions: VxeGridProps<any> = {
         },
         {
           field: 'qxein',
-          title: '平整度超标，凹超，凸超，翘角，塌角，玻浪型超标(片)',
+          title: $t('productionDaily.Piece_6'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxeinM2',
-          title: '平整度超标，凹超，凸超，翘角，塌角，玻浪型超标(M2)',
+          title: $t('productionDaily.M2_11'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxtin',
-          title: '色点，杂质，混料(片)',
+          title: $t('productionDaily.Piece_10'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxtinM2',
-          title: '色点，杂质，混料(M2)',
+          title: $t('productionDaily.M2_19'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxfin',
-          title: '二等色点，杂质，混料(片)',
+          title: $t('productionDaily.Piece_2'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxfinM2',
-          title: '二等色点，杂质，混料(M2)',
+          title: $t('productionDaily.M2_6'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxyin',
-          title: '表面分层，开裂，侧面分层，毛口(片)',
+          title: $t('productionDaily.BurrDelamSurfaceSidePiece'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxyinM2',
-          title: '表面分层，开裂，侧面分层，毛口(M2)',
+          title: $t('productionDaily.M2BurrDelamSurfaceSide'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxlin',
-          title: '色差，阴阳面，平整度(片)',
+          title: $t('productionDaily.ColorDiffPiece'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxlinM2',
-          title: '色差，阴阳面，平整度(M2)',
+          title: $t('productionDaily.ColorDiffM2'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxoin',
-          title: '洞孔，釉粒，破釉，凹坑，喷釉不均，线条(片)',
+          title: $t('productionDaily.PitGlazePiece'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxoinM2',
-          title: '洞孔，釉粒，破釉，凹坑，喷釉不均，线条(M2)',
+          title: $t('productionDaily.M2PitGlaze'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxpin',
-          title: '缺角，对角线(片)',
+          title: $t('productionDaily.Piece_7'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxpinM2',
-          title: '缺角，对角线(M2)',
+          title: $t('productionDaily.M2_14'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '报废（磨边砖800、600*1200规格无二等品，40砖无等级品）',
+      title: $t('productionDaily.Grade2SpecScrap'),
       children: [
         {
           field: 'qxwfw',
-          title: '洞孔，釉粒，破釉，凹坑，不料不均，混料，色差，阴阳面，线条',
+          title: $t('productionDaily.ColorDiffPitGlaze'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxefw',
-          title: '平整度超标，凹超，凸超，翘角，塌角，玻浪型超标',
+          title: $t('productionDaily.flatnessExceeded'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxtfw',
-          title: '色点，杂质，混料',
+          title: $t('productionDaily.colorSpotImpurityMixed'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxffw',
-          title: '二等色点，杂质，混料',
+          title: $t('productionDaily.secondGradeDefects'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxyfw',
-          title: '表面分层，开裂，侧面分层，毛口',
+          title: $t('productionDaily.BurrDelamSurfaceSide'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxlfw',
-          title: '色差，阴阳面，平整度',
+          title: $t('productionDaily.ColorDiff'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxofw',
-          title: '洞孔，釉粒，破釉，凹坑，喷釉不均，线条',
+          title: $t('productionDaily.PitGlaze'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'qxpfw',
-          title: '缺角，对角线',
+          title: $t('productionDaily.chippedCornerDiagonal'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
@@ -392,13 +392,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

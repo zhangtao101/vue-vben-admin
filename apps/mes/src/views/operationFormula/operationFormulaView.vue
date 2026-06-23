@@ -48,7 +48,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     { field: 'userName', title: '所属工序', minWidth: 150 },
     { field: 'perName', title: '工步名称', minWidth: 150 },
     { field: 'workNumber', title: '工步ID', minWidth: 150 },
@@ -110,11 +110,11 @@ const showEditDrawer = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  isEnable: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  isEnable: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
   perName_workNumber: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
-  userName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  userName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -149,11 +149,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteUser(row.userCode).then(() => {
@@ -162,7 +162,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 

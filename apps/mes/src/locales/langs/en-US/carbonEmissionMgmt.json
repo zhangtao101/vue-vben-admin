@@ -1,0 +1,14 @@
+{
+  "enterpriseElectricityCarbon": "Enterprise Purchased Electricity Carbon",
+  "fossilFuelCarbon": "Fossil Fuel Combustion Carbon",
+  "time": "Time",
+  "currentEmissionValue": "Current Emission Value",
+  "previousEmissionValue": "Previous Emission Value",
+  "lastYear": "Last Year",
+  "thisYear": "This Year",
+  "itemName": "Item Name",
+  "itemEnergyComparison": "Itemized Energy Comparison",
+  "itemEnergyRatio": "Itemized Energy Ratio (Last 30 Days)",
+  "itemEnergyYearOnYear": "Itemized Energy YoY Analysis",
+  "itemEnergyTrend": "Itemized Energy Trend (Last 30 Days)"
+}

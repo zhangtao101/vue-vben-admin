@@ -76,11 +76,11 @@ function submit() {
  */
 const meterTypeOptions = ref<any>([
   {
-    label: '水表',
+    label: $t('equip.meterTypeWater'),
     value: 2,
   },
   {
-    label: '气表',
+    label: $t('equip.meterTypeGas'),
     value: 3,
   },
 ]);
@@ -129,7 +129,7 @@ function queryMeterData(row: any) {
             :name="['energyList', index, 'meterType']"
             :rules="{
               required: true,
-              message: '该项为必填字段',
+              message: $t('equip.requiredItem'),
               trigger: 'change',
             }"
             :label="$t('energyConsumption.energyConsumptionAnalysis.meterType')"
@@ -151,7 +151,7 @@ function queryMeterData(row: any) {
             :name="['energyList', index, 'equipmentCode']"
             :rules="{
               required: true,
-              message: '该项为必填字段',
+              message: $t('equip.requiredItem'),
               trigger: 'change',
             }"
             :label="
@@ -172,7 +172,7 @@ function queryMeterData(row: any) {
             :name="['energyList', index, 'updateTime']"
             :rules="{
               required: true,
-              message: '该项为必填字段',
+              message: $t('equip.requiredItem'),
               trigger: 'change',
             }"
             :label="
@@ -190,7 +190,7 @@ function queryMeterData(row: any) {
             :name="['energyList', index, 'value']"
             :rules="{
               required: true,
-              message: '该项为必填字段',
+              message: $t('equip.requiredItem'),
               trigger: 'change',
             }"
             :label="

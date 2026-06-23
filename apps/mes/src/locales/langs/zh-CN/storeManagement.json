@@ -5,7 +5,8 @@
     "storeType": "仓库类型",
     "storeLocation": "仓库位置",
     "storeCapacity": "仓库容量",
-    "storeRemark": "备注"
+    "storeRemark": "备注",
+    "isUse": "是否启用"
   },
   "physicalStore": {
     "status": "状态",
@@ -19,7 +20,9 @@
   "storeLocation": {
     "wareLocationCode": "库位编号",
     "wareLocationName": "库位名称",
-    "physicalWareArea": "物理库区"
+    "physicalWareArea": "物理库区",
+    "templateParseFailed": "模板解析失败",
+    "locationPrint": "库位打印"
   },
   "ioBillManagement": {
     "ioBillCode": "单据编号",
@@ -34,7 +37,31 @@
     "number": "数量",
     "materialFeatureId": "物料特征ID",
     "shifts": "班次",
-    "batch": "批号"
+    "batch": "批号",
+    "formCode": "单据编号",
+    "operateDate": "单据日期",
+    "operatorName": "创建人",
+    "enterOutName": "单据类型说明",
+    "outTypeName": "操作类型说明",
+    "formStateName": "单据执行状态",
+    "auditStateName": "审核状态",
+    "auditUser": "审核人",
+    "auditTime": "审核时间",
+    "inboundOrder": "入库单",
+    "outboundOrder": "出库单",
+    "normalInbound": "正常入库",
+    "returnToStock": "退库",
+    "normalOutbound": "正常出库",
+    "returnGoods": "退货",
+    "basicInfo": "基本信息",
+    "infoEdit": "信息编辑",
+    "featureSelection": "特性选择",
+    "all": "全部",
+    "inbound": "入库",
+    "outbound": "出库",
+    "noMaterialFound": "未查询到相关物料号",
+    "auditConfirmPass": "是否确认通过该条数据?",
+    "auditConfirmNoPass": "是否确认不通过该条数据?"
   },
   "inventoryManagement": {
     "materialNumber": "材料编号",
@@ -44,7 +71,20 @@
     "warehouseType": "仓库类型",
     "logicalRepositories": "逻辑仓库",
     "physicalWarehouse": "物理仓库",
-    "number": "单号"
+    "number": "单号",
+    "qualityTest": "质检",
+    "contract": "合同",
+    "semiFinished": "半成品",
+    "zeroStock": "零库存",
+    "materialType": "材料类别",
+    "materialDrawingCode": "材料图号",
+    "stockQuality": "库存数量",
+    "minPackNumber": "最小包装数",
+    "safeLevel": "安全量",
+    "storageCode": "所在储位",
+    "wareHouse": "所在仓库",
+    "wareArea": "所在库区",
+    "wareLocation": "所在库位"
   },
   "batchLock": {
     "batch": "批次",
@@ -54,7 +94,12 @@
     "partNumber": "料号",
     "lock": "锁定",
     "unlock": "解锁",
-    "tag": "标记"
+    "tag": "标记",
+    "packingCode": "箱码",
+    "storageLocation": "所属储位",
+    "lockTypeName": "锁定状态说明",
+    "confirmOperation": "是否确认操作!",
+    "pleaseSelectData": "请先选择数据!"
   },
   "labelPrint": {
     "labelPrint": "标签打印",
@@ -156,7 +201,8 @@
     "outboundOrder": "出库单",
     "transferOrder": "调拨单",
     "typeName": "类别",
-    "workOrderCode": "工单号"
+    "workOrderCode": "工单号",
+    "templateFileName": "材料导入模板.xlsx"
   },
   "inspectionSlip": {
     "formCode": "送检单号",
@@ -415,6 +461,11 @@
     "selectPrintRows": "请选择需要打印的单据",
     "sameTransferFormOnly": "请选择同一张调拨单号的数据"
   },
+  "lineSideWarehouseAllocation": {
+    "templateParseFailed": "模板解析失败",
+    "unitPiece": "片",
+    "dateFormat": "YYYY年MM月DD日"
+  },
   "materialInventory": {
     "formCode": "盘点单号",
     "inventoryDate": "盘点日期",
@@ -437,6 +488,14 @@
     "toProfitLoss": "转盈亏单",
     "selectData": "请选择数据",
     "selectOneData": "请选择一条数据",
-    "todoFeature": "该功能正在迁移中"
+    "todoFeature": "该功能正在迁移中",
+    "alreadyConvertedToProfitLoss": "该盘点单已转盈亏单，不能编辑",
+    "confirmDeleteContent": "是否确定删除?",
+    "deleteSuccess": "删除成功",
+    "operationSuccess": "操作成功",
+    "operationFailed": "操作失败",
+    "confirmIssue": "确认是否签发!",
+    "confirmProfitLoss": "确认转盈亏单!",
+    "confirmUnIssue": "确认是否取消签发!"
   }
 }

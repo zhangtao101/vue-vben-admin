@@ -53,38 +53,38 @@ const columns = ref([
   {
     dataIndex: 'materialCode',
     ellipsis: true,
-    title: '料号',
+    title: $t('basic.bomManagement.msd.materialCode'),
     width: 120,
   },
   {
     dataIndex: 'typeName',
     ellipsis: true,
-    title: '所属类型',
+    title: $t('basic.barCodeManagement.typeOfOwnership'),
     width: 120,
   },
   {
     dataIndex: 'materialName',
     ellipsis: true,
-    title: '物料名称',
+    title: $t('baseInfo.materialName'),
     width: 120,
   },
   {
     dataIndex: 'specialLevelName',
     ellipsis: true,
-    title: '品质等级',
+    title: $t('baseInfo.qualityLevel'),
     width: 120,
   },
   {
     dataIndex: 'createTime',
     ellipsis: true,
-    title: '创建时间',
+    title: $t('baseInfo.createTime'),
     width: 120,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('baseInfo.action'),
     width: 80,
   },
 ] as any[]);
@@ -193,49 +193,49 @@ const detailColumns = ref([
   {
     dataIndex: 'materialType',
     ellipsis: true,
-    title: '规格型号',
+    title: $t('baseInfo.specification'),
     width: 120,
   },
   {
     dataIndex: 'packaging',
     ellipsis: true,
-    title: '封装',
+    title: $t('baseInfo.packaging'),
     width: 120,
   },
   {
     dataIndex: 'dosage',
     ellipsis: true,
-    title: '用量',
+    title: $t('baseInfo.usage'),
     width: 120,
   },
   {
     dataIndex: 'location',
     ellipsis: true,
-    title: '位置',
+    title: $t('baseInfo.location'),
     width: 120,
   },
   {
     dataIndex: 'createTime',
     ellipsis: true,
-    title: '创建时间',
+    title: $t('baseInfo.createTime'),
     width: 120,
   },
   {
     dataIndex: 'remark',
     ellipsis: true,
-    title: '备注',
+    title: $t('baseInfo.remark'),
     width: 80,
   },
   {
     dataIndex: 'remark1',
     ellipsis: true,
-    title: '备注1',
+    title: $t('baseInfo.remark1'),
     width: 80,
   },
   {
     dataIndex: 'remark2',
     ellipsis: true,
-    title: '备注2',
+    title: $t('baseInfo.remark2'),
     width: 80,
   },
 ] as any[]);
@@ -313,9 +313,9 @@ const headers = ref({
 // 文件上传状态改变事件
 function handleChange(info: UploadChangeParam) {
   if (info.file.status === 'done') {
-    message.success(`${info.file.name} file uploaded successfully`);
+    message.success($t('baseInfo.uploadSuccessMessage'));
   } else if (info.file.status === 'error') {
-    message.error(`${info.file.name} file upload failed.`);
+    message.error($t('baseInfo.uploadFailed'));
   }
 }
 
@@ -491,9 +491,9 @@ function closePrint() {
       :height="560"
       class="custom-class"
       placement="top"
-      title="详情查看"
+      :title="$t('common.detail')"
     >
-      <TypographyTitle :level="3">产品引用</TypographyTitle>
+      <TypographyTitle :level="3">{{ $t('basic.bomManagement.materialsInform.productReference') }}</TypographyTitle>
       <Table
         :columns="detailColumns"
         :data-source="details"
@@ -516,7 +516,7 @@ function closePrint() {
       :height="560"
       class="custom-class"
       placement="top"
-      title="打印"
+      :title="$t('common.print')"
     >
       <!-- region 打印区域 -->
       <div id="printDiv">
@@ -537,7 +537,7 @@ function closePrint() {
                 colspan="10"
               >
                 <div class="flex-1">
-                  <label>产品 名称</label>
+                  <label>{{ $t('baseInfo.productName') }}</label>
                   <span>{{ printData.product.productName }}</span>
                 </div>
                 <div class="flex-1">555</div>

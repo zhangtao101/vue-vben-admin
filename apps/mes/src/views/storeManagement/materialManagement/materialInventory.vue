@@ -300,7 +300,7 @@ function handleEdit() {
   }
   const selectedRow = selectedRows.value[0];
   if (selectedRow.profitLoss) {
-    message.warning('该盘点单已转盈亏单，不能编辑');
+    message.warning($t('storeManagement.materialInventory.alreadyConvertedToProfitLoss'));
     return;
   }
   currentEditRow.value = selectedRow;
@@ -314,17 +314,17 @@ function handleDelete() {
     return;
   }
   Modal.confirm({
-    title: '提示',
-    content: '是否确定删除?',
+    title: $t('common.prompt'),
+    content: $t('storeManagement.materialInventory.confirmDeleteContent'),
     onOk: () => {
       deleteMaterialInventory(selectedIds.value)
         .then(() => {
-          message.success('删除成功');
+          message.success($t('storeManagement.materialInventory.deleteSuccess'));
           clearSelectionAndDetail();
           mainGridApi.reload();
         })
         .catch(() => {
-          message.warning('操作失败');
+          message.warning($t('storeManagement.materialInventory.operationFailed'));
         });
     },
   });
@@ -336,9 +336,9 @@ function issueByType(type: 'issue' | 'profitLoss' | 'unIssue') {
     return;
   }
   const confirmText = {
-    issue: '确认是否签发!',
-    profitLoss: '确认转盈亏单!',
-    unIssue: '确认是否取消签发!',
+    issue: $t('storeManagement.materialInventory.confirmIssue'),
+    profitLoss: $t('storeManagement.materialInventory.confirmProfitLoss'),
+    unIssue: $t('storeManagement.materialInventory.confirmUnIssue'),
   };
   const requestMap = {
     issue: issueMaterialInventory,
@@ -346,17 +346,17 @@ function issueByType(type: 'issue' | 'profitLoss' | 'unIssue') {
     unIssue: unIssueMaterialInventory,
   };
   Modal.confirm({
-    title: '提示',
+    title: $t('common.prompt'),
     content: confirmText[type],
     onOk: () => {
       requestMap[type](selectedIds.value)
         .then(() => {
-          message.success('操作成功');
+          message.success($t('storeManagement.materialInventory.operationSuccess'));
           clearSelectionAndDetail();
           mainGridApi.reload();
         })
         .catch(() => {
-          message.warning('操作失败');
+          message.warning($t('storeManagement.materialInventory.operationFailed'));
         });
     },
   });
@@ -374,7 +374,7 @@ function handleExport() {
       }
     })
     .catch(() => {
-      message.warning('操作失败');
+      message.warning($t('storeManagement.materialInventory.operationFailed'));
     });
 }
 

@@ -1,0 +1,13 @@
+{
+  "systemName": "System Name",
+  "totalEnergyUsage": "Total Energy Usage",
+  "productionEnergy": "Production Energy",
+  "nonProductionEnergy": "Non-Production Energy",
+  "createTime": "Create Time",
+  "workOrderNumber": "Work Order No.",
+  "productName": "Product Name",
+  "deviceName": "Device Name",
+  "deviceNumber": "Device No.",
+  "productQuantity": "Quantity",
+  "singleEnergyUsage": "Energy per Unit"
+}

@@ -37,62 +37,62 @@ const columns = ref([
   {
     dataIndex: 'checkCode',
     ellipsis: true,
-    title: '物料投料校验异常编号',
+    title: $t('productionFeedAudit.abnormalCheckCode'),
     width: 180,
   },
   {
     dataIndex: 'worksheetCode',
     ellipsis: true,
-    title: '工单号',
+    title: $t('productionFeedAudit.worksheetCode'),
     width: 170,
   },
   {
     dataIndex: 'productName',
     ellipsis: true,
-    title: '产品名称',
+    title: $t('productionFeedAudit.productName'),
     width: 170,
   },
   {
     dataIndex: 'materialCode',
     ellipsis: true,
-    title: '料号',
+    title: $t('productionFeedAudit.materialCode'),
     width: 100,
   },
   {
     dataIndex: 'materialName',
     ellipsis: true,
-    title: '物料名称',
+    title: $t('productionFeedAudit.materialName'),
     width: 220,
   },
   {
     dataIndex: 'useNumber',
     ellipsis: true,
-    title: '投入量',
+    title: $t('productionFeedAudit.inputQuantity'),
     width: 120,
   },
   {
     dataIndex: 'standardNumber',
     ellipsis: true,
-    title: '标准用量上限',
+    title: $t('productionFeedAudit.standardUpperLimit'),
     width: 120,
   },
   {
     dataIndex: 'createTime',
     ellipsis: true,
-    title: '生成时间',
+    title: $t('productionFeedAudit.generateTime'),
     width: 170,
   },
   {
     dataIndex: 'remark',
     ellipsis: true,
-    title: '备注',
+    title: $t('productionFeedAudit.remark'),
     width: 170,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('productionFeedAudit.action'),
     width: 170,
   },
 ] as any[]);
@@ -188,7 +188,7 @@ function paginationChange(page: any) {
 function handleAudit(row: any, isPass: boolean) {
   // 根据 isPass 的值设置对话框的标题和 audioFun 的状态码
   // 如果 isPass 为 true，表示审核通过，否则表示审核不通过
-  const title = isPass ? '是否确认通过该条数据?' : '是否确认不通过该条数据?';
+  const title = isPass ? $t('productionFeedAudit.confirmPass') : $t('productionFeedAudit.confirmReject');
   const statusCode = isPass ? 1 : 2;
 
   // 调用 Modal.confirm 方法显示一个确认对话框，让用户确认是否执行审核操作
@@ -196,11 +196,11 @@ function handleAudit(row: any, isPass: boolean) {
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'primary'，表示这是一个主要的操作。
      */

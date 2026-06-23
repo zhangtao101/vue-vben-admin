@@ -75,7 +75,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('page.common.serialNumber') },
     {
       field: 'taskCode',
       title: $t('inventoryTaskView.taskCode'),
@@ -111,7 +111,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       width: 150,
     },
   ],
@@ -235,7 +235,7 @@ const materialGridOptions: VxeGridProps<any> = {
     isHover: true,
   },
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'materialCode',
       title: $t('inventoryTaskView.materialCode'),
@@ -283,7 +283,7 @@ const detailGridOptions: VxeGridProps<any> = {
   border: true,
   stripe: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'labelCode',
       title: $t('inventoryTaskView.labelCode'),

@@ -59,32 +59,32 @@ const columns = ref([
   {
     dataIndex: 'roleCode',
     ellipsis: true,
-    title: '角色编码',
+    title: $t('system.sysRole.roleCode'),
     width: 60,
   },
   {
     dataIndex: 'roleName',
     ellipsis: true,
-    title: '角色名称',
+    title: $t('system.sysRole.roleName'),
     width: 70,
   },
   {
     dataIndex: 'isEnable',
     ellipsis: true,
-    title: '状态',
+    title: $t('common.status'),
     width: 60,
   },
   {
     dataIndex: 'discription',
     ellipsis: true,
-    title: '描述',
+    title: $t('basic.description'),
     width: 80,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('common.operation'),
     width: 80,
   },
 ] as any[]);
@@ -130,11 +130,11 @@ const showEditDrawer = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  isEnable: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  isEnable: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
   perName_workNumber: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('basic.requiredField'), required: true, trigger: 'change' },
   ],
-  userName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  userName: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -166,11 +166,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('system.sysRole.deleteCancelled'));
     },
     onOk() {
       deleteRoleById(row.id)
@@ -185,7 +185,7 @@ function delRow(row: any) {
           message.error(error.msg); // 显示操作失败的提示信息
         });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -587,19 +587,19 @@ onMounted(() => {
       :width="600"
       class="custom-class"
       placement="right"
-      title="查看详情"
+      :title="$t('basic.viewDetail')"
     >
-      <Descriptions :column="2" bordered title="用户详情">
-        <DescriptionsItem label="角色编码">
+      <Descriptions :column="2" bordered :title="$t('system.sysRole.userDetail')">
+        <DescriptionsItem :label="$t('system.sysRole.roleCode')">
           {{ checkedRow.roleCode }}
         </DescriptionsItem>
-        <DescriptionsItem label="角色名称">
+        <DescriptionsItem :label="$t('system.sysRole.roleName')">
           {{ checkedRow.roleName }}
         </DescriptionsItem>
-        <DescriptionsItem :span="2" label="状态">
-          {{ checkedRow.isEnable ? '启用' : '禁用' }}
+        <DescriptionsItem :span="2" :label="$t('common.status')">
+          {{ checkedRow.isEnable ? $t('common.enable') : $t('common.stopUsing') }}
         </DescriptionsItem>
-        <DescriptionsItem :span="2" label="描述">
+        <DescriptionsItem :span="2" :label="$t('basic.description')">
           {{ checkedRow.discription }}
         </DescriptionsItem>
       </Descriptions>
@@ -613,7 +613,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('basic.infoEdit')"
       @close="onClose"
     >
       <Form
@@ -630,7 +630,7 @@ onMounted(() => {
           <Input
             v-model:value="checkedRow.roleCode"
             disabled
-            placeholder="自动生成"
+            :placeholder="$t('system.sysRole.autoGenerate')"
           />
         </FormItem>
         <!-- 角色名称 -->
@@ -640,8 +640,8 @@ onMounted(() => {
         <!-- 状态 -->
         <FormItem :label="$t('system.sysRole.isEnable')" name="isEnable">
           <RadioGroup v-model:value="checkedRow.isEnable">
-            <Radio :value="1">启用</Radio>
-            <Radio :value="0">禁用</Radio>
+            <Radio :value="1">{{ $t('common.enable') }}</Radio>
+            <Radio :value="0">{{ $t('common.stopUsing') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 用户描述 -->
@@ -701,7 +701,7 @@ onMounted(() => {
         :width="300"
         class="custom-class"
         placement="right"
-        title="web权限配置"
+        :title="$t('system.sysRole.webPermissionsConfiguration')"
       >
         <Tree
           v-model:checked-keys="selectedWebPermissionCodes"
@@ -720,7 +720,7 @@ onMounted(() => {
         :width="300"
         class="custom-class"
         placement="right"
-        title="pda权限配置"
+        :title="$t('system.sysRole.pdaPermissionsConfiguration')"
       >
         <Tree
           v-model:checked-keys="selectedPdaPermissionCodes"

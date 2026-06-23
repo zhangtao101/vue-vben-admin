@@ -86,7 +86,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 60, title: '序号' },
+    { type: 'seq', width: 60, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'schemeCode',
       title: $t('tallyScheme.schemeCode'),
@@ -133,7 +133,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'action',
-      title: '操作',
+      title: $t('common.operation'),
       width: 180,
       fixed: 'right',
       slots: { default: 'action' },
@@ -253,10 +253,10 @@ function handleView(row: MaintenanceScheme) {
 // ========== 删除 ==========
 function handleDelete(row: MaintenanceScheme) {
   Modal.confirm({
-    title: '提示',
+    title: $t('common.prompt'),
     content: $t('tallyScheme.confirmDelete'),
-    okText: '确认',
-    cancelText: '取消',
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
     okButtonProps: { danger: true },
     onOk() {
       return new Promise((resolve) => {
@@ -351,11 +351,11 @@ onMounted(() => {
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
-          <Button @click="handleReset">重置</Button>
+          <Button @click="handleReset">{{ $t('common.reset') }}</Button>
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
-          <Button type="primary" @click="gridApi.reload()">查询</Button>
+          <Button type="primary" @click="gridApi.reload()">{{ $t('common.query') }}</Button>
         </FormItem>
       </Form>
     </Card>

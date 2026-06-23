@@ -33,10 +33,10 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'typeCode', title: '类别编号', minWidth: 80 },
-    { field: 'typeName', title: '类别名称', minWidth: 80 },
-    { field: 'typeLevel', title: '类别等级', minWidth: 100 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'typeCode', title: $t('basic.productCategory.categoryNumber'), minWidth: 80 },
+    { field: 'typeName', title: $t('basic.productCategory.categoryName'), minWidth: 80 },
+    { field: 'typeLevel', title: $t('baseInfo.categoryLevel'), minWidth: 100 },
     /* {
       field: 'action',
       fixed: 'right',
@@ -133,7 +133,7 @@ const selectedKeys = ref<string[]>([]);
 const treeData = ref<any[]>([
   {
     code: '',
-    name: '全部',
+    name: $t('page.common.all'),
     childrens: [],
   },
 ]);

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -24,64 +24,64 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
     {
       field: 'worksheetCode',
-      title: '工单号',
+      title: $t('productionDaily.WorkOrder_1'),
       minWidth: 200,
     },
     {
       field: 'workstationCode',
-      title: '工作站编号',
+      title: $t('productionDaily.Code_3'),
       minWidth: 150,
     },
     {
       field: 'workstationName',
-      title: '工作站名称',
+      title: $t('productionDaily.Name'),
       minWidth: 150,
     },
     {
       field: 'productName',
-      title: '产品名称',
+      title: $t('productionDaily.NameProduct'),
       minWidth: 150,
     },
     {
       field: 'worksheetPlanNumber',
-      title: '工单计划数',
+      title: $t('productionDaily.WorkOrderPlan'),
       minWidth: 150,
     },
     {
       field: 'worksheetFinishNumber',
-      title: '工单完工数',
+      title: $t('productionDaily.WorkOrder_2'),
       minWidth: 150,
     },
     {
       field: 'materialCode',
-      title: '物料编号',
+      title: $t('productionDaily.CodeMaterial'),
       minWidth: 150,
     },
     {
       field: 'materialName',
-      title: '物料名称',
+      title: $t('productionDaily.NameMaterial'),
       minWidth: 200,
     },
     {
       field: 'feedNumber',
-      title: '实际投入量',
+      title: $t('productionDaily.InputActual'),
       minWidth: 150,
     },
     {
       field: 'standardNumber',
-      title: '标准应发量',
+      title: $t('productionDaily.ShouldIssueStandard'),
       minWidth: 150,
     },
     {
       field: 'unit',
-      title: '单位',
+      title: $t('productionDaily.unitName'),
       minWidth: 150,
     },
   ],
@@ -125,13 +125,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

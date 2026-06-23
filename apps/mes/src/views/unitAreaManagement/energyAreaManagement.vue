@@ -49,32 +49,32 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'partitionID',
-      title: '分区 ID',
+      title: $t('unitAreaManagement.partitionID'),
       minWidth: 150,
     },
     {
       field: 'partitionName',
-      title: '分区名称',
+      title: $t('unitAreaManagement.partitionName'),
       minWidth: 150,
     },
     {
       field: 'partitionJC',
-      title: '分区简称',
+      title: $t('unitAreaManagement.partitionAbbreviation'),
       minWidth: 150,
     },
     {
       field: 'parentPartitionName',
-      title: '上级分区',
+      title: $t('unitAreaManagement.superiorPartition'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       width: 220,
     },
   ],
@@ -125,7 +125,7 @@ const editForm = ref();
 const editRules = ref<any>({
   partitionID: [
     {
-      message: '此项为必填项',
+      message: $t('page.common.requiredField'),
       required: true,
       trigger: 'change',
     },
@@ -139,7 +139,7 @@ const editRules = ref<any>({
     },
   ],
   partitionName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
     {
       trigger: 'change',
       validator: (_rule: any, value: any) => {
@@ -149,7 +149,7 @@ const editRules = ref<any>({
       },
     },
   ],
-  partitionJC: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  partitionJC: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 /**
  * 用能分区ID防抖
@@ -163,7 +163,7 @@ const partitionIDAntiShake = debounce(
       if (res) {
         resolve();
       } else {
-        reject(new Error('该用能分区ID已存在'));
+        reject(new Error($t('unitAreaManagement.partitionIDExists')));
       }
     });
   },
@@ -181,7 +181,7 @@ const partitionNameAntiShake = debounce(
       if (res) {
         resolve();
       } else {
-        reject(new Error('该用能分区名称已存在'));
+        reject(new Error($t('unitAreaManagement.partitionNameExists')));
       }
     });
   },
@@ -206,11 +206,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteEnergyZoning(row.id).then(() => {
@@ -219,7 +219,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -326,10 +326,10 @@ function handleChange(info: any) {
     // 重新查询数据，更新列表
     gridApi.reload();
     // 显示成功消息
-    message.success('文件上传成功!');
+    message.success($t('page.common.uploadSuccess'));
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || '文件上传失败';
+    const errorMessage = info.file.response?.message || $t('unitAreaManagement.uploadFailed');
     // 显示错误消息
     message.error(errorMessage);
   }
@@ -497,7 +497,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('unitAreaManagement.editInfo')"
     >
       <Form
         ref="editForm"

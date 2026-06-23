@@ -46,40 +46,40 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'workshop',
-      title: '动火车间',
+      title: $t('fireOperation.LocomotiveRoom'),
       minWidth: 150,
     },
     {
       field: 'hotworkUser',
-      title: '动火人',
+      title: $t('fireOperation.Firer'),
       minWidth: 150,
     },
     {
       field: 'hotworkCode',
-      title: '动火编号',
+      title: $t('fireOperation.FireNumber'),
       minWidth: 150,
     },
     {
       field: 'department',
-      title: '申请部门',
+      title: $t('fireOperation.ApplyingDepartment'),
       minWidth: 150,
     },
     {
       field: 'departSupervisor',
-      title: '申请部门责任人',
+      title: $t('fireOperation.ResponsibleOfApplyingDepartment'),
       minWidth: 150,
     },
     {
       field: 'location',
-      title: '动火部位',
+      title: $t('fireOperation.firePart'),
       minWidth: 150,
     },
     {
       field: 'level',
-      title: '动火级别',
+      title: $t('fireOperation.FireLevel'),
       minWidth: 150,
       slots: {
         default: 'level',
@@ -87,47 +87,47 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'startTime',
-      title: '开始时间',
+      title: $t('fireOperation.StartTime'),
       minWidth: 150,
     },
     {
       field: 'endTime',
-      title: '结束时间',
+      title: $t('fireOperation.EndTime'),
       minWidth: 150,
     },
     {
       field: 'content',
-      title: '动火内容',
+      title: $t('fireOperation.FireContent'),
       minWidth: 150,
     },
     {
       field: 'equipment',
-      title: '动火设备',
+      title: $t('fireOperation.FireEquipment'),
       minWidth: 150,
     },
     {
       field: 'remark',
-      title: '备注',
+      title: $t('fireOperation.Remarks'),
       minWidth: 150,
     },
     {
       field: 'certificateCode',
-      title: '证书编号',
+      title: $t('fireOperation.FirerCertificateNumber'),
       minWidth: 150,
     },
     {
       field: 'guardian',
-      title: '监护人姓名',
+      title: $t('fireOperation.SupervisorName'),
       minWidth: 150,
     },
     {
       field: 'siteSupervisor',
-      title: '现场指挥',
+      title: $t('fireOperation.OnSiteCommand'),
       minWidth: 150,
     },
     {
       field: 'applicantDeptReview',
-      title: '申请部门负责人审核',
+      title: $t('fireOperation.thePersonInChargeReviews'),
       minWidth: 150,
       slots: {
         default: 'status',
@@ -135,12 +135,12 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'applicantDeptTime',
-      title: '申请部门审核时间',
+      title: $t('fireOperation.ApplyingDepartmentLeaderApprovalTime'),
       minWidth: 150,
     },
     {
       field: 'securityDeptReview',
-      title: '安全部门审核',
+      title: $t('fireOperation.safetyDepartmentReview'),
       minWidth: 150,
       slots: {
         default: 'status',
@@ -148,12 +148,12 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'securityDeptTime',
-      title: '安全部门审核时间',
+      title: $t('fireOperation.safetyDeptApprovalTime'),
       minWidth: 150,
     },
     {
       field: 'companyLeaderReview',
-      title: '公司分管领导审核',
+      title: $t('fireOperation.theCompanyIsInChargeOfTheLeadershipReview'),
       minWidth: 150,
       slots: {
         default: 'status',
@@ -161,12 +161,12 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'companyLeaderTime',
-      title: '公司分管领导审核时间',
+      title: $t('fireOperation.CompanyLeadershipApprovalTime'),
       minWidth: 150,
     },
     {
       field: 'state',
-      title: '状态',
+      title: $t('basic.status'),
       minWidth: 80,
       slots: { default: 'state' },
     },
@@ -174,7 +174,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       minWidth: 300,
     },
   ],
@@ -242,11 +242,11 @@ function queryData({ page, pageSize }: any) {
 }
 
 const levels: any = {
-  1: '一级',
-  2: '二级',
-  3: '三级',
-  4: '四级',
-  5: '五级',
+  1: $t('fireOperation.level1'),
+  2: $t('fireOperation.level2'),
+  3: $t('fireOperation.level3'),
+  4: $t('fireOperation.level4'),
+  5: $t('fireOperation.level5'),
 };
 
 // endregion
@@ -404,8 +404,10 @@ function statusChange() {
  * @param row
  */
 function taskClose(row: any) {
-  const params = { ...row };
-  params.end = 1;
+  const params = { 
+    ...row,
+    end: 1,
+   };
   updateApply(params).then(() => {
     message.success($t('common.successfulOperation'));
     gridApi.reload();

@@ -49,17 +49,17 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'equipmentName', title: '设备名称', minWidth: 120 },
-    { field: 'equipmentNameCode', title: '设备名称编码', minWidth: 120 },
-    { field: 'cTime', title: '创建时间', minWidth: 50 },
-    { field: 'cUser', title: '创建人', minWidth: 50 },
-    { field: 'remark', title: '备注', minWidth: 80 },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
+    { field: 'equipmentName', title: $t('equip.equipmentName'), minWidth: 120 },
+    { field: 'equipmentNameCode', title: $t('equip.equipmentNameCode'), minWidth: 120 },
+    { field: 'cTime', title: $t('equip.createdTime'), minWidth: 50 },
+    { field: 'cUser', title: $t('equip.createdBy'), minWidth: 50 },
+    { field: 'remark', title: $t('equip.remark'), minWidth: 80 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('equip.operation'),
       width: 220,
     },
   ],
@@ -110,20 +110,20 @@ const editForm = ref();
 const editRules = ref<any>({
   equipmentName: [
     {
-      message: '此项为必填项',
+      message: $t('equip.requiredField'),
       required: true,
       trigger: 'change',
     },
   ],
   equipmentCode: [
     {
-      message: '此项为必填项',
+      message: $t('equip.requiredField'),
       required: true,
       trigger: 'change',
     },
   ],
   equipmentNameCode: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('equip.requiredField'), required: true, trigger: 'change' },
   ],
 });
 /**
@@ -151,11 +151,11 @@ function showDetails(row: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('equip.cancelDelete'));
     },
     onOk() {
       queryScadaEquipNameCodeQuote({
@@ -170,23 +170,23 @@ function delRow(row: any) {
         };
         if (data) {
           Modal.confirm({
-            cancelText: '取消',
-            okText: '确认',
+            cancelText: $t('common.cancel'),
+            okText: $t('common.confirm'),
             okType: 'danger',
             onCancel() {
-              message.warning('已取消删除!');
+              message.warning($t('equip.cancelDelete'));
             },
             onOk() {
               delFun();
             },
-            title: '该数据已被引用，是否删除?',
+            title: $t('equip.confirmDeleteReferenced'),
           });
         } else {
           delFun();
         }
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('equip.confirmDeleteRecord'),
   });
 }
 
@@ -349,7 +349,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('equip.infoEdit')"
       @close="onClose"
     >
       <Form

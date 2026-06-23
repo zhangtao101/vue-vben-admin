@@ -92,7 +92,7 @@ const queryParams = ref<any>({
 
 // ========== 故障等级选项 ==========
 /** 故障等级下拉选项，首项为"全部" */
-const faultLevelOptions = ref<any[]>([{ label: '全部', value: undefined }]);
+const faultLevelOptions = ref<any[]>([{ label: $t('repair.repairOrder.all'), value: undefined }]);
 
 // ========== 故障等级映射 ==========
 /** 故障等级编码到名称的映射，用于表格格式化显示 */
@@ -115,7 +115,7 @@ function loadFaultLevelOptions() {
       });
       map[item.configCode] = item.configName;
     });
-    faultLevelOptions.value = [{ label: '全部', value: undefined }, ...options];
+    faultLevelOptions.value = [{ label: $t('repair.repairOrder.all'), value: undefined }, ...options];
     faultLevelMap.value = map;
   });
 }
@@ -185,7 +185,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'equipmentGroup',
       title: $t('repair.equipmentFailure.equipmentGroupCode'),
@@ -371,7 +371,7 @@ function handleEdit(row: any) {
 function handleDelete(row: any) {
   Modal.confirm({
     title: $t('repair.equipmentFailure.confirmDelete'),
-    content: `确定删除故障 "${row.faultName}" 吗？`,
+    content: $t('repair.equipmentFailure.deleteMessage', { name: row.faultName }),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () => {
@@ -423,7 +423,7 @@ function handleDelete(row: any) {
                 v-else
                 v-model:value="queryParams.faultLevelCode"
                 :options="faultLevelOptions"
-                placeholder="请选择"
+                :placeholder="$t('repair.equipmentFailure.statusPlaceholder')"
                 allow-clear
                 style="width: 200px"
               />

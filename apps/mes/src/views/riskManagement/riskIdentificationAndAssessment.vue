@@ -46,53 +46,53 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'riskName', title: '风险名称', minWidth: 120 },
-    { field: 'operationUnit', title: '作业单元', minWidth: 120 },
-    { field: 'checkItem', title: '检查项目', minWidth: 120 },
-    { field: 'checkContent', title: '检查内容', minWidth: 120 },
-    { field: 'checkStandard', title: '检查标准', minWidth: 120 },
-    { field: 'measuresRationality', title: '措施合理', minWidth: 120 },
-    { field: 'controlMeasures', title: '风险控制措施', minWidth: 120 },
-    { field: 'description', title: '风险描述', minWidth: 120 },
-    { field: 'hazardousFactors', title: '危险有害因素', minWidth: 120 },
-    { field: 'potentialAccident', title: '可能导致事故', minWidth: 120 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'riskName', title: $t('riskManagement.RiskName'), minWidth: 120 },
+    { field: 'operationUnit', title: $t('riskManagement.jobUnit'), minWidth: 120 },
+    { field: 'checkItem', title: $t('riskManagement.inspectionItem'), minWidth: 120 },
+    { field: 'checkContent', title: $t('riskManagement.inspectionContent'), minWidth: 120 },
+    { field: 'checkStandard', title: $t('riskManagement.inspectionStandards'), minWidth: 120 },
+    { field: 'measuresRationality', title: $t('riskManagement.MeasuresReasonable'), minWidth: 120 },
+    { field: 'controlMeasures', title: $t('riskManagement.RiskControlMeasures'), minWidth: 120 },
+    { field: 'description', title: $t('riskManagement.RiskDescription'), minWidth: 120 },
+    { field: 'hazardousFactors', title: $t('riskManagement.HazardFactors'), minWidth: 120 },
+    { field: 'potentialAccident', title: $t('riskManagement.PotentialAccident'), minWidth: 120 },
     {
-      title: '固有风险评估',
+      title: $t('riskManagement.inherentRiskAssessment'),
       children: [
-        { field: 'llevel', title: '事故发生的可能性(L)', minWidth: 180 },
-        { field: 'l', title: '分值(L)', minWidth: 80 },
+        { field: 'llevel', title: $t('riskManagement.lLabel'), minWidth: 180 },
+        { field: 'l', title: $t('riskManagement.scoreL'), minWidth: 80 },
         {
           field: 'elevel',
-          title: '暴露于危险环境的频繁程度(E)',
+          title: $t('riskManagement.eLabel'),
           minWidth: 190,
         },
-        { field: 'e', title: '分值(E)', minWidth: 80 },
-        { field: 'clevel', title: '发生事故产生的后果(C)', minWidth: 180 },
-        { field: 'c', title: '分值(C)', minWidth: 80 },
-        { field: 'd', title: 'D', minWidth: 80 },
+        { field: 'e', title: $t('riskManagement.scoreE'), minWidth: 80 },
+        { field: 'clevel', title: $t('riskManagement.cLabel'), minWidth: 180 },
+        { field: 'c', title: $t('riskManagement.scoreC'), minWidth: 80 },
+        { field: 'd', title: $t('riskManagement.dValue'), minWidth: 80 },
       ],
     },
     {
-      title: '控制风险评估',
+      title: $t('riskManagement.controlledRiskAssessment'),
       children: [
-        { field: 'll', title: 'L', minWidth: 80 },
-        { field: 's', title: 'S', minWidth: 80 },
-        { field: 'r', title: 'R', minWidth: 80 },
+        { field: 'll', title: $t('riskManagement.lValue'), minWidth: 80 },
+        { field: 's', title: $t('riskManagement.sValue'), minWidth: 80 },
+        { field: 'r', title: $t('riskManagement.rValue'), minWidth: 80 },
       ],
     },
-    { field: 'controlRisk', title: '控制风险', minWidth: 80 },
-    { field: 'inherentRisk', title: '固有风险', minWidth: 80 },
-    { field: 'escalationLevel', title: '升级', minWidth: 80 },
-    { field: 'details', title: '操作修改详情', minWidth: 120 },
-    { field: 'measures', title: '现有控制措施', minWidth: 120 },
-    { field: 'responsibleDepartment', title: '责任部门', minWidth: 120 },
-    { field: 'responsiblePerson', title: '责任人', minWidth: 120 },
+    { field: 'controlRisk', title: $t('riskManagement.controlRisk'), minWidth: 80 },
+    { field: 'inherentRisk', title: $t('riskManagement.InherentRisk'), minWidth: 80 },
+    { field: 'escalationLevel', title: $t('riskManagement.Upgrade'), minWidth: 80 },
+    { field: 'details', title: $t('riskManagement.OperationDetails'), minWidth: 120 },
+    { field: 'measures', title: $t('riskManagement.ExistingControls'), minWidth: 120 },
+    { field: 'responsibleDepartment', title: $t('riskManagement.ResponsibleDepartment'), minWidth: 120 },
+    { field: 'responsiblePerson', title: $t('riskManagement.ResponsiblePerson'), minWidth: 120 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       minWidth: 150,
     },
   ],
@@ -484,7 +484,7 @@ onMounted(() => {
         <!-- 风险名称 -->
         <FormItem
           :label="$t('riskManagement.RiskName')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="riskName"
         >
           <Input v-model:value="editItem.riskName" />
@@ -492,7 +492,7 @@ onMounted(() => {
         <!-- 作业单元 -->
         <FormItem
           :label="$t('riskManagement.jobUnit')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="operationUnit"
         >
           <Input v-model:value="editItem.operationUnit" />
@@ -500,7 +500,7 @@ onMounted(() => {
         <!-- 巡检项目 -->
         <FormItem
           :label="$t('riskManagement.inspectionItem')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="checkItem"
         >
           <Input v-model:value="editItem.checkItem" />
@@ -508,7 +508,7 @@ onMounted(() => {
         <!-- 巡检内容 -->
         <FormItem
           :label="$t('riskManagement.inspectionContent')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="checkContent"
         >
           <Input v-model:value="editItem.checkContent" />
@@ -516,7 +516,7 @@ onMounted(() => {
         <!-- 检查标准 -->
         <FormItem
           :label="$t('riskManagement.inspectionStandards')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="checkStandard"
         >
           <Input v-model:value="editItem.checkStandard" />
@@ -524,7 +524,7 @@ onMounted(() => {
         <!-- 风险描述 -->
         <FormItem
           :label="$t('riskManagement.RiskDescription')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="description"
         >
           <Input v-model:value="editItem.description" />
@@ -532,7 +532,7 @@ onMounted(() => {
         <!-- 危险有害因素 -->
         <FormItem
           :label="$t('riskManagement.HazardFactors')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="hazardousFactors"
         >
           <Input v-model:value="editItem.hazardousFactors" />
@@ -540,7 +540,7 @@ onMounted(() => {
         <!-- 可能导致事故 -->
         <FormItem
           :label="$t('riskManagement.PotentialAccident')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="potentialAccident"
         >
           <Input v-model:value="editItem.potentialAccident" />
@@ -549,7 +549,7 @@ onMounted(() => {
         <!-- 事故发生的可能性 -->
         <FormItem
           :label="$t('riskManagement.lLabel')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="llevel"
         >
           <Select
@@ -567,7 +567,7 @@ onMounted(() => {
         <!-- 暴露于危险环境的频繁程度 -->
         <FormItem
           :label="$t('riskManagement.eLabel')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="elevel"
         >
           <Select
@@ -585,7 +585,7 @@ onMounted(() => {
         <!-- 发生事故产生的后果 -->
         <FormItem
           :label="$t('riskManagement.cLabel')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="clevel"
         >
           <Select
@@ -603,7 +603,7 @@ onMounted(() => {
         <!-- 升级 -->
         <FormItem
           :label="$t('riskManagement.Upgrade')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="escalationLevel"
         >
           <Input v-model:value="editItem.escalationLevel" />
@@ -611,7 +611,7 @@ onMounted(() => {
         <!-- 操作修改详情 -->
         <!--        <FormItem
           :label="$t('riskManagement.OperationDetails')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="details"
         >
           <Textarea v-model:value="editItem.details" />
@@ -619,7 +619,7 @@ onMounted(() => {
         <!-- 现有控制措施 -->
         <FormItem
           :label="$t('riskManagement.ExistingControls')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="measures"
         >
           <Input v-model:value="editItem.measures" />
@@ -627,7 +627,7 @@ onMounted(() => {
         <!-- 措施合理 -->
         <FormItem
           :label="$t('riskManagement.MeasuresReasonable')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="measuresRationality"
         >
           <Input v-model:value="editItem.measuresRationality" />
@@ -635,7 +635,7 @@ onMounted(() => {
         <!-- 风险控制措施 -->
         <FormItem
           :label="$t('riskManagement.RiskControlMeasures')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="controlMeasures"
         >
           <Input v-model:value="editItem.controlMeasures" />
@@ -643,7 +643,7 @@ onMounted(() => {
         <!-- 控制风险 -->
         <FormItem
           :label="$t('riskManagement.controlRisk')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="controlRisk"
         >
           <Input v-model:value="editItem.controlRisk" />
@@ -651,7 +651,7 @@ onMounted(() => {
         <!-- L -->
         <FormItem
           label="L"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="ll"
         >
           <RadioGroup v-model:value="editItem.ll">
@@ -663,7 +663,7 @@ onMounted(() => {
         <!-- L -->
         <FormItem
           label="S"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="s"
         >
           <RadioGroup v-model:value="editItem.s">
@@ -675,7 +675,7 @@ onMounted(() => {
         <!-- 责任人 -->
         <FormItem
           :label="$t('riskManagement.ResponsiblePerson')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="responsiblePerson"
         >
           <Cascader

@@ -61,7 +61,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     { field: 'moldCode', title: $t('moldArchiveMgmt.moldCode'), minWidth: 200 },
     { field: 'moldName', title: $t('moldArchiveMgmt.moldName'), minWidth: 150 },
     {
@@ -108,7 +108,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       width: 250,
     },
   ],
@@ -427,7 +427,7 @@ onMounted(() => {
             v-model:value="queryParams.status"
             :options="statusOptions"
             allow-clear
-            placeholder="请选择状态"
+            :placeholder="$t('moldArchiveMgmt.statusPlaceholder')"
             style="width: 120px"
           />
         </FormItem>

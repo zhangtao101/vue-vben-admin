@@ -27,5 +27,15 @@
   "riskName": "风险名称",
   "choose": "区域/标准选择",
   "planCode": "计划编号",
-  "planName": "计划名称"
+  "planName": "计划名称",
+  "specialPlanCode": "专项计划编号",
+  "intervalPeriod": "间隔周期",
+  "planEnabled": "计划是否开启",
+  "cyclePlan": "周期计划",
+  "specialInspection": "专项巡检",
+  "dailyInspection": "日常巡检",
+  "dailyCheck": "日常检查",
+  "comprehensiveCheck": "综合检查",
+  "specialCheck": "专项检查",
+  "majorHazardCheck": "重大隐患排查"
 }

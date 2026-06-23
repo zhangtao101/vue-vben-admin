@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,35 +34,35 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
-    { field: 'classType', title: '班次', minWidth: 200 },
-    { field: 'worksheetCode', title: '工单', minWidth: 200 },
+    { field: 'day', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'lineName', title: $t('productionDaily.LineNo'), minWidth: 200 },
+    { field: 'classType', title: $t('productionDaily.Shift'), minWidth: 200 },
+    { field: 'worksheetCode', title: $t('productionDaily.WorkOrder'), minWidth: 200 },
     {
       field: 'dlStopTime',
-      title: '电能停机时间(H)',
+      title: $t('productionDaily.StopTimeElectric'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopReason',
-      title: '停机原因',
+      title: $t('productionDaily.Shutdown_4'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopDlValue',
-      title: '停机电能（KWH)',
+      title: $t('productionDaily.KWHShutdownElectric_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 5 }],
   height: 500,
   stripe: true,

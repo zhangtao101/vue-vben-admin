@@ -96,7 +96,7 @@ const taskGridOptions: VxeGridProps<MaintenanceTaskRecord> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'maintenanceNo',
       title: $t('maintenanceTask.maintenanceNo'),
@@ -227,9 +227,9 @@ function handleTaskReset() {
 
 // ========== 状态颜色映射 ==========
 const taskStatusColorMap: Record<string, string> = {
-  待保养: 'warning',
-  待验收: 'processing',
-  已完成: 'success',
+  [$t('maintenanceTask.taskStatusPending')]: 'warning',
+  [$t('maintenanceTask.taskStatusVerify')]: 'processing',
+  [$t('maintenanceTask.taskStatusCompleted')]: 'success',
 };
 
 // ========== 任务详情抽屉 ==========
@@ -313,7 +313,7 @@ function handleExecute(row: MaintenanceTaskRecord) {
  */
 function handleExecuteSubmit() {
   if (!executeForm.value.executeTime) {
-    message.warning(`${$t('maintenanceTask.executeTime')}不能为空`);
+    message.warning(`${$t('maintenanceTask.executeTime')}${$t('maintenanceTask.cannotBeEmpty')}`);
     return;
   }
 

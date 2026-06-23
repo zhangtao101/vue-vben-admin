@@ -43,26 +43,26 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'routeCode', title: '工艺路线编号', minWidth: 150 },
-    { field: 'routeName', title: '工艺路线名称', minWidth: 150 },
-    { field: 'routeTypeName', title: '工艺路线类型', minWidth: 100 },
-    { field: 'version', title: '版本', minWidth: 100 },
-    { field: 'isEnable', title: '是否启用', minWidth: 80 },
-    { field: 'isDefault', title: '是否默认', minWidth: 80 },
-    { field: 'remark', title: '备注', minWidth: 100 },
-    { field: 'createTime', title: '创建时间', minWidth: 150 },
-    { field: 'updateTime', title: '更新时间', minWidth: 150 },
-    { field: 'updateUsername', title: '更新人', minWidth: 100 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'routeCode', title: $t('processManagement.processRoute.processRouteNumber'), minWidth: 150 },
+    { field: 'routeName', title: $t('processManagement.processRoute.processRouteName'), minWidth: 150 },
+    { field: 'routeTypeName', title: $t('processManagement.processRoute.routeType'), minWidth: 100 },
+    { field: 'version', title: $t('processManagement.processRoute.version'), minWidth: 100 },
+    { field: 'isEnable', title: $t('processManagement.processRoute.isEnabled'), minWidth: 80 },
+    { field: 'isDefault', title: $t('processManagement.processRoute.isDefault'), minWidth: 80 },
+    { field: 'remark', title: $t('processManagement.processRoute.remark'), minWidth: 100 },
+    { field: 'createTime', title: $t('processManagement.processRoute.createTime'), minWidth: 150 },
+    { field: 'updateTime', title: $t('processManagement.processRoute.updateTime'), minWidth: 150 },
+    { field: 'updateUsername', title: $t('processManagement.processRoute.updateUsername'), minWidth: 100 },
     {
       field: 'state',
       slots: { default: 'status' },
-      title: '状态',
+      title: $t('processManagement.processRoute.status'),
       minWidth: 100,
       fixed: 'right',
     },
     {
-      title: '操作',
+      title: $t('processManagement.processRoute.operation'),
       minWidth: 300,
       fixed: 'right',
       slots: {
@@ -132,10 +132,10 @@ function handleExport() {
 
 function handleUploadChange(info: any) {
   if (info.file.status === 'done') {
-    message.success('上传成功');
+    message.success($t('processManagement.processRoute.uploadSuccess'));
     gridApi.reload();
   } else if (info.file.status === 'error') {
-    message.error('文件上传失败');
+    message.error($t('processManagement.processRoute.uploadFailure'));
   }
 }
 
@@ -145,7 +145,7 @@ function beforeUpload(file: any) {
     file.type ===
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   if (!isExcel) {
-    message.error('只能上传 Excel 文件');
+    message.error($t('processManagement.processRoute.excelOnly'));
   }
   return isExcel;
 }
@@ -157,12 +157,12 @@ function beforeUpload(file: any) {
 function handleStateChange(row: any, checked: boolean) {
   const isEnable = checked;
   const title = isEnable
-    ? '是否确认启用该工艺路线?'
-    : '是否确认停用该工艺路线?';
+    ? $t('processManagement.processRoute.confirmEnableRoute')
+    : $t('processManagement.processRoute.confirmDisableRoute');
 
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'primary',
     onCancel() {
       gridApi.reload();
@@ -189,12 +189,12 @@ function handleStateChange(row: any, checked: boolean) {
 // region 审核
 
 function handleAudit(row: any, isPass: boolean) {
-  const title = isPass ? '是否确认通过该条数据?' : '是否确认不通过该条数据?';
+  const title = isPass ? $t('processManagement.processRoute.confirmPassData') : $t('processManagement.processRoute.confirmNotPassData');
   const statusCode = isPass ? 2 : 3;
 
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'primary',
     onOk() {
       submitAudit(row.id, statusCode);
@@ -228,16 +228,16 @@ function handleViewRouteDetail(id: string, isUpdate: boolean) {
 
 function handleDelete(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       confirmDelete(row.id);
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -324,7 +324,7 @@ onMounted(() => {
               type="primary"
               @click="handleExport"
             >
-              导出
+              {{ $t('processManagement.processRoute.export') }}
             </Button>
             <!-- 上传按钮 -->
             <Upload
@@ -336,18 +336,18 @@ onMounted(() => {
               :before-upload="beforeUpload"
               @change="handleUploadChange"
             >
-              <Button type="primary">点击上传</Button>
+              <Button type="primary">{{ $t('processManagement.processRoute.clickUpload') }}</Button>
             </Upload>
           </Space>
         </template>
         <template #status="{ row }">
-          <div v-if="row.state === 3">已弃用</div>
+          <div v-if="row.state === 3">{{ $t('processManagement.processRoute.deprecated') }}</div>
           <div v-else>
             <Switch
               :checked="row.useState === 1"
               :disabled="!author.includes('启停变更')"
-              checked-children="启用"
-              un-checked-children="停用"
+              :checked-children="$t('processManagement.processRoute.enabled')"
+              :un-checked-children="$t('processManagement.processRoute.disabled')"
               @change="(checked: any) => handleStateChange(row, checked)"
             />
           </div>

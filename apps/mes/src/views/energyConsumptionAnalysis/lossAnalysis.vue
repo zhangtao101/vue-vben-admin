@@ -41,13 +41,13 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center', // 表格内容居中对齐
   border: true, // 显示表格边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 }, // 自动生成的序号列
-    { field: 'lossNumber', title: '线损对象编码', minWidth: 200 }, // 线损对象的唯一编码
-    { field: 'lossName', title: '线损对象名称', minWidth: 200 }, // 线损对象的名称
-    { field: 'allValue', title: '总能耗', minWidth: 200 }, // 总能耗数值
-    { field: 'useValue', title: '使用能耗', minWidth: 150 }, // 实际使用的能耗
-    { field: 'lossRate', title: '线损率(%)', minWidth: 150 }, // 线损率百分比
-    { field: 'time', title: '时间', minWidth: 150 }, // 统计时间点
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动生成的序号列
+    { field: 'lossNumber', title: $t('energyConsumption.energyConsumptionAnalysis.lossObjectCode'), minWidth: 200 }, // 线损对象的唯一编码
+    { field: 'lossName', title: $t('energyConsumption.energyConsumptionAnalysis.lossObjectName'), minWidth: 200 }, // 线损对象的名称
+    { field: 'allValue', title: $t('energyConsumption.energyConsumptionAnalysis.totalEnergyConsumption'), minWidth: 200 }, // 总能耗数值
+    { field: 'useValue', title: $t('energyConsumption.energyConsumptionAnalysis.usedEnergy'), minWidth: 150 }, // 实际使用的能耗
+    { field: 'lossRate', title: $t('energyConsumption.energyConsumptionAnalysis.lossRate'), minWidth: 150 }, // 线损率百分比
+    { field: 'time', title: $t('energyConsumption.energyConsumptionAnalysis.time'), minWidth: 150 }, // 统计时间点
   ],
   height: 500, // 固定表格高度
   stripe: true, // 启用斑马纹样式
@@ -93,13 +93,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number): string {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('energyConsumption.energyConsumptionCollectionDetails.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('energyConsumption.energyConsumptionCollectionDetails.brick');
     }
     default: {
-      return '未定义的类型';
+      return $t('energyConsumption.energyConsumptionStatistics.undefinedType');
     }
   }
 }
@@ -124,15 +124,15 @@ const queryParams = ref<any>({
  */
 const timeTypeOptions = [
   {
-    label: '年',
+    label: $t('energyConsumption.energyConsumptionStatistics.year'),
     value: 'year',
   },
   {
-    label: '月',
+    label: $t('energyConsumption.energyConsumptionStatistics.month'),
     value: 'month',
   },
   {
-    label: '日',
+    label: $t('energyConsumption.energyConsumptionStatistics.day'),
     value: 'day',
   },
 ];

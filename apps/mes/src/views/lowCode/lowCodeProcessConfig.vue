@@ -44,7 +44,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'name',
       title: $t('lowCode.lowCodeProcessConfig.name'),

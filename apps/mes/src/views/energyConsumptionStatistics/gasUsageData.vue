@@ -98,7 +98,7 @@ function chartInit(chartData: any) {
       ],
       axis: {
         y: {
-          title: '用气量', // Y轴标题
+          title: $t('electricityConsumptionData.gasUsageAxisTitle'), // Y轴标题
           grid: null, // 隐藏网格线，突出数据趋势
           labelFormatter: (d: any) => `${d}`, // Y轴标签格式化
         },
@@ -169,11 +169,11 @@ function queryChartData() {
  * 定义用气量数据表格的显示列信息
  */
 const columns: any = [
-  { title: '序号', type: 'seq', width: 50 }, // 自动生成序号列
-  { field: 'meterCode', title: '设备编号', minWidth: 150 }, // 气表设备唯一标识
-  { field: 'meterName', title: '设备名称', minWidth: 150 }, // 气表设备名称
-  { field: 'gasUse', title: '用气量', minWidth: 150 }, // 气体消耗量
-  { field: 'time', title: '日期', minWidth: 150 }, // 数据记录时间
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动生成序号列
+  { field: 'meterCode', title: $t('electricityConsumptionData.equipmentCode'), minWidth: 150 }, // 气表设备唯一标识
+  { field: 'meterName', title: $t('electricityConsumptionData.equipmentName'), minWidth: 150 }, // 气表设备名称
+  { field: 'gasUse', title: $t('electricityConsumptionData.gasUsage'), minWidth: 150 }, // 气体消耗量
+  { field: 'time', title: $t('electricityConsumptionData.date'), minWidth: 150 }, // 数据记录时间
 ];
 
 /**

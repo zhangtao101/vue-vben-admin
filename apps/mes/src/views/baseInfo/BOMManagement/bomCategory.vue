@@ -33,10 +33,10 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'typeCode', title: '类别编号', minWidth: 80 },
-    { field: 'typeName', title: '类别名称', minWidth: 80 },
-    { field: 'typeLevel', title: '类别等级', minWidth: 100 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'typeCode', title: $t('basic.productCategory.categoryNumber'), minWidth: 80 },
+    { field: 'typeName', title: $t('basic.productCategory.categoryName'), minWidth: 80 },
+    { field: 'typeLevel', title: $t('baseInfo.categoryLevel'), minWidth: 100 },
     /* {
       field: 'action',
       fixed: 'right',
@@ -142,7 +142,7 @@ function queryAllCategoryTree() {
       treeData.value = [
         {
           typeCode: '',
-          typeName: '全部',
+          typeName: $t('page.common.all'),
           children: data,
         },
       ];
@@ -158,7 +158,7 @@ function queryAllCategoryTree() {
  * @param {boolean} info.selected - 节点的选中状态
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
-  if (node.typeName === '全部') {
+  if (node.typeName === $t('page.common.all')) {
     queryParams.value.parentTypeCode = '';
   } else {
     selectedKey.value = selected && node.typeLevel < 3 ? node : undefined;

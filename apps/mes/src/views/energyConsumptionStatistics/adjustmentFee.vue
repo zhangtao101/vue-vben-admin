@@ -99,14 +99,14 @@ const selectShowType = ref('chart');
  * 定义表格显示的列信息和格式
  */
 const columns: any = [
-  { title: '序号', type: 'seq', width: 50 }, // 自动生成序号列
-  { field: 'worksheetCode1', title: '字段A', minWidth: 200 }, // 示例字段A
-  { field: 'worksheetCode2', title: '字段B', minWidth: 200 }, // 示例字段B
-  { field: 'worksheetCode3', title: '字段C', minWidth: 200 }, // 示例字段C
-  { field: 'worksheetCode4', title: '字段D', minWidth: 200 }, // 示例字段D
-  { field: 'worksheetCode5', title: '字段E', minWidth: 200 }, // 示例字段E
-  { field: 'worksheetCode6', title: '字段F', minWidth: 200 }, // 示例字段F
-  { field: 'worksheetCode7', title: '字段G', minWidth: 200 }, // 示例字段G
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动生成序号列
+  { field: 'worksheetCode1', title: $t('electricityConsumptionData.fieldA'), minWidth: 200 }, // 示例字段A
+  { field: 'worksheetCode2', title: $t('electricityConsumptionData.fieldB'), minWidth: 200 }, // 示例字段B
+  { field: 'worksheetCode3', title: $t('electricityConsumptionData.fieldC'), minWidth: 200 }, // 示例字段C
+  { field: 'worksheetCode4', title: $t('electricityConsumptionData.fieldD'), minWidth: 200 }, // 示例字段D
+  { field: 'worksheetCode5', title: $t('electricityConsumptionData.fieldE'), minWidth: 200 }, // 示例字段E
+  { field: 'worksheetCode6', title: $t('electricityConsumptionData.fieldF'), minWidth: 200 }, // 示例字段F
+  { field: 'worksheetCode7', title: $t('electricityConsumptionData.fieldG'), minWidth: 200 }, // 示例字段G
 ];
 
 /**
@@ -386,7 +386,7 @@ onMounted(() => {
         <Col span="12">
           <!-- 提示信息 - 功率因数优化建议 -->
           <Alert
-            message="提示：合理的无功补偿，提高功率因数，可以避免罚款，降低电能损耗，改善电能质量。"
+            :message="$t('electricityConsumptionData.adjustmentFeeTip')"
             type="warning"
             show-icon
           />

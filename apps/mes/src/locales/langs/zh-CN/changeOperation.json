@@ -1,4 +1,24 @@
 {
   "changeOperationNumber": "变更编号",
-  "changeOperationType": "变更类型"
+  "changeOperationType": "变更类型",
+  "changeTaskNumber": "变更任务编号",
+  "changeBeforeVersion": "变更前版本",
+  "changeAfterVersion": "变更后版本",
+  "changeTaskStatus": "变更任务状态",
+  "changeTime": "变更时间",
+  "operation": "操作",
+  "boundProductCode": "绑定产品编号",
+  "boundProductName": "绑定产品名称",
+  "correspondingRouteCode": "对应工艺路线编号",
+  "correspondingRouteName": "对应工艺路线名称",
+  "updatedVersion": "更新后的版本号",
+  "currentlyUsedVersion": "当前对应使用的版本",
+  "applicationStatus": "应用状态",
+  "processParameterTemplateChange": "工艺参数模板变更",
+  "processRouteChange": "工艺路线变更",
+  "details": "详情",
+  "currentVersion": "当前版本",
+  "confirmChange": "是否确认变更?",
+  "changeCancelled": "已取消变更!",
+  "atLeastOneRecord": "至少选择一条数据!"
 }

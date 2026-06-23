@@ -88,7 +88,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 60, title: '序号' },
+    { type: 'seq', width: 60, title: $t('basic.serialNumber') },
     { field: 'name', title: $t('system.resourceMgmt.name'), minWidth: 150 },
     { field: 'alink', title: $t('system.resourceMgmt.alink'), minWidth: 200 },
     {
@@ -238,12 +238,12 @@ function handleClose() {
  */
 function handleDelete(row: any) {
   Modal.confirm({
-    title: '确认删除该数据吗？',
-    cancelText: '取消',
-    okText: '确认',
+    title: $t('ui.widgets.deletionConfirmation'),
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除');
+      message.warning($t('system.baseOrganization.deleteCancelled'));
     },
     onOk() {
       deleteResource(row.id)

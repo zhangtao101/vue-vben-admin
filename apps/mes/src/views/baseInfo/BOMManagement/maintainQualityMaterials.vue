@@ -39,38 +39,38 @@ const columns = ref([
   {
     dataIndex: 'materialCode',
     ellipsis: true,
-    title: '料号',
+    title: $t('basic.bomManagement.msd.materialCode'),
     width: 120,
   },
   {
     dataIndex: 'typeName',
     ellipsis: true,
-    title: '所属类型',
+    title: $t('basic.barCodeManagement.typeOfOwnership'),
     width: 120,
   },
   {
     dataIndex: 'materialName',
     ellipsis: true,
-    title: '物料名称',
+    title: $t('baseInfo.materialName'),
     width: 120,
   },
   {
     dataIndex: 'specialLevelName',
     ellipsis: true,
-    title: '品质等级',
+    title: $t('baseInfo.qualityLevel'),
     width: 120,
   },
   {
     dataIndex: 'createTime',
     ellipsis: true,
-    title: '创建时间',
+    title: $t('baseInfo.createTime'),
     width: 120,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('baseInfo.action'),
     width: 80,
   },
 ] as any[]);
@@ -145,9 +145,9 @@ const showDrawer = ref(false);
 const editMessage = ref({} as any);
 // 编辑对象表单验证规则
 const editRules = ref({
-  displayName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  ruleName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  typeName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  displayName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  ruleName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  typeName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 } as any);
 
 // 关闭模态框
@@ -239,7 +239,7 @@ function onClose() {
       class="custom-class"
       placement="right"
       root-class-name="root-class-name"
-      title="信息编辑"
+      :title="$t('baseInfo.infoEdit')"
     >
       <Form
         :label-col="{ span: 8 }"

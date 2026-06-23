@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -27,33 +27,33 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '月份', minWidth: 200 },
-    { field: 'lineName', title: '生产线', minWidth: 200 },
+    { field: 'month', title: $t('productionDaily.Month'), minWidth: 200 },
+    { field: 'lineName', title: $t('productionDaily.Line'), minWidth: 200 },
     {
       field: 'productionBatch',
-      title: '实际生产批次(次)',
+      title: $t('productionDaily.BatchActual'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'productionQuantity',
-      title: '实际生产批量(万m2)',
+      title: $t('productionDaily.Actual_2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'batchQuantity',
-      title: '批次批量',
+      title: $t('productionDaily.Batch'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,

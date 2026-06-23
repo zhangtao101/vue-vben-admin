@@ -52,50 +52,50 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'processCode', title: '过程编码', minWidth: 150 },
-    { field: 'processName', title: '过程名称', minWidth: 200 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'processCode', title: $t('processManagement.processBase.processCode'), minWidth: 150 },
+    { field: 'processName', title: $t('processManagement.processBase.processName'), minWidth: 200 },
     {
       field: 'isSpecial',
-      title: '特殊过程',
+      title: $t('processManagement.processBase.specialProcess'),
       minWidth: 90,
       slots: { default: 'selectedState' },
     },
     {
       field: 'isKey',
-      title: '关键过程',
+      title: $t('processManagement.processBase.criticalProcess'),
       minWidth: 90,
       slots: { default: 'selectedState' },
     },
     {
       field: 'isPlan',
-      title: '计划节点',
+      title: $t('processManagement.processBase.planNode'),
       minWidth: 90,
       slots: { default: 'selectedState' },
     },
-    { field: 'experienceTime', title: '经验时间', minWidth: 90 },
+    { field: 'experienceTime', title: $t('processManagement.processBase.experienceTime'), minWidth: 90 },
     {
       field: 'isGeneral',
-      title: '过程类型',
+      title: $t('processManagement.processBase.processType'),
       minWidth: 90,
       slots: { default: 'selectedState' },
     },
-    { field: 'parentProcessName', title: '父过程名称', minWidth: 90 },
+    { field: 'parentProcessName', title: $t('processManagement.processBase.parentProcessName'), minWidth: 90 },
     {
       field: 'isReport',
-      title: '报工节点',
+      title: $t('processManagement.processBase.reportingNode'),
       minWidth: 90,
       slots: { default: 'selectedState' },
     },
-    { field: 'createTime', title: '创建时间', minWidth: 150 },
-    { field: 'updateTime', title: '操作时间', minWidth: 150 },
-    { field: 'updateUsername', title: '操作人', minWidth: 90 },
-    { field: 'remark', title: '备注', minWidth: 120 },
+    { field: 'createTime', title: $t('processManagement.processBase.createTime'), minWidth: 150 },
+    { field: 'updateTime', title: $t('processManagement.processBase.updateTime'), minWidth: 150 },
+    { field: 'updateUsername', title: $t('processManagement.processBase.updateUsername'), minWidth: 90 },
+    { field: 'remark', title: $t('processManagement.processBase.remark'), minWidth: 120 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('processManagement.processBase.operation'),
       minWidth: 150,
     },
   ],
@@ -179,7 +179,7 @@ const selectedKeys = ref<string[]>([]);
 const treeData = ref<any[]>([
   {
     childNodes: [],
-    processName: '根节点',
+    processName: $t('processManagement.processBase.rootNode'),
     id: 0,
   },
 ]);
@@ -232,21 +232,21 @@ const formRef = ref();
 const processTypeOptions = [
   {
     value: true,
-    label: '一般过程',
+    label: $t('processManagement.processBase.generalProcess'),
   },
   {
     value: false,
-    label: '检验过程',
+    label: $t('processManagement.processBase.inspectionProcess'),
   },
 ];
 // 操作类型
 const overweightType = [
   {
-    label: '是',
+    label: $t('processManagement.processBase.yes'),
     value: true,
   },
   {
-    label: '否',
+    label: $t('processManagement.processBase.no'),
     value: false,
   },
 ];
@@ -294,11 +294,11 @@ function submit() {
 
 function deleteRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteProcess(row.id)
@@ -314,7 +314,7 @@ function deleteRow(row: any) {
           message.error(error.msg); // 显示操作失败的提示信息
         });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -439,7 +439,7 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.processName')"
-              :rules="[{ required: true, message: '该项为必填项' }]"
+              :rules="[{ required: true, message: $t('page.common.requiredField') }]"
               name="processName"
             >
               <Input v-model:value="editItem.processName" class="w-full" />
@@ -449,7 +449,7 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.processCode')"
-              :rules="[{ required: true, message: '该项为必填项' }]"
+              :rules="[{ required: true, message: $t('page.common.requiredField') }]"
               name="processCode"
             >
               <Input v-model:value="editItem.processCode" class="w-full" />
@@ -461,7 +461,7 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.parentProcess')"
-              :rules="[{ required: false, message: '该项为必填项' }]"
+              :rules="[{ required: false, message: $t('page.common.requiredField') }]"
               name="parentProcessCode"
             >
               <Select
@@ -482,7 +482,7 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.processType')"
-              :rules="[{ required: true, message: '该项为必填项' }]"
+              :rules="[{ required: true, message: $t('page.common.requiredField') }]"
               name="isGeneral"
             >
               <RadioGroup
@@ -498,7 +498,7 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.reportingNode')"
-              :rules="[{ required: true, message: '该项为必填项' }]"
+              :rules="[{ required: true, message: $t('page.common.requiredField') }]"
               name="isReport"
             >
               <RadioGroup
@@ -515,7 +515,7 @@ onMounted(() => {
             >
               <InputNumber
                 v-model:value="editItem.experienceTime"
-                addon-after="秒(S)"
+                :addon-after="$t('processManagement.processBase.seconds')"
               />
             </FormItem>
           </Col>
@@ -525,7 +525,7 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.criticalProcess')"
-              :rules="[{ required: true, message: '该项为必填项' }]"
+              :rules="[{ required: true, message: $t('page.common.requiredField') }]"
               name="isKey"
             >
               <RadioGroup
@@ -539,7 +539,7 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.specialProcess')"
-              :rules="[{ required: true, message: '该项为必填项' }]"
+              :rules="[{ required: true, message: $t('page.common.requiredField') }]"
               name="isSpecial"
             >
               <RadioGroup
@@ -555,7 +555,7 @@ onMounted(() => {
           <Col :span="12">
             <FormItem
               :label="$t('processManagement.processBase.planNode')"
-              :rules="[{ required: true, message: '该项为必填项' }]"
+              :rules="[{ required: true, message: $t('page.common.requiredField') }]"
               name="isPlan"
             >
               <RadioGroup

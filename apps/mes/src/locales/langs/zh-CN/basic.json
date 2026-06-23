@@ -1,4 +1,20 @@
 {
+  "serialNumber": "序号",
+  "all": "全部",
+  "status": "状态",
+  "description": "描述",
+  "remark": "备注",
+  "createTime": "创建时间",
+  "updateTime": "更新时间",
+  "createBy": "创建人",
+  "updateBy": "更新人",
+  "viewDetail": "查看详情",
+  "infoEdit": "信息编辑",
+  "addSuccess": "新增成功",
+  "editSuccess": "修改成功",
+  "deleteSuccess": "删除成功",
+  "addFailed": "新增失败",
+  "editFailed": "修改失败",
   "productBom": {
     "code": "类别编号",
     "name": "类别名称",
@@ -12,13 +28,24 @@
     "categorySelection": "类别选择",
     "materialOrProductCode": "物料/产品编码",
     "materialOrProductName": "物料/产品名称",
-    "remark": "备注"
+    "remark": "备注",
+    "material": "物料",
+    "product": "产品",
+    "pcbPanel": "pcb拼板",
+    "pcbSubPanel": "pcb小板",
+    "mold": "模具",
+    "semiFinishedProduct": "半成品",
+    "pickingRequest": "领料申请单",
+    "packagingCode": "包装码",
+    "oneDimensionalCode": "一维码",
+    "twoDimensionalCode": "二维码"
   },
   "productCategory": {
     "categoryNumber": "类别编号",
     "categoryName": "类别名称"
   },
   "bomManagement": {
+    "view": "查看",
     "materialCode": "物料编号",
     "materialName": "物料名称",
     "bomCategory": {
@@ -244,8 +271,16 @@
     "bindSo": "绑定SO",
     "confirmBind": "确认绑定",
     "splitCount": "拆分数量",
-    "generate": "生成"
+    "generate": "生成",
+    "invalidSplitCount": "请输入有效的拆分数量",
+    "splitCountExceeded": "拆分数量不能超过 {0}",
+    "pleaseSelectSoFirst": "请先选择SO",
+    "maxSplitCountPlaceholder": "最大: {0}"
   },
+  "requiredField": "此项为必填项",
+  "pleaseSelectAtLeastOne": "请至少选择一条数据",
+  "confirmDeleteTitle": "是否确认删除?",
+  "printNotReady": "打印功能暂未完成",
   "shortageTracking": {
     "queryTitle": "缺料追踪查询",
     "materialGroup": "物料小组",

@@ -57,14 +57,14 @@ const queryParams = ref<any>({
 
 // 点检类型下拉选项
 const itemTypeOptions = [
-  { label: '数值型', value: 1 },
-  { label: '文本型', value: 2 },
+  { label: $t('equip.tallyMaintenanceItem.numericType'), value: 1 },
+  { label: $t('equip.tallyMaintenanceItem.textType'), value: 2 },
 ];
 
 // 通用专用选项
 const isSpecialOptions = [
-  { label: '通用', value: 1 },
-  { label: '专用', value: 2 },
+  { label: $t('equip.tallyMaintenanceItem.universal'), value: 1 },
+  { label: $t('equip.tallyMaintenanceItem.dedicated'), value: 2 },
 ];
 
 // ========== 表格配置 ==========
@@ -72,19 +72,19 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
-    { field: 'checkItemCode', title: '点检项编号', minWidth: 120 },
-    { field: 'checkItemName', title: '点检项名称', minWidth: 120 },
-    { field: 'itemDescription', title: '点检项说明', minWidth: 140 },
-    { field: 'itemTypeName', title: '点检项类型', minWidth: 100 },
-    { field: 'equipName', title: '设备名称', minWidth: 120 },
-    { field: 'dailyTagName', title: '日常标记', minWidth: 80 },
-    { field: 'maintenanceTagName', title: '保养标记', minWidth: 80 },
-    { field: 'isUseName', title: '启停用标记', minWidth: 90 },
-    { field: 'isSpecialName', title: '通用专用', minWidth: 80 },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
+    { field: 'checkItemCode', title: $t('equip.tallyMaintenanceItem.checkItemCode'), minWidth: 120 },
+    { field: 'checkItemName', title: $t('equip.tallyMaintenanceItem.checkItemName'), minWidth: 120 },
+    { field: 'itemDescription', title: $t('equip.tallyMaintenanceItem.itemDescription'), minWidth: 140 },
+    { field: 'itemTypeName', title: $t('equip.tallyMaintenanceItem.itemType'), minWidth: 100 },
+    { field: 'equipName', title: $t('equip.tallyMaintenanceItem.equipName'), minWidth: 120 },
+    { field: 'dailyTagName', title: $t('equip.tallyMaintenanceItem.dailyTag'), minWidth: 80 },
+    { field: 'maintenanceTagName', title: $t('equip.tallyMaintenanceItem.maintenanceTag'), minWidth: 80 },
+    { field: 'isUseName', title: $t('equip.tallyMaintenanceItem.isUse'), minWidth: 90 },
+    { field: 'isSpecialName', title: $t('equip.tallyMaintenanceItem.isSpecial'), minWidth: 80 },
     {
       field: 'action',
-      title: '操作',
+      title: $t('equip.operation'),
       width: 120,
       fixed: 'right',
       slots: { default: 'action' },
@@ -166,10 +166,10 @@ function handleReset() {
 // ========== 删除 ==========
 function handleDelete(row: any) {
   Modal.confirm({
-    title: '提示',
-    content: '确定要删除吗？',
-    okText: '确认',
-    cancelText: '取消',
+    title: $t('common.prompt'),
+    content: $t('equip.tallyMaintenanceItem.confirmDelete'),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
     okButtonProps: { danger: true },
     onOk() {
       return new Promise((resolve) => {
@@ -210,22 +210,22 @@ const formData = ref<any>({
 // 表单校验规则
 const rules: Record<string, any[]> = {
   checkItemCode: [
-    { required: true, message: '此项为必填项', trigger: 'change' },
+    { required: true, message: $t('equip.requiredField'), trigger: 'change' },
   ],
   checkItemName: [
-    { required: true, message: '此项为必填项', trigger: 'change' },
+    { required: true, message: $t('equip.requiredField'), trigger: 'change' },
   ],
   itemDescription: [
-    { required: true, message: '此项为必填项', trigger: 'change' },
+    { required: true, message: $t('equip.requiredField'), trigger: 'change' },
   ],
-  itemType: [{ required: true, message: '此项为必填项', trigger: 'change' }],
-  isSpecial: [{ required: true, message: '此项为必填项', trigger: 'change' }],
-  equipName: [{ required: false, message: '此项为必填项', trigger: 'change' }],
-  dailyTag: [{ required: true, message: '此项为必填项', trigger: 'change' }],
+  itemType: [{ required: true, message: $t('equip.requiredField'), trigger: 'change' }],
+  isSpecial: [{ required: true, message: $t('equip.requiredField'), trigger: 'change' }],
+  equipName: [{ required: false, message: $t('equip.requiredField'), trigger: 'change' }],
+  dailyTag: [{ required: true, message: $t('equip.requiredField'), trigger: 'change' }],
   maintenanceTag: [
-    { required: true, message: '此项为必填项', trigger: 'change' },
+    { required: true, message: $t('equip.requiredField'), trigger: 'change' },
   ],
-  isUse: [{ required: true, message: '此项为必填项', trigger: 'change' }],
+  isUse: [{ required: true, message: $t('equip.requiredField'), trigger: 'change' }],
 };
 
 // 设备远程搜索
@@ -323,7 +323,7 @@ function handleSubmit() {
       formData.value.equipCode = undefined;
     } else {
       if (!formData.value.equipName || !formData.value.equipTypeCode) {
-        message.warning('请选择具体的设备');
+        message.warning($t('equip.tallyMaintenanceItem.selectEquipment'));
         return;
       }
     }
@@ -359,34 +359,34 @@ onMounted(() => {
     <!-- 查询区域 -->
     <Card class="!mb-4">
       <Form layout="inline">
-        <FormItem label="设备名称" style="margin-bottom: 1em">
+        <FormItem :label="$t('equip.tallyMaintenanceItem.equipName')" style="margin-bottom: 1em">
           <Input
             v-model:value="queryParams.equipName"
-            placeholder="请输入设备名称"
+            :placeholder="$t('equip.tallyMaintenanceItem.enterEquipName')"
             allow-clear
             style="width: 180px"
           />
         </FormItem>
-        <FormItem label="点检项名称" style="margin-bottom: 1em">
+        <FormItem :label="$t('equip.tallyMaintenanceItem.checkItemName')" style="margin-bottom: 1em">
           <Input
             v-model:value="queryParams.checkItemName"
-            placeholder="请输入点检项名称"
+            :placeholder="$t('equip.tallyMaintenanceItem.enterCheckItemName')"
             allow-clear
             style="width: 180px"
           />
         </FormItem>
-        <FormItem label="点检项编号" style="margin-bottom: 1em">
+        <FormItem :label="$t('equip.tallyMaintenanceItem.checkItemCode')" style="margin-bottom: 1em">
           <Input
             v-model:value="queryParams.checkItemCode"
-            placeholder="请输入点检项编号"
+            :placeholder="$t('equip.tallyMaintenanceItem.enterCheckItemCode')"
             allow-clear
             style="width: 180px"
           />
         </FormItem>
-        <FormItem label="点检类型" style="margin-bottom: 1em">
+        <FormItem :label="$t('equip.tallyMaintenanceItem.itemType')" style="margin-bottom: 1em">
           <Select
             v-model:value="queryParams.itemType"
-            placeholder="请选择"
+            :placeholder="$t('equip.tallyMaintenanceItem.pleaseSelect')"
             allow-clear
             :options="itemTypeOptions"
             style="width: 160px"
@@ -415,14 +415,14 @@ onMounted(() => {
             @click="handleAdd"
           >
             <Icon icon="mdi:plus" class="mr-1 inline-block align-middle" />
-            新增
+            {{ $t('common.add') }}
           </Button>
         </template>
 
         <template #action="{ row }">
           <Space>
             <Tooltip>
-              <template #title>编辑</template>
+              <template #title>{{ $t('common.edit') }}</template>
               <Button
                 type="link"
                 v-if="author.includes('编辑')"
@@ -436,7 +436,7 @@ onMounted(() => {
               </Button>
             </Tooltip>
             <Tooltip>
-              <template #title>删除</template>
+              <template #title>{{ $t('common.delete') }}</template>
               <Button
                 type="link"
                 danger
@@ -458,60 +458,60 @@ onMounted(() => {
     <!-- 新增/编辑抽屉 -->
     <Drawer
       v-model:open="drawerVisible"
-      :title="drawerMode === 'add' ? '新增点检保养项' : '编辑点检保养项'"
+      :title="drawerMode === 'add' ? $t('equip.tallyMaintenanceItem.addTitle') : $t('equip.tallyMaintenanceItem.editTitle')"
       width="600"
       :destroy-on-close="true"
       :footer-style="{ textAlign: 'right' }"
     >
       <Form ref="formRef" :model="formData" :rules="rules" layout="vertical">
         <!-- 点检项编号 -->
-        <FormItem label="点检项编号：" name="checkItemCode">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.checkItemCode') }：`" name="checkItemCode">
           <Input
             v-model:value="formData.checkItemCode"
             :maxlength="64"
             :disabled="drawerMode === 'edit'"
-            placeholder="请输入点检项编号"
+            :placeholder="$t('equip.tallyMaintenanceItem.enterCheckItemCode')"
           />
         </FormItem>
         <!-- 点检项名称 -->
-        <FormItem label="点检项名称：" name="checkItemName">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.checkItemName') }：`" name="checkItemName">
           <Input
             v-model:value="formData.checkItemName"
             :maxlength="64"
-            placeholder="请输入点检项名称"
+            :placeholder="$t('equip.tallyMaintenanceItem.enterCheckItemName')"
           />
         </FormItem>
         <!-- 点检项说明 -->
-        <FormItem label="点检项说明：" name="itemDescription">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.itemDescription') }：`" name="itemDescription">
           <Input
             v-model:value="formData.itemDescription"
             :maxlength="64"
-            placeholder="请输入点检项说明"
+            :placeholder="$t('equip.tallyMaintenanceItem.enterItemDescription')"
           />
         </FormItem>
         <!-- 点检项类型 -->
-        <FormItem label="点检项类型：" name="itemType">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.itemType') }：`" name="itemType">
           <Select
             v-model:value="formData.itemType"
-            placeholder="请选择"
+            :placeholder="$t('equip.tallyMaintenanceItem.pleaseSelect')"
             :options="itemTypeOptions"
           />
         </FormItem>
         <!-- 通用专用 -->
-        <FormItem label="通用专用：" name="isSpecial">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.isSpecial') }：`" name="isSpecial">
           <Select
             v-model:value="formData.isSpecial"
-            placeholder="请选择"
+            :placeholder="$t('equip.tallyMaintenanceItem.pleaseSelect')"
             :options="isSpecialOptions"
           />
         </FormItem>
         <!-- 设备名称 -->
-        <FormItem label="设备名称：" name="equipName">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.equipName') }：`" name="equipName">
           <Select
             v-model:value="formData.equipMessage"
             show-search
             :filter-option="false"
-            placeholder="请输入关键词搜索"
+            :placeholder="$t('equip.tallyMaintenanceItem.keywordSearch')"
             :loading="equipLoading"
             :options="equipOptions"
             :disabled="formData.isSpecial === 1"
@@ -521,33 +521,33 @@ onMounted(() => {
           />
         </FormItem>
         <!-- 日常标记 -->
-        <FormItem label="日常标记：" name="dailyTag">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.dailyTag') }：`" name="dailyTag">
           <RadioGroup v-model:value="formData.dailyTag">
-            <Radio :value="1">是</Radio>
-            <Radio :value="2">否</Radio>
+            <Radio :value="1">{{ $t('equip.tallyMaintenanceItem.yes') }}</Radio>
+            <Radio :value="2">{{ $t('equip.tallyMaintenanceItem.no') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 保养标记 -->
-        <FormItem label="保养标记：" name="maintenanceTag">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.maintenanceTag') }：`" name="maintenanceTag">
           <RadioGroup v-model:value="formData.maintenanceTag">
-            <Radio :value="1">是</Radio>
-            <Radio :value="2">否</Radio>
+            <Radio :value="1">{{ $t('equip.tallyMaintenanceItem.yes') }}</Radio>
+            <Radio :value="2">{{ $t('equip.tallyMaintenanceItem.no') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 启停用标记 -->
-        <FormItem label="启停用标记：" name="isUse">
+        <FormItem :label="`${$t('equip.tallyMaintenanceItem.isUse') }：`" name="isUse">
           <RadioGroup v-model:value="formData.isUse">
-            <Radio :value="1">启用</Radio>
-            <Radio :value="2">停用</Radio>
+            <Radio :value="1">{{ $t('equip.tallyMaintenanceItem.enableRadio') }}</Radio>
+            <Radio :value="2">{{ $t('equip.tallyMaintenanceItem.disableRadio') }}</Radio>
           </RadioGroup>
         </FormItem>
       </Form>
 
       <template #footer>
         <Space>
-          <Button @click="drawerVisible = false">取消</Button>
+          <Button @click="drawerVisible = false">{{ $t('common.cancel') }}</Button>
           <Button type="primary" :loading="drawerLoading" @click="handleSubmit">
-            保存
+            {{ $t('equip.tallyMaintenanceItem.save') }}
           </Button>
         </Space>
       </template>

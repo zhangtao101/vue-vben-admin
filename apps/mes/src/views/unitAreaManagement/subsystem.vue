@@ -60,49 +60,49 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'systemNumber',
-      title: '系统编号',
+      title: $t('equip.systemNumber'),
       minWidth: 150,
     },
     {
       field: 'systemName',
-      title: '系统名称',
+      title: $t('equip.systemName'),
       minWidth: 150,
     },
     {
       field: 'systemType',
-      title: '系统类型',
+      title: $t('equip.systemType'),
       minWidth: 150,
       slots: { default: 'systemType' },
     },
     {
       field: 'subarea',
-      title: '所属单元分区',
+      title: $t('unitAreaManagement.belongingUnitPartition'),
       minWidth: 150,
     },
     {
       field: 'location',
-      title: '安装位置',
+      title: $t('unitAreaManagement.installationLocation'),
       minWidth: 150,
     },
     {
       fixed: 'right',
-      title: '运行状态',
+      title: $t('unitAreaManagement.runningStatus'),
       minWidth: 150,
       slots: { default: 'isUse' },
     },
     {
       field: 'equipmentCodes',
-      title: '仪表',
+      title: $t('unitAreaManagement.instrument'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       width: 220,
     },
   ],
@@ -153,7 +153,7 @@ const editForm = ref();
 const editRules = ref<any>({
   systemNumber: [
     {
-      message: '此项为必填项',
+      message: $t('page.common.requiredField'),
       required: true,
       trigger: 'change',
     },
@@ -167,7 +167,7 @@ const editRules = ref<any>({
     },
   ],
   systemName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
     {
       trigger: 'change',
       validator: (_rule: any, value: any) => {
@@ -177,8 +177,8 @@ const editRules = ref<any>({
       },
     },
   ],
-  subarea: [{ message: '此项为必填项', required: false, trigger: 'change' }],
-  systemType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  subarea: [{ message: $t('page.common.requiredField'), required: false, trigger: 'change' }],
+  systemType: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -193,7 +193,7 @@ const systemNumberDetection = debounce(
       if (res) {
         resolve();
       } else {
-        reject(new Error('该系统编号已存在'));
+        reject(new Error($t('unitAreaManagement.systemNumberExists')));
       }
     });
   },
@@ -211,7 +211,7 @@ const systemNameDetection = debounce(
       if (res) {
         resolve();
       } else {
-        reject(new Error('该系统名称已存在'));
+        reject(new Error($t('unitAreaManagement.systemNameExists')));
       }
     });
   },
@@ -238,11 +238,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteItemizedSystem(row.id).then(() => {
@@ -251,7 +251,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -362,7 +362,7 @@ function meterClose() {
  */
 function selectAll(check: boolean) {
   // 过滤出包含 meterKey.value 的仪表
-  // eslint-disable-next-line array-callback-return
+   
   const arr = meterList.value.map((item: any) => {
     if (item.label.includes(meterKey.value)) {
       return item.value;
@@ -416,40 +416,40 @@ const queryParams = ref<any>({
 // 状态列表
 const statusOptions = ref([
   {
-    label: '全部',
+    label: $t('page.common.all'),
     value: -1,
   },
   {
-    label: '启用',
+    label: $t('status.enable'),
     value: 1,
   },
   {
-    label: '禁用',
+    label: $t('status.forbidden'),
     value: 0,
   },
 ]);
 // 系统类型列表
-const systemType = [
+const systemType: any = [
   {
-    label: '电表',
+    label: $t('unitAreaManagement.electricMeter'),
     value: '1',
   },
   {
-    label: '水表',
+    label: $t('unitAreaManagement.waterMeter'),
     value: '2',
   },
   {
-    label: '气表',
+    label: $t('unitAreaManagement.gasMeter'),
     value: '3',
   },
   {
-    label: '碳表',
+    label: $t('unitAreaManagement.carbonMeter'),
     value: '5',
   },
 ];
 // 系统类型映射表
 const systemTypeMap = Object.fromEntries(
-  systemType.map(({ value, label }) => [value, label]),
+  systemType.map(({ value, label }: any) => [value, label]),
 );
 
 // 总数信息
@@ -535,14 +535,14 @@ function handleChange(info: any) {
       // 重新查询数据，更新列表
       gridApi.reload();
       // 显示成功消息
-      message.success('文件上传成功!');
+      message.success($t('page.common.uploadSuccess'));
     } else {
       // 显示错误消息
       message.error(msg);
     }
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || '文件上传失败';
+    const errorMessage = info.file.response?.message || $t('unitAreaManagement.uploadFailed');
     // 显示错误消息
     message.error(errorMessage);
   }
@@ -770,7 +770,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('unitAreaManagement.editInfo')"
       @close="onClose"
     >
       <Form
@@ -833,11 +833,11 @@ onMounted(() => {
       :title="$t('equip.configuration')"
       @close="meterClose"
     >
-      <Input v-model:value="meterKey" placeholder="请输入仪表名称或编号" />
+      <Input v-model:value="meterKey" :placeholder="$t('unitAreaManagement.meterPlaceholder')" />
       <div>
         <Space class="my-4">
-          <Button @click="selectAll(true)" type="primary">全选</Button>
-          <Button @click="selectAll(false)" type="primary">全不选</Button>
+          <Button @click="selectAll(true)" type="primary">{{ $t('unitAreaManagement.selectAll') }}</Button>
+          <Button @click="selectAll(false)" type="primary">{{ $t('unitAreaManagement.deselectAll') }}</Button>
         </Space>
       </div>
       <CheckboxGroup v-model:value="checkedRow.equipmentCode">

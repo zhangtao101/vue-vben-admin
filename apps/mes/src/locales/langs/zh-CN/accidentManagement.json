@@ -5,9 +5,11 @@
   "position": "岗位",
   "occurrenceTime": "发生时间",
   "eventDescription": "事件描述",
+  "accidentDescription": "事故描述",
   "injuredPart": "受伤部位",
   "descriptionOfInjuryCondition": "受伤情况描述",
   "injuryType": "伤害类型",
+  "injuryTypeName": "受伤类型",
   "relatedAttachments": "相关附件",
   "departmentSupervisor": "责任部门主管",
   "uploadAttachments": "单击或拖动文件到此区域进行上传",
@@ -16,5 +18,12 @@
   "rectificationMeasure": "整改措施",
   "employeeChoice": "员工选择",
   "accidentType": "事故类型",
-  "year": "年份"
+  "year": "年份",
+  "serialNumber": "序号",
+  "accidentCode": "事故编号",
+  "action": "操作",
+  "level1": "特别重大事故(I级)",
+  "level2": "重大事故(II级)",
+  "level3": "较大事故(III级)",
+  "level4": "一般事故(IV级)"
 }

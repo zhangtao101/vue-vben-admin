@@ -1,0 +1,21 @@
+{
+  "workSheetCode": "工单号",
+  "workstationCode": "工作站编号",
+  "productCode": "产品编号",
+  "productName": "产品名称",
+  "planDateStart": "计划开始时间",
+  "workSheetPlanNumber": "工单计划数",
+  "workSheetFinishNumber": "工单完成数（入库数量）",
+  "planDateEnd": "预计完成时间",
+  "unit": "单位",
+  "workOrderStatus": "工单状态",
+  "reportWorkStatus": "工单报工状态",
+  "action": "操作",
+  "notProduced": "未生产",
+  "inProduction": "生产中",
+  "completedOffline": "完工下线",
+  "pausedOffline": "暂停下线",
+  "notReported": "未报工",
+  "reported": "已报工",
+  "undefinedState": "未定义的状态"
+}

@@ -49,37 +49,37 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'lossNumber',
-      title: '线损对象编号',
+      title: $t('unitAreaManagement.lineLossObjectNumber'),
       minWidth: 150,
     },
     {
       field: 'lossName',
-      title: '线损对象名称',
+      title: $t('unitAreaManagement.lineLossObjectName'),
       minWidth: 150,
     },
     {
       field: 'remark',
-      title: '描述',
+      title: $t('unitAreaManagement.describe'),
       minWidth: 150,
     },
     {
       field: 'createUser',
-      title: '创建人',
+      title: $t('unitAreaManagement.createUser'),
       minWidth: 150,
     },
     {
       field: 'createTime',
-      title: '创建时间',
+      title: $t('unitAreaManagement.createTime'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       width: 220,
     },
   ],
@@ -130,7 +130,7 @@ const editForm = ref();
 const editRules = ref<any>({
   lossNumber: [
     {
-      message: '此项为必填项',
+      message: $t('page.common.requiredField'),
       required: true,
       trigger: 'change',
     },
@@ -144,7 +144,7 @@ const editRules = ref<any>({
     },
   ],
   lossName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
     {
       trigger: 'change',
       validator: (_rule: any, value: any) => {
@@ -154,7 +154,7 @@ const editRules = ref<any>({
       },
     },
   ],
-  partitionJC: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  partitionJC: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 /**
  * 用能分区ID防抖
@@ -168,7 +168,7 @@ const partitionIDAntiShake = debounce(
       if (res) {
         resolve();
       } else {
-        reject(new Error('该用能分区ID已存在'));
+        reject(new Error($t('unitAreaManagement.partitionIDExists')));
       }
     });
   },
@@ -186,7 +186,7 @@ const partitionNameAntiShake = debounce(
       if (res) {
         resolve();
       } else {
-        reject(new Error('该用能分区名称已存在'));
+        reject(new Error($t('unitAreaManagement.partitionNameExists')));
       }
     });
   },
@@ -211,11 +211,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteLineLossAnalysis(row.id).then(() => {
@@ -224,7 +224,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -538,7 +538,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('unitAreaManagement.editInfo')"
     >
       <Form
         ref="editForm"

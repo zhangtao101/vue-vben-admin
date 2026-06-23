@@ -57,22 +57,22 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'planCode', title: '计划编号', minWidth: 190 },
-    { field: 'planName', title: '计划名称', minWidth: 190 },
-    { field: 'checkName', title: '专项计划编号', minWidth: 190 },
-    { field: 'manager', title: '负责人', minWidth: 150 },
-    { field: 'startTime', title: '开始时间', minWidth: 150 },
-    { field: 'endTime', title: '结束时间', minWidth: 150 },
-    { field: 'cycle', title: '间隔周期', minWidth: 150 },
-    // { field: 'checkType', title: '检查类别', minWidth: 150 },
-    { field: 'calendarName', title: '日历名称', minWidth: 150 },
-    // { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
-    // { field: 'areaCode', title: '巡检区域', minWidth: 150 },
-    // { field: 'area', title: '巡检项目', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'planCode', title: $t('hiddenDangerInspectionPlan.planCode'), minWidth: 190 },
+    { field: 'planName', title: $t('hiddenDangerInspectionPlan.planName'), minWidth: 190 },
+    { field: 'checkName', title: $t('hiddenDangerInspectionPlan.specialPlanCode'), minWidth: 190 },
+    { field: 'manager', title: $t('hiddenDangerInspectionPlan.responsiblePerson'), minWidth: 150 },
+    { field: 'startTime', title: $t('hiddenDangerInspectionPlan.startTime'), minWidth: 150 },
+    { field: 'endTime', title: $t('hiddenDangerInspectionPlan.endTime'), minWidth: 150 },
+    { field: 'cycle', title: $t('hiddenDangerInspectionPlan.intervalPeriod'), minWidth: 150 },
+    // { field: 'checkType', title: $t('hiddenDangerInspectionPlan.inspectionCategory'), minWidth: 150 },
+    { field: 'calendarName', title: $t('hiddenDangerInspectionPlan.calendarName'), minWidth: 150 },
+    // { field: 'checkCriteria', title: $t('hiddenDangerInspectionPlan.inspectionStandard'), minWidth: 150 },
+    // { field: 'areaCode', title: $t('hiddenDangerInspectionPlan.inspectionArea'), minWidth: 150 },
+    // { field: 'area', title: $t('hiddenDangerInspectionPlan.inspectionItem'), minWidth: 150 },
     {
       field: 'timeType',
-      title: '检查类别',
+      title: $t('hiddenDangerInspectionPlan.inspectionCategory'),
       minWidth: 150,
       slots: { default: 'timeType' },
     },
@@ -80,14 +80,14 @@ const gridOptions: VxeGridProps<any> = {
       field: 'isUse',
       fixed: 'right',
       slots: { default: 'isUse' },
-      title: '计划是否开启',
+      title: $t('hiddenDangerInspectionPlan.planEnabled'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       minWidth: 150,
     },
   ],
@@ -162,15 +162,15 @@ function queryData({ page, pageSize }: any) {
  */
 const timeTypeOptions = [
   {
-    label: '周期计划',
+    label: $t('hiddenDangerInspectionPlan.cyclePlan'),
     value: 1,
   },
   {
-    label: '专项巡检',
+    label: $t('hiddenDangerInspectionPlan.specialInspection'),
     value: 2,
   },
   {
-    label: '日常巡检',
+    label: $t('hiddenDangerInspectionPlan.dailyInspection'),
     value: 0,
   },
 ];
@@ -323,7 +323,7 @@ function addAll() {
  * 删除计划详情
  * @param index 计划详情索引
  */
-function removeDetail(index: number) {
+function removeDetail(index: any) {
   editItem.value.details.splice(index, 1);
 }
 // endregion
@@ -332,20 +332,20 @@ function removeDetail(index: number) {
 
 const inspectionTypeOptions = ref<any[]>([
   {
-    label: '日常检查',
-    value: '日常检查',
+    label: $t('hiddenDangerInspectionPlan.dailyCheck'),
+    value: $t('hiddenDangerInspectionPlan.dailyCheck'),
   },
   {
-    label: '综合检查',
-    value: '综合检查',
+    label: $t('hiddenDangerInspectionPlan.comprehensiveCheck'),
+    value: $t('hiddenDangerInspectionPlan.comprehensiveCheck'),
   },
   {
-    label: '专项检查',
-    value: '专项检查',
+    label: $t('hiddenDangerInspectionPlan.specialCheck'),
+    value: $t('hiddenDangerInspectionPlan.specialCheck'),
   },
   {
-    label: '重大隐患排查',
-    value: '重大隐患排查',
+    label: $t('hiddenDangerInspectionPlan.majorHazardCheck'),
+    value: $t('hiddenDangerInspectionPlan.majorHazardCheck'),
   },
 ]);
 
@@ -425,11 +425,11 @@ function checkCriteriaChange(checkedItem: any, item: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deletePlan(row.id).then(() => {
@@ -438,7 +438,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -721,7 +721,7 @@ onMounted(() => {
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.planName')"
           style="margin-bottom: 1em"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="planName"
         >
           <Input v-model:value="editItem.planName" />
@@ -729,7 +729,7 @@ onMounted(() => {
         <!-- 负责人 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.responsiblePerson')"
-          :rules="[{ required: false, message: '该项为必填项' }]"
+          :rules="[{ required: false, message: $t('page.common.requiredField') }]"
           name="userChenked"
         >
           <Cascader
@@ -760,7 +760,7 @@ onMounted(() => {
         <!-- 巡检类型 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionType')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="timeType"
         >
           <RadioGroup
@@ -772,7 +772,7 @@ onMounted(() => {
         <!-- 开始时间 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.startTime')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="startTime"
           v-if="[0, 1, 2].includes(editItem.timeType)"
         >
@@ -785,7 +785,7 @@ onMounted(() => {
         <!-- 结束时间 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.endTime')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="endTime"
           v-if="[1].includes(editItem.timeType)"
         >
@@ -798,7 +798,7 @@ onMounted(() => {
         <!-- 巡检周期 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionPeriod')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="cycle"
           v-if="[1].includes(editItem.timeType)"
         >
@@ -812,7 +812,7 @@ onMounted(() => {
         <!-- 专项计划编号 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.specialInspectionName')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="checkName"
           v-if="[2].includes(editItem.timeType)"
         >
@@ -822,7 +822,7 @@ onMounted(() => {
         <!-- 日历名称 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.calendarName')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="calendarName"
           v-if="[0].includes(editItem.timeType)"
         >
@@ -840,7 +840,7 @@ onMounted(() => {
           <FormItem
             :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
             style="margin-bottom: 1em"
-            :rules="[{ required: true, message: '该项为必填项' }]"
+            :rules="[{ required: true, message: $t('page.common.requiredField') }]"
             :name="['details', index, 'checkType']"
           >
             <Select
@@ -856,7 +856,7 @@ onMounted(() => {
           <FormItem
             :label="$t('hiddenDangerInspectionStandard.checkItem')"
             style="margin-bottom: 1em"
-            :rules="[{ required: true, message: '该项为必填项' }]"
+            :rules="[{ required: true, message: $t('page.common.requiredField') }]"
             :name="['details', index, 'checkItem']"
           >
             <Select
@@ -886,7 +886,7 @@ onMounted(() => {
           <!-- 检查标准 -->
           <FormItem
             :label="$t('hiddenDangerInspectionPlan.inspectionStandard')"
-            :rules="[{ required: true, message: '该项为必填项' }]"
+            :rules="[{ required: true, message: $t('page.common.requiredField') }]"
             :name="['details', index, 'checkCriteria']"
           >
             <Textarea v-model:value="item.checkCriteria" readonly />
@@ -896,17 +896,17 @@ onMounted(() => {
           <FormItem
             :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
             style="margin-bottom: 1em"
-            :rules="[{ required: true, message: '该项为必填项' }]"
+            :rules="[{ required: true, message: $t('page.common.requiredField') }]"
             :name="['details', index, 'area']"
           >
             <Input v-model:value="item.area" readonly />
           </FormItem>
           <FormItem :wrapper-col="{ span: 18, offset: 6 }">
             <Popconfirm
-              title="确认删除吗？"
+              :title="$t('ui.widgets.deletionConfirmation')"
               @confirm="removeDetail(index)"
-              ok-text="确认"
-              cancel-text="取消"
+              :ok-text="$t('common.confirm')"
+              :cancel-text="$t('common.cancel')"
             >
               <Button type="primary" class="w-full" danger>
                 {{ $t('common.delete') }}

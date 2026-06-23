@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -27,40 +27,40 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '月份', minWidth: 200 },
+    { field: 'month', title: $t('productionDaily.Month'), minWidth: 200 },
     {
       field: 'zjinput',
-      title: '投入泥料量(T)',
+      title: $t('productionDaily.InputT_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
-    { field: 'zjproduction', title: '产出浆料量(T)', minWidth: 200 },
+    { field: 'zjproduction', title: $t('productionDaily.OutputSlurryT'), minWidth: 200 },
     {
       field: 'zjconsumption',
-      title: ' 投入浆料量(T)',
+      title: $t('productionDaily.InputSlurryT'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'zfproduction',
-      title: '产出粉料量(T)',
+      title: $t('productionDaily.OutputPowderT'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'zfconsumption',
-      title: '投入粉料量(T)',
+      title: $t('productionDaily.InputPowderT'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'zp',
-      title: '产出砖坯量(T)',
+      title: $t('productionDaily.OutputBrickBlankT'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
@@ -104,13 +104,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

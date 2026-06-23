@@ -71,6 +71,7 @@
   "itemDescription": "项目说明",
   "isRequired": "是否必填",
   "isCompleted": "是否完成",
+  "uncompletedStatus": "未完成",
   "recoveryValue": "恢复值",
   "usageBefore": "保养前使用次数",
   "usageAfter": "保养后使用次数",
@@ -83,5 +84,6 @@
   "basicInfo": "基本信息",
   "executeInfo": "保养信息",
   "yes": "是",
-  "no": "否"
+  "no": "否",
+  "cannotBeEmpty": "不能为空"
 }

@@ -144,7 +144,7 @@ function chartInit(chartData: any = []) {
           type: 'line', // 折线图
           encode: {
             x: 'time', // X轴：时间
-            y: '用电量', // Y轴：用电量
+            y: $t('energyConsumption.energyConsumptionAnalysis.electricityConsumption'), // Y轴：用电量
             shape: 'smooth', // 平滑曲线
           },
           scale: {
@@ -152,7 +152,7 @@ function chartInit(chartData: any = []) {
           },
           axis: {
             y: {
-              title: '用电量', // Y轴标题
+              title: $t('energyConsumption.energyConsumptionAnalysis.electricityConsumption'), // Y轴标题
               grid: null, // 隐藏网格线
             },
           },
@@ -222,8 +222,8 @@ function queryChartData() {
       list.forEach((item: any) => {
         chartData.push({
           time: item.time,
-          用电量: item.dlValue,
-          用水量: 0, // 日数据无用水量，设为0
+          [$t('energyConsumption.energyConsumptionAnalysis.electricityConsumption')]: item.dlValue,
+          [$t('energyConsumption.energyConsumptionAnalysis.waterConsumption')]: 0, // 日数据无用水量，设为0
         });
       });
     } else {
@@ -231,8 +231,8 @@ function queryChartData() {
       list.forEach((item: any) => {
         chartData.push({
           time: item.time,
-          用电量: item.dlValue,
-          用水量: item.slValue,
+          [$t('energyConsumption.energyConsumptionAnalysis.electricityConsumption')]: item.dlValue,
+          [$t('energyConsumption.energyConsumptionAnalysis.waterConsumption')]: item.slValue,
         });
       });
     }
@@ -252,27 +252,27 @@ function queryChartData() {
 const columnsDay: any = [
   {
     field: 'classNumber',
-    title: '班组编号',
+    title: $t('energyConsumption.energyConsumptionAnalysis.teamNumber'),
     minWidth: 150,
   },
   {
     field: 'className',
-    title: '班组名称',
+    title: $t('energyConsumption.energyConsumptionAnalysis.teamName'),
     minWidth: 150,
   },
   {
     field: 'systemName',
-    title: '用能单元分区',
+    title: $t('energyConsumption.energyConsumptionAnalysis.energyUnitPartition'),
     minWidth: 150,
   },
   {
     field: 'dlValue',
-    title: '用电量',
+    title: $t('energyConsumption.energyConsumptionAnalysis.electricityConsumption'),
     minWidth: 150,
   },
   {
     field: 'time',
-    title: '时间',
+    title: $t('energyConsumption.energyConsumptionAnalysis.time'),
     minWidth: 150,
   },
 ];
@@ -284,32 +284,32 @@ const columnsDay: any = [
 const columnsOuther: any = [
   {
     field: 'classNumber',
-    title: '班组编号',
+    title: $t('energyConsumption.energyConsumptionAnalysis.teamNumber'),
     minWidth: 150,
   },
   {
     field: 'className',
-    title: '班组名称',
+    title: $t('energyConsumption.energyConsumptionAnalysis.teamName'),
     minWidth: 150,
   },
   {
     field: 'systemName',
-    title: '用能单元分区',
+    title: $t('energyConsumption.energyConsumptionAnalysis.energyUnitPartition'),
     minWidth: 150,
   },
   {
     field: 'dValue',
-    title: '用电量',
+    title: $t('energyConsumption.energyConsumptionAnalysis.electricityConsumption'),
     minWidth: 150,
   },
   {
     field: 'slValue',
-    title: '用水能',
+    title: $t('energyConsumption.energyConsumptionAnalysis.waterEnergy'),
     minWidth: 150,
   },
   {
     field: 'time',
-    title: '时间',
+    title: $t('energyConsumption.energyConsumptionAnalysis.time'),
     minWidth: 150,
   },
 ];
@@ -318,7 +318,7 @@ const columnsOuther: any = [
  * 表格API实例
  * 用于表格数据重新加载等操作
  */
-let gridApi: any;
+let gridApi: any = null;
 /**
  * 查询表格数据
  * 根据班组名称和时间粒度查询班组能耗数据，用于表格展示

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,58 +34,58 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '日期', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'lineName', title: '生产批号', minWidth: 200 },
+    { field: 'month', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.CodeProduct_1'), minWidth: 200 },
+    { field: 'lineName', title: $t('productionDaily.productionBatchNo'), minWidth: 200 },
     {
       field: 'pressQuantity',
-      title: '压制量(M2)',
+      title: $t('productionDaily.M2_21'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'inReportNumber',
-      title: '入中间库量(M2)',
+      title: $t('productionDaily.M2_17'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'yjdlValue',
-      title: '压机用电量(KWH)',
+      title: $t('productionDaily.KWHPressElectricity'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'yldlValue',
-      title: '窑炉用电量(KWH)',
+      title: $t('productionDaily.KWHKilnElectricity'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'yxdlValue',
-      title: '釉线用电量(KWH)',
+      title: $t('productionDaily.KWHElectricityGlazeLine'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'totalDlValue',
-      title: '总用电量(KWH)',
+      title: $t('productionDaily.KWHElectricity_2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopValue',
-      title: '停窑电量(KWH)',
+      title: $t('productionDaily.KWHElectric_4'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
   height: 500,
   stripe: true,

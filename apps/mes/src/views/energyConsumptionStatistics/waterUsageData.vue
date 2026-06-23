@@ -100,7 +100,7 @@ function chartInit(chartData: any) {
       ],
       axis: {
         y: {
-          title: '用水量', // Y轴标题
+          title: $t('electricityConsumptionData.waterUsageAxisTitle'), // Y轴标题
           grid: null, // 隐藏网格线，突出数据趋势
           labelFormatter: (d: any) => `${d}T`, // Y轴标签格式化（吨单位）
         },
@@ -180,18 +180,18 @@ function queryChartData() {
  * 定义用水量数据表格的显示列信息
  */
 const columns: any = [
-  { title: '序号', type: 'seq', width: 50 }, // 自动生成序号列
-  { field: 'meterCode', title: '设备编号', minWidth: 150 }, // 水表设备唯一标识
-  { field: 'meterName', title: '设备名称', minWidth: 150 }, // 水表设备名称
-  { field: 'waterUse', title: '用水量', minWidth: 150 }, // 水资源消耗量（吨）
-  { field: 'time', title: '日期', minWidth: 150 }, // 数据记录时间
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动生成序号列
+  { field: 'meterCode', title: $t('electricityConsumptionData.equipmentCode'), minWidth: 150 }, // 水表设备唯一标识
+  { field: 'meterName', title: $t('electricityConsumptionData.equipmentName'), minWidth: 150 }, // 水表设备名称
+  { field: 'waterUse', title: $t('electricityConsumptionData.waterUsage'), minWidth: 150 }, // 水资源消耗量（吨）
+  { field: 'time', title: $t('electricityConsumptionData.date'), minWidth: 150 }, // 数据记录时间
 ];
 
 /**
  * 表格API对象
  * 用于控制表格的重载、刷新等操作
  */
-let gridApi: any;
+let gridApi: any = null;
 
 /**
  * 表格数据查询函数

@@ -69,66 +69,36 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
     { type: 'checkbox', width: 60 },
-    {
-      field: 'isFinish',
-      slots: { default: 'selectedState' },
-      title: '完成',
-      minWidth: 50,
-    },
-    {
-      field: 'isSuspend',
-      slots: { default: 'selectedState' },
-      title: '中止',
-      minWidth: 50,
-    },
-    {
-      field: 'isSign',
-      slots: { default: 'selectedState' },
-      title: '签发',
-      minWidth: 50,
-    },
-    {
-      field: 'isLock',
-      slots: { default: 'selectedState' },
-      title: '锁定',
-      minWidth: 50,
-    },
-    { field: 'applyCode', title: '申请编号', minWidth: 150 },
-    { field: 'applyDate', title: '申请日期', minWidth: 150 },
-    { field: 'requireDate', title: '需求日期', minWidth: 150 },
-    { field: 'applyTypeName', title: '申请类别', minWidth: 150 },
-    { field: 'materialCode', title: '材料编号', minWidth: 150 },
-    { field: 'materialName', title: '材料名称', minWidth: 250 },
-    { field: 'unit', title: '单位', minWidth: 150 },
-    {
-      field: 'applyNumber',
-      title: '申请数量',
-      minWidth: 150,
-    },
-    { field: 'receiveNumber', title: '实际发料数量', minWidth: 150 },
-    { field: 'unclaimedQuantity', title: '未领数量', minWidth: 150 },
-    { field: 'remark', title: '备注说明', minWidth: 250 },
-    { field: 'planCode', title: '计划号', minWidth: 150 },
-    { field: 'username', title: '所属用户', minWidth: 150 },
-    { field: 'applyOrgName', title: '申请部门', minWidth: 150 },
-    { field: 'dutyOrgName', title: '责任部门', minWidth: 150 },
-    { field: 'lockPerson', title: '锁定人', minWidth: 150 },
-    { field: 'lockTime', title: '锁定时间', minWidth: 150 },
-    { field: 'signPersonName', title: '签发人', minWidth: 150 },
-    { field: 'signTime', title: '签发时间', minWidth: 150 },
-    { field: 'suspendPersonName', title: '中止人', minWidth: 150 },
-    { field: 'suspendTime', title: '中止时间', minWidth: 150 },
-    { field: 'operatorName', title: '操作人', minWidth: 150 },
-    { field: 'operateTime', title: '操作时间', minWidth: 150 },
-    {
-      field: 'action',
-      fixed: 'right',
-      slots: { default: 'action' },
-      title: '操作',
-      minWidth: 250,
-    },
+    { field: 'isFinish', slots: { default: 'selectedState' }, title: $t('storesRequisition.complete'), minWidth: 50 },
+    { field: 'isSuspend', slots: { default: 'selectedState' }, title: $t('storesRequisition.suspend'), minWidth: 50 },
+    { field: 'isSign', slots: { default: 'selectedState' }, title: $t('storesRequisition.issue'), minWidth: 50 },
+    { field: 'isLock', slots: { default: 'selectedState' }, title: $t('storesRequisition.lock'), minWidth: 50 },
+    { field: 'applyCode', title: $t('storesRequisition.applicationNumber'), minWidth: 150 },
+    { field: 'applyDate', title: $t('storesRequisition.applicationDate'), minWidth: 150 },
+    { field: 'requireDate', title: $t('storesRequisition.demandDate'), minWidth: 150 },
+    { field: 'applyTypeName', title: $t('storesRequisition.categoryOfApplication'), minWidth: 150 },
+    { field: 'materialCode', title: $t('storesRequisition.materialNumber'), minWidth: 150 },
+    { field: 'materialName', title: $t('storesRequisition.materialName'), minWidth: 250 },
+    { field: 'unit', title: $t('storeManagement.labelPrint.unit'), minWidth: 150 },
+    { field: 'applyNumber', title: $t('storesRequisition.applyQty'), minWidth: 150 },
+    { field: 'receiveNumber', title: $t('storesRequisition.actualDeliveredQty'), minWidth: 150 },
+    { field: 'unclaimedQuantity', title: $t('storesRequisition.unclaimedQty'), minWidth: 150 },
+    { field: 'remark', title: $t('storesRequisition.remark'), minWidth: 250 },
+    { field: 'planCode', title: $t('storesRequisition.planCode'), minWidth: 150 },
+    { field: 'username', title: $t('storesRequisition.owningUser'), minWidth: 150 },
+    { field: 'applyOrgName', title: $t('storesRequisition.applicationDepartment'), minWidth: 150 },
+    { field: 'dutyOrgName', title: $t('storesRequisition.responsibleDepartment'), minWidth: 150 },
+    { field: 'lockPerson', title: $t('storesRequisition.lockPerson'), minWidth: 150 },
+    { field: 'lockTime', title: $t('storesRequisition.lockTime'), minWidth: 150 },
+    { field: 'signPersonName', title: $t('storesRequisition.issuer'), minWidth: 150 },
+    { field: 'signTime', title: $t('storesRequisition.issueTime'), minWidth: 150 },
+    { field: 'suspendPersonName', title: $t('storesRequisition.suspendPerson'), minWidth: 150 },
+    { field: 'suspendTime', title: $t('storesRequisition.suspendTime'), minWidth: 150 },
+    { field: 'operatorName', title: $t('storesRequisition.operatorName'), minWidth: 150 },
+    { field: 'operateTime', title: $t('storesRequisition.operateTime'), minWidth: 150 },
+    { field: 'action', fixed: 'right', slots: { default: 'action' }, title: $t('common.operation'), minWidth: 250 },
   ],
   height: 500,
   stripe: true,
@@ -217,40 +187,24 @@ function queryData({ page, pageSize }: any) {
 function delRow(row?: any) {
   // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
-    cancelText: '取消',
-    // 确认按钮的文本
-    okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
-      message.warning('已取消删除!');
+      message.warning($t('storesRequisition.deleteCancelled'));
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
-      // 调用删除按钮的操作，传递按钮的编码和类型参数
       storeRequisitionDelete(row.id)
         .then(() => {
-          // 如果删除操作成功，显示操作成功的提示信息
-          message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
-
+          message.success($t('common.successfulOperation'));
           gridApi.query();
         })
         .catch((error) => {
-          // 如果删除操作失败，显示错误提示信息
-          message.error($t('common.operationFailure')); // 操作失败的提示信息（通过国际化处理）
-
-          // 显示具体的错误信息
-          message.error(error.msg); // 显示从服务器返回的错误消息
+          message.error($t('common.operationFailure'));
+          message.error(error.msg);
         });
     },
-
-    // 确认框的标题文本
-    title: '是否确认删除该条数据?',
+    title: $t('storesRequisition.confirmDeleteRecord'),
   });
 }
 
@@ -271,80 +225,21 @@ const addOrUpdateGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    {
-      field: 'applyTypeName',
-      slots: { default: 'applyTypeName' },
-      title: '申请类别',
-      minWidth: 200,
-    },
-    {
-      field: 'materialCode',
-      title: '材料编号',
-      minWidth: 150,
-    },
-    {
-      field: 'applyCode',
-      slots: { default: 'materialName' },
-      title: '材料名称',
-      minWidth: 350,
-    },
-    { field: 'unit', title: '单位', minWidth: 150 },
-    {
-      field: 'applyNumber',
-      slots: { default: 'applyNumberStorage' },
-      title: '申请数量',
-      minWidth: 150,
-    },
-    {
-      field: 'planCode',
-      slots: { default: 'planCode' },
-      title: '工单号',
-      minWidth: 200,
-    },
-    { field: 'storeNumber', title: '库存数量', minWidth: 250 },
-    {
-      field: 'receiveNumber',
-      slots: { default: 'receiveNumber' },
-      title: '实际发料数量',
-      minWidth: 150,
-    },
-    {
-      field: 'remarkArr1',
-      slots: { default: 'storageLocation' },
-      title: '库位',
-      minWidth: 150,
-    },
-    {
-      field: 'remarkArr2',
-      slots: { default: 'actualStorage' },
-      title: '储位',
-      minWidth: 150,
-    },
-    {
-      field: 'remarkArr3',
-      slots: { default: 'batchNumber' },
-      title: '批次号',
-      minWidth: 150,
-    },
-    {
-      field: 'remarkArr4',
-      slots: { default: 'moistureContent' },
-      title: '含水率',
-      minWidth: 150,
-    },
-    {
-      slots: { default: 'lineSideWarehouseLocation' },
-      title: '线边仓库位',
-      minWidth: 150,
-    },
-    {
-      field: 'action',
-      fixed: 'right',
-      slots: { default: 'action' },
-      title: '操作',
-      minWidth: 120,
-    },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
+    { field: 'applyTypeName', slots: { default: 'applyTypeName' }, title: $t('storesRequisition.categoryOfApplication'), minWidth: 200 },
+    { field: 'materialCode', title: $t('storesRequisition.materialNumber'), minWidth: 150 },
+    { field: 'applyCode', slots: { default: 'materialName' }, title: $t('storesRequisition.materialName'), minWidth: 350 },
+    { field: 'unit', title: $t('storeManagement.labelPrint.unit'), minWidth: 150 },
+    { field: 'applyNumber', slots: { default: 'applyNumberStorage' }, title: $t('storesRequisition.applyQty'), minWidth: 150 },
+    { field: 'planCode', slots: { default: 'planCode' }, title: $t('storesRequisition.workOrderNo'), minWidth: 200 },
+    { field: 'storeNumber', title: $t('storesRequisition.stockQty'), minWidth: 250 },
+    { field: 'receiveNumber', slots: { default: 'receiveNumber' }, title: $t('storesRequisition.actualDeliveredQty'), minWidth: 150 },
+    { field: 'remarkArr1', slots: { default: 'storageLocation' }, title: $t('storesRequisition.storageLocation'), minWidth: 150 },
+    { field: 'remarkArr2', slots: { default: 'actualStorage' }, title: $t('storesRequisition.actualStorage'), minWidth: 150 },
+    { field: 'remarkArr3', slots: { default: 'batchNumber' }, title: $t('storesRequisition.batchNumber'), minWidth: 150 },
+    { field: 'remarkArr4', slots: { default: 'moistureContent' }, title: $t('storesRequisition.moistureContent'), minWidth: 150 },
+    { slots: { default: 'lineSideWarehouseLocation' }, title: $t('storesRequisition.lineSideWarehouseLocation'), minWidth: 150 },
+    { field: 'action', fixed: 'right', slots: { default: 'action' }, title: $t('common.operation'), minWidth: 120 },
   ],
   height: 500,
   stripe: true,
@@ -450,29 +345,18 @@ function queryDetails() {
  * @param row
  */
 function delDetailRow(row: any) {
-  // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
-    cancelText: '取消',
-    // 确认按钮的文本
-    okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
-      message.warning('已取消删除!');
+      message.warning($t('storesRequisition.deleteCancelled'));
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
       addOrUpdateGridApi.grid.remove(row);
-      message.success('删除成功!');
+      message.success($t('storesRequisition.deleteSuccess'));
     },
-
-    // 确认框的标题文本
-    title: '是否确认删除该条数据?',
+    title: $t('storesRequisition.confirmDeleteRecord'),
   });
 }
 
@@ -482,7 +366,7 @@ function delDetailRow(row: any) {
 function addRow() {
   addOrUpdateGridApi.grid.insert({
     applyType: 20,
-    applyTypeName: '线边仓调拨',
+    applyTypeName: $t('storesRequisition.lineSideWarehouseAllocation'),
     remarkArr: [],
   });
 }
@@ -496,7 +380,7 @@ function submit() {
   const tableData = addOrUpdateGridApi.grid.getTableData().tableData;
   tableData.forEach((row: any) => {
     if (!row.materialCode) {
-      message.error('请先维护具体的材料!');
+      message.error($t('storesRequisition.pleaseMaintainMaterial'));
       return false;
     }
     row.remark = row.remarkArr.join(',');
@@ -600,7 +484,9 @@ function selectedMaterialFun() {
     });
     selectMaterialMessage.value.storeNumber = data;
     if (selectMaterialMessage.value.applyType === 18) {
-      selectMaterialMessage.value.unit = '片';
+      selectMaterialMessage.value.unit = $t(
+        'storeManagement.lineSideWarehouseAllocation.unitPiece',
+      );
     }
     selectMaterialClose();
   });
@@ -626,7 +512,7 @@ function getIds() {
   if (selectedRows.length > 0) {
     return selectedRows.map((item: any) => item.id);
   } else {
-    message.warning('请至少选中一条数据进行操作!');
+    message.warning($t('storesRequisition.pleaseSelectData'));
     return [];
   }
 }
@@ -687,7 +573,7 @@ function printFile() {
   // 当前选中的数据
   const selectedRows = gridApi.grid.getCheckboxRecords();
   if (selectedRows.length === 0) {
-    message.warning('请至少选择一条数据!');
+    message.warning($t('storesRequisition.pleaseSelectOneRecord'));
     return;
   }
 
@@ -717,7 +603,7 @@ function printFile() {
         row.lv = 'P';
       });
       data = {
-        time: dayjs().format('YYYY年MM月DD日'),
+        time: dayjs().format($t('storeManagement.lineSideWarehouseAllocation.dateFormat')),
         materialRequisitionNumber: selectedRows[0].applyCode,
         semiFinishedProduct: selectedRows,
       };
@@ -731,7 +617,7 @@ function printFile() {
         }
       });
       data = {
-        time: dayjs().format('YYYY年MM月DD日'),
+        time: dayjs().format($t('storeManagement.lineSideWarehouseAllocation.dateFormat')),
         applyOrgCode: selectedRows[0].applyOrgCode,
         materialRequisitionNumber: selectedRows[0].applyCode,
         applyOrgName: selectedRows[0].applyOrgName,
@@ -749,11 +635,13 @@ function printFile() {
         });
         hiprintTemplate.print(data, { leftOffset: -1, topOffset: -1 });
       } catch {
-        console.error('模板解析失败');
+        console.error(
+          $t('storeManagement.lineSideWarehouseAllocation.templateParseFailed'),
+        );
       }
     });
   } else {
-    message.warning('请选择同一单的数据进行打印!');
+    message.warning($t('storesRequisition.pleaseSelectSameOrder'));
   }
 }
 
@@ -794,42 +682,25 @@ const deleteTheEntireDisplay = ref(false);
 const oddNumber = ref('');
 
 function del() {
-  // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
-    cancelText: '取消',
-    // 确认按钮的文本
-    okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
-      message.warning('已取消删除!');
+      message.warning($t('storesRequisition.deleteCancelled'));
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
-      // 调用删除按钮的操作，传递按钮的编码和类型参数
       wholeOrderDelete(oddNumber.value)
         .then(() => {
-          // 如果删除操作成功，显示操作成功的提示信息
-          message.success($t('common.successfulOperation')); // 成功操作的提示信息（通过国际化处理）
-
+          message.success($t('common.successfulOperation'));
           gridApi.query();
         })
         .catch((error) => {
-          // 如果删除操作失败，显示错误提示信息
-          message.error($t('common.operationFailure')); // 操作失败的提示信息（通过国际化处理）
-
-          // 显示具体的错误信息
-          message.error(error.msg); // 显示从服务器返回的错误消息
+          message.error($t('common.operationFailure'));
+          message.error(error.msg);
         });
     },
-
-    // 确认框的标题文本
-    title: '是否确认删除该条数据?',
+    title: $t('storesRequisition.confirmDeleteRecord'),
   });
 }
 
@@ -843,7 +714,7 @@ onMounted(async () => {
     queryOrg();
   } catch {
     // 统一处理错误
-    message.error('数据加载失败，请重试');
+    message.error($t('storesRequisition.dataLoadFailed'));
   }
 });
 </script>
@@ -1036,7 +907,7 @@ onMounted(async () => {
       :height="500"
       placement="top"
       root-class-name="root-class-name"
-      title="信息编辑"
+      :title="$t('storesRequisition.infoEdit')"
       @close="close"
     >
       <Form
@@ -1051,7 +922,7 @@ onMounted(async () => {
         <Row>
           <Col :span="24" class="!mb-4">
             <!--            <Button class="mr-4" type="primary">计划导入</Button>-->
-            <Button type="primary" @click="addRow">增加</Button>
+            <Button type="primary" @click="addRow">{{ $t('storesRequisition.addRow') }}</Button>
           </Col>
         </Row>
         <Row>
@@ -1169,7 +1040,7 @@ onMounted(async () => {
             type="primary"
             @click="showSelectMaterial(row)"
           >
-            选择
+            {{ $t('storeManagement.labelPrint.choose') }}
           </Button>
         </template>
         <!-- 申领数量 -->
@@ -1251,7 +1122,7 @@ onMounted(async () => {
       :height="500"
       placement="top"
       root-class-name="root-class-name"
-      title="材料选择"
+      :title="$t('storesRequisition.selectMaterialTitle')"
     >
       <MaterialSelection
         :apply-org-code="editMessage.applyOrgCode"
@@ -1281,7 +1152,7 @@ onMounted(async () => {
 
     <Modal
       :open="deleteTheEntireDisplay"
-      title="整单删除"
+      :title="$t('storesRequisition.wholeOrderDelete')"
       @ok="del"
       @cancel="deleteTheEntireDisplay = false"
     >

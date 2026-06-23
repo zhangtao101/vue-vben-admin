@@ -61,7 +61,7 @@ const equipmentGroupOptions = ref<{ label: string; value: string }[]>([]);
 async function initEquipmentGroupOptions() {
   const res = await searchBaseConfig({ configType: 'EQUIPMENT_GROUP' });
   equipmentGroupOptions.value = [
-    { label: '全部', value: '' },
+    { label: $t('repair.repairProcessConfig.all'), value: '' },
     ...((res || []) as any[]).map((item) => ({
       label: item.configName,
       value: item.configCode,
@@ -109,7 +109,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'configName',
       title: $t('repair.repairProcessConfig.configName'),
@@ -322,10 +322,10 @@ onMounted(async () => {
  */
 function formatEquipmentGroup(value: string) {
   const map: Record<string, string> = {
-    LINE_A: 'A线',
-    LINE_B: 'B线',
-    LINE_C: 'C线',
-    ALL: '全部',
+    LINE_A: $t('repair.repairProcessConfig.lineA'),
+    LINE_B: $t('repair.repairProcessConfig.lineB'),
+    LINE_C: $t('repair.repairProcessConfig.lineC'),
+    ALL: $t('repair.repairProcessConfig.all'),
   };
   return map[value] || value || '-';
 }

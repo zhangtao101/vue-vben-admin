@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -27,51 +27,51 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '日期', minWidth: 200 },
-    { field: 'yline', title: '窑线', minWidth: 200 },
+    { field: 'month', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'yline', title: $t('productionDaily.kilnLineName'), minWidth: 200 },
     {
       field: 'wgValue',
-      title: '卧干天然气用量M3',
+      title: $t('productionDaily.NaturalGasM3Usage_4'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'ylValue',
-      title: '窑线天然气用量M3',
+      title: $t('productionDaily.NaturalGasM3Usage_5'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'yxValue',
-      title: '釉线天然气用量M3',
+      title: $t('productionDaily.NaturalGasGlazeLineM3Usage'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'sumValue',
-      title: '总天然气用量M3',
+      title: $t('productionDaily.NaturalGasM3Usage_6'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopValue',
-      title: '停窑天然气用量M3',
+      title: $t('productionDaily.NaturalGasM3Usage_3'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'bfb',
-      title: '占比',
+      title: $t('productionDaily.Proportion'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,

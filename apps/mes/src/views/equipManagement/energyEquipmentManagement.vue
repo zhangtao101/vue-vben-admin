@@ -60,51 +60,51 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
     {
       field: 'equipmentCode',
-      title: '仪表编号',
+      title: $t('equip.instrumentNumber'),
       minWidth: 150,
     },
     {
       field: 'equipmentName',
-      title: '仪表名称',
+      title: $t('equip.instrumentName'),
       minWidth: 150,
     },
     {
       field: 'type',
-      title: '仪表类型',
+      title: $t('equip.instrumentType'),
       minWidth: 150,
     },
     {
       field: 'model',
-      title: '仪表型号',
+      title: $t('equip.instrumentModel'),
       minWidth: 150,
     },
     {
       field: 'useDepartmentName',
-      title: '所属单元分区',
+      title: $t('equip.unitPartition'),
       minWidth: 150,
     },
     {
       field: 'location',
-      title: '安装位置',
+      title: $t('equip.installationLocation'),
       minWidth: 150,
     },
     {
       field: 'bl',
-      title: '倍率（电表专属）',
+      title: $t('equip.magnificationElectric'),
       minWidth: 150,
       visible: true,
     },
     {
       field: 'orderNum',
-      title: '顺序',
+      title: $t('equip.order'),
       minWidth: 80,
       visible: true,
     },
     {
-      title: '启用状态',
+      title: $t('equip.enableStatus'),
       fixed: 'right',
       minWidth: 150,
       slots: { default: 'isUse' },
@@ -113,7 +113,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('equip.operation'),
       width: 220,
     },
   ],
@@ -164,15 +164,15 @@ const editForm = ref();
 const editRules = ref<any>({
   equipmentCode: [
     {
-      message: '此项为必填项',
+      message: $t('equip.requiredField'),
       required: true,
       trigger: 'change',
     },
   ],
   equipmentName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('equip.requiredField'), required: true, trigger: 'change' },
   ],
-  zoningId: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  zoningId: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
 });
 /**
  * 显示是编辑抽屉
@@ -198,11 +198,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('equip.cancelDelete'));
     },
     onOk() {
       deleteTheMeter({ id: row.id, equipmentCode: row.equipmentCode }).then(
@@ -213,7 +213,7 @@ function delRow(row: any) {
         },
       );
     },
-    title: '是否确认删除该条数据?',
+    title: $t('equip.confirmDeleteRecord'),
   });
 }
 
@@ -317,30 +317,30 @@ const queryParams = ref<any>({
 // 电表类型
 const equipTypeOptions = ref([
   {
-    label: '电表',
+    label: $t('equip.meterTypeElectric'),
     value: 1,
   },
   {
-    label: '水表',
+    label: $t('equip.meterTypeWater'),
     value: 2,
   },
   {
-    label: '气表',
+    label: $t('equip.meterTypeGas'),
     value: 3,
   },
 ]);
 // 状态列表
 const statusOptions = ref([
   {
-    label: '全部',
+    label: $t('equip.all'),
     value: -1,
   },
   {
-    label: '启用',
+    label: $t('equip.enable'),
     value: 1,
   },
   {
-    label: '禁用',
+    label: $t('equip.disable'),
     value: 0,
   },
 ]);
@@ -436,10 +436,10 @@ function handleChange(info: any) {
     // 重新查询数据，更新列表
     gridApi.reload();
     // 显示成功消息
-    message.success('文件上传成功!');
+    message.success($t('equip.fileUploadSuccess'));
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || '文件上传失败';
+    const errorMessage = info.file.response?.message || $t('equip.fileUploadFailed');
     // 显示错误消息
     message.error(errorMessage);
   }
@@ -666,7 +666,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('equip.infoEdit')"
     >
       <Form
         ref="editForm"

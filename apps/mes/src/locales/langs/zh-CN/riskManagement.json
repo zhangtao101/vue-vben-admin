@@ -38,5 +38,22 @@
   "AreaScan": "区域条码",
   "riskType": "风险种类",
   "jobUnit": "作业单元",
-  "controlRisk": "控制风险"
+  "controlRisk": "控制风险",
+  "inherentRiskAssessment": "固有风险评估",
+  "controlledRiskAssessment": "控制风险评估",
+  "scoreL": "分值(L)",
+  "scoreE": "分值(E)",
+  "scoreC": "分值(C)",
+  "dValue": "D",
+  "lValue": "L",
+  "sValue": "S",
+  "rValue": "R",
+  "cyclePlan": "周期计划",
+  "dailyInspection": "日常巡检",
+  "abnormity": "异常",
+  "toBeInspected": "待检查",
+  "reported": "已上报",
+  "inspectTime": "检查时间",
+  "checkItem": "检查项目",
+  "checkResult": "检查结果"
 }

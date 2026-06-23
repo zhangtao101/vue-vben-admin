@@ -56,28 +56,28 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'userName', title: '用户名', minWidth: 150 },
-    { field: 'perName', title: '关联人员', minWidth: 150 },
-    { field: 'workNumber', title: '工号', minWidth: 150 },
+    { title: $t('basic.serialNumber'), type: 'seq', width: 50 },
+    { field: 'userName', title: $t('system.sysUser.username'), minWidth: 150 },
+    { field: 'perName', title: $t('system.sysUser.associatedPersonnel'), minWidth: 150 },
+    { field: 'workNumber', title: $t('system.sysUser.workNumber'), minWidth: 150 },
     {
       field: 'isEnable',
       slots: { default: 'status' },
-      title: '状态',
+      title: $t('common.status'),
       minWidth: 150,
     },
     {
       field: 'roleNames',
       slots: { default: 'roleNames' },
-      title: '角色管理',
+      title: $t('system.sysUser.roleManagement'),
       minWidth: 150,
     },
-    { field: 'discription', title: '用户描述', minWidth: 150 },
+    { field: 'discription', title: $t('system.sysUser.userDescription'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       width: 220,
     },
   ],
@@ -126,11 +126,11 @@ const showEditDrawer = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  isEnable: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  isEnable: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
   perName_workNumber: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('basic.requiredField'), required: true, trigger: 'change' },
   ],
-  userName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  userName: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -167,11 +167,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('system.sysUser.deleteCancelled'));
     },
     onOk() {
       deleteUser(row.userCode)
@@ -186,7 +186,7 @@ function delRow(row: any) {
           message.error(error.msg); // 显示操作失败的提示信息
         });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -303,12 +303,12 @@ function handleChange(value: any, _option: any) {
 function resetPasswordFun(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
       // 点击取消按钮，显示警告消息
-      message.warning('已取消!');
+      message.warning($t('system.sysUser.cancelled'));
     },
     onOk() {
       // 调用 API 接口重置密码
@@ -318,7 +318,7 @@ function resetPasswordFun(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认重置密码?',
+    title: $t('system.sysUser.resetPasswordTitle'),
   });
 }
 
@@ -534,22 +534,22 @@ onMounted(() => {
       :width="600"
       class="custom-class"
       placement="right"
-      title="查看详情"
+      :title="$t('basic.viewDetail')"
     >
-      <Descriptions :column="2" bordered title="用户详情">
-        <DescriptionsItem label="用户名">
+      <Descriptions :column="2" bordered :title="$t('system.sysUser.detailTitle')">
+        <DescriptionsItem :label="$t('system.sysUser.username')">
           {{ checkedRow.userName }}
         </DescriptionsItem>
-        <DescriptionsItem label="关联人员">
+        <DescriptionsItem :label="$t('system.sysUser.associatedPersonnel')">
           {{ checkedRow.perName }}
         </DescriptionsItem>
-        <DescriptionsItem label="工号">
+        <DescriptionsItem :label="$t('system.sysUser.workNumber')">
           {{ checkedRow.workNumber }}
         </DescriptionsItem>
-        <DescriptionsItem label="状态">
-          {{ checkedRow.isEnable ? '启用' : '禁用' }}
+        <DescriptionsItem :label="$t('common.status')">
+          {{ checkedRow.isEnable ? $t('common.enable') : $t('common.stopUsing') }}
         </DescriptionsItem>
-        <DescriptionsItem label="用户描述">
+        <DescriptionsItem :label="$t('system.sysUser.userDescription')">
           {{ checkedRow.discription }}
         </DescriptionsItem>
       </Descriptions>
@@ -563,7 +563,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('basic.infoEdit')"
     >
       <Form
         ref="editForm"
@@ -590,7 +590,7 @@ onMounted(() => {
             :not-found-content="null"
             :options="personnelData"
             :show-arrow="false"
-            placeholder="输入用户名进行查询"
+            :placeholder="$t('system.sysUser.searchPersonnel')"
             placement="bottomRight"
             show-search
             @change="handleChange"
@@ -615,8 +615,8 @@ onMounted(() => {
         <!-- 状态 -->
         <FormItem :label="$t('system.sysUser.status')" name="isEnable">
           <RadioGroup v-model:value="checkedRow.isEnable">
-            <Radio :value="1">启用</Radio>
-            <Radio :value="0">禁用</Radio>
+            <Radio :value="1">{{ $t('common.enable') }}</Radio>
+            <Radio :value="0">{{ $t('common.stopUsing') }}</Radio>
           </RadioGroup>
         </FormItem>
 

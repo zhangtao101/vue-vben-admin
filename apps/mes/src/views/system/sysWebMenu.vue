@@ -62,17 +62,17 @@ const gridOptions: VxeGridProps<any> = reactive({
   },
   columns: [
     { type: 'seq', title: '#', width: 60 },
-    { field: 'name', title: '菜单名称', minWidth: 150, dragSort: false },
-    { field: 'url', title: 'url', minWidth: 200 },
+    { field: 'name', title: $t('system.sysWebMenu.menuName'), minWidth: 150, dragSort: false },
+    { field: 'url', title: $t('system.sysWebMenu.url'), minWidth: 200 },
     {
       field: 'isEnable',
-      title: '是否启用',
+      title: $t('system.sysWebMenu.isEnable'),
       width: 100,
       slots: { default: 'isEnable_default' },
     },
     {
       field: 'operation',
-      title: '操作',
+      title: $t('common.operation'),
       width: 120,
       fixed: 'right',
       slots: { default: 'operation_default' },
@@ -135,11 +135,11 @@ function changeSort() {
  */
 function delTableRow(rowId: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('system.sysWebMenu.deleteCancelled'));
     },
     onOk() {
       deleteBtnById(rowId)
@@ -152,7 +152,7 @@ function delTableRow(rowId: any) {
           message.error(error.msg);
         });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -317,9 +317,9 @@ const editMessage = ref<any>({});
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  isEnable: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  name: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  url: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  isEnable: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  name: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  url: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**

@@ -5,5 +5,20 @@
   "workingStepVersion": "Work Step Version",
   "jobType": "Job Type",
   "functionName": "Function Name",
-  "detailsAndRemarks": "Details & Remarks"
+  "detailsAndRemarks": "Details & Remarks",
+  "equipCode": "Equipment Code",
+  "equipName": "Equipment Name",
+  "formulaCode": "Formula Code",
+  "formulaName": "Formula Name",
+  "processCode": "Process Code",
+  "processName": "Process Name",
+  "version": "Version",
+  "userName": "User Name",
+  "associatedPersonnel": "Associated Personnel",
+  "workNumber": "Work Number",
+  "userDescription": "User Description",
+  "userDetails": "User Details",
+  "searchPlaceholder": "Enter username to search",
+  "status": "Status",
+  "editInfo": "Edit Info"
 }

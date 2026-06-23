@@ -35,15 +35,15 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'value', title: '排放因子', minWidth: 150 },
+    { title: $t('baseInfo.serialNumber'), type: 'seq', width: 50 },
+    { field: 'value', title: $t('baseInfo.emissionFactor'), minWidth: 150 },
     {
       field: 'status',
       slots: { default: 'isUse' },
-      title: '状态',
+      title: $t('baseInfo.status'),
       minWidth: 150,
     },
-    { field: 'time', title: '创建时间', minWidth: 150 },
+    { field: 'time', title: $t('baseInfo.createTime'), minWidth: 150 },
   ],
   height: 500,
   stripe: true,
@@ -250,7 +250,7 @@ onMounted(() => {
       placement="right"
       root-class-name="root-class-name"
       style="color: red"
-      title="信息编辑"
+      :title="$t('baseInfo.infoEdit')"
     >
       <Form
         ref="gridEmissionFactorImportFormRef"

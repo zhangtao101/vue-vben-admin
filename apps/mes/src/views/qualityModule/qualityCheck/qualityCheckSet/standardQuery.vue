@@ -31,7 +31,7 @@ const gridOptions: VxeGridProps<any> = {
     drag: true, // 允许行拖拽
   },
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     { field: 'standardTypeName', title: '标准类型', minWidth: 80 },
     { field: 'productCode', title: '产品编号', minWidth: 200 },
     { field: 'itemCode', title: '质检项编号', minWidth: 150 },

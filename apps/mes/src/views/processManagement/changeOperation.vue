@@ -47,18 +47,18 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'changeCode', title: '变更任务编号', minWidth: 120 },
-    { field: 'changeTypeName', title: '变更类型', minWidth: 120 },
-    { field: 'changeBeforeVersion', title: '变更前版本', minWidth: 120 },
-    { field: 'changeAfterVersion', title: '变更后版本', minWidth: 120 },
-    { field: 'stateName', title: '变更任务状态', minWidth: 120 },
-    { field: 'changeTime', title: '变更时间', minWidth: 120 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'changeCode', title: $t('changeOperation.changeTaskNumber'), minWidth: 120 },
+    { field: 'changeTypeName', title: $t('changeOperation.changeOperationType'), minWidth: 120 },
+    { field: 'changeBeforeVersion', title: $t('changeOperation.changeBeforeVersion'), minWidth: 120 },
+    { field: 'changeAfterVersion', title: $t('changeOperation.changeAfterVersion'), minWidth: 120 },
+    { field: 'stateName', title: $t('changeOperation.changeTaskStatus'), minWidth: 120 },
+    { field: 'changeTime', title: $t('changeOperation.changeTime'), minWidth: 120 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('changeOperation.operation'),
       minWidth: 100,
     },
   ],
@@ -218,12 +218,12 @@ const [DetailsGrid, detailsGridApi] = useVbenVxeGrid({
 const changeOfProcessRoute = [
   {
     field: 'productCode',
-    title: '绑定产品编号',
+    title: $t('changeOperation.boundProductCode'),
     width: 120,
   },
   {
     field: 'productName',
-    title: '绑定产品名称',
+    title: $t('changeOperation.boundProductName'),
     width: 120,
   },
 ];
@@ -234,12 +234,12 @@ const changeOfProcessRoute = [
 const processParameterTemplate = [
   {
     field: 'routeCode',
-    title: '对应工艺路线编号',
+    title: $t('changeOperation.correspondingRouteCode'),
     width: 180,
   },
   {
     field: 'routeName',
-    title: '对应工艺路线名称',
+    title: $t('changeOperation.correspondingRouteName'),
     width: 180,
   },
 ];
@@ -250,17 +250,17 @@ const processParameterTemplate = [
 const tableHeaders = [
   {
     field: 'useVersion',
-    title: '更新后的版本号',
+    title: $t('changeOperation.updatedVersion'),
     width: 160,
   },
   {
     field: 'nowVersion',
-    title: '当前对应使用的版本',
+    title: $t('changeOperation.currentlyUsedVersion'),
     width: 160,
   },
   {
     field: 'useStateName',
-    title: '应用状态',
+    title: $t('changeOperation.applicationStatus'),
     width: 120,
   },
 ];
@@ -307,11 +307,11 @@ function closeDetails() {
  */
 function submitChange() {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消变更!');
+      message.warning($t('changeOperation.changeCancelled'));
     },
     onOk() {
       if (selectedRow.value.length > 0) {
@@ -329,10 +329,10 @@ function submitChange() {
             message.error(error.msg);
           });
       } else {
-        message.error('至少选择一条数据!');
+        message.error($t('changeOperation.atLeastOneRecord'));
       }
     },
-    title: '是否确认变更?',
+    title: $t('changeOperation.confirmChange'),
   });
 }
 
@@ -381,8 +381,8 @@ onMounted(() => {
             v-model:value="queryParams.changeType"
             style="width: 180px !important"
           >
-            <SelectOption :value="1">工艺参数模板变更</SelectOption>
-            <SelectOption :value="2">工艺路线变更</SelectOption>
+            <SelectOption :value="1">{{ $t('changeOperation.processParameterTemplateChange') }}</SelectOption>
+            <SelectOption :value="2">{{ $t('changeOperation.processRouteChange') }}</SelectOption>
           </Select>
         </FormItem>
         <FormItem style="margin-bottom: 1em">
@@ -412,20 +412,20 @@ onMounted(() => {
       v-model:open="detailsVisible"
       :footer-style="{ textAlign: 'right' }"
       :width="800"
-      title="详情"
+      :title="$t('changeOperation.details')"
       @close="closeDetails"
     >
       <Descriptions :column="2" bordered>
-        <DescriptionsItem label="变更编号">
+        <DescriptionsItem :label="$t('changeOperation.changeOperationNumber')">
           {{ editItem.changeCode }}
         </DescriptionsItem>
-        <DescriptionsItem label="变更类型">
+        <DescriptionsItem :label="$t('changeOperation.changeOperationType')">
           {{ editItem.changeTypeName }}
         </DescriptionsItem>
-        <DescriptionsItem label="变更前版本">
+        <DescriptionsItem :label="$t('changeOperation.changeBeforeVersion')">
           {{ editItem.changeBeforeVersion }}
         </DescriptionsItem>
-        <DescriptionsItem label="当前版本">
+        <DescriptionsItem :label="$t('changeOperation.currentVersion')">
           {{ editItem.changeAfterVersion }}
         </DescriptionsItem>
       </Descriptions>

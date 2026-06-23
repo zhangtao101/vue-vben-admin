@@ -328,17 +328,17 @@ function handleAssign(row: any) {
  */
 function confirmAssign() {
   if (!assignRepairBy.value) {
-    message.error('请输入维修人');
+    message.error($t('repair.myRepairTask.assignRepairBy'));
     return;
   }
   assignRepairTask(assignCurrentRow.value.id, assignRepairBy.value)
     .then(() => {
-      message.success('指派成功');
+      message.success($t('repair.myRepairTask.assignSuccess'));
       assignModalVisible.value = false;
       gridApi.reload();
     })
     .catch(() => {
-      message.error('指派失败');
+      message.error($t('repair.myRepairTask.assignFailed'));
     });
 }
 
@@ -365,7 +365,7 @@ function handlePause(row: any) {
  */
 function confirmPause() {
   if (!pauseReason.value) {
-    message.error('请输入暂停原因');
+    message.error($t('repair.myRepairTask.enterPauseReason'));
     return;
   }
   pauseRepairTask({
@@ -373,12 +373,12 @@ function confirmPause() {
     pauseReason: pauseReason.value,
   })
     .then(() => {
-      message.success('暂停成功');
+      message.success($t('repair.myRepairTask.pauseSuccess'));
       pauseModalVisible.value = false;
       gridApi.reload();
     })
     .catch(() => {
-      message.error('暂停失败');
+      message.error($t('repair.myRepairTask.pauseFailed'));
     });
 }
 
@@ -404,9 +404,9 @@ const sparePartsSelectedRows = ref<any[]>([]);
 
 /** 维修结果选项 */
 const repairResultOptions = [
-  { label: '已修复', value: 'NORMAL' },
-  { label: '部分修复', value: 'PARTIAL' },
-  { label: '未修复', value: 'FAILED' },
+  { label: $t('repair.myRepairTask.repairResultFixed'), value: 'NORMAL' },
+  { label: $t('repair.myRepairTask.repairResultPartial'), value: 'PARTIAL' },
+  { label: $t('repair.myRepairTask.repairResultUnfixed'), value: 'FAILED' },
 ];
 
 /** 根因大类选项 */
@@ -451,7 +451,7 @@ function handleComplete(row: any) {
       completeState.content = data.repairContent || '';
     })
     .catch(() => {
-      message.error('获取详情失败');
+      message.error($t('repair.myRepairTask.getDetailFailed'));
     })
     .finally(() => {
       completeState.loading = false;
@@ -463,11 +463,11 @@ function handleComplete(row: any) {
  */
 function confirmComplete() {
   if (!completeState.result) {
-    message.error('请选择维修结果');
+    message.error($t('repair.myRepairTask.selectRepairResult'));
     return;
   }
   if (!completeState.content) {
-    message.error('请输入维修内容');
+    message.error($t('repair.myRepairTask.repairContentPlaceholder'));
     return;
   }
   reportRepairTask({
@@ -487,12 +487,12 @@ function confirmComplete() {
     repairContent: completeState.content,
   })
     .then(() => {
-      message.success('完成成功');
+      message.success($t('repair.myRepairTask.completeSuccess'));
       completeState.visible = false;
       gridApi.reload();
     })
     .catch(() => {
-      message.error('完成失败');
+      message.error($t('repair.myRepairTask.completeFailed'));
     });
 }
 
@@ -520,12 +520,12 @@ function handleResume(row: any) {
 function confirmResume() {
   resumeRepairTask(resumeCurrentRow.value.id, resumeRemark.value || undefined)
     .then(() => {
-      message.success('恢复成功');
+      message.success($t('repair.myRepairTask.resumeSuccess'));
       resumeModalVisible.value = false;
       gridApi.reload();
     })
     .catch(() => {
-      message.error('恢复失败');
+      message.error($t('repair.myRepairTask.resumeFailed'));
     });
 }
 
@@ -564,11 +564,11 @@ function handleTransfer(row: any) {
  */
 function confirmTransfer() {
   if (!transferTo.value) {
-    message.error('请输入转交人');
+    message.error($t('repair.myRepairTask.enterTransferPerson'));
     return;
   }
   if (!transferReason.value) {
-    message.error('请输入转交原因');
+    message.error($t('repair.myRepairTask.enterTransferReason'));
     return;
   }
   transferRepairTask({
@@ -578,12 +578,12 @@ function confirmTransfer() {
     remark: transferRemark.value,
   })
     .then(() => {
-      message.success('转交成功');
+      message.success($t('repair.myRepairTask.transferSuccess'));
       transferModalVisible.value = false;
       gridApi.reload();
     })
     .catch(() => {
-      message.error('转交失败');
+      message.error($t('repair.myRepairTask.transferFailed'));
     });
 }
 
@@ -705,7 +705,7 @@ onMounted(async () => {
             <!-- 待领取状态：领取按钮 -->
             <template v-if="row.status === 'WAITING'">
               <Tooltip v-if="author.includes('领取')">
-                <template #title>领取</template>
+                <template #title>{{ $t('repair.myRepairTask.receive') }}</template>
                 <Button type="link" @click="handleReceive(row)" class="px-1">
                   <Icon
                     icon="mdi:hand-front-right-outline"
@@ -714,7 +714,7 @@ onMounted(async () => {
                 </Button>
               </Tooltip>
               <Tooltip v-if="author.includes('指派')">
-                <template #title>指派</template>
+                <template #title>{{ $t('repair.myRepairTask.assign') }}</template>
                 <Button type="link" @click="handleAssign(row)" class="px-1">
                   <Icon
                     icon="mdi:account-arrow-right-outline"
@@ -764,7 +764,7 @@ onMounted(async () => {
             <!-- 暂停状态：恢复按钮 -->
             <template v-if="row.status === 'PAUSED' && row.isCurrentUser">
               <Tooltip v-if="author.includes('恢复')">
-                <template #title>恢复</template>
+                <template #title>{{ $t('repair.myRepairTask.resume') }}</template>
                 <Button type="link" @click="handleResume(row)" class="px-1">
                   <Icon
                     icon="mdi:play-circle-outline"
@@ -791,10 +791,10 @@ onMounted(async () => {
       @ok="confirmAssign"
     >
       <Form>
-        <FormItem label="维修人" required>
+        <FormItem :label="$t('repair.myRepairTask.assignRepairByLabel')" required>
           <Select
             v-model:value="assignRepairBy"
-            placeholder="请选择维修人"
+            :placeholder="$t('repair.myRepairTask.assignRepairByPlaceholder')"
             :options="assignUserOptions"
           />
         </FormItem>
@@ -808,8 +808,8 @@ onMounted(async () => {
       @ok="confirmPause"
     >
       <Form>
-        <FormItem label="暂停原因" required>
-          <Input v-model:value="pauseReason" placeholder="请输入暂停原因" />
+        <FormItem :label="$t('repair.myRepairTask.pauseReason')" required>
+          <Input v-model:value="pauseReason" :placeholder="$t('repair.myRepairTask.enterPauseReason')" />
         </FormItem>
       </Form>
     </Modal>
@@ -832,54 +832,54 @@ onMounted(async () => {
       <template v-else-if="completeState.detail">
         <!-- 基本信息区域 - 不可编辑 -->
         <div class="mb-6">
-          <div class="text-base font-medium mb-3 border-b pb-2">基本信息</div>
+          <div class="text-base font-medium mb-3 border-b pb-2">{{ $t('repair.myRepairTask.basicInfoSection') }}</div>
           <Descriptions :column="2" bordered size="small">
-            <DescriptionsItem label="报修单号">
+            <DescriptionsItem :label="$t('repair.repairTask.requestNo')">
               {{ completeState.detail.requestNo || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="维修单号">
+            <DescriptionsItem :label="$t('repair.repairTask.repairNo')">
               {{ completeState.detail.repairNo || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="设备编码">
+            <DescriptionsItem :label="$t('repair.repairTask.equipmentCode')">
               {{ completeState.detail.equipmentCode || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="设备名称">
+            <DescriptionsItem :label="$t('repair.repairTask.equipmentName')">
               {{ completeState.detail.equipmentName || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="报修类型">
+            <DescriptionsItem :label="$t('repair.repairTask.repairType')">
               {{ completeState.detail.repairType || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="紧急程度">
+            <DescriptionsItem :label="$t('repair.repairTask.urgentLevel')">
               {{ completeState.detail.urgentLevel || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="报修人">
+            <DescriptionsItem :label="$t('repair.repairTask.reportBy')">
               {{ completeState.detail.reportBy || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="维修人">
+            <DescriptionsItem :label="$t('repair.repairTask.repairBy')">
               {{ completeState.detail.repairBy || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="故障名称">
+            <DescriptionsItem :label="$t('repair.repairTask.faultName')">
               {{ completeState.detail.faultName || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="故障代码">
+            <DescriptionsItem :label="$t('repair.repairTask.faultCode')">
               {{ completeState.detail.faultCode || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="报修时间">
+            <DescriptionsItem :label="$t('repair.repairTask.reportTime')">
               {{ completeState.detail.reportTime || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="维修开始时间">
+            <DescriptionsItem :label="$t('repair.repairTask.repairStartTime')">
               {{ completeState.detail.repairStartTime || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="维修结束时间">
+            <DescriptionsItem :label="$t('repair.repairTask.repairEndTime')">
               {{ completeState.detail.repairEndTime || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="响应时长(分钟)">
+            <DescriptionsItem :label="$t('repair.repairTask.responseDuration')">
               {{ completeState.detail.responseDuration || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="维修时长(分钟)">
+            <DescriptionsItem :label="$t('repair.repairTask.repairDuration')">
               {{ completeState.detail.repairDuration || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem label="暂停时长(分钟)">
+            <DescriptionsItem :label="$t('repair.myRepairTask.pauseDurationLabel')">
               {{ completeState.detail.pauseDuration || '-' }}
             </DescriptionsItem>
           </Descriptions>
@@ -887,19 +887,19 @@ onMounted(async () => {
 
         <!-- 可编辑区域 -->
         <div>
-          <div class="text-base font-medium mb-3 border-b pb-2">维修填报</div>
+          <div class="text-base font-medium mb-3 border-b pb-2">{{ $t('repair.myRepairTask.repairReportSection') }}</div>
           <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
-            <FormItem label="维修结果" required>
+            <FormItem :label="$t('repair.myRepairTask.repairResultLabel')" required>
               <Select
                 v-model:value="completeState.result"
-                placeholder="请选择维修结果"
+                :placeholder="$t('repair.myRepairTask.repairResultPlaceholder')"
                 :options="repairResultOptions"
               />
             </FormItem>
-            <FormItem label="是否更换配件">
+            <FormItem :label="$t('repair.myRepairTask.replaceParts')">
               <Switch v-model:checked="completeState.hasReplacedParts" />
             </FormItem>
-            <FormItem v-if="completeState.hasReplacedParts" label="配件选择">
+            <FormItem v-if="completeState.hasReplacedParts" :label="$t('repair.myRepairTask.selectParts')">
               <div class="flex items-center gap-2">
                 <Input
                   :value="
@@ -907,7 +907,7 @@ onMounted(async () => {
                       .map((r: any) => r.spareName || r)
                       .join(', ')
                   "
-                  placeholder="请选择配件"
+                  :placeholder="$t('repair.myRepairTask.selectPartsPlaceholder')"
                   readonly
                 />
                 <Button
@@ -917,35 +917,35 @@ onMounted(async () => {
                     sparePartsSelectedRows = [...completeState.replacedParts];
                   "
                 >
-                  选择配件
+                  {{ $t('repair.myRepairTask.chooseParts') }}
                 </Button>
               </div>
             </FormItem>
-            <FormItem label="根因大类">
+            <FormItem :label="$t('repair.myRepairTask.rootCauseCategory')">
               <Select
                 v-model:value="completeState.rootCauseCategory"
-                placeholder="请选择根因大类"
+                :placeholder="$t('repair.myRepairTask.rootCauseCategoryPlaceholder')"
                 :options="rootCauseOptions"
                 allow-clear
               />
             </FormItem>
-            <FormItem label="原因说明">
+            <FormItem :label="$t('repair.myRepairTask.causeDescription')">
               <Input
                 v-model:value="completeState.rootCauseDetail"
-                placeholder="请输入原因说明"
+                :placeholder="$t('repair.myRepairTask.causeDescriptionPlaceholder')"
               />
             </FormItem>
-            <FormItem label="处理方式">
+            <FormItem :label="$t('repair.myRepairTask.handlingMethod')">
               <Input
                 v-model:value="completeState.repairMethod"
-                placeholder="请输入处理方式"
+                :placeholder="$t('repair.myRepairTask.handlingMethodPlaceholder')"
               />
             </FormItem>
-            <FormItem label="维修内容" required>
+            <FormItem :label="$t('repair.myRepairTask.repairContentLabel')" required>
               <Input.TextArea
                 v-model:value="completeState.content"
                 :rows="4"
-                placeholder="请输入维修内容"
+                :placeholder="$t('repair.myRepairTask.repairContentPlaceholder')"
               />
             </FormItem>
           </Form>
@@ -954,8 +954,8 @@ onMounted(async () => {
 
       <template #footer>
         <Space>
-          <Button @click="completeState.visible = false">取消</Button>
-          <Button type="primary" @click="confirmComplete">确认完成</Button>
+          <Button @click="completeState.visible = false">{{ $t('common.cancel') }}</Button>
+          <Button type="primary" @click="confirmComplete">{{ $t('repair.myRepairTask.confirmComplete') }}</Button>
         </Space>
       </template>
     </Drawer>
@@ -979,11 +979,11 @@ onMounted(async () => {
       @ok="confirmResume"
     >
       <Form>
-        <FormItem label="恢复说明">
+        <FormItem :label="$t('repair.myRepairTask.resumeDescription')">
           <Input.TextArea
             v-model:value="resumeRemark"
             :rows="2"
-            placeholder="请输入恢复说明（可选）"
+            :placeholder="$t('repair.myRepairTask.resumeDescriptionPlaceholder')"
           />
         </FormItem>
       </Form>
@@ -996,25 +996,25 @@ onMounted(async () => {
       @ok="confirmTransfer"
     >
       <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
-        <FormItem label="转交人" required>
+        <FormItem :label="$t('repair.myRepairTask.transferPerson')" required>
           <Select
             v-model:value="transferTo"
-            placeholder="请选择转交人"
+            :placeholder="$t('repair.myRepairTask.transferPersonPlaceholder')"
             :options="transferUserOptions"
           />
         </FormItem>
-        <FormItem label="转交原因" required>
+        <FormItem :label="$t('repair.myRepairTask.transferReason')" required>
           <Input.TextArea
             v-model:value="transferReason"
             :rows="2"
-            placeholder="请输入转交原因"
+            :placeholder="$t('repair.myRepairTask.transferReasonPlaceholder')"
           />
         </FormItem>
-        <FormItem label="备注">
+        <FormItem :label="$t('repair.myRepairTask.remark')">
           <Input.TextArea
             v-model:value="transferRemark"
             :rows="2"
-            placeholder="请输入备注（可选）"
+            :placeholder="$t('repair.myRepairTask.remarkPlaceholder')"
           />
         </FormItem>
       </Form>

@@ -50,18 +50,18 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'formulaName', title: '配方名称', minWidth: 150 },
-    { field: 'processCode', title: '工序编号', minWidth: 150 },
-    { field: 'processName', title: '工序名称', minWidth: 150 },
-    { field: 'equipCode', title: '设备编号', minWidth: 150 },
-    { field: 'equipName', title: '设备名称', minWidth: 150 },
-    { field: 'version', title: '版本号', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'formulaName', title: $t('stepManagementView.formulaName'), minWidth: 150 },
+    { field: 'processCode', title: $t('stepManagementView.processCode'), minWidth: 150 },
+    { field: 'processName', title: $t('stepManagementView.processName'), minWidth: 150 },
+    { field: 'equipCode', title: $t('stepManagementView.equipCode'), minWidth: 150 },
+    { field: 'equipName', title: $t('stepManagementView.equipName'), minWidth: 150 },
+    { field: 'version', title: $t('stepManagementView.version'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       width: 220,
     },
   ],
@@ -110,11 +110,11 @@ const showEditDrawer = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  isEnable: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  isEnable: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
   perName_workNumber: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
-  userName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  userName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -149,11 +149,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteUser(row.userCode).then(() => {
@@ -162,7 +162,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -430,22 +430,22 @@ onMounted(() => {
       :width="600"
       class="custom-class"
       placement="right"
-      title="查看详情"
+      :title="$t('common.view')"
     >
-      <Descriptions :column="2" bordered title="用户详情">
-        <DescriptionsItem label="用户名">
+      <Descriptions :column="2" bordered :title="$t('stepManagementView.userDetails')">
+        <DescriptionsItem :label="$t('stepManagementView.userName')">
           {{ checkedRow.userName }}
         </DescriptionsItem>
-        <DescriptionsItem label="关联人员">
+        <DescriptionsItem :label="$t('stepManagementView.associatedPersonnel')">
           {{ checkedRow.perName }}
         </DescriptionsItem>
-        <DescriptionsItem label="工号">
+        <DescriptionsItem :label="$t('stepManagementView.workNumber')">
           {{ checkedRow.workNumber }}
         </DescriptionsItem>
-        <DescriptionsItem label="状态">
-          {{ checkedRow.isEnable ? '启用' : '禁用' }}
+        <DescriptionsItem :label="$t('stepManagementView.status')">
+          {{ checkedRow.isEnable ? $t('status.enable') : $t('status.forbidden') }}
         </DescriptionsItem>
-        <DescriptionsItem label="用户描述">
+        <DescriptionsItem :label="$t('stepManagementView.userDescription')">
           {{ checkedRow.discription }}
         </DescriptionsItem>
       </Descriptions>
@@ -459,7 +459,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('stepManagementView.editInfo')"
     >
       <Form
         ref="editForm"
@@ -496,7 +496,7 @@ onMounted(() => {
             :not-found-content="null"
             :options="personnelData"
             :show-arrow="false"
-            placeholder="输入用户名进行查询"
+            :placeholder="$t('stepManagementView.searchPlaceholder')"
             placement="bottomRight"
             show-search
             @change="handleChange"
@@ -515,7 +515,7 @@ onMounted(() => {
             :not-found-content="null"
             :options="personnelData"
             :show-arrow="false"
-            placeholder="输入用户名进行查询"
+            :placeholder="$t('stepManagementView.searchPlaceholder')"
             placement="bottomRight"
             show-search
             @change="handleChange"

@@ -56,7 +56,7 @@ const gridOptions: VxeGridProps<MoldOperationRecord> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'operationTypeName',
       title: $t('moldChangeRecord.operationTypeName'),

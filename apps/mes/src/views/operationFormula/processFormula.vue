@@ -138,7 +138,7 @@ const formulaGridOptions: VxeGridProps<any> = {
     isHover: true, // 启用行悬停高亮效果
   },
   columns: [
-    { title: '序号', type: 'seq', minWidth: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', minWidth: 50 },
     {
       field: 'productCode',
       title: '产品编号',

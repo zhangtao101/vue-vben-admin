@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
-import { $t, useI18n } from '@vben/locales';
+import { $t } from '@vben/locales';
 
 import {
   Button,
@@ -39,22 +39,22 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'month', title: '月份', minWidth: 150 },
-    { field: 'startTime', title: '计算时间', minWidth: 150 },
+    { title: $t('baseInfo.serialNumber'), type: 'seq', width: 50 },
+    { field: 'month', title: $t('baseInfo.month'), minWidth: 150 },
+    { field: 'startTime', title: $t('baseInfo.computeTime'), minWidth: 150 },
     {
       field: 'type',
-      title: '类型',
+      title: $t('baseInfo.type'),
       minWidth: 150,
       slots: { default: 'typeText' },
     },
     {
       field: 'status',
       slots: { default: 'isUse' },
-      title: '状态',
+      title: $t('baseInfo.status'),
       minWidth: 150,
     },
-    { field: 'createTime', title: '创建时间', minWidth: 150 },
+    { field: 'createTime', title: $t('baseInfo.createTime'), minWidth: 150 },
   ],
   height: 500,
   stripe: true,
@@ -185,8 +185,6 @@ const ruleFormState = ref<any>({});
  * 规则编辑表单验证规则
  * 定义各字段的必填项和验证规则
  */
-const { locale } = useI18n();
-const separator = locale.value === 'zh-CN' ? '、' : ', ';
 const editRules: any = {
   month: [
     {
@@ -196,7 +194,7 @@ const editRules: any = {
     },
     {
       pattern: /^([1-9]|1[0-2])(,\s*([1-9]|1[0-2]))*$/,
-      message: `请输入1-12的正整数${separator}多个月份请用英文逗号分隔`,
+      message: $t('baseInfo.monthValidationMsg'),
       trigger: 'blur',
     },
   ],
@@ -211,7 +209,7 @@ const editRules: any = {
     },
     {
       pattern: /^(\d|1\d|2[0-3])(,\s*(\d|1\d|2[0-3]))*$/,
-      message: `请输入0-23的正整数${separator}多个时间请用英文逗号分隔`,
+      message: $t('baseInfo.timeValidationMsg'),
       trigger: 'blur',
     },
   ],
@@ -259,7 +257,7 @@ function saveRule() {
           gridApi.reload();
         })
         .catch(() => {
-          message.error('保存失败');
+          message.error($t('baseInfo.saveFailed'));
         });
     }
   });
@@ -406,7 +404,7 @@ onMounted(() => {
       class="custom-class"
       placement="right"
       root-class-name="root-class-name"
-      title="规则编辑"
+      :title="$t('baseInfo.ruleEdit')"
     >
       <Form
         ref="ruleFormRef"

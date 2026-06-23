@@ -64,27 +64,27 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'equipmentCode', title: '设备编号', minWidth: 110 },
-    { field: 'equipmentName', title: '设备名称', minWidth: 120 },
-    { field: 'model', title: '型号', minWidth: 150 },
-    { field: 'manufacturer', title: '生产厂家', minWidth: 100 },
-    { field: 'manufacturingCode', title: '出厂编号', minWidth: 150 },
-    { field: 'manufacturingDate', title: '出厂日期', minWidth: 100 },
-    { field: 'supplier', title: '供应商', minWidth: 100 },
-    { field: 'originalValue', title: '原值', minWidth: 150 },
-    { field: 'installDate', title: '安装日期', minWidth: 100 },
-    { field: 'useDepartmentName', title: '使用部门', minWidth: 150 },
-    { field: 'lineType', title: '拉别', minWidth: 150 },
-    { field: 'location', title: '存放位置', minWidth: 150 },
-    { field: 'equipmentTypeName', title: '设备类别', minWidth: 150 },
-    { field: 'assetsName', title: '资产状态', minWidth: 150 },
-    { field: 'remark', title: '备注', minWidth: 100 },
+    { title: $t('equip.sequence'), type: 'seq', width: 50 },
+    { field: 'equipmentCode', title: $t('equip.equipmentNumber'), minWidth: 110 },
+    { field: 'equipmentName', title: $t('equip.equipName'), minWidth: 120 },
+    { field: 'model', title: $t('equip.model'), minWidth: 150 },
+    { field: 'manufacturer', title: $t('equip.productionFactory'), minWidth: 100 },
+    { field: 'manufacturingCode', title: $t('equip.productionNumber'), minWidth: 150 },
+    { field: 'manufacturingDate', title: $t('equip.manufacturingDate'), minWidth: 100 },
+    { field: 'supplier', title: $t('equip.supplier'), minWidth: 100 },
+    { field: 'originalValue', title: $t('equip.originalValue'), minWidth: 150 },
+    { field: 'installDate', title: $t('equip.installationDate'), minWidth: 100 },
+    { field: 'useDepartmentName', title: $t('equip.useDepartment'), minWidth: 150 },
+    { field: 'lineType', title: $t('equip.partitioning'), minWidth: 150 },
+    { field: 'location', title: $t('equip.storageLocation'), minWidth: 150 },
+    { field: 'equipmentTypeName', title: $t('equip.equipmentCategory'), minWidth: 150 },
+    { field: 'assetsName', title: $t('equip.assetStatus'), minWidth: 150 },
+    { field: 'remark', title: $t('equip.remark'), minWidth: 100 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('equip.operation'),
       width: 220,
     },
   ],
@@ -129,22 +129,22 @@ const dialogStatus = ref('create');
 const editForm = ref();
 // form 表单规则验证
 const editRules = ref<any>({
-  equipmentCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  equipmentNameCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  assets: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  equipmentCode: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
+  equipmentNameCode: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
+  assets: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
 });
 
 // 设备名称远程搜索列表
 const equipNameList = ref<any[]>([]);
 // 设备类别选项
 const equipmentTypeOptions = [
-  { value: 1, label: '主要设备' },
-  { value: 2, label: '辅助设备' },
+  { value: 1, label: $t('equip.primaryEquipment') },
+  { value: 2, label: $t('equip.auxiliaryEquipment') },
 ];
 // 资产状态选项
 const assetsOptions = [
-  { value: '1', label: '启用' },
-  { value: '2', label: '停用' },
+  { value: '1', label: $t('equip.enable') },
+  { value: '2', label: $t('equip.disable') },
 ];
 
 // 文件数据
@@ -229,17 +229,17 @@ function handleDetail(row: any) {
  */
 function delRow(_row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('equip.cancelDelete'));
     },
     onOk() {
       // 由于新版 API 暂无用引用校验，直接提示删除功能请使用接口
-      message.info('删除功能暂未完成');
+      message.info($t('equip.deleteNotReady'));
     },
-    title: '是否确认删除该条数据?',
+    title: $t('equip.confirmDeleteRecord'),
   });
 }
 
@@ -340,7 +340,7 @@ function handleFile1Change(info: any) {
           status: 'done',
           url: resp.fileUrl || resp.data?.fileUrl,
         }];
-        message.success('上传成功');
+        message.success($t('equip.uploadSuccess'));
       });
     } else {
       file1.value = [fileData];
@@ -349,10 +349,10 @@ function handleFile1Change(info: any) {
         name: file.name,
         status: 'done',
       }];
-      message.success('上传成功');
+      message.success($t('equip.uploadSuccess'));
     }
   } else if (file.status === 'error') {
-    message.error('上传失败');
+    message.error($t('equip.uploadFailed'));
   }
 }
 
@@ -381,7 +381,7 @@ function handleFile2Change(info: any) {
           status: 'done',
           url: resp.fileUrl || resp.data?.fileUrl,
         }];
-        message.success('上传成功');
+        message.success($t('equip.uploadSuccess'));
       });
     } else {
       file2.value = [fileData];
@@ -390,10 +390,10 @@ function handleFile2Change(info: any) {
         name: file.name,
         status: 'done',
       }];
-      message.success('上传成功');
+      message.success($t('equip.uploadSuccess'));
     }
   } else if (file.status === 'error') {
-    message.error('上传失败');
+    message.error($t('equip.uploadFailed'));
   }
 }
 
@@ -418,7 +418,7 @@ function handleFile1Remove() {
   if (item && dialogStatus.value === 'update' && item.id) {
     deleteFile(item.id).then(() => {
       file1.value = [];
-      message.success('删除成功!');
+      message.success($t('equip.deleteSuccess'));
     });
   } else {
     file1.value = [];
@@ -430,7 +430,7 @@ function handleFile2Remove() {
   if (item && dialogStatus.value === 'update' && item.id) {
     deleteFile(item.id).then(() => {
       file2.value = [];
-      message.success('删除成功!');
+      message.success($t('equip.deleteSuccess'));
     });
   } else {
     file2.value = [];
@@ -493,9 +493,9 @@ const queryParams = ref<any>({});
 
 // 资产状态列表
 const statusList = [
-  { label: '全部', value: '' },
-  { label: '启用', value: '1' },
-  { label: '停用', value: '2' },
+  { label: $t('equip.all'), value: '' },
+  { label: $t('equip.enable'), value: '1' },
+  { label: $t('equip.disable'), value: '2' },
 ];
 
 /**
@@ -580,7 +580,7 @@ onMounted(() => {
         >
           <Input
             v-model:value="queryParams.equipmentCode"
-            placeholder="请输入设备编号"
+            :placeholder="$t('equip.pleaseEnterEquipmentNumber')"
             @keyup.enter="() => gridApi.reload()"
           />
         </FormItem>
@@ -590,7 +590,7 @@ onMounted(() => {
             v-model:value="queryParams.equipmentName"
             allow-clear
             class="!w-48"
-            placeholder="请输入设备名称"
+            :placeholder="$t('equip.pleaseEnterEquipmentName')"
           />
         </FormItem>
         <!-- 使用部门 -->
@@ -599,7 +599,7 @@ onMounted(() => {
             v-model:value="queryParams.useDepartmentName"
             allow-clear
             class="!w-48"
-            placeholder="请输入使用部门"
+            :placeholder="$t('equip.pleaseEnterUseDepartment')"
           />
         </FormItem>
         <!-- 资产状态 -->
@@ -675,7 +675,7 @@ onMounted(() => {
       :width="800"
       class="custom-class"
       placement="right"
-      :title="dialogStatus === 'detail' ? '查看' : dialogStatus === 'update' ? '编辑' : '新增'"
+      :title="dialogStatus === 'detail' ? $t('equip.view') : dialogStatus === 'update' ? $t('equip.edit') : $t('equip.add')"
       @close="onClose"
     >
       <Form
@@ -704,7 +704,7 @@ onMounted(() => {
                 v-model:value="checkedRow.equipmentNameCode"
                 show-search
                 :disabled="dialogStatus === 'detail'"
-                placeholder="请输入设备名称"
+                :placeholder="$t('equip.pleaseEnterEquipmentName')"
                 :filter-option="false"
                 :options="equipNameList"
                 @search="getEquipName"
@@ -843,7 +843,7 @@ onMounted(() => {
                 v-model:value="checkedRow.equipmentType"
                 :disabled="dialogStatus === 'detail'"
                 :options="equipmentTypeOptions"
-                placeholder="请选择"
+                :placeholder="$t('equip.pleaseSelect')"
               />
             </FormItem>
           </Col>
@@ -871,7 +871,7 @@ onMounted(() => {
             </FormItem>
           </Col>
           <Col :span="12">
-            <FormItem label="安装验收单:" name="file1">
+            <FormItem :label="`${$t('equip.installationAcceptanceForm') }:`" name="file1">
               <Upload
                 v-if="dialogStatus !== 'detail'"
                 v-model:file-list="uploadFileList1"
@@ -885,7 +885,7 @@ onMounted(() => {
               >
                 <Button>
                   <Icon icon="mdi:cloud-upload" class="inline-block align-middle text-xl text-[#5085ff]" />
-                  上传
+                  {{ $t('equip.upload') }}
                 </Button>
               </Upload>
               <div v-else v-for="item in file1" :key="item.id">
@@ -896,7 +896,7 @@ onMounted(() => {
         </Row>
         <Row :gutter="8">
           <Col :span="12">
-            <FormItem label="其他附件:" name="file2">
+            <FormItem :label="`${$t('equip.otherAttachments') }:`" name="file2">
               <Upload
                 v-if="dialogStatus !== 'detail'"
                 v-model:file-list="uploadFileList2"
@@ -910,7 +910,7 @@ onMounted(() => {
               >
                 <Button>
                   <Icon icon="mdi:cloud-upload" class="inline-block align-middle text-xl text-[#5085ff]" />
-                  上传
+                  {{ $t('equip.upload') }}
                 </Button>
               </Upload>
               <div v-else v-for="item in file2" :key="item.id">
@@ -971,12 +971,12 @@ onMounted(() => {
         <Descriptions.Item :label="$t('equip.remark')" :span="2">
           {{ checkedRow.remark }}
         </Descriptions.Item>
-        <Descriptions.Item label="安装验收单" :span="2">
+        <Descriptions.Item :label="$t('equip.installationAcceptanceForm')" :span="2">
           <div v-for="item in file1" :key="item.id">
             <span class="cursor-pointer text-blue-500" @click="fileDown(item)">{{ item.fileName }}</span>
           </div>
         </Descriptions.Item>
-        <Descriptions.Item label="其他附件" :span="2">
+        <Descriptions.Item :label="$t('equip.otherAttachments')" :span="2">
           <div v-for="item in file2" :key="item.id">
             <span class="cursor-pointer text-blue-500" @click="fileDown(item)">{{ item.fileName }}</span>
           </div>

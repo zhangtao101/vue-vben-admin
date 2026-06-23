@@ -200,8 +200,8 @@ onMounted(() => {
         button-style="solid"
         @change="queryData()"
       >
-        <RadioButton :value="1">电能流向分析</RadioButton>
-        <RadioButton :value="2">水流向分析</RadioButton>
+        <RadioButton :value="1">{{ $t('energyConsumption.energyConsumptionAnalysis.electricFlowAnalysis') }}</RadioButton>
+        <RadioButton :value="2">{{ $t('energyConsumption.energyConsumptionAnalysis.waterFlowAnalysis') }}</RadioButton>
       </RadioGroup>
 
       <!-- 图表容器，带加载状态 -->

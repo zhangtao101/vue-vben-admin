@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';

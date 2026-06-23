@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -31,7 +31,7 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
@@ -39,87 +39,87 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: '',
-      title: '生产日期（开始-结束时间）',
+      title: $t('productionDaily.DateTimeStartEnd'),
       minWidth: 200,
       fixed: 'left',
     },
-    { field: '', title: '生产批号', minWidth: 120, fixed: 'left' },
-    { field: '', title: '窑号', minWidth: 120, fixed: 'left' },
-    { field: '', title: '产品编号', minWidth: 120, fixed: 'left' },
+    { field: '', title: $t('productionDaily.productionBatchNo'), minWidth: 120, fixed: 'left' },
+    { field: '', title: $t('productionDaily.KilnNo'), minWidth: 120, fixed: 'left' },
+    { field: '', title: $t('productionDaily.CodeProduct'), minWidth: 120, fixed: 'left' },
     {
       field: '',
-      title: '期初盘存(M2)',
+      title: $t('productionDaily.M2_13'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '粉料用量(T)',
+      title: $t('productionDaily.PowderUsageT'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '废粉(T)',
+      title: $t('productionDaily.T'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '压制量(M2)',
+      title: $t('productionDaily.M2_21'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '装载量(M2)',
+      title: $t('productionDaily.LoadM2_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '进窑量(M2)',
+      title: $t('productionDaily.M2_8'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '出窑量(M2)',
+      title: $t('productionDaily.M2_4'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '装载(%)',
+      title: $t('productionDaily.Load'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '卸载(%)',
+      title: $t('productionDaily.unloadingPercent'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '出窑(%)',
+      title: $t('productionDaily.kilnOutputPercent'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '出窑/压制(%)',
+      title: $t('productionDaily.kilnOutputPercent_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '入库/压制(%)',
+      title: $t('productionDaily.Inbound_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      title: '入待抛砖库JP（M2）',
+      title: $t('productionDaily.M2_16'),
       children: [
         {
           field: '',
@@ -135,7 +135,7 @@ const gridOptions: VxeGridProps<any> = {
         },
         {
           field: '',
-          title: '小计',
+          title: $t('productionDaily.subtotal'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -143,16 +143,16 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: '',
-      title: '入库合计（M2）',
+      title: $t('productionDaily.TotalInboundM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      title: '报废熟砖',
+      title: $t('productionDaily.ScrapFiredBrick'),
       children: [
         {
           field: '',
-          title: '片',
+          title: $t('productionDaily.Piece_5'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -172,34 +172,34 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: '',
-      title: '抛光上砖前损耗',
+      title: $t('productionDaily.LossPolish'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '总损耗(%)',
+      title: $t('productionDaily.Loss'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '期末盘存',
+      title: $t('productionDaily.periodEndInventory'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      title: '天燃气（M3）',
+      title: $t('productionDaily.GasM3Day'),
       children: [
         {
           field: '',
-          title: '卧干器',
+          title: $t('productionDaily.horizontalDrying_1'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: '',
-          title: '窑炉',
+          title: $t('productionDaily.Kiln'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -207,12 +207,12 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: '',
-      title: '停窑燃气(M3)',
+      title: $t('productionDaily.GasM3'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
@@ -254,13 +254,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

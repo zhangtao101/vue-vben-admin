@@ -53,49 +53,49 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'qualitySign',
       slots: { default: 'selectedState' },
-      title: '质检',
+      title: $t('baseInfo.inspection'),
       minWidth: 60,
     },
     {
       field: 'semifinishedProductSign',
       slots: { default: 'selectedState' },
-      title: '半成品',
+      title: $t('baseInfo.semiFinished'),
       minWidth: 60,
     },
     {
       field: 'planSign',
       slots: { default: 'selectedState' },
-      title: '计划',
+      title: $t('baseInfo.plan'),
       minWidth: 60,
     },
-    { field: 'productTypeName', title: '产品类别', minWidth: 80 },
-    { field: 'productCode', title: '产品编号', minWidth: 150 },
-    { field: 'productName', title: '产品名称', minWidth: 150 },
+    { field: 'productTypeName', title: $t('baseInfo.productCategory'), minWidth: 80 },
+    { field: 'productCode', title: $t('baseInfo.productCode'), minWidth: 150 },
+    { field: 'productName', title: $t('baseInfo.productName'), minWidth: 150 },
     {
       field: 'isSingleSide',
       slots: { default: 'isSingleSide' },
-      title: '单/双面',
+      title: $t('baseInfo.singleDoubleSided'),
       minWidth: 100,
     },
-    { field: 'unit', title: '计量单位', minWidth: 100 },
-    { field: 'costomerGoodsCode', title: '客户货号', minWidth: 100 },
-    { field: 'costomerTypeCode', title: '客户型号', minWidth: 100 },
-    { field: 'produceType', title: '生产类型', minWidth: 100 },
-    { field: 'workTime', title: '标准工时', minWidth: 100 },
-    { field: 'packageNum', title: '包装数量', minWidth: 100 },
-    { field: 'szie', title: '外箱尺寸', minWidth: 100 },
-    { field: 'length', title: '*长', minWidth: 100 },
-    { field: 'width', title: '*宽', minWidth: 100 },
-    { field: 'height', title: '*高', minWidth: 100 },
+    { field: 'unit', title: $t('baseInfo.measurementUnit'), minWidth: 100 },
+    { field: 'costomerGoodsCode', title: $t('basic.productInform.customerItemNumber'), minWidth: 100 },
+    { field: 'costomerTypeCode', title: $t('basic.productInform.customerModel'), minWidth: 100 },
+    { field: 'produceType', title: $t('basic.productInform.productionType'), minWidth: 100 },
+    { field: 'workTime', title: $t('basic.productInform.standardWorkingHours'), minWidth: 100 },
+    { field: 'packageNum', title: $t('basic.productInform.packagingQuantity'), minWidth: 100 },
+    { field: 'szie', title: $t('basic.productInform.outerBoxSize'), minWidth: 100 },
+    { field: 'length', title: $t('basic.productInform.long'), minWidth: 100 },
+    { field: 'width', title: $t('basic.productInform.wide'), minWidth: 100 },
+    { field: 'height', title: $t('basic.productInform.high'), minWidth: 100 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('baseInfo.action'),
       minWidth: 160,
     },
   ],
@@ -201,7 +201,7 @@ const selectedKeys = ref<string[]>([]);
 const treeData = ref<any[]>([
   {
     code: '',
-    name: '全部',
+    name: $t('page.common.all'),
     childrens: [],
   },
 ]);
@@ -332,10 +332,10 @@ function handleChange(info: any) {
     // 重新查询数据，更新列表
     gridApi.reload();
     // 显示成功消息
-    message.success('文件上传成功!');
+    message.success($t('baseInfo.uploadSuccess'));
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || '文件上传失败';
+    const errorMessage = info.file.response?.message || $t('baseInfo.uploadFailed');
     // 显示错误消息
     message.error(errorMessage);
   }
@@ -453,7 +453,7 @@ onMounted(() => {
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
             <template #isSingleSide="{ row }">
-              {{ row.isSingleSide === 1 ? '单面' : '双面' }}
+              {{ row.isSingleSide === 1 ? $t('baseInfo.singleSide') : $t('baseInfo.doubleSide') }}
             </template>
             <template #action="{ row }">
               <!-- 编辑按钮 -->
@@ -491,7 +491,7 @@ onMounted(() => {
       :title="isEdit ? $t('common.edit') : $t('common.view')"
     >
       <Tabs v-model:active-key="activeTabKey">
-        <Tabs.TabPane key="first" tab="产品信息">
+        <Tabs.TabPane key="first" :tab="$t('basic.productInform.productDescription')">
           <Form
             :label-col="{ span: 6 }"
             :model="editData"
@@ -521,8 +521,8 @@ onMounted(() => {
                 v-model:value="editData.isSingleSide"
                 :disabled="!isEdit"
               >
-                <Radio :value="1">单面</Radio>
-                <Radio :value="2">双面</Radio>
+                <Radio :value="1">{{ $t('baseInfo.singleSide') }}</Radio>
+                <Radio :value="2">{{ $t('baseInfo.doubleSide') }}</Radio>
               </RadioGroup>
             </FormItem>
             <!-- 计量单位 -->
@@ -712,7 +712,7 @@ onMounted(() => {
             </FormItem>
           </Form>
         </Tabs.TabPane>
-        <Tabs.TabPane key="second" tab="打码信息">
+        <Tabs.TabPane key="second" :tab="$t('basic.productInform.printInformation')">
           <Form
             :label-col="{ span: 6 }"
             :model="editData"
@@ -766,9 +766,9 @@ onMounted(() => {
           </Form>
         </Tabs.TabPane>
         <!-- 仅在查看时显示产品描述 -->
-        <Tabs.TabPane v-if="!isEdit" key="third" tab="产品描述">
+        <Tabs.TabPane v-if="!isEdit" key="third" :tab="$t('basic.productInform.productDescription')">
           <div style="min-height: 200px; padding: 20px">
-            {{ editData.produceDescription || '暂无描述' }}
+            {{ editData.produceDescription || $t('baseInfo.noDescription') }}
           </div>
         </Tabs.TabPane>
       </Tabs>

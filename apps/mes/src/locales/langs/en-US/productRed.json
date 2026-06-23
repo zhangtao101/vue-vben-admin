@@ -1,12 +1,20 @@
 {
-  "timeFrame": "Time Frame",
-  "theTicketNumber": "Work Order Number",
-  "reportingProcess": "Reporting Process",
-  "questLines": "Quest Lines",
-  "ticketStatus": "Ticket Status",
+  "timeFrame": "Report Time Range",
+  "theTicketNumber": "Work Order No.",
+  "reportingProcess": "Report Process",
+  "questLines": "Task Line",
+  "ticketStatus": "Work Order Status",
   "partName": "Part Name",
+  "productCode": "Product Code",
   "productName": "Product Name",
-  "partsProducts": "Parts/Products",
+  "partsProducts": "Part/Product",
   "delayStatus": "Delay Status",
-  "planNumber": "Plan Number"
+  "planNumber": "Plan No.",
+  "worksheetCode": "Work Order No.",
+  "batchNumber": "Work Order Batch No.",
+  "reportProcess": "Report Process",
+  "completedNumber": "Completed Quantity",
+  "endTime": "Work Order End Time",
+  "planStartTime": "Plan Start Time",
+  "action": "Action"
 }

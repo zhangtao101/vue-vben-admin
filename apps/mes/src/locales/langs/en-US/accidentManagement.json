@@ -5,9 +5,11 @@
   "position": "Position",
   "occurrenceTime": "Occurrence Time",
   "eventDescription": "Event Description",
+  "accidentDescription": "Accident Description",
   "injuredPart": "Injured Part",
   "descriptionOfInjuryCondition": "Description of Injury Condition",
   "injuryType": "Injury Type",
+  "injuryTypeName": "Injury Type",
   "relatedAttachments": "Related Attachments",
   "departmentSupervisor": "Department Supervisor",
   "uploadAttachments": "Upload Attachments",
@@ -16,5 +18,12 @@
   "rectificationMeasure": "Rectification Measure",
   "employeeChoice": "Employee Choice",
   "accidentType": "Accident Type",
-  "year": "Year"
+  "year": "Year",
+  "serialNumber": "Serial No.",
+  "accidentCode": "Accident Code",
+  "action": "Action",
+  "level1": "Catastrophic Accident (Level I)",
+  "level2": "Major Accident (Level II)",
+  "level3": "Major Accident (Level III)",
+  "level4": "General Accident (Level IV)"
 }

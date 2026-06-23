@@ -32,46 +32,46 @@ const queryParams = ref({
 // 类别列表
 const typeList = [
   {
-    label: '物料',
+    label: $t('basic.barCodeManagement.material'),
     value: '1',
   },
   {
-    label: '产品',
+    label: $t('basic.barCodeManagement.product'),
     value: '2',
   },
   {
-    label: 'pcb拼板',
+    label: $t('basic.barCodeManagement.pcbPanel'),
     value: '3',
   },
   {
-    label: 'pcb小板',
+    label: $t('basic.barCodeManagement.pcbSubPanel'),
     value: '4',
   },
   {
-    label: '模具',
+    label: $t('basic.barCodeManagement.mold'),
     value: '5',
   },
   {
-    label: '半成品',
+    label: $t('basic.barCodeManagement.semiFinishedProduct'),
     value: '6',
   },
   {
-    label: '领料申请单',
+    label: $t('basic.barCodeManagement.pickingRequest'),
     value: '7',
   },
   {
-    label: '包装码',
+    label: $t('basic.barCodeManagement.packagingCode'),
     value: '8',
   },
 ];
 // 展示方式列表
 const displayModeList = [
   {
-    label: '一维码',
+    label: $t('basic.barCodeManagement.oneDimensionalCode'),
     value: '2',
   },
   {
-    label: '二维码',
+    label: $t('basic.barCodeManagement.twoDimensionalCode'),
     value: '1',
   },
 ];
@@ -91,50 +91,50 @@ const columns = ref([
   {
     dataIndex: 'ruleName',
     ellipsis: true,
-    title: '规则名',
+    title: $t('basic.barCodeManagement.ruleName'),
     width: 120,
   },
   {
     dataIndex: 'typeName',
     ellipsis: true,
-    title: '所属类型',
+    title: $t('basic.barCodeManagement.typeOfOwnership'),
     width: 120,
   },
   {
     dataIndex: 'displayName',
     ellipsis: true,
-    title: '展示方式',
+    title: $t('basic.barCodeManagement.displayMode'),
     width: 120,
   },
   {
     dataIndex: 'typeCodeName',
     ellipsis: true,
-    title: '类别选择',
+    title: $t('basic.barCodeManagement.categorySelection'),
     width: 120,
   },
   {
     dataIndex: 'morpCode',
     ellipsis: true,
-    title: '物料/产品编号',
+    title: $t('basic.barCodeManagement.materialOrProductCode'),
     width: 120,
   },
   {
     dataIndex: 'morpName',
     ellipsis: true,
-    title: '物料/产品名称',
+    title: $t('basic.barCodeManagement.materialOrProductName'),
     width: 120,
   },
   {
     dataIndex: 'remarks',
     ellipsis: true,
-    title: '备注',
+    title: $t('basic.barCodeManagement.remark'),
     width: 120,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('baseInfo.action'),
     width: 80,
   },
 ] as any[]);
@@ -264,9 +264,9 @@ const showDrawer = ref(false);
 const editMessage = ref({} as any);
 // 编辑对象表单验证规则
 const editRules = ref({
-  displayName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  ruleName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  typeName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  displayName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  ruleName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  typeName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 } as any);
 
 // 关闭模态框
@@ -382,7 +382,7 @@ function onClose() {
       placement="right"
       root-class-name="root-class-name"
       style="color: red"
-      title="信息编辑"
+      :title="$t('baseInfo.infoEdit')"
     >
       <Form
         :label-col="{ span: 8 }"

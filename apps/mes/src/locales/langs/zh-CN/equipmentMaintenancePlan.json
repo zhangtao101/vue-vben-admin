@@ -18,6 +18,7 @@
   "endDate": "结束日期",
   "status": "状态",
   "remark": "备注",
+  "confirmDelete": "确定要删除该保养计划吗？",
   "keywordPlaceholder": "请输入计划名称",
   "bindEquipment": "查看绑定设备",
   "maintenanceItem": "查看保养项",

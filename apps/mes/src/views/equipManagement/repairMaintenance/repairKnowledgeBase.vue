@@ -73,7 +73,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 60, title: '序号' },
+    { type: 'seq', width: 60, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'pmCode',
       title: $t('repair.repairKnowledgeBase.pmCode'),
@@ -266,11 +266,11 @@ function handleEdit(row: any) {
 function handleToggleStatus(row: any) {
   const action =
     row.status === 'NORMAL' ? disableRepairKnowledge : enableRepairKnowledge;
-  const actionText = row.status === 'NORMAL' ? '禁用' : '启用';
+  const actionText = row.status === 'NORMAL' ? $t('repair.repairKnowledgeBase.disableAction') : $t('repair.repairKnowledgeBase.enableAction');
 
   Modal.confirm({
-    title: `${actionText}确认`,
-    content: `确定要${actionText}知识「${row.title}」吗？`,
+    title: $t('repair.repairKnowledgeBase.toggleConfirm', { action: actionText }),
+    content: $t('repair.repairKnowledgeBase.toggleMessage', { action: actionText, title: row.title }),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () => {
@@ -292,7 +292,7 @@ function handleToggleStatus(row: any) {
 function handleDelete(row: any) {
   Modal.confirm({
     title: $t('repair.equipmentFailure.confirmDelete'),
-    content: `确定删除知识「${row.title}」吗？`,
+    content: $t('repair.repairKnowledgeBase.deleteMessage', { title: row.title }),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () => {
@@ -325,12 +325,12 @@ function handleDelete(row: any) {
 
         <!-- 标题 -->
         <FormItem
-          :label="$t('repair.repairKnowledgeBase.title')"
+          :label="$t('repair.repairKnowledgeBase.titleField')"
           style="margin-bottom: 0"
         >
           <Input
             v-model:value="queryParams.title"
-            :placeholder="`请输入${$t('repair.repairKnowledgeBase.title')}`"
+            :placeholder="`请输入${$t('repair.repairKnowledgeBase.titleField')}`"
             allow-clear
             style="width: 160px"
           />

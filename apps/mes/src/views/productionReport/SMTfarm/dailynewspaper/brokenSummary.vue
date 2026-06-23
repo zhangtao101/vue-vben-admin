@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,37 +34,37 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
-    { field: 'batchName', title: '批号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'batchCode', title: '编码+批号', minWidth: 200 },
-    { field: 'specification', title: '规格', minWidth: 200 },
+    { field: 'day', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'lineName', title: $t('productionDaily.LineNo'), minWidth: 200 },
+    { field: 'batchName', title: $t('productionDaily.batchNo'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.CodeProduct_1'), minWidth: 200 },
+    { field: 'batchCode', title: $t('productionDaily.Code_2'), minWidth: 200 },
+    { field: 'specification', title: $t('productionDaily.Spec'), minWidth: 200 },
     {
       field: 'qpsm2',
-      title: '前破碎平方（M2)',
+      title: $t('productionDaily.PreBrokenSqMM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'hpsm2',
-      title: '后破碎平方（M2)',
+      title: $t('productionDaily.PostBrokenSqMM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'summ2',
-      title: '汇总（M2)',
+      title: $t('productionDaily.SummaryM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,
@@ -106,13 +106,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

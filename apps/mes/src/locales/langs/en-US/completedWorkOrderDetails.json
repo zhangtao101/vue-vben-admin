@@ -4,5 +4,13 @@
   "feedingDetails": "Feeding Details",
   "warehouseEntryDetails": "Warehouse Entry Details",
   "parameterDetails": "Parameter Details",
-  "detailedSettingsOfTheParameterPressEquipment": "Detailed Settings of the Parameter Press Equipment"
+  "detailedSettingsOfTheParameterPressEquipment": "Detailed Settings of Parameter Press Equipment",
+  "date": "Date",
+  "worksheetCode": "Work Order No.",
+  "workstationName": "Workstation Name",
+  "productCode": "Product Code",
+  "productName": "Product Name",
+  "planNumber": "Plan Quantity",
+  "inStorageNumber": "Storage Quantity",
+  "action": "Action"
 }

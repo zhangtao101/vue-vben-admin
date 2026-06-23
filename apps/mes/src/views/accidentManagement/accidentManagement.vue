@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -40,30 +40,30 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'accidentCode', title: '事故编号', minWidth: 190 },
+    { title: $t('accidentManagement.serialNumber'), type: 'seq', width: 50 },
+    { field: 'accidentCode', title: $t('accidentManagement.accidentCode'), minWidth: 190 },
     {
       field: 'type',
-      title: '事故类型',
+      title: $t('accidentManagement.accidentType'),
       minWidth: 150,
       slots: { default: 'type' },
     },
-    { field: 'injuredUser', title: '受伤员工', minWidth: 150 },
-    { field: 'worknumber', title: '工号', minWidth: 150 },
-    { field: 'position', title: '部门', minWidth: 150 },
-    { field: 'time', title: '发生时间', minWidth: 150 },
-    { field: 'eventDescription', title: '事故描述', minWidth: 150 },
-    { field: 'injuredPartList', title: '受伤部位', minWidth: 150 },
-    { field: 'injuredDescription', title: '受伤情况描述', minWidth: 150 },
-    { field: 'injuredTypeList', title: '受伤类型', minWidth: 150 },
-    { field: 'manager', title: '责任部门主管', minWidth: 150 },
-    { field: 'reason', title: '事故原因', minWidth: 150 },
-    { field: 'measures', title: '整改措施', minWidth: 150 },
+    { field: 'injuredUser', title: $t('accidentManagement.injuredEmployee'), minWidth: 150 },
+    { field: 'worknumber', title: $t('accidentManagement.employeeID'), minWidth: 150 },
+    { field: 'position', title: $t('accidentManagement.department'), minWidth: 150 },
+    { field: 'time', title: $t('accidentManagement.occurrenceTime'), minWidth: 150 },
+    { field: 'eventDescription', title: $t('accidentManagement.accidentDescription'), minWidth: 150 },
+    { field: 'injuredPartList', title: $t('accidentManagement.injuredPart'), minWidth: 150 },
+    { field: 'injuredDescription', title: $t('accidentManagement.descriptionOfInjuryCondition'), minWidth: 150 },
+    { field: 'injuredTypeList', title: $t('accidentManagement.injuryTypeName'), minWidth: 150 },
+    { field: 'manager', title: $t('accidentManagement.departmentSupervisor'), minWidth: 150 },
+    { field: 'reason', title: $t('accidentManagement.accidentReason'), minWidth: 150 },
+    { field: 'measures', title: $t('accidentManagement.rectificationMeasure'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('accidentManagement.action'),
       minWidth: 150,
     },
   ],
@@ -174,12 +174,12 @@ function editClose() {
 
 // region 事故类型
 
-const accidentType = ref<any>({
-  1: '特别重大事故(I级)',
-  2: '重大事故(II级)',
-  3: '较大事故(III级)',
-  4: '一般事故(IV级)',
-});
+const accidentType = computed<any>(() => ({
+  1: $t('accidentManagement.level1'),
+  2: $t('accidentManagement.level2'),
+  3: $t('accidentManagement.level3'),
+  4: $t('accidentManagement.level4'),
+}));
 
 // endregion
 

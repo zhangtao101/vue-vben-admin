@@ -1,3 +1,26 @@
 {
-  "selectionOfProcessRoute": "Selection Of Process Route"
+  "selectionOfProcessRoute": "Selection Of Process Route",
+  "workOrderNumber": "Work Order No.",
+  "workstationCode": "Workstation Code",
+  "routeName": "Route Name",
+  "routeCode": "Route Code",
+  "productCode": "Product Code",
+  "productName": "Product Name",
+  "planStartTime": "Plan Start Time",
+  "planQuantity": "Planned Quantity",
+  "completedQuantity": "Completed Qty (Inbound)",
+  "estimatedCompletionTime": "Estimated Completion",
+  "unit": "Unit",
+  "workOrderStatus": "Work Order Status",
+  "workOrderReportStatus": "Report Status",
+  "operation": "Operation",
+  "notProduced": "Not Produced",
+  "inProduction": "In Production",
+  "completedOffline": "Completed Offline",
+  "pausedOffline": "Paused Offline",
+  "notReported": "Not Reported",
+  "reported": "Reported",
+  "undefinedStatus": "Undefined Status",
+  "enterKeyword": "Enter keyword to search",
+  "search": "Search"
 }

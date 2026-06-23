@@ -58,23 +58,23 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'planCode', title: '计划编号', minWidth: 150 },
-    { field: 'planName', title: '计划名称', minWidth: 150 },
-    { field: 'manager', title: '计划任务负责人', minWidth: 150 },
-    { field: 'riskName', title: '风险名称', minWidth: 150 },
-    { field: 'riskType', title: '风险种类', minWidth: 150 },
-    { field: 'startTime', title: '计划检查开始日期', minWidth: 180 },
-    { field: 'endTime', title: '计划检查结束日期', minWidth: 180 },
-    { field: 'calendarName', title: '日历名称', minWidth: 150 },
-    { field: 'cycle', title: '巡检周期', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'planCode', title: $t('hiddenDangerInspectionPlan.planCode'), minWidth: 150 },
+    { field: 'planName', title: $t('hiddenDangerInspectionPlan.planName'), minWidth: 150 },
+    { field: 'manager', title: $t('riskManagement.planTaskResponsiblePerson'), minWidth: 150 },
+    { field: 'riskName', title: $t('riskManagement.RiskName'), minWidth: 150 },
+    { field: 'riskType', title: $t('riskManagement.riskType'), minWidth: 150 },
+    { field: 'startTime', title: $t('riskManagement.planCheckStartTime'), minWidth: 180 },
+    { field: 'endTime', title: $t('riskManagement.planCheckEndTime'), minWidth: 180 },
+    { field: 'calendarName', title: $t('hiddenDangerInspectionPlan.calendarName'), minWidth: 150 },
+    { field: 'cycle', title: $t('hiddenDangerInspectionPlan.inspectionPeriod'), minWidth: 150 },
     /* { field: 'checkType', title: '检查类别', minWidth: 150 },
     { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
     { field: 'areaCode', title: '巡检区域', minWidth: 150 },
     { field: 'area', title: '巡检项目', minWidth: 150 },*/
     {
       field: 'timeType',
-      title: '计划类型',
+      title: $t('riskManagement.planType'),
       minWidth: 150,
       slots: { default: 'timeType' },
     },
@@ -82,14 +82,14 @@ const gridOptions: VxeGridProps<any> = {
       field: 'isUse',
       fixed: 'right',
       slots: { default: 'isUse' },
-      title: '计划是否开启',
+      title: $t('hiddenDangerInspectionPlan.planEnabled'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       minWidth: 150,
     },
   ],
@@ -164,11 +164,11 @@ function queryData({ page, pageSize }: any) {
  */
 const timeTypeOptions = [
   {
-    label: '周期计划',
+    label: $t('riskManagement.cyclePlan'),
     value: 1,
   },
   {
-    label: '日常巡检',
+    label: $t('riskManagement.dailyInspection'),
     value: 0,
   },
 ];
@@ -317,7 +317,7 @@ function addAll() {
  * 删除计划详情
  * @param index 计划详情索引
  */
-function removeDetail(index: number) {
+function removeDetail(index: any) {
   editItem.value.details.splice(index, 1);
 }
 
@@ -758,7 +758,7 @@ onMounted(() => {
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.planName')"
           style="margin-bottom: 1em"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="planName"
         >
           <Input v-model:value="editItem.planName" />
@@ -766,7 +766,7 @@ onMounted(() => {
         <!-- 负责人 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.responsiblePerson')"
-          :rules="[{ required: false, message: '该项为必填项' }]"
+          :rules="[{ required: false, message: $t('page.common.requiredField') }]"
           name="userChenked"
         >
           <Cascader
@@ -796,7 +796,7 @@ onMounted(() => {
         <!-- 巡检类型 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionType')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="timeType"
         >
           <RadioGroup
@@ -808,7 +808,7 @@ onMounted(() => {
         <!-- 开始时间 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.startTime')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="startTime"
           v-if="[0, 1, 2].includes(editItem.timeType)"
         >
@@ -823,7 +823,7 @@ onMounted(() => {
         <!-- 结束时间 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.endTime')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="endTime"
           v-if="[1].includes(editItem.timeType)"
         >
@@ -838,7 +838,7 @@ onMounted(() => {
         <!-- 巡检周期 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionPeriod')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="cycle"
           v-if="[1].includes(editItem.timeType)"
         >
@@ -852,7 +852,7 @@ onMounted(() => {
         <!-- 日历名称 -->
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.calendarName')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="calendarName"
           v-if="[0].includes(editItem.timeType)"
         >
@@ -869,7 +869,7 @@ onMounted(() => {
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.riskName')"
           style="margin-bottom: 1em"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="riskName_riskType"
         >
           <Select
@@ -894,7 +894,7 @@ onMounted(() => {
           <hr class="my-4" />
           <FormItem
             :label="$t('hiddenDangerInspectionStandard.riskClassification')"
-            :rules="[{ required: true, message: '该项为必填项' }]"
+            :rules="[{ required: true, message: $t('page.common.requiredField') }]"
             :name="['details', index, 'checkType']"
           >
             <Select
@@ -908,7 +908,7 @@ onMounted(() => {
           <FormItem
             :label="$t('hiddenDangerInspectionPlan.inspectionCategory')"
             style="margin-bottom: 1em"
-            :rules="[{ required: true, message: '该项为必填项' }]"
+            :rules="[{ required: true, message: $t('page.common.requiredField') }]"
             :name="['details', index, 'checkItem']"
           >
             <Select
@@ -938,7 +938,7 @@ onMounted(() => {
           <!-- 检查标准 -->
           <FormItem
             :label="$t('hiddenDangerInspectionPlan.inspectionStandard')"
-            :rules="[{ required: true, message: '该项为必填项' }]"
+            :rules="[{ required: true, message: $t('page.common.requiredField') }]"
             :name="['details', index, 'checkCriteria']"
           >
             <Textarea v-model:value="item.checkCriteria" readonly />
@@ -948,7 +948,7 @@ onMounted(() => {
           <FormItem
             :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
             style="margin-bottom: 1em"
-            :rules="[{ required: true, message: '该项为必填项' }]"
+            :rules="[{ required: true, message: $t('page.common.requiredField') }]"
             :name="['details', index, 'area']"
           >
             <Input v-model:value="item.area" readonly />
@@ -956,10 +956,10 @@ onMounted(() => {
 
           <FormItem :wrapper-col="{ span: 18, offset: 6 }">
             <Popconfirm
-              title="确认删除吗？"
-              @confirm="removeDetail(index)"
-              ok-text="确认"
-              cancel-text="取消"
+              :title="$t('page.common.confirmDeleteTitle')"
+              @confirm="removeDetail(Number(index))"
+              :ok-text="$t('common.confirm')"
+              :cancel-text="$t('common.cancel')"
             >
               <Button type="primary" class="w-full" danger>
                 {{ $t('common.delete') }}

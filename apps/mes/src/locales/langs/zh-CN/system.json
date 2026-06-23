@@ -19,7 +19,8 @@
     "highestEducation": "最高学历",
     "isOnDuty": "是否在职",
     "description": "描述",
-    "affiliatedOrganization": "所属组织"
+    "affiliatedOrganization": "所属组织",
+    "deleteCancelled": "已取消删除!"
   },
   "basePosition": {
     "jobCode": "岗位编码",
@@ -27,8 +28,11 @@
     "jobType": "岗位类别",
     "jobLevel": "岗位等级",
     "workObjective": "工作目标",
-    "remark": "备注"
+    "remark": "备注",
+    "deleteCancelled": "已取消删除!",
+    "deprecated": "已弃用"
   },
+
   "baseOrganization": {
     "fullNameOfOrganization": "组织全称",
     "organizationAbbreviation": "组织简称",
@@ -42,13 +46,19 @@
     "email": "邮箱",
     "status": "状态",
     "description": "描述",
-    "superiorOrganization": "上级组织"
+    "superiorOrganization": "上级组织",
+    "isAvailable": "是否可用",
+    "company": "公司",
+    "department": "部门",
+    "deleteCancelled": "已取消删除!"
   },
   "baseDictionary": {
     "wordCode": "字典编号",
     "wordName": "字典名称",
     "parentDictionary": "父级字典",
-    "description": "描述"
+    "description": "描述",
+    "uppercaseRequired": "该项是大写字母, 请确保格式正确!",
+    "enterKeyword": "请输入关键字"
   },
   "regionManagement": {
     "regionalCode": "区域编号",
@@ -58,7 +68,8 @@
     "areaCreator": "区域创建人",
     "creationTime": "创建时间",
     "forMoreDetails": "查看详情",
-    "department": "部门"
+    "department": "部门",
+    "deleteCancelled": "已取消删除!"
   },
   "sysRole": {
     "roleCode": "角色编码",
@@ -67,12 +78,19 @@
     "description": "描述",
     "webRolePermissions": "web角色权限",
     "pdaRolePermissions": "pda角色权限",
-    "permissionConfiguration": "权限配置"
+    "permissionConfiguration": "权限配置",
+    "webPermissionsConfiguration": "web权限配置",
+    "pdaPermissionsConfiguration": "pda权限配置",
+    "deleteCancelled": "已取消删除!",
+    "autoGenerate": "自动生成",
+    "userDetail": "用户详情"
   },
   "sysButton": {
     "buttonName": "按钮名称",
     "isEnable": "是否启用",
-    "description": "描述"
+    "description": "描述",
+    "deleteCancelled": "已取消删除!",
+    "enterKeyword": "请输入关键字"
   },
   "sysUser": {
     "username": "用户名",
@@ -85,14 +103,22 @@
     "oldPassword": "旧密码",
     "newPassword": "新密码",
     "confirmPassword": "确认密码",
-    "role": "角色"
+    "role": "角色",
+    "roleManagement": "角色管理",
+    "userDescription": "用户描述",
+    "searchPersonnel": "输入用户名进行查询",
+    "resetPasswordTitle": "是否确认重置密码?",
+    "detailTitle": "用户详情",
+    "deleteCancelled": "已取消删除!",
+    "cancelled": "已取消!"
   },
   "sysWebMenu": {
     "menuName": "菜单名称",
     "parentMenu": "上级菜单",
     "url": "url",
-    "isEnable": "状态",
-    "description": "描述"
+    "isEnable": "是否启用",
+    "description": "描述",
+    "deleteCancelled": "已取消删除!"
   },
   "resourceMgmt": {
     "name": "资源名称",

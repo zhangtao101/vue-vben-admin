@@ -47,17 +47,17 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'calendarName', title: '日历名称', minWidth: 150 },
-    { field: 'organizationName', title: '组织名称', minWidth: 150 },
-    { field: 'cTime', title: '创建时间', minWidth: 150 },
-    { field: 'uTime', title: '修改时间', minWidth: 150 },
-    { field: 'uName', title: '操作人', minWidth: 150 },
+    { title: $t('baseInfo.serialNumber'), type: 'seq', width: 50 },
+    { field: 'calendarName', title: $t('baseInfo.calendarName'), minWidth: 150 },
+    { field: 'organizationName', title: $t('baseInfo.orgName'), minWidth: 150 },
+    { field: 'cTime', title: $t('baseInfo.createTime'), minWidth: 150 },
+    { field: 'uTime', title: $t('baseInfo.modifyTime'), minWidth: 150 },
+    { field: 'uName', title: $t('baseInfo.operator'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('baseInfo.action'),
       minWidth: 220,
     },
   ],
@@ -99,11 +99,11 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('baseInfo.cancelDeletePrompt'));
     },
     onOk() {
       deletePlantCalendar({
@@ -120,7 +120,7 @@ function delRow(row: any) {
           message.error(error.msg); // 显示操作失败的提示信息
         });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -149,8 +149,8 @@ const workDayOptions = ref<any>([
 ]);
 // 新增/编辑规则
 const editRules = ref<any>({
-  staCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  staName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  staCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  staName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 /**
  * 显示编辑抽屉
@@ -487,7 +487,7 @@ onMounted(() => {
       :footer-style="{ textAlign: 'right' }"
       :width="500"
       placement="right"
-      title="信息编辑"
+      :title="$t('baseInfo.infoEdit')"
       @close="close"
     >
       <Form

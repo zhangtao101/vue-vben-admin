@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,63 +34,63 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '日期', minWidth: 200 },
-    { field: 'linename', title: '生产线', minWidth: 200 },
+    { field: 'month', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'linename', title: $t('productionDaily.Line'), minWidth: 200 },
     {
       field: 'lyzpqpy',
-      title: '全抛釉(M2)',
+      title: $t('productionDaily.M2Glaze'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'lyzpcbz',
-      title: '超白砖(M2)',
+      title: $t('productionDaily.M2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'lyzpptz',
-      title: '普通砖(M2)',
+      title: $t('productionDaily.M2_12'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'lyzprpz',
-      title: '柔抛砖(M2)',
+      title: $t('productionDaily.M2_15'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'lyzpspz',
-      title: '刷抛砖(M2)',
+      title: $t('productionDaily.M2_20'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'lyzppjz',
-      title: '抛晶砖(M2)',
+      title: $t('productionDaily.M2_10'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'sumPG',
-      title: '抛光小计(M2)',
+      title: $t('productionDaily.PolishM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'sumMB',
-      title: '磨边砖入库产量(M2)',
+      title: $t('productionDaily.InboundOutputM2'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,

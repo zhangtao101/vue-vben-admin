@@ -40,6 +40,7 @@ import {
   updateSopBinding,
 } from '#/api';
 import { queryProductList } from '#/api/processManagement/processRoute.service';
+import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
 // region 表格配置
@@ -52,18 +53,18 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'productCode', title: '产品编号', minWidth: 100 },
-    { field: 'productName', title: '产品名称', minWidth: 80 },
-    { field: 'routeCode', title: '路线编号', minWidth: 100 },
-    { field: 'routeName', title: '路线名称', minWidth: 120 },
-    { field: 'processName', title: '对应工序', minWidth: 120 },
-    { field: 'fileName', title: 'SOP图纸名称', minWidth: 100 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'productCode', title: $t('sopBinding.productCode'), minWidth: 100 },
+    { field: 'productName', title: $t('sopBinding.productName'), minWidth: 80 },
+    { field: 'routeCode', title: $t('sopBinding.routeCode'), minWidth: 100 },
+    { field: 'routeName', title: $t('sopBinding.routeName'), minWidth: 120 },
+    { field: 'processName', title: $t('sopBinding.correspondingProcess'), minWidth: 120 },
+    { field: 'fileName', title: $t('sopBinding.sopDrawingName'), minWidth: 100 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('sopBinding.operation'),
       minWidth: 150,
     },
   ],
@@ -192,13 +193,13 @@ const fileList = ref<any>({});
  */
 const rules: any = {
   productCode: [
-    { required: true, message: '请选择产品型号', trigger: 'change' },
+    { required: true, message: $t('sopBinding.selectProductModel'), trigger: 'change' },
   ],
   productName: [
-    { required: true, message: '产品名称为必填项', trigger: 'blur' },
+    { required: true, message: $t('sopBinding.productNameRequired'), trigger: 'blur' },
   ],
-  routeCode: [{ required: true, message: '请选择路线编号', trigger: 'change' }],
-  routeName: [{ required: true, message: '路线名称为必填项', trigger: 'blur' }],
+  routeCode: [{ required: true, message: $t('sopBinding.selectRouteCode'), trigger: 'change' }],
+  routeName: [{ required: true, message: $t('sopBinding.routeNameRequired'), trigger: 'blur' }],
 };
 
 /**
@@ -333,7 +334,7 @@ function handleSubmit() {
         : addSopBinding(params);
 
     ob.then(() => {
-      message.success('操作成功');
+      message.success($t('sopBinding.operationSuccessful'));
       closeDialog();
       gridApi.reload();
     });
@@ -399,18 +400,18 @@ const routeDetailGridOptions: VxeGridProps<any> = {
   },
   columns: [
     { type: 'checkbox', width: 50 },
-    { field: 'processName', title: '工序名称', minWidth: 120 },
-    { field: 'processCode', title: '工序编号', minWidth: 100 },
+    { field: 'processName', title: $t('sopBinding.processName'), minWidth: 120 },
+    { field: 'processCode', title: $t('sopBinding.processCode'), minWidth: 100 },
     {
       field: 'fileName',
-      title: '文件名称',
+      title: $t('sopBinding.fileName'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'detailAction' },
-      title: '操作',
+      title: $t('sopBinding.operation'),
       minWidth: 80,
     },
   ],
@@ -461,19 +462,19 @@ const [RouteDetailGrid, routeDetailGridApi] = useVbenVxeGrid({
  */
 function handleDelete(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteSopBinding(row.id).then(() => {
-        message.success('删除成功');
+        message.success($t('sopBinding.deleteSuccessful'));
         gridApi.reload();
       });
     },
-    title: '该操作不可撤销，请确认！',
+    title: $t('sopBinding.irreversibleWarning'),
   });
 }
 
@@ -531,38 +532,38 @@ onMounted(() => {
     <!-- region 搜索 -->
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <FormItem label="产品型号">
+        <FormItem :label="$t('sopBinding.productModel')">
           <Input
             v-model:value="queryParams.productCode"
-            placeholder="请输入产品型号"
+            :placeholder="$t('sopBinding.inputProductModel')"
             allow-clear
           />
         </FormItem>
-        <FormItem label="产品名称">
+        <FormItem :label="$t('sopBinding.productName')">
           <Input
             v-model:value="queryParams.productName"
-            placeholder="请输入产品名称"
+            :placeholder="$t('sopBinding.inputProductName')"
             allow-clear
           />
         </FormItem>
-        <FormItem label="路线编号">
+        <FormItem :label="$t('sopBinding.routeCode')">
           <Input
             v-model:value="queryParams.routeCode"
-            placeholder="请输入路线编号"
+            :placeholder="$t('sopBinding.inputRouteCode')"
             allow-clear
           />
         </FormItem>
-        <FormItem label="路线名称">
+        <FormItem :label="$t('sopBinding.routeName')">
           <Input
             v-model:value="queryParams.routeName"
-            placeholder="请输入路线名称"
+            :placeholder="$t('sopBinding.inputRouteName')"
             allow-clear
           />
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSearch">
             <Icon icon="mdi:magnify" class="mr-2" />
-            查询
+            {{ $t('sopBinding.search') }}
           </Button>
         </FormItem>
       </Form>
@@ -579,7 +580,7 @@ onMounted(() => {
               @click="openCreateDialog"
             >
               <Icon icon="mdi:plus" class="mr-2" />
-              新增
+              {{ $t('sopBinding.add') }}
             </Button>
           </Space>
         </template>
@@ -608,7 +609,7 @@ onMounted(() => {
     <!-- 新增/编辑抽屉 -->
     <Drawer
       v-model:open="dialogVisible"
-      :title="dialogStatus === 'create' ? '新增' : '编辑'"
+      :title="dialogStatus === 'create' ? $t('sopBinding.add') : $t('sopBinding.edit')"
       width="60%"
       @close="closeDialog"
       :footer-style="{ textAlign: 'right' }"
@@ -620,12 +621,12 @@ onMounted(() => {
         :label-col="{ span: 8 }"
         :wrapper-col="{ span: 16 }"
       >
-        <FormItem label="产品型号" name="productCode">
+        <FormItem :label="$t('sopBinding.productModel')" name="productCode">
           <Select
             v-model:value="formData.productCode"
             allow-clear
             filterable
-            placeholder="请选择产品型号"
+            :placeholder="$t('sopBinding.selectProductModel')"
             :disabled="dialogStatus === 'update'"
             @change="handleProductChange"
           >
@@ -638,11 +639,11 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="路线编号" name="routeCode">
+        <FormItem :label="$t('sopBinding.routeCode')" name="routeCode">
           <Select
             v-model:value="formData.routeCode"
             allow-clear
-            placeholder="请选择路线编号"
+            :placeholder="$t('sopBinding.selectRouteCode')"
             :disabled="dialogStatus === 'update'"
             @change="handleRouteChange"
           >
@@ -661,7 +662,7 @@ onMounted(() => {
         <!-- 工艺路线明细表格 -->
         <RouteDetailGrid>
           <template #detailAction="{ row }">
-            <Tooltip title="绑定文件">
+            <Tooltip :title="$t('sopBinding.bindFile')">
               <Upload
                 :action="fileUploadUrl"
                 :headers="{ Authorization: accessStore.accessToken || '' }"
@@ -685,9 +686,9 @@ onMounted(() => {
             :disabled="selectedRows.length === 0"
             @click="handleSubmit"
           >
-            保存
+            {{ $t('sopBinding.save') }}
           </Button>
-          <Button @click="closeDialog">取消</Button>
+          <Button @click="closeDialog">{{ $t('sopBinding.cancel') }}</Button>
         </Space>
       </template>
     </Drawer>

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -31,94 +31,94 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'month', title: '日期', minWidth: 200 },
-    { field: 'startDay', title: '开始时间', minWidth: 200 },
-    { field: 'endDay', title: '结束时间', minWidth: 200 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'productCode', title: '产品编号', minWidth: 200 },
-    { field: 'productName', title: '产品名称（配方名称）', minWidth: 200 },
+    { field: 'month', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'startDay', title: $t('productionDaily.TimeStart'), minWidth: 200 },
+    { field: 'endDay', title: $t('productionDaily.TimeEnd'), minWidth: 200 },
+    { field: 'worksheetCode', title: $t('productionDaily.WorkOrder_1'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.CodeProduct'), minWidth: 200 },
+    { field: 'productName', title: $t('productionDaily.NameProductFormula'), minWidth: 200 },
     {
       field: 'planNumber',
-      title: '计划数',
+      title: $t('productionDaily.Plan_1'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'reportNumber',
-      title: '当月报工数量(T)',
+      title: $t('productionDaily.QtyReportT'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'equipCode',
-      title: '设备编号',
+      title: $t('productionDaily.CodeEquipment'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'equipName',
-      title: '设备名称',
+      title: $t('productionDaily.NameEquipment'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
-      title: '球磨机',
+      title: $t('productionDaily.ballMill'),
       children: [
         {
           field: 'feedNumber',
-          title: '球磨机加料量(T)',
+          title: $t('productionDaily.T_7'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'unFeedNumber',
-          title: '盘盈加料量(T)',
+          title: $t('productionDaily.T_6'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'dayInNumber',
-          title: '当月入库量(T)',
+          title: $t('productionDaily.InboundT_1'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
       ],
     },
     {
-      title: '喷干塔',
+      title: $t('productionDaily.sprayDryingQty_1'),
       children: [
         {
           field: 'pfCurrentTime',
-          title: '喷干持续时间',
+          title: $t('productionDaily.Time_4'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'zfOutNumber',
-          title: '累计喷干量(T)',
+          title: $t('productionDaily.T_4'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'zffeedNumber',
-          title: '投入量(T)',
+          title: $t('productionDaily.InputT'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'zfReportNumber',
-          title: '报工量(T)',
+          title: $t('productionDaily.ReportT'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: 'zfDayInNumber',
-          title: '当月入库量(喷粉)(T)',
+          title: $t('productionDaily.InboundT'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
@@ -126,120 +126,120 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'dlstartEnergyNumber',
-      title: '电量开始读数',
+      title: $t('productionDaily.StartElectric'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'dlendEnergyNumber',
-      title: '电量结束读数',
+      title: $t('productionDaily.EndElectric'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'dluseEnergyNumber',
-      title: '使用能耗',
+      title: $t('productionDaily.Energy_4'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'dlperUseNumber',
-      title: '电量单位能耗',
+      title: $t('productionDaily.EnergyElectric'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'trqstartEnergyNumber',
-      title: '天然气开始读数',
+      title: $t('productionDaily.NaturalGasStart'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'trqendEnergyNumber',
-      title: '天然气结束读数',
+      title: $t('productionDaily.NaturalGasEnd'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'trquseEnergyNumber',
-      title: '天然气使用量(M3)',
+      title: $t('productionDaily.NaturalGasM3Usage_1'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'smjstartEnergyNumber',
-      title: '水煤浆开始读数',
+      title: $t('productionDaily.CWSStart'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'smjendEnergyNumber',
-      title: '水煤浆结束读数',
+      title: $t('productionDaily.CWSEnd'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'smjuseEnergyNumber',
-      title: '水煤浆使用量（KG）',
+      title: $t('productionDaily.CWSKGUsage_1'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'jlqstartEnergyNumber',
-      title: '焦炉气开始读数',
+      title: $t('productionDaily.COGStart'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'jlqendEnergyNumber',
-      title: '焦炉气结束读数',
+      title: $t('productionDaily.COGEnd'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'jlquseEnergyNumber',
-      title: '焦炉气使用读数',
+      title: $t('productionDaily.COG'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'currentTime',
-      title: '工单用时',
+      title: $t('productionDaily.WorkOrder_3'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'perOutput',
-      title: '单位产能',
+      title: $t('productionDaily.Capacity'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'dlperUseNumber',
-      title: '电量单位能耗',
+      title: $t('productionDaily.EnergyElectric'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'jlqperUseNumber',
-      title: '焦炉气单位能耗',
+      title: $t('productionDaily.COGEnergy'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'trqperUseNumber',
-      title: '天然气单位能耗',
+      title: $t('productionDaily.NaturalGasEnergy'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: 'smjperUseNumber',
-      title: '水煤浆单位能耗（KG）',
+      title: $t('productionDaily.CWSEnergyKG'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
@@ -281,13 +281,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

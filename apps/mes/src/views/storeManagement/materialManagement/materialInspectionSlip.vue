@@ -275,7 +275,7 @@ const gridOptions: VxeGridProps<any> = {
       width: 120,
     },
     {
-      title: '操作',
+      title: $t('common.operation'),
       width: 200,
       fixed: 'right',
       slots: { default: 'action' },

@@ -56,38 +56,38 @@ const columns = ref<any[]>([
   {
     dataIndex: 'orgFullName',
     ellipsis: true,
-    title: '组织全称',
+    title: $t('system.baseOrganization.fullNameOfOrganization'),
     width: 170,
   },
   {
     dataIndex: 'orgType',
     ellipsis: true,
-    title: '组织类型',
+    title: $t('system.baseOrganization.tissueType'),
     width: 100,
   },
   {
     dataIndex: 'orgCode',
     ellipsis: true,
-    title: '组织编码',
+    title: $t('system.baseOrganization.tissueCoding'),
     width: 60,
   },
   {
     dataIndex: 'orgLevel',
     ellipsis: true,
-    title: '组织等级',
+    title: $t('system.baseOrganization.organizationalHierarchy'),
     width: 60,
   },
   {
     dataIndex: 'isEnable',
     ellipsis: true,
-    title: '是否可用',
+    title: $t('system.baseOrganization.isAvailable'),
     width: 100,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('common.operation'),
     width: 80,
   },
 ]);
@@ -113,20 +113,12 @@ const selectedKey = ref<any>(undefined);
 function delTableRow(row: any) {
   // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
-    cancelText: '取消',
-    // 确认按钮的文本
-    okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
-      message.warning('已取消删除!');
+      message.warning($t('system.baseOrganization.deleteCancelled'));
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
       // 调用删除按钮的操作，传递按钮的编码和类型参数
       delOrganization(row.id)
@@ -154,8 +146,7 @@ function delTableRow(row: any) {
         });
     },
 
-    // 确认框的标题文本
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -359,12 +350,12 @@ const editRules = ref<any>({
       },
     },
   ],
-  isEnable: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  orgCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  orgFullName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  orgLevel: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  orgParCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  orgType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  isEnable: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  orgCode: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  orgFullName: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  orgLevel: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  orgParCode: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  orgType: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
   tel: [
     {
       trigger: 'change',
@@ -666,8 +657,8 @@ onMounted(() => {
           name="orgType"
         >
           <RadioGroup v-model:value="editMessage.orgType" name="orgType">
-            <Radio value="公司">公司</Radio>
-            <Radio value="部门">部门</Radio>
+            <Radio value="公司">{{ $t('system.baseOrganization.company') }}</Radio>
+            <Radio value="部门">{{ $t('system.baseOrganization.department') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 组织编码 -->
@@ -723,8 +714,8 @@ onMounted(() => {
         <!-- 是否可用 -->
         <FormItem :label="$t('system.baseOrganization.status')" name="isEnable">
           <RadioGroup v-model:value="editMessage.isEnable" name="statusGroup">
-            <Radio :value="1">启用</Radio>
-            <Radio :value="0">停用</Radio>
+            <Radio :value="1">{{ $t('common.enable') }}</Radio>
+            <Radio :value="0">{{ $t('common.stopUsing') }}</Radio>
           </RadioGroup>
         </FormItem>
         <!-- 描述 -->

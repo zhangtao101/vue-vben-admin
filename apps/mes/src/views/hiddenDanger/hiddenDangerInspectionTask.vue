@@ -58,32 +58,32 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'checkCode', title: '检查编号', minWidth: 150 },
-    { field: 'planCheckTime', title: '计划检查时间', minWidth: 150 },
-    { field: 'checkType', title: '检查类别', minWidth: 150 },
-    { field: 'checkCriteria', title: '检查标准', minWidth: 150 },
-    { field: 'checkName', title: '专项检查名称', minWidth: 150 },
-    { field: 'checkUser', title: '检查人', minWidth: 150 },
-    { field: 'area', title: '检查区域', minWidth: 150 },
-    { field: 'areaCode', title: '检查项目', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'checkCode', title: $t('hiddenDangerInspectionTask.checkTheNumber'), minWidth: 150 },
+    { field: 'planCheckTime', title: $t('hiddenDangerInspectionTask.PlannedInspectionDate'), minWidth: 150 },
+    { field: 'checkType', title: $t('hiddenDangerInspectionTask.InspectionCategory'), minWidth: 150 },
+    { field: 'checkCriteria', title: $t('hiddenDangerInspectionTask.InspectionStandard'), minWidth: 150 },
+    { field: 'checkName', title: $t('hiddenDangerInspectionTask.specialInspectionName'), minWidth: 150 },
+    { field: 'checkUser', title: $t('hiddenDangerInspectionTask.checkUser'), minWidth: 150 },
+    { field: 'area', title: $t('hiddenDangerInspectionTask.InspectionArea'), minWidth: 150 },
+    { field: 'areaCode', title: $t('hiddenDangerInspectionTask.InspectionItem'), minWidth: 150 },
     {
       field: 'result',
-      title: '结果',
+      title: $t('hiddenDangerInspectionTask.Result'),
       minWidth: 150,
       slots: { default: 'result' },
     },
-    { field: 'remark', title: '备注', minWidth: 150 },
-    { field: 'checkTime', title: '检查时间', minWidth: 150 },
+    { field: 'remark', title: $t('hiddenDangerInspectionTask.Remarks'), minWidth: 150 },
+    { field: 'checkTime', title: $t('hiddenDangerInspectionTask.InspectionTime'), minWidth: 150 },
     {
       field: 'isReport',
-      title: '是否上报隐患',
+      title: $t('hiddenDangerInspectionTask.ReportHiddenDanger'),
       minWidth: 150,
       slots: { default: 'status' },
     },
     {
       field: 'state',
-      title: '是否完成巡检',
+      title: $t('hiddenDangerInspectionTask.inspectionStatus'),
       minWidth: 150,
       slots: { default: 'status' },
     },
@@ -91,7 +91,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       minWidth: 280,
     },
   ],
@@ -451,15 +451,15 @@ function submit() {
     ...details.value,
   };
   if (uploadFile.value.length === 0) {
-    message.error('上传相关的图片!');
+    message.error($t('page.common.uploadImageWarning'));
     return;
   }
   if (!params.checkTime) {
-    message.error('请选择检查时间!');
+    message.error($t('page.common.selectCheckTime'));
     return;
   }
   if (!params.result && params.result !== 0) {
-    message.error('请选择检查结果!');
+    message.error($t('page.common.selectCheckResult'));
     return;
   }
   params.photoList = [];
@@ -844,7 +844,7 @@ onMounted(() => {
     <!-- region 指派 -->
     <Modal
       v-model:open="showAssigned"
-      title="分配任务"
+      :title="$t('hiddenDangerInspectionTask.assignTask')"
       @ok="assignedSubmit"
       @cancel="assignedCancel()"
       :ok-button-props="{

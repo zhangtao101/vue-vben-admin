@@ -35,10 +35,10 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'dimension', title: '维度', minWidth: 150 },
-    { field: 'level', title: '等级', minWidth: 120 },
-    { field: 'score', title: '分值', minWidth: 120 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'dimension', title: $t('riskManagement.Dimension'), minWidth: 150 },
+    { field: 'level', title: $t('riskManagement.Level'), minWidth: 120 },
+    { field: 'score', title: $t('riskManagement.Score'), minWidth: 120 },
     /* { field: 'createUser', title: '提交人', minWidth: 120 },
     { field: 'createTime', title: '提交时间', minWidth: 150 },
     { field: 'updateTime', title: '更新时间', minWidth: 150 },*/
@@ -46,7 +46,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       minWidth: 150,
     },
   ],
@@ -117,15 +117,15 @@ function queryData({ page, pageSize }: any) {
  */
 const listOfDimensions = ref<any>([
   {
-    label: '事故发生的可能性(L)',
+    label: $t('riskManagement.lLabel'),
     value: '事故发生的可能性(L)',
   },
   {
-    label: '暴露于危险环境的频繁程度(E)',
+    label: $t('riskManagement.eLabel'),
     value: '暴露于危险环境的频繁程度(E)',
   },
   {
-    label: '发生事故产生的后果(C)',
+    label: $t('riskManagement.cLabel'),
     value: '发生事故产生的后果(C)',
   },
 ]);
@@ -315,7 +315,7 @@ onMounted(() => {
         <!-- 维度 -->
         <FormItem
           :label="$t('riskManagement.Dimension')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="dimension"
         >
           <Select
@@ -328,7 +328,7 @@ onMounted(() => {
         <!-- 等级 -->
         <FormItem
           :label="$t('riskManagement.Level')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="level"
         >
           <Input v-model:value="editItem.level" />
@@ -336,7 +336,7 @@ onMounted(() => {
         <!-- 分值 -->
         <FormItem
           :label="$t('riskManagement.Score')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="score"
         >
           <InputNumber v-model:value="editItem.score" :min="0" />

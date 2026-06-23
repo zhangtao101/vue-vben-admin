@@ -37,5 +37,11 @@
   "toBeContinued": "未完成",
   "unfinishedReason": "未完成原因",
   "currentStatus": "当前状态",
-  "reviewResults": "审核结果"
+  "reviewResults": "审核结果",
+  "firePart": "动火部位",
+  "level1": "一级",
+  "level2": "二级",
+  "level3": "三级",
+  "level4": "四级",
+  "level5": "五级"
 }

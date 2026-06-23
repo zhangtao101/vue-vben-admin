@@ -60,25 +60,25 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'workstationCode', title: '工作站编号', minWidth: 150 },
-    { field: 'workstationName', title: '工作站名称', minWidth: 150 },
-    { field: 'stationTypeName', title: '工作站类型', minWidth: 150 },
-    { field: 'workstationIp', title: '工作站IP', minWidth: 150 },
-    { field: 'auditStateName', title: '审核状态', minWidth: 150 },
-    { field: 'auditTime', title: '审核时间', minWidth: 150 },
-    { field: 'auditUser', title: '审核人', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'workstationCode', title: $t('baseInfo.workStationCode'), minWidth: 150 },
+    { field: 'workstationName', title: $t('baseInfo.workStationName'), minWidth: 150 },
+    { field: 'stationTypeName', title: $t('baseInfo.workStationType'), minWidth: 150 },
+    { field: 'workstationIp', title: $t('baseInfo.workStationIp'), minWidth: 150 },
+    { field: 'auditStateName', title: $t('baseInfo.auditStatus'), minWidth: 150 },
+    { field: 'auditTime', title: $t('baseInfo.auditTime'), minWidth: 150 },
+    { field: 'auditUser', title: $t('baseInfo.auditor'), minWidth: 150 },
     {
       field: 'state',
       slots: { default: 'status' },
-      title: '工作站状态',
+      title: $t('baseInfo.workStationStatus'),
       minWidth: 100,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('baseInfo.action'),
       minWidth: 250,
     },
   ],
@@ -163,24 +163,24 @@ const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
   workstationCode: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
   workstationName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
   workstationType: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
 });
 
 // 工作站类型
 const workStationType = ref([
   {
-    label: '工段工作站',
+    label: $t('baseInfo.sectionStation'),
     value: 1,
   },
   {
-    label: '工序工作站',
+    label: $t('baseInfo.processStation'),
     value: 2,
   },
 ]);
@@ -199,26 +199,26 @@ const workStationDetailHeader = ref<any>([
   {
     dataIndex: 'processCode',
     ellipsis: true,
-    title: '工序编号',
+    title: $t('baseInfo.subProcessCode'),
     width: 160,
   },
   {
     dataIndex: 'processName',
     ellipsis: true,
-    title: '工序名称',
+    title: $t('baseInfo.subProcessName'),
     width: 120,
   },
   {
     dataIndex: 'costCenterCode',
     ellipsis: true,
-    title: '成本中心编号',
+    title: $t('baseInfo.costCenterCode'),
     width: 120,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('baseInfo.action'),
     width: 120,
   },
 ]);
@@ -436,11 +436,11 @@ function delWorkStationDetail(index: number) {
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'danger'，通常用于表示这是一个危险的操作。
      */
@@ -450,7 +450,7 @@ function delWorkStationDetail(index: number) {
      * 如果用户点击取消按钮，显示一条警告消息。
      */
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     /**
      * 定义确认操作的回调函数。
@@ -462,7 +462,7 @@ function delWorkStationDetail(index: number) {
     /**
      * 设置对话框的标题为 '是否确认删除该条数据?'。
      */
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -534,11 +534,11 @@ function delRow(row: any) {
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'danger'，通常用于表示这是一个危险的操作。
      */
@@ -548,7 +548,7 @@ function delRow(row: any) {
      * 如果用户点击取消按钮，显示一条警告消息。
      */
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     /**
      * 定义确认操作的回调函数。
@@ -581,7 +581,7 @@ function delRow(row: any) {
     /**
      * 设置对话框的标题为 '是否确认删除该条数据?'。
      */
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -711,10 +711,10 @@ function handleChange(info: any) {
     // 重新查询数据，更新列表
     gridApi.reload();
     // 显示成功消息
-    message.success('文件上传成功!');
+    message.success($t('page.common.uploadSuccess'));
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || '文件上传失败';
+    const errorMessage = info.file.response?.message || $t('baseInfo.uploadFailed');
     // 显示错误消息
     message.error(errorMessage);
   }
@@ -732,7 +732,7 @@ function handleChange(info: any) {
 function handleAudit(row: any, isPass: boolean) {
   // 根据 isPass 的值设置对话框的标题和 audioFun 的状态码
   // 如果 isPass 为 true，表示审核通过，否则表示审核不通过
-  const title = isPass ? '是否确认通过该条数据?' : '是否确认不通过该条数据?';
+  const title = isPass ? $t('baseInfo.confirmPass') : $t('baseInfo.confirmReject');
   const statusCode = isPass ? 2 : 3;
 
   // 调用 Modal.confirm 方法显示一个确认对话框，让用户确认是否执行审核操作
@@ -740,11 +740,11 @@ function handleAudit(row: any, isPass: boolean) {
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'primary'，表示这是一个主要的操作。
      */
@@ -799,18 +799,18 @@ function audioFun(id: number, status: number) {
  */
 function changeState(row: any) {
   // 根据 row.state 的值设置对话框的标题，确定是启用还是停用配置
-  const title = row.state === 1 ? '是否确认启用该配置?' : '是否确认停用该配置?';
+  const title = row.state === 1 ? $t('baseInfo.confirmEnable') : $t('baseInfo.confirmDisable');
 
   // 调用 Modal.confirm 方法显示一个确认对话框，让用户确认是否更改配置状态
   Modal.confirm({
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'primary'，表示这是一个主要的操作。
      */
@@ -884,7 +884,7 @@ onMounted(async () => {
     });
   } catch {
     // 统一处理错误
-    message.error('数据加载失败，请重试');
+    message.error($t('page.common.dataLoadFailed'));
   }
 });
 </script>
@@ -949,15 +949,15 @@ onMounted(async () => {
           </Upload>
         </template>
         <template #status="{ row }">
-          <div v-if="row.state === 3">已弃用</div>
+          <div v-if="row.state === 3">{{ $t('baseInfo.deprecated') }}</div>
           <div v-else>
             <Switch
               v-model:checked="row.state"
               :checked-value="1"
               :disabled="row.auditState !== 2 && editButton"
               :un-checked-value="2"
-              checked-children="启用"
-              un-checked-children="停用"
+              :checked-children="$t('status.enable')"
+              :un-checked-children="$t('status.forbidden')"
               @change="changeState(row)"
             />
           </div>
@@ -1034,7 +1034,7 @@ onMounted(async () => {
       :footer-style="{ textAlign: 'right' }"
       :height="500"
       placement="top"
-      title="信息编辑"
+      :title="$t('baseInfo.infoEdit')"
       @close="onClose()"
     >
       <Form
@@ -1068,7 +1068,7 @@ onMounted(async () => {
           />
         </FormItem>
         <!-- 工作站IP -->
-        <FormItem label="IP" name="workstationIp" style="margin-bottom: 1em">
+        <FormItem :label="$t('baseInfo.workStationIp')" name="workstationIp" style="margin-bottom: 1em">
           <Input
             v-model:value="checkedRow.workstationIp"
             :disabled="isShowStatus"

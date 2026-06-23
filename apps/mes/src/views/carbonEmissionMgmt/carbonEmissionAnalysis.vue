@@ -45,11 +45,11 @@ import MyStatistic from '#/util/myStatistic.vue';
  */
 const type = [
   {
-    label: '企业净购入电力隐含碳排放',
+    label: $t('carbonEmissionMgmt.enterpriseElectricityCarbon'),
     value: 1,
   },
   {
-    label: '化石燃料燃烧碳排放',
+    label: $t('carbonEmissionMgmt.fossilFuelCarbon'),
     value: 3,
   },
 ];
@@ -165,8 +165,8 @@ function chartInit(chartData: any = []) {
             lineWidth: 2,
           },
           tooltip: {
-            title: '时间',
-            items: [{ channel: 'y', name: '当期排放值' }],
+            title: $t('carbonEmissionMgmt.time'),
+            items: [{ channel: 'y', name: $t('carbonEmissionMgmt.currentEmissionValue') }],
           },
         },
         {
@@ -182,8 +182,8 @@ function chartInit(chartData: any = []) {
             lineWidth: 2,
           },
           tooltip: {
-            title: '时间',
-            items: [{ channel: 'y', name: '上期排放值' }],
+            title: $t('carbonEmissionMgmt.time'),
+            items: [{ channel: 'y', name: $t('carbonEmissionMgmt.previousEmissionValue') }],
           },
         },
         {

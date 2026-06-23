@@ -57,24 +57,24 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'perName', title: '姓名', minWidth: 80 },
-    { field: 'workNumber', title: '工号', minWidth: 80 },
-    { field: 'rfid', title: 'rfid', minWidth: 100 },
-    { field: 'phoneNumber', title: '手机号码', minWidth: 120 },
-    { field: 'stationName', title: '岗位名称', minWidth: 120 },
-    { field: 'email', title: '邮箱', minWidth: 120 },
+    { title: $t('basic.serialNumber'), type: 'seq', width: 50 },
+    { field: 'perName', title: $t('system.baseStaff.name'), minWidth: 80 },
+    { field: 'workNumber', title: $t('system.baseStaff.workNumber'), minWidth: 80 },
+    { field: 'rfid', title: $t('system.baseStaff.rfid'), minWidth: 100 },
+    { field: 'phoneNumber', title: $t('system.baseStaff.phoneNumber'), minWidth: 120 },
+    { field: 'stationName', title: $t('system.baseStaff.jobTitle'), minWidth: 120 },
+    { field: 'email', title: $t('system.baseStaff.email'), minWidth: 120 },
     {
       field: 'isOnDuty',
       slots: { default: 'status' },
-      title: '是否在职',
+      title: $t('system.baseStaff.isOnDuty'),
       minWidth: 100,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       minWidth: 120,
     },
   ],
@@ -121,19 +121,12 @@ function delTableRow(row: any) {
   // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
     // 取消按钮的文本
-    cancelText: '取消',
-    // 确认按钮的文本
-    okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
-      message.warning('已取消删除!');
+      message.warning($t('system.baseStaff.deleteCancelled'));
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
       // 调用删除按钮的操作，传递按钮的编码和类型参数
       delSysPerson(row.id)
@@ -154,8 +147,7 @@ function delTableRow(row: any) {
         });
     },
 
-    // 确认框的标题文本
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -313,9 +305,9 @@ const editRules = ref<any>({
       },
     },
   ],
-  isOnDuty: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  orgCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  perName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  isOnDuty: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  orgCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  perName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
   phoneNumber: [
     {
       trigger: 'change',
@@ -346,7 +338,7 @@ const editRules = ref<any>({
       },
     },
   ],
-  stationCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  stationCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
   teleNumber: [
     {
       trigger: 'change',
@@ -363,7 +355,7 @@ const editRules = ref<any>({
     },
   ],
   workNumber: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
     {
       trigger: 'change',
       validator: (_rule: Rule, value: string) => {
@@ -797,7 +789,7 @@ onMounted(() => {
             :filter-option="filterOption"
             :options="stationList"
             allow-clear
-            placeholder="输入关键字进行查询"
+            :placeholder="$t('system.baseDictionary.enterKeyword')"
             show-search
             style="width: 200px"
           />

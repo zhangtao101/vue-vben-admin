@@ -41,5 +41,20 @@
   "notAccepted": "notAccepted",
   "retracement": "retracement",
   "title": "Select the distribution personnel",
-  "type": "Type"
+  "type": "Type",
+  "discoverer": "Discoverer",
+  "hazardType": "Hazard Type",
+  "description": "Description",
+  "generalHazard": "General Hazard",
+  "seriousHazard": "Serious Hazard",
+  "majorHazard": "Major Hazard",
+  "criticalHazard": "Critical Hazard",
+  "hazardReported": "Hazard Reported",
+  "issueConfirmed": "Issue Confirmed",
+  "rectificationOrganized": "Rectification Organized",
+  "rectificationImplemented": "Rectification Implemented",
+  "undefinedStatus": "Undefined Status",
+  "hiddenDanger": "Hidden Danger",
+  "risk": "Risk",
+  "selectHazardLevel": "Please select the hazard level!"
 }

@@ -1,4 +1,24 @@
 {
   "changeOperationNumber": "Change Operation Number",
-  "changeOperationType": "Change Operation Type"
+  "changeOperationType": "Change Operation Type",
+  "changeTaskNumber": "Change Task Number",
+  "changeBeforeVersion": "Version Before Change",
+  "changeAfterVersion": "Version After Change",
+  "changeTaskStatus": "Change Task Status",
+  "changeTime": "Change Time",
+  "operation": "Operation",
+  "boundProductCode": "Bound Product Code",
+  "boundProductName": "Bound Product Name",
+  "correspondingRouteCode": "Corresponding Route Code",
+  "correspondingRouteName": "Corresponding Route Name",
+  "updatedVersion": "Updated Version",
+  "currentlyUsedVersion": "Currently Used Version",
+  "applicationStatus": "Application Status",
+  "processParameterTemplateChange": "Process Parameter Template Change",
+  "processRouteChange": "Process Route Change",
+  "details": "Details",
+  "currentVersion": "Current Version",
+  "confirmChange": "Confirm the change?",
+  "changeCancelled": "Change cancelled!",
+  "atLeastOneRecord": "Select at least one record!"
 }

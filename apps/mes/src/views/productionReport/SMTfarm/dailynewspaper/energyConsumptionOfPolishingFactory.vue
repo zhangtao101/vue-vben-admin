@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,50 +34,50 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '报工日期', minWidth: 200 },
-    { field: 'workstation', title: '工作中心', minWidth: 200 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'productCode', title: '全产品编码', minWidth: 200 },
-    { field: 'batchName', title: '批号', minWidth: 200 },
-    { field: 'bm', title: '编码+批号', minWidth: 200 },
+    { field: 'day', title: $t('productionDaily.DateReport'), minWidth: 200 },
+    { field: 'workstation', title: $t('productionDaily.workstation_1'), minWidth: 200 },
+    { field: 'worksheetCode', title: $t('productionDaily.WorkOrder_1'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.CodeProduct_2'), minWidth: 200 },
+    { field: 'batchName', title: $t('productionDaily.batchNo'), minWidth: 200 },
+    { field: 'bm', title: $t('productionDaily.Code_2'), minWidth: 200 },
 
     {
       field: 'inReportNumber',
-      title: '当期领用（M2)',
+      title: $t('productionDaily.M2_5'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'inStorageNumber',
-      title: '入库量（M2)',
+      title: $t('productionDaily.InboundM2_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'dlValue',
-      title: '用电量（KWH)',
+      title: $t('productionDaily.KWHElectricity_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopValue',
-      title: '停线用电（KWH)',
+      title: $t('productionDaily.KWHLineStopElectricity'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'sumValue',
-      title: '合计',
+      title: $t('productionDaily.Total'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 5 }],
   height: 500,
   stripe: true,
@@ -119,13 +119,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

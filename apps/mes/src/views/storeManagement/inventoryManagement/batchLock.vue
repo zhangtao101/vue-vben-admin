@@ -29,19 +29,19 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
     { type: 'checkbox', width: 50 },
-    { field: 'packingCode', title: '箱码', minWidth: 150 },
-    { field: 'labelCode', title: '标签编码', minWidth: 150 },
-    { field: 'materialCode', title: '物料料号', minWidth: 150 },
-    { field: 'materialName', title: '物料名称', minWidth: 150 },
-    { field: 'materialDescriptionId', title: '特征ID', minWidth: 150 },
-    { field: 'number', title: '数量', minWidth: 150 },
-    { field: 'unit', title: '单位', minWidth: 150 },
-    { field: 'warehouseAreaCode', title: '所属储位', minWidth: 150 },
-    { field: 'worksheetCode', title: '工单单号', minWidth: 150 },
-    { field: 'batchCode', title: '批次号', minWidth: 150 },
-    { field: 'lockTypeName', title: '锁定状态说明', minWidth: 150 },
+    { field: 'packingCode', title: $t('storeManagement.batchLock.packingCode'), minWidth: 150 },
+    { field: 'labelCode', title: $t('storeManagement.labelPrint.labelCode'), minWidth: 150 },
+    { field: 'materialCode', title: $t('storeManagement.labelPrint.materialCode'), minWidth: 150 },
+    { field: 'materialName', title: $t('storeManagement.labelPrint.materialName'), minWidth: 150 },
+    { field: 'materialDescriptionId', title: $t('storeManagement.ioBillManagement.materialFeatureId'), minWidth: 150 },
+    { field: 'number', title: $t('storeManagement.ioBillManagement.number'), minWidth: 150 },
+    { field: 'unit', title: $t('storeManagement.labelPrint.unit'), minWidth: 150 },
+    { field: 'warehouseAreaCode', title: $t('storeManagement.batchLock.storageLocation'), minWidth: 150 },
+    { field: 'worksheetCode', title: $t('storeManagement.batchLock.workOrderNumber'), minWidth: 150 },
+    { field: 'batchCode', title: $t('storeManagement.batchLock.batch'), minWidth: 150 },
+    { field: 'lockTypeName', title: $t('storeManagement.batchLock.lockTypeName'), minWidth: 150 },
   ],
   height: 500,
   stripe: true,
@@ -105,9 +105,9 @@ function lock(type: number) {
   const checkboxRecords = gridApi.grid.getCheckboxRecords();
   if (checkboxRecords.length > 0) {
     Modal.confirm({
-      title: '是否确认操作!',
-      okText: '确定',
-      cancelText: '取消',
+      title: $t('storeManagement.batchLock.confirmOperation'),
+      okText: $t('common.confirm'),
+      cancelText: $t('common.cancel'),
       onOk() {
         materialRecordBatchLock({
           lockState: type,
@@ -118,7 +118,7 @@ function lock(type: number) {
       },
     });
   } else {
-    message.error('请先选择数据!');
+    message.error($t('storeManagement.batchLock.pleaseSelectData'));
   }
 }
 

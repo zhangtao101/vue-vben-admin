@@ -40,18 +40,18 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'partitionName', title: '单元分区名称', minWidth: 190 },
-    { field: 'equipmentCode', title: '仪表编号', minWidth: 150 },
-    { field: 'equipmentName', title: '仪表名称', minWidth: 150 },
-    { field: 'equipmentType', title: '仪表类型', minWidth: 150 },
-    { field: 'waringDay', title: '日上限', minWidth: 150 },
-    { field: 'waringMonth', title: '月上限', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'partitionName', title: $t('alarmManagement.partitionName'), minWidth: 190 },
+    { field: 'equipmentCode', title: $t('alarmManagement.meterNumber'), minWidth: 150 },
+    { field: 'equipmentName', title: $t('alarmManagement.meterName'), minWidth: 150 },
+    { field: 'equipmentType', title: $t('alarmManagement.meterType'), minWidth: 150 },
+    { field: 'waringDay', title: $t('alarmManagement.dailyLimit'), minWidth: 150 },
+    { field: 'waringMonth', title: $t('alarmManagement.monthlyLimit'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       minWidth: 150,
     },
   ],
@@ -181,7 +181,7 @@ function addUser() {
 /**
  * 删除用户
  */
-function delUser(index: number) {
+function delUser(index: any) {
   editItem.value.handleUser.splice(index, 1);
 }
 
@@ -230,12 +230,12 @@ const filterOption = (input: string, option: any) => {
 function reset(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
       // 点击取消按钮，显示警告消息
-      message.warning('已取消操作!');
+      message.warning($t('alarmManagement.cancelPrompt'));
     },
     onOk() {
       // 调用 API 接口执行工单群发操作
@@ -247,7 +247,7 @@ function reset(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认重置配置?',
+    title: $t('alarmManagement.confirmResetConfig'),
   });
 }
 
@@ -359,7 +359,7 @@ onMounted(() => {
         <!-- 仪表编号 -->
         <FormItem
           :label="$t('alarmManagement.meterNumber')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="equipmentCode"
         >
           <Input v-model:value="editItem.equipmentCode" readonly />
@@ -367,7 +367,7 @@ onMounted(() => {
         <!-- 日上限 -->
         <FormItem
           :label="$t('alarmManagement.dailyLimit')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="waringDay"
         >
           <InputNumber v-model:value="editItem.waringDay" />
@@ -375,7 +375,7 @@ onMounted(() => {
         <!-- 月上限 -->
         <FormItem
           :label="$t('alarmManagement.monthlyLimit')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="waringMonth"
         >
           <InputNumber v-model:value="editItem.waringMonth" />
@@ -383,7 +383,7 @@ onMounted(() => {
         <!-- 超时时间 -->
         <FormItem
           :label="$t('alarmManagement.timeout')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="outTime"
         >
           <InputNumber
@@ -394,7 +394,7 @@ onMounted(() => {
         <!-- 处理人 -->
         <FormItem
           :label="$t('alarmManagement.handlers')"
-          :rules="[{ required: true, message: '该项为必填项' }]"
+          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
           name="handleUser"
         >
           <template v-for="(item, index) of editItem.handleUser" :key="index">

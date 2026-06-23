@@ -45,41 +45,41 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 190 },
-    { field: 'workstationCode', title: '工作站编号', minWidth: 150 },
-    { field: 'routeName', title: '路线名称', minWidth: 150 },
-    { field: 'routeCode', title: '路线编号', minWidth: 150 },
-    { field: 'productCode', title: '产品编号', minWidth: 150 },
-    { field: 'productName', title: '产品名称', minWidth: 150 },
-    { field: 'planDateStart', title: '计划开始时间', minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'worksheetCode', title: $t('selectionOfRDProcessRoute.workOrderNumber'), minWidth: 190 },
+    { field: 'workstationCode', title: $t('selectionOfRDProcessRoute.workstationCode'), minWidth: 150 },
+    { field: 'routeName', title: $t('selectionOfRDProcessRoute.routeName'), minWidth: 150 },
+    { field: 'routeCode', title: $t('selectionOfRDProcessRoute.routeCode'), minWidth: 150 },
+    { field: 'productCode', title: $t('selectionOfRDProcessRoute.productCode'), minWidth: 150 },
+    { field: 'productName', title: $t('selectionOfRDProcessRoute.productName'), minWidth: 150 },
+    { field: 'planDateStart', title: $t('selectionOfRDProcessRoute.planStartTime'), minWidth: 150 },
+    { field: 'workSheetPlanNumber', title: $t('selectionOfRDProcessRoute.planQuantity'), minWidth: 150 },
     {
       field: 'workSheetFinishNumber',
-      title: '工单完成数（入库数量）',
+      title: $t('selectionOfRDProcessRoute.completedQuantity'),
       minWidth: 180,
     },
-    { field: 'planDateEnd', title: '预计完成时间', minWidth: 150 },
-    { field: 'unit', title: '单位', minWidth: 150 },
+    { field: 'planDateEnd', title: $t('selectionOfRDProcessRoute.estimatedCompletionTime'), minWidth: 150 },
+    { field: 'unit', title: $t('selectionOfRDProcessRoute.unit'), minWidth: 150 },
     {
       field: 'state',
       fixed: 'right',
       slots: { default: 'workOrderStatus' },
-      title: '工单状态',
+      title: $t('selectionOfRDProcessRoute.workOrderStatus'),
       minWidth: 150,
     },
     {
       field: 'reportState',
       fixed: 'right',
       slots: { default: 'reportTheWorkStatus' },
-      title: '工单报工状态',
+      title: $t('selectionOfRDProcessRoute.workOrderReportStatus'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('selectionOfRDProcessRoute.operation'),
       minWidth: 150,
     },
   ],
@@ -122,19 +122,19 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getStatusText(state: number) {
   switch (state) {
     case -1: {
-      return '未生产';
+      return $t('selectionOfRDProcessRoute.notProduced');
     }
     case 1: {
-      return '生产中';
+      return $t('selectionOfRDProcessRoute.inProduction');
     }
     case 2: {
-      return '完工下线';
+      return $t('selectionOfRDProcessRoute.completedOffline');
     }
     case 3: {
-      return '暂停下线';
+      return $t('selectionOfRDProcessRoute.pausedOffline');
     }
     default: {
-      return '未定义的状态';
+      return $t('selectionOfRDProcessRoute.undefinedStatus');
     }
   }
 }
@@ -145,13 +145,13 @@ function getStatusText(state: number) {
 function getReportStateText(state: number) {
   switch (state) {
     case 1: {
-      return '未报工';
+      return $t('selectionOfRDProcessRoute.notReported');
     }
     case 2: {
-      return '已报工';
+      return $t('selectionOfRDProcessRoute.reported');
     }
     default: {
-      return '未定义的状态';
+      return $t('selectionOfRDProcessRoute.undefinedStatus');
     }
   }
 }
@@ -193,19 +193,19 @@ function queryType() {
  */
 const statusTypes = ref([
   {
-    label: '未生产',
+    label: $t('selectionOfRDProcessRoute.notProduced'),
     value: -1,
   },
   {
-    label: '生产中',
+    label: $t('selectionOfRDProcessRoute.inProduction'),
     value: 1,
   },
   {
-    label: '完工下线',
+    label: $t('selectionOfRDProcessRoute.completedOffline'),
     value: 2,
   },
   {
-    label: '暂停下线',
+    label: $t('selectionOfRDProcessRoute.pausedOffline'),
     value: 3,
   },
 ]);
@@ -214,11 +214,11 @@ const statusTypes = ref([
  */
 const reportStatusTypes = ref([
   {
-    label: '未报工',
+    label: $t('selectionOfRDProcessRoute.notReported'),
     value: 1,
   },
   {
-    label: '已报工',
+    label: $t('selectionOfRDProcessRoute.reported'),
     value: 2,
   },
 ]);
@@ -485,8 +485,8 @@ onMounted(() => {
     >
       <InputSearch
         v-model:value="routeName"
-        placeholder="输入关键字进行查询"
-        enter-button="查询"
+        :placeholder="$t('selectionOfRDProcessRoute.enterKeyword')"
+        :enter-button="$t('selectionOfRDProcessRoute.search')"
         :loading="searchLoading"
         @search="queryProcessRoute"
       />

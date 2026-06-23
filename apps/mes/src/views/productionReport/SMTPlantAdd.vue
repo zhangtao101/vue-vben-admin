@@ -10,6 +10,8 @@ import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
+import { $t } from '#/locales';
+
 /* eslint-disable perfectionist/sort-imports */
 
 // eslint-disable-next-line n/no-extraneous-import
@@ -54,27 +56,27 @@ import {
  * 显示本日计划与完成情况一览
  */
 const mainColumns: any[] = [
-  { title: '序号', type: 'seq', width: 50 },
-  { field: 'lineName', title: '任务线别', minWidth: 100 },
-  { field: 'processName', title: '报工工序', minWidth: 80 },
-  { field: 'subProductCode', title: '部件编号', minWidth: 80 },
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+  { field: 'lineName', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
+  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
+  { field: 'subProductCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
   {
     field: 'subProductName',
     slots: { default: 'subProductName' },
-    title: '部件名称',
+    title: $t('SMTPlantAdd.partName'),
     minWidth: 200,
   },
   {
     field: 'productPlan',
     slots: { default: 'productPlan' },
-    title: '部件/产品',
+    title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'subPlanCode', title: '部件计划号', minWidth: 100 },
-  { field: 'dayPlanNumber', title: '本日计划数', minWidth: 100 },
-  { field: 'dayFinishNumber', title: '本日完成数', minWidth: 100 },
-  { field: 'updateTime', title: '操作时间', minWidth: 135 },
-  { field: 'updateUser', title: '操作人', minWidth: 80 },
+  { field: 'subPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 100 },
+  { field: 'dayPlanNumber', title: $t('SMTPlantAdd.dayPlanNumber'), minWidth: 100 },
+  { field: 'dayFinishNumber', title: $t('SMTPlantAdd.dayFinishNumber'), minWidth: 100 },
+  { field: 'updateTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
+  { field: 'updateUser', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
 ];
 
 const gridOptions: VxeGridProps<any> = {
@@ -111,42 +113,42 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
  * 读码报工明细表格配置
  */
 const readCodeColumns: any[] = [
-  { title: '序号', type: 'seq', width: 50 },
-  { field: 'taskLine', title: '任务线别', minWidth: 100 },
-  { field: 'processName', title: '报工工序', minWidth: 80 },
-  { field: 'workSheetCode', title: '工单编号', minWidth: 120 },
-  { field: 'partCode', title: '部件编号', minWidth: 80 },
-  { field: 'partName', title: '部件名称', minWidth: 150 },
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+  { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
+  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
+  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 120 },
+  { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
+  { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 150 },
   {
     field: 'partOrProduct',
     slots: { default: 'partOrProduct' },
-    title: '部件/产品',
+    title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: '下发日期', minWidth: 90 },
-  { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: '工单完成数', minWidth: 100 },
+  { field: 'planDateStart', title: $t('SMTPlantAdd.issueDate'), minWidth: 90 },
+  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workOrderPlanNumber'), minWidth: 100 },
+  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workOrderFinishNumber'), minWidth: 100 },
   {
     field: 'isLater',
     slots: { default: 'isLater' },
-    title: '延时',
+    title: $t('SMTPlantAdd.delay'),
     minWidth: 60,
   },
-  { field: 'reportDate', title: '报工日期', minWidth: 90 },
-  { field: 'reportTimeQuantum', title: '报工时段', minWidth: 90 },
-  { field: 'qcCode', title: '二维码', minWidth: 80 },
-  { field: 'reportNumber', title: '报工数', minWidth: 80 },
-  { field: 'partPlanCode', title: '部件计划号', minWidth: 100 },
-  { field: 'partPlanNumber', title: '计划完成数', minWidth: 100 },
-  { field: 'partPlanFinishNumber', title: '计划已完成数', minWidth: 120 },
-  { field: 'productName', title: '产品名称', minWidth: 150 },
-  { field: 'productPlanCode', title: '产品计划号', minWidth: 120 },
-  { field: 'createTime', title: '操作时间', minWidth: 135 },
-  { field: 'createUserName', title: '操作人', minWidth: 80 },
+  { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
+  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeSlot'), minWidth: 90 },
+  { field: 'qcCode', title: $t('SMTPlantAdd.qrCode'), minWidth: 80 },
+  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
+  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 100 },
+  { field: 'partPlanNumber', title: $t('SMTPlantAdd.plannedCompletionNumber'), minWidth: 100 },
+  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.plannedCompletedNumber'), minWidth: 120 },
+  { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 150 },
+  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
+  { field: 'createTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
+  { field: 'createUserName', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
   {
     field: 'dataType',
     slots: { default: 'dataType' },
-    title: '数据来源',
+    title: $t('SMTPlantAdd.dataSource'),
     minWidth: 80,
   },
 ];
@@ -155,42 +157,42 @@ const readCodeColumns: any[] = [
  * 人工报工明细表格配置
  */
 const manualReportColumns: any[] = [
-  { title: '序号', type: 'seq', width: 50 },
-  { field: 'taskLine', title: '任务线别', minWidth: 100 },
-  { field: 'processName', title: '报工工序', minWidth: 80 },
-  { field: 'workSheetCode', title: '工单编号', minWidth: 120 },
-  { field: 'partCode', title: '部件编号', minWidth: 80 },
-  { field: 'partName', title: '部件名称', minWidth: 150 },
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+  { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
+  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
+  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 120 },
+  { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
+  { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 150 },
   {
     field: 'partOrProduct',
     slots: { default: 'partOrProduct' },
-    title: '部件/产品',
+    title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: '下发日期', minWidth: 90 },
-  { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: '工单完成数', minWidth: 100 },
+  { field: 'planDateStart', title: $t('SMTPlantAdd.issueDate'), minWidth: 90 },
+  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workOrderPlanNumber'), minWidth: 100 },
+  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workOrderFinishNumber'), minWidth: 100 },
   {
     field: 'isLater',
     slots: { default: 'isLater' },
-    title: '延时',
+    title: $t('SMTPlantAdd.delay'),
     minWidth: 60,
   },
-  { field: 'reportDate', title: '报工日期', minWidth: 90 },
-  { field: 'reportTimeQuantum', title: '报工时段', minWidth: 90 },
-  { field: 'qcCode', title: '二维码', minWidth: 80 },
-  { field: 'reportNumber', title: '报工数', minWidth: 80 },
-  { field: 'partPlanCode', title: '部件计划号', minWidth: 90 },
-  { field: 'partPlanNumber', title: '计划完成数', minWidth: 90 },
-  { field: 'partPlanFinishNumber', title: '计划已完成数', minWidth: 100 },
-  { field: 'productName', title: '产品名称', minWidth: 150 },
-  { field: 'productPlanCode', title: '产品计划号', minWidth: 120 },
-  { field: 'createTime', title: '操作时间', minWidth: 135 },
-  { field: 'createUserName', title: '操作人', minWidth: 80 },
+  { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
+  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeSlot'), minWidth: 90 },
+  { field: 'qcCode', title: $t('SMTPlantAdd.qrCode'), minWidth: 80 },
+  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
+  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 90 },
+  { field: 'partPlanNumber', title: $t('SMTPlantAdd.plannedCompletionNumber'), minWidth: 90 },
+  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.plannedCompletedNumber'), minWidth: 100 },
+  { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 150 },
+  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
+  { field: 'createTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
+  { field: 'createUserName', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
   {
     field: 'dataType',
     slots: { default: 'dataType' },
-    title: '数据来源',
+    title: $t('SMTPlantAdd.dataSource'),
     minWidth: 80,
   },
 ];
@@ -225,21 +227,21 @@ const [DetailGrid, detailGridApi] = useVbenVxeGrid({
  */
 const workorderColumns: any[] = [
   { type: 'checkbox', width: 55 },
-  { field: 'workSheetCode', title: '工单编号', minWidth: 150 },
-  { field: 'sideNo', title: '面号', minWidth: 150 },
+  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 150 },
+  { field: 'sideNo', title: $t('SMTPlantAdd.sideNo'), minWidth: 150 },
   {
     field: 'subProductName',
-    title: '部件名称',
+    title: $t('SMTPlantAdd.partName'),
     minWidth: 150,
   },
-  { field: 'subPlanCode', title: '部件计划号', minWidth: 150 },
+  { field: 'subPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 150 },
   {
     field: 'isProductPlan',
     slots: { default: 'isProductPlan' },
-    title: '部件/产品',
+    title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: '工单日期', minWidth: 150 },
+  { field: 'planDateStart', title: $t('SMTPlantAdd.workOrderDate'), minWidth: 150 },
 ];
 
 const workorderGridOptions: VxeGridProps<any> = {
@@ -311,8 +313,8 @@ const bgTime = [
 
 // 部件/产品选项
 const productList = [
-  { label: '部件', value: 1 },
-  { label: '产品', value: 2 },
+  { label: $t('SMTPlantAdd.part'), value: 1 },
+  { label: $t('SMTPlantAdd.product'), value: 2 },
 ];
 
 // 查询表单
@@ -365,19 +367,19 @@ let processId = '';
 
 // 表单验证规则
 const rules: any = {
-  reportDate: [{ required: true, message: '此项为必填项', trigger: 'change' }],
-  processCode: [{ required: true, message: '此项为必填项', trigger: 'change' }],
+  reportDate: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
+  processCode: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
   taskLineCode: [
-    { required: true, message: '此项为必填项', trigger: 'change' },
+    { required: true, message: $t('page.common.requiredField'), trigger: 'change' },
   ],
 };
 
 const dialogRules: any = {
-  workSheetCode: [{ required: true, message: '请选择工单', trigger: 'change' }],
+  workSheetCode: [{ required: true, message: $t('SMTPlantAdd.pleaseSelectWorkOrder'), trigger: 'change' }],
   reportTimeQuantum: [
-    { required: true, message: '此项为必填项', trigger: 'change' },
+    { required: true, message: $t('page.common.requiredField'), trigger: 'change' },
   ],
-  number: [{ required: true, message: '此项为必填项', trigger: 'change' }],
+  number: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
 };
 
 // endregion 状态定义
@@ -394,7 +396,7 @@ function getProcessList() {
       planProcess.value = data;
     })
     .catch((error: any) => {
-      message.error(error.message || '获取工序列表失败');
+      message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
     });
 }
 
@@ -416,7 +418,7 @@ function handleProcessChange() {
         taskLineList.value = data;
       })
       .catch((error: any) => {
-        message.error(error.message || '获取产线列表失败');
+        message.error(error.message || $t('SMTPlantAdd.getLineListFailed'));
       });
   }
 }
@@ -450,7 +452,7 @@ function handleExport() {
       window.open(url);
     })
     .catch((error: any) => {
-      message.error(error.message || '导出失败');
+      message.error(error.message || $t('SMTPlantAdd.exportFailed'));
     });
 }
 
@@ -499,7 +501,7 @@ function loadReadCodeData() {
       detailGridApi.grid.reloadData(data.results);
     })
     .catch((error: any) => {
-      message.error(error.message || '加载读码报工数据失败');
+      message.error(error.message || $t('SMTPlantAdd.loadReadCodeDataFailed'));
     });
 }
 
@@ -517,7 +519,7 @@ function loadManualData() {
       detailGridApi.grid.reloadData(data.list);
     })
     .catch((error: any) => {
-      message.error(error.message || '加载人工报工数据失败');
+      message.error(error.message || $t('SMTPlantAdd.loadManualDataFailed'));
     });
 }
 
@@ -530,7 +532,7 @@ function handleExportDetail() {
       window.open(url);
     })
     .catch((error: any) => {
-      message.error(error.message || '导出失败');
+      message.error(error.message || $t('SMTPlantAdd.exportFailed'));
     });
 }
 
@@ -572,7 +574,7 @@ function loadWorkorderList() {
       workorderGridApi.grid.reloadData(data);
     })
     .catch((error: any) => {
-      message.error(error.message || '获取工单列表失败');
+      message.error(error.message || $t('SMTPlantAdd.getWorkorderListFailed'));
     });
 }
 
@@ -628,7 +630,7 @@ function setRowStyle({ row }: any) {
  */
 function handleSubmit() {
   if (!selectedWorkorder.value) {
-    message.warning('请选择工单');
+    message.warning($t('SMTPlantAdd.pleaseSelectWorkOrder'));
     return;
   }
   const tempData = {
@@ -638,12 +640,12 @@ function handleSubmit() {
   };
   createArticle(tempData)
     .then(() => {
-      message.success('保存成功');
+      message.success($t('SMTPlantAdd.saveSuccess'));
       dialogFormVisible.value = false;
       handleSearch();
     })
     .catch((error: any) => {
-      message.error(error.message || '保存失败');
+      message.error(error.message || $t('SMTPlantAdd.saveFailed'));
     });
 }
 
@@ -673,7 +675,7 @@ onMounted(() => {
     <!-- 查询表单 -->
     <Card>
       <Form :model="listQuery" :rules="rules" layout="inline">
-        <FormItem label="报工日期" name="reportDate" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.reportDate')" name="reportDate" class="!my-2">
           <DatePicker
             v-model:value="listQuery.reportDate"
             disabled
@@ -681,10 +683,10 @@ onMounted(() => {
             value-format="YYYY-MM-DD"
           />
         </FormItem>
-        <FormItem label="报工工序" name="processCode" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.reportProcess')" name="processCode" class="!my-2">
           <Select
             v-model:value="listQuery.processCode"
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
             @change="handleProcessChange"
           >
@@ -697,10 +699,10 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="任务线别" name="taskLineCode" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.taskLine')" name="taskLineCode" class="!my-2">
           <Select
             v-model:value="listQuery.taskLineCode"
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
             @change="handleTaskLineChange"
           >
@@ -713,20 +715,20 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="部件名称" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.partName')" class="!my-2">
           <Input
             v-model:value="listQuery.partName"
             allow-clear
-            placeholder="请输入"
+            :placeholder="$t('SMTPlantAdd.pleaseInput')"
             class="!w-48"
             @press-enter="handleSearch"
           />
         </FormItem>
-        <FormItem label="部件/产品" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.partOrProduct')" class="!my-2">
           <Select
             v-model:value="listQuery.partOrProduct"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
           >
             <SelectOption
@@ -746,7 +748,7 @@ onMounted(() => {
               @click="handleSearch"
             >
               <Icon icon="mdi:search" class="mr-1" />
-              查询
+              {{ $t('SMTPlantAdd.query') }}
             </Button>
             <Button
               v-if="exportShow"
@@ -755,7 +757,7 @@ onMounted(() => {
               @click="handleExport"
             >
               <Icon icon="mdi:export" class="mr-1" />
-              导出
+              {{ $t('SMTPlantAdd.export') }}
             </Button>
           </Space>
         </FormItem>
@@ -765,10 +767,10 @@ onMounted(() => {
     <!-- 主表格 -->
     <Card v-show="tableShow" style="margin-top: 16px">
       <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">本日计划与完成情况一览</h3>
+        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.dailyPlanAndCompletionOverview') }}</h3>
         <Button v-if="addShow" type="primary" @click="handleCreate">
           <Icon icon="mdi:plus" class="mr-1" />
-          新增
+          {{ $t('SMTPlantAdd.add') }}
         </Button>
       </div>
       <Grid>
@@ -780,9 +782,9 @@ onMounted(() => {
         <template #productPlan="{ row }">
           <span>{{
             row.productPlan === false
-              ? '部件'
+              ? $t('SMTPlantAdd.part')
               : row.productPlan === true
-                ? '产品'
+                ? $t('SMTPlantAdd.product')
                 : ''
           }}</span>
         </template>
@@ -792,55 +794,55 @@ onMounted(() => {
     <!-- 详情表格 -->
     <Card v-if="detailShow" style="margin-top: 16px">
       <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">报工明细</h3>
+        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.reportDetails') }}</h3>
         <Button v-if="exportShow" type="primary" @click="handleExportDetail">
           <Icon icon="mdi:export" class="mr-1" />
-          导出
+          {{ $t('SMTPlantAdd.export') }}
         </Button>
       </div>
       <Tabs v-model:active-key="activeTab" @change="handleTabChange">
-        <TabPane key="first" tab="读码报工">
+        <TabPane key="first" :tab="$t('SMTPlantAdd.readCodeReport')">
           <DetailGrid>
             <template #partOrProduct="{ row }">
               <span>{{
                 row.partOrProduct === 1
-                  ? '部件'
+                  ? $t('SMTPlantAdd.part')
                   : row.partOrProduct === 2
-                    ? '产品'
+                    ? $t('SMTPlantAdd.product')
                     : ''
               }}</span>
             </template>
             <template #isLater="{ row }">
               <span>{{
-                row.isLater === 2 ? '是' : row.isLater === 1 ? '否' : ''
+                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
               }}</span>
             </template>
             <template #dataType="{ row }">
               <span>{{
-                row.dataType === 1 ? '读码' : row.dataType === 2 ? '冲红' : ''
+                row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
               }}</span>
             </template>
           </DetailGrid>
         </TabPane>
-        <TabPane key="second" tab="人工报工">
+        <TabPane key="second" :tab="$t('SMTPlantAdd.manualReport')">
           <DetailGrid>
             <template #partOrProduct="{ row }">
               <span>{{
                 row.partOrProduct === 1
-                  ? '部件'
+                  ? $t('SMTPlantAdd.part')
                   : row.partOrProduct === 2
-                    ? '产品'
+                    ? $t('SMTPlantAdd.product')
                     : ''
               }}</span>
             </template>
             <template #isLater="{ row }">
               <span>{{
-                row.isLater === 2 ? '是' : row.isLater === 1 ? '否' : ''
+                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
               }}</span>
             </template>
             <template #dataType="{ row }">
               <span>{{
-                row.dataType === 1 ? '读码' : row.dataType === 2 ? '冲红' : ''
+                row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
               }}</span>
             </template>
           </DetailGrid>
@@ -852,44 +854,44 @@ onMounted(() => {
     <Drawer
       v-model:open="dialogFormVisible"
       :mask-closable="false"
-      title="新增报工记录"
+      :title="$t('SMTPlantAdd.addReportRecord')"
       width="90%"
     >
       <Form :model="popData" :rules="dialogRules" layout="vertical">
-        <FormItem label="报工日期" name="reportDate">
+        <FormItem :label="$t('SMTPlantAdd.reportDate')" name="reportDate">
           <Input v-model:value="popData.reportDate" disabled />
         </FormItem>
 
         <div class="grid grid-cols-2 gap-4">
-          <FormItem label="报工工序" name="processName">
+          <FormItem :label="$t('SMTPlantAdd.reportProcess')" name="processName">
             <Input v-model:value="popData.processName" disabled />
           </FormItem>
-          <FormItem label="任务线别" name="lineName">
+          <FormItem :label="$t('SMTPlantAdd.taskLine')" name="lineName">
             <Input v-model:value="popData.lineName" disabled />
           </FormItem>
         </div>
 
-        <Card title="选择工单" style="margin-bottom: 16px">
+        <Card :title="$t('SMTPlantAdd.selectWorkOrder')" style="margin-bottom: 16px">
           <Form layout="inline">
-            <FormItem label="工单编号">
+            <FormItem :label="$t('SMTPlantAdd.workOrderCode')">
               <Input
                 v-model:value="workSheetCode1"
                 allow-clear
-                placeholder="请输入工单编号"
+                :placeholder="$t('SMTPlantAdd.pleaseInputWorkOrderCode')"
                 style="width: 200px"
               />
             </FormItem>
-            <FormItem label="部件计划号">
+            <FormItem :label="$t('SMTPlantAdd.partPlanCode')">
               <Input
                 v-model:value="partPlanCode1"
                 allow-clear
-                placeholder="请输入部件计划号"
+                :placeholder="$t('SMTPlantAdd.pleaseInputPartPlanCode')"
                 style="width: 200px"
               />
             </FormItem>
             <FormItem>
               <Button type="primary" @click="handleSearchWorkorder">
-                查询工单
+                {{ $t('SMTPlantAdd.queryWorkOrder') }}
               </Button>
             </FormItem>
           </Form>
@@ -897,9 +899,9 @@ onMounted(() => {
             <template #isProductPlan="{ row }">
               <span>{{
                 row.isProductPlan === false
-                  ? '部件'
+                  ? $t('SMTPlantAdd.part')
                   : row.isProductPlan === true
-                    ? '产品'
+                    ? $t('SMTPlantAdd.product')
                     : ''
               }}</span>
             </template>
@@ -907,27 +909,27 @@ onMounted(() => {
         </Card>
 
         <div class="grid grid-cols-2 gap-4">
-          <FormItem label="工单计划数">
+          <FormItem :label="$t('SMTPlantAdd.workOrderPlanQuantity')">
             <span>{{ popData.workSheetPlanNumber }}</span>
           </FormItem>
-          <FormItem label="工单完成数">
+          <FormItem :label="$t('SMTPlantAdd.workOrderCompletedQuantity')">
             <span>{{ popData.workSheetFinishNumber }}</span>
           </FormItem>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          <FormItem label="部件计划计划数">
+          <FormItem :label="$t('SMTPlantAdd.partPlanQuantity')">
             <span>{{ popData.subPlanNumber }}</span>
           </FormItem>
-          <FormItem label="部件计划已完成数">
+          <FormItem :label="$t('SMTPlantAdd.partPlanCompletedQuantity')">
             <span>{{ popData.subPlanFinishNumber }}</span>
           </FormItem>
         </div>
 
-        <FormItem label="报工时段" name="reportTimeQuantum">
+        <FormItem :label="$t('SMTPlantAdd.reportTimeSlot')" name="reportTimeQuantum">
           <Select
             v-model:value="popData.reportTimeQuantum"
-            placeholder="请选择"
+            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             style="width: 100%"
           >
             <SelectOption v-for="item in bgTime" :key="item" :value="item">
@@ -936,12 +938,12 @@ onMounted(() => {
           </Select>
         </FormItem>
 
-        <FormItem label="输入数量" name="number">
+        <FormItem :label="$t('SMTPlantAdd.inputQuantity')" name="number">
           <InputNumber
             v-model:value="popData.number"
             :max="999999999999"
             :min="0"
-            placeholder="请输入数量"
+            :placeholder="$t('SMTPlantAdd.pleaseInputQuantity')"
             style="width: 100%"
           />
         </FormItem>
@@ -949,8 +951,8 @@ onMounted(() => {
 
       <template #footer>
         <Space>
-          <Button @click="dialogFormVisible = false">取消</Button>
-          <Button type="primary" @click="handleSubmit">保存</Button>
+          <Button @click="dialogFormVisible = false">{{ $t('SMTPlantAdd.cancel') }}</Button>
+          <Button type="primary" @click="handleSubmit">{{ $t('SMTPlantAdd.save') }}</Button>
         </Space>
       </template>
     </Drawer>

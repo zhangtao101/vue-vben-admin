@@ -17,5 +17,16 @@
   "yes": "Yes",
   "no": "No",
   "effective": "Effective",
-  "invalid": "Invalid"
+  "invalid": "Invalid",
+  "normal": "Normal",
+  "abnormal": "Abnormal",
+  "pending": "Pending",
+  "processing": "Processing",
+  "cancelled": "Cancelled",
+  "locked": "Locked",
+  "unlocked": "Unlocked",
+  "finished": "Finished",
+  "submitted": "Submitted",
+  "approved": "Approved",
+  "rejected": "Rejected"
 }

@@ -44,29 +44,29 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     {
       field: 'workshopName',
-      title: '车间',
+      title: $t('baseInfo.workshop'),
       minWidth: 100,
     },
     {
       field: 'lineName',
-      title: '生产线名称',
+      title: $t('baseInfo.productionLineName'),
       minWidth: 150,
     },
     {
       field: 'processName',
-      title: '计划工序',
+      title: $t('baseInfo.planProcess'),
       minWidth: 120,
     },
     {
       field: 'lineTypeName',
-      title: '生产线类型',
+      title: $t('baseInfo.productionLineType'),
       minWidth: 120,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('baseInfo.action'),
       minWidth: 120,
     },
   ],
@@ -129,12 +129,12 @@ const formData = ref({
 });
 
 const rules = {
-  lineName: [{ required: true, message: '请输入生产线名称', trigger: 'blur' }],
+  lineName: [{ required: true, message: $t('baseInfo.inputProductionLineName'), trigger: 'blur' }],
   lineType: [
-    { required: true, message: '请选择生产线类型', trigger: 'change' },
+    { required: true, message: $t('baseInfo.selectProductionLineType'), trigger: 'change' },
   ],
-  processId: [{ required: true, message: '请选择计划工序', trigger: 'change' }],
-  workshop: [{ required: true, message: '请选择车间', trigger: 'change' }],
+  processId: [{ required: true, message: $t('baseInfo.selectPlanProcess'), trigger: 'change' }],
+  workshop: [{ required: true, message: $t('baseInfo.selectWorkshop'), trigger: 'change' }],
 } as any;
 
 // endregion
@@ -237,14 +237,14 @@ function handleEdit(row: any) {
  */
 function handleDelete(row: any) {
   Modal.confirm({
-    title: '提示',
-    content: '该操作不可撤销，请确认！',
-    okText: '确定',
-    cancelText: '取消',
+    title: $t('baseInfo.confirmTitle'),
+    content: $t('baseInfo.confirmContent'),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
     okType: 'danger',
     onOk() {
       deleteProductLine(row.id).then(() => {
-        message.success('删除成功!');
+        message.success($t('baseInfo.deleteSuccess'));
         gridApi.reload();
       });
     },
@@ -258,13 +258,13 @@ function handleSubmit() {
   formRef.value?.validate().then(() => {
     if (editMode.value) {
       updateProductLine(formData.value).then(() => {
-        message.success('更新成功');
+        message.success($t('baseInfo.updateSuccess'));
         handleCancel();
         gridApi.reload();
       });
     } else {
       createProductLine(formData.value).then(() => {
-        message.success('创建成功');
+        message.success($t('baseInfo.createSuccess'));
         handleCancel();
         gridApi.reload();
       });
@@ -284,11 +284,11 @@ function handleCancel() {
   <Page>
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <FormItem label="车间">
+        <FormItem :label="$t('baseInfo.workshop')">
           <Select
             v-model:value="queryParams.workshop"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('baseInfo.selectPlaceholder')"
             style="width: 200px"
           >
             <SelectOption
@@ -300,7 +300,7 @@ function handleCancel() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="生产线类型">
+        <FormItem :label="$t('baseInfo.productionLineType')">
           <Select
             v-model:value="queryParams.lineType"
             allow-clear
@@ -316,11 +316,11 @@ function handleCancel() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="生产线名称">
+        <FormItem :label="$t('baseInfo.productionLineName')">
           <Input
             v-model:value="queryParams.lineName"
             :max-length="16"
-            placeholder="请输入生产线名称"
+            :placeholder="$t('baseInfo.inputProductionLineName')"
             style="width: 200px"
             @press-enter="handleSearch"
           />
@@ -380,7 +380,7 @@ function handleCancel() {
     <!-- 编辑弹框 -->
     <Modal
       v-model:open="showEditDrawer"
-      :title="editMode ? '编辑' : '新增'"
+      :title="editMode ? $t('baseInfo.edit') : $t('baseInfo.add')"
       :width="600"
       :footer-style="{ textAlign: 'right' }"
     >
@@ -426,7 +426,7 @@ function handleCancel() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="计划工序" name="processId">
+        <FormItem :label="$t('baseInfo.planProcess')" name="processId">
           <Select
             v-model:value="formData.processId"
             allow-clear

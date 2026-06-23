@@ -18,6 +18,7 @@
   "endDate": "End Date",
   "status": "Status",
   "remark": "Remark",
+  "confirmDelete": "Are you sure to delete this maintenance plan?",
   "keywordPlaceholder": "Please enter plan name",
   "bindEquipment": "View Equipment",
   "maintenanceItem": "View Maintenance Items",

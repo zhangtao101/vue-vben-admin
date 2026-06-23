@@ -49,7 +49,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     { field: 'formulaName', title: '配方名称', minWidth: 150 },
     { field: 'processCode', title: '工序编号', minWidth: 150 },
     { field: 'processName', title: '工序名称', minWidth: 150 },
@@ -118,11 +118,11 @@ const showEditDrawer = ref(false);
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  formulaCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  formulaName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  equipCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  processCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  version: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  formulaCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  formulaName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  equipCode: [{ message: $t('page.common.requiredField'), required: false, trigger: 'change' }],
+  processCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  version: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -151,11 +151,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteSteps(row.id).then(() => {
@@ -164,7 +164,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 

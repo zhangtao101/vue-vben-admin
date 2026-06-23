@@ -1,3 +1,26 @@
 {
-  "selectionOfProcessRoute": "工艺路线选择"
+  "selectionOfProcessRoute": "工艺路线选择",
+  "workOrderNumber": "工单号",
+  "workstationCode": "工作站编号",
+  "routeName": "路线名称",
+  "routeCode": "路线编号",
+  "productCode": "产品编号",
+  "productName": "产品名称",
+  "planStartTime": "计划开始时间",
+  "planQuantity": "工单计划数",
+  "completedQuantity": "工单完成数（入库数量）",
+  "estimatedCompletionTime": "预计完成时间",
+  "unit": "单位",
+  "workOrderStatus": "工单状态",
+  "workOrderReportStatus": "工单报工状态",
+  "operation": "操作",
+  "notProduced": "未生产",
+  "inProduction": "生产中",
+  "completedOffline": "完工下线",
+  "pausedOffline": "暂停下线",
+  "notReported": "未报工",
+  "reported": "已报工",
+  "undefinedStatus": "未定义的状态",
+  "enterKeyword": "输入关键字进行查询",
+  "search": "查询"
 }

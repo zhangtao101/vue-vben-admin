@@ -216,10 +216,10 @@ let electricityRateAnalysisChart: any;
  * 注意：当前为模拟数据，实际使用时需要替换为真实的业务数据
  */
 const electricityRateAnalysisChartData = ref<any>([
-  { item: '尖电费', count: 40, percent: 0.4 }, // 尖时段电费占40%
-  { item: '峰电费', count: 21, percent: 0.21 }, // 峰时段电费占21%
-  { item: '平电费', count: 17, percent: 0.17 }, // 平时段电费占17%
-  { item: '谷电费', count: 13, percent: 0.13 }, // 谷时段电费占13%
+          { item: $t('electricityConsumptionData.spikeFee'), count: 40, percent: 0.4 }, // 尖时段电费占40%
+          { item: $t('electricityConsumptionData.peakFee'), count: 21, percent: 0.21 }, // 峰时段电费占21%
+          { item: $t('electricityConsumptionData.flatFee'), count: 17, percent: 0.17 }, // 平时段电费占17%
+          { item: $t('electricityConsumptionData.valleyFee'), count: 13, percent: 0.13 }, // 谷时段电费占13%
 ]);
 
 /**
@@ -289,7 +289,7 @@ function createAnAnalyticalEnergyShareChart() {
         {
           type: 'text', // 中心文本
           style: {
-            text: '各时段占比', // 中心标题
+            text: $t('electricityConsumptionData.ratioOfPeriods'), // 中心标题
             x: '50%', // 水平居中
             y: '50%', // 垂直居中
             fontSize: 34, // 字体大小
@@ -471,11 +471,11 @@ function createAChartOfElectricityUsage() {
       x: {
         labelSpacing: 4, // X轴标签间距
         labelTransform: 'rotate(90)', // X轴标签90度旋转
-        title: '时间', // X轴标题
+        title: $t('electricityConsumptionData.timeTitle'), // X轴标题
       },
       y: {
         labelFormatter: '~s', // Y轴数值格式化（千分位）
-        title: '电费(元)', // Y轴标题
+        title: $t('electricityConsumptionData.electricChargeYuan'), // Y轴标题
       },
     },
     tooltip: {
@@ -502,14 +502,14 @@ function createAChartOfElectricityUsage() {
  * 定义电费数据表格的显示列信息
  */
 const columns: any = [
-  { title: '序号', type: 'seq', width: 50 }, // 自动生成序号列
-  { field: 'worksheetCode1', title: '字段A', minWidth: 200 }, // 示例字段A
-  { field: 'worksheetCode2', title: '字段B', minWidth: 200 }, // 示例字段B
-  { field: 'worksheetCode3', title: '字段C', minWidth: 200 }, // 示例字段C
-  { field: 'worksheetCode4', title: '字段D', minWidth: 200 }, // 示例字段D
-  { field: 'worksheetCode5', title: '字段E', minWidth: 200 }, // 示例字段E
-  { field: 'worksheetCode6', title: '字段F', minWidth: 200 }, // 示例字段F
-  { field: 'worksheetCode7', title: '字段G', minWidth: 200 }, // 示例字段G
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动生成序号列
+  { field: 'worksheetCode1', title: $t('electricityConsumptionData.fieldA'), minWidth: 200 }, // 示例字段A
+  { field: 'worksheetCode2', title: $t('electricityConsumptionData.fieldB'), minWidth: 200 }, // 示例字段B
+  { field: 'worksheetCode3', title: $t('electricityConsumptionData.fieldC'), minWidth: 200 }, // 示例字段C
+  { field: 'worksheetCode4', title: $t('electricityConsumptionData.fieldD'), minWidth: 200 }, // 示例字段D
+  { field: 'worksheetCode5', title: $t('electricityConsumptionData.fieldE'), minWidth: 200 }, // 示例字段E
+  { field: 'worksheetCode6', title: $t('electricityConsumptionData.fieldF'), minWidth: 200 }, // 示例字段F
+  { field: 'worksheetCode7', title: $t('electricityConsumptionData.fieldG'), minWidth: 200 }, // 示例字段G
 ];
 
 /**
@@ -555,23 +555,23 @@ const current = ref(0); // 当前引导步骤（从0开始）
  */
 const steps: TourProps['steps'] = [
   {
-    title: '查询',
-    description: '在这个地方选择相应的查询条件进行查询.',
+    title: $t('electricityConsumptionData.guideQuery'),
+    description: $t('electricityConsumptionData.guideQueryDesc'),
     target: () => ref1.value && ref1.value.$el, // 目标：查询条件表单
   },
   {
-    title: '基本信息显示',
-    description: '在这个地方会显示查询到的用电信息总览.',
+    title: $t('electricityConsumptionData.guideBasicInfo'),
+    description: $t('electricityConsumptionData.guideBasicInfoDesc'),
     target: () => ref2.value && ref2.value.$el, // 目标：电费信息统计卡片
   },
   {
-    title: '显示切换',
-    description: '在这里切换展示数据的形式.',
+    title: $t('electricityConsumptionData.guideDisplaySwitch'),
+    description: $t('electricityConsumptionData.guideDisplaySwitchDesc'),
     target: () => ref3.value && ref3.value.$el, // 目标：图表/表格切换按钮
   },
   {
-    title: '数据展示',
-    description: '在这里展示详细的数据, 以图表或者表格的形式.',
+    title: $t('electricityConsumptionData.guideDataDisplay'),
+    description: $t('electricityConsumptionData.guideDataDisplayDesc'),
     target: () => ref4.value && ref4.value.$el, // 目标：数据展示区域
   },
 ];
@@ -765,11 +765,11 @@ onMounted(() => {
             "
           >
             <!-- 用电优化建议提示 -->
-            <Alert
-              message="提示：避峰用谷，合理调配可以降低总用电费用。"
-              type="warning"
-              show-icon
-            />
+          <Alert
+            :message="$t('electricityConsumptionData.peakSavingTip')"
+            type="warning"
+            show-icon
+          />
             <!-- 环形饼图容器 -->
             <div id="electricityRateAnalysis"></div>
           </Card>

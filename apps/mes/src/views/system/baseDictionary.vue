@@ -54,32 +54,32 @@ const columns = ref<any[]>([
   {
     dataIndex: 'wordName',
     ellipsis: true,
-    title: '字典名称',
+    title: $t('system.baseDictionary.wordName'),
     width: 60,
   },
   {
     dataIndex: 'wordCode',
     ellipsis: true,
-    title: '字典编号',
+    title: $t('system.baseDictionary.wordCode'),
     width: 60,
   },
   {
     dataIndex: 'parName',
     ellipsis: true,
-    title: '父级字典',
+    title: $t('system.baseDictionary.parentDictionary'),
     width: 60,
   },
   {
     dataIndex: 'discription',
     ellipsis: true,
-    title: '描述',
+    title: $t('basic.description'),
     width: 80,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('common.operation'),
     width: 80,
   },
 ]);
@@ -105,20 +105,12 @@ const selectedKey = ref<any>(undefined);
 function delTableRow(row: any) {
   // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
-    cancelText: '取消',
-    // 确认按钮的文本
-    okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
-      message.warning('已取消删除!');
+      message.warning($t('system.baseOrganization.deleteCancelled'));
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
       // 调用删除按钮的操作，传递按钮的编码和类型参数
       deleteDictionary(row.wordCode)
@@ -146,8 +138,7 @@ function delTableRow(row: any) {
         });
     },
 
-    // 确认框的标题文本
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -323,7 +314,7 @@ const editMessage = ref<any>({});
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  parName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  parName: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
   wordCode: [
     {
       required: true,
@@ -331,16 +322,16 @@ const editRules = ref<any>({
       validator: (_rule: Rule, value: string) => {
         const regex = /^[A-Z]+$/;
         if (value === '') {
-          return Promise.reject(new Error('此项为必填项'));
+          return Promise.reject(new Error($t('basic.requiredField')));
         } else if (regex.test(value)) {
           return Promise.resolve();
         } else {
-          return Promise.reject(new Error('该项是大写字母, 请确保格式正确!'));
+          return Promise.reject(new Error($t('system.baseDictionary.uppercaseRequired')));
         }
       },
     },
   ],
-  wordName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  wordName: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**

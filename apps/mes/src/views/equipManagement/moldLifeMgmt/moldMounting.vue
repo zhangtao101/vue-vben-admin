@@ -295,7 +295,7 @@ function resetForm() {
           </Input>
           <Button :loading="moldLoading" @click="queryMoldInfo">
             <Icon icon="mdi:magnify" class="inline-block align-top" />
-            查询
+            {{ $t('common.query') }}
           </Button>
         </div>
         <!-- 模具信息展示 -->
@@ -304,14 +304,10 @@ function resetForm() {
           class="mt-3 p-3 bg-white rounded border border-gray-200"
         >
           <Space>
-            <span class="text-gray-500"
-              >{{ $t('moldMounting.moldName') }}：</span
-            >
+            <span class="text-gray-500">{{ $t('moldMounting.moldName') }}：</span>
             <span class="font-medium">{{ moldInfo.moldName }}</span>
             <Divider type="vertical" />
-            <span class="text-gray-500"
-              >{{ $t('moldMounting.moldStatus') }}：</span
-            >
+            <span class="text-gray-500">{{ $t('moldMounting.moldStatus') }}：</span>
             <span class="font-medium">
               {{ moldInfo.currentStatusName }}
             </span>
@@ -340,7 +336,7 @@ function resetForm() {
           </Input>
           <Button :loading="equipmentLoading" @click="queryEquipmentInfo">
             <Icon icon="mdi:magnify" class="inline-block align-top" />
-            查询
+            {{ $t('common.query') }}
           </Button>
         </div>
         <!-- 设备信息展示 -->
@@ -349,14 +345,10 @@ function resetForm() {
           class="mt-3 p-3 bg-white rounded border border-gray-200"
         >
           <Space>
-            <span class="text-gray-500"
-              >{{ $t('moldMounting.equipmentName') }}：</span
-            >
+            <span class="text-gray-500">{{ $t('moldMounting.equipmentName') }}：</span>
             <span class="font-medium">{{ equipmentInfo.equipName }}</span>
             <Divider type="vertical" />
-            <span class="text-gray-500"
-              >{{ $t('moldMounting.process') }}：</span
-            >
+            <span class="text-gray-500">{{ $t('moldMounting.process') }}：</span>
             <span class="font-medium">{{ equipmentInfo.processName }}</span>
           </Space>
         </div>
@@ -383,7 +375,7 @@ function resetForm() {
           </Input>
           <Button :loading="workOrderLoading" @click="queryWorkOrderInfo">
             <Icon icon="mdi:magnify" class="inline-block align-top" />
-            查询
+            {{ $t('common.query') }}
           </Button>
         </div>
         <!-- 工单信息展示 -->
@@ -392,14 +384,10 @@ function resetForm() {
           class="mt-3 p-3 bg-white rounded border border-gray-200"
         >
           <Space>
-            <span class="text-gray-500"
-              >{{ $t('moldMounting.productCode') }}：</span
-            >
+            <span class="text-gray-500">{{ $t('moldMounting.productCode') }}：</span>
             <span class="font-medium">{{ workOrderInfo.productCode }}</span>
             <Divider type="vertical" />
-            <span class="text-gray-500"
-              >{{ $t('moldMounting.productName') }}：</span
-            >
+            <span class="text-gray-500">{{ $t('moldMounting.productName') }}：</span>
             <span class="font-medium">{{ workOrderInfo.productName }}</span>
           </Space>
         </div>

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -32,83 +32,83 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
     {
       field: '1',
-      title: '窑号',
+      title: $t('productionDaily.KilnNo'),
       minWidth: 200,
       slots: { default: 'kilnNumber' },
     },
     {
-      title: '停机非生产',
+      title: $t('productionDaily.Shutdown_3'),
       children: [
         {
-          title: '大修',
+          title: $t('productionDaily.overhaul'),
           children: [
             {
               field: '2',
-              title: '时间',
+              title: $t('productionDaily.Time_7'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
               field: '2',
-              title: '燃气',
+              title: $t('productionDaily.Gas'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
           ],
         },
         {
-          title: '放假(升降温)',
+          title: $t('productionDaily.holidayTempChange'),
           children: [
             {
               field: '2',
-              title: '时间',
+              title: $t('productionDaily.Time_7'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
               field: '2',
-              title: '燃气',
+              title: $t('productionDaily.Gas'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
           ],
         },
         {
-          title: '不可抗拒(雷电/限电/限气)',
+          title: $t('productionDaily.ForceMajeureLightningPowerLimitGasLimit'),
           children: [
             {
               field: '2',
-              title: '时间',
+              title: $t('productionDaily.Time_7'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
               field: '2',
-              title: '燃气',
+              title: $t('productionDaily.Gas'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
           ],
         },
         {
-          title: '小计',
+          title: $t('productionDaily.subtotal'),
           children: [
             {
               field: '2',
-              title: '时间',
+              title: $t('productionDaily.Time_7'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
               field: '2',
-              title: '燃气',
+              title: $t('productionDaily.Gas'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
@@ -117,40 +117,40 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '空烧时间',
+      title: $t('productionDaily.Time_3'),
       children: [
         {
-          title: '转产',
+          title: $t('productionDaily.Changeover'),
           children: [
             {
-              title: '定额',
+              title: $t('productionDaily.quota'),
               children: [
                 {
                   field: '2',
-                  title: '时间',
+                  title: $t('productionDaily.Time_7'),
                   minWidth: 150,
                   slots: { footer: 'footerData' },
                 },
                 {
                   field: '2',
-                  title: '燃气',
+                  title: $t('productionDaily.Gas'),
                   minWidth: 150,
                   slots: { footer: 'footerData' },
                 },
               ],
             },
             {
-              title: '实际',
+              title: $t('productionDaily.Actual'),
               children: [
                 {
                   field: '2',
-                  title: '时间',
+                  title: $t('productionDaily.Time_7'),
                   minWidth: 150,
                   slots: { footer: 'footerData' },
                 },
                 {
                   field: '2',
-                  title: '燃气',
+                  title: $t('productionDaily.Gas'),
                   minWidth: 150,
                   slots: { footer: 'footerData' },
                 },
@@ -159,178 +159,122 @@ const gridOptions: VxeGridProps<any> = {
           ],
         },
         {
-          title: '新品实验研发n',
+          title: $t('productionDaily.newProductRd'),
           children: [
             {
               field: '2',
-              title: '时间',
+              title: $t('productionDaily.Time_7'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
               field: '2',
-              title: '燃气',
+              title: $t('productionDaily.Gas'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
           ],
         },
         {
-          title: '工艺调整',
+          title: $t('productionDaily.processAdjustment'),
           children: [
             {
               field: '2',
-              title: '时间',
+              title: $t('productionDaily.Time_7'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
               field: '2',
-              title: '燃气',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-          ],
-        },
-        {
-          title: '故障空烧',
-          children: [
-            {
-              title: '粉制',
-              children: [
-                {
-                  field: '2',
-                  title: '时间',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-                {
-                  field: '2',
-                  title: '燃气',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-              ],
-            },
-            {
-              title: '成型',
-              children: [
-                {
-                  field: '2',
-                  title: '时间',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-                {
-                  field: '2',
-                  title: '燃气',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-              ],
-            },
-            {
-              title: '烧干',
-              children: [
-                {
-                  field: '2',
-                  title: '时间',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-                {
-                  field: '2',
-                  title: '燃气',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-              ],
-            },
-            {
-              title: '窑炉',
-              children: [
-                {
-                  field: '2',
-                  title: '时间',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-                {
-                  field: '2',
-                  title: '燃气',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-              ],
-            },
-            {
-              title: '釉线',
-              children: [
-                {
-                  field: '2',
-                  title: '时间',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-                {
-                  field: '2',
-                  title: '燃气',
-                  minWidth: 150,
-                  slots: { footer: 'footerData' },
-                },
-              ],
-            },
-          ],
-        },
-        {
-          title: '模具/粉车维修',
-          children: [
-            {
-              field: '2',
-              title: '时间',
-              minWidth: 150,
-              slots: { footer: 'footerData' },
-            },
-            {
-              field: '2',
-              title: '燃气',
+              title: $t('productionDaily.Gas'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
           ],
         },
         {
-          title: '责任',
+          title: $t('productionDaily.faultEmptyFiring'),
           children: [
             {
-              title: '粉制(混料/断料)',
+              title: $t('productionDaily.powderProcess'),
               children: [
                 {
                   field: '2',
-                  title: '时间',
+                  title: $t('productionDaily.Time_7'),
                   minWidth: 150,
                   slots: { footer: 'footerData' },
                 },
                 {
                   field: '2',
-                  title: '燃气',
+                  title: $t('productionDaily.Gas'),
                   minWidth: 150,
                   slots: { footer: 'footerData' },
                 },
               ],
             },
             {
-              title: '亚光(操作调整)',
+              title: $t('productionDaily.forming'),
               children: [
                 {
                   field: '2',
-                  title: '时间',
+                  title: $t('productionDaily.Time_7'),
                   minWidth: 150,
                   slots: { footer: 'footerData' },
                 },
                 {
                   field: '2',
-                  title: '燃气',
+                  title: $t('productionDaily.Gas'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: $t('productionDaily.dryFiring'),
+              children: [
+                {
+                  field: '2',
+                  title: $t('productionDaily.Time_7'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: $t('productionDaily.Gas'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: $t('productionDaily.Kiln'),
+              children: [
+                {
+                  field: '2',
+                  title: $t('productionDaily.Time_7'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: $t('productionDaily.Gas'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: $t('productionDaily.GlazeLine'),
+              children: [
+                {
+                  field: '2',
+                  title: $t('productionDaily.Time_7'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: $t('productionDaily.Gas'),
                   minWidth: 150,
                   slots: { footer: 'footerData' },
                 },
@@ -339,17 +283,73 @@ const gridOptions: VxeGridProps<any> = {
           ],
         },
         {
-          title: '小计',
+          title: $t('productionDaily.moldPowderCartRepair'),
           children: [
             {
               field: '2',
-              title: '时间',
+              title: $t('productionDaily.Time_7'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
             {
               field: '2',
-              title: '燃气',
+              title: $t('productionDaily.Gas'),
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+          ],
+        },
+        {
+          title: $t('productionDaily.Responsible'),
+          children: [
+            {
+              title: $t('productionDaily.powderProcess_1'),
+              children: [
+                {
+                  field: '2',
+                  title: $t('productionDaily.Time_7'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: $t('productionDaily.Gas'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+            {
+              title: $t('productionDaily.Operation_1'),
+              children: [
+                {
+                  field: '2',
+                  title: $t('productionDaily.Time_7'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+                {
+                  field: '2',
+                  title: $t('productionDaily.Gas'),
+                  minWidth: 150,
+                  slots: { footer: 'footerData' },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          title: $t('productionDaily.subtotal'),
+          children: [
+            {
+              field: '2',
+              title: $t('productionDaily.Time_7'),
+              minWidth: 150,
+              slots: { footer: 'footerData' },
+            },
+            {
+              field: '2',
+              title: $t('productionDaily.Gas'),
               minWidth: 150,
               slots: { footer: 'footerData' },
             },
@@ -358,17 +358,17 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '合计',
+      title: $t('productionDaily.Total'),
       children: [
         {
           field: '2',
-          title: '时间',
+          title: $t('productionDaily.Time_7'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },
         {
           field: '2',
-          title: '燃气',
+          title: $t('productionDaily.Gas'),
           minWidth: 150,
           slots: { footer: 'footerData' },
         },

@@ -1,5 +1,14 @@
 {
   "materialCode": "物料编号",
   "materialName": "物料名称",
-  "productName": "产品名称"
+  "productName": "产品名称",
+  "abnormalCheckCode": "物料投料校验异常编号",
+  "worksheetCode": "工单号",
+  "inputQuantity": "投入量",
+  "standardUpperLimit": "标准用量上限",
+  "generateTime": "生成时间",
+  "remark": "备注",
+  "action": "操作",
+  "confirmPass": "是否确认通过该条数据?",
+  "confirmReject": "是否确认不通过该条数据?"
 }

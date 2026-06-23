@@ -56,20 +56,20 @@ const columns = ref<any[]>([
   {
     dataIndex: 'buttonName',
     ellipsis: true,
-    title: '按钮名称',
+    title: $t('system.sysButton.buttonName'),
     width: 40,
   },
   {
     dataIndex: 'isEnable',
     ellipsis: true,
-    title: '是否启用',
+    title: $t('system.sysButton.isEnable'),
     width: 30,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
     fixed: 'right',
-    title: '操作',
+    title: $t('common.operation'),
     width: 15,
   },
 ]);
@@ -93,20 +93,12 @@ const selectedKey = ref('');
 function delTableRow(row: any) {
   // 弹出确认框，询问用户是否确认删除该行数据
   Modal.confirm({
-    // 取消按钮的文本
-    cancelText: '取消',
-    // 确认按钮的文本
-    okText: '确认',
-    // 确认按钮的类型（此处为危险操作，通常用于删除等不可逆操作）
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
-
-    // 用户取消操作时触发的回调函数
     onCancel() {
-      // 弹出警告提示，提示用户取消了删除操作
-      message.warning('已取消删除!');
+      message.warning($t('system.sysButton.deleteCancelled'));
     },
-
-    // 用户确认操作时触发的回调函数
     onOk() {
       // 调用删除按钮的操作，传递按钮的编码和类型参数
       deleteButton({
@@ -131,8 +123,7 @@ function delTableRow(row: any) {
         });
     },
 
-    // 确认框的标题文本
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -306,9 +297,9 @@ const editMessage = ref<any>({});
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  buttonName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  isEnable: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  url: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  buttonName: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  isEnable: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  url: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -389,7 +380,7 @@ onMounted(() => {
         <Card class="h-[80vh] overflow-y-auto">
           <Input
             v-model:value="queryParams.name"
-            placeholder="请输入关键字"
+            :placeholder="$t('system.sysButton.enterKeyword')"
             style="margin-bottom: 8px"
           />
 

@@ -73,7 +73,7 @@ const gridOptions: VxeGridProps<MaintenanceAlertRecord> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'moldCode',
       title: $t('maintenanceAlert.moldCode'),

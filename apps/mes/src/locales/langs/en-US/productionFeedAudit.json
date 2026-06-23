@@ -1,5 +1,14 @@
 {
   "materialCode": "Material Code",
   "materialName": "Material Name",
-  "productName": "Product Name"
+  "productName": "Product Name",
+  "abnormalCheckCode": "Material Feed Verification Exception No.",
+  "worksheetCode": "Work Order No.",
+  "inputQuantity": "Input Quantity",
+  "standardUpperLimit": "Standard Upper Limit",
+  "generateTime": "Generation Time",
+  "remark": "Remark",
+  "action": "Action",
+  "confirmPass": "Confirm approval?",
+  "confirmReject": "Confirm rejection?"
 }

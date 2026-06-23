@@ -9,5 +9,16 @@
   "equipCode": "设备编号",
   "equipName": "设备名称",
   "formulaCode": "配方编号",
-  "formulaName": "配方名称"
+  "formulaName": "配方名称",
+  "processCode": "工序编号",
+  "processName": "工序名称",
+  "version": "版本号",
+  "userName": "用户名",
+  "associatedPersonnel": "关联人员",
+  "workNumber": "工号",
+  "userDescription": "用户描述",
+  "userDetails": "用户详情",
+  "searchPlaceholder": "输入用户名进行查询",
+  "status": "状态",
+  "editInfo": "信息编辑"
 }

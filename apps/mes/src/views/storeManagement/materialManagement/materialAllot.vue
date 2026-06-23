@@ -271,7 +271,7 @@ function loadWarehouses() {
 }
 
 function handleOpenPrint() {
-  message.warning('打印功能未完成');
+  message.warning($t('basic.printNotReady'));
 }
 
 onMounted(() => {

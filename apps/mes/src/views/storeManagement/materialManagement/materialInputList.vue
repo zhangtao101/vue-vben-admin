@@ -261,7 +261,7 @@ function handlePrint() {
     return;
   }
   // 暂未完成
-  message.warning('打印功能暂未完成');
+  message.warning($t('basic.printNotReady'));
 }
 
 // 导出

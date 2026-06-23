@@ -193,7 +193,7 @@ function resetForm() {
           </Input>
           <Button :loading="equipmentLoading" @click="queryEquipmentInfo">
             <Icon icon="mdi:magnify" class="inline-block align-top" />
-            查询
+            {{ $t('common.query') }}
           </Button>
         </div>
         <!-- 设备信息展示 -->
@@ -202,14 +202,10 @@ function resetForm() {
           class="mt-3 p-3 bg-white rounded border border-gray-200"
         >
           <Space>
-            <span class="text-gray-500"
-              >{{ $t('moldDismounting.equipmentName') }}：</span
-            >
+            <span class="text-gray-500">{{ $t('moldDismounting.equipmentName') }}：</span>
             <span class="font-medium">{{ equipmentInfo.equipName }}</span>
             <Divider type="vertical" />
-            <span class="text-gray-500"
-              >{{ $t('moldDismounting.process') }}：</span
-            >
+            <span class="text-gray-500">{{ $t('moldDismounting.process') }}：</span>
             <span class="font-medium">{{ equipmentInfo.processName }}</span>
           </Space>
         </div>
@@ -234,27 +230,19 @@ function resetForm() {
         >
           <Space direction="vertical" :size="8">
             <Space>
-              <span class="text-gray-500"
-                >{{ $t('moldDismounting.moldCode') }}：</span
-              >
+              <span class="text-gray-500">{{ $t('moldDismounting.moldCode') }}：</span>
               <span class="font-medium">{{ moldCurrentInfo.moldCode }}</span>
               <Divider type="vertical" />
-              <span class="text-gray-500"
-                >{{ $t('moldDismounting.moldName') }}：</span
-              >
+              <span class="text-gray-500">{{ $t('moldDismounting.moldName') }}：</span>
               <span class="font-medium">{{ moldCurrentInfo.moldName }}</span>
             </Space>
             <Space>
-              <span class="text-gray-500"
-                >{{ $t('moldDismounting.workOrderNo') }}：</span
-              >
+              <span class="text-gray-500">{{ $t('moldDismounting.workOrderNo') }}：</span>
               <span class="font-medium">{{
                 moldCurrentInfo.workOrderNo || '-'
               }}</span>
               <Divider type="vertical" />
-              <span class="text-gray-500"
-                >{{ $t('moldDismounting.installTime') }}：</span
-              >
+              <span class="text-gray-500">{{ $t('moldDismounting.installTime') }}：</span>
               <span class="font-medium">{{
                 moldCurrentInfo.installTime || '-'
               }}</span>

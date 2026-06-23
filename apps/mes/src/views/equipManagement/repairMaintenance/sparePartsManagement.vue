@@ -89,7 +89,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 60, title: '序号' },
+    { type: 'seq', width: 60, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'spareCode',
       title: $t('repair.sparePart.spareCode'),
@@ -289,7 +289,7 @@ function handleEdit(row: any) {
 function handleDelete(row: any) {
   Modal.confirm({
     title: $t('repair.sparePart.confirmDelete'),
-    content: `确定要删除备件「${row.spareName}」吗？`,
+    content: $t('repair.sparePart.deleteMessage', { name: row.spareName }),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () => {

@@ -64,7 +64,7 @@ const chartContainerIds = [
 /**
  * 图表标题映射表
  */
-const chartTitles: string[] = ['用电量', '有功功率', '无功功率'];
+const chartTitles: string[] = [$t('electricityConsumptionData.electricityConsumption'), '有功功率', '无功功率'];
 
 /**
  * 图表数据字段映射表
@@ -136,7 +136,7 @@ function renderChart(
         labelFormatter: (d: any) => `${d}`, // Y轴标签格式化
       },
       x: {
-        title: '时间',
+        title: $t('electricityConsumptionData.timeTitle'),
       },
     },
   });
@@ -196,20 +196,20 @@ function queryChartData() {
  * 定义用电量数据表格的显示列信息
  */
 const columns: any = [
-  { title: '序号', type: 'seq', width: 50 }, // 自动生成序号列
+  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动生成序号列
   {
     field: 'equipmentCode',
-    title: '仪表编号', // 电表设备唯一标识
+    title: $t('electricityConsumptionData.equipmentCode'), // 电表设备唯一标识
     minWidth: 150,
   },
   {
     field: 'equipmentName',
-    title: '仪表名称', // 电表设备名称
+    title: $t('electricityConsumptionData.equipmentName'), // 电表设备名称
     minWidth: 150,
   },
   {
     field: 'value',
-    title: '用电量（kWh）', // 总用电量数值
+    title: $t('electricityConsumptionData.electricityConsumptionKwh'), // 总用电量数值
     minWidth: 150,
   },
   /* {
@@ -229,7 +229,7 @@ const columns: any = [
   },*/
   {
     field: 'time',
-    title: '日期', // 数据记录时间
+    title: $t('electricityConsumptionData.date'), // 数据记录时间
     minWidth: 150,
   },
 ];
@@ -238,7 +238,7 @@ const columns: any = [
  * 表格API对象
  * 用于控制表格的重载、刷新等操作
  */
-let gridApi: any;
+let gridApi: any = null;
 
 /**
  * 表格数据查询函数
@@ -444,10 +444,10 @@ const exportForm = ref<any>({
  */
 function showExportConfirm() {
   Modal.confirm({
-    title: '确认导出',
-    content: '确定要导出选中设备的数据吗?',
-    okText: '确认',
-    cancelText: '取消',
+    title: $t('electricityConsumptionData.confirmExport'),
+    content: $t('electricityConsumptionData.confirmExportContent'),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
     onOk: handleExport,
   });
 }
@@ -484,12 +484,12 @@ function handleExport() {
     .then((res: any) => {
       if (res) {
         window.open(res, '_blank');
-        message.success('导出成功!');
+        message.success($t('electricityConsumptionData.exportSuccess'));
         showExportDrawer.value = false;
       }
     })
     .catch((error: any) => {
-      message.error('导出失败: ' + (error.message || '未知错误'));
+      message.error($t('electricityConsumptionData.exportFailure') + (error.message || $t('electricityConsumptionData.unknownError')));
     });
 }
 
@@ -669,25 +669,25 @@ onMounted(() => {
       :footer-style="{ textAlign: 'right' }"
       :width="500"
       placement="right"
-      title="导出数据"
+      :title="$t('electricityConsumptionData.exportData')"
     >
       <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-        <!-- 时间类型 -->
-        <FormItem label="导出类型">
+        <!-- 导出类型 -->
+        <FormItem :label="$t('electricityConsumptionData.exportDataType')">
           <Select
             :value="queryParams.timeType"
             disabled
             :options="[
-              { label: '小时', value: 1 },
-              { label: '日', value: 2 },
-              { label: '月', value: 3 },
-              { label: '年', value: 4 },
+              { label: $t('electricityConsumptionData.hourS'), value: 1 },
+              { label: $t('electricityConsumptionData.day'), value: 2 },
+              { label: $t('electricityConsumptionData.month'), value: 3 },
+              { label: $t('electricityConsumptionData.years'), value: 4 },
             ]"
           />
         </FormItem>
 
         <!-- 时间范围 -->
-        <FormItem label="时间范围">
+        <FormItem :label="$t('electricityConsumptionData.timeRange')">
           <div
             v-if="queryParams.searchTime && queryParams.searchTime.length === 2"
           >
@@ -696,25 +696,25 @@ onMounted(() => {
                 timeFormatList[queryParams.timeType],
               )
             }}
-            至
+            {{ $t('electricityConsumptionData.to') }}
             {{
               queryParams.searchTime[1].format(
                 timeFormatList[queryParams.timeType],
               )
             }}
           </div>
-          <div v-else>未设置时间范围</div>
+          <div v-else>{{ $t('electricityConsumptionData.noTimeRangeSet') }}</div>
         </FormItem>
 
         <!-- 设备选择 -->
-        <FormItem label="选择设备">
+        <FormItem :label="$t('electricityConsumptionData.selectDevice')">
           <div class="mb-2">
             <Checkbox
               v-model:checked="isAllChecked"
               :indeterminate="isIndeterminate"
               @change="checkAllChange"
             >
-              全选
+              {{ $t('electricityConsumptionData.selectAll') }}
             </Checkbox>
           </div>
           <Checkbox.Group
@@ -736,8 +736,12 @@ onMounted(() => {
 
       <template #footer>
         <div class="text-right">
-          <Button @click="showExportDrawer = false" class="mr-2"> 取消 </Button>
-          <Button type="primary" @click="showExportConfirm"> 确认导出 </Button>
+          <Button @click="showExportDrawer = false" class="mr-2">
+            {{ $t('electricityConsumptionData.cancel') }}
+          </Button>
+          <Button type="primary" @click="showExportConfirm">
+            {{ $t('electricityConsumptionData.confirmExportBtn') }}
+          </Button>
         </div>
       </template>
     </Drawer>

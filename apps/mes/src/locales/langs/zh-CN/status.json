@@ -17,5 +17,16 @@
   "yes": "是",
   "no": "否",
   "effective": "有效",
-  "invalid": "无效"
+  "invalid": "无效",
+  "normal": "正常",
+  "abnormal": "异常",
+  "pending": "待处理",
+  "processing": "处理中",
+  "cancelled": "已取消",
+  "locked": "已锁定",
+  "unlocked": "未锁定",
+  "finished": "已完成",
+  "submitted": "已提交",
+  "approved": "已审核",
+  "rejected": "已驳回"
 }

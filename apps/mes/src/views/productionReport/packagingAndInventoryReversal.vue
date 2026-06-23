@@ -33,39 +33,39 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 190 },
-    { field: 'workstationCode', title: '工作站编号', minWidth: 150 },
-    { field: 'productCode', title: '产品编号', minWidth: 150 },
-    { field: 'productName', title: '产品名称', minWidth: 150 },
-    { field: 'planDateStart', title: '计划开始时间', minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 150 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'worksheetCode', title: $t('packagingAndInventoryReversal.worksheetCode'), minWidth: 190 },
+    { field: 'workstationCode', title: $t('packagingAndInventoryReversal.workstationCode'), minWidth: 150 },
+    { field: 'productCode', title: $t('packagingAndInventoryReversal.productCode'), minWidth: 150 },
+    { field: 'productName', title: $t('packagingAndInventoryReversal.productName'), minWidth: 150 },
+    { field: 'planDateStart', title: $t('packagingAndInventoryReversal.planStartTime'), minWidth: 150 },
+    { field: 'workSheetPlanNumber', title: $t('packagingAndInventoryReversal.planNumber'), minWidth: 150 },
     {
       field: 'workSheetFinishNumber',
-      title: '工单完成数（入库数量）',
+      title: $t('packagingAndInventoryReversal.completedQuantity'),
       minWidth: 180,
     },
-    { field: 'planDateEnd', title: '预计完成时间', minWidth: 150 },
-    { field: 'unit', title: '单位', minWidth: 150 },
+    { field: 'planDateEnd', title: $t('packagingAndInventoryReversal.estimatedCompletionTime'), minWidth: 150 },
+    { field: 'unit', title: $t('packagingAndInventoryReversal.unit'), minWidth: 150 },
     {
       field: 'state',
       fixed: 'right',
       slots: { default: 'workOrderStatus' },
-      title: '工单状态',
+      title: $t('packagingAndInventoryReversal.workOrderStatus'),
       minWidth: 150,
     },
     {
       field: 'reportState',
       fixed: 'right',
       slots: { default: 'reportTheWorkStatus' },
-      title: '工单报工状态',
+      title: $t('packagingAndInventoryReversal.reportStatus'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('packagingAndInventoryReversal.action'),
       minWidth: 120,
     },
   ],
@@ -108,19 +108,19 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getStatusText(state: number) {
   switch (state) {
     case -1: {
-      return '未生产';
+      return $t('packagingAndInventoryReversal.notProduced');
     }
     case 1: {
-      return '生产中';
+      return $t('packagingAndInventoryReversal.inProduction');
     }
     case 2: {
-      return '完工下线';
+      return $t('packagingAndInventoryReversal.productionCompleted');
     }
     case 3: {
-      return '暂停下线';
+      return $t('packagingAndInventoryReversal.productionPaused');
     }
     default: {
-      return '未定义的状态';
+      return $t('packagingAndInventoryReversal.undefinedStatus');
     }
   }
 }
@@ -131,13 +131,13 @@ function getStatusText(state: number) {
 function getReportStateText(state: number) {
   switch (state) {
     case 1: {
-      return '未报工';
+      return $t('packagingAndInventoryReversal.notReported');
     }
     case 2: {
-      return '已报工';
+      return $t('packagingAndInventoryReversal.reported');
     }
     default: {
-      return '未定义的状态';
+      return $t('packagingAndInventoryReversal.undefinedStatus');
     }
   }
 }
@@ -189,19 +189,19 @@ function queryType() {
  */
 const statusTypes = ref([
   {
-    label: '未生产',
+    label: $t('packagingAndInventoryReversal.notProduced'),
     value: -1,
   },
   {
-    label: '生产中',
+    label: $t('packagingAndInventoryReversal.inProduction'),
     value: 1,
   },
   {
-    label: '完工下线',
+    label: $t('packagingAndInventoryReversal.productionCompleted'),
     value: 2,
   },
   {
-    label: '暂停下线',
+    label: $t('packagingAndInventoryReversal.productionPaused'),
     value: 3,
   },
 ]);
@@ -210,11 +210,11 @@ const statusTypes = ref([
  */
 const reportStatusTypes = ref([
   {
-    label: '未报工',
+    label: $t('packagingAndInventoryReversal.notReported'),
     value: 1,
   },
   {
-    label: '已报工',
+    label: $t('packagingAndInventoryReversal.reported'),
     value: 2,
   },
 ]);

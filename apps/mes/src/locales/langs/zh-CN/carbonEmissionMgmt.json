@@ -1,0 +1,14 @@
+{
+  "enterpriseElectricityCarbon": "企业净购入电力隐含碳排放",
+  "fossilFuelCarbon": "化石燃料燃烧碳排放",
+  "time": "时间",
+  "currentEmissionValue": "当期排放值",
+  "previousEmissionValue": "上期排放值",
+  "lastYear": "去年",
+  "thisYear": "今年",
+  "itemName": "分项名称",
+  "itemEnergyComparison": "分项用能对比",
+  "itemEnergyRatio": "分项用能占比（近30天）",
+  "itemEnergyYearOnYear": "分项用能同比分析",
+  "itemEnergyTrend": "分项用能趋势（近30天）"
+}

@@ -5,7 +5,8 @@
     "storeType": "Store Type",
     "storeLocation": "Store Location",
     "storeCapacity": "Store Capacity",
-    "storeRemark": "Remark"
+    "storeRemark": "Remark",
+    "isUse": "Is Enabled"
   },
   "physicalStore": {
     "status": "Status",
@@ -19,7 +20,9 @@
   "storeLocation": {
     "wareLocationCode": "Ware Location Code",
     "wareLocationName": "Ware Location Name",
-    "physicalWareArea": "Physical Ware Area"
+    "physicalWareArea": "Physical Ware Area",
+    "templateParseFailed": "Template parsing failed",
+    "locationPrint": "Location Print"
   },
   "ioBillManagement": {
     "ioBillCode": "IO Bill Code",
@@ -34,7 +37,31 @@
     "number": "Quantity",
     "materialFeatureId": "Material Feature ID",
     "shifts": "Shifts",
-    "batch": "Batch Number"
+    "batch": "Batch Number",
+    "formCode": "Form Code",
+    "operateDate": "Operate Date",
+    "operatorName": "Creator",
+    "enterOutName": "Bill Type Desc",
+    "outTypeName": "Op Type Desc",
+    "formStateName": "Form Status",
+    "auditStateName": "Audit Status",
+    "auditUser": "Auditor",
+    "auditTime": "Audit Time",
+    "inboundOrder": "Inbound Order",
+    "outboundOrder": "Outbound Order",
+    "normalInbound": "Normal Inbound",
+    "returnToStock": "Return to Stock",
+    "normalOutbound": "Normal Outbound",
+    "returnGoods": "Return Goods",
+    "basicInfo": "Basic Info",
+    "infoEdit": "Info Edit",
+    "featureSelection": "Feature Selection",
+    "all": "All",
+    "inbound": "Inbound",
+    "outbound": "Outbound",
+    "noMaterialFound": "No material found",
+    "auditConfirmPass": "Confirm to pass this record?",
+    "auditConfirmNoPass": "Confirm to reject this record?"
   },
   "inventoryManagement": {
     "materialNumber": "Material Number",
@@ -44,7 +71,20 @@
     "warehouseType": "Warehouse Type",
     "logicalRepositories": "Logical Repositories",
     "physicalWarehouse": "Physical Warehouse",
-    "number": "Document Number"
+    "number": "Document Number",
+    "qualityTest": "Quality Test",
+    "contract": "Contract",
+    "semiFinished": "Semi Finished",
+    "zeroStock": "Zero Stock",
+    "materialType": "Material Type",
+    "materialDrawingCode": "Material Drawing Code",
+    "stockQuality": "Stock Quantity",
+    "minPackNumber": "Min Pack Number",
+    "safeLevel": "Safety Level",
+    "storageCode": "Storage Code",
+    "wareHouse": "Warehouse",
+    "wareArea": "Ware Area",
+    "wareLocation": "Ware Location"
   },
   "batchLock": {
     "batch": "Batch",
@@ -54,7 +94,12 @@
     "partNumber": "Part Number",
     "lock": "Lock",
     "unlock": "Unlock",
-    "tag": "Tag"
+    "tag": "Tag",
+    "packingCode": "Packing Code",
+    "storageLocation": "Storage Location",
+    "lockTypeName": "Lock Status",
+    "confirmOperation": "Are you sure to operate!",
+    "pleaseSelectData": "Please select data first!"
   },
   "labelPrint": {
     "labelPrint": "Label Print",
@@ -156,7 +201,8 @@
     "outboundOrder": "Outbound Order",
     "transferOrder": "Transfer Order",
     "typeName": "Type Name",
-    "workOrderCode": "Work Order Code"
+    "workOrderCode": "Work Order Code",
+    "templateFileName": "MaterialImportTemplate.xlsx"
   },
   "inspectionSlip": {
     "formCode": "Form Code",
@@ -415,6 +461,11 @@
     "selectPrintRows": "Please select rows to print",
     "sameTransferFormOnly": "Please select rows of the same transfer form only"
   },
+  "lineSideWarehouseAllocation": {
+    "templateParseFailed": "Template parsing failed",
+    "unitPiece": "Piece",
+    "dateFormat": "MM/DD/YYYY"
+  },
   "materialInventory": {
     "formCode": "Inventory Form No.",
     "inventoryDate": "Inventory Date",
@@ -437,6 +488,14 @@
     "toProfitLoss": "To Profit/Loss",
     "selectData": "Please select data",
     "selectOneData": "Please select one row",
-    "todoFeature": "This feature is being migrated"
+    "todoFeature": "This feature is being migrated",
+    "alreadyConvertedToProfitLoss": "This inventory has been converted to profit/loss, cannot edit",
+    "confirmDeleteContent": "Are you sure to delete?",
+    "deleteSuccess": "Delete successful",
+    "operationSuccess": "Operation successful",
+    "operationFailed": "Operation failed",
+    "confirmIssue": "Confirm to issue!",
+    "confirmProfitLoss": "Confirm to convert to profit/loss!",
+    "confirmUnIssue": "Confirm to cancel issue!"
   }
 }

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -40,74 +40,74 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
     {
       field: 'worksheetCode',
-      title: '工单号',
+      title: $t('productionDaily.WorkOrder_1'),
       minWidth: 200,
     },
     {
       field: 'productCode',
-      title: '产品编号',
+      title: $t('productionDaily.CodeProduct'),
       minWidth: 150,
     },
     {
       field: 'productName',
-      title: '产品名称',
+      title: $t('productionDaily.NameProduct'),
       minWidth: 150,
     },
     {
       field: 'batchCode',
-      title: '生产批号',
+      title: $t('productionDaily.productionBatchNo'),
       minWidth: 150,
     },
     {
       field: 'inNumber',
-      title: '装载量 M²',
+      title: $t('productionDaily.LoadM2'),
       minWidth: 150,
     },
     {
       field: 'outNumber',
-      title: '出窑量 M²',
+      title: $t('productionDaily.M2_3'),
       minWidth: 150,
     },
     {
       field: 'perUseNumber',
-      title: '理论总单耗 KG/M²',
+      title: $t('productionDaily.M2KG_1'),
       minWidth: 150,
     },
     {
       field: 'inTotalUseNumber',
-      title: '理论装载总用量 KG',
+      title: $t('productionDaily.LoadKGUsage'),
       minWidth: 150,
     },
     {
       field: 'outTotalUseNumber',
-      title: '理论出窑总用量 KG',
+      title: $t('productionDaily.KGUsage'),
       minWidth: 150,
     },
     {
       field: 'totalUseNumber',
-      title: '实际总用量 KG',
+      title: $t('productionDaily.ActualKGUsage_1'),
       minWidth: 150,
     },
     {
       field: 'wasteInRate',
-      title: '实际损耗率（装载量）',
+      title: $t('productionDaily.LossActualLoadRate'),
       minWidth: 150,
     },
     {
       field: 'wasteOutRate',
-      title: '实际损耗率（出窑量）',
+      title: $t('productionDaily.LossActualRate'),
       minWidth: 150,
     },
     {
       field: 'action',
-      title: '操作',
+      title: $t('productionDaily.Operation'),
       minWidth: 150,
       fixed: 'right',
       slots: {
@@ -200,37 +200,37 @@ const details = ref<any>({});
 const showDrawer = ref(false);
 const columns = [
   {
-    title: '物料编号',
+    title: $t('productionDaily.CodeMaterial'),
     dataIndex: 'materialCode',
     key: 'materialCode',
   },
   {
-    title: '物料名称',
+    title: $t('productionDaily.NameMaterial'),
     dataIndex: 'materialName',
     key: 'materialName',
   },
   {
-    title: '配方编号',
+    title: $t('productionDaily.CodeFormula'),
     dataIndex: 'productCode',
     key: 'productCode',
   },
   {
-    title: '理论单耗(KG/M2)',
+    title: $t('productionDaily.M2KG'),
     dataIndex: 'perUseNumber',
     key: 'perUseNumber',
   },
   {
-    title: '理论用量(KG)',
+    title: $t('productionDaily.KGUsage_1'),
     dataIndex: 'standardUseNumber',
     key: 'standardUseNumber',
   },
   {
-    title: '实际用量(KG)',
+    title: $t('productionDaily.ActualKGUsage'),
     dataIndex: 'useNumber',
     key: 'useNumber',
   },
   {
-    title: '实际损耗',
+    title: $t('productionDaily.LossActual'),
     dataIndex: 'wasteRate',
     key: 'wasteRate',
   },
@@ -245,7 +245,7 @@ function showDetails(row: any) {
     details.value = [...row.mateiralDtos];
     showDrawer.value = true;
   } else {
-    message.warning('暂无详情');
+    message.warning($t('productionDaily.noDetails'));
   }
 }
 

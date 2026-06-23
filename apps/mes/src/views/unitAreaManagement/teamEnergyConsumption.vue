@@ -49,47 +49,47 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'classNumber',
-      title: '班组编号',
+      title: $t('energyConsumption.energyConsumptionAnalysis.teamNumber'),
       minWidth: 150,
     },
     {
       field: 'className',
-      title: '班组名称',
+      title: $t('energyConsumption.energyConsumptionAnalysis.teamName'),
       minWidth: 150,
     },
     {
       field: 'productionLine',
-      title: '所属产线',
+      title: $t('energyConsumption.energyConsumptionAnalysis.productionLine'),
       minWidth: 150,
     },
     {
       field: 'systemName',
-      title: '用能单元分区',
+      title: $t('unitAreaManagement.energyUnitPartition'),
       minWidth: 150,
     },
     {
       field: 'startTime',
-      title: '开始时间',
+      title: $t('unitAreaManagement.startTime'),
       minWidth: 150,
     },
     {
       field: 'endTime',
-      title: '结束时间',
+      title: $t('unitAreaManagement.endTime'),
       minWidth: 150,
     },
     {
       field: 'remark',
-      title: '备注',
+      title: $t('unitAreaManagement.remark'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       width: 220,
     },
   ],
@@ -140,7 +140,7 @@ const editForm = ref();
 const editRules = ref<any>({
   classNumber: [
     {
-      message: '此项为必填项',
+      message: $t('page.common.requiredField'),
       required: true,
       trigger: 'change',
     },
@@ -154,7 +154,7 @@ const editRules = ref<any>({
     },
   ],
   className: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
     {
       trigger: 'change',
       validator: (_rule: any, value: any) => {
@@ -164,7 +164,7 @@ const editRules = ref<any>({
       },
     },
   ],
-  time: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  time: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 /**
  * 班组编号防抖
@@ -178,7 +178,7 @@ const checkClassNumberShake = debounce(
       if (res) {
         resolve();
       } else {
-        reject(new Error('该班组编号已存在'));
+        reject(new Error($t('unitAreaManagement.classNumberExists')));
       }
     });
   },
@@ -196,7 +196,7 @@ const checkClassNameShake = debounce(
       if (res) {
         resolve();
       } else {
-        reject(new Error('该班组名称已存在'));
+        reject(new Error($t('unitAreaManagement.classNameExists')));
       }
     });
   },
@@ -223,11 +223,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       deleteClassController({
@@ -238,7 +238,7 @@ function delRow(row: any) {
         gridApi.query();
       });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -453,7 +453,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('unitAreaManagement.editInfo')"
     >
       <Form
         ref="editForm"

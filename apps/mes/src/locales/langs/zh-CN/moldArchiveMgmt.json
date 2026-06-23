@@ -3,6 +3,7 @@
   "keyword": "关键词",
   "keywordPlaceholder": "请输入模具编码或名称搜索",
   "status": "状态",
+  "statusPlaceholder": "请选择状态",
   "statusActive": "启用",
   "statusDisabled": "停用",
   "moldCode": "模具编码",

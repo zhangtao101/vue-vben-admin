@@ -62,7 +62,7 @@ const printStatusOptions = [
 
 // 表格列配置
 const gridColumns: any[] = [
-  { type: 'seq', title: '序号', width: 60 },
+  { type: 'seq', title: $t('basic.laborHourEvaluation.sequence'), width: 60 },
   { type: 'checkbox', width: 55 },
   {
     field: 'isPrint',

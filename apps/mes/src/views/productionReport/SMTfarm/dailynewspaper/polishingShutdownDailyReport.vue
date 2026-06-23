@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -31,206 +31,206 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
     {
       field: 'type',
-      title: '类型',
+      title: $t('productionDaily.Type'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'materialName',
-      title: '产品名称',
+      title: $t('productionDaily.NameProduct'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'productCode',
-      title: '产品编码',
+      title: $t('productionDaily.CodeProduct_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'lineName',
-      title: '线号',
+      title: $t('productionDaily.LineNo'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'mbnumber',
-      title: '磨边产量',
+      title: $t('productionDaily.Output_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'pgnumber',
-      title: '抛光产量',
+      title: $t('productionDaily.OutputPolish'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopTime',
-      title: '停机时间合计(h)',
+      title: $t('productionDaily.StopTimeTotal'),
       minWidth: 200,
     },
     {
-      title: '客定品新品',
+      title: $t('productionDaily.customNewProduct'),
       children: [
         {
           field: 'KDPXPDY',
-          title: '对色打样',
+          title: $t('productionDaily.colorMatchingSample'),
           minWidth: 150,
         },
         {
           field: 'KDPXPDYNH',
-          title: '对色打样能耗',
+          title: $t('productionDaily.Energy_2'),
           minWidth: 150,
         },
       ],
     },
     {
-      title: '产前对样',
+      title: $t('productionDaily.preProductionSampleCheck'),
       children: [
         {
           field: 'CQDY',
-          title: '产前对样',
+          title: $t('productionDaily.preProductionSampleCheck'),
           minWidth: 150,
         },
         {
           field: 'CQDYNH',
-          title: '产前对样能耗',
+          title: $t('productionDaily.Energy'),
           minWidth: 150,
         },
       ],
     },
     {
-      title: '工艺停机',
+      title: $t('productionDaily.Shutdown'),
       children: [
         {
           field: 'gytcdb',
-          title: '打包',
+          title: $t('productionDaily.Pkg'),
           minWidth: 150,
         },
         {
           field: 'gytcpg',
-          title: '抛光',
+          title: $t('productionDaily.Polish'),
           minWidth: 150,
         },
         {
           field: 'gytcsc',
-          title: '窑炉',
+          title: $t('productionDaily.Kiln'),
           minWidth: 150,
         },
         {
           field: 'gYTCSY',
-          title: '施釉',
+          title: $t('productionDaily.Glaze_1'),
           minWidth: 150,
         },
         {
           field: 'gytcsy',
-          title: '卧干',
+          title: $t('productionDaily.horizontalDrying'),
           minWidth: 150,
         },
         {
           field: 'gytccx',
-          title: '成型',
+          title: $t('productionDaily.forming'),
           minWidth: 150,
         },
         {
           field: 'gytcyl',
-          title: '原料',
+          title: $t('productionDaily.RawMaterial'),
           minWidth: 150,
         },
       ],
     },
     {
-      title: '生产停机',
+      title: $t('productionDaily.Shutdown_2'),
       children: [
         {
           field: 'sctcdb',
-          title: '打包',
+          title: $t('productionDaily.Pkg'),
           minWidth: 150,
         },
         {
           field: 'sctcpg',
-          title: '抛光',
+          title: $t('productionDaily.Polish'),
           minWidth: 150,
         },
         {
           field: 'sctcsc',
-          title: '窑炉',
+          title: $t('productionDaily.Kiln'),
           minWidth: 150,
         },
         {
           field: 'sctcsy',
-          title: '施釉',
+          title: $t('productionDaily.Glaze_1'),
           minWidth: 150,
         },
         {
           field: 'sctcwg',
-          title: '卧干',
+          title: $t('productionDaily.horizontalDrying'),
           minWidth: 150,
         },
         {
           field: 'sctcyl',
-          title: '原料',
+          title: $t('productionDaily.RawMaterial'),
           minWidth: 150,
         },
         {
           field: 'sctccx',
-          title: '成型',
+          title: $t('productionDaily.forming'),
           minWidth: 150,
         },
       ],
     },
     {
-      title: '设备故障',
+      title: $t('productionDaily.Equipment'),
       children: [
         {
           field: 'sbgzdb',
-          title: '打包',
+          title: $t('productionDaily.Pkg'),
           minWidth: 150,
         },
         {
           field: 'sbgzpg',
-          title: '抛光',
+          title: $t('productionDaily.Polish'),
           minWidth: 150,
         },
         {
           field: 'sbgzyl',
-          title: '窑炉',
+          title: $t('productionDaily.Kiln'),
           minWidth: 150,
         },
         {
           field: 'sbgzyx',
-          title: '施釉',
+          title: $t('productionDaily.Glaze_1'),
           minWidth: 150,
         },
         {
           field: 'sbgzsg',
-          title: '卧干',
+          title: $t('productionDaily.horizontalDrying'),
           minWidth: 150,
         },
         {
           field: 'sbgzfz',
-          title: '原料',
+          title: $t('productionDaily.RawMaterial'),
           minWidth: 150,
         },
         {
           field: 'sbgzcx',
-          title: '成型',
+          title: $t('productionDaily.forming'),
           minWidth: 150,
         },
       ],
     },
-    { field: 'sczc', title: '转产', minWidth: 200 },
-    { field: 'cnxz', title: '产能限制', minWidth: 200 },
-    { field: 'zrzh', title: '自然灾害', minWidth: 200 },
-    { field: 'sbqx', title: '设备清洗', minWidth: 200 },
+    { field: 'sczc', title: $t('productionDaily.Changeover'), minWidth: 200 },
+    { field: 'cnxz', title: $t('productionDaily.CapacityLimit'), minWidth: 200 },
+    { field: 'zrzh', title: $t('productionDaily.NaturalDisaster'), minWidth: 200 },
+    { field: 'sbqx', title: $t('productionDaily.Equipment_1'), minWidth: 200 },
   ],
   footerData: [{}, {}],
   height: 500,
@@ -273,13 +273,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

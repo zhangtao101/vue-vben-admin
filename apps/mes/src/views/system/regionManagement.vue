@@ -49,19 +49,19 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'depart', title: '部门', minWidth: 150 },
-    { field: 'areaCode', title: '区域编号', minWidth: 150 },
-    { field: 'areaName', title: '区域名称', minWidth: 150 },
-    { field: 'areaSize', title: '区域大小', minWidth: 150 },
-    { field: 'areaManger', title: '区域负责人', minWidth: 150 },
-    { field: 'createUser', title: '区域创建人', minWidth: 150 },
-    { field: 'createTime', title: '创建时间', minWidth: 150 },
+    { title: $t('basic.serialNumber'), type: 'seq', width: 50 },
+    { field: 'depart', title: $t('system.regionManagement.department'), minWidth: 150 },
+    { field: 'areaCode', title: $t('system.regionManagement.regionalCode'), minWidth: 150 },
+    { field: 'areaName', title: $t('system.regionManagement.regionalName'), minWidth: 150 },
+    { field: 'areaSize', title: $t('system.regionManagement.regionalSize'), minWidth: 150 },
+    { field: 'areaManger', title: $t('system.regionManagement.regionalManager'), minWidth: 150 },
+    { field: 'createUser', title: $t('system.regionManagement.areaCreator'), minWidth: 150 },
+    { field: 'createTime', title: $t('basic.createTime'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       width: 220,
     },
   ],
@@ -111,10 +111,10 @@ const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
   perName_workNumber: [
-    { message: '此项为必填项', required: false, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: false, trigger: 'change' },
   ],
-  areaCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  areaName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  areaCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  areaName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -149,11 +149,11 @@ function editRow(row?: any) {
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('system.regionManagement.deleteCancelled'));
     },
     onOk() {
       deleteArea(row.id)
@@ -168,7 +168,7 @@ function delRow(row: any) {
           message.error(error.msg); // 显示操作失败的提示信息
         });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -462,7 +462,7 @@ onMounted(() => {
       placement="right"
       :title="$t('common.view')"
     >
-      <Descriptions :column="2" bordered title="用户详情">
+      <Descriptions :column="2" bordered :title="$t('system.sysUser.detailTitle')">
         <DescriptionsItem :label="$t('system.regionManagement.department')">
           {{ checkedRow.depart }}
         </DescriptionsItem>
@@ -557,7 +557,7 @@ onMounted(() => {
             :not-found-content="null"
             :options="personnelData"
             :show-arrow="false"
-            placeholder="输入用户名进行查询"
+            :placeholder="$t('system.sysUser.searchPersonnel')"
             placement="bottomRight"
             show-search
             @change="handleChange"

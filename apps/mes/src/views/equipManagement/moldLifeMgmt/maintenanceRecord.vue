@@ -93,7 +93,7 @@ const recordGridOptions: VxeGridProps<MaintenanceRecord> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'maintenanceNo',
       title: $t('maintenanceTask.maintenanceNo'),
@@ -242,8 +242,8 @@ function handleRecordReset() {
 
 // ========== 状态颜色映射 ==========
 const resultColorMap: Record<string, string> = {
-  通过: 'success',
-  不通过: 'error',
+  [$t('maintenanceTask.resultPass')]: 'success',
+  [$t('maintenanceTask.resultFail')]: 'error',
 };
 
 // ========== 详情抽屉 ==========
@@ -514,12 +514,12 @@ function handleDetail(row: any) {
               <td>{{ item.itemDescription || '-' }}</td>
               <td>
                 <Tag :color="item.isRequired ? 'warning' : 'default'">
-                  {{ item.isRequired ? '是' : '否' }}
+                  {{ item.isRequired ? $t('maintenanceTask.yes') : $t('maintenanceTask.no') }}
                 </Tag>
               </td>
               <td>
                 <Tag :color="item.isCompleted ? 'success' : 'error'">
-                  {{ item.isCompleted ? '完成' : '未完成' }}
+                  {{ item.isCompleted ? $t('maintenanceTask.isCompleted') : $t('maintenanceTask.uncompletedStatus') }}
                 </Tag>
               </td>
             </tr>

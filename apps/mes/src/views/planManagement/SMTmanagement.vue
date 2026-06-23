@@ -88,7 +88,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50, minWidth: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50, minWidth: 50 },
     {
       field: 'workSheetCode',
       title: $t('SMTmanagement.workOrderNumber'),
@@ -285,9 +285,9 @@ const fileList = ref<any>([]);
 function handleUploadChange(info: any) {
   if (info.file.status === 'done') {
     gridApi.reload();
-    message.success('文件上传成功!');
+    message.success($t('page.common.uploadSuccess'));
   } else if (info.file.status === 'error') {
-    const errorMessage = info.file.response?.message || '文件上传失败';
+    const errorMessage = info.file.response?.message || $t('planManagement.uploadFailed');
     message.error(errorMessage);
   }
 }
@@ -331,13 +331,13 @@ function handleDelete(row: any) {
 
 // region 条码打印
 function handleBarcodePrint(_row: any) {
-  message.info('打印功能暂未完成');
+  message.info($t('planManagement.printNotReady'));
 }
 // endregion
 
 // region 打印
 function handlePrint() {
-  message.info('打印功能暂未完成');
+  message.info($t('planManagement.printNotReady'));
 }
 // endregion
 
@@ -375,7 +375,7 @@ onMounted(() => {
           <Select
             v-model:value="queryParams.lineId"
             :options="lineOptions"
-            placeholder="请选择"
+            :placeholder="$t('baseInfo.selectPlaceholder')"
             allow-clear
             style="width: 180px"
           />

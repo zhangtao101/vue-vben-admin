@@ -78,7 +78,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'stocktakingCode',
       title: $t('inventoryPlanMgmt.stocktakingCode'),
@@ -129,7 +129,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       width: 200,
     },
   ],
@@ -663,8 +663,8 @@ onMounted(() => {
           <Switch
             :disabled="!author.includes('状态变更')"
             :checked="row.isUse === 1"
-            checked-children="启用"
-            un-checked-children="停用"
+            :checked-children="$t('common.enable')"
+            :un-checked-children="$t('common.stopUsing')"
             @change="
               () => (row.isUse === 1 ? handleDisable(row) : handleEnable(row))
             "

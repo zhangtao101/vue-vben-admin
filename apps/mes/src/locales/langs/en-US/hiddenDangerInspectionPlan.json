@@ -27,5 +27,15 @@
   "riskName": "Risk Name",
   "choose": "Area/Standard Selection",
   "planCode": "Plan Code",
-  "planName": "Plan Name"
+  "planName": "Plan Name",
+  "specialPlanCode": "Special Plan Code",
+  "intervalPeriod": "Interval Period",
+  "planEnabled": "Plan Enabled",
+  "cyclePlan": "Cycle Plan",
+  "specialInspection": "Special Inspection",
+  "dailyInspection": "Daily Inspection",
+  "dailyCheck": "Daily Check",
+  "comprehensiveCheck": "Comprehensive Check",
+  "specialCheck": "Special Check",
+  "majorHazardCheck": "Major Hazard Check"
 }

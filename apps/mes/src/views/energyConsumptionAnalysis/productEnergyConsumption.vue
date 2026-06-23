@@ -138,8 +138,8 @@ function chartInit(chartData: any = []) {
       autoFit: true, // 自适应容器大小
       data: chartData,
       encode: {
-        x: '时间', // X轴：时间
-        y: '能耗(kWh)', // Y轴：能耗值
+        x: $t('energyConsumption.energyConsumptionAnalysis.time'), // X轴：时间
+        y: $t('energyConsumption.energyConsumptionAnalysis.energyKwh'), // Y轴：能耗值
         color: 'name', // 颜色：分项系统名称
       },
       transform: [{ type: 'stackY' }], // Y轴堆叠转换
@@ -189,8 +189,8 @@ function queryChartData() {
       // 日数据：按分项系统分组显示
       data.forEach((item: any) => {
         chartData.push({
-          时间: item.time,
-          '能耗(kWh)': item.value,
+          [$t('energyConsumption.energyConsumptionAnalysis.time')]: item.time,
+          [$t('energyConsumption.energyConsumptionAnalysis.energyKwh')]: item.value,
           name: item.systemName,
         });
       });
@@ -199,24 +199,24 @@ function queryChartData() {
       data.forEach((item: any) => {
         chartData.push(
           {
-            时间: item.time,
-            '能耗(kWh)': item.peakValue,
-            name: '尖时段电量',
+            [$t('energyConsumption.energyConsumptionAnalysis.time')]: item.time,
+            [$t('energyConsumption.energyConsumptionAnalysis.energyKwh')]: item.peakValue,
+            name: $t('energyConsumption.energyConsumptionAnalysis.peakPeriodLabel'),
           },
           {
-            时间: item.time,
-            '能耗(kWh)': item.spikeValue,
-            name: '峰时段电量',
+            [$t('energyConsumption.energyConsumptionAnalysis.time')]: item.time,
+            [$t('energyConsumption.energyConsumptionAnalysis.energyKwh')]: item.spikeValue,
+            name: $t('energyConsumption.energyConsumptionAnalysis.spikePeriodLabel'),
           },
           {
-            时间: item.time,
-            '能耗(kWh)': item.flatValue,
-            name: '平时段电量',
+            [$t('energyConsumption.energyConsumptionAnalysis.time')]: item.time,
+            [$t('energyConsumption.energyConsumptionAnalysis.energyKwh')]: item.flatValue,
+            name: $t('energyConsumption.energyConsumptionAnalysis.flatPeriodLabel'),
           },
           {
-            时间: item.time,
-            '能耗(kWh)': item.valleyValue,
-            name: '谷时段电量',
+            [$t('energyConsumption.energyConsumptionAnalysis.time')]: item.time,
+            [$t('energyConsumption.energyConsumptionAnalysis.energyKwh')]: item.valleyValue,
+            name: $t('energyConsumption.energyConsumptionAnalysis.valleyPeriodLabel'),
           },
         );
       });
@@ -237,22 +237,22 @@ function queryChartData() {
 const columnsDay: any = [
   {
     field: 'subarea',
-    title: '单元分区',
+    title: $t('energyConsumption.energyConsumptionAnalysis.unitPartition'),
     minWidth: 150,
   },
   {
     field: 'systemName',
-    title: '分项系统名称',
+    title: $t('energyConsumption.energyConsumptionAnalysis.subitemSystemName'),
     minWidth: 150,
   },
   {
     field: 'value',
-    title: '用电量（kWh）',
+    title: $t('energyConsumption.energyConsumptionAnalysis.electricityConsumptionKwh'),
     minWidth: 150,
   },
   {
     field: 'time',
-    title: '时间',
+    title: $t('energyConsumption.energyConsumptionAnalysis.time'),
     minWidth: 150,
   },
 ];
@@ -310,42 +310,42 @@ function queryData() {
 const columnsOther: any = [
   {
     field: 'subarea',
-    title: '单元分区',
+    title: $t('energyConsumption.energyConsumptionAnalysis.unitPartition'),
     minWidth: 150,
   },
   {
     field: 'systemName',
-    title: '分项系统名称',
+    title: $t('energyConsumption.energyConsumptionAnalysis.subitemSystemName'),
     minWidth: 150,
   },
   {
     field: 'peakValue',
-    title: '尖时段电量',
+    title: $t('energyConsumption.energyConsumptionAnalysis.peakPeriodElectricity'),
     minWidth: 150,
   },
   {
     field: 'spikeValue',
-    title: '峰时段电量（kwh）',
+    title: $t('energyConsumption.energyConsumptionAnalysis.spikePeriodElectricity'),
     minWidth: 150,
   },
   {
     field: 'flatValue',
-    title: '平时段电量（kwh）',
+    title: $t('energyConsumption.energyConsumptionAnalysis.flatPeriodElectricity'),
     minWidth: 150,
   },
   {
     field: 'valleyValue',
-    title: '谷时段电量（kwh）',
+    title: $t('energyConsumption.energyConsumptionAnalysis.valleyPeriodElectricity'),
     minWidth: 150,
   },
   {
     field: 'value',
-    title: '总电量',
+    title: $t('energyConsumption.energyConsumptionAnalysis.totalElectricity'),
     minWidth: 150,
   },
   {
     field: 'time',
-    title: '时间',
+    title: $t('energyConsumption.energyConsumptionAnalysis.time'),
     minWidth: 150,
   },
 ];

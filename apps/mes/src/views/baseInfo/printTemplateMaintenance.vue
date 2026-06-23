@@ -29,7 +29,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     { field: 'printCode', title: '打印模板编号', minWidth: 150 },
     {
       field: 'printState',
@@ -160,9 +160,9 @@ const showDrawer = ref(false);
 const editMessage = ref<any>({});
 // 编辑的模板基本信息验证规则
 const editRules = ref({
-  printCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  printState: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  printType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  printCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  printState: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  printType: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 } as any);
 // 打印状态
 const statusOptions = [
@@ -347,7 +347,7 @@ onMounted(async () => {});
       placement="right"
       root-class-name="root-class-name"
       style="color: red"
-      title="信息编辑"
+      :title="$t('baseInfo.infoEdit')"
     >
       <Form
         ref="editForm"

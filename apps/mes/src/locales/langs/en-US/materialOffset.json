@@ -1,0 +1,21 @@
+{
+  "workSheetCode": "Work Order No.",
+  "workstationCode": "Workstation Code",
+  "productCode": "Product Code",
+  "productName": "Product Name",
+  "planDateStart": "Plan Start Time",
+  "workSheetPlanNumber": "Planned Quantity",
+  "workSheetFinishNumber": "Completed Quantity (Warehouse)",
+  "planDateEnd": "Estimated Finish Time",
+  "unit": "Unit",
+  "workOrderStatus": "Work Order Status",
+  "reportWorkStatus": "Work Report Status",
+  "action": "Action",
+  "notProduced": "Not Produced",
+  "inProduction": "In Production",
+  "completedOffline": "Completed Offline",
+  "pausedOffline": "Paused Offline",
+  "notReported": "Not Reported",
+  "reported": "Reported",
+  "undefinedState": "Undefined State"
+}

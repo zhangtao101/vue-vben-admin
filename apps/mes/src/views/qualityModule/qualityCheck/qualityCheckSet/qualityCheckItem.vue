@@ -53,7 +53,7 @@ const gridOptions: VxeGridProps<any> = {
   },
   columns: [
     // 定义表格列配置
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     { field: 'itemCode', title: '质检项编号', minWidth: 150 },
     { field: 'produceName', title: '所属工序', minWidth: 200 },
     { field: 'itemName', title: '质检项名称', minWidth: 200 },
@@ -146,7 +146,7 @@ const showDrawer = ref(false);
 const editMessage = ref<any>({});
 // 表单验证规则配置
 const editRules = ref({
-  itemName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  itemName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 } as any);
 
 /**
@@ -210,11 +210,11 @@ function close() {
 function delRow(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       // 调用删除API
@@ -224,7 +224,7 @@ function delRow(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认删除?',
+    title: $t('page.common.confirmDeletePrompt'),
   });
 }
 

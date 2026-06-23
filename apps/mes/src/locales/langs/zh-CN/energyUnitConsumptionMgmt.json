@@ -1,0 +1,14 @@
+{
+  "systemName": "系统名称",
+  "totalEnergyUsage": "使用总能耗",
+  "productionEnergy": "生产能耗",
+  "nonProductionEnergy": "非生产能耗",
+  "createTime": "创建时间",
+  "workOrderNumber": "工单编号",
+  "productName": "产品名称",
+  "productNumber": "产品编号",
+  "deviceName": "设备名称",
+  "deviceNumber": "设备编号",
+  "productQuantity": "产品数量",
+  "singleEnergyUsage": "单个使用能源"
+}

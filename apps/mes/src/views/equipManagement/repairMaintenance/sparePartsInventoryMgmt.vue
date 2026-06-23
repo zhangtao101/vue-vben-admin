@@ -96,7 +96,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 60, title: '序号' },
+    { type: 'seq', width: 60, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'spareCode',
       title: $t('repair.spareInventory.spareCode'),

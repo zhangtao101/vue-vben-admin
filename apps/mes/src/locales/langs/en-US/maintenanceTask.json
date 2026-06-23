@@ -71,6 +71,7 @@
   "itemDescription": "Item Description",
   "isRequired": "Required",
   "isCompleted": "Completed",
+  "uncompletedStatus": "Uncompleted",
   "recoveryValue": "Recovery Value",
   "usageBefore": "Usage Before",
   "usageAfter": "Usage After",
@@ -83,5 +84,6 @@
   "basicInfo": "Basic Info",
   "executeInfo": "Execute Info",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "cannotBeEmpty": "cannot be empty"
 }

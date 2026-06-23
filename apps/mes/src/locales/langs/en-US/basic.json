@@ -1,4 +1,20 @@
 {
+  "serialNumber": "No.",
+  "all": "All",
+  "status": "Status",
+  "description": "Description",
+  "remark": "Remark",
+  "createTime": "Create Time",
+  "updateTime": "Update Time",
+  "createBy": "Created By",
+  "updateBy": "Updated By",
+  "viewDetail": "View Detail",
+  "infoEdit": "Edit Info",
+  "addSuccess": "Added Successfully",
+  "editSuccess": "Modified Successfully",
+  "deleteSuccess": "Deleted Successfully",
+  "addFailed": "Add Failed",
+  "editFailed": "Edit Failed",
   "productBom": {
     "productNumber": "productNumber",
     "productName": "productName",
@@ -6,19 +22,30 @@
     "systemName": "System Name"
   },
   "barCodeManagement": {
-    "ruleName": "ruleName",
-    "typeOfOwnership": "ownershipType",
-    "displayMode": "displayMode",
-    "categorySelection": "categorySelection",
-    "materialOrProductCode": "materialOrProductCode",
-    "materialOrProductName": "materialOrProductName",
-    "remark": "remark"
+    "ruleName": "Rule Name",
+    "typeOfOwnership": "Ownership Type",
+    "displayMode": "Display Mode",
+    "categorySelection": "Category Selection",
+    "materialOrProductCode": "Material/Product Code",
+    "materialOrProductName": "Material/Product Name",
+    "remark": "Remark",
+    "material": "Material",
+    "product": "Product",
+    "pcbPanel": "PCB Panel",
+    "pcbSubPanel": "PCB Sub-panel",
+    "mold": "Mold",
+    "semiFinishedProduct": "Semi-finished",
+    "pickingRequest": "Picking Request",
+    "packagingCode": "Packaging Code",
+    "oneDimensionalCode": "1D Barcode",
+    "twoDimensionalCode": "2D Barcode"
   },
   "productCategory": {
     "categoryNumber": "categoryNumber",
     "categoryName": "categoryName"
   },
   "bomManagement": {
+    "view": "View",
     "materialCode": "materialCode",
     "materialName": "materialName",
     "bomCategory": {},
@@ -241,8 +268,16 @@
     "bindSo": "Bind SO",
     "confirmBind": "Confirm Bind",
     "splitCount": "Split Count",
-    "generate": "Generate"
+    "generate": "Generate",
+    "invalidSplitCount": "Please enter a valid split count",
+    "splitCountExceeded": "Split count cannot exceed {0}",
+    "pleaseSelectSoFirst": "Please select SO first",
+    "maxSplitCountPlaceholder": "Max: {0}"
   },
+  "requiredField": "This field is required",
+  "pleaseSelectAtLeastOne": "Please select at least one record",
+  "confirmDeleteTitle": "Are you sure to delete?",
+  "printNotReady": "Print function is not yet available",
   "shortageTracking": {
     "queryTitle": "Shortage Tracking Query",
     "materialGroup": "Material Group",

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,33 +34,33 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '入库日期', minWidth: 200 },
-    { field: 'lineName', title: '线号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'level', title: '等级', minWidth: 200 },
-    { field: 'size', title: '尺寸', minWidth: 200 },
-    { field: 'color', title: '色号', minWidth: 200 },
-    { field: 'reason', title: '降等原因', minWidth: 200 },
-    { field: 'place', title: '产地/年份', minWidth: 200 },
+    { field: 'day', title: $t('productionDaily.DateInbound'), minWidth: 200 },
+    { field: 'lineName', title: $t('productionDaily.LineNo'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.CodeProduct_1'), minWidth: 200 },
+    { field: 'level', title: $t('productionDaily.gradeLevel'), minWidth: 200 },
+    { field: 'size', title: $t('productionDaily.dimension'), minWidth: 200 },
+    { field: 'color', title: $t('productionDaily.ColorNo'), minWidth: 200 },
+    { field: 'reason', title: $t('productionDaily.degradeReason'), minWidth: 200 },
+    { field: 'place', title: $t('productionDaily.YearOrigin'), minWidth: 200 },
     {
       field: 'totalNumber',
-      title: '总片数',
+      title: $t('productionDaily.PcsCount'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'totalM2',
-      title: '总平方',
+      title: $t('productionDaily.SqM'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 7 }],
   height: 500,
   stripe: true,
@@ -102,13 +102,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

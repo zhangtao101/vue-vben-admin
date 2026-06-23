@@ -2,5 +2,10 @@
   "checkType": "检查类别",
   "riskClassification": "风险分类",
   "checkCriteria": "检查标准",
-  "checkItem": "巡检项目"
+  "checkItem": "巡检项目",
+  "checkArea": "检查区域",
+  "areaCode": "区域编码",
+  "submitter": "提交人",
+  "submissionTime": "提交时间",
+  "updateTime": "更新时间"
 }

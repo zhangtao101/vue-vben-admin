@@ -411,7 +411,7 @@ const columns: any = [
  * 表格API对象
  * 用于控制表格的重载、刷新等操作
  */
-let gridApi: any;
+let gridApi: any = null;
 
 /**
  * 加载表格数据

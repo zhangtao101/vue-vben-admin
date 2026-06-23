@@ -54,43 +54,43 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'isQualityTest',
-      title: '质检',
+      title: $t('baseInfo.inspection'),
       minWidth: 80,
       slots: { default: 'selectedState' },
     },
     {
       field: 'isContract',
-      title: '合同',
+      title: $t('baseInfo.contract'),
       minWidth: 80,
       slots: { default: 'selectedState' },
     },
     {
       field: 'isHalf',
-      title: '半成品',
+      title: $t('baseInfo.semiFinished'),
       minWidth: 80,
       slots: { default: 'selectedState' },
     },
     {
       field: 'isZeroStock',
-      title: '零库存',
+      title: $t('baseInfo.zeroInventory'),
       minWidth: 80,
       slots: { default: 'selectedState' },
     },
-    { field: 'materialTypeCode', title: '材料类别', minWidth: 80 },
-    { field: 'materialCode', title: '材料编号', minWidth: 150 },
-    { field: 'materialDrawingCode', title: '材料图号', minWidth: 150 },
-    { field: 'materialName', title: '材料名称', minWidth: 200 },
-    { field: 'unit', title: '单位', minWidth: 100 },
-    { field: 'minPackNumber', title: '最小包装数', minWidth: 90 },
-    { field: 'safeLevel', title: '安全量', minWidth: 80 },
+    { field: 'materialTypeCode', title: $t('baseInfo.materialCategory'), minWidth: 80 },
+    { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 150 },
+    { field: 'materialDrawingCode', title: $t('baseInfo.materialDrawingNumber'), minWidth: 150 },
+    { field: 'materialName', title: $t('baseInfo.materialName'), minWidth: 200 },
+    { field: 'unit', title: $t('baseInfo.unit'), minWidth: 100 },
+    { field: 'minPackNumber', title: $t('baseInfo.minPackageQuantity'), minWidth: 90 },
+    { field: 'safeLevel', title: $t('baseInfo.safetyQuantity'), minWidth: 80 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('baseInfo.action'),
       width: 220,
     },
   ],
@@ -175,7 +175,7 @@ function queryData({ page, pageSize }: any) {
 const selectedKeys = ref<string[]>([]);
 // 节点数据
 const treeData = ref<TreeProps['treeData']>([
-  { key: '', typeCode: '', typeName: '全部', childs: [] },
+  { key: '', typeCode: '', typeName: $t('page.common.all'), childs: [] },
 ]);
 
 // 树字段配置
@@ -217,14 +217,14 @@ const showEditDrawer = ref(false);
 const editMessage = ref({} as any);
 // 编辑对象表单验证规则
 const editRules = ref({
-  downSafe: [{ message: '此项为必填项', required: false, trigger: 'change' }],
+  downSafe: [{ message: $t('page.common.requiredField'), required: false, trigger: 'change' }],
   materialCode: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
   materialName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
-  upSafe: [{ message: '此项为必填项', required: false, trigger: 'change' }],
+  upSafe: [{ message: $t('page.common.requiredField'), required: false, trigger: 'change' }],
 } as any);
 
 /**
@@ -256,7 +256,7 @@ const editFormRef = ref();
 function submitForm() {
   editFormRef.value?.validate().then(() => {
     materialUpDownSafe(editMessage.value).then(() => {
-      message.success('修改成功');
+      message.success($t('baseInfo.modifySuccess'));
       onClose();
       gridApi.reload();
     });
@@ -349,7 +349,7 @@ function pasClose() {
 function submitPasForm() {
   pasFormRef.value?.validate().then(() => {
     // TODO: 实现PAS文件上传逻辑
-    message.success('保存成功');
+    message.success($t('baseInfo.saveSuccess'));
     pasClose();
     gridApi.reload();
   });
@@ -368,20 +368,20 @@ const eyeGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'productCode',
-      title: '产品编号',
+      title: $t('baseInfo.productCode'),
       minWidth: 120,
     },
     {
       field: 'productName',
-      title: '产品名称',
+      title: $t('baseInfo.productName'),
       minWidth: 120,
     },
     {
       field: 'useNumber',
-      title: '使用材料数',
+      title: $t('baseInfo.usedMaterialQuantity'),
       minWidth: 120,
     },
   ],
@@ -510,18 +510,18 @@ onMounted(() => {
 
 // endregion
 
-// region 文件上传和模板下载
+// region 文件上传和{{ $t('common.downloadTemplate') }}
 
 // 上传接口地址
 const uploadAction = `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/base/materialInfo/saveByExcel`;
 
 function handleUploadSuccess() {
-  message.success('上传成功');
+  message.success($t('baseInfo.uploadSuccessMessage'));
   gridApi.reload();
 }
 
 function handleUploadError() {
-  message.error('上传失败');
+  message.error($t('baseInfo.uploadFailMessage'));
 }
 
 function downloadTemplate() {
@@ -600,7 +600,7 @@ function downloadTemplate() {
                 @success="handleUploadSuccess"
                 @error="handleUploadError"
               >
-                <Button type="primary">点击上传</Button>
+                <Button type="primary">{{ $t('common.upload') }}</Button>
               </Upload>
             </Col>
             <Col>
@@ -827,7 +827,7 @@ function downloadTemplate() {
             :max-count="10"
             multiple
           >
-            <Button type="primary">选择文件</Button>
+            <Button type="primary">{{ $t('common.selectFile') }}</Button>
           </Upload>
         </FormItem>
       </Form>

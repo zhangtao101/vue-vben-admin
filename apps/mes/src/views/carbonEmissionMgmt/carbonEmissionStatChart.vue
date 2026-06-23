@@ -14,6 +14,7 @@
 import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Chart } from '@antv/g2';
@@ -91,12 +92,12 @@ function queryItemizedEnergyAnalysisChart() {
         {
           type: item.systemName, // 分项系统名称
           data: item.lastValue, // 去年能耗值
-          name: '去年',
+          name: $t('carbonEmissionMgmt.lastYear'),
         },
         {
           type: item.systemName, // 分项系统名称
           data: item.currentValue, // 今年能耗值
-          name: '今年',
+          name: $t('carbonEmissionMgmt.thisYear'),
         },
       );
     });
@@ -258,12 +259,12 @@ function queryYearOverYearAnalysisChartsData() {
         {
           type: item.systemName, // 分项系统名称
           data: item.lastValue, // 去年能耗值
-          name: '去年',
+          name: $t('carbonEmissionMgmt.lastYear'),
         },
         {
           type: item.systemName, // 分项系统名称
           data: item.currentValue, // 今年能耗值
-          name: '今年',
+          name: $t('carbonEmissionMgmt.thisYear'),
         },
       );
     });
@@ -434,7 +435,7 @@ onMounted(() => {
   <Page>
     <Card class="my-2">
       <label>
-        分项名称:
+        {{ $t('carbonEmissionMgmt.itemName') }}
         <Select
           class="w-[80%]"
           mode="multiple"
@@ -451,12 +452,12 @@ onMounted(() => {
     </Card>
     <Row :gutter="20" class="!mb-4 !mt-4">
       <Col :span="12">
-        <Card title="分项用能对比">
+        <Card :title="$t('carbonEmissionMgmt.itemEnergyComparison')">
           <div id="energyContrast" class="min-h-[300px]"></div>
         </Card>
       </Col>
       <Col :span="12">
-        <Card title="分项用能占比（近30天）">
+        <Card :title="$t('carbonEmissionMgmt.itemEnergyRatio')">
           <div id="energyUseRatio" class="min-h-[300px]"></div>
         </Card>
       </Col>
@@ -464,7 +465,7 @@ onMounted(() => {
 
     <Card class="my-2">
       <label>
-        分项名称:
+        {{ $t('carbonEmissionMgmt.itemName') }}
         <Select
           class="w-48"
           v-model:value="contrast"
@@ -475,12 +476,12 @@ onMounted(() => {
     </Card>
     <Row :gutter="20">
       <Col :span="12">
-        <Card title="分项用能同比分析">
+        <Card :title="$t('carbonEmissionMgmt.itemEnergyYearOnYear')">
           <div id="yearOnYearAnalysis" class="min-h-[300px]"></div>
         </Card>
       </Col>
       <Col :span="12">
-        <Card title="分项用能趋势（近30天）">
+        <Card :title="$t('carbonEmissionMgmt.itemEnergyTrend')">
           <div id="energyUseTrend" class="min-h-[300px]"></div>
         </Card>
       </Col>

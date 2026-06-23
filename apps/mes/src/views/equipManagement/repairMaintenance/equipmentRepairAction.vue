@@ -62,7 +62,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'manualCode',
       title: $t('repair.equipmentRepairAction.manualCode'),
@@ -187,10 +187,10 @@ const drawerForm = ref();
 
 // ========== 表单校验规则 ==========
 const formRules = ref<any>({
-  manualCode: [{ required: true, message: '请输入手册编码', trigger: 'change' }],
-  manualName: [{ required: true, message: '请输入手册名称', trigger: 'change' }],
-  faultTreeName: [{ required: true, message: '请选择故障现象名称', trigger: 'change' }],
-  manualContent: [{ required: true, message: '请输入维修措施内容', trigger: 'change' }],
+  manualCode: [{ required: true, message: $t('repair.equipmentRepairAction.manualCodePlaceholder'), trigger: 'change' }],
+  manualName: [{ required: true, message: $t('repair.equipmentRepairAction.manualNamePlaceholder'), trigger: 'change' }],
+  faultTreeName: [{ required: true, message: $t('repair.equipmentRepairAction.faultTreeNameSearchPlaceholder'), trigger: 'change' }],
+  manualContent: [{ required: true, message: $t('repair.equipmentRepairAction.manualContentPlaceholder'), trigger: 'change' }],
 });
 
 // ========== 故障现象远程搜索 ==========
@@ -247,8 +247,8 @@ function handleEdit(row: any) {
  */
 function handleDelete(row: any) {
   Modal.confirm({
-    title: '确认删除',
-    content: `确定删除手册 "${row.manualName}" 吗？`,
+    title: $t('repair.equipmentRepairAction.confirmDelete'),
+    content: $t('repair.equipmentRepairAction.deleteMessage', { name: row.manualName }),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () => {
@@ -308,7 +308,7 @@ function handleSubmit() {
         >
           <Input
             v-model:value="queryParams.manualCode"
-            placeholder="请输入手册编码"
+            :placeholder="$t('repair.equipmentRepairAction.manualCodePlaceholder')"
             allow-clear
           />
         </FormItem>
@@ -319,7 +319,7 @@ function handleSubmit() {
         >
           <Input
             v-model:value="queryParams.manualName"
-            placeholder="请输入手册名称"
+            :placeholder="$t('repair.equipmentRepairAction.manualNamePlaceholder')"
             allow-clear
           />
         </FormItem>
@@ -330,7 +330,7 @@ function handleSubmit() {
         >
           <Input
             v-model:value="queryParams.faultTreeName"
-            placeholder="请输入故障现象名称"
+            :placeholder="$t('repair.equipmentRepairAction.faultTreeNamePlaceholder')"
             allow-clear
           />
         </FormItem>
@@ -417,8 +417,8 @@ function handleSubmit() {
       v-model:open="drawerVisible"
       :title="
         dialogStatus === 'create'
-          ? '新增维修措施'
-          : '编辑维修措施'
+          ? $t('repair.equipmentRepairAction.addTitle')
+          : $t('repair.equipmentRepairAction.editTitle')
       "
       width="600"
       :destroy-on-close="true"
@@ -431,19 +431,19 @@ function handleSubmit() {
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 18 }"
       >
-        <FormItem label="手册编码" name="manualCode">
+        <FormItem :label="$t('repair.equipmentRepairAction.manualCode')" name="manualCode">
           <Input
             v-model:value="currentRow.manualCode"
-            placeholder="请输入手册编码"
+            :placeholder="$t('repair.equipmentRepairAction.manualCodePlaceholder')"
           />
         </FormItem>
-        <FormItem label="手册名称" name="manualName">
+        <FormItem :label="$t('repair.equipmentRepairAction.manualName')" name="manualName">
           <Input
             v-model:value="currentRow.manualName"
-            placeholder="请输入手册名称"
+            :placeholder="$t('repair.equipmentRepairAction.manualNamePlaceholder')"
           />
         </FormItem>
-        <FormItem label="故障现象名称" name="faultTreeName">
+        <FormItem :label="$t('repair.equipmentRepairAction.faultTreeName')" name="faultTreeName">
           <Select
             v-model:value="currentRow.faultTreeName"
             :options="faultTreeOptions"
@@ -451,7 +451,7 @@ function handleSubmit() {
             :not-found-content="faultTreeLoading ? undefined : null"
             :default-active-first-option="false"
             show-search
-            placeholder="请输入故障现象名称搜索"
+            :placeholder="$t('repair.equipmentRepairAction.faultTreeNameSearchPlaceholder')"
             class="!w-full"
             @search="handleFaultTreeSearch"
           >
@@ -460,17 +460,17 @@ function handleSubmit() {
             </template>
           </Select>
         </FormItem>
-        <FormItem label="维修措施内容" name="manualContent">
+        <FormItem :label="$t('repair.equipmentRepairAction.manualContent')" name="manualContent">
           <Textarea
             v-model:value="currentRow.manualContent"
-            placeholder="请输入维修措施内容"
+            :placeholder="$t('repair.equipmentRepairAction.manualContentPlaceholder')"
             :rows="4"
           />
         </FormItem>
-        <FormItem label="备注" name="remark">
+        <FormItem :label="$t('repair.equipmentRepairAction.remark')" name="remark">
           <Textarea
             v-model:value="currentRow.remark"
-            placeholder="请输入备注（选填）"
+            :placeholder="$t('repair.equipmentRepairAction.remarkPlaceholder')"
             :rows="3"
           />
         </FormItem>

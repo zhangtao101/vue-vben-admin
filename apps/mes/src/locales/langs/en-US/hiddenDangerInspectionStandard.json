@@ -2,5 +2,10 @@
   "checkType": "Check Type",
   "checkCriteria": "Check Criteria",
   "riskClassification": "Risk Classification",
-  "checkItem": "Check Item"
+  "checkItem": "Check Item",
+  "checkArea": "Check Area",
+  "areaCode": "Area Code",
+  "submitter": "Submitter",
+  "submissionTime": "Submission Time",
+  "updateTime": "Update Time"
 }

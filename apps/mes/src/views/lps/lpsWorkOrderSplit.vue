@@ -294,11 +294,11 @@ function handleMainSplit(row: any) {
 function handleGenerateSplitRows() {
   const count = splitCount.value;
   if (!count || count <= 0) {
-    Modal.warning({ title: '提示', content: '请输入有效的拆分数量' });
+    Modal.warning({ title: $t('common.prompt'), content: $t('basic.workOrderSplit.invalidSplitCount') });
     return;
   }
   if (count > maxSplitCount.value) {
-    Modal.warning({ title: '提示', content: `拆分数量不能超过 ${maxSplitCount.value}` });
+    Modal.warning({ title: $t('common.prompt'), content: $t('basic.workOrderSplit.splitCountExceeded', [maxSplitCount.value]) });
     return;
   }
 
@@ -395,7 +395,7 @@ function handleQuerySo(value: any) {
  */
 function handleConfirmBind() {
   if (!bindResult.value || !bindSo.value) {
-    Modal.warning({ title: '提示', content: '请先选择SO' });
+    Modal.warning({ title: $t('common.prompt'), content: $t('basic.workOrderSplit.pleaseSelectSoFirst') });
     return;
   }
 
@@ -638,7 +638,7 @@ watch(
             v-model:value="splitCount"
             :min="1"
             :max="maxSplitCount"
-            :placeholder="`最大: ${maxSplitCount}`"
+            :placeholder="$t('basic.workOrderSplit.maxSplitCountPlaceholder', [maxSplitCount])"
             style="width: 200px"
           />
           <Button type="primary" @click="handleGenerateSplitRows">

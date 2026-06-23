@@ -31,6 +31,8 @@ import {
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
+import { $t } from '#/locales';
+
 // 图片上传地址
 /** 故障图片上传接口地址 */
 const uploadUrl = `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/common/file/upload/maintenance-image`;
@@ -59,20 +61,20 @@ const formData = ref<any>({ ...initFormData });
 // 报修类型选项
 /** 报修类型下拉/单选选项列表 */
 const repairTypeOptions = [
-  { value: 'RT_EMERGENCY_STOP', label: '应急维修(停机)' },
-  { value: 'RT_EMERGENCY_NONSTOP', label: '应急维修(非停机)' },
-  { value: 'RT_PREVENTIVE', label: '预防性维护' },
-  { value: 'RT_INSPECTION', label: '点巡检' },
-  { value: 'RT_ANDON', label: '安灯呼叫' },
-  { value: 'RT_OTHER', label: '其他工单' },
+  { value: 'RT_EMERGENCY_STOP', label: $t('repair.repairOrder.emergencyStop') },
+  { value: 'RT_EMERGENCY_NONSTOP', label: $t('repair.repairOrder.emergencyNonstop') },
+  { value: 'RT_PREVENTIVE', label: $t('repair.repairOrder.preventive') },
+  { value: 'RT_INSPECTION', label: $t('repair.repairOrder.inspection') },
+  { value: 'RT_ANDON', label: $t('repair.repairOrder.andon') },
+  { value: 'RT_OTHER', label: $t('repair.repairOrder.other') },
 ];
 
 // 紧急程度选项
 /** 紧急程度下拉/单选选项列表 */
 const urgencyOptions = [
-  { value: 'NORMAL', label: '一般' },
-  { value: 'URGENT', label: '紧急' },
-  { value: 'CRITICAL', label: '特急' },
+  { value: 'NORMAL', label: $t('repair.repairOrder.normal') },
+  { value: 'URGENT', label: $t('repair.repairOrder.urgent') },
+  { value: 'CRITICAL', label: $t('repair.repairOrder.critical') },
 ];
 
 // 提交加载状态
@@ -106,27 +108,27 @@ function handlePreview(file: any) {
 function validateForm(): Promise<boolean> {
   return new Promise((resolve) => {
     if (!formData.value.equipmentCode) {
-      message.error('请输入设备编码');
+      message.error($t('repair.repairRequest.equipmentCodeRequired'));
       resolve(false);
       return;
     }
     if (!formData.value.repairType) {
-      message.error('请选择报修类型');
+      message.error($t('repair.repairRequest.repairTypeRequired'));
       resolve(false);
       return;
     }
     if (!formData.value.faultTime) {
-      message.error('请选择故障时间');
+      message.error($t('repair.repairRequest.faultTimeRequired'));
       resolve(false);
       return;
     }
     if (!formData.value.faultDescription) {
-      message.error('请输入故障描述');
+      message.error($t('repair.repairRequest.faultDescriptionRequired'));
       resolve(false);
       return;
     }
     if (!formData.value.urgencyLevel) {
-      message.error('请选择紧急程度');
+      message.error($t('repair.repairRequest.urgentLevelRequired'));
       resolve(false);
       return;
     }
@@ -140,7 +142,7 @@ function validateForm(): Promise<boolean> {
       needRelatedTask.includes(formData.value.repairType) &&
       !formData.value.relatedTask
     ) {
-      message.error('请选择关联任务');
+      message.error($t('repair.repairRequest.linkedTaskRequired'));
       resolve(false);
       return;
     }
@@ -185,7 +187,7 @@ function handleSubmit() {
     // TODO: 调用接口
     // submitRepairRequest(params).then(() => {...})
 
-    message.success('接口待接入');
+    message.success($t('repair.repairRequest.apiNotReady'));
     submitLoading.value = false;
   });
 }
@@ -197,10 +199,10 @@ function handleSubmit() {
  */
 function handleReset() {
   Modal.confirm({
-    title: '提示',
-    content: '确定要重置表单吗？所有未保存的内容将丢失',
-    okText: '确定',
-    cancelText: '取消',
+    title: $t('common.prompt'),
+    content: $t('repair.repairRequest.resetFormConfirm'),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
     onOk: () => {
       formData.value = { ...initFormData };
       imageList.value = [];
@@ -211,24 +213,24 @@ function handleReset() {
 
 <template>
   <Page>
-    <Card title="报修申请">
+    <Card :title="$t('repair.repairRequest.repairRequestTitle')">
       <Form layout="vertical">
         <!-- 设备信息 -->
         <Row :gutter="16">
           <Col :span="12">
-            <FormItem label="设备编码" required>
+            <FormItem :label="$t('repair.repairRequest.equipmentCode')" required>
               <Input
                 v-model:value="formData.equipmentCode"
-                placeholder="扫码或输入设备编码"
+                :placeholder="$t('repair.repairRequest.scanOrEnterCode')"
               />
             </FormItem>
           </Col>
           <Col :span="12">
-            <FormItem label="设备名称">
+            <FormItem :label="$t('repair.repairTask.equipmentName')">
               <Input
                 :value="formData.equipmentName"
                 disabled
-                placeholder="自动带出"
+                :placeholder="$t('repair.repairRequest.autoFill')"
               />
             </FormItem>
           </Col>
@@ -236,20 +238,20 @@ function handleReset() {
 
         <Row :gutter="16">
           <Col :span="12">
-            <FormItem label="设备类型">
+            <FormItem :label="$t('repair.repairRequest.equipmentType')">
               <Input
                 :value="formData.equipmentType"
                 disabled
-                placeholder="自动带出"
+                :placeholder="$t('repair.repairRequest.autoFill')"
               />
             </FormItem>
           </Col>
           <Col :span="12">
-            <FormItem label="所在车间">
+            <FormItem :label="$t('repair.repairRequest.workshop')">
               <Input
                 :value="formData.workshop"
                 disabled
-                placeholder="自动带出"
+                :placeholder="$t('repair.repairRequest.autoFill')"
               />
             </FormItem>
           </Col>
@@ -258,7 +260,7 @@ function handleReset() {
         <!-- 报修信息 -->
         <Row :gutter="16">
           <Col :span="24">
-            <FormItem label="报修类型" required>
+            <FormItem :label="$t('repair.repairOrder.repairType')" required>
               <RadioGroup v-model:value="formData.repairType">
                 <Space wrap>
                   <Radio
@@ -276,16 +278,16 @@ function handleReset() {
 
         <Row :gutter="16">
           <Col :span="12">
-            <FormItem label="关联任务">
+            <FormItem :label="$t('repair.repairRequest.linkedTask')">
               <Input
                 v-model:value="formData.relatedTask"
-                placeholder="请先选择报修类型"
+                :placeholder="$t('repair.repairRequest.linkedTaskPlaceholder')"
                 disabled
               />
             </FormItem>
           </Col>
           <Col :span="12">
-            <FormItem label="故障时间" required>
+            <FormItem :label="$t('repair.repairRequest.faultTime')" required>
               <DatePicker
                 v-model:value="formData.faultTime"
                 show-time
@@ -298,7 +300,7 @@ function handleReset() {
 
         <Row :gutter="16">
           <Col :span="24">
-            <FormItem label="紧急程度" required>
+            <FormItem :label="$t('repair.repairOrder.urgentLevel')" required>
               <RadioGroup v-model:value="formData.urgencyLevel">
                 <Space>
                   <Radio
@@ -316,10 +318,10 @@ function handleReset() {
 
         <Row :gutter="16">
           <Col :span="24">
-            <FormItem label="故障描述" required>
+            <FormItem :label="$t('repair.repairRequest.faultDescription')" required>
               <Textarea
                 v-model:value="formData.faultDescription"
-                placeholder="请详细描述故障现象"
+                :placeholder="$t('repair.repairRequest.faultDescriptionPlaceholder')"
                 :rows="3"
               />
             </FormItem>
@@ -329,10 +331,10 @@ function handleReset() {
         <!-- 故障部位 -->
         <Row :gutter="16">
           <Col :span="24">
-            <FormItem label="故障部位">
+            <FormItem :label="$t('repair.repairRequest.faultLocation')">
               <Textarea
                 v-model:value="formData.faultParts"
-                placeholder="请输入故障部位"
+                :placeholder="$t('repair.repairRequest.faultLocationPlaceholder')"
                 :rows="2"
               />
             </FormItem>
@@ -342,7 +344,7 @@ function handleReset() {
         <!-- 故障图片 -->
         <Row :gutter="16">
           <Col :span="24">
-            <FormItem label="故障图片">
+            <FormItem :label="$t('repair.repairRequest.faultImage')">
               <Upload
                 v-model:file-list="imageList"
                 :action="uploadUrl"
@@ -354,7 +356,7 @@ function handleReset() {
               >
                 <div>
                   <Icon class="text-2xl" icon="mdi:image-plus-outline" />
-                  <div class="mt-1">上传图片</div>
+                  <div class="mt-1">{{ $t('repair.repairRequest.uploadImage') }}</div>
                 </div>
               </Upload>
               <Modal
@@ -374,7 +376,7 @@ function handleReset() {
             <div class="flex justify-center gap-4">
               <Button size="large" @click="handleReset">
                 <Icon class="mr-1" icon="mdi:refresh" />
-                重置
+                {{ $t('common.reset') }}
               </Button>
               <Button
                 type="primary"
@@ -383,7 +385,7 @@ function handleReset() {
                 @click="handleSubmit"
               >
                 <Icon class="mr-1" icon="mdi:check" />
-                提交报修
+                {{ $t('repair.repairRequest.submitRepair') }}
               </Button>
             </div>
           </Col>

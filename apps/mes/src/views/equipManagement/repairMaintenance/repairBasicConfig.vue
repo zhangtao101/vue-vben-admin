@@ -146,7 +146,7 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'checkbox', width: 50 },
-    { type: 'seq', width: 50, title: '序号' },
+    { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'configCode',
       title: $t('repair.repairBasicConfig.configCode'),

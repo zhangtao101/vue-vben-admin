@@ -54,48 +54,48 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'equipmentCode',
-      title: '仪表编码',
+      title: $t('alarmManagement.meterCode'),
       minWidth: 150,
     },
     {
       field: 'equipmentName',
-      title: '仪表名称',
+      title: $t('alarmManagement.meterName'),
       minWidth: 150,
     },
     {
       field: 'partitionName',
-      title: '所属单元',
+      title: $t('alarmManagement.belongingUnit'),
       minWidth: 150,
     },
     {
       field: 'location',
-      title: '安装位置',
+      title: $t('alarmManagement.installLocation'),
       minWidth: 150,
     },
     {
       field: 'status',
-      title: '状态',
+      title: $t('basic.status'),
       minWidth: 150,
       slots: { default: 'status' },
     },
     {
       field: 'currentHandler',
-      title: '当前处理人',
+      title: $t('alarmManagement.currentHandler'),
       minWidth: 150,
     },
     {
       field: 'createTime',
-      title: '创建时间',
+      title: $t('basic.createTime'),
       minWidth: 150,
     },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('page.common.action'),
       width: 220,
     },
   ],
@@ -138,16 +138,16 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getStatusText(status: number) {
   switch (status) {
     case 1: {
-      return '未处理';
+      return $t('alarmManagement.unprocessed');
     }
     case 2: {
-      return '处理中';
+      return $t('status.processing');
     }
     case 3: {
-      return '已处理';
+      return $t('alarmManagement.processed');
     }
     default: {
-      return '未知';
+      return $t('alarmManagement.unknownStatus');
     }
   }
 }
@@ -167,22 +167,22 @@ const editForm = ref();
 const editRules = ref<any>({
   waringType: [
     {
-      message: '此项为必填项',
+      message: $t('page.common.requiredField'),
       required: true,
       trigger: 'change',
     },
   ],
-  handleType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  direction: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  handleType: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  direction: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 // 处理方式
 const handleType = [
   {
-    label: '直接处理',
+    label: $t('alarmManagement.directProcessing'),
     value: 1,
   },
   {
-    label: '通知处理',
+    label: $t('alarmManagement.notificationProcessing'),
     value: 2,
   },
 ];
@@ -190,11 +190,11 @@ const handleType = [
 // 移交方式
 const transferType = [
   {
-    label: '上一级',
+    label: $t('alarmManagement.previousLevel'),
     value: 1,
   },
   {
-    label: '下一级',
+    label: $t('alarmManagement.nextLevel'),
     value: -1,
   },
 ];
@@ -288,19 +288,19 @@ const queryParams = ref<any>({
 // 状态列表
 const statusOptions = ref([
   {
-    label: '全部',
+    label: $t('page.common.all'),
     value: -1,
   },
   {
-    label: '未处理',
+    label: $t('alarmManagement.unprocessed'),
     value: 1,
   },
   {
-    label: '处理中',
+    label: $t('status.processing'),
     value: 2,
   },
   {
-    label: '已处理',
+    label: $t('alarmManagement.processed'),
     value: 3,
   },
 ]);
@@ -686,7 +686,7 @@ onMounted(() => {
       :width="400"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('alarmManagement.infoEdit')"
       @close="onClose"
     >
       <Form
@@ -766,23 +766,23 @@ onMounted(() => {
       :width="700"
       class="custom-class"
       placement="right"
-      title="信息编辑"
+      :title="$t('alarmManagement.infoEdit')"
       @close="detailsClose"
     >
       <Descriptions :column="2" bordered>
-        <DescriptionsItem label="告警类型">
+        <DescriptionsItem :label="$t('alarmManagement.warningType')">
           {{ details.problemDesc }}
         </DescriptionsItem>
-        <DescriptionsItem label="处理人">
+        <DescriptionsItem :label="$t('alarmManagement.handlerLabel')">
           {{ details.handleUser }}
         </DescriptionsItem>
-        <DescriptionsItem label="处理方式">
+        <DescriptionsItem :label="$t('alarmManagement.treatment')">
           {{ details.resultType }}
         </DescriptionsItem>
-        <DescriptionsItem label="处理描述">
+        <DescriptionsItem :label="$t('alarmManagement.processingDescription')">
           {{ details.handleContent }}
         </DescriptionsItem>
-        <DescriptionsItem label="现场图片">
+        <DescriptionsItem :label="$t('alarmManagement.sitePhoto')">
           <template v-if="details.imageUrls">
             <Image
               :src="item"
@@ -792,7 +792,7 @@ onMounted(() => {
             />
           </template>
         </DescriptionsItem>
-        <DescriptionsItem label="处理时间">
+        <DescriptionsItem :label="$t('alarmManagement.processingTime')">
           {{ details.handleTime }}
         </DescriptionsItem>
       </Descriptions>

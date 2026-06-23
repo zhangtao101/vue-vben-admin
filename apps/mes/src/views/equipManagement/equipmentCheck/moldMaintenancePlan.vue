@@ -92,7 +92,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 60, title: '序号' },
+    { type: 'seq', width: 60, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'planCode',
       title: $t('moldMaintenancePlan.planCode'),
@@ -144,7 +144,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'action',
-      title: '操作',
+      title: $t('common.operation'),
       width: 180,
       fixed: 'right',
       slots: { default: 'action' },
@@ -265,10 +265,10 @@ function handleView(row: MoldMaintenancePlan) {
 // ========== 删除 ==========
 function handleDelete(row: MoldMaintenancePlan) {
   Modal.confirm({
-    title: '提示',
+    title: $t('common.prompt'),
     content: $t('moldMaintenancePlan.confirmDelete'),
-    okText: '确认',
-    cancelText: '取消',
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
     okButtonProps: { danger: true },
     onOk() {
       return new Promise((resolve) => {

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,89 +34,89 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
+    { field: 'worksheetCode', title: $t('productionDaily.WorkOrder_1'), minWidth: 200 },
     {
       field: 'workstationName ',
-      title: '工作站名称',
+      title: $t('productionDaily.Name'),
       minWidth: 200,
     },
     {
       field: 'productCode',
-      title: '产品编号',
+      title: $t('productionDaily.CodeProduct'),
       minWidth: 200,
     },
     {
       field: 'productName',
-      title: '产品名称',
+      title: $t('productionDaily.NameProduct'),
       minWidth: 200,
     },
     {
       field: 'meterNumber',
-      title: '仪表编号',
+      title: $t('productionDaily.Code_5'),
       minWidth: 200,
     },
     {
       field: 'startCollectionTime',
-      title: '正常开始采集时间',
+      title: $t('productionDaily.TimeStartCollection'),
       minWidth: 200,
     },
     {
       field: 'endCollectionTime',
-      title: '正常结束采集时间',
+      title: $t('productionDaily.TimeEndCollection'),
       minWidth: 200,
     },
     {
       field: 'startNumber',
-      title: '开始读数',
+      title: $t('productionDaily.Start'),
       minWidth: 200,
     },
     {
       field: 'endNumber',
-      title: '结束读数',
+      title: $t('productionDaily.End'),
       minWidth: 200,
     },
     {
       field: 'trqValue',
-      title: '天然气',
+      title: $t('productionDaily.NaturalGas'),
       minWidth: 120,
     },
     {
       field: 'jlqValue',
-      title: '焦炉气(M3)',
+      title: $t('productionDaily.COGM3'),
       minWidth: 120,
     },
     {
       field: 'smjValue',
-      title: '水煤浆（KG）',
+      title: $t('productionDaily.CWSKG'),
       minWidth: 120,
     },
     {
       field: 'dlValue',
-      title: '电能(KWH)',
+      title: $t('productionDaily.KWHElectric_2'),
       minWidth: 120,
     },
     {
       field: 'YCstartCollectionTime',
-      title: '异常开始采集时间',
+      title: $t('productionDaily.ExceptionTimeStartCollection'),
       minWidth: 200,
     },
     {
       field: 'YCendCollectionTime',
-      title: '异常结束采集时间',
+      title: $t('productionDaily.ExceptionTimeEndCollection'),
       minWidth: 200,
     },
     {
       field: 'errorCause',
-      title: '异常原因',
+      title: $t('productionDaily.Exception_1'),
       minWidth: 200,
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,
@@ -158,13 +158,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

@@ -84,7 +84,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'seq', width: 60, title: '序号' },
+    { type: 'seq', width: 60, title: $t('basic.laborHourEvaluation.sequence') },
     {
       field: 'orderNo',
       title: $t('repair.spareOrder.orderNo'),
@@ -266,7 +266,7 @@ function handleEdit(row: any) {
 function handleDelete(row: any) {
   Modal.confirm({
     title: $t('repair.spareOrder.confirmDelete'),
-    content: `确定要删除单据「${row.orderName}」吗？`,
+    content: $t('repair.spareOrder.deleteMessage', { name: row.orderName }),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () => {
@@ -287,7 +287,7 @@ function handleDelete(row: any) {
 function handleApprove(row: any) {
   Modal.confirm({
     title: $t('repair.spareOrder.approveConfirm'),
-    content: `确定要审核通过单据「${row.orderName}」吗？`,
+    content: $t('repair.spareOrder.approveMessage', { name: row.orderName }),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () => {
@@ -308,7 +308,7 @@ function handleApprove(row: any) {
 function handleReject(row: any) {
   Modal.confirm({
     title: $t('repair.spareOrder.rejectConfirm'),
-    content: `确定要驳回单据「${row.orderName}」吗？`,
+    content: $t('repair.spareOrder.rejectMessage', { name: row.orderName }),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () => {

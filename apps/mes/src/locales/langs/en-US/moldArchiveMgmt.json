@@ -3,6 +3,7 @@
   "keyword": "Keyword",
   "keywordPlaceholder": "Please enter mold code or name to search",
   "status": "Status",
+  "statusPlaceholder": "Select Status",
   "statusActive": "Active",
   "statusDisabled": "Disabled",
   "moldCode": "Mold Code",

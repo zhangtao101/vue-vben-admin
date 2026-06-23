@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,31 +34,31 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'productName', title: '产品名称', minWidth: 200 },
-    { field: 'ballMillCode', title: '球磨机号', minWidth: 200 },
+    { field: 'day', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'worksheetCode', title: $t('productionDaily.WorkOrder_1'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.CodeProduct_1'), minWidth: 200 },
+    { field: 'productName', title: $t('productionDaily.NameProduct'), minWidth: 200 },
+    { field: 'ballMillCode', title: $t('productionDaily.ballMill_1'), minWidth: 200 },
     {
       field: 'inreportNumber',
-      title: '当日投入量（KG）',
+      title: $t('productionDaily.InputKG'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'outreportNumber',
-      title: '当日产出量（KG）',
+      title: $t('productionDaily.OutputKG'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
-    { field: 'tankName', title: '存浆容器（八角桶）', minWidth: 200 },
+    { field: 'tankName', title: $t('productionDaily.slurryStorageDrum'), minWidth: 200 },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,
@@ -100,13 +100,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

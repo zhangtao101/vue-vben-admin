@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -49,27 +49,27 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     {
       field: 'workshop',
-      title: '所属车间',
+      title: $t('baseInfo.workshop'),
       minWidth: 100,
       formatter: ({ cellValue }) => {
-        return cellValue === 1 ? '装配车间' : '焊接车间';
+        return cellValue === 1 ? $t('baseInfo.assemblyWorkshop') : $t('baseInfo.weldingWorkshop');
       },
     },
-    { field: 'checkPointCode', title: '测控点编号', minWidth: 100 },
-    { field: 'checkPointName', title: '测控点名称', minWidth: 120 },
-    { field: 'equipmentCode', title: '设备编号', minWidth: 100 },
-    { field: 'equipmentName', title: '设备名称', minWidth: 100 },
-    { field: 'processName', title: '工序名称', minWidth: 180 },
-    { field: 'lineName', title: '生产线名称', minWidth: 100 },
-    { field: 'ip', title: '测控点IP', minWidth: 100 },
-    { field: 'port', title: '测控点端口号', minWidth: 120 },
-    { field: 'macAddress', title: 'MAC地址', minWidth: 120 },
-    { field: 'description', title: '测控点描述', minWidth: 120 },
+    { field: 'checkPointCode', title: $t('baseInfo.checkPointCode'), minWidth: 100 },
+    { field: 'checkPointName', title: $t('baseInfo.checkPointName'), minWidth: 120 },
+    { field: 'equipmentCode', title: $t('baseInfo.equipmentCode'), minWidth: 100 },
+    { field: 'equipmentName', title: $t('baseInfo.equipmentName'), minWidth: 100 },
+    { field: 'processName', title: $t('baseInfo.processName'), minWidth: 180 },
+    { field: 'lineName', title: $t('baseInfo.lineName'), minWidth: 100 },
+    { field: 'ip', title: $t('baseInfo.ip'), minWidth: 100 },
+    { field: 'port', title: $t('baseInfo.port'), minWidth: 120 },
+    { field: 'macAddress', title: $t('baseInfo.macAddress'), minWidth: 120 },
+    { field: 'description', title: $t('baseInfo.description'), minWidth: 120 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('baseInfo.action'),
       minWidth: 120,
     },
   ],
@@ -113,9 +113,9 @@ const queryParams = ref({
 // endregion
 
 // region 车间列表
-const workshopList = ref([
-  { id: 1, name: '装配车间' },
-  { id: 2, name: '焊接车间' },
+const workshopList = computed(() => [
+  { id: 1, name: $t('baseInfo.assemblyWorkshop') },
+  { id: 2, name: $t('baseInfo.weldingWorkshop') },
 ]);
 
 // endregion
@@ -154,35 +154,35 @@ const formData = ref({
 
 const rules: any = {
   checkPointCode: [
-    { required: true, message: '请输入测控点编号', trigger: 'blur' },
+    { required: true, message: $t('baseInfo.inputCheckPointCode'), trigger: 'blur' },
   ],
   checkPointName: [
-    { required: true, message: '请输入测控点名称', trigger: 'blur' },
+    { required: true, message: $t('baseInfo.inputCheckPointName'), trigger: 'blur' },
   ],
   ip: [
-    { required: true, message: '请输入测控点IP', trigger: 'blur' },
+    { required: true, message: $t('baseInfo.inputIp'), trigger: 'blur' },
     {
       pattern: /^(\d{1,3}\.){3}\d{1,3}$/,
-      message: '请输入有效的IP地址',
+      message: $t('baseInfo.inputValidIp'),
       trigger: 'blur',
     },
   ],
   port: [
-    { required: true, message: '请输入测控点端口号', trigger: 'blur' },
+    { required: true, message: $t('baseInfo.inputPort'), trigger: 'blur' },
     {
       type: 'number',
       min: 1,
       max: 65_535,
-      message: '端口号范围应为1-65535',
+      message: $t('baseInfo.portRange'),
       trigger: 'blur',
     },
   ],
-  workshop: [{ required: true, message: '请选择所属车间', trigger: 'change' }],
+  workshop: [{ required: true, message: $t('baseInfo.selectWorkshop'), trigger: 'change' }],
   processName: [
-    { required: true, message: '请选择工序名称', trigger: 'change' },
+    { required: true, message: $t('baseInfo.selectProcessName'), trigger: 'change' },
   ],
   processCode: [
-    { required: true, message: '请选择工序编码', trigger: 'change' },
+    { required: true, message: $t('baseInfo.selectProcessCode'), trigger: 'change' },
   ],
   lineName: [],
 };
@@ -265,14 +265,14 @@ function handleEdit(row: any) {
  */
 function handleDelete(row: any) {
   Modal.confirm({
-    title: '提示',
-    content: '该操作不可撤销，请确认！',
-    okText: '确定',
-    cancelText: '取消',
+    title: $t('baseInfo.confirmTitle'),
+    content: $t('baseInfo.confirmContent'),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
     okType: 'danger',
     onOk() {
       deleteCheckPoint(row.id).then(() => {
-        message.success('删除成功!');
+        message.success($t('baseInfo.deleteSuccess'));
         gridApi.reload();
       });
     },
@@ -286,13 +286,13 @@ function handleSubmit() {
   formRef.value?.validate().then(() => {
     if (editMode.value) {
       updateCheckPoint(formData.value).then(() => {
-        message.success('更新成功');
+        message.success($t('baseInfo.updateSuccess'));
         handleCancel();
         gridApi.reload();
       });
     } else {
       createCheckPoint(formData.value).then(() => {
-        message.success('创建成功');
+        message.success($t('baseInfo.createSuccess'));
         handleCancel();
         gridApi.reload();
       });
@@ -421,38 +421,38 @@ function handleLineNameChange() {
   <Page>
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <FormItem label="测控点名称">
+        <FormItem :label="$t('baseInfo.checkPointName')">
           <Input
             v-model:value="queryParams.checkPointName"
             :max-length="32"
-            placeholder="请输入测控点名称"
+            :placeholder="$t('baseInfo.inputCheckPointName')"
             style="width: 200px"
             @press-enter="handleSearch"
           />
         </FormItem>
-        <FormItem label="设备名称">
+        <FormItem :label="$t('baseInfo.equipmentName')">
           <Input
             v-model:value="queryParams.equipmentName"
             :max-length="32"
-            placeholder="请输入设备名称"
+            :placeholder="$t('baseInfo.inputEquipmentName')"
             style="width: 200px"
             @press-enter="handleSearch"
           />
         </FormItem>
-        <FormItem label="工序名称">
+        <FormItem :label="$t('baseInfo.processName')">
           <Input
             v-model:value="queryParams.processName"
             :max-length="32"
-            placeholder="请输入工序名称"
+            :placeholder="$t('baseInfo.inputProcessName')"
             style="width: 200px"
             @press-enter="handleSearch"
           />
         </FormItem>
-        <FormItem label="IP地址">
+        <FormItem :label="$t('baseInfo.ipAddress')">
           <Input
             v-model:value="queryParams.ipAddress"
             :max-length="15"
-            placeholder="请输入IP地址"
+            :placeholder="$t('baseInfo.inputIpAddress')"
             style="width: 200px"
             @press-enter="handleSearch"
           />
@@ -512,7 +512,7 @@ function handleLineNameChange() {
     <!-- 编辑抽屉 -->
     <Drawer
       v-model:open="showEditDrawer"
-      :title="editMode ? '编辑' : '新增'"
+      :title="editMode ? $t('baseInfo.edit') : $t('baseInfo.add')"
       :width="800"
       :footer-style="{ textAlign: 'right' }"
     >
@@ -524,30 +524,30 @@ function handleLineNameChange() {
         :wrapper-col="{ span: 16 }"
         autocomplete="off"
       >
-        <FormItem label="测控点名称" name="checkPointName">
+        <FormItem :label="$t('baseInfo.checkPointName')" name="checkPointName">
           <Input v-model:value="formData.checkPointName" :max-length="32" />
         </FormItem>
-        <FormItem label="测控点编号" name="checkPointCode">
+        <FormItem :label="$t('baseInfo.checkPointCode')" name="checkPointCode">
           <Input
             v-model:value="formData.checkPointCode"
             :max-length="32"
             :disabled="editMode"
           />
         </FormItem>
-        <FormItem label="测控点IP" name="ip">
+        <FormItem :label="$t('baseInfo.ip')" name="ip">
           <Input v-model:value="formData.ip" :max-length="15" />
         </FormItem>
-        <FormItem label="测控点端口号" name="port">
+        <FormItem :label="$t('baseInfo.port')" name="port">
           <InputNumber v-model:value="formData.port" style="width: 100%" />
         </FormItem>
-        <FormItem label="MAC地址" name="macAddress">
+        <FormItem :label="$t('baseInfo.macAddress')" name="macAddress">
           <Input v-model:value="formData.macAddress" :max-length="50" />
         </FormItem>
-        <FormItem label="所属车间" name="workshop">
+        <FormItem :label="$t('baseInfo.workshop')" name="workshop">
           <Select
             v-model:value="formData.workshop"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('baseInfo.selectPlaceholder')"
             style="width: 100%"
           >
             <SelectOption
@@ -559,12 +559,12 @@ function handleLineNameChange() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="设备名称" name="equipmentName">
+        <FormItem :label="$t('baseInfo.equipmentName')" name="equipmentName">
           <Select
             v-model:value="formData.equipmentName"
             allow-clear
             filterable
-            placeholder="请输入"
+            :placeholder="$t('baseInfo.inputPlaceholder')"
             @search="handleEquipmentNameSearch"
             @change="handleEquipmentNameChange"
             :loading="selectLoading"
@@ -580,11 +580,11 @@ function handleLineNameChange() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="设备编号" name="equipmentCode">
+        <FormItem :label="$t('baseInfo.equipmentCode')" name="equipmentCode">
           <Select
             v-model:value="formData.equipmentCode"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('baseInfo.selectPlaceholder')"
             style="width: 100%"
             @change="handleEquipCodeChange"
           >
@@ -597,12 +597,12 @@ function handleLineNameChange() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="工序名称" name="processName">
+        <FormItem :label="$t('baseInfo.processName')" name="processName">
           <Select
             v-model:value="formData.processName"
             allow-clear
             filterable
-            placeholder="请输入"
+            :placeholder="$t('baseInfo.inputPlaceholder')"
             @search="handleProcessNameSearch"
             @change="handleProcessNameChange"
             :loading="selectLoading"
@@ -618,11 +618,11 @@ function handleLineNameChange() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="工序编码" name="processCode">
+        <FormItem :label="$t('baseInfo.processCode')" name="processCode">
           <Select
             v-model:value="formData.processCode"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('baseInfo.selectPlaceholder')"
             style="width: 100%"
             @change="handleProcessCodeChange"
           >
@@ -635,11 +635,11 @@ function handleLineNameChange() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="生产线名称" name="lineName">
+        <FormItem :label="$t('baseInfo.lineName')" name="lineName">
           <Select
             v-model:value="formData.lineName"
             allow-clear
-            placeholder="请选择"
+            :placeholder="$t('baseInfo.selectPlaceholder')"
             style="width: 100%"
             @change="handleLineNameChange"
           >
@@ -652,7 +652,7 @@ function handleLineNameChange() {
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem label="测控点描述" name="description">
+        <FormItem :label="$t('baseInfo.controlPointDescription')" name="description">
           <Input.TextArea
             v-model:value="formData.description"
             :max-length="256"

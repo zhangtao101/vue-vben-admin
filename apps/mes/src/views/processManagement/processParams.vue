@@ -64,28 +64,28 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'tempCode', title: '模板编号', minWidth: 150 },
-    { field: 'tempName', title: '模板名称', minWidth: 220 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'tempCode', title: $t('processManagement.processParams.templateNumber'), minWidth: 150 },
+    { field: 'tempName', title: $t('processManagement.processParams.templateName'), minWidth: 220 },
     {
       field: 'tempType',
-      title: '模板类型',
+      title: $t('processManagement.processParams.templateType'),
       minWidth: 150,
       slots: { default: 'tempType' },
     },
-    { field: 'proceCode', title: '工序', minWidth: 200 },
+    { field: 'proceCode', title: $t('processManagement.processParams.process'), minWidth: 200 },
     {
       field: 'state',
-      title: '状态',
+      title: $t('processManagement.processParams.status'),
       minWidth: 150,
       slots: { default: 'state' },
     },
-    { field: 'auditStateName', title: '审核状态', minWidth: 150 },
+    { field: 'auditStateName', title: $t('processManagement.processParams.auditStatus'), minWidth: 150 },
     {
       field: 'operation',
       fixed: 'right',
       slots: { default: 'operation' },
-      title: '操作',
+      title: $t('processManagement.processParams.operation'),
       minWidth: 350,
     },
   ],
@@ -166,10 +166,10 @@ const showEditDrawer = ref(false);
 const editItem = ref<any>({});
 // form表单规则验证
 const editRules = ref<any>({
-  proceCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  tempCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  tempName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  tempType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  proceCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  tempCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  tempName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  tempType: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 // 详情表格头部
@@ -183,38 +183,38 @@ const detailHeader = ref<any>([
   {
     dataIndex: 'paramName',
     ellipsis: true,
-    title: '参数名称',
+    title: $t('processManagement.processParams.parameterName'),
     width: 120,
   },
   {
     dataIndex: 'paramType',
     ellipsis: true,
-    title: '参数类型',
+    title: $t('processManagement.processParams.parameterType'),
     width: 120,
     slots: { default: 'paramType' },
   },
   {
     dataIndex: 'paramInitValue',
     ellipsis: true,
-    title: '参数默认值',
+    title: $t('processManagement.processParams.parameterDefaultValue'),
     width: 120,
   },
   {
     dataIndex: 'paramThreshold',
     ellipsis: true,
-    title: '阈值范围',
+    title: $t('processManagement.processParams.thresholdRange'),
     width: 120,
   },
   {
     dataIndex: 'description',
     ellipsis: true,
-    title: '参数说明',
+    title: $t('processManagement.processParams.parameterDescription'),
     width: 120,
   },
   {
     dataIndex: 'operation',
     ellipsis: true,
-    title: '操作',
+    title: $t('processManagement.processParams.operation'),
     width: 180,
   },
 ]);
@@ -283,11 +283,11 @@ function delRow(index: number) {
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'danger'，通常用于表示这是一个危险的操作。
      */
@@ -297,7 +297,7 @@ function delRow(index: number) {
      * 如果用户点击取消按钮，显示一条警告消息。
      */
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     /**
      * 定义确认操作的回调函数。
@@ -309,7 +309,7 @@ function delRow(index: number) {
     /**
      * 设置对话框的标题为 '是否确认删除该条数据?'。
      */
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -326,11 +326,11 @@ function delProcess(row: any) {
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'danger'，通常用于表示这是一个危险的操作。
      */
@@ -340,7 +340,7 @@ function delProcess(row: any) {
      * 如果用户点击取消按钮，显示一条警告消息。
      */
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     /**
      * 定义确认操作的回调函数。
@@ -355,7 +355,7 @@ function delProcess(row: any) {
     /**
      * 设置对话框的标题为 '是否确认删除该条数据?'。
      */
-    title: '是否确认删除该条数据?',
+    title: $t('page.common.confirmDeleteTitle'),
   });
 }
 
@@ -529,18 +529,18 @@ function queryLog() {
  */
 function changeState(row: any) {
   // 根据 row.state 的值设置对话框的标题，确定是启用还是停用配置
-  const title = row.state === 1 ? '是否确认启用该配置?' : '是否确认停用该配置?';
+  const title = row.state === 1 ? $t('processManagement.processParams.confirmEnable') : $t('processManagement.processParams.confirmDisable');
 
   // 调用 Modal.confirm 方法显示一个确认对话框，让用户确认是否更改配置状态
   Modal.confirm({
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'primary'，表示这是一个主要的操作。
      */
@@ -619,7 +619,7 @@ watch(
 function handleAudit(row: any, isPass: boolean) {
   // 根据 isPass 的值设置对话框的标题和 audioFun 的状态码
   // 如果 isPass 为 true，表示审核通过，否则表示审核不通过
-  const title = isPass ? '是否确认通过该条数据?' : '是否确认不通过该条数据?';
+  const title = isPass ? $t('processManagement.processParams.confirmPass') : $t('processManagement.processParams.confirmNotPass');
   const statusCode = isPass ? 2 : 3;
 
   // 调用 Modal.confirm 方法显示一个确认对话框，让用户确认是否执行审核操作
@@ -627,11 +627,11 @@ function handleAudit(row: any, isPass: boolean) {
     /**
      * 设置取消按钮的文本为 '取消'。
      */
-    cancelText: '取消',
+    cancelText: $t('common.cancel'),
     /**
      * 设置确认按钮的文本为 '确认'。
      */
-    okText: '确认',
+    okText: $t('common.confirm'),
     /**
      * 设置确认按钮的类型为 'primary'，表示这是一个主要的操作。
      */
@@ -692,9 +692,9 @@ const fileList = ref<any>([]);
 function handleChange(info: any) {
   if (info.file.status === 'done') {
     gridApi.reload();
-    message.success(`文件上传成功!`);
+    message.success($t('processManagement.processParams.uploadSuccess'));
   } else if (info.file.status === 'error') {
-    message.error(`文件上传失败`);
+    message.error($t('processManagement.processParams.uploadFailure'));
   }
 }
 
@@ -778,31 +778,31 @@ onMounted(() => {
         <template #paramType="{ row }">
           <span>{{
             row.paramType === 1
-              ? '数值型'
+              ? $t('processManagement.processParams.numericType')
               : row.paramType === 2
-                ? '判断型'
-                : '未定义'
+                ? $t('processManagement.processParams.judgmentType')
+                : $t('processManagement.processParams.undefined')
           }}</span>
         </template>
         <template #tempType="{ row }">
           {{
             row.tempType === 1
-              ? '参数设置模板'
+              ? $t('processManagement.processParams.parameterSettingTemplate')
               : row.tempType === 2
-                ? '参数采集模板'
-                : '参数阈值模板'
+                ? $t('processManagement.processParams.parameterCollectionTemplate')
+                : $t('processManagement.processParams.parameterThresholdTemplate')
           }}
         </template>
         <template #state="{ row }">
-          <div v-if="row.state === 3">已弃用</div>
+          <div v-if="row.state === 3">{{ $t('processManagement.processParams.deprecated') }}</div>
           <div v-else>
             <Switch
               v-model:checked="row.state"
               :checked-value="1"
               :disabled="row.auditState !== 2 && editButton"
               :un-checked-value="2"
-              checked-children="启用"
-              un-checked-children="停用"
+              :checked-children="$t('processManagement.processParams.enabled')"
+              :un-checked-children="$t('processManagement.processParams.disabled')"
               @change="changeState(row)"
             />
           </div>
@@ -905,7 +905,7 @@ onMounted(() => {
       :footer-style="{ textAlign: 'right' }"
       :height="600"
       placement="top"
-      title="信息编辑"
+      :title="$t('processManagement.processParams.infoEdit')"
       @close="onClose()"
       class="z-auto"
     >
@@ -944,9 +944,9 @@ onMounted(() => {
             :disabled="isShowStatus"
             style="width: 180px !important"
           >
-            <SelectOption :value="1">参数设置模板</SelectOption>
-            <SelectOption :value="2">参数采集模板</SelectOption>
-            <SelectOption :value="3">参数阈值模板</SelectOption>
+            <SelectOption :value="1">{{ $t('processManagement.processParams.parameterSettingTemplate') }}</SelectOption>
+            <SelectOption :value="2">{{ $t('processManagement.processParams.parameterCollectionTemplate') }}</SelectOption>
+            <SelectOption :value="3">{{ $t('processManagement.processParams.parameterThresholdTemplate') }}</SelectOption>
           </Select>
         </FormItem>
         <!-- 所属工序 -->
@@ -1010,8 +1010,8 @@ onMounted(() => {
                 :disabled="isShowStatus"
                 class="w-3/4"
               >
-                <SelectOption :value="1">数值型</SelectOption>
-                <SelectOption :value="2">判断型</SelectOption>
+                <SelectOption :value="1">{{ $t('processManagement.processParams.numericType') }}</SelectOption>
+                <SelectOption :value="2">{{ $t('processManagement.processParams.judgmentType') }}</SelectOption>
               </Select>
               <Input
                 v-else
@@ -1044,7 +1044,7 @@ onMounted(() => {
       :footer-style="{ textAlign: 'right' }"
       :height="500"
       placement="top"
-      title="日志查看"
+      :title="$t('processManagement.processParams.logView')"
       @close="onClose()"
     >
       <Spin :spinning="logLoading">

@@ -60,36 +60,36 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     {
       field: 'workSheetCode',
-      title: '工单号',
+      title: $t('waterContentMaintenance.workSheetCode'),
       minWidth: 220,
     },
-    { field: 'planDateStart', title: '计划时间', minWidth: 150 },
-    { field: 'planCode', title: '计划号', minWidth: 220 },
-    { field: 'lineName', title: '任务线别', minWidth: 150 },
-    { field: 'subProductName', title: '部件名称', minWidth: 200 },
-    { field: 'sideNo', title: '面号', minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: '工单计划数', minWidth: 150 },
-    { field: 'workSheetFinishNumber', title: '工单完成数', minWidth: 150 },
-    { field: 'productName', title: '产品名称', minWidth: 150 },
-    { field: 'subPlanNumber', title: '部件计划数量', minWidth: 150 },
-    { field: 'productCode', title: '产品编号', minWidth: 150 },
-    { field: 'worksheetCodea', title: 'A工单号', minWidth: 150 },
-    { field: 'subProductCode', title: '部件编号', minWidth: 150 },
-    { field: 'subPlanCode', title: '部件计划号', minWidth: 150 },
-    { field: 'produceUnarrangedNumber', title: '生产未排数', minWidth: 150 },
-    { field: 'produceNotFinishNumber', title: '生产未完数', minWidth: 150 },
-    { field: 'produceWorkshop', title: '生产车间', minWidth: 150 },
-    { field: 'remark', title: '备注', minWidth: 150 },
-    { field: 'updateUsername', title: '操作时间', minWidth: 150 },
-    { field: 'updateTime', title: '操作时间', minWidth: 150 },
+    { field: 'planDateStart', title: $t('waterContentMaintenance.planDate'), minWidth: 150 },
+    { field: 'planCode', title: $t('waterContentMaintenance.planCode'), minWidth: 220 },
+    { field: 'lineName', title: $t('waterContentMaintenance.lineName'), minWidth: 150 },
+    { field: 'subProductName', title: $t('waterContentMaintenance.subProductName'), minWidth: 200 },
+    { field: 'sideNo', title: $t('waterContentMaintenance.sideNo'), minWidth: 150 },
+    { field: 'workSheetPlanNumber', title: $t('waterContentMaintenance.workSheetPlanNumber'), minWidth: 150 },
+    { field: 'workSheetFinishNumber', title: $t('waterContentMaintenance.workSheetFinishNumber'), minWidth: 150 },
+    { field: 'productName', title: $t('waterContentMaintenance.productName'), minWidth: 150 },
+    { field: 'subPlanNumber', title: $t('waterContentMaintenance.subPlanNumber'), minWidth: 150 },
+    { field: 'productCode', title: $t('waterContentMaintenance.productCode'), minWidth: 150 },
+    { field: 'worksheetCodea', title: $t('waterContentMaintenance.worksheetCodea'), minWidth: 150 },
+    { field: 'subProductCode', title: $t('waterContentMaintenance.subProductCode'), minWidth: 150 },
+    { field: 'subPlanCode', title: $t('waterContentMaintenance.subPlanCode'), minWidth: 150 },
+    { field: 'produceUnarrangedNumber', title: $t('waterContentMaintenance.produceUnarrangedNumber'), minWidth: 150 },
+    { field: 'produceNotFinishNumber', title: $t('waterContentMaintenance.produceNotFinishNumber'), minWidth: 150 },
+    { field: 'produceWorkshop', title: $t('waterContentMaintenance.produceWorkshop'), minWidth: 150 },
+    { field: 'remark', title: $t('waterContentMaintenance.remark'), minWidth: 150 },
+    { field: 'updateUsername', title: $t('waterContentMaintenance.updateUsername'), minWidth: 150 },
+    { field: 'updateTime', title: $t('waterContentMaintenance.updateTime'), minWidth: 150 },
     {
       field: 'operation',
       fixed: 'right',
       slots: { default: 'operation' },
-      title: '操作',
+      title: $t('waterContentMaintenance.operation'),
       minWidth: 220,
     },
   ],
@@ -233,9 +233,9 @@ function close() {
 
 /**
  * addLine - 在表单状态数组的指定索引位置添加一个新的空行。
- * @param {number} index - 需要添加空行的索引位置。
+ * @param {any} index - 需要添加空行的索引位置。
  */
-function addLine(index: number) {
+function addLine(index: any) {
   // 检查 formState 数组在指定索引位置是否有值，如果没有，则初始化为空数组。
   if (!formState.value[index]) {
     formState.value[index] = [];
@@ -247,11 +247,11 @@ function addLine(index: number) {
 
 /**
  * delLine - 删除表单状态数组中的一行，并根据该行是否具有唯一标识符（如 `id`）来决定操作。
- * @param {number} rowIndex - 需要删除的行的索引位置。
- * @param {number} index - 需要删除的行的索引位置。
+ * @param {any} rowIndex - 需要删除的行的索引位置。
+ * @param {any} index - 需要删除的行的索引位置。
  * @param {object} item - 需要删除的行的数据对象。
  */
-function delLine(rowIndex: number, index: number, item: any) {
+function delLine(rowIndex: any, index: any, item: any) {
   // 弹出确认对话框，询问用户是否确定删除。
   Modal.confirm({
     // 当用户点击确认按钮时执行的函数。
@@ -280,7 +280,7 @@ function delLine(rowIndex: number, index: number, item: any) {
       }
     },
     // 设置对话框标题为“确定删除吗？”
-    title: '确定删除吗？',
+    title: $t('waterContentMaintenance.confirmDelete'),
   });
 }
 
@@ -319,9 +319,9 @@ function queryMoistureContent(key: any) {
 /**
  * submit - 提交表单数据，根据数据是否已有 `id` 来决定是更新数据还是保存新数据。
  * @param {object} item - 当前要提交的表单项数据。
- * @param {number} index - 当前表单项在数组中的索引。
+ * @param {any} index - 当前表单项在数组中的索引。
  */
-function submit(item: any, index: number) {
+function submit(item: any, index: any) {
   // 验证表单数据的有效性。
   formRef.value.validate().then(() => {
     // 构建提交参数对象，包含当前表单项数据和其他必要信息。
@@ -381,12 +381,12 @@ function handleChange(info: any) {
   if (info.file.status === 'done') {
     if (info.file.response?.code === 200) {
       gridApi.reload();
-      message.success(`文件上传成功!`);
+      message.success($t('waterContentMaintenance.uploadSuccess'));
     } else {
-      message.error(`文件上传失败, ${info.file.response?.msg}`);
+      message.error(`${$t('waterContentMaintenance.uploadFailure')}, ${info.file.response?.msg}`);
     }
   } else if (info.file.status === 'error') {
-    message.error(`文件上传失败`);
+    message.error($t('waterContentMaintenance.uploadFailure'));
   }
 }
 
@@ -419,7 +419,7 @@ function printFile(workSheetCode: string) {
       });
       hiprintTemplate.print({ table: data }, { leftOffset: -1, topOffset: -1 });
     } catch {
-      console.error('模板解析失败');
+      console.error($t('waterContentMaintenance.templateParseFailure'));
     }
   });
 }
@@ -552,7 +552,7 @@ onMounted(() => {
       :footer-style="{ textAlign: 'right' }"
       :width="600"
       placement="right"
-      title="投料"
+      :title="$t('waterContentMaintenance.feeding')"
       @close="close"
     >
       <Spin :spinning="bomLoading">
@@ -587,7 +587,7 @@ onMounted(() => {
                             :label="$t('waterContentMaintenance.batchCode')"
                             :name="[i, index, 'batchCode']"
                             :rules="[
-                              { required: true, message: '该项为必填项!' },
+                              { required: true, message: $t('waterContentMaintenance.requiredField') },
                             ]"
                           >
                             <Input v-model:value="item.batchCode" />
@@ -599,7 +599,7 @@ onMounted(() => {
                             :label="$t('waterContentMaintenance.warehouseCode')"
                             :name="[i, index, 'warehouseCode']"
                             :rules="[
-                              { required: false, message: '该项为必填项!' },
+                              { required: false, message: $t('waterContentMaintenance.requiredField') },
                             ]"
                           >
                             <Input v-model:value="item.warehouseCode" />
@@ -613,7 +613,7 @@ onMounted(() => {
                             "
                             :name="[i, index, 'wrehouseAreaCode']"
                             :rules="[
-                              { required: false, message: '该项为必填项!' },
+                              { required: false, message: $t('waterContentMaintenance.requiredField') },
                             ]"
                           >
                             <Input v-model:value="item.wrehouseAreaCode" />
@@ -629,7 +629,7 @@ onMounted(() => {
                             "
                             :name="[i, index, 'actualStorageLocation']"
                             :rules="[
-                              { required: false, message: '该项为必填项!' },
+                              { required: false, message: $t('waterContentMaintenance.requiredField') },
                             ]"
                           >
                             <Input v-model:value="item.sjWarehouseCode" />
@@ -641,7 +641,7 @@ onMounted(() => {
                             :label="$t('waterContentMaintenance.waterNumber')"
                             :name="[i, index, 'waterNumber']"
                             :rules="[
-                              { required: true, message: '该项为必填项!' },
+                              { required: true, message: $t('waterContentMaintenance.requiredField') },
                             ]"
                           >
                             <InputNumber
@@ -672,7 +672,7 @@ onMounted(() => {
                             "
                             :name="[i, index, 'standardNumber']"
                             :rules="[
-                              { required: false, message: '该项为必填项!' },
+                              { required: false, message: $t('waterContentMaintenance.requiredField') },
                             ]"
                           >
                             <InputNumber
@@ -709,7 +709,7 @@ onMounted(() => {
                             type="primary"
                             @click="submit(item, i)"
                           >
-                            保存
+                            {{ $t('waterContentMaintenance.save') }}
                           </Button>
                         </Col>
                         <Col :offset="2" :span="11">
@@ -720,14 +720,14 @@ onMounted(() => {
                             type="primary"
                             @click="delLine(i, index, item)"
                           >
-                            删除
+                            {{ $t('waterContentMaintenance.delete') }}
                           </Button>
                         </Col>
                       </Row>
                     </div>
                   </template>
                   <Button class="w-full" type="primary" @click="addLine(i)">
-                    添加
+                    {{ $t('waterContentMaintenance.add') }}
                   </Button>
                 </Spin>
               </CollapsePanel>

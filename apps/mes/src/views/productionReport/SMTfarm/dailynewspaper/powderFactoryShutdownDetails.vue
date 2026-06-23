@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -34,71 +34,71 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '日期', minWidth: 200 },
-    { field: 'classType', title: '班次', minWidth: 200 },
-    { field: 'worksheetCode', title: '工单', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
+    { field: 'day', title: $t('productionDaily.Date'), minWidth: 200 },
+    { field: 'classType', title: $t('productionDaily.Shift'), minWidth: 200 },
+    { field: 'worksheetCode', title: $t('productionDaily.WorkOrder'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.CodeProduct_1'), minWidth: 200 },
     {
       field: 'trqStopTime',
-      title: '天然气停机时间(H)',
+      title: $t('productionDaily.StopTimeNaturalGas'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'dlStopTime',
-      title: '电能停机时间(H)',
+      title: $t('productionDaily.StopTimeElectric'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'jlqStopTime',
-      title: '焦炉气停机时间(H)',
+      title: $t('productionDaily.StopTimeCOG'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopReason',
-      title: '停机原因',
+      title: $t('productionDaily.Shutdown_4'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopTrqValue',
-      title: '停机燃气(M3)',
+      title: $t('productionDaily.ShutdownGasM3'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopDlValue',
-      title: '停机电能（KWH)',
+      title: $t('productionDaily.KWHShutdownElectric_1'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopJlqValue',
-      title: '停机焦炉气(M3)',
+      title: $t('productionDaily.COGShutdownM3'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'smjStopTime',
-      title: '水煤浆停机时间(H)',
+      title: $t('productionDaily.StopTimeCWS'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: 'stopJlqValue',
-      title: '停机水煤浆（KG）',
+      title: $t('productionDaily.CWSShutdownKG'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 5 }],
   height: 500,
   stripe: true,
@@ -140,13 +140,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

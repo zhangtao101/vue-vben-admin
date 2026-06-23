@@ -38,7 +38,7 @@ const gridOptions: VxeGridProps<any> = {
     reserve: true,
   },
   columns: [
-    { type: 'seq', width: 60, title: '序号' },
+    { type: 'seq', width: 60, title: $t('page.common.serialNumber') },
     {
       field: 'formCode',
       title: $t('qualityModule.qualityCheck.qualityEntering.formCode'),

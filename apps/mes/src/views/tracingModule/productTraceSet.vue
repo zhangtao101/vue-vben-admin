@@ -54,7 +54,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center', // 表格内容居中对齐
   border: true, // 显示表格边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 }, // 自动序号列
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动序号列
     { field: 'routeCode', title: '工艺路线编号', minWidth: 105 }, // 工艺路线的唯一标识
     { field: 'routeName', title: '工艺路线名称', minWidth: 105 }, // 工艺路线的显示名称
     { field: 'routeTypeName', title: '工艺路线类型', minWidth: 105 }, // 工艺路线的分类类型
@@ -107,7 +107,7 @@ const detailsGridOptions: VxeGridProps<any> = {
   align: 'center', // 表格内容居中对齐
   border: true, // 显示表格边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 }, // 自动序号列
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动序号列
     { field: 'processCode', title: '过程编码', minWidth: 105 }, // 工艺过程的唯一标识
     { field: 'processName', title: '过程名称', minWidth: 105 }, // 工艺过程的显示名称
     { field: 'opTime', title: '操作时间', minWidth: 160 }, // 过程操作的时间记录

@@ -41,13 +41,13 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'wareAreaCode', title: '库区编号', minWidth: 80 },
-    { field: 'wareAreaName', title: '库区名称', minWidth: 80 },
-    { field: 'warehouseName', title: '物理仓库', minWidth: 80 },
-    { field: 'remark', title: '备注', minWidth: 80 },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
+    { field: 'wareAreaCode', title: $t('storeManagement.storeBlock.wareAreaCode'), minWidth: 80 },
+    { field: 'wareAreaName', title: $t('storeManagement.storeBlock.wareAreaName'), minWidth: 80 },
+    { field: 'warehouseName', title: $t('storeManagement.storeBlock.physicalWarehouse'), minWidth: 80 },
+    { field: 'remark', title: $t('storeManagement.storeManage.storeRemark'), minWidth: 80 },
     {
-      title: '操作',
+      title: $t('common.operation'),
       minWidth: 150,
       fixed: 'right',
       slots: {
@@ -134,7 +134,7 @@ const editItem = ref<any>({});
 // form表单规则验证
 const editRules = ref<any>({
   warehouseName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('basic.requiredField'), required: true, trigger: 'change' },
   ],
 });
 
@@ -190,12 +190,12 @@ function submit() {
 function delPhysicalWarehouse(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     // 取消操作回调
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('common.cancelOperation'));
     },
     // 确认操作回调
     onOk() {
@@ -206,7 +206,7 @@ function delPhysicalWarehouse(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认删除?',
+    title: $t('basic.confirmDeleteTitle'),
   });
 }
 // endregion

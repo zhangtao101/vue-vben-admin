@@ -42,7 +42,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center', // 表格内容居中对齐
   border: true, // 显示表格边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 }, // 序号列
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 序号列
     { field: 'specialCharacterName', title: '特殊特性名称', minWidth: 90 }, // 特殊特性名称列
     { field: 'specialCharacterSymbol', title: '特殊特性符号', minWidth: 90 }, // 特殊特性符号列
     { field: 'remark', title: '备注', minWidth: 100 }, // 备注列
@@ -144,12 +144,12 @@ const editItem = ref<any>({});
 // form表单规则验证
 const editRules = ref<any>({
   specialCharacterName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
   specialCharacterSymbol: [
-    { message: '此项为必填项', required: false, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: false, trigger: 'change' },
   ],
-  remark: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  remark: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -212,12 +212,12 @@ function submit() {
 function delPhysicalWarehouse(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     // 取消操作回调
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     // 确认操作回调
     onOk() {
@@ -228,7 +228,7 @@ function delPhysicalWarehouse(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认删除?',
+    title: $t('page.common.confirmDeletePrompt'),
   });
 }
 

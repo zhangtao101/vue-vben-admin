@@ -44,16 +44,16 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'staCode', title: '岗位编码', minWidth: 150 },
-    { field: 'staName', title: '岗位名称', minWidth: 150 },
-    { field: 'staType', title: '岗位类别', minWidth: 150 },
-    { field: 'staLevel', title: '岗位等级', minWidth: 150 },
+    { title: $t('basic.serialNumber'), type: 'seq', width: 50 },
+    { field: 'staCode', title: $t('system.basePosition.jobCode'), minWidth: 150 },
+    { field: 'staName', title: $t('system.basePosition.jobName'), minWidth: 150 },
+    { field: 'staType', title: $t('system.basePosition.jobType'), minWidth: 150 },
+    { field: 'staLevel', title: $t('system.basePosition.jobLevel'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
       minWidth: 220,
     },
   ],
@@ -95,11 +95,11 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('system.basePosition.deleteCancelled'));
     },
     onOk() {
       deleteStation(row.id)
@@ -114,7 +114,7 @@ function delRow(row: any) {
           message.error(error.msg); // 显示操作失败的提示信息
         });
     },
-    title: '是否确认删除该条数据?',
+    title: $t('ui.widgets.deletionConfirmation'),
   });
 }
 
@@ -128,8 +128,8 @@ const showEditDialog = ref(false);
 const editItem = ref<any>({});
 // 新增/编辑规则
 const editRules = ref<any>({
-  staCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  staName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  staCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  staName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 /**
  * 显示编辑抽屉
@@ -330,7 +330,7 @@ onMounted(() => {
           </Button>
         </template>
         <template #state="{ row }">
-          <div v-if="row.state === 3">已弃用</div>
+          <div v-if="row.state === 3">{{ $t('system.basePosition.deprecated') }}</div>
           <div v-else>
             <Switch
               v-model:checked="row.state"
@@ -376,7 +376,7 @@ onMounted(() => {
       :footer-style="{ textAlign: 'right' }"
       :width="500"
       placement="right"
-      title="信息编辑"
+      :title="$t('basic.infoEdit')"
       @close="close"
     >
       <Form

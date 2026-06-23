@@ -49,7 +49,7 @@ const gridOptions: VxeGridProps<any> = {
   border: true, // 显示表格边框
   columns: [
     // 定义表格列配置
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     { field: 'workshopName', title: '所属车间', minWidth: 100 },
     { field: 'formCode', title: '质检表编号', minWidth: 150 },
     { field: 'formName', title: '质检表名称', minWidth: 120 },
@@ -145,16 +145,16 @@ const showDrawer = ref(false);
 const editMessage = ref<any>({});
 // 表单验证规则配置
 const editRules = ref({
-  workshop: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  formCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  formName: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  version: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  formType: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  workshop: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  formCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  formName: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  version: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  formType: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
   productReference: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
   sendNumberEnable: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
 } as any);
 
@@ -270,11 +270,11 @@ function exportFile() {
 function delRow(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     onOk() {
       // 调用删除API
@@ -284,7 +284,7 @@ function delRow(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认删除?',
+    title: $t('page.common.confirmDeletePrompt'),
   });
 }
 

@@ -4,5 +4,13 @@
   "feedingDetails": "投料明细",
   "warehouseEntryDetails": "入库明细",
   "parameterDetails": "参数明细",
-  "detailedSettingsOfTheParameterPressEquipment": "参数压机设备设置明细"
+  "detailedSettingsOfTheParameterPressEquipment": "参数压机设备设置明细",
+  "date": "日期",
+  "worksheetCode": "工单编号",
+  "workstationName": "工作站名称",
+  "productCode": "产品编号",
+  "productName": "产品名称",
+  "planNumber": "工单计划数",
+  "inStorageNumber": "工单入库数量",
+  "action": "操作"
 }

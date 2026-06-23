@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+﻿<script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
@@ -31,92 +31,92 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'day', title: '产品编码', minWidth: 200 },
-    { field: 'worksheetCode', title: '产品批号', minWidth: 200 },
-    { field: 'lineName', title: '规格 （mm）', minWidth: 200 },
-    { field: 'productCode', title: '结批情况', minWidth: 200 },
-    { field: 'materialName', title: '投入量', minWidth: 200 },
-    { field: 'reportNumber', title: '产出量', minWidth: 200 },
-    { field: 'qualityNumber', title: '前破碎合计', minWidth: 200 },
+    { field: 'day', title: $t('productionDaily.CodeProduct_1'), minWidth: 200 },
+    { field: 'worksheetCode', title: $t('productionDaily.Product'), minWidth: 200 },
+    { field: 'lineName', title: $t('productionDaily.Spec_1'), minWidth: 200 },
+    { field: 'productCode', title: $t('productionDaily.batchClosingStatus'), minWidth: 200 },
+    { field: 'materialName', title: $t('productionDaily.Input'), minWidth: 200 },
+    { field: 'reportNumber', title: $t('productionDaily.Output'), minWidth: 200 },
+    { field: 'qualityNumber', title: $t('productionDaily.PreBrokenTotal'), minWidth: 200 },
     {
-      title: '入库PA率(PA量/入库量)',
+      title: $t('productionDaily.InboundRate'),
       children: [
-        { field: 'dlValue', title: '目标', minWidth: 150 },
-        { field: 'jlqValue', title: '实际', minWidth: 150 },
+        { field: 'dlValue', title: $t('productionDaily.target'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Actual'), minWidth: 150 },
       ],
     },
     {
-      title: '前破碎率（破碎合计/投入量）',
+      title: $t('productionDaily.PreBrokenTotalInputBrokenRate'),
       children: [
-        { field: 'dlValue', title: '合计', minWidth: 150 },
-        { field: 'jlqValue', title: '窑炉', minWidth: 150 },
-        { field: 'jlqValue', title: '抛光', minWidth: 150 },
+        { field: 'dlValue', title: $t('productionDaily.Total'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Kiln'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Polish'), minWidth: 150 },
       ],
     },
-    { field: 'qualityNumber', title: '实际投入产出', minWidth: 200 },
+    { field: 'qualityNumber', title: $t('productionDaily.InputOutputActual'), minWidth: 200 },
     {
-      title: '缺陷率（缺陷量/入库量）',
+      title: $t('productionDaily.InboundDefectRate'),
       children: [
-        { field: 'dlValue', title: '色点PT', minWidth: 150 },
-        { field: 'jlqValue', title: '花纹PW', minWidth: 150 },
-        { field: 'jlqValue', title: '破釉', minWidth: 150 },
-        { field: 'jlqValue', title: '凹坑', minWidth: 150 },
-        { field: 'jlqValue', title: '洞孔', minWidth: 150 },
-        { field: 'jlqValue', title: '擦伤', minWidth: 150 },
-        { field: 'jlqValue', title: '漏底', minWidth: 150 },
-        { field: 'jlqValue', title: '平整度PE', minWidth: 150 },
+        { field: 'dlValue', title: $t('productionDaily.T_8'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.patternPW'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Glaze'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Pit'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.hole'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Scratch'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.bottomLeak'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.flatnessExceeded_1'), minWidth: 150 },
         { field: 'jlqValue', title: 'OA/OB', minWidth: 150 },
         { field: 'jlqValue', title: 'OBQ', minWidth: 150 },
-        { field: 'jlqValue', title: '报废', minWidth: 150 },
-        { field: 'jlqValue', title: '待处理', minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Scrap'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.pendingStatus'), minWidth: 150 },
       ],
     },
     {
-      title: '前破碎分布',
+      title: $t('productionDaily.PreBroken_1'),
       children: [
-        { field: 'dlValue', title: '窑炉', minWidth: 150 },
-        { field: 'jlqValue', title: '抛光', minWidth: 150 },
+        { field: 'dlValue', title: $t('productionDaily.Kiln'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Polish'), minWidth: 150 },
       ],
     },
     {
-      title: '入库量分布',
+      title: $t('productionDaily.Inbound_2'),
       children: [
-        { field: 'dlValue', title: '色点PT', minWidth: 150 },
-        { field: 'jlqValue', title: '花纹PW', minWidth: 150 },
-        { field: 'jlqValue', title: '破釉', minWidth: 150 },
-        { field: 'jlqValue', title: '凹坑', minWidth: 150 },
-        { field: 'jlqValue', title: '洞孔', minWidth: 150 },
-        { field: 'jlqValue', title: '擦伤', minWidth: 150 },
-        { field: 'jlqValue', title: '漏底', minWidth: 150 },
-        { field: 'jlqValue', title: '平整度PE', minWidth: 150 },
+        { field: 'dlValue', title: $t('productionDaily.T_8'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.patternPW'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Glaze'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Pit'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.hole'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Scratch'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.bottomLeak'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.flatnessExceeded_1'), minWidth: 150 },
         { field: 'jlqValue', title: 'OA/OB', minWidth: 150 },
         { field: 'jlqValue', title: 'OBQ', minWidth: 150 },
       ],
     },
     {
-      title: '报废',
+      title: $t('productionDaily.Scrap'),
       children: [
         { field: 'dlValue', title: 'PT', minWidth: 150 },
         { field: 'jlqValue', title: 'OAW', minWidth: 150 },
-        { field: 'jlqValue', title: '破釉', minWidth: 150 },
-        { field: 'jlqValue', title: '凹坑', minWidth: 150 },
-        { field: 'jlqValue', title: '洞孔', minWidth: 150 },
-        { field: 'jlqValue', title: '擦伤', minWidth: 150 },
-        { field: 'jlqValue', title: '漏底', minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Glaze'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Pit'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.hole'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.Scratch'), minWidth: 150 },
+        { field: 'jlqValue', title: $t('productionDaily.bottomLeak'), minWidth: 150 },
         { field: 'jlqValue', title: 'OAE', minWidth: 150 },
         { field: 'jlqValue', title: 'OA/OB', minWidth: 150 },
         { field: 'jlqValue', title: 'OBQ', minWidth: 150 },
         { field: 'jlqValue', title: 'OBJ', minWidth: 150 },
       ],
     },
-    { field: 'qualityNumber', title: '待处理', minWidth: 200 },
+    { field: 'qualityNumber', title: $t('productionDaily.pendingStatus'), minWidth: 200 },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
   height: 500,
   stripe: true,
@@ -158,13 +158,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('productionDaily.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('productionDaily.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('productionDaily.undefinedType');
     }
   }
 }

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -40,19 +40,19 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'warehouseCode', title: '仓库编号', minWidth: 120 },
-    { field: 'warehouseName', title: '仓库名称', minWidth: 120 },
+    { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
+    { field: 'warehouseCode', title: $t('storeManagement.storeManage.storeCode'), minWidth: 120 },
+    { field: 'warehouseName', title: $t('storeManagement.storeManage.storeName'), minWidth: 120 },
     {
       field: 'isUse',
-      title: '是否启用',
+      title: $t('storeManagement.storeManage.isUse'),
       minWidth: 80,
       slots: { default: 'isUse' },
     },
-    { field: 'warehouseLocation', title: '仓库位置', minWidth: 120 },
-    { field: 'remark', title: '备注', minWidth: 80 },
+    { field: 'warehouseLocation', title: $t('storeManagement.storeManage.storeLocation'), minWidth: 120 },
+    { field: 'remark', title: $t('storeManagement.storeManage.storeRemark'), minWidth: 80 },
     {
-      title: '操作',
+      title: $t('common.operation'),
       minWidth: 150,
       fixed: 'right',
       slots: {
@@ -139,31 +139,19 @@ const editItem = ref<any>({});
 // form表单规则验证
 const editRules = ref<any>({
   warehouseName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('basic.requiredField'), required: true, trigger: 'change' },
   ],
 });
 // 状态映射
-const statusMap = [
-  {
-    label: '启用',
-    value: 1,
-  },
-  {
-    label: '停用',
-    value: 0,
-  },
-];
+const statusMap = computed(() => [
+  { label: $t('common.enable'), value: 1 },
+  { label: $t('common.stopUsing'), value: 0 },
+]);
 // 是否为线边仓映射
-const valueMap = [
-  {
-    label: '是',
-    value: 1,
-  },
-  {
-    label: '否',
-    value: 0,
-  },
-];
+const valueMap = computed(() => [
+  { label: $t('common.yes'), value: 1 },
+  { label: $t('common.no'), value: 0 },
+]);
 
 /**
  * 显示编辑抽屉
@@ -219,12 +207,12 @@ function submit() {
 function delPhysicalWarehouse(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     // 取消操作回调
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('common.cancelOperation'));
     },
     // 确认操作回调
     onOk() {
@@ -235,7 +223,7 @@ function delPhysicalWarehouse(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认删除?',
+    title: $t('basic.confirmDeleteTitle'),
   });
 }
 // endregion

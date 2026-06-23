@@ -39,61 +39,61 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('page.common.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'workSheetCode', title: '工单号', minWidth: 200 },
-    { field: 'productCode', title: '产品编码', minWidth: 200 },
-    { field: 'productName', title: '产品名称', minWidth: 200 },
-    { field: 'catchCode', title: '任务采集编号', minWidth: 250 },
-    { field: 'workstationName', title: '工作站名称', minWidth: 250 },
-    { field: 'type', title: '采集模式', minWidth: 200 },
-    { field: 'energyEquipCode', title: '采集仪表编号', minWidth: 200 },
+    { field: 'workSheetCode', title: $t('energyConsumption.energyConsumptionCollectionDetails.workSheetCode'), minWidth: 200 },
+    { field: 'productCode', title: $t('energyConsumption.energyConsumptionCollectionDetails.productCode'), minWidth: 200 },
+    { field: 'productName', title: $t('energyConsumption.energyConsumptionCollectionDetails.productName'), minWidth: 200 },
+    { field: 'catchCode', title: $t('energyConsumption.energyConsumptionCollectionDetails.taskCatchCode'), minWidth: 250 },
+    { field: 'workstationName', title: $t('energyConsumption.energyConsumptionCollectionDetails.workstationName'), minWidth: 250 },
+    { field: 'type', title: $t('energyConsumption.energyConsumptionCollectionDetails.collectionMode'), minWidth: 200 },
+    { field: 'energyEquipCode', title: $t('energyConsumption.energyConsumptionCollectionDetails.collectTheInstrumentNumber'), minWidth: 200 },
     {
       field: 'energyEquipName',
-      title: '采集仪表名称',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectTheInstrumentName'),
       minWidth: 200,
     },
     {
       field: 'startTime',
-      title: '采集开始时间',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectionStartTime'),
       minWidth: 200,
     },
     {
       field: 'startValue',
-      title: '采集开始读数',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.startReadingCollection'),
       minWidth: 200,
     },
     {
       field: 'endTime',
-      title: '采集结束时间',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectionEndTime'),
       minWidth: 200,
     },
     {
       field: 'endValue',
-      title: '采集结束读数',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.readingAtTheEndOfCollection'),
       minWidth: 200,
     },
     {
       field: 'energyValue',
-      title: '采集总能耗',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.collectTheTotalEnergyConsumption'),
       minWidth: 200,
     },
     {
       field: 'catchUser',
-      title: '采集人',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.catchUser'),
       minWidth: 200,
     },
     {
       field: 'errorName',
-      title: '异常类型',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.exceptionType'),
       minWidth: 200,
     },
     {
       field: 'opType',
-      title: '操作类型',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.operationType'),
       minWidth: 200,
       slots: {
         default: 'opType',
@@ -101,12 +101,12 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'reason',
-      title: '原因',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.reason'),
       minWidth: 200,
     },
     {
       field: 'remark',
-      title: '备注',
+      title: $t('energyConsumption.energyConsumptionCollectionDetails.remark'),
       minWidth: 200,
     },
   ],
@@ -149,13 +149,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('energyConsumption.energyConsumptionCollectionDetails.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('energyConsumption.energyConsumptionCollectionDetails.brick');
     }
     default: {
-      return '未定义的类型';
+      return $t('energyConsumption.energyConsumptionStatistics.undefinedType');
     }
   }
 }

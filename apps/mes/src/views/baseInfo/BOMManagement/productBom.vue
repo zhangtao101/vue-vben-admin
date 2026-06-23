@@ -42,37 +42,37 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'bomTypeName', title: 'BOM类别', minWidth: 80 },
-    { field: 'productTypeName', title: '产品类别', minWidth: 80 },
-    { field: 'productCode', title: '产品编号', minWidth: 100 },
-    { field: 'productName', title: '产品名称', minWidth: 100 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    { field: 'bomTypeName', title: $t('baseInfo.bomCategory'), minWidth: 80 },
+    { field: 'productTypeName', title: $t('baseInfo.productCategory'), minWidth: 80 },
+    { field: 'productCode', title: $t('baseInfo.productCode'), minWidth: 100 },
+    { field: 'productName', title: $t('baseInfo.productName'), minWidth: 100 },
     {
       field: 'isLock',
-      title: '锁定',
+      title: $t('baseInfo.locked'),
       minWidth: 100,
       slots: { default: 'selectedState' },
     },
     {
       field: 'isAudit',
-      title: '审核',
+      title: $t('baseInfo.audit'),
       slots: { default: 'selectedState' },
       minWidth: 100,
     },
     {
       field: 'isHalf',
-      title: '半成品',
+      title: $t('baseInfo.semiFinished'),
       slots: { default: 'selectedState' },
       minWidth: 100,
     },
-    { field: 'materialCode', title: '材料编号', minWidth: 100 },
-    { field: 'remark', title: '备注说明', minWidth: 100 },
-    { field: 'sourceProduct', title: '来源产品', minWidth: 100 },
+    { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 100 },
+    { field: 'remark', title: $t('baseInfo.remarkDescription'), minWidth: 100 },
+    { field: 'sourceProduct', title: $t('baseInfo.sourceProduct'), minWidth: 100 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('baseInfo.action'),
       minWidth: 120,
     },
   ],
@@ -176,7 +176,7 @@ function queryAllCategoryTree() {
       treeData.value = [
         {
           typeCode: '',
-          typeName: '全部',
+          typeName: $t('page.common.all'),
           children: data,
         },
       ];
@@ -192,7 +192,7 @@ function queryAllCategoryTree() {
  * @param {boolean} info.selected - 节点的选中状态
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
-  if (node.typeName === '全部') {
+  if (node.typeName === $t('page.common.all')) {
     queryParams.value.bomTypeCode = '';
   } else {
     selectedKey.value = selected && node.typeLevel < 3 ? node : undefined;
@@ -224,29 +224,29 @@ const designGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 60 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 60 },
     {
       field: 'isLowerestLevel',
-      title: '末级',
+      title: $t('baseInfo.lastLevel'),
       width: 80,
       slots: { default: 'isLowerestLevel' },
     },
-    { field: 'orderNumber', title: '顺序', width: 80 },
-    { field: 'materialTypeName', title: '材料类别', minWidth: 120 },
-    { field: 'materialCode', title: '材料编号', minWidth: 120 },
-    { field: 'materialName', title: '部件或材料名称', minWidth: 200 },
-    { field: 'codeNumber', title: '代号', width: 100 },
-    { field: 'perDosage', title: '单位用量', width: 100 },
-    { field: 'perQuantity', title: '单位数量', width: 100 },
-    { field: 'singleDosage', title: '单件用量', width: 100 },
-    { field: 'unit', title: '单位', width: 80 },
-    { field: 'conversionFaction', title: '*转换系数', width: 100 },
-    { field: 'auxiliaryDoage', title: '=辅助用量', width: 100 },
-    { field: 'auxiliaryUnit', title: '辅助单位', width: 100 },
-    { field: 'productCode', title: '产品编号', width: 120 },
-    { field: 'supplier', title: '供应厂商', width: 120 },
-    { field: 'useProcess', title: '使用工序', width: 120 },
-    { field: 'remark', title: '备注说明', minWidth: 150 },
+    { field: 'orderNumber', title: $t('baseInfo.orderNumber'), width: 80 },
+    { field: 'materialTypeName', title: $t('baseInfo.materialCategory'), minWidth: 120 },
+    { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 120 },
+    { field: 'materialName', title: $t('baseInfo.partOrMaterialName'), minWidth: 200 },
+    { field: 'codeNumber', title: $t('baseInfo.codeName'), width: 100 },
+    { field: 'perDosage', title: $t('baseInfo.perDosage'), width: 100 },
+    { field: 'perQuantity', title: $t('baseInfo.perQuantity'), width: 100 },
+    { field: 'singleDosage', title: $t('baseInfo.singleDosage'), width: 100 },
+    { field: 'unit', title: $t('baseInfo.unit'), width: 80 },
+    { field: 'conversionFaction', title: $t('baseInfo.conversionFaction'), width: 100 },
+    { field: 'auxiliaryDoage', title: $t('baseInfo.auxiliaryDoage'), width: 100 },
+    { field: 'auxiliaryUnit', title: $t('baseInfo.auxiliaryUnit'), width: 100 },
+    { field: 'productCode', title: $t('baseInfo.productCode'), width: 120 },
+    { field: 'supplier', title: $t('baseInfo.supplier'), width: 120 },
+    { field: 'useProcess', title: $t('baseInfo.useProcess'), width: 120 },
+    { field: 'remark', title: $t('baseInfo.remarkDescription'), minWidth: 150 },
   ],
   height: 500,
   data: designGridData,
@@ -260,29 +260,29 @@ const expandGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 60 },
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 60 },
     {
       field: 'isLowerestLevel',
-      title: '末级',
+      title: $t('baseInfo.lastLevel'),
       width: 80,
       slots: { default: 'isLowerestLevel' },
     },
-    { field: 'orderNumber', title: '顺序', width: 80 },
-    { field: 'materialTypeName', title: '材料类别', minWidth: 120 },
-    { field: 'materialCode', title: '材料编号', minWidth: 120 },
-    { field: 'materialName', title: '部件或材料名称', minWidth: 200 },
-    { field: 'codeNumber', title: '代号', width: 100 },
-    { field: 'perDosage', title: '单位用量', width: 100 },
-    { field: 'perQuantity', title: '单位数量', width: 100 },
-    { field: 'singleDosage', title: '单件用量', width: 100 },
-    { field: 'unit', title: '单位', width: 80 },
-    { field: 'conversionFaction', title: '*转换系数', width: 100 },
-    { field: 'auxiliaryDoage', title: '=辅助用量', width: 100 },
-    { field: 'auxiliaryUnit', title: '辅助单位', width: 100 },
-    { field: 'productCode', title: '产品编号', width: 120 },
-    { field: 'supplier', title: '供应厂商', width: 120 },
-    { field: 'useProcess', title: '使用工序', width: 120 },
-    { field: 'remark', title: '备注说明', minWidth: 150 },
+    { field: 'orderNumber', title: $t('baseInfo.orderNumber'), width: 80 },
+    { field: 'materialTypeName', title: $t('baseInfo.materialCategory'), minWidth: 120 },
+    { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 120 },
+    { field: 'materialName', title: $t('baseInfo.partOrMaterialName'), minWidth: 200 },
+    { field: 'codeNumber', title: $t('baseInfo.codeName'), width: 100 },
+    { field: 'perDosage', title: $t('baseInfo.perDosage'), width: 100 },
+    { field: 'perQuantity', title: $t('baseInfo.perQuantity'), width: 100 },
+    { field: 'singleDosage', title: $t('baseInfo.singleDosage'), width: 100 },
+    { field: 'unit', title: $t('baseInfo.unit'), width: 80 },
+    { field: 'conversionFaction', title: $t('baseInfo.conversionFaction'), width: 100 },
+    { field: 'auxiliaryDoage', title: $t('baseInfo.auxiliaryDoage'), width: 100 },
+    { field: 'auxiliaryUnit', title: $t('baseInfo.auxiliaryUnit'), width: 100 },
+    { field: 'productCode', title: $t('baseInfo.productCode'), width: 120 },
+    { field: 'supplier', title: $t('baseInfo.supplier'), width: 120 },
+    { field: 'useProcess', title: $t('baseInfo.useProcess'), width: 120 },
+    { field: 'remark', title: $t('baseInfo.remarkDescription'), minWidth: 150 },
   ],
   height: 500,
   data: expandGridData,
@@ -416,7 +416,7 @@ onMounted(() => {
             </template>
             <template #action="{ row }">
               <Tooltip>
-                <template #title>查看</template>
+                <template #title>{{ $t('basic.bomManagement.view') }}</template>
                 <Button
                   v-if="author.includes('查看')"
                   :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
@@ -435,19 +435,19 @@ onMounted(() => {
     <!-- 查看 BOM 详情 -->
     <Modal
       v-model:open="detailModalVisible"
-      :title="activeTabKey === 'first' ? '设计BOM' : '多级展开'"
+      :title="activeTabKey === 'first' ? $t('baseInfo.designBOM') : $t('baseInfo.multiLevelExpand')"
       width="90%"
       :footer="null"
     >
       <Tabs v-model:active-key="activeTabKey" @change="handleTabChange">
-        <Tabs.TabPane key="first" tab="设计BOM">
+        <Tabs.TabPane key="first" :tab="$t('baseInfo.designBOM')">
           <DesignGrid>
             <template #isLowerestLevel="{ row }">
               <Checkbox :checked="row.isLowerestLevel" :disabled="true" />
             </template>
           </DesignGrid>
         </Tabs.TabPane>
-        <Tabs.TabPane key="second" tab="多级展开">
+        <Tabs.TabPane key="second" :tab="$t('baseInfo.multiLevelExpand')">
           <ExpandGrid>
             <template #isLowerestLevel="{ row }">
               <Checkbox :checked="row.isLowerestLevel" :disabled="true" />
@@ -456,7 +456,7 @@ onMounted(() => {
         </Tabs.TabPane>
       </Tabs>
       <div style="margin-top: 16px; text-align: right">
-        <Button @click="detailModalVisible = false">取消</Button>
+        <Button @click="detailModalVisible = false">{{ $t('common.cancel') }}</Button>
       </div>
     </Modal>
   </Page>

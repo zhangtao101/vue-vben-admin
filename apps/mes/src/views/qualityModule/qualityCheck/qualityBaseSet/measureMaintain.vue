@@ -42,7 +42,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center', // 表格内容居中对齐
   border: true, // 显示表格边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 }, // 序号列
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 序号列
     { field: 'measureMethodName', title: '度量方法', minWidth: 100 }, // 度量方法名列
     { field: 'remark', title: '备注', minWidth: 80 }, // 备注列
     { field: 'operateTime', title: '操作时间', minWidth: 150 }, // 操作时间列
@@ -143,9 +143,9 @@ const editItem = ref<any>({});
 // form表单规则验证
 const editRules = ref<any>({
   measureMethodName: [
-    { message: '此项为必填项', required: true, trigger: 'change' },
+    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
   ],
-  remark: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  remark: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
 });
 
 /**
@@ -211,12 +211,12 @@ function submit() {
 function delPhysicalWarehouse(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     // 取消操作回调
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('page.common.cancelDeletePrompt'));
     },
     // 确认操作回调
     onOk() {
@@ -227,7 +227,7 @@ function delPhysicalWarehouse(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认删除?',
+    title: $t('page.common.confirmDeletePrompt'),
   });
 }
 
