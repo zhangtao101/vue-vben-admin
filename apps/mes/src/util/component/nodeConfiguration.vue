@@ -29,14 +29,13 @@ defineExpose({
 </script>
 
 <template>
-  <!-- 签到 -->
   <Drawer
     v-model:open="isOpen"
     :footer-style="{ textAlign: 'right' }"
     height="100%"
     class="custom-class"
     placement="top"
-    title="签到"
+    :title="$t('component.signIn')"
   >
     <Form :model="formState">
       <!-- 对象名称 -->

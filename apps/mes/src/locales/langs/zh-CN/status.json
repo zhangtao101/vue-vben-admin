@@ -28,5 +28,20 @@
   "finished": "已完成",
   "submitted": "已提交",
   "approved": "已审核",
-  "rejected": "已驳回"
+  "rejected": "已驳回",
+  "inProgress": "进行中",
+  "notStarted": "未开始",
+  "received": "已领",
+  "unreceived": "未领",
+  "fullCompletion": "足额完成",
+  "shortCompletion": "欠额完成",
+  "overCompletion": "超额完成",
+  "part": "部件",
+  "product": "产品",
+  "delayShort": "延时欠额",
+  "delayOver": "延时超额",
+  "delayFull": "延时足额",
+  "verySatisfied": "非常满意",
+  "satisfied": "满意",
+  "dissatisfied": "不满意"
 }

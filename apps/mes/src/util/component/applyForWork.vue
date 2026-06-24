@@ -67,72 +67,64 @@ const gridOptions: VxeGridProps<any> = {
     mode: 'row', // 行编辑模式
   },
   columns: [
-    { title: '序号', type: 'seq', width: 50 }, // 序号列
-    { field: 'reportCode', title: '报工单号', minWidth: 300 }, // 报工单唯一标识
-    { field: 'processCode', title: '工序编号', minWidth: 150 }, // 工序代码
-    { field: 'processName', title: '报工工序', minWidth: 150 }, // 工序名称
+    { title: $t('basic.serialNumber'), type: 'seq', width: 50 },
+    { field: 'reportCode', title: $t('component.reportOrderNumber'), minWidth: 300 },
+    { field: 'processCode', title: $t('component.processCode'), minWidth: 150 },
+    { field: 'processName', title: $t('component.reportProcess'), minWidth: 150 },
     {
       field: 'dlValue',
-      title: '能耗电量',
-      // editRender: {}, // 预留编辑渲染配置
-      // slots: { edit: 'edit_dlValue' }, // 预留编辑插槽
+      title: $t('component.energyElectricity'),
       minWidth: 150,
     },
     {
       field: 'trqValue',
-      title: '能耗天然气',
-      // editRender: {},
-      // slots: { edit: 'edit_trqValue' },
+      title: $t('component.energyNaturalGas'),
       minWidth: 150,
     },
     {
       field: 'jlqValue',
-      title: '能耗焦炉气',
-      // editRender: {},
-      // slots: { edit: 'edit_jlqValue' },
+      title: $t('component.energyCokeOvenGas'),
       minWidth: 150,
     },
     {
       field: 'smjValue',
-      title: '能耗水煤浆（KG）',
-      // editRender: {},
-      // slots: { edit: 'edit_smjValue' },
+      title: $t('component.energyWaterCoalSlurry'),
       minWidth: 150,
     },
-    { field: 'reportTime', title: '报工时间', minWidth: 200 }, // 报工提交时间
-    { field: 'reportUser', title: '报工人', minWidth: 150 }, // 报工操作人员
-    { field: 'workstationCode', title: '工作站编号', minWidth: 150 }, // 工作站代码
-    { field: 'workstationName', title: '工作站名称', minWidth: 150 }, // 工作站名称
-    { field: 'defectCode', title: '缺陷代码', minWidth: 150 }, // 缺陷标识代码
-    { field: 'productCode', title: '产品编号', minWidth: 150 }, // 产品代码
-    { field: 'productName', title: '产品名称', minWidth: 150 }, // 产品名称
-    { field: 'reportNumber', title: '报工总数', minWidth: 150 }, // 报工总数量
+    { field: 'reportTime', title: $t('component.reportTime'), minWidth: 200 },
+    { field: 'reportUser', title: $t('component.reportPerson'), minWidth: 150 },
+    { field: 'workstationCode', title: $t('component.workstationCode'), minWidth: 150 },
+    { field: 'workstationName', title: $t('component.workstationName'), minWidth: 150 },
+    { field: 'defectCode', title: $t('component.defectCode'), minWidth: 150 },
+    { field: 'productCode', title: $t('component.productCode'), minWidth: 150 },
+    { field: 'productName', title: $t('component.productName'), minWidth: 150 },
+    { field: 'reportNumber', title: $t('component.reportTotal'), minWidth: 150 },
     {
       field: 'qualityNumber',
-      title: '良品数',
+      title: $t('component.qualityCount'),
       minWidth: 150,
     },
     {
       field: 'unqualityNumber',
-      title: '废品数',
+      title: $t('component.defectCount'),
       minWidth: 150,
     },
-    { field: 'waiteNumber', title: '等待处理数量', minWidth: 150 }, // 待处理数量
+    { field: 'waiteNumber', title: $t('component.waitProcessCount'), minWidth: 150 },
     {
       field: 'personTime',
-      title: '人时',
+      title: $t('component.personHour'),
       minWidth: 150,
     },
     {
       field: 'equipTime',
-      title: '机时',
+      title: $t('component.machineHour'),
       minWidth: 150,
     },
     {
       field: 'action',
-      fixed: 'right', // 固定在表格右侧
-      slots: { default: 'action' }, // 操作列插槽
-      title: '操作',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: $t('component.operation'),
       minWidth: 220,
     },
   ],
@@ -379,19 +371,19 @@ function reportenergyHarvestingDrawerClose() {
 function getTypeText(type: number) {
   switch (type) {
     case 1: {
-      return '天然气'; // 天然气类型
+      return $t('component.naturalGas');
     }
     case 2: {
-      return '电'; // 电力类型
+      return $t('component.electricity');
     }
     case 3: {
-      return '水煤浆'; // 水煤浆类型
+      return $t('component.waterCoalSlurry');
     }
     case 4: {
-      return '焦炉'; // 焦炉气类型
+      return $t('component.cokeOvenGas');
     }
     default: {
-      return '未定义的能源类型'; // 未知类型
+      return $t('component.undefinedEnergyType');
     }
   }
 }
@@ -568,7 +560,7 @@ onMounted(() => {});
     :footer-style="{ textAlign: 'right' }"
     :width="750"
     placement="right"
-    title="人员报工信息编辑"
+    :title="$t('component.reportInfoEdit')"
     @close="reportForWorkDrawerClose"
   >
     <!-- 有报工数据时显示详情编辑区域 -->
@@ -577,11 +569,11 @@ onMounted(() => {});
       <div v-for="item of editDetails" :key="item.id" class="!mb-8">
         <!-- 报工基本信息描述列表 -->
         <Descriptions bordered :column="2" class="!mb-4">
-          <DescriptionsItem label="报工总数" :span="2">
+          <DescriptionsItem :label="$t('component.reportTotal')" :span="2">
             {{ item.reportNumber }}
           </DescriptionsItem>
           <!-- 原始良品数编辑项 -->
-          <DescriptionsItem label="良品数">
+          <DescriptionsItem :label="$t('component.qualityCount')">
             <InputNumber
               v-model:value="item.qualityNumber"
               :addon-after="item.unit"
@@ -596,7 +588,7 @@ onMounted(() => {});
             />
           </DescriptionsItem>
           <!-- 转换后的良品数显示（只读） -->
-          <DescriptionsItem label="良品数">
+          <DescriptionsItem :label="$t('component.qualityCount')">
             <InputNumber
               v-model:value="item.qualityNumber_zf"
               :addon-after="getUnit(item.unit)"
@@ -606,7 +598,7 @@ onMounted(() => {});
           </DescriptionsItem>
 
           <!-- 原始废品数编辑项 -->
-          <DescriptionsItem label="废品数">
+          <DescriptionsItem :label="$t('component.defectCount')">
             <InputNumber
               v-model:value="item.unqualityNumber"
               :addon-after="item.unit"
@@ -621,7 +613,7 @@ onMounted(() => {});
             />
           </DescriptionsItem>
           <!-- 转换后的废品数显示（只读） -->
-          <DescriptionsItem label="废品数">
+          <DescriptionsItem :label="$t('component.defectCount')">
             <InputNumber
               v-model:value="item.unqualityNumber_zf"
               :addon-after="getUnit(item.unit)"
@@ -630,34 +622,34 @@ onMounted(() => {});
             />
           </DescriptionsItem>
           <!-- 人时编辑项 -->
-          <DescriptionsItem label="人时">
+          <DescriptionsItem :label="$t('component.personHour')">
             <InputNumber
               v-model:value="item.personTime"
-              addon-after="小时"
+              :addon-after="$t('component.hour')"
               :min="0"
             />
           </DescriptionsItem>
           <!-- 机时编辑项 -->
-          <DescriptionsItem label="机时">
+          <DescriptionsItem :label="$t('component.machineHour')">
             <InputNumber
               v-model:value="item.equipTime"
-              addon-after="小时"
+              :addon-after="$t('component.hour')"
               :min="0"
             />
           </DescriptionsItem>
           <!-- 报工人信息（只读） -->
-          <DescriptionsItem label="报工人">
+          <DescriptionsItem :label="$t('component.reportPerson')">
             {{ item.reportPerson }}
           </DescriptionsItem>
           <!-- 报工时间信息（只读） -->
-          <DescriptionsItem label="报工时间">
+          <DescriptionsItem :label="$t('component.reportTime')">
             {{ item.reportTime }}
           </DescriptionsItem>
         </Descriptions>
 
         <!-- 切换具体报工人员数据显示的按钮 -->
         <Button @click="item.editDetails = !item.editDetails">
-          {{ item.editDetails ? '隐藏' : '编辑' }}具体报工人员报工数据
+          {{ item.editDetails ? $t('component.hide') : $t('component.edit') }}{{ $t('component.specificReportData') }}
         </Button>
 
         <!-- 具体报工人员数据展示区域 -->
@@ -672,13 +664,13 @@ onMounted(() => {});
               :column="2"
               :key="i.id"
             >
-              <DescriptionsItem label="人员工号">
+              <DescriptionsItem :label="$t('component.personnelId')">
                 {{ i.reportPerson }}
               </DescriptionsItem>
-              <DescriptionsItem label="报工总数">
+              <DescriptionsItem :label="$t('component.reportTotal')">
                 {{ i.reportNumber }}
               </DescriptionsItem>
-              <DescriptionsItem label="良品数">
+              <DescriptionsItem :label="$t('component.qualityCount')">
                 <InputNumber
                   v-model:value="i.qualityNumber"
                   :min="0"
@@ -690,7 +682,7 @@ onMounted(() => {});
                   "
                 />
               </DescriptionsItem>
-              <DescriptionsItem label="废品数">
+              <DescriptionsItem :label="$t('component.defectCount')">
                 <InputNumber
                   v-model:value="i.unqualityNumber"
                   :min="0"
@@ -702,7 +694,7 @@ onMounted(() => {});
                   "
                 />
               </DescriptionsItem>
-              <DescriptionsItem label="人时">
+              <DescriptionsItem :label="$t('component.personHour')">
                 <InputNumber v-model:value="i.personTime" :min="0" />
               </DescriptionsItem>
             </Descriptions>
@@ -710,12 +702,12 @@ onMounted(() => {});
         </div>
         <!-- 无具体人员报工数据时显示提示信息 -->
         <div v-else>
-          <span>当前报工没有具体的人员报工数据</span>
+          <span>{{ $t('component.noReportData') }}</span>
         </div>
       </div>
     </div>
     <!-- 无报工数据时显示空状态 -->
-    <Empty v-else description="暂无具体人员的报工数据" />
+    <Empty v-else :description="$t('component.noPersonReportData')" />
   </Drawer>
   <!-- endregion -->
   <!-- region 能源采集信息编辑抽屉 -->
@@ -739,11 +731,11 @@ onMounted(() => {});
         class="!mb-8"
       >
         <!-- 能源类型显示 -->
-        <DescriptionsItem label="能源类型">
+        <DescriptionsItem :label="$t('component.energyType')">
           {{ getTypeText(item.energyType) }}
         </DescriptionsItem>
         <!-- 仪表编号显示 -->
-        <DescriptionsItem label="仪表编号">
+        <DescriptionsItem :label="$t('component.meterCode')">
           {{ item.energyEquipCode }}
         </DescriptionsItem>
         <!-- 仪表读数编辑（当前已注释，可能不需要直接编辑） -->
@@ -751,11 +743,11 @@ onMounted(() => {});
           <InputNumber v-model:value="item.energyValue" :min="0" />
         </DescriptionsItem>-->
         <!-- 仪表开始时间显示 -->
-        <DescriptionsItem label="仪表开始时间">
+        <DescriptionsItem :label="$t('component.meterStartTime')">
           {{ item.energyStartTime }}
         </DescriptionsItem>
         <!-- 仪表开始读数编辑 -->
-        <DescriptionsItem label="仪表开始读数">
+        <DescriptionsItem :label="$t('component.meterStartReading')">
           <InputNumber
             v-model:value="item.startEnergyValue"
             :min="0"
@@ -763,11 +755,11 @@ onMounted(() => {});
           />
         </DescriptionsItem>
         <!-- 仪表结束时间显示 -->
-        <DescriptionsItem label="仪表结束时间">
+        <DescriptionsItem :label="$t('component.meterEndTime')">
           {{ item.energyEndTime }}
         </DescriptionsItem>
         <!-- 仪表结束读数编辑 -->
-        <DescriptionsItem label="仪表结束读数">
+        <DescriptionsItem :label="$t('component.meterEndReading')">
           <InputNumber
             v-model:value="item.endEnergyValue"
             :min="item.startEnergyValue || 0"
@@ -776,7 +768,7 @@ onMounted(() => {});
           />
         </DescriptionsItem>
         <!-- 能耗值编辑 -->
-        <DescriptionsItem label="能耗">
+        <DescriptionsItem :label="$t('component.energyConsumption')">
           <InputNumber
             v-model:value="item.energyValue"
             :min="0"
@@ -784,33 +776,33 @@ onMounted(() => {});
           />
         </DescriptionsItem>
         <!-- 异常说明显示 -->
-        <DescriptionsItem label="异常说明">
+        <DescriptionsItem :label="$t('component.exceptionDescription')">
           {{ item.errorName }}
         </DescriptionsItem>
         <!-- 关联工单号显示 -->
-        <DescriptionsItem label="工单号">
+        <DescriptionsItem :label="$t('component.workOrderNumber')">
           {{ item.worksheetCode }}
         </DescriptionsItem>
         <!-- 采集任务号显示 -->
-        <DescriptionsItem label="采集任务号">
+        <DescriptionsItem :label="$t('component.collectionTaskNo')">
           {{ item.catchCode }}
         </DescriptionsItem>
         <!-- 采集人员显示 -->
-        <DescriptionsItem label="采集人">
+        <DescriptionsItem :label="$t('component.collector')">
           {{ item.catchUser }}
         </DescriptionsItem>
         <!-- 采集时间显示 -->
-        <DescriptionsItem label="采集时间">
+        <DescriptionsItem :label="$t('component.collectionTime')">
           {{ item.catchTime }}
         </DescriptionsItem>
         <!-- 备注信息显示 -->
-        <DescriptionsItem label="备注">
+        <DescriptionsItem :label="$t('component.remark')">
           {{ item.remark }}
         </DescriptionsItem>
       </Descriptions>
     </div>
     <!-- 无能源采集数据时显示空状态 -->
-    <Empty v-else description="暂无具体的能源采集数据" />
+    <Empty v-else :description="$t('component.noEnergyCollectionData')" />
   </Drawer>
   <!-- endregion -->
 </template>

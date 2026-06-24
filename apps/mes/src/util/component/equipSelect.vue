@@ -87,7 +87,7 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     {
-      title: '设备编号',
+      title: $t('component.equipmentNumber'),
       children: [
         {
           field: 'equipmentCode',
@@ -106,7 +106,7 @@ const gridOptions: VxeGridProps<any> = {
       ],
     },
     {
-      title: '设备名称',
+      title: $t('component.equipmentName'),
       children: [
         {
           field: 'equipmentName',
@@ -299,7 +299,7 @@ watch(
     :footer-style="{ textAlign: 'right' }"
     :width="700"
     placement="right"
-    title="设备选择"
+    :title="$t('component.equipmentSelect')"
     @close="close"
   >
     <Grid ref="gridRef">

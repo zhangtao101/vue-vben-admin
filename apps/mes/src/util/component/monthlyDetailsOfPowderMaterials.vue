@@ -4,6 +4,7 @@ import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 import { onMounted } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { queryYLDayStatistics } from '#/api';
@@ -22,9 +23,9 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'expand', width: 60, slots: { content: 'expand_content' } },
-    { field: '', title: '月份', minWidth: 50 },
+    { field: '', title: $t('component.month'), minWidth: 50 },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('component.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,

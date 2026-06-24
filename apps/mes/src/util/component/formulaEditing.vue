@@ -30,13 +30,13 @@ const nodes = ref([
   {
     id: 'start',
     type: 'menu',
-    data: { label: '开始', toolbarPosition: Position.Top },
+    data: { label: $t('component.startNode'), toolbarPosition: Position.Top },
     position: { x: 0, y: 0 },
   },
   {
     id: 'end',
     type: 'menu',
-    data: { label: '结束', toolbarPosition: Position.Top },
+    data: { label: $t('component.endNode'), toolbarPosition: Position.Top },
     position: { x: 200, y: 0 },
   },
 ]);
@@ -65,21 +65,21 @@ async function layoutGraph(direction: any) {
 const changedType = ref<any>();
 const typeOptions = ref<any>([
   {
-    label: '节点1',
+    label: $t('component.nodeType1'),
     value: '1',
   },
   {
-    label: '节点2',
+    label: $t('component.nodeType2'),
     value: '2',
   },
   {
-    label: '节点3',
+    label: $t('component.nodeType3'),
     value: '3',
   },
 ]);
 function showCreate(data: any) {
   Modal.confirm({
-    title: '请选择节点类型!',
+    title: $t('component.pleaseSelectNodeType'),
     content: h(Select, {
       options: typeOptions.value,
       onChange(_value: any, item: any) {
@@ -87,8 +87,8 @@ function showCreate(data: any) {
       },
       class: 'w-full',
     }),
-    okText: '确定',
-    cancelText: '取消',
+    okText: $t('component.confirm'),
+    cancelText: $t('component.cancel'),
     onOk() {
       if (changedType.value) {
         const targetId = addNode();
@@ -104,7 +104,7 @@ function showCreate(data: any) {
           layoutGraph('LR');
         }, 300);
       } else {
-        message.error('请选择节点类型!');
+        message.error($t('component.pleaseSelectNodeType'));
       }
     },
   });

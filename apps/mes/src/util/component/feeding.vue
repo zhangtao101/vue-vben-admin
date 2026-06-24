@@ -130,23 +130,23 @@ const gridOptions: VxeGridProps<any> = {
   },
 
   columns: [
-    { title: '序号', type: 'seq', width: 50 }, // 序号列
-    { field: 'materialCode', title: '物料编号', minWidth: 120 }, // 物料唯一标识
-    { field: 'materialName', title: '原料名称', minWidth: 200 }, // 物料描述名称
-    { field: 'materialDosage', title: '干料标准量', minWidth: 150 }, // 标准用量
-    { field: 'unit', title: '投入单位', minWidth: 150 }, // 计量单位
-    { field: 'materialUseNumber', title: '已投入量', minWidth: 150 }, // 已投用量
+    { title: $t('basic.serialNumber'), type: 'seq', width: 50 },
+    { field: 'materialCode', title: $t('component.materialCode'), minWidth: 120 },
+    { field: 'materialName', title: $t('component.rawMaterialName'), minWidth: 200 },
+    { field: 'materialDosage', title: $t('component.dryMaterialStandard'), minWidth: 150 },
+    { field: 'unit', title: $t('component.inputUnit'), minWidth: 150 },
+    { field: 'materialUseNumber', title: $t('component.inputAmount'), minWidth: 150 },
     {
       field: '',
-      title: '补投入量',
+      title: $t('component.supplementInputAmount'),
       minWidth: 150,
-      slots: { default: 'feedingAmount' }, // 自定义补投料量显示插槽
+      slots: { default: 'feedingAmount' },
     },
     {
       field: 'action',
-      fixed: 'right', // 固定在表格右侧
-      slots: { default: 'action' }, // 操作列插槽
-      title: '操作',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: $t('component.operation'),
       minWidth: 150,
     },
   ],
@@ -500,7 +500,7 @@ function getDryChargeSum(row?: any) {
  */
 function deleteFeed(rowIndex: number) {
   Modal.confirm({
-    title: '确定删除吗？',
+    title: $t('component.confirmDelete'),
     onOk() {
       const tableData = gridApi.grid.getTableData().tableData;
       tableData.splice(rowIndex, 1);
@@ -635,7 +635,7 @@ function addFeedLine() {
  */
 function delFeedLine(index: any) {
   Modal.confirm({
-    title: '确定删除吗？',
+    title: $t('component.confirmDelete'),
     onOk() {
       formState.value.splice(index, 1);
     },
@@ -716,7 +716,7 @@ function submit(type: 0 | 1) {
 
   // 验证是否有有效的投料数据
   if (params.feedDetailVMs.length === 0) {
-    message.error('请先添加物料');
+    message.error($t('component.pleaseAddMaterial'));
     return;
   }
 
@@ -747,7 +747,7 @@ function submit(type: 0 | 1) {
     } else if (isSpecialWorkstation(['抛光'])) {
       ob = smkFeedPGSave(params);
     } else {
-      message.warning('当前没有具体的接口, 请联系相关人员!');
+      message.warning($t('component.noSpecificApi'));
       return;
     }
     submitLoading.value = true; // 设置投料提交状态
@@ -940,7 +940,7 @@ function queryAuditByRecord() {
           <FormItem :label="$t('supplementaryFeedingOperation.materialNumber')">
             <Select
               v-model:value="editFeed.materialCode"
-              placeholder="输入编号进行查询"
+              :placeholder="$t('component.enterMaterialCode')"
               class="w-full"
               :filter-option="false"
               :options="materialCodeList"

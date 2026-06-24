@@ -1,7 +1,5 @@
-/* eslint-disable eslint-comments/no-unlimited-disable */
-/* eslint-disable */
-import mqtt from 'mqtt';
 import { message } from 'ant-design-vue';
+import mqtt from 'mqtt';
 
 const mqttTool: any = {
   client: null,

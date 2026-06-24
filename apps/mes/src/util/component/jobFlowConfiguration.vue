@@ -122,32 +122,32 @@ const typeOfOperation: {
   value: number;
 }[] = [
   {
-    label: '工序过程操作',
+    label: $t('component.processOperation'),
     rules: [],
     value: 1,
   },
   {
-    label: '质量检测',
+    label: $t('component.qualityInspection'),
     rules: [],
     value: 2,
   },
   {
-    label: 'SOP查看',
+    label: $t('component.sopView'),
     rules: [],
     value: 3,
   },
   {
-    label: '安灯',
+    label: $t('component.andon'),
     rules: [],
     value: 4,
   },
   {
-    label: '资源指派',
+    label: $t('component.resourceAssign'),
     rules: [],
     value: 5,
   },
   {
-    label: '设备参数',
+    label: $t('component.equipmentParams'),
     rules: [],
     value: 6,
   },
@@ -582,7 +582,7 @@ function submit() {
     :footer-style="{ textAlign: 'right' }"
     :width="600"
     placement="right"
-    title="操作详情配置"
+    :title="$t('component.operationConfig')"
     @close="close"
   >
     <!-- 表单容器，用于配置各种操作类型和规则 -->
@@ -605,9 +605,9 @@ function submit() {
           <FormItem
             :rules="{
               required: true,
-              message: '该项为必填项',
+              message: $t('component.requiredField'),
             }"
-            label="操作类型"
+            :label="$t('component.operationType')"
           >
             <!-- 下拉选择框，用于选择操作类型 -->
             <Select
@@ -633,8 +633,8 @@ function submit() {
               <template v-if="rule.type === 1">
                 <Switch
                   v-model:checked="item.rules[i][rule.label]"
-                  checked-children="开"
-                  un-checked-children="关"
+                  :checked-children="$t('component.on')"
+                  :un-checked-children="$t('component.off')"
                 />
               </template>
               <!-- 规则类型2：数值输入控件 -->
@@ -650,8 +650,8 @@ function submit() {
                 <Space>
                   <Switch
                     v-model:checked="item.rules[i][rule.label]"
-                    checked-children="开"
-                    un-checked-children="关"
+                    :checked-children="$t('component.on')"
+                    :un-checked-children="$t('component.off')"
                   />
                   <FormItemRest>
                     <InputNumber
@@ -691,7 +691,7 @@ function submit() {
                 }
               "
             >
-              <Button class="w-full" danger type="primary"> 删除 </Button>
+              <Button class="w-full" danger type="primary"> {{ $t('common.delete') }} </Button>
             </Popconfirm>
           </FormItem>
         </div>
@@ -710,7 +710,7 @@ function submit() {
         }
       "
     >
-      新增
+      {{ $t('common.add') }}
     </Button>
 
     <!-- 抽屉底部操作按钮区域 -->

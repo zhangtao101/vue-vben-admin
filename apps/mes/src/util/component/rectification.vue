@@ -230,19 +230,19 @@ function getTitle() {
 // 原因列表
 const sourceType = ref([
   {
-    label: '人',
+    label: $t('component.person'),
     value: '人',
   },
   {
-    label: '物',
+    label: $t('component.thing'),
     value: '物',
   },
   {
-    label: '环',
+    label: $t('component.environment'),
     value: '环',
   },
   {
-    label: '管',
+    label: $t('component.management'),
     value: '管',
   },
 ]);
@@ -591,7 +591,7 @@ onMounted(() => {
         >
           <InputNumber
             v-model:value="formState.rectificationCosts"
-            addon-after="元"
+            :addon-after="$t('component.yuan')"
           />
         </FormItem>
         <!-- 整改期限  -->
@@ -658,7 +658,7 @@ onMounted(() => {
         >
           <InputNumber
             v-model:value="formState.rectificationAmount"
-            addon-after="元"
+            :addon-after="$t('component.yuan')"
           />
         </FormItem>
 

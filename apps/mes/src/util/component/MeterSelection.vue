@@ -32,9 +32,9 @@ const rule = ref<any>({
   required: true,
   trigger: 'change',
   validator: (_rule: any, _value: any) => {
-    return props.parent.equipmentCode
+      return props.parent.equipmentCode
       ? Promise.resolve()
-      : Promise.reject(new Error('请选择电表编号76543'));
+      : Promise.reject(new Error($t('component.pleaseSelectMeter')));
   },
 });
 </script>

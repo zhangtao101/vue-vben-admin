@@ -24,104 +24,104 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('component.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: '', title: '月份', minWidth: 50 },
+    { field: '', title: $t('component.month'), minWidth: 50 },
     {
       field: '',
-      title: '粉料厂预算（%）',
+      title: $t('component.powderFactoryBudget'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '粉料厂实际（%）',
+      title: $t('component.powderFactoryActual'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '粉料厂实际-预算（%）',
+      title: $t('component.powderFactoryActualBudget'),
       minWidth: 180,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '窑炉厂预算（%）',
+      title: $t('component.kilnFactoryBudget'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '窑炉厂实际（%）',
+      title: $t('component.kilnFactoryActual'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '窑炉厂实际-预算（%）',
+      title: $t('component.kilnFactoryActualBudget'),
       minWidth: 180,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '抛光厂预算（%）',
+      title: $t('component.polishingFactoryBudget'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '抛光厂实际（%）',
+      title: $t('component.polishingFactoryActual'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '抛光厂实际-预算（%）',
+      title: $t('component.polishingFactoryActualBudget'),
       minWidth: 180,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '粉料厂投入产出率（%）',
+      title: $t('component.powderFactoryIORate'),
       minWidth: 180,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '一次烧窑炉投入产出率（%）',
+      title: $t('component.primaryKilnIORate'),
       minWidth: 200,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: '抛光投入产出率（%）',
+      title: $t('component.polishingIORate'),
       minWidth: 180,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: 'PA率预算（%）',
+      title: $t('component.paRateBudget'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: 'PA率实际（%）',
+      title: $t('component.paRateActual'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
     {
       field: '',
-      title: 'PA率实际-预算（%）',
+      title: $t('component.paRateActualBudget'),
       minWidth: 150,
       slots: { footer: 'footerData' },
     },
   ],
-  footerData: [{ seq: '合计' }],
+  footerData: [{ seq: $t('component.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 2 }],
   height: 500,
   stripe: true,
@@ -163,13 +163,13 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number) {
   switch (state) {
     case 1: {
-      return '原料';
+      return $t('component.rawMaterial');
     }
     case 2: {
-      return '砖坯';
+      return $t('component.brickBlank');
     }
     default: {
-      return '未定义的类型';
+      return $t('component.undefinedType');
     }
   }
 }

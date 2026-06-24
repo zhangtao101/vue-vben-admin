@@ -28,5 +28,20 @@
   "finished": "Finished",
   "submitted": "Submitted",
   "approved": "Approved",
-  "rejected": "Rejected"
+  "rejected": "Rejected",
+  "inProgress": "In Progress",
+  "notStarted": "Not Started",
+  "received": "Received",
+  "unreceived": "Unreceived",
+  "fullCompletion": "Full Completion",
+  "shortCompletion": "Short Completion",
+  "overCompletion": "Over Completion",
+  "part": "Part",
+  "product": "Product",
+  "delayShort": "Delay Shortage",
+  "delayOver": "Delay Surplus",
+  "delayFull": "Delay Full",
+  "verySatisfied": "Very Satisfied",
+  "satisfied": "Satisfied",
+  "dissatisfied": "Dissatisfied"
 }

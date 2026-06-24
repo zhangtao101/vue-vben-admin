@@ -36,24 +36,24 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
-      title: '序号',
+      title: $t('component.serialNumber'),
       type: 'seq',
       field: 'seq',
       width: 50,
     },
-    { field: 'code', title: `单号`, minWidth: 200 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 200 },
-    { field: 'batchCode', title: `批次号`, minWidth: 200 },
-    { field: 'warehouseCode', title: '库位', minWidth: 200 },
-    { field: 'number', title: `数量`, minWidth: 200 },
-    { field: 'unit', title: `单位`, minWidth: 120 },
-    { field: 'packageNumber', title: '包装箱数', minWidth: 200 },
-    { field: 'opTime', title: `时间`, minWidth: 200 },
+    { field: 'code', title: $t('component.orderNumber'), minWidth: 200 },
+    { field: 'worksheetCode', title: $t('component.workOrderNumber'), minWidth: 200 },
+    { field: 'batchCode', title: $t('component.batchNumber'), minWidth: 200 },
+    { field: 'warehouseCode', title: $t('component.warehouseLocation'), minWidth: 200 },
+    { field: 'number', title: $t('component.quantity'), minWidth: 200 },
+    { field: 'unit', title: $t('component.unit'), minWidth: 120 },
+    { field: 'packageNumber', title: $t('component.packageCount'), minWidth: 200 },
+    { field: 'opTime', title: $t('component.time'), minWidth: 200 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('component.operation'),
       minWidth: 120,
     },
   ],
@@ -116,12 +116,11 @@ function close() {
 function chargeAgainst() {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     onCancel() {
-      // 点击取消按钮，显示提示信息
-      message.warning('已取消操作!');
+      message.warning($t('component.operationCancelled'));
     },
     onOk() {
       editItem.value.loading = true;
@@ -149,8 +148,8 @@ function chargeAgainst() {
     },
     title:
       optionType.value === 1
-        ? '是否确认操作?'
-        : '本次冲销为单据冲销，是否确认冲销整张投料单据?',
+        ? $t('component.confirmOperation')
+        : $t('component.confirmReverseDoc'),
   });
 }
 
@@ -215,10 +214,29 @@ const open = ({ row, type }: any) => {
   optionType.value = type;
   queryParams.value.worksheetCode = row.worksheetCode;
 
-  const title = type === 1 ? '入库' : '投料';
+  const titleMap: Record<string, Record<number, string>> = {
+    code: {
+      1: $t('component.inboundOrderNumber'),
+      2: $t('component.feedingOrderNumber'),
+    },
+    batchCode: {
+      1: $t('component.inboundBatchNumber'),
+      2: $t('component.feedingBatchNumber'),
+    },
+    number: {
+      1: $t('component.inboundQuantity'),
+      2: $t('component.feedingQuantity'),
+    },
+    opTime: {
+      1: $t('component.inboundTime'),
+      2: $t('component.feedingTime'),
+    },
+  };
+
   (gridOptions.columns as any).forEach((column: any) => {
-    if (['batchCode', 'code', 'number', 'opTime'].includes(column.field)) {
-      column.title = `${title}${column.title}`;
+    const mapped = titleMap[column.field];
+    if (mapped) {
+      column.title = mapped[type];
     }
   });
 

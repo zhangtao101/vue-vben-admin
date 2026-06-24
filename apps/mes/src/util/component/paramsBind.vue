@@ -71,17 +71,17 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: '工单号', minWidth: 180 },
-    { field: 'equipCode', title: '设备号', minWidth: 100 },
-    { field: 'address', title: '设备ID', minWidth: 100 },
-    { field: 'startTime', title: '开始时间', minWidth: 150 },
-    { field: 'endTime', title: '结束时间', minWidth: 150 },
+    { title: $t('basic.serialNumber'), type: 'seq', width: 50 },
+    { field: 'worksheetCode', title: $t('component.workOrderNumber'), minWidth: 180 },
+    { field: 'equipCode', title: $t('component.equipmentCode'), minWidth: 100 },
+    { field: 'address', title: $t('component.equipmentId'), minWidth: 100 },
+    { field: 'startTime', title: $t('component.startTime'), minWidth: 150 },
+    { field: 'endTime', title: $t('component.endTime'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
-      title: '操作',
+      title: $t('component.operation'),
       minWidth: 150,
     },
   ],
@@ -195,10 +195,9 @@ function submit() {
 function edit(row: any) {
   const params = {
     ...row,
+   equipCodeAndAddress: `${row.equipCode}&&${row.address}`,
+   dateTime: [dayjs(row.startTime), dayjs(row.endTime)],
   };
-
-  params.equipCodeAndAddress = `${row.equipCode}&&${row.address}`;
-  params.dateTime = [dayjs(row.startTime), dayjs(row.endTime)];
 
   formState.value = params;
 }
@@ -237,7 +236,7 @@ function displayParameterBinding(row: any) {
   }).then(({ paramNames, ...equip }: any) => {
     showDetails.value = true;
     equipMessage.value = equip;
-    const columns: any = [{ title: '序号', type: 'seq', width: 50 }];
+    const columns: any = [{ title: $t('basic.serialNumber'), type: 'seq', width: 50 }];
     paramNames.forEach((paramName: string) => {
       columns.push({
         field: paramName,
@@ -329,7 +328,7 @@ function detailsClose() {
       <FormItem
         :rules="{
           required: true,
-          message: '该项为必填项',
+          message: $t('basic.requiredField'),
         }"
         name="equipCodeAndAddress"
         :label="$t('workOrderParams.equipmentNumber')"
@@ -344,7 +343,7 @@ function detailsClose() {
       <FormItem
         :rules="{
           required: true,
-          message: '该项为必填项',
+          message: $t('basic.requiredField'),
         }"
         name="dateTime"
         :label="$t('workOrderParams.theTimeElapsedForTheWorkOrder')"
@@ -358,7 +357,7 @@ function detailsClose() {
       <FormItem
         :rules="{
           required: false,
-          message: '该项为必填项',
+          message: $t('basic.requiredField'),
         }"
         name="remark"
         :label="$t('workOrderParams.remark')"

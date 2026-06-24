@@ -168,18 +168,18 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center', // 表格内容居中对齐
   border: true, // 显示表格边框
   columns: [
-    { title: '序号', type: 'seq', width: 50 }, // 序号列
-    { field: 'ruleCode', title: '规则编号', minWidth: 150 }, // 规则唯一标识
-    { field: 'ruleName', title: '规则名称', minWidth: 150 }, // 规则描述名称
-    { field: 'startDate', title: '开始日期', minWidth: 150 }, // 规则生效开始日期
-    { field: 'endDate', title: '结束日期', minWidth: 150 }, // 规则生效结束日期
-    { field: 'uTime', title: '修改时间', minWidth: 150 }, // 规则最后修改时间
-    { field: 'uName', title: '操作人', minWidth: 150 }, // 最后修改操作人员
+    { title: $t('basic.serialNumber'), type: 'seq', width: 50 },
+    { field: 'ruleCode', title: $t('component.ruleCode'), minWidth: 150 },
+    { field: 'ruleName', title: $t('component.ruleName'), minWidth: 150 },
+    { field: 'startDate', title: $t('component.startDate'), minWidth: 150 },
+    { field: 'endDate', title: $t('component.endDate'), minWidth: 150 },
+    { field: 'uTime', title: $t('component.modifyTime'), minWidth: 150 },
+    { field: 'uName', title: $t('component.operator'), minWidth: 150 },
     {
       field: 'action',
-      fixed: 'right', // 固定在表格右侧
-      slots: { default: 'action' }, // 操作列插槽
-      title: '操作',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: $t('component.operation'),
       minWidth: 220,
     },
   ],
@@ -232,30 +232,26 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
  */
 function delRow(row: any) {
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
-    okType: 'danger', // 危险操作，使用红色按钮
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
+    okType: 'danger',
     onCancel() {
-      // 用户取消删除时显示警告信息
-      message.warning('已取消删除!');
+      message.warning($t('component.deleteCancelled'));
     },
     onOk() {
-      // 用户确认删除时执行删除操作
       deleteAdditionalRule({
-        id: row.id, // 异常规则ID
+        id: row.id,
       })
         .then(() => {
-          // 删除成功时的处理
-          message.success($t('common.successfulOperation')); // 显示成功提示
-          gridApi.query(); // 重新查询表格数据
+          message.success($t('common.successfulOperation'));
+          gridApi.query();
         })
         .catch((error) => {
-          // 删除失败时的处理
-          message.error($t('common.operationFailure')); // 显示通用错误提示
-          message.error(error.msg); // 显示具体错误信息
+          message.error($t('common.operationFailure'));
+          message.error(error.msg);
         });
     },
-    title: '是否确认删除该条数据?', // 确认对话框标题
+    title: $t('component.deleteConfirm'),
   });
 }
 
@@ -275,8 +271,8 @@ const workDayOptions = ref<any>([
 ]);
 // 表单验证规则配置
 const editRules = ref<any>({
-  staCode: [{ message: '此项为必填项', required: true, trigger: 'change' }],
-  time: [{ message: '此项为必填项', required: true, trigger: 'change' }],
+  staCode: [{ message: $t('component.requiredField'), required: true, trigger: 'change' }],
+  time: [{ message: $t('component.requiredField'), required: true, trigger: 'change' }],
 });
 /**
  * 显示异常规则编辑对话框
@@ -421,7 +417,7 @@ defineExpose({
     :footer-style="{ textAlign: 'right' }"
     height="100%"
     placement="top"
-    title="信息详情"
+    :title="$t('component.infoDetail')"
     @close="detailsClose"
   >
     <!-- 日历基本信息展示区域 -->
@@ -539,7 +535,7 @@ defineExpose({
     :footer-style="{ textAlign: 'right' }"
     :width="500"
     placement="right"
-    title="信息编辑"
+    :title="$t('component.infoEdit')"
     @close="close"
   >
     <!-- 异常规则编辑表单 -->

@@ -201,7 +201,7 @@ function handleSubmit() {
       :model="formData"
       :rules="rules"
     >
-      <FormItem label="父节点">
+      <FormItem :label="$t('component.parentNode')">
         <Input :value="props.parentName || props.parentId" disabled />
       </FormItem>
 
@@ -211,7 +211,7 @@ function handleSubmit() {
       >
         <Select
           v-model:value="formData.equipmentGroup"
-          placeholder="请选择"
+          :placeholder="$t('component.pleaseSelect')"
           :options="equipmentGroupOptions"
           show-search
           :filter-option="
@@ -225,14 +225,14 @@ function handleSubmit() {
         :label="$t('repair.equipmentFailure.faultCode')"
         name="faultCode"
       >
-        <Input v-model:value="formData.faultCode" placeholder="请输入" />
+        <Input v-model:value="formData.faultCode" :placeholder="$t('component.pleaseInput')" />
       </FormItem>
 
       <FormItem
         :label="$t('repair.equipmentFailure.faultName')"
         name="faultName"
       >
-        <Input v-model:value="formData.faultName" placeholder="请输入" />
+        <Input v-model:value="formData.faultName" :placeholder="$t('component.pleaseInput')" />
       </FormItem>
 
       <FormItem
@@ -241,7 +241,7 @@ function handleSubmit() {
       >
         <Select
           v-model:value="formData.faultLevelCode"
-          placeholder="请选择"
+          :placeholder="$t('component.pleaseSelect')"
           :options="
             faultLevelOptions?.filter((item) => item.value !== undefined) || []
           "
@@ -252,7 +252,7 @@ function handleSubmit() {
         <Input.TextArea
           v-model:value="formData.faultDescription"
           :rows="3"
-          placeholder="请输入"
+          :placeholder="$t('component.pleaseInput')"
         />
       </FormItem>
 
@@ -260,7 +260,7 @@ function handleSubmit() {
         <Input.TextArea
           v-model:value="formData.solution"
           :rows="3"
-          placeholder="请输入"
+          :placeholder="$t('component.pleaseInput')"
         />
       </FormItem>
 
@@ -268,7 +268,7 @@ function handleSubmit() {
         <InputNumber
           v-model:value="formData.sortOrder"
           :min="0"
-          placeholder="请输入"
+          :placeholder="$t('component.pleaseInput')"
           class="!w-full"
         />
       </FormItem>
