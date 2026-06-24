@@ -73,18 +73,16 @@ defineExpose({ open });
     :footer="null"
     class="barcode-print-modal"
   >
-    <Space style="margin-bottom: 12px">
+    <Space class="print-toolbar">
       <Button @click="show = false">返回</Button>
       <Button type="primary" @click="handlePrint">打印</Button>
     </Space>
 
     <div id="printTest1">
-      <div style="font-family: '宋体'; font-size: 22px; font-weight: 800; text-align: center; padding-bottom: 10px">
-        SMT生产日计划
-      </div>
-      <span style="font-family: '宋体'; font-size: 16px">打印日期：{{ nowDate }}</span>
+      <div class="print-title">SMT生产日计划</div>
+      <span class="print-date">打印日期：{{ nowDate }}</span>
 
-      <div style="text-align: center" class="JsBarcode">
+      <div class="barcode-wrapper">
         <svg id="svgcode"><div /></svg>
         <div>{{ barCodeDetail.workSheetCode }}</div>
       </div>
@@ -113,10 +111,10 @@ defineExpose({ open });
             <td>{{ barCodeDetail.workSheetCode }}</td>
             <td>{{ barCodeDetail.planDateStart }}</td>
             <td>{{ barCodeDetail.productCode }}</td>
-            <td style="word-break: break-all">{{ barCodeDetail.productName }}</td>
+            <td class="td-break-word">{{ barCodeDetail.productName }}</td>
             <td>{{ barCodeDetail.lineName }}</td>
             <td>{{ barCodeDetail.subProductCode }}</td>
-            <td style="word-break: break-all">{{ barCodeDetail.subProductName }}</td>
+            <td class="td-break-word">{{ barCodeDetail.subProductName }}</td>
             <td>{{ barCodeDetail.subPlanCode }}</td>
             <td>{{ barCodeDetail.subPlanNumber }}</td>
             <td>{{ barCodeDetail.produceUnarrangedNumber }}</td>
@@ -134,6 +132,27 @@ defineExpose({ open });
 </template>
 
 <style scoped>
+.print-toolbar {
+  margin-bottom: 12px;
+}
+
+.print-title {
+  padding-bottom: 10px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 22px;
+  font-family: '宋体';
+}
+
+.print-date {
+  font-family: '宋体';
+  font-size: 16px;
+}
+
+.barcode-wrapper {
+  text-align: center;
+}
+
 .print-table {
   width: 99.5%;
   font-family: '宋体';
@@ -158,5 +177,9 @@ defineExpose({ open });
   font-size: 13px;
   text-align: center;
   border: 1px solid black;
+}
+
+.td-break-word {
+  word-break: break-all;
 }
 </style>
