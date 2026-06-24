@@ -277,7 +277,7 @@ function resetForm() {
     <Card class="mb-4">
       <div class="text-lg font-medium mb-4">{{ $t('moldMounting.title') }}</div>
       <!-- 上部：模具扫码 -->
-      <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+      <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
         <div class="flex items-center mb-2">
           <span class="text-red-500 mr-1">*</span>
           <span class="font-medium">{{ $t('moldMounting.moldScan') }}</span>
@@ -290,7 +290,7 @@ function resetForm() {
             @press-enter="queryMoldInfo"
           >
             <template #prefix>
-              <Icon icon="mdi:barcode-scan" class="text-gray-400" />
+              <Icon icon="mdi:barcode-scan" class="text-gray-400 dark:text-gray-500" />
             </template>
           </Input>
           <Button :loading="moldLoading" @click="queryMoldInfo">
@@ -301,13 +301,13 @@ function resetForm() {
         <!-- 模具信息展示 -->
         <div
           v-if="moldInfo"
-          class="mt-3 p-3 bg-white rounded border border-gray-200"
+          class="mt-3 p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
         >
           <Space>
-            <span class="text-gray-500">{{ $t('moldMounting.moldName') }}：</span>
+            <span class="text-gray-500 dark:text-gray-400">{{ $t('moldMounting.moldName') }}：</span>
             <span class="font-medium">{{ moldInfo.moldName }}</span>
             <Divider type="vertical" />
-            <span class="text-gray-500">{{ $t('moldMounting.moldStatus') }}：</span>
+            <span class="text-gray-500 dark:text-gray-400">{{ $t('moldMounting.moldStatus') }}：</span>
             <span class="font-medium">
               {{ moldInfo.currentStatusName }}
             </span>
@@ -316,7 +316,7 @@ function resetForm() {
       </div>
 
       <!-- 中部：设备扫码 -->
-      <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+      <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
         <div class="flex items-center mb-2">
           <span class="text-red-500 mr-1">*</span>
           <span class="font-medium">{{
@@ -331,7 +331,7 @@ function resetForm() {
             @press-enter="queryEquipmentInfo"
           >
             <template #prefix>
-              <Icon icon="mdi:barcode-scan" class="text-gray-400" />
+              <Icon icon="mdi:barcode-scan" class="text-gray-400 dark:text-gray-500" />
             </template>
           </Input>
           <Button :loading="equipmentLoading" @click="queryEquipmentInfo">
@@ -342,20 +342,20 @@ function resetForm() {
         <!-- 设备信息展示 -->
         <div
           v-if="equipmentInfo"
-          class="mt-3 p-3 bg-white rounded border border-gray-200"
+          class="mt-3 p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
         >
           <Space>
-            <span class="text-gray-500">{{ $t('moldMounting.equipmentName') }}：</span>
+            <span class="text-gray-500 dark:text-gray-400">{{ $t('moldMounting.equipmentName') }}：</span>
             <span class="font-medium">{{ equipmentInfo.equipName }}</span>
             <Divider type="vertical" />
-            <span class="text-gray-500">{{ $t('moldMounting.process') }}：</span>
+            <span class="text-gray-500 dark:text-gray-400">{{ $t('moldMounting.process') }}：</span>
             <span class="font-medium">{{ equipmentInfo.processName }}</span>
           </Space>
         </div>
       </div>
 
       <!-- 下部：工单扫码 -->
-      <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+      <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
         <div class="flex items-center mb-2">
           <span class="text-red-500 mr-1">*</span>
           <span class="font-medium">{{
@@ -370,7 +370,7 @@ function resetForm() {
             @press-enter="queryWorkOrderInfo"
           >
             <template #prefix>
-              <Icon icon="mdi:barcode-scan" class="text-gray-400" />
+              <Icon icon="mdi:barcode-scan" class="text-gray-400 dark:text-gray-500" />
             </template>
           </Input>
           <Button :loading="workOrderLoading" @click="queryWorkOrderInfo">
@@ -381,13 +381,13 @@ function resetForm() {
         <!-- 工单信息展示 -->
         <div
           v-if="workOrderInfo"
-          class="mt-3 p-3 bg-white rounded border border-gray-200"
+          class="mt-3 p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
         >
           <Space>
             <span class="text-gray-500">{{ $t('moldMounting.productCode') }}：</span>
             <span class="font-medium">{{ workOrderInfo.productCode }}</span>
             <Divider type="vertical" />
-            <span class="text-gray-500">{{ $t('moldMounting.productName') }}：</span>
+            <span class="text-gray-500 dark:text-gray-400">{{ $t('moldMounting.productName') }}：</span>
             <span class="font-medium">{{ workOrderInfo.productName }}</span>
           </Space>
         </div>
@@ -402,7 +402,7 @@ function resetForm() {
         </div>
         <div
           v-if="validateLoading"
-          class="p-4 bg-gray-50 rounded-lg text-center text-gray-500"
+          class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center text-gray-500 dark:text-gray-400"
         >
           {{ $t('moldMounting.validating') }}
         </div>
@@ -417,7 +417,7 @@ function resetForm() {
           :type="validateResult.valid ? 'success' : 'error'"
           :show-icon="true"
         />
-        <div v-else class="p-4 bg-gray-50 rounded-lg text-center text-gray-400">
+        <div v-else class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center text-gray-400 dark:text-gray-500">
           {{ $t('moldMounting.validateHint') }}
         </div>
       </div>
