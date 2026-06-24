@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -43,8 +43,8 @@ const qrcodeList = ref<any[]>([]);
 const materialList = ref<any[]>([]);
 const showReturn = ref(false);
 
-// ========== 表格数据 ==========
-const tableData = ref<any[]>([]);
+// ========== 表格数据状态 ==========
+const hasTableData = ref(false);
 
 // ========== 弹窗控制 ==========
 const bomVisible = ref(false);
@@ -111,7 +111,7 @@ const gridOptions: VxeGridProps<any> = {
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
 
-const [Grid] = useVbenVxeGrid({ gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 // ========== 搜索 ==========
 function handleSearch() {
@@ -124,14 +124,14 @@ function handleSearch() {
   loading.value = true;
   getTraceList({ qrcode: qr })
     .then((res: any) => {
+      showReturn.value = true;
+      hasTableData.value = true;
       hearList.value = res || {};
-      tableData.value = res?.routeList || [];
+      nextTick(() => {
+        gridApi.grid.reloadData(res?.routeList || []);
+      });
       materialList.value = res?.materialList || [];
       qrcodeList.value = res?.qrcodeList || [];
-      showReturn.value = true;
-    })
-    .catch((error: any) => {
-      message.error(error?.message || $t('page.common.dataLoadFailed'));
     })
     .finally(() => {
       loading.value = false;
@@ -144,26 +144,17 @@ function handleBarcodeClick(item: any) {
   getPartTraceList({ qrcode: item.qrcode, productCode: item.productCode })
     .then((res: any) => {
       hearList.value = res || {};
-      tableData.value = res?.routeList || [];
+      nextTick(() => {
+        gridApi.grid.reloadData(res?.routeList || []);
+      });
       materialList.value = res?.materialList || [];
       qrcodeList.value = res?.qrcodeList || [];
       showReturn.value = true;
-    })
-    .catch((error: any) => {
-      message.error(error?.message || $t('page.common.dataLoadFailed'));
+      hasTableData.value = true;
     })
     .finally(() => {
       loading.value = false;
     });
-}
-
-// ========== 返回 ==========
-function handleReturn() {
-  showReturn.value = false;
-  hearList.value = {};
-  tableData.value = [];
-  materialList.value = [];
-  qrcodeList.value = [];
 }
 
 // ========== 查看物料清单 ==========
@@ -174,29 +165,34 @@ function handleViewBom() {
 // ========== 详情 ==========
 function handleDetail(row: any) {
   const r = { ...row, time: row.opTime };
-  const processCodeMap: Record<string, string> = {
-    'SMT-SY': '丝印详情',
-    'SMT-BZ': 'SMT-包装详情',
-    'SMT-AOI': 'QC成品检验',
-    'SMT-TP': '贴片详情',
-    'SMT-QA': 'QA检验',
-    'SMT-HLH': '回流焊详情',
-    'DIP-AOI': 'AOI检验',
-    'DIP-BFH': '波峰焊',
-    'DIP-BH': '补焊',
-    'DIP-QC': '补焊QC',
-    'DIP-ICT': 'ICT检验',
-    'DIP-FCT': 'FCT检验',
-    'DIP-BZ': 'DIP-包装',
-    'DIP-QA': 'DIP-QA检验',
+
+  const codeKeyMap: Record<string, string> = {
+    'SMT-SY': 'tracingModule.productTrace.smtSy',
+    'SMT-BZ': 'tracingModule.productTrace.smtBz',
+    'SMT-AOI': 'tracingModule.productTrace.smtAoi',
+    'SMT-TP': 'tracingModule.productTrace.smtTp',
+    'SMT-QA': 'tracingModule.productTrace.smtQa',
+    'SMT-HLH': 'tracingModule.productTrace.smtHlh',
+    'DIP-AOI': 'tracingModule.productTrace.dipAoi',
+    'DIP-BFH': 'tracingModule.productTrace.dipBfh',
+    'DIP-BH': 'tracingModule.productTrace.dipBh',
+    'DIP-QC': 'tracingModule.productTrace.dipQc',
+    'DIP-ICT': 'tracingModule.productTrace.dipIct',
+    'DIP-FCT': 'tracingModule.productTrace.dipFct',
+    'DIP-BZ': 'tracingModule.productTrace.dipBz',
+    'DIP-QA': 'tracingModule.productTrace.dipQa',
   };
 
-  const processNameMap: Record<string, string> = {
-    '插件': '插件详情',
-    '出货': '出货详情',
+  const nameKeyMap: Record<string, string> = {
+    '插件': 'tracingModule.productTrace.plugin',
+    '出货': 'tracingModule.productTrace.shipment',
   };
 
-  const title = processCodeMap[r.processCode] || processNameMap[r.processName] || '详情';
+  const i18nKey =
+    codeKeyMap[r.processCode] ||
+    nameKeyMap[r.processName] ||
+    'tracingModule.productTrace.detail';
+  const title = $t(i18nKey);
   detailTitle.value = title;
   detailRow.value = r;
 
@@ -234,9 +230,6 @@ function _handlePasteMaterialClick(row: any) {
       }
       inspectionData.value = detail;
       inspectionDetailList.value = detail.labelList || [];
-    })
-    .catch((error: any) => {
-      message.error(error?.message || $t('page.common.dataLoadFailed'));
     });
 }
 
@@ -311,15 +304,12 @@ function getStateColor(state: string) {
             </template>
             <span v-else>-</span>
           </Descriptions.Item>
-          <Descriptions.Item v-if="showReturn">
-            <Button @click="handleReturn">{{ $t('tracingModule.productTrace.return') }}</Button>
-          </Descriptions.Item>
         </Descriptions>
       </Card>
 
       <!-- 过程追溯表格 -->
-      <Card v-if="tableData.length > 0" :title="$t('tracingModule.productTrace.processTrace')">
-        <Grid :data="tableData">
+      <Card v-if="hasTableData" :title="$t('tracingModule.productTrace.processTrace')">
+        <Grid>
           <template #state="{ row }">
             <Tag :color="getStateColor(row.state)">
               {{ row.state }}
