@@ -4,7 +4,7 @@
  * 用于管理SMT车间的报工记录
  * 功能包括：查询本日计划与完成情况、查看报工明细、新增报工记录
  */
-import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { computed, onMounted, reactive, ref } from 'vue';
 
@@ -83,7 +83,7 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: mainColumns,
-  height: 500,
+  height: 300,
   pagerConfig: {
     enabled: true,
     pageSize: 10,
@@ -92,18 +92,24 @@ const gridOptions: VxeGridProps<any> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }: any) => {
-        return await fetchList({
-          ...listQuery,
-          pageNum: page.currentPage,
+        return await queryData({
+          page: page.currentPage,
           pageSize: page.pageSize,
         });
       },
     },
   },
   stripe: true,
+  toolbarConfig: {
+    custom: true,
+    refresh: true,
+    zoom: true,
+  },
 };
 
-const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
+const gridEvents: VxeGridListeners<any> = {};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // endregion 主表格配置
 
@@ -205,7 +211,7 @@ const detailGridOptions: VxeGridProps<any> = {
   border: true,
   columns: detailColumns.value,
   data: [],
-  height: 500,
+  height: 300,
   pagerConfig: {
     enabled: true,
     pageSize: 20,
@@ -431,6 +437,37 @@ function handleTaskLineChange() {
     if (item.id === listQuery.taskLineCode) {
       popData.lineName = item.lineName;
     }
+  });
+}
+
+/**
+ * 查询数据
+ * 用于 proxyConfig 代理加载，校验必填项后调用 fetchList 接口
+ */
+function queryData({ page, pageSize }: any) {
+  return new Promise((resolve) => {
+    if (!listQuery.processCode || !listQuery.taskLineCode) {
+      resolve({ items: [], total: 0 });
+      return;
+    }
+    const params = {
+      ...listQuery,
+      pageNum: page,
+      pageSize,
+    };
+    fetchList(params)
+      .then(({ total, list }: any) => {
+        resolve({
+          total: total || 0,
+          items: list || [],
+        });
+      })
+      .catch(() => {
+        resolve({
+          total: 0,
+          items: [],
+        });
+      });
   });
 }
 
@@ -855,6 +892,7 @@ onMounted(() => {
       v-model:open="dialogFormVisible"
       :mask-closable="false"
       :title="$t('SMTPlantAdd.addReportRecord')"
+      :footer-style="{ textAlign: 'right' }"
       width="90%"
     >
       <Form :model="popData" :rules="dialogRules" layout="vertical">
