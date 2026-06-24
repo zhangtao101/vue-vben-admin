@@ -540,7 +540,7 @@ onMounted(() => {
   <Page id="page">
     <div class="mb-5 flex justify-center text-center">
       <BadgeRibbon
-        :text="item.payload.count"
+        :text="String(item.payload.count ?? 0)"
         :color="getColor(item.payload)"
         v-for="item of items"
         :key="item.value"
@@ -551,11 +551,16 @@ onMounted(() => {
           }
         "
       >
-        <Card
-          :title="item.payload.label"
-          class="ml-8 w-48 cursor-pointer hover:bg-sky-500/20"
-          :class="checkedItem === item.value ? 'bg-blue-500' : ''"
-        />
+        <div
+          class="ml-8 w-48 cursor-pointer rounded-md border-2 px-4 py-2.5 text-center font-bold transition-all"
+          :class="
+            checkedItem === item.value
+              ? 'border-blue-500 bg-blue-500 text-white shadow-md'
+              : 'border-gray-200 bg-white text-gray-700 hover:border-sky-300 hover:bg-sky-50'
+          "
+        >
+          {{ item.payload.label }}
+        </div>
       </BadgeRibbon>
     </div>
     <hr class="mb-2" />
@@ -567,7 +572,7 @@ onMounted(() => {
       </span>
       <div class="flex text-center">
         <BadgeRibbon
-          :text="item.payload.count"
+          :text="String(item.payload.count ?? 0)"
           :color="getColor(item.payload)"
           v-for="item of statisticsOfTheNumberOfClaimedItems"
           :key="item.value"
@@ -578,11 +583,16 @@ onMounted(() => {
             }
           "
         >
-          <Card
-            :title="item.payload.label"
-            class="ml-8 w-36 cursor-pointer hover:bg-sky-500/20"
-            :class="checkedType === item.value ? 'bg-blue-500' : ''"
-          />
+          <div
+            class="ml-8 w-36 cursor-pointer rounded-md border-2 px-3 py-2 text-center font-bold transition-all"
+            :class="
+              checkedType === item.value
+                ? 'border-blue-500 bg-blue-500 text-white shadow-md'
+                : 'border-gray-200 bg-white text-gray-700 hover:border-sky-300 hover:bg-sky-50'
+            "
+          >
+            {{ item.payload.label }}
+          </div>
         </BadgeRibbon>
       </div>
     </div>
@@ -746,12 +756,4 @@ onMounted(() => {
       />
     </Drawer>
   </Page>
-</template>
-
-<style scoped lang="scss">
-:deep(.bg-blue-500) {
-  .ant-card-head-title {
-    color: #fff;
-  }
-}
-</style>
+</template>\n

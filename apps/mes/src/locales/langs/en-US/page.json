@@ -10,7 +10,9 @@
     "title": "Overview",
     "analytics": "Analytics",
     "workspace": "Workspace",
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "superset": "Data Dashboard",
+    "scada": "SCADA"
   },
   "common": {
     "serialNumber": "Serial No.",

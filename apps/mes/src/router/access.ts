@@ -91,6 +91,22 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
               title: $t('page.dashboard.welcome'),
             },
           },
+          {
+            name: 'superset',
+            path: '/superset',
+            meta: {
+              link: 'http://192.168.0.104:8088/superset/welcome/',
+              title: $t('page.dashboard.superset'),
+            },
+          },
+          {
+            name: 'scada',
+            path: '/scada',
+            meta: {
+              link: 'http://192.168.0.107:8089/login',
+              title: $t('page.dashboard.scada'),
+            },
+          },
         ],
       });
       return routes;
