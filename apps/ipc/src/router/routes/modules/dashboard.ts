@@ -94,16 +94,16 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.barcodeInspection'),
         },
       },
-      // {
-      //   name: 'ctuCartonPicking',
-      //   path: 'ctuCartonPicking',
-      //   component: () => import('#/views/flow/ctuCartonPicking.vue'),
-      //   meta: {
-      //     icon: 'mdi:inbox-full-outline',
-      //     ignoreAccess: true,
-      //     title: $t('menu.ctuCartonPicking'),
-      //   },
-      // },
+      {
+        name: 'ctuCartonPicking',
+        path: 'ctuCartonPicking',
+        component: () => import('#/views/flow/ctuCartonPicking.vue'),
+        meta: {
+          icon: 'mdi:inbox-full-outline',
+          ignoreAccess: true,
+          title: $t('menu.ctuCartonPicking'),
+        },
+      },
       {
         name: 'batchPrinting',
         path: 'batchPrinting',
@@ -114,16 +114,16 @@ const routes: RouteRecordRaw[] = [
           title: $t('menu.batchPrinting'),
         },
       },
-      // {
-      //   name: 'ctuOutboundPicking',
-      //   path: 'ctuOutboundPicking',
-      //   component: () => import('#/views/flow/ctuOutboundPicking.vue'),
-      //   meta: {
-      //     icon: 'mdi:file-table-box-multiple-outline',
-      //     ignoreAccess: true,
-      //     title: $t('menu.ctuOutboundPicking'),
-      //   },
-      // },
+      {
+        name: 'ctuOutboundPicking',
+        path: 'ctuOutboundPicking',
+        component: () => import('#/views/flow/ctuOutboundPicking.vue'),
+        meta: {
+          icon: 'mdi:file-table-box-multiple-outline',
+          ignoreAccess: true,
+          title: $t('menu.ctuOutboundPicking'),
+        },
+      },
       {
         name: 'ioBillOperation',
         path: 'ioBillOperation',
@@ -239,26 +239,26 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   // 报表管理
-  // {
-  //   meta: {
-  //     icon: 'lucide:layout-dashboard',
-  //     order: -1,
-  //     title: $t('menu.reportManagement'),
-  //   },
-  //   name: 'bb',
-  //   path: '/bb',
-  //   children: [
-  //     {
-  //       name: 'test',
-  //       path: 'test',
-  //       component: () => import('#/views/reportForms/test.vue'),
-  //       meta: {
-  //         ignoreAccess: true,
-  //         title: $t('menu.dispatchOperation'),
-  //       },
-  //     },
-  //   ],
-  // },
+  {
+    meta: {
+      icon: 'lucide:layout-dashboard',
+      order: -1,
+      title: $t('menu.reportManagement'),
+    },
+    name: 'bb',
+    path: '/bb',
+    children: [
+      {
+        name: 'test',
+        path: 'test',
+        component: () => import('#/views/reportForms/test.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: $t('menu.dispatchOperation'),
+        },
+      },
+    ],
+  },
 ];
 
 export default routes;
