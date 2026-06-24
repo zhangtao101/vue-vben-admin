@@ -51,7 +51,7 @@ export async function getSendCheckDetail(formId: any) {
  * 分页查询产品追溯路线列表
  * @param query 查询参数
  */
-export async function getRouteList(query: any) {
+export async function getTraceRouteList(query: any) {
   return requestClient.get<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/process/route/getRouteList?${qs.stringify(query)}`,
   );

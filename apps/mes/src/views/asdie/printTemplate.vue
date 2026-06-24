@@ -256,7 +256,7 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-@import '/css/iconfont.css';
+@import '/iconFont/css/iconfont.css';
 
 // flex
 @mixin flex-row {
