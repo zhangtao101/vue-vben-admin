@@ -40,7 +40,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'planCode',
       title: '计划编号',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'workSheetCode',
@@ -48,12 +48,12 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 180,
     },
     {
-      field: 'productCode',
+      field: 'subProductCode',
       title: '产品编码',
       minWidth: 150,
     },
     {
-      field: 'productName',
+      field: 'subProductName',
       title: '产品名称',
       minWidth: 150,
     },

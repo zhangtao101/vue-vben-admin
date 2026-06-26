@@ -50,7 +50,7 @@ export default defineConfig(async () => {
             // target: 'http://192.168.0.60:8060',
             target: 'http://192.168.0.102:8060',
             // target: 'http://192.168.0.102:8050',
-            // target: 'http://192.168.0.60:8060',
+            // target: 'http://192.168.0.13:8060',
             // target: 'http://271z43k730.zicp.vip',
           },
         },
