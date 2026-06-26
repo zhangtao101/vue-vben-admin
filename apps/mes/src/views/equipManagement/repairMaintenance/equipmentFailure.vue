@@ -217,11 +217,11 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('repair.equipmentFailure.solution'),
       minWidth: 200,
     },
-    {
-      field: 'sortOrder',
-      title: $t('repair.repairBasicConfig.sortOrder'),
-      minWidth: 80,
-    },
+    // {
+    //   field: 'sortOrder',
+    //   title: $t('repair.repairBasicConfig.sortOrder'),
+    //   minWidth: 80,
+    // },
     {
       field: 'action',
       title: $t('common.action'),

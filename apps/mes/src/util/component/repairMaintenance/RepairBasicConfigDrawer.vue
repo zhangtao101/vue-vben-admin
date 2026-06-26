@@ -14,7 +14,6 @@ import {
   Form,
   FormItem,
   Input,
-  InputNumber,
   message,
   Space,
 } from 'ant-design-vue';
@@ -80,7 +79,6 @@ const formData = ref({
   repairGroupCode: '',
   itemRequirement: '',
   itemStandard: '',
-  sortOrder: undefined as number | undefined,
   remark: '',
 });
 
@@ -99,7 +97,6 @@ function resetForm(forceConfigType?: string) {
     repairGroupCode: '',
     itemRequirement: '',
     itemStandard: '',
-    sortOrder: undefined,
     remark: '',
   };
 }
@@ -289,14 +286,14 @@ function handleSubmit() {
         />
       </FormItem>
 
-      <FormItem :label="$t('repair.repairBasicConfig.sortOrder')">
+      <!-- <FormItem :label="$t('repair.repairBasicConfig.sortOrder')">
         <InputNumber
           v-model:value="formData.sortOrder"
           :min="0"
           :placeholder="`请输入${$t('repair.repairBasicConfig.sortOrder')}`"
           class="!w-full"
         />
-      </FormItem>
+      </FormItem> -->
 
       <FormItem :label="$t('repair.repairBasicConfig.remark')">
         <Input.TextArea

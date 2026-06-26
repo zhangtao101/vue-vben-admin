@@ -610,18 +610,30 @@ function handleSubmit() {
                 {{ currentRow?.usagePercent }}%
               </Tag>
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('moldArchiveMgmt.warningThreshold')">
+            <!-- <DescriptionsItem :label="$t('moldArchiveMgmt.warningThreshold')">
               {{ currentRow?.warningThreshold }}%
-            </DescriptionsItem>
-            <DescriptionsItem :label="$t('moldArchiveMgmt.blockThreshold')">
+            </DescriptionsItem> -->
+            <!-- <DescriptionsItem :label="$t('moldArchiveMgmt.blockThreshold')">
               {{ currentRow?.blockThreshold }}%
-            </DescriptionsItem>
+            </DescriptionsItem> -->
             <DescriptionsItem :label="$t('moldArchiveMgmt.recoveryMode')">
               {{ getRecoveryModeLabel(currentRow?.recoveryMode) }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('moldArchiveMgmt.standardCapacity')">
-              {{ currentRow?.standardCapacity || '-' }}
+            <DescriptionsItem
+              v-if="currentRow?.recoveryMode === 'PERCENT'"
+              :label="$t('moldArchiveMgmt.recoveryPercent')"
+            >
+              {{ currentRow?.recoveryPercent || '-' }}%
             </DescriptionsItem>
+            <DescriptionsItem
+              v-if="currentRow?.recoveryMode === 'FIXED'"
+              :label="$t('moldArchiveMgmt.recoveryFixed')"
+            >
+              {{ currentRow?.recoveryFixed || '-' }}
+            </DescriptionsItem>
+            <!-- <DescriptionsItem :label="$t('moldArchiveMgmt.standardCapacity')">
+              {{ currentRow?.standardCapacity || '-' }}
+            </DescriptionsItem> -->
           </Descriptions>
         </Tabs.TabPane>
 
@@ -711,24 +723,24 @@ function handleSubmit() {
         </FormItem>
 
         <!-- 预警阈值 -->
-        <FormItem :label="$t('moldArchiveMgmt.warningThreshold')">
+        <!-- <FormItem :label="$t('moldArchiveMgmt.warningThreshold')">
           <InputNumber
             v-model:value="currentRow.warningThreshold"
             :max="100"
             :min="0"
             style="width: 100%"
           />
-        </FormItem>
+        </FormItem> -->
 
         <!-- 拦截阈值 -->
-        <FormItem :label="$t('moldArchiveMgmt.blockThreshold')">
+        <!-- <FormItem :label="$t('moldArchiveMgmt.blockThreshold')">
           <InputNumber
             v-model:value="currentRow.blockThreshold"
             :max="100"
             :min="0"
             style="width: 100%"
           />
-        </FormItem>
+        </FormItem> -->
 
         <!-- 恢复模式 -->
         <FormItem :label="$t('moldArchiveMgmt.recoveryMode')">
@@ -772,13 +784,13 @@ function handleSubmit() {
         </FormItem>
 
         <!-- 标准产能 -->
-        <FormItem :label="$t('moldArchiveMgmt.standardCapacity')">
+        <!-- <FormItem :label="$t('moldArchiveMgmt.standardCapacity')">
           <InputNumber
             v-model:value="currentRow.standardCapacity"
             :min="0"
             style="width: 100%"
           />
-        </FormItem>
+        </FormItem> -->
       </Form>
 
       <!-- 产品绑定区域 -->
