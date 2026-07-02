@@ -150,7 +150,7 @@ function open() {
     planCode: '',
     productCode: '',
     productName: '',
-    processType: 1,
+    processType: undefined,
     isFinish: '2',
     isPlanWork: '2',
   };
@@ -182,7 +182,7 @@ defineExpose({ open, queryParams });
       <FormItem :label="$t('SMTmanagement.productName')" style="margin-bottom: 8px">
         <Input v-model:value="queryParams.productName" :placeholder="$t('SMTmanagement.inputProductName')" />
       </FormItem>
-      <FormItem :label="$t('SMTmanagement.processType')" style="margin-bottom: 8px">
+      <FormItem :label="$t('SMTmanagement.processType')" :required="true" style="margin-bottom: 8px">
         <Select
           v-model:value="queryParams.processType"
           :options="processTypeOptions"
