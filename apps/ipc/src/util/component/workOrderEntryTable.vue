@@ -27,6 +27,7 @@ import {
   moveOut,
   moveUpAndDown,
   obtainTheWorkOrderManagementList,
+  sheetBack,
 } from '#/api';
 import EquipmentResources from '#/util/component/equipmentResources.vue';
 
@@ -54,7 +55,7 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     // 序号列
     {
-      title: '序号',
+      title: $t('workOrderEntry.seq'),
       type: 'seq',
       field: 'seq',
       width: 50,
@@ -62,48 +63,48 @@ const gridOptions: VxeGridProps<any> = {
     // 工单编号列
     {
       field: 'worksheetCode',
-      title: '工单编号',
+      title: $t('workOrderEntry.workOrderCode'),
       minWidth: 200,
     },
     // 产品编码列
     {
       field: 'productCode',
-      title: '产品编码',
+      title: $t('workOrderEntry.productCode'),
       minWidth: 200,
     },
     // 作业资源列
     {
       field: 'equipCode',
-      title: '作业资源',
+      title: $t('workOrderEntry.workArea'),
       minWidth: 200,
     },
     // 工单状态列
     {
       field: 'sendStateName',
-      title: '工单状态',
+      title: $t('workOrderEntry.workOrderStatusCol'),
       minWidth: 150,
     },
     // 工单模式列
     {
       field: 'modelTypeName',
-      title: '工单模式',
+      title: $t('workOrderEntry.workOrderMode'),
       minWidth: 200,
     },
     // 预计开始时间列
     {
       field: 'planStartDate',
-      title: '预计开始时间',
+      title: $t('workOrderEntry.plannedStartDate'),
       minWidth: 150,
     },
     // 预计结束时间列
     {
       field: 'planEndDate',
-      title: '预计结束时间',
+      title: $t('workOrderEntry.plannedEndDate'),
       minWidth: 150,
     },
     // 操作列，固定在右侧
     {
-      title: '操作',
+      title: $t('workOrderEntry.action'),
       minWidth: 180,
       slots: {
         default: 'action',
@@ -247,12 +248,12 @@ function queryData({ page, pageSize }: any) {
 function inputSheetCode() {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     // 取消操作回调
     onCancel() {
-      message.warning('已取消进站!');
+      message.warning($t('workOrderEntry.cancelPullIn'));
     },
     // 确认操作回调
     onOk() {
@@ -272,7 +273,34 @@ function inputSheetCode() {
         gridApi.reload();
       });
     },
-    title: '是否确认进站?',
+    title: $t('workOrderEntry.confirmPullIn'),
+  });
+}
+
+// endregion
+
+// region 进站撤回
+
+/**
+ * 处理进站撤回操作
+ */
+function pullBack() {
+  Modal.confirm({
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
+    okType: 'danger',
+    onCancel() {
+      message.warning($t('workOrderEntry.cancelPullBack'));
+    },
+    onOk() {
+      sheetBack({
+        workstationCode: props.queryParams.workstationCode,
+      }).then(() => {
+        message.success($t('common.successfulOperation'));
+        gridApi.reload();
+      });
+    },
+    title: $t('workOrderEntry.confirmPullBack'),
   });
 }
 
@@ -286,12 +314,12 @@ function inputSheetCode() {
 function delSheetCode(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     // 取消操作回调
     onCancel() {
-      message.warning('已取消删除!');
+      message.warning($t('workOrderEntry.cancelDelete'));
     },
     // 确认操作回调
     onOk() {
@@ -302,7 +330,7 @@ function delSheetCode(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认删除?',
+    title: $t('workOrderEntry.confirmDelete'),
   });
 }
 // endregion
@@ -344,12 +372,12 @@ function moveInFun() {
 function moveOutFun(row: any) {
   // 弹出确认对话框
   Modal.confirm({
-    cancelText: '取消',
-    okText: '确认',
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
     okType: 'danger',
     // 取消操作回调
     onCancel() {
-      message.warning('已取消移出!');
+      message.warning($t('workOrderEntry.cancelMoveOut'));
     },
     // 确认操作回调
     onOk() {
@@ -364,7 +392,7 @@ function moveOutFun(row: any) {
         gridApi.reload();
       });
     },
-    title: '是否确认移出?',
+    title: $t('workOrderEntry.confirmMoveOut'),
   });
 }
 
@@ -472,8 +500,17 @@ defineExpose({
           type="primary"
           @click="inputSheetCode()"
           v-if="workOrderType === '1'"
+          class="!mr-2"
         >
           {{ $t('workOrderEntry.pullIn') }}
+        </Button>
+        <Button
+          type="primary"
+          danger
+          @click="pullBack()"
+          v-if="workOrderType === '1'"
+        >
+          {{ $t('workOrderEntry.pullBack') }}
         </Button>
       </template>
       <!-- 自定义工具栏操作 -->
@@ -484,8 +521,8 @@ defineExpose({
           button-style="solid"
           @change="() => gridApi.reload()"
         >
-          <RadioButton value="1">待执行列表</RadioButton>
-          <RadioButton value="2">工单总列表</RadioButton>
+          <RadioButton value="1">{{ $t('workOrderEntry.pendingList') }}</RadioButton>
+          <RadioButton value="2">{{ $t('workOrderEntry.allWorkOrderList') }}</RadioButton>
         </RadioGroup>
       </template>
       <!-- 操作列自定义插槽 -->
@@ -648,11 +685,11 @@ defineExpose({
   />
 
   <!-- 移入确认对话框 -->
-  <Modal v-model:open="showIn" title="是否确认移入?" @ok="moveInFun">
+  <Modal v-model:open="showIn" :title="$t('workOrderEntry.confirmMoveIn')" @ok="moveInFun">
     <!-- 单选按钮组，用于选择工单移入模式 -->
     <RadioGroup v-model:value="modelType">
-      <Radio :value="1">手动</Radio>
-      <Radio :value="2">自动</Radio>
+      <Radio :value="1">{{ $t('workOrderEntry.manual') }}</Radio>
+      <Radio :value="2">{{ $t('workOrderEntry.auto') }}</Radio>
     </RadioGroup>
   </Modal>
 </template>

@@ -2,6 +2,8 @@
   "planNumber": "Plan Number",
   "workOrderCoding": "Work Order Code",
   "productName": "Product Name",
+  "processType": "Process Type",
+  "pleaseSelectProcessType": "Please Select Process Type",
   "resourceAssignment": "Resource Assignment",
   "sentOut": "Sent Work Order View",
   "jobGroup": "Job Group",

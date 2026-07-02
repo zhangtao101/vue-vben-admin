@@ -124,3 +124,11 @@ export function finishWorksheetInOut(params: any) {
     params,
   );
 }
+/**
+ * 获取工单单别
+ */
+export function getProcessTypeList() {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/plan/worksheet/getProcessTypeList`,
+  );
+}

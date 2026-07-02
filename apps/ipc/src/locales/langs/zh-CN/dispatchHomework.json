@@ -2,6 +2,8 @@
   "planNumber": "计划编号",
   "workOrderCoding": "工单编码",
   "productName": "产品名称",
+  "processType": "工单单别",
+  "pleaseSelectProcessType": "请选择工单单别",
   "resourceAssignment": "资源指派",
   "sentOut": "已派工单信息查看",
   "jobGroup": "作业群组",

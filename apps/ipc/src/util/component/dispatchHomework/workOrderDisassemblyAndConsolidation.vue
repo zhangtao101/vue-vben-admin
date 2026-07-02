@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
@@ -17,6 +17,7 @@ import {
   message,
   RadioGroup,
   Row,
+  Select,
   Space,
   Spin,
   Textarea,
@@ -30,6 +31,7 @@ import {
   searchProduceWorkSheetList,
   splitWorkSheet,
 } from '#/api';
+import { getProcessTypeList } from '#/api/flow/dispatchHomework.service';
 import EquipmentResources from '#/util/component/equipmentResources.vue';
 
 const props = defineProps({
@@ -46,6 +48,22 @@ const queryParams = ref<any>({
   planCode: '',
   workSheetCode: '',
   productName: '',
+  processType: undefined,
+});
+
+// 工单单别列表
+const processTypeList = ref<any>([]);
+
+// 获取工单单别列表
+function fetchProcessTypeList() {
+  getProcessTypeList().then((res: any) => {
+    processTypeList.value = res.data || [];
+  });
+}
+
+// 组件挂载时初始化加载
+onMounted(() => {
+  fetchProcessTypeList();
 });
 
 // endregion
@@ -312,6 +330,23 @@ function orderSubmit() {
       <!--产品名称 -->
       <FormItem :label="$t('dispatchHomework.productName')">
         <Input v-model:value="queryParams.productName" />
+      </FormItem>
+      <!--工单单别 -->
+      <FormItem :label="$t('dispatchHomework.processType')">
+        <Select
+          v-model:value="queryParams.processType"
+          :placeholder="$t('dispatchHomework.pleaseSelectProcessType')"
+          allow-clear
+          class="w-40"
+        >
+          <Select.Option
+            v-for="item in processTypeList"
+            :key="item.processType"
+            :value="item.processType"
+          >
+            {{ item.processTypeName }}
+          </Select.Option>
+        </Select>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="gridApi.reload()" class="mr-4">
