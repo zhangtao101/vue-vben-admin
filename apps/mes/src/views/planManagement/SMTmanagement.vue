@@ -99,6 +99,11 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('SMTmanagement.plannedTime'),
       minWidth: 130,
     },
+    {
+      field: 'planDateStop',
+      title: $t('SMTmanagement.planDateStop'),
+      minWidth: 130,
+    },
     { field: 'planCode', title: $t('SMTmanagement.planNumber'), minWidth: 150 },
     {
       field: 'lineName',

@@ -106,6 +106,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 // region 状态定义
 const queryParams = reactive({
   recordCode: undefined as string | undefined,
+  manufacturerName: undefined as string | undefined,
   recordDateStart: undefined as string | undefined,
   recordDateEnd: undefined as string | undefined,
   pageNum: 1,
@@ -268,6 +269,17 @@ function handleFormSuccess() {
             :placeholder="
               $t('common.pleaseEnter') +
               $t('storeManagement.labelPrint.recordCode')
+            "
+            allow-clear
+            style="width: 200px"
+          />
+        </FormItem>
+        <FormItem :label="$t('storeManagement.labelPrint.supplier')">
+          <Input
+            v-model:value="queryParams.manufacturerName"
+            :placeholder="
+              $t('common.pleaseEnter') +
+              $t('storeManagement.labelPrint.supplier')
             "
             allow-clear
             style="width: 200px"

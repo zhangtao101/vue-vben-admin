@@ -26,9 +26,7 @@ import {
   deleteProductRoute,
   exportProductRouteList,
   queryProductList,
-  queryProductRouteDetail,
   queryProductRouteList,
-  updateProductRoute,
 } from '#/api';
 
 interface Props {
@@ -47,17 +45,16 @@ const queryParams = ref({
   routeCode: '',
   productCode: '',
 });
+const saveLoading = ref(false);
 
 // 产品选择弹窗相关
 const showProductSelectModal = ref(false);
-const productFormRef = ref();
-const productFormData = ref<any>({});
 const productSelectQuery = ref({
   productCode: '',
   productName: '',
 });
 const productList = ref<any[]>([]);
-const selectedProduct = ref<any>(null);
+const selectedProducts = ref<any[]>([]);
 const productPagination = ref({
   pageNum: 1,
   pageSize: 10,
@@ -148,34 +145,40 @@ function exportProductRoute() {
 }
 
 function showAddProductBind() {
-  productFormData.value = {
-    routeCode: currentRoute.value.routeCode,
-    routeName: currentRoute.value.routeName,
-    productCode: undefined,
-    productName: undefined,
-  };
+  selectedProducts.value = [];
   showProductSelectModal.value = true;
 }
 
-function showEditProductBind(row: any) {
-  queryProductRouteDetail(row.id).then((res: any) => {
-    productFormData.value = { ...res };
-    showProductSelectModal.value = true;
-  });
+function showEditProductBind(_row: any) {
+  // 编辑功能暂时不需要，因为现在支持多选
+  message.info('编辑功能暂不可用，请使用新增功能');
 }
 
 function saveProductBind() {
-  productFormRef.value.validate().then(() => {
-    const params = {
-      ...productFormData.value,
-    };
-    const api = params.id ? updateProductRoute : addProductRoute;
-    api(params).then(() => {
+  if (selectedProducts.value.length === 0) {
+    message.warning('请至少选择一个产品');
+    return;
+  }
+
+  saveLoading.value = true;
+  const currentRouteData = currentRoute.value;
+  const params = selectedProducts.value.map((product) => ({
+    routeCode: currentRouteData.routeCode,
+    routeName: currentRouteData.routeName,
+    productCode: product.productCode,
+    productName: product.productName,
+  }));
+
+  addProductRoute(params)
+    .then(() => {
       message.success('操作成功');
       showProductSelectModal.value = false;
+      selectedProducts.value = [];
       productGridApi?.reload();
+    })
+    .finally(() => {
+      saveLoading.value = false;
     });
-  });
 }
 
 function deleteProductBind(row: any) {
@@ -193,14 +196,8 @@ function deleteProductBind(row: any) {
   });
 }
 
-function copyProductBind(row: any) {
-  productFormData.value = {
-    routeCode: row.routeCode,
-    routeName: row.routeName,
-    productRouteId: row.id,
-    productCode: undefined,
-    productName: undefined,
-  };
+function copyProductBind(_row: any) {
+  selectedProducts.value = [];
   showProductSelectModal.value = true;
 }
 
@@ -221,26 +218,14 @@ function loadProductList() {
       semifinishedProductSign: item.semifinishedProductSign === 1,
     }));
     productPagination.value.total = res.total;
-    // 重置选中状态
-    if (selectedProduct.value) {
-      const exists = productList.value.find(
-        (p: any) =>
-          p.id === selectedProduct.value.id ||
-          p.productCode === selectedProduct.value.productCode,
+    // 重置选中状态，移除已不存在的产品
+    if (selectedProducts.value.length > 0) {
+      const validKeys = new Set(productList.value.map((p: any) => p.key));
+      selectedProducts.value = selectedProducts.value.filter((sp) =>
+        validKeys.has(sp.key),
       );
-      if (!exists) {
-        selectedProduct.value = null;
-        productFormData.value.productName = undefined;
-        productFormData.value.productCode = undefined;
-      }
     }
   });
-}
-
-function selectProduct(row: any) {
-  selectedProduct.value = { ...row, key: row.key };
-  productFormData.value.productName = row.productName;
-  productFormData.value.productCode = row.productCode;
 }
 
 function searchProduct() {
@@ -260,7 +245,7 @@ watch(showProductSelectModal, (val) => {
     productSelectQuery.value.productName = '';
     productPagination.value.pageNum = 1;
     productPagination.value.pageSize = 10;
-    selectedProduct.value = null;
+    selectedProducts.value = [];
     loadProductList();
   }
 });
@@ -351,22 +336,6 @@ defineExpose({
       width="900px"
     >
       <!-- 产品绑定表单 -->
-      <Card class="!mb-4">
-        <Form ref="productFormRef" :model="productFormData" layout="inline">
-          <FormItem label="工艺路线编号" style="margin-bottom: 1em">
-            <Input v-model:value="productFormData.routeCode" readonly />
-          </FormItem>
-          <FormItem label="工艺路线名称" style="margin-bottom: 1em">
-            <Input v-model:value="productFormData.routeName" readonly />
-          </FormItem>
-          <FormItem label="产品编号" style="margin-bottom: 1em">
-            <Input v-model:value="productFormData.productCode" readonly />
-          </FormItem>
-          <FormItem label="产品名称" style="margin-bottom: 1em">
-            <Input v-model:value="productFormData.productName" readonly />
-          </FormItem>
-        </Form>
-      </Card>
 
       <Card class="!mb-4">
         <Form :model="productSelectQuery" layout="inline">
@@ -411,12 +380,10 @@ defineExpose({
           },
         }"
         :row-selection="{
-          type: 'radio',
-          selectedRowKeys: selectedProduct ? [selectedProduct.key] : [],
+          type: 'checkbox',
+          selectedRowKeys: selectedProducts.map((item) => item.key),
           onChange: (_, selectedRows) => {
-            if (selectedRows.length > 0) {
-              selectProduct(selectedRows[0]);
-            }
+            selectedProducts = selectedRows;
           },
         }"
         :scroll="{ y: 300 }"
@@ -439,7 +406,7 @@ defineExpose({
       <template #footer>
         <Space>
           <Button @click="showProductSelectModal = false">取消</Button>
-          <Button type="primary" @click="saveProductBind">保存</Button>
+          <Button type="primary" :loading="saveLoading" @click="saveProductBind">保存</Button>
         </Space>
       </template>
     </Modal>

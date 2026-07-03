@@ -51,6 +51,7 @@
   "planQuantity": "计划数量",
   "singleDosage": "单件用量",
   "planDateStart": "计划开始时间",
+  "planDateStop": "计划结束时间",
   "planType": "计划类别",
   "orderDate": "订单日期",
   "deliverDate": "交货日期",

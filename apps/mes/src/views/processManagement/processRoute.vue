@@ -296,6 +296,14 @@ onMounted(() => {
           <Input v-model:value="queryParams.routeName" />
         </FormItem>
 
+        <!-- 产品型号 -->
+        <FormItem
+          :label="$t('processManagement.processRoute.productCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input v-model:value="queryParams.productCode" />
+        </FormItem>
+
         <FormItem style="margin-bottom: 1em">
           <Button type="primary" @click="gridApi.reload()">
             <Icon icon="mdi:magnify" class="mr-2" />
