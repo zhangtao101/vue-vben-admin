@@ -34,7 +34,11 @@
     "number": "Quantity",
     "materialFeatureId": "Material Feature ID",
     "shifts": "Shifts",
-    "batch": "Batch Number"
+    "batch": "Batch Number",
+    "syncFormCode": "Sync Form Code",
+    "pleaseEnterFormCode": "Please enter form code",
+    "syncSuccess": "Sync form code successfully",
+    "syncFailed": "Sync form code failed"
   },
   "inventoryManagement": {
     "materialNumber": "Material Number",

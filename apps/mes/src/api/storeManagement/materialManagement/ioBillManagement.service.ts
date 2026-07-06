@@ -70,3 +70,13 @@ export function materialFeatureGetMaterialCodeList(params: any) {
     `${import.meta.env.VITE_GLOB_MES_WMS}/base/materialInfo/getByMaterialCodeAndName?${qs.stringify(params)}`,
   );
 }
+
+/**
+ * 手动同步单据(仅为豪声使用)
+ * @param params - 包含 formCode 的参数对象
+ */
+export function syncErpFormCode(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/api/erp/formCode/singlesync?${qs.stringify(params)}`,
+  );
+}

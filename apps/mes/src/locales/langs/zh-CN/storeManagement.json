@@ -34,7 +34,11 @@
     "number": "数量",
     "materialFeatureId": "物料特征ID",
     "shifts": "班次",
-    "batch": "批号"
+    "batch": "批号",
+    "syncFormCode": "单据同步",
+    "pleaseEnterFormCode": "请输入单据编号",
+    "syncSuccess": "同步单据成功",
+    "syncFailed": "同步单据失败"
   },
   "inventoryManagement": {
     "materialNumber": "材料编号",

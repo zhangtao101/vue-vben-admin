@@ -62,6 +62,7 @@ import {
   inboundAndOutboundDocumentsAreViewed,
   materialFeatureGetByMaterialCodeWith,
   materialFeatureGetMaterialCodeList,
+  syncErpFormCode,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -85,9 +86,9 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'formCode', title: '单据编号', minWidth: 150 },
     { field: 'operateDate', title: '单据日期', minWidth: 150 },
     { field: 'operatorName', title: '创建人', minWidth: 150 },
-    { field: 'enterOut', title: '单据类型', minWidth: 150 },
+    // { field: 'enterOut', title: '单据类型', minWidth: 150 },
     { field: 'enterOutName', title: '单据类型说明', minWidth: 150 },
-    { field: 'outType', title: '操作类型', minWidth: 150 },
+    // { field: 'outType', title: '操作类型', minWidth: 150 },
     { field: 'outTypeName', title: '操作类型说明', minWidth: 150 },
     { field: 'formStateName', title: '单据执行状态', minWidth: 150 },
     { field: 'auditStateName', title: '审核状态', minWidth: 150 },
@@ -247,6 +248,22 @@ function delRow(row: any) {
 }
 
 /**
+ * 手动同步单据
+ * 根据单据编号从ERP同步单据数据
+ */
+function handleSyncFormCode() {
+  if (!queryParams.value.formCode) {
+    message.warning($t('storeManagement.ioBillManagement.pleaseEnterFormCode'));
+    return;
+  }
+
+  syncErpFormCode({ formCode: queryParams.value.formCode.trim() }).then(() => {
+    message.success($t('storeManagement.ioBillManagement.syncSuccess'));
+    gridApi.reload();
+  });
+}
+
+/**
  * 关闭编辑抽屉
  * 清空表单数据并重置相关状态
  */
@@ -280,7 +297,7 @@ function submit() {
       ? inboundAndOutboundDocumentsAreUpdated(params)
       : inboundAndOutboundDocumentsAreInserted(params);
     ob.then(() => {
-      gridApi.query();
+      gridApi.reload();
       message.success($t('common.successfulOperation'));
       onClose();
     });
@@ -760,13 +777,21 @@ onMounted(() => {
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
-          <Button
-            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
-            type="primary"
-            @click="() => gridApi.reload()"
-          >
-            {{ $t('common.search') }}
-          </Button>
+          <Space>
+            <Button
+              :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
+              type="primary"
+              @click="() => gridApi.reload()"
+            >
+              {{ $t('common.search') }}
+            </Button>
+            <Button
+              :disabled="!queryParams.formCode"
+              @click="handleSyncFormCode"
+            >
+              {{ $t('storeManagement.ioBillManagement.syncFormCode') }}
+            </Button>
+          </Space>
         </FormItem>
       </Form>
     </Card>
