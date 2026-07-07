@@ -390,6 +390,7 @@ onMounted(() => {
         <!-- 上方库存汇总表格 -->
         <Card class="!mb-8">
           <Grid>
+            <template #toolbar-tools></template>
             <template #status="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
@@ -398,7 +399,9 @@ onMounted(() => {
 
         <!-- 下方库存明细表格 -->
         <Card class="!mb-8">
-          <GridBottom />
+          <GridBottom>
+            <template #toolbar-tools></template>
+          </GridBottom>
         </Card>
       </Col>
     </Row>
