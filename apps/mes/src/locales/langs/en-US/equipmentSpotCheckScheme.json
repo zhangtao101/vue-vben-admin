@@ -1,6 +1,7 @@
 {
   "inspectionScheme": "Inspection Scheme",
   "schemeCode": "Scheme Code",
+  "schemeCodePlaceholder": "Please enter scheme code",
   "schemeName": "Scheme Name",
   "schemeNamePlaceholder": "Please enter scheme name",
   "inspectionType": "Inspection Type",

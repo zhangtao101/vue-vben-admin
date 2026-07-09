@@ -1,5 +1,6 @@
 {
   "schemeCode": "Scheme Code",
+  "schemeCodePlaceholder": "Please enter scheme code",
   "schemeName": "Scheme Name",
   "planType": "Maintenance Type",
   "isStopMachine": "Stop Machine Required",

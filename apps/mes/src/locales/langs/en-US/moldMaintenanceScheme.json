@@ -4,6 +4,7 @@
   "editTitle": "Edit Mold Maintenance Scheme",
   "viewTitle": "View Mold Maintenance Scheme",
   "schemeCode": "Scheme Code",
+  "schemeCodePlaceholder": "Please enter scheme code",
   "schemeName": "Scheme Name",
   "planType": "Maintenance Type",
   "status": "Status",

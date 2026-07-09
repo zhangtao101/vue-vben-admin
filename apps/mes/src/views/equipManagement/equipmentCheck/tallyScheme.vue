@@ -60,6 +60,7 @@ const author = ref<string[]>([]);
 // ========== 查询参数 ==========
 const queryParams = ref({
   keyword: '',
+  schemeCode: '',
   planType: undefined as string | undefined,
   status: undefined as string | undefined,
 });
@@ -220,6 +221,7 @@ function handleImportChange(info: any) {
 function handleReset() {
   queryParams.value = {
     keyword: '',
+    schemeCode: '',
     planType: undefined,
     status: undefined,
   };
@@ -308,6 +310,18 @@ onMounted(() => {
           <Input
             v-model:value="queryParams.keyword"
             :placeholder="$t('tallyScheme.keywordPlaceholder')"
+            allow-clear
+            style="width: 200px"
+          />
+        </FormItem>
+
+        <FormItem
+          :label="$t('tallyScheme.schemeCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input
+            v-model:value="queryParams.schemeCode"
+            :placeholder="$t('tallyScheme.schemeCodePlaceholder')"
             allow-clear
             style="width: 200px"
           />

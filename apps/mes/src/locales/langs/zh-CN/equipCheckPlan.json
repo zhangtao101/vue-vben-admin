@@ -1,5 +1,6 @@
 {
   "planCode": "计划编号",
+  "planCodePlaceholder": "请输入计划编号",
   "planName": "计划名称",
   "schemeName": "关联方案",
   "inspectionType": "点巡检类型",

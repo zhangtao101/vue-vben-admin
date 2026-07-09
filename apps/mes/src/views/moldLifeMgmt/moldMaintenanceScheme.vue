@@ -60,6 +60,7 @@ const author = ref<string[]>([]);
 // ========== 查询参数 ==========
 const queryParams = ref({
   keyword: '',
+  schemeCode: '',
   planType: undefined as string | undefined,
   categoryName: '',
   status: undefined as string | undefined,
@@ -218,6 +219,7 @@ function handleImportChange(info: any) {
 function handleReset() {
   queryParams.value = {
     keyword: '',
+    schemeCode: '',
     planType: undefined,
     categoryName: '',
     status: undefined,
@@ -310,6 +312,18 @@ onMounted(() => {
           <Input
             v-model:value="queryParams.keyword"
             :placeholder="$t('moldMaintenanceScheme.keywordPlaceholder')"
+            allow-clear
+            style="width: 200px"
+          />
+        </FormItem>
+
+        <FormItem
+          :label="$t('moldMaintenanceScheme.schemeCode')"
+          style="margin-bottom: 1em"
+        >
+          <Input
+            v-model:value="queryParams.schemeCode"
+            :placeholder="$t('moldMaintenanceScheme.schemeCodePlaceholder')"
             allow-clear
             style="width: 200px"
           />
