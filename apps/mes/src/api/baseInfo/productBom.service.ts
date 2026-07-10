@@ -38,3 +38,28 @@ export function getProductBomTypeTree() {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/bomtype/getTree`,
   );
 }
+
+/**
+ * 下载产品 BOM 导入模板（返回文件路径）
+ */
+export function downloadProductBomTemplate() {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/productbom/downloadExcel`,
+  );
+}
+
+/**
+ * 导入产品 BOM Excel 文件
+ * @param formData FormData 文件数据（字段名 file）
+ */
+export function importProductBom(formData: FormData) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/productbom/import`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  );
+}

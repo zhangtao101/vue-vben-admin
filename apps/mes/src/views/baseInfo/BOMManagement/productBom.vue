@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { MdiEyeOutline, MdiSearch } from '@vben/icons';
+import { useAccessStore } from '@vben/stores';
 
 import {
   Button,
@@ -15,15 +16,19 @@ import {
   DirectoryTree,
   Form,
   FormItem,
+  Image,
   Input,
+  message,
   Modal,
   Row,
   Tabs,
   Tooltip,
+  Upload,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  downloadProductBomTemplate,
   getBomDetailList,
   getBomDetailTree,
   getProductBomList,
@@ -47,6 +52,12 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'productTypeName', title: $t('baseInfo.productCategory'), minWidth: 80 },
     { field: 'productCode', title: $t('baseInfo.productCode'), minWidth: 100 },
     { field: 'productName', title: $t('baseInfo.productName'), minWidth: 100 },
+    {
+      field: 'imagePath',
+      minWidth: 80,
+      slots: { default: 'imagePath' },
+      title: '产品图片',
+    },
     {
       field: 'isLock',
       title: $t('baseInfo.locked'),
@@ -131,9 +142,7 @@ const queryParams = ref({
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = queryParams.value;
-    if (selectedKey.value && selectedKey.value.typeCode) {
-      params.bomTypeCode = selectedKey.value.typeCode;
-    }
+    params.bomTypeCode = selectedKey.value && selectedKey.value.typeCode ? selectedKey.value.typeCode : '';
     // 调用 listStations API函数，传递查询参数和分页信息
     getProductBomList({
       ...params, // 展开queryParams.value中的所有查询参数
@@ -193,6 +202,7 @@ function queryAllCategoryTree() {
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
   if (node.typeName === $t('page.common.all')) {
+    selectedKey.value = '';
     queryParams.value.bomTypeCode = '';
   } else {
     selectedKey.value = selected && node.typeLevel < 3 ? node : undefined;
@@ -341,6 +351,47 @@ function handleTabChange(key: number | string) {
 
 // endregion
 
+// region 文件导入 / 模板下载
+
+const accessStore = useAccessStore();
+// 上传请求头信息
+const uploadHeaders = ref<any>({
+  Authorization: accessStore.accessToken,
+});
+// 上传地址
+const uploadAction = ref<string>(
+  `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/productbom/import`,
+);
+// 文件列表
+const fileList = ref<any>([]);
+
+/**
+ * 处理文件上传状态变化
+ * @param info - 包含文件上传信息的对象
+ */
+function handleUploadChange(info: any) {
+  if (info.file.status === 'done') {
+    // 上传成功，重新查询列表
+    gridApi.reload();
+    message.success($t('baseInfo.uploadSuccess'));
+  } else if (info.file.status === 'error') {
+    const errorMessage =
+      info.file.response?.message || $t('baseInfo.uploadFailed');
+    message.error(errorMessage);
+  }
+}
+
+/**
+ * 下载导入模板
+ */
+function downloadTemplate() {
+  downloadProductBomTemplate().then((data: any) => {
+    window.open(data);
+  });
+}
+
+// endregion
+
 // region 初始化
 
 // 当组件挂载到DOM上后，立即执行的函数
@@ -411,6 +462,34 @@ onMounted(() => {
       <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
         <Card class="h-[60vh] overflow-y-auto">
           <Grid>
+            <template #toolbar-tools>
+              <!-- 产品导入 -->
+              <Upload
+                v-model:file-list="fileList"
+                :action="uploadAction"
+                :headers="uploadHeaders"
+                :show-upload-list="false"
+                name="file"
+                @change="handleUploadChange"
+              >
+                <Button type="primary">
+                  {{ $t('common.import') }}
+                </Button>
+              </Upload>
+              <!-- 模板下载 -->
+              <Button class="ml-4" type="primary" @click="downloadTemplate">
+                {{ $t('common.templateDownload') }}
+              </Button>
+            </template>
+            <template #imagePath="{ row }">
+              <Image
+                v-if="row.imagePath"
+                :src="row.imagePath"
+                :width="60"
+                fallback="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PC9zdmc+"
+              />
+              <span v-else>-</span>
+            </template>
             <template #selectedState="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
