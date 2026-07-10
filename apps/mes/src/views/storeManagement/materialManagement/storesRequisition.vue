@@ -1085,7 +1085,7 @@ onMounted(async () => {
 
       <addOrUpdateGrid>
         <template #materialName="{ row }">
-          <Input v-model:value="row.materialName" class="mr-1 w-48" readonly />
+          <Input v-model:value="row.materialName" class="mr-1 w-48!" readonly />
           <Button
             :disabled="!editMessage.applyOrgCode || !row.applyType"
             type="primary"
