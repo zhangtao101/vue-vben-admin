@@ -1,9 +1,11 @@
+import { computed } from 'vue';
+
 import { $t } from '@vben/locales';
 
 /**
  * 领料进度类型
  */
-export const TYPE_OF_MATERIAL_REQUISITION_PROGRESS = [
+export const TYPE_OF_MATERIAL_REQUISITION_PROGRESS = computed(() => [
   {
     label: $t('status.inProgress'),
     value: '0',
@@ -16,12 +18,12 @@ export const TYPE_OF_MATERIAL_REQUISITION_PROGRESS = [
     label: $t('status.notStarted'),
     value: '-1',
   },
-];
+]);
 
 /**
  * 领料状态
  */
-export const MATERIAL_REQUISITION_STATUS_TYPE = [
+export const MATERIAL_REQUISITION_STATUS_TYPE = computed(() => [
   {
     label: $t('basic.all'),
     value: '2',
@@ -34,11 +36,11 @@ export const MATERIAL_REQUISITION_STATUS_TYPE = [
     label: $t('status.unreceived'),
     value: '0',
   },
-];
+]);
 /**
  * 工单完成状态
  */
-export const WORK_ORDER_COMPLETION_STATUS = [
+export const WORK_ORDER_COMPLETION_STATUS = computed(() => [
   {
     label: $t('status.finished'),
     value: '0',
@@ -55,11 +57,11 @@ export const WORK_ORDER_COMPLETION_STATUS = [
     label: $t('status.overCompletion'),
     value: '6',
   },
-];
+]);
 /**
  * 部件/产品
  */
-export const COMPONENTS_PRODUCTS = [
+export const COMPONENTS_PRODUCTS = computed(() => [
   {
     label: $t('basic.all'),
     value: '0',
@@ -72,11 +74,11 @@ export const COMPONENTS_PRODUCTS = [
     label: $t('status.product'),
     value: '2',
   },
-];
+]);
 /**
  * 延时状态
  */
-export const DELAY_STATE = [
+export const DELAY_STATE = computed(() => [
   {
     label: $t('status.delayShort'),
     value: '1',
@@ -89,11 +91,11 @@ export const DELAY_STATE = [
     label: $t('status.delayFull'),
     value: '3',
   },
-];
+]);
 /**
  * 评价状态
  */
-export const EVALUATION_STATUS = [
+export const EVALUATION_STATUS = computed(() => [
   {
     label: $t('status.verySatisfied'),
     value: '1',
@@ -106,4 +108,4 @@ export const EVALUATION_STATUS = [
     label: $t('status.dissatisfied'),
     value: '3',
   },
-];
+]);

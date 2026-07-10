@@ -123,7 +123,7 @@ function handleGridLoadEvent() {
     const grid = (gridApi as any).grid;
     if (grid) {
       const tableData = grid.getData();
-      tableData.forEach((row: MoldSelectItem) => {
+      tableData.forEach((row: any) => {
         if (row.moldCode && selectedCodes.value.includes(row.moldCode)) {
           grid.setCheckboxRow(row, true);
         }
