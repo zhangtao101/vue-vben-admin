@@ -1,6 +1,7 @@
 {
   "planCode": "Plan Code",
   "planCodePlaceholder": "Please enter plan code",
+  "planCodeRequired": "Plan code is required",
   "planName": "Plan Name",
   "schemeName": "Scheme",
   "inspectionType": "Inspection Type",

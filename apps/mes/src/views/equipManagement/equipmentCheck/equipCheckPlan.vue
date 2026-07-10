@@ -60,7 +60,6 @@ const author = ref<string[]>([]);
 // ========== 查询参数 ==========
 const queryParams = ref({
   keyword: '',
-  planCode: '',
   inspectionType: undefined as string | undefined,
   status: undefined as string | undefined,
 });
@@ -217,7 +216,6 @@ function queryData({
 function handleReset() {
   queryParams.value = {
     keyword: '',
-    planCode: '',
     inspectionType: undefined,
     status: undefined,
   };
@@ -334,18 +332,6 @@ onMounted(() => {
           <Input
             v-model:value="queryParams.keyword"
             :placeholder="$t('equipCheckPlan.keywordPlaceholder')"
-            allow-clear
-            style="width: 200px"
-          />
-        </FormItem>
-
-        <FormItem
-          :label="$t('equipCheckPlan.planCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input
-            v-model:value="queryParams.planCode"
-            :placeholder="$t('equipCheckPlan.planCodePlaceholder')"
             allow-clear
             style="width: 200px"
           />

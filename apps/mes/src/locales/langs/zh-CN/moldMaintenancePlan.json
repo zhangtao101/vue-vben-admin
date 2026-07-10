@@ -18,6 +18,7 @@
   "endDate": "结束日期",
   "status": "状态",
   "remark": "备注",
+  "planCodeRequired": "计划编号为必填项",
   "planNameRequired": "计划名称为必填项",
   "schemeIdRequired": "保养方案为必填项",
   "planTypeRequired": "计划类型为必填项",

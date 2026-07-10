@@ -119,6 +119,9 @@ const statusOptions = [
 const formRef = ref();
 
 const rules: Record<string, Rule[]> = {
+  planCode: [
+    { required: true, message: `请输入${$t('equipCheckPlan.planCode')}` },
+  ],
   planName: [
     { required: true, message: `请输入${$t('equipCheckPlan.planName')}` },
   ],
@@ -424,10 +427,14 @@ const drawerTitle = computed(() => {
         :rules="rules"
       >
         <FormItem
-          v-if="mode !== 'add'"
           :label="$t('equipCheckPlan.planCode')"
+          name="planCode"
         >
-          <Input v-model:value="formData.planCode" disabled />
+          <Input
+            v-model:value="formData.planCode"
+            :disabled="mode !== 'add'"
+            :placeholder="$t('equipCheckPlan.planCodePlaceholder')"
+          />
         </FormItem>
 
         <FormItem :label="$t('equipCheckPlan.planName')" name="planName">

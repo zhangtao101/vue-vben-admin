@@ -53,7 +53,6 @@ const author = ref<string[]>([]);
 // ========== 查询参数 ==========
 const queryParams = ref({
   keyword: '',
-  schemeCode: '',
   inspectionType: undefined as string | undefined,
   equipmentGroup: '',
   status: undefined as string | undefined,
@@ -190,7 +189,6 @@ function queryData({
 function handleReset() {
   queryParams.value = {
     keyword: '',
-    schemeCode: '',
     inspectionType: undefined,
     equipmentGroup: '',
     status: undefined,
@@ -300,18 +298,6 @@ onMounted(() => {
           <Input
             v-model:value="queryParams.keyword"
             :placeholder="$t('equipmentSpotCheckScheme.keywordPlaceholder')"
-            allow-clear
-            style="width: 200px"
-          />
-        </FormItem>
-
-        <FormItem
-          :label="$t('equipmentSpotCheckScheme.schemeCode')"
-          style="margin-bottom: 1em"
-        >
-          <Input
-            v-model:value="queryParams.schemeCode"
-            :placeholder="$t('equipmentSpotCheckScheme.schemeCodePlaceholder')"
             allow-clear
             style="width: 200px"
           />

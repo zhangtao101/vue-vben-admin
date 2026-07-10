@@ -129,6 +129,18 @@ const statusOptions = [
   },
 ];
 
+// ========== 表单验证规则 ==========
+/** 表单验证规则：方案编号为必填项 */
+const rules: Record<string, any[]> = {
+  schemeCode: [
+    {
+      required: true,
+      message: `请输入${$t('moldMaintenanceScheme.schemeCode')}`,
+      trigger: 'blur',
+    },
+  ],
+};
+
 // ========== 监听 ==========
 /** 监听抽屉打开/关闭，打开时加载数据，关闭时清空状态 */
 watch(
@@ -481,49 +493,91 @@ const detailData = computed(() => {
           <h4 class="mb-2 font-medium">
             {{ $t('moldMaintenanceScheme.maintenanceItems') }}
           </h4>
-          <table class="detail-table">
-            <thead>
-              <tr>
-                <th class="text-center">序号</th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.itemCode') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.itemName') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.itemRequirement') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.itemStandard') }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in detailData.details" :key="index">
-                <td class="text-center">{{ Number(index) + 1 }}</td>
-                <td class="text-center">{{ item.itemCode || '-' }}</td>
-                <td class="text-center">{{ item.itemName || '-' }}</td>
-                <td class="text-center">{{ item.itemRequirement || '-' }}</td>
-                <td class="text-center">{{ item.itemStandard || '-' }}</td>
-              </tr>
-              <tr v-if="!detailData.details || detailData.details.length === 0">
-                <td colspan="5" class="text-center text-gray-400">暂无数据</td>
-              </tr>
-            </tbody>
-          </table>
+          <div
+            v-if="detailData.details && detailData.details.length > 0"
+            class="border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
+          >
+            <Row
+              :gutter="8"
+              align="middle"
+              class="pb-2 mb-2 border-b border-gray-200 dark:border-gray-600"
+            >
+              <Col :span="4">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.sequenceNo')
+                }}</span>
+              </Col>
+              <Col :span="4">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.itemCode')
+                }}</span>
+              </Col>
+              <Col :span="4">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.itemName')
+                }}</span>
+              </Col>
+              <Col :span="8">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.itemRequirement')
+                }}</span>
+              </Col>
+              <Col :span="4">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.itemStandard')
+                }}</span>
+              </Col>
+            </Row>
+            <div
+              v-for="(item, index) in detailData.details"
+              :key="index"
+              class="mb-2 pb-2 border-b border-dashed border-gray-200 last:mb-0 last:pb-0 last:border-b-0 dark:border-gray-600"
+            >
+              <Row :gutter="8" align="middle">
+                <Col :span="4">
+                  <span>{{ Number(index) + 1 }}</span>
+                </Col>
+                <Col :span="4">
+                  <span>{{ item.itemCode || '-' }}</span>
+                </Col>
+                <Col :span="4">
+                  <span>{{ item.itemName || '-' }}</span>
+                </Col>
+                <Col :span="8">
+                  <span>{{ item.itemRequirement || '-' }}</span>
+                </Col>
+                <Col :span="4">
+                  <span>{{ item.itemStandard || '-' }}</span>
+                </Col>
+              </Row>
+            </div>
+          </div>
+          <div
+            v-else
+            class="py-3 text-center text-gray-400 dark:text-gray-500"
+          >
+            暂无数据
+          </div>
         </div>
       </div>
 
       <!-- 新增/编辑模式 -->
-      <Form v-else ref="formRef" layout="vertical" :model="formData">
+      <Form v-else ref="formRef" layout="vertical" :model="formData" :rules="rules">
         <Row :gutter="16">
-          <Col v-if="mode !== 'add'" :span="8">
-            <FormItem :label="$t('moldMaintenanceScheme.schemeCode')">
-              <Input v-model:value="formData.schemeCode" disabled />
+          <Col :span="8">
+            <FormItem
+              :label="$t('moldMaintenanceScheme.schemeCode')"
+              name="schemeCode"
+            >
+              <Input
+                v-model:value="formData.schemeCode"
+                :disabled="mode !== 'add'"
+                :placeholder="$t('moldMaintenanceScheme.schemeCodePlaceholder')"
+                :maxlength="100"
+              />
             </FormItem>
           </Col>
-          <Col :span="mode === 'add' ? 12 : 8">
+          <Col :span="8">
             <FormItem
               :label="$t('moldMaintenanceScheme.schemeName')"
               name="schemeName"
@@ -535,7 +589,7 @@ const detailData = computed(() => {
               />
             </FormItem>
           </Col>
-          <Col :span="mode === 'add' ? 12 : 8">
+          <Col :span="8">
             <FormItem :label="$t('moldMaintenanceScheme.planType')">
               <Select
                 v-model:value="formData.planType"
@@ -610,46 +664,61 @@ const detailData = computed(() => {
         </Row>
 
         <!-- 已选模具展示区域 -->
-        <div v-if="selectedMolds.length > 0" class="mb-4">
-          <table class="detail-table">
-            <thead>
-              <tr>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.moldSelectDrawer.moldCode') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.moldSelectDrawer.moldName') }}
-                </th>
-                <th class="text-center">
-                  {{
-                    $t(
-                      'moldMaintenanceScheme.moldSelectDrawer.moldCategoryName',
-                    )
-                  }}
-                </th>
-                <th class="text-center">
-                  {{ $t('common.action') }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in selectedMolds" :key="item.moldCode">
-                <td>{{ item.moldCode }}</td>
-                <td>{{ item.moldName || '-' }}</td>
-                <td>{{ item.moldCategoryName || '-' }}</td>
-                <td class="text-center">
-                  <Button
-                    type="link"
-                    danger
-                    size="small"
-                    @click="removeMold(index)"
-                  >
-                    <Icon icon="mdi:delete" />
-                  </Button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div
+          v-if="selectedMolds.length > 0"
+          class="mb-4 border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
+        >
+          <Row
+            :gutter="8"
+            align="middle"
+            class="pb-2 mb-2 border-b border-gray-200 dark:border-gray-600"
+          >
+            <Col :span="7">
+              <span class="font-medium">{{
+                $t('moldMaintenanceScheme.moldSelectDrawer.moldCode')
+              }}</span>
+            </Col>
+            <Col :span="7">
+              <span class="font-medium">{{
+                $t('moldMaintenanceScheme.moldSelectDrawer.moldName')
+              }}</span>
+            </Col>
+            <Col :span="8">
+              <span class="font-medium">{{
+                $t('moldMaintenanceScheme.moldSelectDrawer.moldCategoryName')
+              }}</span>
+            </Col>
+            <Col :span="2" class="text-center">
+              <span class="font-medium">{{ $t('common.action') }}</span>
+            </Col>
+          </Row>
+          <div
+            v-for="(item, index) in selectedMolds"
+            :key="item.moldCode"
+            class="mb-2 pb-2 border-b border-dashed border-gray-200 last:mb-0 last:pb-0 last:border-b-0 dark:border-gray-600"
+          >
+            <Row :gutter="8" align="middle">
+              <Col :span="7">
+                <span>{{ item.moldCode }}</span>
+              </Col>
+              <Col :span="7">
+                <span>{{ item.moldName || '-' }}</span>
+              </Col>
+              <Col :span="8">
+                <span>{{ item.moldCategoryName || '-' }}</span>
+              </Col>
+              <Col :span="2" class="text-center">
+                <Button
+                  type="link"
+                  danger
+                  size="small"
+                  @click="removeMold(index)"
+                >
+                  <Icon icon="mdi:delete" />
+                </Button>
+              </Col>
+            </Row>
+          </div>
         </div>
 
         <FormItem :label="$t('moldMaintenanceScheme.remark')">
@@ -662,35 +731,57 @@ const detailData = computed(() => {
             {{ $t('moldMaintenanceScheme.maintenanceItems') }}
           </h4>
 
-          <table class="detail-table">
-            <thead>
-              <tr>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.sequenceNo') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.itemCode') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.itemName') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.itemRequirement') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('moldMaintenanceScheme.itemDrawer.itemStandard') }}
-                </th>
-                <th class="text-center">
-                  {{ $t('common.action') }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in formData.details" :key="index">
-                <td class="text-center">{{ (index as number) + 1 }}</td>
-                <td>{{ item.itemCode }}</td>
-                <td>{{ item.itemName }}</td>
-                <td>
+          <div class="border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
+            <!-- 表头 -->
+            <Row
+              :gutter="8"
+              align="middle"
+              class="pb-2 mb-2 border-b border-gray-200 dark:border-gray-600"
+            >
+              <Col :span="4">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.sequenceNo')
+                }}</span>
+              </Col>
+              <Col :span="4">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.itemCode')
+                }}</span>
+              </Col>
+              <Col :span="4">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.itemName')
+                }}</span>
+              </Col>
+              <Col :span="8">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.itemRequirement')
+                }}</span>
+              </Col>
+              <Col :span="3">
+                <span class="font-medium">{{
+                  $t('moldMaintenanceScheme.itemDrawer.itemStandard')
+                }}</span>
+              </Col>
+              <Col :span="1" />
+            </Row>
+            <!-- 数据行 -->
+            <div
+              v-for="(item, index) in formData.details"
+              :key="index"
+              class="mb-2 pb-2 border-b border-dashed border-gray-200 last:mb-0 last:pb-0 last:border-b-0 dark:border-gray-600"
+            >
+              <Row :gutter="8" align="middle">
+                <Col :span="4">
+                  <span>{{ (index as number) + 1 }}</span>
+                </Col>
+                <Col :span="4">
+                  <span>{{ item.itemCode }}</span>
+                </Col>
+                <Col :span="4">
+                  <span>{{ item.itemName }}</span>
+                </Col>
+                <Col :span="8">
                   <Input
                     v-model:value="item.itemRequirement"
                     :placeholder="
@@ -700,8 +791,8 @@ const detailData = computed(() => {
                     "
                     size="small"
                   />
-                </td>
-                <td>
+                </Col>
+                <Col :span="3">
                   <Input
                     v-model:value="item.itemStandard"
                     :placeholder="
@@ -711,8 +802,8 @@ const detailData = computed(() => {
                     "
                     size="small"
                   />
-                </td>
-                <td class="text-center">
+                </Col>
+                <Col :span="1">
                   <Button
                     type="link"
                     danger
@@ -721,10 +812,10 @@ const detailData = computed(() => {
                   >
                     <Icon icon="mdi:delete" />
                   </Button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                </Col>
+              </Row>
+            </div>
+          </div>
 
           <Button
             type="dashed"
@@ -774,21 +865,4 @@ const detailData = computed(() => {
 </template>
 
 <style scoped>
-/* 查看模式详情表格样式 */
-.detail-table {
-  width: 100%;
-  font-size: 14px;
-  border-collapse: collapse;
-}
-
-.detail-table th,
-.detail-table td {
-  padding: 8px;
-  border: 1px solid #d9d9d9;
-}
-
-.detail-table th {
-  font-weight: 500;
-  background-color: #fafafa;
-}
 </style>

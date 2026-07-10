@@ -6,6 +6,7 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * [TIME]: 2026-04-25 10:17:00
  */
+import type { Rule } from 'ant-design-vue/es/form';
 import type { MaintenancePlan } from '#/api';
 
 import { computed, ref, watch } from 'vue';
@@ -90,6 +91,28 @@ const formData = ref<any>({
   status: 'ACTIVE',
   remark: '',
 });
+
+// ========== 表单验证 ==========
+const rules: Record<string, Rule[]> = {
+  planCode: [
+    { required: true, message: `请输入${$t('equipmentMaintenancePlan.planCode')}` },
+  ],
+  planName: [
+    { required: true, message: `请输入${$t('equipmentMaintenancePlan.planName')}` },
+  ],
+  schemeId: [
+    { required: true, message: `请选择${$t('equipmentMaintenancePlan.schemeName')}` },
+  ],
+  firstExecuteTime: [
+    {
+      required: true,
+      message: `请选择${$t('equipmentMaintenancePlan.firstExecuteTime')}`,
+    },
+  ],
+  effectiveDate: [
+    { required: true, message: `请选择${$t('equipmentMaintenancePlan.effectiveDate')}` },
+  ],
+};
 
 // ========== 方案下拉选项 ==========
 // 方案下拉选项列表：包含 label（显示名称）和 value（方案ID）
@@ -422,12 +445,16 @@ const drawerTitle = computed(() => {
         </div>
       </div>
 
-      <Form v-else ref="formRef" layout="vertical" :model="formData">
+      <Form v-else ref="formRef" layout="vertical" :model="formData" :rules="rules">
         <FormItem
-          v-if="mode !== 'add'"
           :label="$t('equipmentMaintenancePlan.planCode')"
+          name="planCode"
         >
-          <Input v-model:value="formData.planCode" disabled />
+          <Input
+            v-model:value="formData.planCode"
+            :disabled="mode !== 'add'"
+            :placeholder="$t('equipmentMaintenancePlan.planCodePlaceholder')"
+          />
         </FormItem>
 
         <FormItem

@@ -74,6 +74,13 @@ const searchKeyword = ref('');
 
 // ========== 表单验证 ==========
 const planRules = ref<any>({
+  planCode: [
+    {
+      required: true,
+      message: $t('moldMaintenancePlan.planCodeRequired'),
+      trigger: 'change',
+    },
+  ],
   planName: [
     {
       required: true,
@@ -490,10 +497,14 @@ const detailData = computed(() => {
       <!-- 新增/编辑模式 -->
       <Form v-else ref="formRef" layout="vertical" :model="formData" :rules="planRules">
         <FormItem
-          v-if="mode !== 'add'"
           :label="$t('moldMaintenancePlan.planCode')"
+          name="planCode"
         >
-          <Input v-model:value="formData.planCode" disabled />
+          <Input
+            v-model:value="formData.planCode"
+            :disabled="mode !== 'add'"
+            :placeholder="$t('moldMaintenancePlan.planCodePlaceholder')"
+          />
         </FormItem>
 
         <FormItem :label="$t('moldMaintenancePlan.planName')" name="planName">

@@ -137,6 +137,13 @@ const currentRow = ref<InspectionScheme | null>(null);
 
 // ========== 表单验证规则 ==========
 const rules: any = {
+  schemeCode: [
+    {
+      required: true,
+      message: `请输入${$t('equipmentSpotCheckScheme.schemeCode')}`,
+      trigger: 'blur',
+    },
+  ],
   schemeName: [
     {
       required: true,
@@ -459,7 +466,7 @@ function removeEquipment(index: number) {
       <!-- 已选设备展示区域 -->
       <div
         v-if="selectedEquipments.length > 0"
-        class="mt-4 p-3 border border-gray-200 rounded bg-gray-50"
+        class="mt-4 p-3 border border-gray-200 rounded bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
       >
         <h4 class="mb-2 font-medium">
           {{
@@ -543,12 +550,22 @@ function removeEquipment(index: number) {
       <!-- 新增/编辑模式 -->
       <Form ref="formRef" :model="formData" :rules="rules" layout="vertical">
         <Row :gutter="16">
-          <Col v-if="mode !== 'add'" :span="8">
-            <FormItem :label="$t('equipmentSpotCheckScheme.schemeCode')">
-              <Input v-model:value="formData.schemeCode" disabled />
+          <Col :span="8">
+            <FormItem
+              :label="$t('equipmentSpotCheckScheme.schemeCode')"
+              name="schemeCode"
+            >
+              <Input
+                v-model:value="formData.schemeCode"
+                :disabled="mode !== 'add'"
+                :placeholder="
+                  $t('equipmentSpotCheckScheme.schemeCodePlaceholder')
+                "
+                :maxlength="100"
+              />
             </FormItem>
           </Col>
-          <Col :span="mode === 'add' ? 12 : 8">
+          <Col :span="8">
             <FormItem
               :label="$t('equipmentSpotCheckScheme.schemeName')"
               name="schemeName"
@@ -564,7 +581,7 @@ function removeEquipment(index: number) {
               />
             </FormItem>
           </Col>
-          <Col :span="mode === 'add' ? 12 : 8">
+          <Col :span="8">
             <FormItem
               :label="$t('equipmentSpotCheckScheme.inspectionType')"
               name="inspectionType"
@@ -629,12 +646,12 @@ function removeEquipment(index: number) {
         <!-- 已选设备展示区域 -->
         <div
           v-if="selectedEquipments.length > 0"
-          class="mb-4 p-3 border border-gray-200 rounded bg-gray-50"
+          class="mb-4 p-3 border border-gray-200 rounded bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
         >
           <Row
             :gutter="8"
             align="middle"
-            class="pb-2 mb-2 border-b border-gray-200"
+            class="pb-2 mb-2 border-b border-gray-200 dark:border-gray-600"
           >
             <Col :span="6">
               <span class="font-medium">{{
@@ -730,12 +747,12 @@ function removeEquipment(index: number) {
           <div class="mb-2 font-medium">
             {{ $t('equipmentSpotCheckScheme.item') }}
           </div>
-          <div class="border border-gray-200 rounded p-3 bg-gray-50">
+          <div class="border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
             <!-- 表头 -->
             <Row
               :gutter="8"
               align="middle"
-              class="pb-2 mb-2 border-b border-gray-200"
+              class="pb-2 mb-2 border-b border-gray-200 dark:border-gray-600"
             >
               <Col :span="4">
                 <span class="font-medium">{{
@@ -768,7 +785,7 @@ function removeEquipment(index: number) {
             <div
               v-for="(item, index) in formData.details"
               :key="index"
-              class="mb-2 pb-2 border-b border-dashed border-gray-200 last:mb-0 last:pb-0 last:border-b-0"
+              class="mb-2 pb-2 border-b border-dashed border-gray-200 last:mb-0 last:pb-0 last:border-b-0 dark:border-gray-600"
             >
               <Row :gutter="8" align="middle">
                 <Col :span="4">
@@ -869,6 +886,15 @@ function removeEquipment(index: number) {
 .detail-table th {
   font-weight: 500;
   background-color: #fafafa;
+}
+
+:global(.dark) .detail-table thead th,
+:global(.dark) .detail-table tbody td {
+  border-color: #424242;
+}
+
+:global(.dark) .detail-table thead th {
+  background-color: #1f2937;
 }
 
 .text-center {

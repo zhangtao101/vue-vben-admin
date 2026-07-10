@@ -18,6 +18,7 @@
   "endDate": "End Date",
   "status": "Status",
   "remark": "Remark",
+  "planCodeRequired": "Plan code is required",
   "planNameRequired": "Plan name is required",
   "schemeIdRequired": "Maintenance scheme is required",
   "planTypeRequired": "Plan type is required",

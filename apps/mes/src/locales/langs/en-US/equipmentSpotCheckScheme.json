@@ -2,6 +2,7 @@
   "inspectionScheme": "Inspection Scheme",
   "schemeCode": "Scheme Code",
   "schemeCodePlaceholder": "Please enter scheme code",
+  "schemeCodeRequired": "Scheme code is required",
   "schemeName": "Scheme Name",
   "schemeNamePlaceholder": "Please enter scheme name",
   "inspectionType": "Inspection Type",

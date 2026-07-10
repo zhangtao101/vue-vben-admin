@@ -5,6 +5,7 @@
   "viewTitle": "View Mold Maintenance Scheme",
   "schemeCode": "Scheme Code",
   "schemeCodePlaceholder": "Please enter scheme code",
+  "schemeCodeRequired": "Scheme code is required",
   "schemeName": "Scheme Name",
   "planType": "Maintenance Type",
   "status": "Status",
