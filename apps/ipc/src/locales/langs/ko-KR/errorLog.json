@@ -1,0 +1,10 @@
+{
+  "code": "박스 코드",
+  "tip": "작업 번호 재정의",
+  "clearTip": "전송 라인 클리어 리셋",
+  "missionNumber": "작업 번호",
+  "boxCode": "박스 코드",
+  "transmissionLineNumber": "전송 라인 번호",
+  "errorLogBreakdown": "오류 로그 분석",
+  "operation": "조작"
+}

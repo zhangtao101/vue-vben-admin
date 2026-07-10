@@ -1,0 +1,13 @@
+{
+  "systemName": "시스템명",
+  "totalEnergyUsage": "총 에너지 사용량",
+  "productionEnergy": "생산 에너지",
+  "nonProductionEnergy": "비생산 에너지",
+  "createTime": "생성 시간",
+  "workOrderNumber": "작업 지시 번호",
+  "productName": "제품명",
+  "deviceName": "장치명",
+  "deviceNumber": "장치 번호",
+  "productQuantity": "수량",
+  "singleEnergyUsage": "단위당 에너지 사용량"
+}

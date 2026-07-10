@@ -1,0 +1,61 @@
+{
+  "listTitle": "금형 유지보수 방안",
+  "addTitle": "금형 유지보수 방안 추가",
+  "editTitle": "금형 유지보수 방안 수정",
+  "viewTitle": "금형 유지보수 방안 보기",
+  "schemeCode": "방안 코드",
+  "schemeCodePlaceholder": "방안 코드를 입력하세요",
+  "schemeCodeRequired": "방안 코드는 필수입니다",
+  "schemeName": "방안명",
+  "planType": "유지보수 유형",
+  "status": "상태",
+  "moldCategoryName": "금형 그룹",
+  "moldCodes": "금형 코드",
+  "moldCount": "금형 수",
+  "itemCount": "항목 수",
+  "isStopMachine": "설비 정지",
+  "operator": "작업자",
+  "remark": "비고",
+  "keywordPlaceholder": "방안명을 입력하세요",
+  "planTypePlaceholder": "유지보수 유형을 선택하세요",
+  "moldCategoryPlaceholder": "금형 그룹을 입력하세요",
+  "moldCodesPlaceholder": "금형 코드를 쉼표로 구분하여 입력하세요",
+  "statusPlaceholder": "상태를 선택하세요",
+  "confirmDelete": "이 유지보수 방안을 삭제하시겠습니까?",
+  "maintenanceItems": "유지보수 항목",
+  "statusOptions": {
+    "ACTIVE": "활성",
+    "DISABLED": "비활성"
+  },
+  "planTypeOptions": {
+    "REGULAR": "정기",
+    "CONDITIONAL": "조건부"
+  },
+  "itemDrawer": {
+    "title": "유지보수 항목",
+    "selectTitle": "유지보수 항목 선택",
+    "addItem": "항목 추가",
+    "itemCode": "항목 코드",
+    "itemName": "항목명",
+    "itemStandard": "표준",
+    "itemRequirement": "요구 사항",
+    "sequenceNo": "번호",
+    "itemCodePlaceholder": "항목 코드를 입력하세요",
+    "itemNamePlaceholder": "항목명을 입력하세요",
+    "itemRequirementPlaceholder": "요구 사항을 입력하세요",
+    "itemStandardPlaceholder": "표준을 입력하세요"
+  },
+  "moldSelectDrawer": {
+    "title": "금형 선택",
+    "selectMold": "금형 선택",
+    "moldCode": "금형 코드",
+    "moldName": "금형명",
+    "moldCategoryCode": "금형 그룹 코드",
+    "moldCategoryName": "금형 그룹명",
+    "moldCodePlaceholder": "금형 코드를 입력하세요",
+    "moldNamePlaceholder": "금형명을 입력하세요",
+    "moldCategoryCodePlaceholder": "금형 그룹 코드를 입력하세요",
+    "cancel": "취소",
+    "confirm": "확인"
+  }
+}

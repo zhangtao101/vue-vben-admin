@@ -1,0 +1,52 @@
+{
+  "auth": {
+    "login": "로그인",
+    "register": "등록",
+    "codeLogin": "코드 로그인",
+    "qrcodeLogin": "QR 코드 로그인",
+    "forgetPassword": "비밀번호 찾기"
+  },
+  "dashboard": {
+    "title": "개요",
+    "analytics": "분석",
+    "workspace": "작업 공간",
+    "welcome": "환영합니다",
+    "superset": "데이터 대시보드",
+    "scada": "SCADA"
+  },
+  "common": {
+    "serialNumber": "일련번호",
+    "infoEdit": "정보 수정",
+    "confirmDeleteTitle": "이 레코드를 삭제하시겠습니까?",
+    "confirmDeletePrompt": "삭제하시겠습니까?",
+    "cancelDeletePrompt": "삭제가 취소되었습니다!",
+    "cancelOperationPrompt": "작업이 취소되었습니다!",
+    "deleteSuccess": "삭제 성공!",
+    "requiredField": "필수 입력 항목입니다",
+    "uploadSuccess": "파일 업로드 성공!",
+    "exportSuccess": "내보내기 성공!",
+    "exportFailed": "내보내기 실패: ",
+    "uploadImageWarning": "관련 이미지를 업로드하세요!",
+    "selectCheckTime": "점검 시간을 선택하세요!",
+    "selectCheckResult": "점검 결과를 선택하세요!",
+    "inputAreaCode": "지역 코드를 입력하세요!",
+    "dataLoadFailed": "데이터 로드 실패, 다시 시도하세요",
+    "confirmExportTitle": "내보내기 확인",
+    "confirmExportContent": "선택한 장비 데이터를 내보내시겠습니까?",
+    "hourLabel": "시",
+    "dayLabel": "일",
+    "monthLabel": "월",
+    "yearLabel": "년",
+    "exportType": "내보내기 유형",
+    "timeRange": "기간",
+    "selectDevice": "장비 선택",
+    "action": "작업",
+    "all": "전체",
+    "selectAll": "전체 선택",
+    "deselectAll": "전체 해제",
+    "to": "부터",
+    "noTimeRange": "기간이 설정되지 않았습니다",
+    "confirmExport": "내보내기 확인",
+    "downloadTemplate": "템플릿 다운로드"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "enterpriseElectricityCarbon": "기업 구매 전력 탄소",
+  "fossilFuelCarbon": "화석 연료 연소 탄소",
+  "time": "시간",
+  "currentEmissionValue": "현재 배출량",
+  "previousEmissionValue": "이전 배출량",
+  "lastYear": "작년",
+  "thisYear": "올해",
+  "itemName": "항목명",
+  "itemEnergyComparison": "항목별 에너지 비교",
+  "itemEnergyRatio": "항목별 에너지 비율(최근 30일)",
+  "itemEnergyYearOnYear": "항목별 에너지 전년 동기 대비 분석",
+  "itemEnergyTrend": "항목별 에너지 추이(최근 30일)"
+}

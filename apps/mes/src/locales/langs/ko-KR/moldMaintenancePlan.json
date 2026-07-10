@@ -1,0 +1,66 @@
+{
+  "listTitle": "금형 유지보수 계획",
+  "addTitle": "금형 유지보수 계획 추가",
+  "editTitle": "금형 유지보수 계획 수정",
+  "viewTitle": "금형 유지보수 계획 보기",
+  "planCode": "계획 코드",
+  "planCodePlaceholder": "계획 코드를 입력하세요",
+  "planName": "계획명",
+  "schemeName": "연결 방안",
+  "planType": "유지보수 유형",
+  "equipmentGroup": "금형 그룹",
+  "moldCount": "금형 수",
+  "firstExecuteTime": "최초 실행 시간",
+  "frequency": "유지보수 주기",
+  "frequencyValue": "주기 값",
+  "frequencyUnit": "주기 단위",
+  "effectiveDate": "적용 날짜",
+  "endDate": "종료 날짜",
+  "status": "상태",
+  "remark": "비고",
+  "planCodeRequired": "계획 코드는 필수입니다",
+  "planNameRequired": "계획명은 필수입니다",
+  "schemeIdRequired": "유지보수 방안은 필수입니다",
+  "planTypeRequired": "계획 유형은 필수입니다",
+  "keywordPlaceholder": "계획명을 입력하세요",
+  "equipmentGroupPlaceholder": "금형 그룹을 입력하세요",
+  "confirmDelete": "이 유지보수 계획을 삭제하시겠습니까?",
+  "conditionTrigger": "트리거 조건",
+  "conditionDimension": "조건 차원",
+  "compareOperator": "비교 연산자",
+  "triggerValue": "트리거 값",
+  "bindMold": "금형 보기",
+  "maintenanceItem": "유지보수 항목 보기",
+  "statusOptions": {
+    "ACTIVE": "활성",
+    "DISABLED": "비활성"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "일",
+    "WEEK": "주",
+    "MONTH": "월"
+  },
+  "planTypeOptions": {
+    "REGULAR": "정기",
+    "CONDITIONAL": "조건부"
+  },
+  "conditionDimensionOptions": {
+    "LIFESPAN": "수명",
+    "USE_COUNT": "사용 횟수"
+  },
+  "compareOperatorOptions": {
+    "LT": "미만",
+    "LTE": "이하"
+  },
+  "moldDrawer": {
+    "moldCode": "금형 코드",
+    "moldName": "금형명",
+    "moldCategoryName": "금형 그룹"
+  },
+  "maintenanceItemDrawer": {
+    "itemCode": "항목 코드",
+    "itemName": "항목명",
+    "itemStandard": "표준",
+    "itemRequirement": "요구 사항"
+  }
+}

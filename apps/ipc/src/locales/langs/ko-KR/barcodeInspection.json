@@ -1,0 +1,10 @@
+{
+  "barCode": "바코드",
+  "deviceNumber": "설비 번호",
+  "workOrderNumber": "작업지시 번호",
+  "processNumber": "공정 번호",
+  "abnormal": "이상",
+  "normal": "정상",
+  "inAction": "실행 중",
+  "executionCompleted": "실행 완료"
+}

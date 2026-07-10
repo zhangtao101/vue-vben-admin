@@ -1,0 +1,20 @@
+{
+  "timeFrame": "보고 시간 범위",
+  "theTicketNumber": "작업 지시서 번호",
+  "reportingProcess": "보고 공정",
+  "questLines": "작업 라인",
+  "ticketStatus": "작업 지시서 상태",
+  "partName": "품목 이름",
+  "productCode": "제품 코드",
+  "productName": "제품 이름",
+  "partsProducts": "품목/제품",
+  "delayStatus": "지연 상태",
+  "planNumber": "계획 번호",
+  "worksheetCode": "작업 지시서 번호",
+  "batchNumber": "작업 지시서 배치 번호",
+  "reportProcess": "보고 공정",
+  "completedNumber": "완료 수량",
+  "endTime": "작업 지시서 종료 시간",
+  "planStartTime": "계획 시작 시간",
+  "action": "작업"
+}

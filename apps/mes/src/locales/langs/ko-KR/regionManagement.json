@@ -1,0 +1,10 @@
+{
+  "regionalCode": "구역 코드",
+  "regionalName": "구역 이름",
+  "regionalSize": "구역 면적(m²)",
+  "regionalManager": "구역 관리자",
+  "areaCreator": "구역 생성자",
+  "creationTime": "생성 시간",
+  "forMoreDetails": "상세 보기",
+  "department": "부서"
+}

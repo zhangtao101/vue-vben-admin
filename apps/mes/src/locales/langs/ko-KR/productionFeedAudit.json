@@ -1,0 +1,14 @@
+{
+  "materialCode": "자재 코드",
+  "materialName": "자재 이름",
+  "productName": "제품 이름",
+  "abnormalCheckCode": "투입 검증 예외 번호",
+  "worksheetCode": "작업 지시서 번호",
+  "inputQuantity": "투입 수량",
+  "standardUpperLimit": "표준 상한",
+  "generateTime": "생성 시간",
+  "remark": "비고",
+  "action": "작업",
+  "confirmPass": "승인하시겠습니까?",
+  "confirmReject": "반려하시겠습니까?"
+}

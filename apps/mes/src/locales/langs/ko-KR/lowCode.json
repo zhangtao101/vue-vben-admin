@@ -1,0 +1,12 @@
+{
+  "processName": "프로세스명",
+  "lowCodeProcessConfig": {
+    "name": "이름",
+    "version": "버전",
+    "addFlow": "프로세스 추가",
+    "editFlow": "프로세스 수정",
+    "enterFlowName": "프로세스명을 입력하세요",
+    "configFlow": "프로세스 구성",
+    "draft": "초안"
+  }
+}

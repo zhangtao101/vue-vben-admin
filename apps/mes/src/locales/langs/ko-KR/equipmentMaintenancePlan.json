@@ -1,0 +1,54 @@
+{
+  "listTitle": "장비 유지보수 계획",
+  "addTitle": "장비 유지보수 계획 추가",
+  "editTitle": "장비 유지보수 계획 수정",
+  "viewTitle": "장비 유지보수 계획 보기",
+  "planCode": "계획 코드",
+  "planCodePlaceholder": "계획 코드를 입력하세요",
+  "planCodeRequired": "계획 코드는 필수입니다",
+  "planName": "계획명",
+  "schemeName": "연결 방안",
+  "planType": "유지보수 유형",
+  "equipmentGroup": "장비 그룹",
+  "equipmentCodes": "장비 코드",
+  "equipmentCount": "장비 수",
+  "firstExecuteTime": "최초 실행 시간",
+  "frequency": "유지보수 주기",
+  "frequencyValue": "주기 값",
+  "frequencyUnit": "주기 단위",
+  "effectiveDate": "적용 날짜",
+  "endDate": "종료 날짜",
+  "status": "상태",
+  "remark": "비고",
+  "confirmDelete": "이 유지보수 계획을 삭제하시겠습니까?",
+  "keywordPlaceholder": "계획명을 입력하세요",
+  "bindEquipment": "장비 보기",
+  "maintenanceItem": "유지보수 항목 보기",
+  "statusOptions": {
+    "ACTIVE": "활성",
+    "DISABLED": "비활성"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "일",
+    "WEEK": "주",
+    "MONTH": "월"
+  },
+  "planTypeOptions": {
+    "REGULAR": "정기",
+    "CONDITIONAL": "조건부"
+  },
+  "bindEquipmentDrawer": {
+    "title": "장비 목록",
+    "equipmentCode": "장비 코드",
+    "equipmentName": "장비명",
+    "equipGroupName": "장비 그룹",
+    "location": "위치"
+  },
+  "maintenanceItemDrawer": {
+    "title": "유지보수 항목",
+    "itemCode": "항목 코드",
+    "itemName": "항목명",
+    "itemStandard": "표준",
+    "itemRequirement": "요구 사항"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "queryTime": "조회 시간",
+  "productNumber": "제품 번호",
+  "productName": "제품 이름",
+  "workOrderNumber": "작업 지시서 번호",
+  "workstationType": "작업장 유형",
+  "workOrderStatus": "작업 지시서 상태",
+  "reportTheWorkStatus": "작업 보고 상태"
+}

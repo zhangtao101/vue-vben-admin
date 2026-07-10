@@ -1,0 +1,41 @@
+{
+  "planCode": "계획 코드",
+  "planCodePlaceholder": "계획 코드를 입력하세요",
+  "planCodeRequired": "계획 코드는 필수입니다",
+  "planName": "계획명",
+  "schemeName": "방안",
+  "inspectionType": "점검 유형",
+  "equipmentGroup": "장비 그룹",
+  "equipmentCount": "장비 수",
+  "equipmentCodes": "바인딩 장비",
+  "firstExecuteTime": "최초 실행 시간",
+  "frequencyValue": "주기 값",
+  "frequencyUnit": "주기 단위",
+  "effectiveDate": "적용 날짜",
+  "endDate": "종료 날짜",
+  "status": "상태",
+  "remark": "비고",
+  "keyword": "키워드",
+  "keywordPlaceholder": "계획명을 입력하세요",
+  "inspectionTypePlaceholder": "점검 유형을 선택하세요",
+  "statusPlaceholder": "상태를 선택하세요",
+  "inspectionTypeOptions": {
+    "INSPECTION": "점검",
+    "PATROL": "순찰"
+  },
+  "frequencyUnitOptions": {
+    "DAY": "일",
+    "WEEK": "주",
+    "MONTH": "월"
+  },
+  "statusOptions": {
+    "ACTIVE": "활성",
+    "DISABLED": "비활성"
+  },
+  "confirmDelete": "이 점검 계획을 삭제하시겠습니까?",
+  "viewTitle": "점검 계획 보기",
+  "addTitle": "점검 계획 추가",
+  "editTitle": "점검 계획 수정",
+  "viewEquipment": "장비 보기",
+  "viewItem": "점검 항목 보기"
+}

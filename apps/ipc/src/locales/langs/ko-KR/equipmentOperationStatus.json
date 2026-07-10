@@ -1,0 +1,6 @@
+{
+  "equipmentAvailable": "설비 가동 가능",
+  "equipmentPlugging": "설비 막힘",
+  "cloggingCause": "막힘 원인",
+  "deviceStatus": "설비 상태"
+}

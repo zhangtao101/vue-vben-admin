@@ -1,0 +1,11 @@
+{
+  "toDoTask": "할 일 작업",
+  "workOrderNumber": "작업지시 번호",
+  "currentOperation": "현재 공정",
+  "jobPosition": "작업 위치",
+  "inspectionTaskFilling": "검사 작업 보고",
+  "selectionOfQualityInspectionTemplates": "품질 검사 템플릿 선택",
+  "selectionOfQualityInspectionItems": "품질 검사 항목 선택",
+  "inspectTheTotalNumberOfProducts": "검사 제품 총수",
+  "theTotalNumberOfDefectiveProducts": "불량 제품 총수"
+}

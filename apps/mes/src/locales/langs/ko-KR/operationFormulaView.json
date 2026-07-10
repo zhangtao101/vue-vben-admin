@@ -1,0 +1,9 @@
+{
+  "formulaName": "수식명",
+  "affiliatedProcess": "소속 공정",
+  "formulaEditing": "수식 편집",
+  "trigger": "트리거",
+  "triggerCondition": "트리거 조건",
+  "delayedMatching": "지연 매칭",
+  "performTheAction": "작업 수행"
+}

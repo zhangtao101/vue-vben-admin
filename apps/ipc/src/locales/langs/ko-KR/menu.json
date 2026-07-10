@@ -1,0 +1,22 @@
+{
+  "productionOperation": "생산 조작",
+  "dispatchOperation": "발행 조작",
+  "workOrderInbound": "작업지시 입고",
+  "workOrderOutbound": "작업지시 출고",
+  "andonManagement": "안돈 관리",
+  "qualityInspection": "품질 검사",
+  "workFlow": "생산 공정",
+  "andonProblemAssessment": "문제 평가",
+  "andengFillingOut": "안돈 보고",
+  "badJudgment": "불량 처리",
+  "rework": "재작업",
+  "poorHandling": "품질 관리",
+  "reportManagement": "보고 관리",
+  "barcodeInspection": "바코드 검사",
+  "ctuOutboundPicking": "CTU 출고 피킹",
+  "ctuCartonPicking": "CTU 박스 피킹",
+  "ioBillOperation": "입출고 전표 조작",
+  "batchPrinting": "일괄 인쇄",
+  "errorLog": "오류 로그",
+  "cartonCodeQuery": "박스 코드 조회"
+}
