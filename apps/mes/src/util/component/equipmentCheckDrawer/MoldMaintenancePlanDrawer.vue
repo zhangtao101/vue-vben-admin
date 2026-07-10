@@ -320,6 +320,7 @@ function handleSubmit() {
 
       const params: any = {
         plan: {
+          planCode: formData.value.planCode,
           planName: formData.value.planName,
           schemeId: formData.value.schemeId,
           planType: formData.value.planType,
