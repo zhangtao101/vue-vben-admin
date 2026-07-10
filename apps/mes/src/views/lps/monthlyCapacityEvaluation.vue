@@ -34,7 +34,7 @@ const productionType = ref<string>('machine');
  * 任务同步
  */
 function handleTaskSync() {
-  console.log('任务同步');
+  // console.log('任务同步');
   // TODO: 调用任务同步接口
 }
 
@@ -42,7 +42,7 @@ function handleTaskSync() {
  * 评估
  */
 function handleEvaluate() {
-  console.log('评估');
+  // console.log('评估');
   // TODO: 调用评估接口
 }
 
@@ -50,7 +50,7 @@ function handleEvaluate() {
  * 查询函数
  */
 function handleQuery() {
-  console.log('月度产能评估查询参数:', queryParams.value);
+  // console.log('月度产能评估查询参数:', queryParams.value);
   // TODO: 调用查询接口
   return new Promise((resolve) => {
     // 模拟假数据
@@ -291,9 +291,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
         <template #toolbar-actions>
           <Space size="large">
             <div>
-              <span class="mr-4"
-                >{{ $t('basic.laborHourEvaluation.assemblyType') }}:</span
-              >
+              <span class="mr-4">{{ $t('basic.laborHourEvaluation.assemblyType') }}:</span>
               <RadioGroup v-model:value="productionType" button-style="solid">
                 <RadioButton value="machine">
                   {{ $t('basic.laborHourEvaluation.machineAssembly') }}
@@ -311,9 +309,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
             </div>
 
             <div>
-              <span class="mr-4"
-                >{{ $t('basic.monthlyCapacityEvaluation.reportType') }}:</span
-              >
+              <span class="mr-4">{{ $t('basic.monthlyCapacityEvaluation.reportType') }}:</span>
               <RadioGroup v-model:value="reportType" button-style="solid">
                 <RadioButton value="monthly">
                   {{ $t('basic.monthlyCapacityEvaluation.monthlyReport') }}
