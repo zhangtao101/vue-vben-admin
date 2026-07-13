@@ -347,9 +347,9 @@ onMounted(() => {
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
-          <Button type="primary" @click="gridApi.reload()">{{
-            $t('common.query')
-          }}</Button>
+          <Button type="primary" @click="gridApi.reload()">
+            {{ $t('common.query') }}
+          </Button>
         </FormItem>
       </Form>
     </Card>
