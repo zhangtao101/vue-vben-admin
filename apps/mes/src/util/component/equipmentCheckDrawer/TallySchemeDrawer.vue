@@ -8,7 +8,7 @@
  */
 import type { MaintenanceScheme, MaintenanceSchemeSubmit } from '#/api';
 
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -46,41 +46,37 @@ defineOptions({
   name: 'TallySchemeDrawer',
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-  mode: 'add',
-  row: null,
-});
-
-// Emits
 const emit = defineEmits<{
   refresh: [];
-  'update:visible': [value: boolean];
 }>();
 
-// Props 定义：接收父组件传递的属性
-interface Props {
-  visible: boolean;
-  mode: 'add' | 'edit' | 'view';
-  row?: MaintenanceScheme | null;
+// ========== 抽屉控制 ==========
+const show = ref(false);
+const currentMode = ref<'add' | 'edit' | 'view'>('add');
+const currentRowData = ref<MaintenanceScheme | null>(null);
+
+function open(mode: 'add' | 'edit' | 'view', row?: MaintenanceScheme | null) {
+  currentMode.value = mode;
+  currentRowData.value = row ?? null;
+  show.value = true;
+  loadEquipmentGroupOptions();
+  if (mode === 'view') {
+    currentRow.value = row ?? null;
+    if (row?.id) {
+      loadViewDetail(row.id);
+    }
+  } else if (mode === 'edit') {
+    if (row?.id) {
+      loadEditDetail(row.id);
+    }
+  } else {
+    currentRow.value = null;
+    selectedEquipments.value = [];
+    resetFormData();
+  }
 }
 
-// ========== 抽屉控制 ==========
-// 抽屉内部可见性状态：与 props.visible 双向绑定
-const drawerVisible = ref(props.visible);
-
-// 监听 props 变化
-watch(
-  () => props.visible,
-  (val) => {
-    drawerVisible.value = val;
-  },
-);
-
-// 监听抽屉内部状态变化
-watch(drawerVisible, (val) => {
-  emit('update:visible', val);
-});
+defineExpose({ open });
 
 // ========== 下拉选项 ==========
 // 计划类型选项：REGULAR-常规、CONDITIONAL-条件
@@ -181,93 +177,92 @@ const rules: any = {
   ],
 };
 
-// ========== 监听抽屉打开并加载数据 ==========
-watch(
-  () => props.visible,
-  (val) => {
-    if (val) {
-      // 加载设备组下拉选项
-      loadEquipmentGroupOptions();
-      if (props.mode === 'view' && props.row?.id) {
-        // 查看模式：加载详情
-        currentRow.value = props.row;
-        getMaintenanceSchemeById(props.row.id).then((res: any) => {
-          currentRow.value = res;
-          // 加载已选设备
-          if (res.equipmentCodes) {
-            const codes = res.equipmentCodes.split(',').filter(Boolean);
-            Promise.all(
-              codes.map((code: string) => queryScadaEquipLedgerByCode(code)),
-            ).then((results: any[]) => {
-              selectedEquipments.value = results
-                .filter(Boolean)
-                .map((r: any) => ({
-                  equipGroupCode: r.equipGroupCode,
-                  equipGroupName: r.equipGroupName,
-                  equipmentCode: r.equipmentCode,
-                  equipmentName: r.equipmentName,
-                  location: r.location,
-                  model: r.model,
-                  useDepartmentName: r.useDepartmentName,
-                }));
-            });
-          }
-        });
-      } else if (props.mode === 'edit' && props.row?.id) {
-        // 编辑模式：加载详情并填充表单
-        getMaintenanceSchemeById(props.row.id).then((res: any) => {
-          const details = res.details || [];
-          formData.value = {
-            id: res.id,
-            schemeCode: res.schemeCode || '',
-            schemeName: res.schemeName,
-            planType: res.planType,
-            isStopMachine: res.isStopMachine || false,
-            equipmentGroup: res.equipmentGroup || '',
-            equipmentCodes: res.equipmentCodes || '',
-            status: res.status,
-            remark: res.remark || '',
-            details,
-          };
-          // 加载已选设备
-          if (res.equipmentCodes) {
-            const codes = res.equipmentCodes.split(',').filter(Boolean);
-            Promise.all(
-              codes.map((code: string) => queryScadaEquipLedgerByCode(code)),
-            ).then((results: any[]) => {
-              selectedEquipments.value = results
-                .filter(Boolean)
-                .map((r: any) => ({
-                  equipGroupCode: r.equipGroupCode,
-                  equipGroupName: r.equipGroupName,
-                  equipmentCode: r.equipmentCode,
-                  equipmentName: r.equipmentName,
-                  location: r.location,
-                  model: r.model,
-                  useDepartmentName: r.useDepartmentName,
-                }));
-            });
-          }
-        });
-      } else {
-        // 新增模式
-        currentRow.value = null;
-        selectedEquipments.value = [];
-        formData.value = {
-          schemeCode: '',
-          schemeName: '',
-          planType: 'REGULAR',
-          isStopMachine: false,
-          equipmentGroup: '',
-          equipmentCodes: '',
-          status: 'ACTIVE',
-          remark: '',
-          details: [],
-        };
-      }
+// 数据加载已移至 open() 和独立函数中
+
+/**
+ * 加载查看模式详情数据。
+ * @param {number} id - 方案ID
+ * @since 2026-07-13
+ */
+function loadViewDetail(id: number) {
+  currentRow.value = currentRowData.value;
+  getMaintenanceSchemeById(id).then((res: any) => {
+    currentRow.value = res;
+    if (res.equipmentCodes) {
+      const codes = res.equipmentCodes.split(',').filter(Boolean);
+      Promise.all(
+        codes.map((code: string) => queryScadaEquipLedgerByCode(code)),
+      ).then((results: any[]) => {
+        selectedEquipments.value = results.filter(Boolean).map((r: any) => ({
+          equipGroupCode: r.equipGroupCode,
+          equipGroupName: r.equipGroupName,
+          equipmentCode: r.equipmentCode,
+          equipmentName: r.equipmentName,
+          location: r.location,
+          model: r.model,
+          useDepartmentName: r.useDepartmentName,
+        }));
+      });
     }
-  },
-);
+  });
+}
+
+/**
+ * 加载编辑模式详情数据并填充表单。
+ * @param {number} id - 方案ID
+ * @since 2026-07-13
+ */
+function loadEditDetail(id: number) {
+  getMaintenanceSchemeById(id).then((res: any) => {
+    const details = res.details || [];
+    formData.value = {
+      id: res.id,
+      schemeCode: res.schemeCode || '',
+      schemeName: res.schemeName,
+      planType: res.planType,
+      isStopMachine: res.isStopMachine || false,
+      equipmentGroup: res.equipmentGroup || '',
+      equipmentCodes: res.equipmentCodes || '',
+      status: res.status,
+      remark: res.remark || '',
+      details,
+    };
+    if (res.equipmentCodes) {
+      const codes = res.equipmentCodes.split(',').filter(Boolean);
+      Promise.all(
+        codes.map((code: string) => queryScadaEquipLedgerByCode(code)),
+      ).then((results: any[]) => {
+        selectedEquipments.value = results.filter(Boolean).map((r: any) => ({
+          equipGroupCode: r.equipGroupCode,
+          equipGroupName: r.equipGroupName,
+          equipmentCode: r.equipmentCode,
+          equipmentName: r.equipmentName,
+          location: r.location,
+          model: r.model,
+          useDepartmentName: r.useDepartmentName,
+        }));
+      });
+    }
+  });
+}
+
+/**
+ * 重置表单数据到默认值（新增模式）。
+ * @since 2026-07-13
+ */
+function resetFormData() {
+  formData.value = {
+    schemeCode: '',
+    schemeName: '',
+    planType: 'REGULAR',
+    isStopMachine: false,
+    equipmentGroup: '',
+    equipmentCodes: '',
+    status: 'ACTIVE',
+    remark: '',
+    details: [],
+  };
+}
 
 // ========== 关闭抽屉 ==========
 /**
@@ -277,7 +272,26 @@ watch(
  * @since 2026-04-25 10:30:00
  */
 function handleClose() {
-  drawerVisible.value = false;
+  show.value = false;
+  // 关闭抽屉时清空所有状态，回到初始状态
+  currentMode.value = 'add';
+  currentRowData.value = null;
+  formData.value = {
+    schemeCode: '',
+    schemeName: '',
+    planType: 'REGULAR',
+    isStopMachine: false,
+    equipmentGroup: '',
+    equipmentCodes: '',
+    status: 'ACTIVE',
+    remark: '',
+    details: [],
+  };
+  selectedEquipments.value = [];
+  selectedMaintenanceItems.value = [];
+  maintenanceItemDrawerVisible.value = false;
+  equipmentDrawerVisible.value = false;
+  currentRow.value = null;
 }
 
 // ========== 提交表单 ==========
@@ -305,12 +319,12 @@ function handleSubmit() {
       };
 
       // 编辑时添加 id
-      if (props.mode === 'edit' && props.row?.id) {
-        (params as any).id = props.row.id;
+      if (currentMode.value === 'edit' && currentRowData.value?.id) {
+        (params as any).id = currentRowData.value.id;
       }
 
       const api =
-        props.mode === 'add'
+        currentMode.value === 'add'
           ? createMaintenanceScheme
           : updateMaintenanceScheme;
 
@@ -431,19 +445,19 @@ function removeEquipment(index: number) {
 
 <template>
   <Drawer
-    v-model:open="drawerVisible"
+    :open="show"
     :title="
-      mode === 'add'
+      currentMode === 'add'
         ? $t('tallyScheme.addTitle')
-        : mode === 'edit'
+        : currentMode === 'edit'
           ? $t('tallyScheme.editTitle')
           : $t('tallyScheme.viewTitle')
     "
-    width="900"
+    :width="900"
     :destroy-on-close="true"
     @close="handleClose"
   >
-    <template v-if="mode === 'view' && currentRow">
+    <template v-if="currentMode === 'view' && currentRow">
       <!-- 查看模式 -->
       <Descriptions :column="2" bordered>
         <DescriptionsItem :label="$t('tallyScheme.schemeCode')">
@@ -569,7 +583,7 @@ function removeEquipment(index: number) {
             <FormItem :label="$t('tallyScheme.schemeCode')" name="schemeCode">
               <Input
                 v-model:value="formData.schemeCode"
-                :disabled="mode !== 'add'"
+                :disabled="currentMode !== 'add'"
                 :placeholder="$t('tallyScheme.schemeCodePlaceholder')"
                 :maxlength="100"
               />
@@ -582,7 +596,7 @@ function removeEquipment(index: number) {
                 :placeholder="`请输入${$t('tallyScheme.schemeName')}`"
                 :maxlength="100"
                 show-count
-                :disabled="mode === 'edit'"
+                :disabled="currentMode === 'edit'"
               />
             </FormItem>
           </Col>
@@ -590,7 +604,7 @@ function removeEquipment(index: number) {
             <FormItem :label="$t('tallyScheme.planType')" name="planType">
               <Select
                 v-model:value="formData.planType"
-                :disabled="mode === 'edit'"
+                :disabled="currentMode === 'edit'"
               >
                 <SelectOption
                   v-for="item in planTypeOptions"
@@ -764,7 +778,9 @@ function removeEquipment(index: number) {
           <div class="mb-2 font-medium">
             {{ $t('tallyScheme.maintenanceItem') }}
           </div>
-          <div class="border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
+          <div
+            class="border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
+          >
             <!-- 表头 -->
             <Row
               :gutter="8"
@@ -857,9 +873,13 @@ function removeEquipment(index: number) {
     <template #footer>
       <Space class="w-full justify-end">
         <Button @click="handleClose">
-          {{ mode === 'view' ? '关闭' : '取消' }}
+          {{ currentMode === 'view' ? '关闭' : '取消' }}
         </Button>
-        <Button v-if="mode !== 'view'" type="primary" @click="handleSubmit">
+        <Button
+          v-if="currentMode !== 'view'"
+          type="primary"
+          @click="handleSubmit"
+        >
           {{ $t('common.confirm') }}
         </Button>
       </Space>

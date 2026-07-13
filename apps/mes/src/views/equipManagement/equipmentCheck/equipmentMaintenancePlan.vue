@@ -233,27 +233,19 @@ function handleReset() {
 }
 
 // ========== 抽屉控制 ==========
-const drawerVisible = ref(false);
-const drawerMode = ref<'add' | 'edit' | 'view'>('add');
-const currentRow = ref<MaintenancePlan | null>(null);
+const planDrawerRef = ref();
 
 // ========== 打开抽屉 ==========
 function handleAdd() {
-  drawerMode.value = 'add';
-  currentRow.value = null;
-  drawerVisible.value = true;
+  planDrawerRef.value.open('add');
 }
 
 function handleEdit(row: MaintenancePlan) {
-  drawerMode.value = 'edit';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  planDrawerRef.value.open('edit', row);
 }
 
 function handleView(row: MaintenancePlan) {
-  drawerMode.value = 'view';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  planDrawerRef.value.open('view', row);
 }
 
 // ========== 删除 ==========
@@ -377,7 +369,9 @@ function formatUnit(unit?: string) {
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
-          <Button type="primary" @click="gridApi.reload()">{{ $t('common.query') }}</Button>
+          <Button type="primary" @click="gridApi.reload()">{{
+            $t('common.query')
+          }}</Button>
         </FormItem>
       </Form>
     </Card>
@@ -490,9 +484,7 @@ function formatUnit(unit?: string) {
 
     <!-- 抽屉组件 -->
     <EquipmentMaintenancePlanDrawer
-      v-model:visible="drawerVisible"
-      :mode="drawerMode"
-      :row="currentRow"
+      ref="planDrawerRef"
       @refresh="gridApi.reload()"
     />
   </Page>

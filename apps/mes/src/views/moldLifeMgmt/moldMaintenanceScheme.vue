@@ -226,27 +226,19 @@ function handleReset() {
 }
 
 // ========== 抽屉控制 ==========
-const drawerVisible = ref(false);
-const drawerMode = ref<'add' | 'edit' | 'view'>('add');
-const currentRow = ref<MoldMaintenanceScheme | null>(null);
+const schemeDrawerRef = ref();
 
 // ========== 打开抽屉 ==========
 function handleAdd() {
-  drawerMode.value = 'add';
-  currentRow.value = null;
-  drawerVisible.value = true;
+  schemeDrawerRef.value.open('add');
 }
 
 function handleEdit(row: MoldMaintenanceScheme) {
-  drawerMode.value = 'edit';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  schemeDrawerRef.value.open('edit', row);
 }
 
 function handleView(row: MoldMaintenanceScheme) {
-  drawerMode.value = 'view';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  schemeDrawerRef.value.open('view', row);
 }
 
 // ========== 删除 ==========
@@ -482,9 +474,7 @@ onMounted(() => {
 
     <!-- 抽屉组件 -->
     <MoldMaintenanceSchemeDrawer
-      v-model:visible="drawerVisible"
-      :mode="drawerMode"
-      :row="currentRow"
+      ref="schemeDrawerRef"
       @refresh="gridApi.reload()"
     />
   </Page>

@@ -196,22 +196,14 @@ function queryData({
 
 // region 抽屉控制
 
-/** 抽屉显示/隐藏状态 */
-const drawerVisible = ref(false);
-
-/** 抽屉模式：add-新增，edit-编辑，view-查看 */
-const drawerMode = ref<'add' | 'edit' | 'view'>('add');
-
-/** 当前操作的行数据 */
-const currentRow = ref<any>(null);
+/** 抽屉组件引用 */
+const archiveDrawerRef = ref();
 
 /**
  * 打开新增抽屉。
  */
 function handleAdd() {
-  drawerMode.value = 'add';
-  currentRow.value = null;
-  drawerVisible.value = true;
+  archiveDrawerRef.value.open('add');
 }
 
 /**
@@ -219,9 +211,7 @@ function handleAdd() {
  * @param {any} row - 当前操作的行数据对象
  */
 function handleEdit(row: any) {
-  drawerMode.value = 'edit';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  archiveDrawerRef.value.open('edit', row);
 }
 
 /**
@@ -229,9 +219,7 @@ function handleEdit(row: any) {
  * @param {any} row - 当前操作的行数据对象
  */
 function handleView(row: any) {
-  drawerMode.value = 'view';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  archiveDrawerRef.value.open('view', row);
 }
 
 // endregion
@@ -622,12 +610,7 @@ onMounted(() => {
     </Card>
 
     <!-- 新增/编辑/详情抽屉 -->
-    <MoldArchiveDrawer
-      v-model:visible="drawerVisible"
-      :mode="drawerMode"
-      :row="currentRow"
-      @refresh="gridApi.query()"
-    />
+    <MoldArchiveDrawer ref="archiveDrawerRef" @refresh="gridApi.query()" />
   </Page>
 </template>
 

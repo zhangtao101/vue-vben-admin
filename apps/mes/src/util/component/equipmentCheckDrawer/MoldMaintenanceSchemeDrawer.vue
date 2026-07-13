@@ -8,7 +8,7 @@
  */
 import type { MoldMaintenanceScheme } from '#/api/equipManagement/moldMaintenanceScheme.service';
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -43,30 +43,35 @@ import { $t } from '#/locales';
 import MoldMaintenanceItemSelectDrawer from './MoldMaintenanceItemSelectDrawer.vue';
 import MoldSelectDrawer from './MoldSelectDrawer.vue';
 
-/** Props 定义：visible(抽屉可见性)、mode(新增/编辑/查看)、row(编辑/查看时传入的行数据) */
-interface Props {
-  visible: boolean;
-  mode: 'add' | 'edit' | 'view';
-  row?: MoldMaintenanceScheme | null;
-}
-
-/** Emits 定义：update:visible(抽屉关闭)、refresh(刷新列表) */
-interface Emits {
-  (e: 'update:visible', value: boolean): void;
-  (e: 'refresh'): void;
-}
-
 defineOptions({
   name: 'MoldMaintenanceSchemeDrawer',
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-  mode: 'add',
-  row: null,
-});
+const emit = defineEmits<{
+  refresh: [];
+}>();
 
-const emit = defineEmits<Emits>();
+// ========== 抽屉控制 ==========
+const show = ref(false);
+const currentMode = ref<'add' | 'edit' | 'view'>('add');
+const currentRowData = ref<MoldMaintenanceScheme | null>(null);
+
+function open(
+  mode: 'add' | 'edit' | 'view',
+  row?: MoldMaintenanceScheme | null,
+) {
+  currentMode.value = mode;
+  currentRowData.value = row ?? null;
+  show.value = true;
+  loadMoldCategoryOptions('');
+  if (mode === 'view' || mode === 'edit') {
+    loadDetail();
+  } else {
+    resetForm();
+  }
+}
+
+defineExpose({ open });
 
 // ========== 状态 ==========
 /** 页面加载状态，控制 Spin 组件 */
@@ -141,37 +146,7 @@ const rules: Record<string, any[]> = {
   ],
 };
 
-// ========== 监听 ==========
-/** 监听抽屉打开/关闭，打开时加载数据，关闭时清空状态 */
-watch(
-  () => props.visible,
-  (val) => {
-    if (val) {
-      loadMoldCategoryOptions('');
-      if (props.mode === 'view' || props.mode === 'edit') {
-        loadDetail();
-      } else {
-        resetForm();
-      }
-    } else {
-      // 关闭抽屉时清空表单数据和已选项，避免下次打开残留数据
-      formData.value = {
-        schemeCode: '',
-        schemeName: '',
-        planType: 'REGULAR',
-        isStopMachine: false,
-        moldCategoryName: '',
-        moldCodes: '',
-        status: 'ACTIVE',
-        remark: '',
-        details: [],
-      };
-      selectedMolds.value = [];
-      maintenanceItemDrawerVisible.value = false;
-      moldDrawerVisible.value = false;
-    }
-  },
-);
+// 数据加载已移至 open() 方法中
 
 // ========== 加载模具类别列表 ==========
 /**
@@ -291,9 +266,9 @@ function handleMaintenanceItemSelect(items: any[]) {
  * @since 2026-06-16 09:25:00
  */
 function loadDetail() {
-  if (!props.row?.id) return;
+  if (!currentRowData.value?.id) return;
   loading.value = true;
-  getMoldMaintenanceSchemeById(props.row.id)
+  getMoldMaintenanceSchemeById(currentRowData.value.id)
     .then((res: any) => {
       formData.value = {
         schemeCode: res.schemeCode || '',
@@ -389,8 +364,8 @@ function handleSubmit() {
       };
 
       let api;
-      if (props.mode === 'edit' && props.row?.id) {
-        params.id = props.row.id;
+      if (currentMode.value === 'edit' && currentRowData.value?.id) {
+        params.id = currentRowData.value.id;
         api = updateMoldMaintenanceScheme(params as any);
       } else {
         api = createMoldMaintenanceScheme(params as any);
@@ -399,7 +374,7 @@ function handleSubmit() {
       api
         .then(() => {
           message.success($t('common.successfulOperation'));
-          emit('update:visible', false);
+          show.value = false;
           emit('refresh');
         })
         .finally(() => {
@@ -418,7 +393,28 @@ function handleSubmit() {
  * @since 2026-06-16 09:25:00
  */
 function handleClose() {
-  emit('update:visible', false);
+  show.value = false;
+  // 关闭抽屉时清空所有状态，回到初始状态
+  currentMode.value = 'add';
+  currentRowData.value = null;
+  loading.value = false;
+  submitting.value = false;
+  fetching.value = false;
+  formData.value = {
+    schemeCode: '',
+    schemeName: '',
+    planType: 'REGULAR',
+    isStopMachine: false,
+    moldCategoryName: '',
+    moldCodes: '',
+    status: 'ACTIVE',
+    remark: '',
+    details: [],
+  };
+  selectedMolds.value = [];
+  selectedMaintenanceItems.value = [];
+  maintenanceItemDrawerVisible.value = false;
+  moldDrawerVisible.value = false;
 }
 
 // ========== 标题 ==========
@@ -429,28 +425,29 @@ const drawerTitle = computed(() => {
     edit: $t('moldMaintenanceScheme.editTitle'),
     view: $t('moldMaintenanceScheme.viewTitle'),
   };
-  return titles[props.mode] || '';
+  return titles[currentMode.value] || '';
 });
 
 // ========== 详情数据 ==========
 /** 查看模式的详情展示数据，基于 formData 计算 */
 const detailData = computed(() => {
-  if (props.mode !== 'view' || !props.row) return null;
+  if (currentMode.value !== 'view' || !currentRowData.value) return null;
   return formData.value;
 });
 </script>
 
 <template>
   <Drawer
-    :open="visible"
+    :open="show"
     :title="drawerTitle"
-    width="900"
+    :width="900"
     :destroy-on-close="true"
-    @update:open="(val) => emit('update:visible', val)"
+    :footer-style="{ textAlign: 'right' }"
+    @close="handleClose"
   >
     <Spin :spinning="loading">
       <!-- 查看模式 -->
-      <div v-if="mode === 'view' && detailData">
+      <div v-if="currentMode === 'view' && detailData">
         <Descriptions :column="2" bordered>
           <DescriptionsItem :label="$t('moldMaintenanceScheme.schemeCode')">
             {{ detailData.schemeCode || '-' }}
@@ -552,17 +549,20 @@ const detailData = computed(() => {
               </Row>
             </div>
           </div>
-          <div
-            v-else
-            class="py-3 text-center text-gray-400 dark:text-gray-500"
-          >
+          <div v-else class="py-3 text-center text-gray-400 dark:text-gray-500">
             暂无数据
           </div>
         </div>
       </div>
 
       <!-- 新增/编辑模式 -->
-      <Form v-else ref="formRef" layout="vertical" :model="formData" :rules="rules">
+      <Form
+        v-else
+        ref="formRef"
+        layout="vertical"
+        :model="formData"
+        :rules="rules"
+      >
         <Row :gutter="16">
           <Col :span="8">
             <FormItem
@@ -571,7 +571,7 @@ const detailData = computed(() => {
             >
               <Input
                 v-model:value="formData.schemeCode"
-                :disabled="mode !== 'add'"
+                :disabled="currentMode !== 'add'"
                 :placeholder="$t('moldMaintenanceScheme.schemeCodePlaceholder')"
                 :maxlength="100"
               />
@@ -584,7 +584,7 @@ const detailData = computed(() => {
             >
               <Input
                 v-model:value="formData.schemeName"
-                :disabled="mode === 'edit'"
+                :disabled="currentMode === 'edit'"
                 :placeholder="$t('moldMaintenanceScheme.keywordPlaceholder')"
               />
             </FormItem>
@@ -593,7 +593,7 @@ const detailData = computed(() => {
             <FormItem :label="$t('moldMaintenanceScheme.planType')">
               <Select
                 v-model:value="formData.planType"
-                :disabled="mode === 'edit'"
+                :disabled="currentMode === 'edit'"
               >
                 <SelectOption
                   v-for="item in planTypeOptions"
@@ -731,7 +731,9 @@ const detailData = computed(() => {
             {{ $t('moldMaintenanceScheme.maintenanceItems') }}
           </h4>
 
-          <div class="border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
+          <div
+            class="border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
+          >
             <!-- 表头 -->
             <Row
               :gutter="8"
@@ -832,12 +834,14 @@ const detailData = computed(() => {
 
     <!-- 底部按钮插槽 -->
     <template #footer>
-      <Space class="w-full justify-end">
+      <Space>
         <Button @click="handleClose">
-          {{ mode === 'view' ? $t('common.close') : $t('common.cancel') }}
+          {{
+            currentMode === 'view' ? $t('common.close') : $t('common.cancel')
+          }}
         </Button>
         <Button
-          v-if="mode !== 'view'"
+          v-if="currentMode !== 'view'"
           type="primary"
           :loading="submitting"
           @click="handleSubmit"
@@ -864,5 +868,4 @@ const detailData = computed(() => {
   />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
