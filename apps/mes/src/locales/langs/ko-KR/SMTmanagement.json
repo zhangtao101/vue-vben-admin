@@ -46,6 +46,7 @@
   "inputProductName": "제품 이름을 입력하세요",
   "selectPlaceholder": "선택하세요",
   "pleaseSelectData": "참조할 데이터를 선택하세요",
+  "pleaseSelectProcessType": "먼저 작업 지시 유형을 선택하세요",
   "finishNumber": "완료 수량",
   "orderNumber": "주문 수량",
   "planQuantity": "계획 수량",

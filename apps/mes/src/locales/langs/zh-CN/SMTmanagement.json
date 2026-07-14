@@ -46,6 +46,7 @@
   "inputProductName": "请输入产品名称",
   "selectPlaceholder": "请选择",
   "pleaseSelectData": "请勾选要引用的数据",
+  "pleaseSelectProcessType": "请先选择工单类别",
   "finishNumber": "完工数",
   "orderNumber": "订单数量",
   "planQuantity": "计划数量",

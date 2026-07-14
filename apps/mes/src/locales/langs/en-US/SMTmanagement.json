@@ -46,6 +46,7 @@
   "inputProductName": "Please enter product name",
   "selectPlaceholder": "Please select",
   "pleaseSelectData": "Please select data to reference",
+  "pleaseSelectProcessType": "Please select the work order type first",
   "finishNumber": "Finished Qty",
   "orderNumber": "Order Qty",
   "planQuantity": "Plan Qty",

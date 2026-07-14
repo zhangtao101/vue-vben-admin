@@ -51,7 +51,7 @@ const queryParams = ref<any>({
   planCode: '',
   productCode: '',
   productName: '',
-  processType: 1,
+  processType: undefined,
   isFinish: '2',
   isPlanWork: '2',
 });
@@ -136,6 +136,10 @@ function loadData({ page, pageSize }: any) {
  * 确认选择
  */
 function handleConfirm() {
+  if (!queryParams.value.processType) {
+    message.warning($t('SMTmanagement.pleaseSelectProcessType'));
+    return;
+  }
   if (selectedRows.value.length === 0) {
     message.warning($t('SMTmanagement.pleaseSelectData'));
     return;
