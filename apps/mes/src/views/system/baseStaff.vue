@@ -238,7 +238,7 @@ function queryAllOrganizations() {
  * @param {boolean} info.selected - 节点的选中状态
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
-  selectedKey.value = selected && node.orgLevel < 3 ? node : undefined;
+  selectedKey.value = selected && node.orgLevel <= 3 ? node : undefined;
   gridApi.reload();
 }
 
