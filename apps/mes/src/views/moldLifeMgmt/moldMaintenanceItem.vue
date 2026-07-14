@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 /**
  * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table、repairBasicConfig.service API
- * [OUTPUT]: 对外提供维修基础配置页面组件，含配置列表、新增/编辑/删除、启用禁用功能
- * [POS]: 维修维护模块 的基础配置页面，管理维修类型、故障等级、设备组、紧急程度等配置
+ * [OUTPUT]: 对外提供模具保养项目配置页面组件，含配置列表、新增/编辑/删除、启用禁用功能
+ * [POS]: 模具生命周期管理模块 的模具保养项目配置页面，管理模具保养项目配置
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-06-16 09:53:00
+ * [TIME]: 2026-07-14 16:52:00
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
@@ -43,63 +43,31 @@ import { queryAuth } from '#/util';
 import RepairBasicConfigDrawer from '#/util/component/repairMaintenance/RepairBasicConfigDrawer.vue';
 
 // ========== 查询参数 ==========
-/** 配置类型查询参数，默认查询维修类型 */
+/** 配置类型查询参数，默认查询模具保养项目 */
 const queryParams = ref({
-  configType: 'REPAIR_TYPE',
+  configType: 'MOLD_MAINTENANCE_ITEM',
 });
 
 // ========== 维修类型选项 ==========
-/** 配置类型下拉选项列表 */
+/** 配置类型下拉选项列表（仅模具保养项目） */
 const configTypeOptions = [
-  { label: $t('repair.repairBasicConfig.repairType'), value: 'REPAIR_TYPE' },
-  { label: $t('repair.repairBasicConfig.faultLevel'), value: 'FAULT_LEVEL' },
   {
-    label: $t('repair.repairBasicConfig.equipmentGroup'),
-    value: 'EQUIPMENT_GROUP',
+    label: $t('repair.repairBasicConfig.moldMaintenanceItem'),
+    value: 'MOLD_MAINTENANCE_ITEM',
   },
-  { label: $t('repair.repairBasicConfig.urgentLevel'), value: 'URGENT_LEVEL' },
-  { label: $t('repair.repairBasicConfig.faultType'), value: 'FAULT_TYPE' },
-  {
-    label: $t('repair.repairBasicConfig.equipFaultCause'),
-    value: 'EQUIP_FAULT_CAUSE',
-  },
-  {
-    label: $t('repair.repairBasicConfig.repairPauseReason'),
-    value: 'REPAIR_PAUSE_REASON',
-  },
-  {
-    label: $t('repair.repairBasicConfig.equipmentOeeReason'),
-    value: 'EQUIPMENT_OEE_REASON',
-  },
-  { label: $t('repair.repairBasicConfig.oeeReason'), value: 'OEE_REASON' },
-  {
-    label: $t('repair.repairBasicConfig.moldAbnormalReason'),
-    value: 'MOLD_ABNORMAL_REASON',
-  },
-  { label: $t('repair.repairBasicConfig.repairItem'), value: 'REPAIR_ITEM' },
 ];
 
 // ========== 维修类型映射 ==========
 /** 配置类型编码到中文名称的映射 */
 const configTypeMap: Record<string, string> = {
-  REPAIR_TYPE: $t('repair.repairBasicConfig.repairType'),
-  FAULT_LEVEL: $t('repair.repairBasicConfig.faultLevel'),
-  EQUIPMENT_GROUP: $t('repair.repairBasicConfig.equipmentGroup'),
-  URGENT_LEVEL: $t('repair.repairBasicConfig.urgentLevel'),
-  FAULT_TYPE: $t('repair.repairBasicConfig.faultType'),
-  EQUIP_FAULT_CAUSE: $t('repair.repairBasicConfig.equipFaultCause'),
-  REPAIR_PAUSE_REASON: $t('repair.repairBasicConfig.repairPauseReason'),
-  EQUIPMENT_OEE_REASON: $t('repair.repairBasicConfig.equipmentOeeReason'),
-  OEE_REASON: $t('repair.repairBasicConfig.oeeReason'),
-  MOLD_ABNORMAL_REASON: $t('repair.repairBasicConfig.moldAbnormalReason'),
-  REPAIR_ITEM: $t('repair.repairBasicConfig.repairItem'),
+  MOLD_MAINTENANCE_ITEM: $t('repair.repairBasicConfig.moldMaintenanceItem'),
 };
 
 /**
  * 格式化配置类型显示文本。
  * @param {string} value - 配置类型编码。
  * @returns {string} 配置类型中文名称，若未找到则返回原编码。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function formatConfigType(value: string) {
   return configTypeMap[value] || value;
@@ -115,7 +83,7 @@ const currentRow = ref<any>(null);
  * 打开新增/编辑抽屉。
  * @param {any} [row] - 可选，要编辑的行数据；不传则表示新增。
  * @returns {void} 无返回值。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function openDrawer(row?: any) {
   currentRow.value = row ? { ...row } : null;
@@ -125,7 +93,7 @@ function openDrawer(row?: any) {
 /**
  * 抽屉操作成功回调，刷新表格数据。
  * @returns {void} 无返回值。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function onDrawerSuccess() {
   gridApi.reload();
@@ -218,7 +186,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
  * 查询基础配置列表数据。
  * @returns {Promise<{ total: number; items: any[] }>} 包含总数和数据列表的 Promise。
  * @throws {Error} API 调用失败时拒绝 Promise。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function queryData() {
   return new Promise((resolve, reject) => {
@@ -238,7 +206,7 @@ function queryData() {
 /**
  * 处理配置类型变更事件，刷新表格数据。
  * @returns {void} 无返回值。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function onConfigTypeChange() {
   gridApi.reload();
@@ -267,15 +235,7 @@ const accessStore = useAccessStore();
 const importFile = ref<any>([]);
 
 /** 支持导入功能的配置类型 */
-const importConfigTypes = new Set([
-  'EQUIP_FAULT_CAUSE',
-  'EQUIPMENT_GROUP',
-  'EQUIPMENT_OEE_REASON',
-  'FAULT_TYPE',
-  'MOLD_ABNORMAL_REASON',
-  'OEE_REASON',
-  'REPAIR_PAUSE_REASON',
-]);
+const importConfigTypes = new Set(['MOLD_MAINTENANCE_ITEM']);
 
 /** 当前选中类型是否支持导入 */
 const showImportButton = computed(() =>
@@ -285,7 +245,7 @@ const showImportButton = computed(() =>
 /**
  * 获取导入上传的接口地址。
  * @returns {string} 基础配置导入的 API URL。
- * @since 2026-06-16 08:58:00
+ * @since 2026-07-14 16:52:00
  */
 function getImportUrl() {
   return `/ht/${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/equip/import/base-config`;
@@ -295,7 +255,7 @@ function getImportUrl() {
  * 处理文件导入状态变更，成功时刷新表格，失败时提示错误。
  * @param {any} info - Upload 组件的 change 事件参数，包含 file 对象。
  * @returns {void} 无返回值。
- * @since 2026-06-16 08:58:00
+ * @since 2026-07-14 16:52:00
  */
 function handleImportChange(info: any) {
   const { file } = info;
@@ -313,7 +273,7 @@ function handleImportChange(info: any) {
  * 处理批量删除按钮点击，获取选中行后弹出确认框执行批量删除。
  * @returns {void} 无返回值，删除成功后显示提示并刷新数据；失败时显示错误提示。
  * @throws {Error} 批量删除 API 调用失败时捕获并显示错误提示，不向上抛出。
- * @since 2026-06-16 09:47:00
+ * @since 2026-07-14 16:52:00
  */
 function handleBatchDelete() {
   const selectedRows = (gridApi.grid as any)?.getCheckboxRecords() || [];
@@ -345,7 +305,7 @@ function handleBatchDelete() {
  * 处理编辑按钮点击，打开编辑抽屉。
  * @param {any} row - 要编辑的行数据。
  * @returns {void} 无返回值。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function handleEdit(row: any) {
   openDrawer(row);
@@ -356,7 +316,7 @@ function handleEdit(row: any) {
  * @param {any} row - 要删除的行数据，需包含 id 和 configName。
  * @returns {void} 无返回值，删除成功后显示提示并刷新数据。
  * @throws {Error} 删除操作被取消时不抛出错误。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function handleDelete(row: any) {
   Modal.confirm({
@@ -380,7 +340,7 @@ function handleDelete(row: any) {
  * @param {any} row - 要切换状态的行数据，需包含 id 和 status。
  * @returns {void} 无返回值，切换成功后显示提示并刷新数据。
  * @throws {Error} API 调用失败时显示错误提示。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function handleStatusChange(row: any) {
   const api =
@@ -396,7 +356,7 @@ function handleStatusChange(row: any) {
 /**
  * 处理新增按钮点击，打开新增抽屉。
  * @returns {void} 无返回值。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 function handleAdd() {
   openDrawer();
@@ -411,7 +371,7 @@ const author = ref<string[]>([]);
 /**
  * 组件挂载时执行初始化。
  * @returns {void} 无返回值。
- * @since 2026-04-20 15:13:00
+ * @since 2026-07-14 16:52:00
  */
 onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {

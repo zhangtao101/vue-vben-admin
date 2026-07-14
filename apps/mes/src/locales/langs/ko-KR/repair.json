@@ -302,6 +302,7 @@
     "oeeReason": "OEE 사유",
     "moldMaintenanceItem": "금형 유지보수 항목",
     "moldAbnormalReason": "이상 사유",
+    "repairItem": "수리 항목",
     "itemRequirement": "유지보수 요구 사항",
     "itemStandard": "유지보수 표준",
     "repairGroupCode": "수리 그룹 코드",
