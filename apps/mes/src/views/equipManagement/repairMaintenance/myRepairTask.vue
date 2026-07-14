@@ -417,7 +417,7 @@ const rootCauseOptions = ref<{ label: string; value: string }[]>([]);
  */
 function fetchRootCauseOptions() {
   getRepairBasicConfigList({
-    configType: 'FAULT_ROOT_CAUSE',
+    configType: 'EQUIP_FAULT_CAUSE',
     status: 'ACTIVE',
   }).then((data) => {
     rootCauseOptions.value = (data || []).map((item: any) => ({
