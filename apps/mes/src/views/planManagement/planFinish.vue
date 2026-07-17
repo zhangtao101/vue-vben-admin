@@ -37,6 +37,7 @@ import {
   producePlanExport,
   producePlanSearch,
   producePlanUpdate,
+  producePlanUpdateFile,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -141,7 +142,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'action',
       title: $t('baseInfo.action'),
       fixed: 'right',
-      minWidth: 150,
+      minWidth: 250,
       slots: { default: 'action' },
     },
   ],
@@ -357,6 +358,61 @@ function delItem(row: any) {
 }
 // endregion
 
+// region 文件绑定
+// 当前绑定行
+const bindingRow = ref<any>({});
+// 上传接口地址（与参考组件完全一致）
+const uploadAction = `/ht/${import.meta.env.VITE_GLOB_MES_MAIN}/iqc/uploadFile`;
+
+/**
+ * 记录当前点击行，供上传成功后绑定使用
+ * @param row 当前行
+ */
+function setBindingRow(row: any) {
+  bindingRow.value = { ...row };
+}
+
+/**
+ * 上传成功回调，调用绑定接口
+ */
+function handleUploadSuccess({code, data}: any) {
+  console.log('data', data);
+  if (code === 200 && data) {
+    // 上传完成后调用绑定接口（filepath 取上传返回地址，id 取当前行 id）
+    producePlanUpdateFile({
+      filepath: data,
+      id: bindingRow.value.id,
+    })
+      .then(() => {
+        message.success($t('common.successfulOperation'));
+        gridApi.reload();
+      })
+      .catch(() => {
+        message.error($t('common.operationFailure'));
+      });
+  } else {
+    message.error($t('common.operationFailure'));
+  }
+}
+
+/**
+ * 上传失败回调
+ */
+function handleUploadError() {
+  message.error($t('common.operationFailure'));
+}
+
+/**
+ * 下载绑定文件（新开页面访问）
+ * @param filepath 文件地址
+ */
+function downloadFile(filepath: string) {
+  if (filepath) {
+    window.open(filepath, '_blank');
+  }
+}
+// endregion
+
 // region 权限查询
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
@@ -538,6 +594,34 @@ onMounted(() => {
                 />
               </Button>
             </Popconfirm>
+          </Tooltip>
+          <!-- 文件绑定 -->
+          <Tooltip>
+            <template #title>{{ $t('planManagement.fileBinding') }}</template>
+            <Upload
+              :action="uploadAction"
+              :headers="{ Authorization: `${accessStore.accessToken}` }"
+              :show-upload-list="false"
+              @error="handleUploadError"
+              @success="handleUploadSuccess"
+            >
+              <Button type="link" @click="setBindingRow(row)">
+                <Icon
+                  icon="mdi:paperclip"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Upload>
+          </Tooltip>
+          <!-- 下载绑定文件 -->
+          <Tooltip v-if="row.filepath">
+            <template #title>{{ $t('planManagement.downloadFile') }}</template>
+            <Button type="link" @click="downloadFile(row.filepath)">
+              <Icon
+                icon="mdi:file-download"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
           </Tooltip>
         </template>
       </Grid>

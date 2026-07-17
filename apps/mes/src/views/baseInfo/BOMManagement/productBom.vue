@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MdiEyeOutline, MdiSearch } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -21,6 +22,7 @@ import {
   message,
   Modal,
   Row,
+  Space,
   Tabs,
   Tooltip,
   Upload,
@@ -28,6 +30,7 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  deleteBomItem,
   downloadProductBomTemplate,
   getBomDetailList,
   getBomDetailTree,
@@ -36,6 +39,9 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import BomItemDrawer from '#/util/component/productBom/BomItemDrawer.vue';
+import ProductBomEditDrawer from '#/util/component/productBom/ProductBomEditDrawer.vue';
+
 
 // 路由信息
 const route = useRoute();
@@ -56,7 +62,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'imagePath',
       minWidth: 80,
       slots: { default: 'imagePath' },
-      title: '产品图片',
+      title: $t('baseInfo.productImage'),
     },
     {
       field: 'isLock',
@@ -84,7 +90,7 @@ const gridOptions: VxeGridProps<any> = {
       fixed: 'right',
       slots: { default: 'action' },
       title: $t('baseInfo.action'),
-      minWidth: 120,
+      minWidth: 200,
     },
   ],
   height: 500,
@@ -222,6 +228,7 @@ const author = ref<string[]>([]);
 
 const detailModalVisible = ref(false);
 const bomCode = ref('');
+const productCode = ref('');
 const activeTabKey = ref('first');
 
 // 设计BOM表格数据
@@ -257,6 +264,13 @@ const designGridOptions: VxeGridProps<any> = {
     { field: 'supplier', title: $t('baseInfo.supplier'), width: 120 },
     { field: 'useProcess', title: $t('baseInfo.useProcess'), width: 120 },
     { field: 'remark', title: $t('baseInfo.remarkDescription'), minWidth: 150 },
+    {
+      field: 'action',
+      title: $t('baseInfo.action'),
+      fixed: 'right',
+      slots: { default: 'itemAction' },
+      width: 140,
+    },
   ],
   height: 500,
   data: designGridData,
@@ -315,6 +329,7 @@ function handleDetail(row: any) {
   activeTabKey.value = 'first';
   detailModalVisible.value = true;
   bomCode.value = row.bomCode;
+  productCode.value = row.productCode;
 
   // 默认加载设计 BOM
   loadDesignBom(row.bomCode);
@@ -348,6 +363,48 @@ function handleTabChange(key: number | string) {
     loadExpandBom(bomCode.value);
   }
 }
+
+// region BOM 明细 新增 / 编辑 / 删除
+const bomItemDrawerRef = ref();
+const productBomEditRef = ref();
+
+function handleAddItem() {
+  bomItemDrawerRef.value.open('add', { productCode: productCode.value });
+}
+
+/**
+ * 编辑产品 BOM 基本信息
+ */
+function handleEditBasic(row: any) {
+  productBomEditRef.value.open(row);
+}
+
+function handleEditItem(row: any) {
+  bomItemDrawerRef.value.open('edit', row);
+}
+
+function handleDeleteItem(row: any) {
+  Modal.confirm({
+    title: $t('basic.delete'),
+    content: `${$t('basic.delete')}：${row.materialName || row.materialCode}`,
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
+    onOk: () =>
+      new Promise<void>((resolve, reject) => {
+        deleteBomItem(row.id)
+          .then(() => {
+            message.success($t('common.successfulOperation'));
+            loadDesignBom(bomCode.value);
+            resolve();
+          })
+          .catch((error: any) => {
+            message.error(error?.message || $t('common.operationFailed'));
+            reject(error);
+          });
+      }),
+  });
+}
+// endregion
 
 // endregion
 
@@ -427,11 +484,8 @@ onMounted(() => {
         </FormItem>
 
         <FormItem>
-          <Button
-            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
-            type="primary"
-            @click="() => gridApi.reload()"
-          >
+          <Button type="primary" @click="() => gridApi.reload()">
+            <Icon icon="mdi:search" class="inline-block mr-2" />
             {{ $t('common.search') }}
           </Button>
         </FormItem>
@@ -498,10 +552,21 @@ onMounted(() => {
                 <template #title>{{ $t('basic.bomManagement.view') }}</template>
                 <Button
                   v-if="author.includes('查看')"
-                  :icon="h(MdiEyeOutline, { class: 'inline-block size-6' })"
                   type="link"
                   @click="handleDetail(row)"
-                />
+                >
+                  <Icon icon="mdi:eye-outline" class="inline-block size-6" />
+                </Button>
+              </Tooltip>
+              <Tooltip>
+                <template #title>{{ $t('common.edit') }}</template>
+                <Button
+                  v-if="author.includes('编辑')"
+                  type="link"
+                  @click="handleEditBasic(row)"
+                >
+                  <Icon icon="mdi:file-edit-outline" class="inline-block size-6" />
+                </Button>
               </Tooltip>
             </template>
           </Grid>
@@ -521,8 +586,36 @@ onMounted(() => {
       <Tabs v-model:active-key="activeTabKey" @change="handleTabChange">
         <Tabs.TabPane key="first" :tab="$t('baseInfo.designBOM')">
           <DesignGrid>
+            <template #toolbar-actions>
+              <Button
+                v-if="author.includes('新增')"
+                type="primary"
+                @click="handleAddItem"
+              >
+                {{ $t('common.add') }}
+              </Button>
+            </template>
             <template #isLowerestLevel="{ row }">
               <Checkbox :checked="row.isLowerestLevel" :disabled="true" />
+            </template>
+            <template #itemAction="{ row }">
+              <Space>
+                <Button
+                  v-if="author.includes('编辑')"
+                  type="link"
+                  @click="handleEditItem(row)"
+                >
+                  {{ $t('common.edit') }}
+                </Button>
+                <Button
+                  v-if="author.includes('删除')"
+                  type="link"
+                  danger
+                  @click="handleDeleteItem(row)"
+                >
+                  {{ $t('basic.delete') }}
+                </Button>
+              </Space>
             </template>
           </DesignGrid>
         </Tabs.TabPane>
@@ -538,6 +631,10 @@ onMounted(() => {
         <Button @click="detailModalVisible = false">{{ $t('common.cancel') }}</Button>
       </div>
     </Modal>
+
+    <!-- BOM 明细新增 / 编辑抽屉 -->
+    <BomItemDrawer ref="bomItemDrawerRef" @refresh="() => loadDesignBom(bomCode)" />
+    <ProductBomEditDrawer ref="productBomEditRef" @refresh="() => gridApi.reload()" />
   </Page>
 </template>
 

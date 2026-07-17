@@ -45,3 +45,16 @@ export async function producePlanUpdate(params: any) {
     params,
   );
 }
+
+/**
+ * 上传完文件使用修改按钮添加文件地址
+ */
+export async function producePlanUpdateFile(params: {
+  filepath?: string;
+  id?: number;
+}) {
+  return requestClient.put<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/plan/producePlan/updateFile`,
+    params
+  );
+}

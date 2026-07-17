@@ -63,3 +63,46 @@ export function importProductBom(formData: FormData) {
     },
   );
 }
+
+/**
+ * 修改产品 BOM（需求修改接口）
+ * @param data id / bomTypeCode / imagePath / productCode / productName / remark
+ */
+export function updateProductBom(data: any) {
+  return requestClient.put(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/productbom/update`,
+    data,
+  );
+}
+
+/**
+ * BOM 明细新增
+ * @param data orderNumber / materialCode / materialName / codeNumber / perDosage / perQuantity / singleDosage / unit / conversionFaction / auxiliaryDoage / auxiliaryUnit / productCode / supplier / useProcess / remark
+ */
+export function addBomItem(data: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/productbom/addBom`,
+    data,
+  );
+}
+
+/**
+ * BOM 明细修改（顺序 orderNumber、产品编号 productCode 不可修改）
+ * @param data id / orderNumber / materialCode / materialName / codeNumber / perDosage / perQuantity / singleDosage / unit / conversionFaction / auxiliaryDoage / auxiliaryUnit / productCode / supplier / useProcess / remark
+ */
+export function updateBomItem(data: any) {
+  return requestClient.put(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/productbom/updateBom`,
+    data,
+  );
+}
+
+/**
+ * BOM 明细删除
+ * @param id BOM 明细 ID
+ */
+export function deleteBomItem(id: number) {
+  return requestClient.delete(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/productbom/deleteBom?id=${id}`,
+  );
+}

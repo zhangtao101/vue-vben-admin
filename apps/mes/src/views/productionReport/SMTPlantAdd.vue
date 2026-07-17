@@ -1,94 +1,143 @@
 <script lang="ts" setup>
 /**
- * SMT车间报工页面
- * 用于管理SMT车间的报工记录
- * 功能包括：查询本日计划与完成情况、查看报工明细、新增报工记录
+ * [INPUT]: 依赖 #/api (smtWorksheetSearch/smtWorksheetUpdate/smtAllLineList)、
+ *         #/locales ($t)
+ * [OUTPUT]: 对外提供 SMTPlantAdd 页面组件，提供 SMT 工单查询与状态流转管理
+ * [POS]: 属于生产报工(productionReport)模块的 SMT 工单状态管理主页面，通过路由 /productionReport/SMTPlantAdd 访问
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-07-17 10:00:00
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { computed, onMounted, reactive, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-
-import { $t } from '#/locales';
-
-/* eslint-disable perfectionist/sort-imports */
+import { MdiSearch } from '@vben/icons';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
-  DatePicker,
+  Descriptions,
+  DescriptionsItem,
   Drawer,
   Form,
   FormItem,
   Input,
-  InputNumber,
   message,
+  Modal,
+  RangePicker,
   Select,
-  SelectOption,
   Space,
-  TabPane,
-  Tabs,
+  Table,
+  Tooltip,
 } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-
 import dayjs from 'dayjs';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  createArticle,
-  exportDetail,
-  exportList,
-  fetchDetailByName,
-  fetchLineById,
-  fetchList,
-  fetchProcessByWorkshop,
-  fetchWorkorder,
-  fetParams,
+  smtAllLineList,
+  smtWorksheetReportDetail,
+  smtWorksheetSearch,
+  smtWorksheetUpdateStatus,
 } from '#/api';
+import { $t } from '#/locales';
+import { queryAuth } from '#/util';
+import WorkSheetReportDrawer from '#/util/component/SMTPlantAdd/WorkSheetReportDrawer.vue';
 
-// region 主表格配置
+// region 状态枚举
+const STATUS = {
+  NOT_STARTED: 1, // 未开始
+  IN_PROGRESS: 2, // 开始 / 正在进行中
+  COMPLETED: 3, // 完成
+  PAUSED: 4, // 暂停
+};
+// endregion
 
-/**
- * 主表格配置选项
- * 显示本日计划与完成情况一览
- */
-const mainColumns: any[] = [
-  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-  { field: 'lineName', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
-  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
-  { field: 'subProductCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
-  {
-    field: 'subProductName',
-    slots: { default: 'subProductName' },
-    title: $t('SMTPlantAdd.partName'),
-    minWidth: 200,
-  },
-  {
-    field: 'productPlan',
-    slots: { default: 'productPlan' },
-    title: $t('SMTPlantAdd.partOrProduct'),
-    minWidth: 80,
-  },
-  { field: 'subPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 100 },
-  { field: 'dayPlanNumber', title: $t('SMTPlantAdd.dayPlanNumber'), minWidth: 100 },
-  { field: 'dayFinishNumber', title: $t('SMTPlantAdd.dayFinishNumber'), minWidth: 100 },
-  { field: 'updateTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
-  { field: 'updateUser', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
-];
+// region 权限
+const route = useRoute();
+const author = ref<string[]>([]);
+// endregion
 
+// region 线别下拉
+const lineOptions = ref<any[]>([]);
+
+function loadLineOptions() {
+  smtAllLineList(1).then((res: any) => {
+    lineOptions.value = (Array.isArray(res) ? res : []).map((item: any) => ({
+      value: item.id,
+      label: item.lineName,
+    }));
+  });
+}
+// endregion
+
+// region 查询参数
+const queryParams = ref<any>({
+  workSheetCode: '',
+  plannedTime: [],
+  planCode: '',
+  productCode: '',
+  productName: '',
+  lineId: undefined,
+});
+
+const isAsc = ref<boolean>(false);
+// endregion
+
+// region 表格配置
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  columns: mainColumns,
-  height: 300,
-  pagerConfig: {
-    enabled: true,
-    pageSize: 10,
-    pageSizes: [10, 20, 50],
-  },
+  columns: [
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50, minWidth: 50 },
+    {
+      field: 'workSheetCode',
+      title: $t('SMTmanagement.workOrderNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'planDateStart',
+      title: $t('SMTmanagement.plannedTime'),
+      minWidth: 130,
+    },
+    {
+      field: 'planDateStop',
+      title: $t('SMTmanagement.planDateStop'),
+      minWidth: 130,
+    },
+    { field: 'planCode', title: $t('SMTmanagement.planNumber'), minWidth: 150 },
+    {
+      field: 'productName',
+      title: $t('SMTmanagement.productName'),
+      minWidth: 200,
+      showOverflow: true,
+    },
+    {
+      field: 'productCode',
+      title: $t('SMTmanagement.productNumber'),
+      minWidth: 100,
+    },
+    {
+      field: 'status',
+      title: $t('SMTPlantAdd.status'),
+      minWidth: 100,
+      slots: { default: 'statusSlot' },
+    },
+    { field: 'remark', title: $t('SMTmanagement.remark'), minWidth: 100 },
+    {
+      field: 'action',
+      title: $t('common.action'),
+      fixed: 'right',
+      minWidth: 600,
+      slots: { default: 'action' },
+    },
+  ],
+  height: 500,
+  stripe: true,
+  sortConfig: { multiple: true },
   proxyConfig: {
     ajax: {
       query: async ({ page }: any) => {
@@ -99,7 +148,6 @@ const gridOptions: VxeGridProps<any> = {
       },
     },
   },
-  stripe: true,
   toolbarConfig: {
     custom: true,
     refresh: true,
@@ -107,898 +155,383 @@ const gridOptions: VxeGridProps<any> = {
   },
 };
 
-const gridEvents: VxeGridListeners<any> = {};
+const gridEvents: VxeGridListeners<any> = {
+  sortChange: ({ sortList }: any) => {
+    if (sortList && sortList.length > 0) {
+      isAsc.value = sortList[0].order === 'asc';
+      gridApi.reload();
+    }
+  },
+};
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+// endregion
 
-// endregion 主表格配置
-
-// region 详情表格配置
-
-/**
- * 读码报工明细表格配置
- */
-const readCodeColumns: any[] = [
-  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-  { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
-  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 120 },
-  { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
-  { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 150 },
-  {
-    field: 'partOrProduct',
-    slots: { default: 'partOrProduct' },
-    title: $t('SMTPlantAdd.partOrProduct'),
-    minWidth: 80,
-  },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.issueDate'), minWidth: 90 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workOrderPlanNumber'), minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workOrderFinishNumber'), minWidth: 100 },
-  {
-    field: 'isLater',
-    slots: { default: 'isLater' },
-    title: $t('SMTPlantAdd.delay'),
-    minWidth: 60,
-  },
-  { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
-  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeSlot'), minWidth: 90 },
-  { field: 'qcCode', title: $t('SMTPlantAdd.qrCode'), minWidth: 80 },
-  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
-  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 100 },
-  { field: 'partPlanNumber', title: $t('SMTPlantAdd.plannedCompletionNumber'), minWidth: 100 },
-  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.plannedCompletedNumber'), minWidth: 120 },
-  { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 150 },
-  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
-  { field: 'createTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
-  { field: 'createUserName', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
-  {
-    field: 'dataType',
-    slots: { default: 'dataType' },
-    title: $t('SMTPlantAdd.dataSource'),
-    minWidth: 80,
-  },
-];
-
-/**
- * 人工报工明细表格配置
- */
-const manualReportColumns: any[] = [
-  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-  { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
-  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 120 },
-  { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
-  { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 150 },
-  {
-    field: 'partOrProduct',
-    slots: { default: 'partOrProduct' },
-    title: $t('SMTPlantAdd.partOrProduct'),
-    minWidth: 80,
-  },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.issueDate'), minWidth: 90 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workOrderPlanNumber'), minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workOrderFinishNumber'), minWidth: 100 },
-  {
-    field: 'isLater',
-    slots: { default: 'isLater' },
-    title: $t('SMTPlantAdd.delay'),
-    minWidth: 60,
-  },
-  { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
-  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeSlot'), minWidth: 90 },
-  { field: 'qcCode', title: $t('SMTPlantAdd.qrCode'), minWidth: 80 },
-  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
-  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 90 },
-  { field: 'partPlanNumber', title: $t('SMTPlantAdd.plannedCompletionNumber'), minWidth: 90 },
-  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.plannedCompletedNumber'), minWidth: 100 },
-  { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 150 },
-  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
-  { field: 'createTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
-  { field: 'createUserName', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
-  {
-    field: 'dataType',
-    slots: { default: 'dataType' },
-    title: $t('SMTPlantAdd.dataSource'),
-    minWidth: 80,
-  },
-];
-
-// 初始化时使用默认值
-const detailColumns = ref(readCodeColumns);
-
-const detailGridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
-  columns: detailColumns.value,
-  data: [],
-  height: 300,
-  pagerConfig: {
-    enabled: true,
-    pageSize: 20,
-    pageSizes: [20, 30, 50],
-  },
-  stripe: true,
-};
-
-const [DetailGrid, detailGridApi] = useVbenVxeGrid({
-  gridOptions: detailGridOptions,
-});
-
-// endregion 详情表格配置
-
-// region 弹窗工单表格配置
-
-/**
- * 工单表格配置
- */
-const workorderColumns: any[] = [
-  { type: 'checkbox', width: 55 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 150 },
-  { field: 'sideNo', title: $t('SMTPlantAdd.sideNo'), minWidth: 150 },
-  {
-    field: 'subProductName',
-    title: $t('SMTPlantAdd.partName'),
-    minWidth: 150,
-  },
-  { field: 'subPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 150 },
-  {
-    field: 'isProductPlan',
-    slots: { default: 'isProductPlan' },
-    title: $t('SMTPlantAdd.partOrProduct'),
-    minWidth: 80,
-  },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.workOrderDate'), minWidth: 150 },
-];
-
-const workorderGridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
-  columns: workorderColumns,
-  checkboxConfig: {
-    highlight: true,
-    reserve: true,
-  },
-  data: [],
-  height: 300,
-  rowConfig: {
-    isCurrent: true,
-  },
-  rowStyle: setRowStyle,
-  stripe: true,
-};
-
-const [WorkorderGrid, workorderGridApi] = useVbenVxeGrid({
-  gridEvents: {
-    checkboxChange: handleWorkorderSelect,
-  },
-  gridOptions: workorderGridOptions,
-});
-
-// endregion 弹窗工单表格配置
-
-// region 状态定义
-
-const activeTab = ref<string>('first');
-const tableShow = ref(false);
-const detailShow = ref(false);
-const addShow = ref(false);
-const exportShow = ref(false);
-
-// 计算是否可以查询或导出（需要选择报工工序和任务线别）
-const canSearchOrExport = computed(() => {
-  return !!(listQuery.processCode && listQuery.taskLineCode);
-});
-
-// 报工时段选项
-const bgTime = [
-  '08:00~09:00',
-  '09:00~10:00',
-  '10:00~11:00',
-  '11:00~12:00',
-  '12:00~13:00',
-  '13:00~14:00',
-  '14:00~15:00',
-  '15:00~16:00',
-  '16:00~17:00',
-  '17:00~18:00',
-  '18:00~19:00',
-  '19:00~20:00',
-  '20:00~21:00',
-  '21:00~22:00',
-  '22:00~23:00',
-  '23:00~24:00',
-  '00:00~01:00',
-  '01:00~02:00',
-  '02:00~03:00',
-  '03:00~04:00',
-  '04:00~05:00',
-  '05:00~06:00',
-  '06:00~07:00',
-  '07:00~08:00',
-];
-
-// 部件/产品选项
-const productList = [
-  { label: $t('SMTPlantAdd.part'), value: 1 },
-  { label: $t('SMTPlantAdd.product'), value: 2 },
-];
-
-// 查询表单
-const listQuery = reactive({
-  produceWorkshop: 1,
-  processCode: undefined as string | undefined,
-  reportDate: dayjs(new Date()).format('YYYY-MM-DD'),
-  taskLineCode: undefined as number | string | undefined,
-  partName: undefined as string | undefined,
-  partOrProduct: undefined as number | undefined,
-});
-
-// 详情查询表单
-const detailQuery = reactive({
-  produceWorkshop: 1,
-  reportDate: undefined as string | undefined,
-  processCode: undefined as string | undefined,
-  taskLineCode: undefined as number | string | undefined,
-  partName: undefined as string | undefined,
-  partOrProduct: undefined as number | undefined,
-  pageNum: 1,
-  pageSize: 20,
-});
-
-// 弹窗表单
-const dialogFormVisible = ref(false);
-const popData = reactive<any>({
-  reportDate: undefined,
-  workSheetCode: undefined,
-  workSheetPlanNumber: '',
-  workSheetFinishNumber: '',
-  subPlanNumber: '',
-  produceNotFinishNumber: '',
-  subPlanFinishNumber: '',
-  number: undefined,
-  reportTimeQuantum: undefined,
-  processName: undefined,
-  lineName: undefined,
-});
-
-// 工单查询
-const workSheetCode1 = ref<string | undefined>(undefined);
-const partPlanCode1 = ref<string | undefined>(undefined);
-const selectedWorkorder = ref<any>(null);
-
-// 工序列表和产线列表
-const planProcess = ref<any[]>([]);
-const taskLineList = ref<any[]>([]);
-let processId = '';
-
-// 表单验证规则
-const rules: any = {
-  reportDate: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
-  processCode: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
-  taskLineCode: [
-    { required: true, message: $t('page.common.requiredField'), trigger: 'change' },
-  ],
-};
-
-const dialogRules: any = {
-  workSheetCode: [{ required: true, message: $t('SMTPlantAdd.pleaseSelectWorkOrder'), trigger: 'change' }],
-  reportTimeQuantum: [
-    { required: true, message: $t('page.common.requiredField'), trigger: 'change' },
-  ],
-  number: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
-};
-
-// endregion 状态定义
-
-// region 方法定义
-
-/**
- * 查询工序列表
- */
-function getProcessList() {
-  const workshop = 1;
-  fetchProcessByWorkshop(workshop)
-    .then((data: any) => {
-      planProcess.value = data;
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
-    });
-}
-
-/**
- * 工序变更
- */
-function handleProcessChange() {
-  processId = '';
-  taskLineList.value = [];
-  planProcess.value.forEach((item) => {
-    if (item.processCode === listQuery.processCode) {
-      processId = item.id;
-      popData.processName = item.processName;
-    }
-  });
-  if (processId) {
-    fetchLineById(processId)
-      .then((data: any) => {
-        taskLineList.value = data;
-      })
-      .catch((error: any) => {
-        message.error(error.message || $t('SMTPlantAdd.getLineListFailed'));
-      });
-  }
-}
-
-/**
- * 任务线别变更
- */
-function handleTaskLineChange() {
-  taskLineList.value.forEach((item) => {
-    if (item.id === listQuery.taskLineCode) {
-      popData.lineName = item.lineName;
-    }
-  });
-}
-
-/**
- * 查询数据
- * 用于 proxyConfig 代理加载，校验必填项后调用 fetchList 接口
- */
+// region 查询数据
 function queryData({ page, pageSize }: any) {
-  return new Promise((resolve) => {
-    if (!listQuery.processCode || !listQuery.taskLineCode) {
-      resolve({ items: [], total: 0 });
-      return;
+  return new Promise((resolve, reject) => {
+    const params: any = {
+      ...queryParams.value,
+      processType: 1,
+      isAsc: isAsc.value ? 1 : 2,
+    };
+    // 处理日期范围
+    if (params.plannedTime && params.plannedTime.length === 2) {
+      params.planDateStart = dayjs(params.plannedTime[0]).format('YYYY-MM-DD');
+      params.planDateEnd = dayjs(params.plannedTime[1]).format('YYYY-MM-DD');
     }
-    const params = {
-      ...listQuery,
+    delete params.plannedTime;
+
+    smtWorksheetSearch({
+      ...params,
       pageNum: page,
       pageSize,
-    };
-    fetchList(params)
-      .then(({ total, list }: any) => {
+    })
+      .then((res: any) => {
         resolve({
-          total: total || 0,
-          items: list || [],
+          total: res?.total ?? 0,
+          items: res?.results ?? res?.list ?? [],
         });
       })
-      .catch(() => {
-        resolve({
-          total: 0,
-          items: [],
-        });
-      });
+      .catch((error: any) => reject(error));
+  });
+}
+// endregion
+
+// region 状态展示
+function getStatusLabel(status: any) {
+  switch (status) {
+    case STATUS.COMPLETED: {
+      return $t('SMTPlantAdd.statusCompleted');
+    }
+    case STATUS.IN_PROGRESS: {
+      return $t('SMTPlantAdd.statusInProgress');
+    }
+    case STATUS.NOT_STARTED: {
+      return $t('SMTPlantAdd.statusNotStarted');
+    }
+    case STATUS.PAUSED: {
+      return $t('SMTPlantAdd.statusPaused');
+    }
+    default: {
+      return '';
+    }
+  }
+}
+// endregion
+
+// region 按钮显示与权限
+// 状态变更权限：开始、结束、暂停、恢复
+function canStart(status: any) {
+  return status === STATUS.NOT_STARTED && author.value.includes('状态变更');
+}
+function canEnd(status: any) {
+  return status === STATUS.IN_PROGRESS && author.value.includes('状态变更');
+}
+function canPause(status: any) {
+  return status === STATUS.IN_PROGRESS && author.value.includes('状态变更');
+}
+function canResume(status: any) {
+  return status === STATUS.PAUSED && author.value.includes('状态变更');
+}
+// 撤回权限
+function canWithdraw(status: any) {
+  return status === STATUS.COMPLETED && author.value.includes('撤回');
+}
+// 工单报工 / 工单冲红：仅“开始”状态，且具备对应权限才显示
+function canReport(status: any) {
+  return status === STATUS.IN_PROGRESS && author.value.includes('工单报工');
+}
+function canRedFlush(status: any) {
+  return status === STATUS.IN_PROGRESS && author.value.includes('工单冲红');
+}
+// endregion
+
+// region 状态变更
+function handleStatusChange(row: any, newStatus: number) {
+  Modal.confirm({
+    title: $t('SMTPlantAdd.statusChangeConfirmTitle'),
+    content: $t('SMTPlantAdd.statusChangeConfirmContent', {
+      code: row.workSheetCode,
+    }),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
+    onOk: () =>
+      new Promise<void>((resolve, reject) => {
+        smtWorksheetUpdateStatus({ id: row.id, status: newStatus })
+          .then(() => {
+            message.success($t('common.successfulOperation'));
+            gridApi.reload();
+            resolve();
+          })
+          .catch((error: any) => {
+            message.error(error?.message || $t('SMTPlantAdd.statusUpdateFailed'));
+            reject(error);
+          });
+      }),
   });
 }
 
-/**
- * 查询
- */
-function handleSearch() {
-  gridApi.reload();
-  tableShow.value = true;
-  detailShow.value = false;
-}
-
-/**
- * 导出主表格
- */
-function handleExport() {
-  exportList(listQuery)
-    .then((url: any) => {
-      window.open(url);
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.exportFailed'));
-    });
-}
-
-/**
- * 查看报工明细
- */
-function handleDetail(row: any) {
-  detailQuery.reportDate = listQuery.reportDate;
-  detailQuery.processCode = listQuery.processCode;
-  detailQuery.taskLineCode = listQuery.taskLineCode;
-  if (row.productPlan === true) {
-    detailQuery.partOrProduct = 2;
-  } else if (row.productPlan === false) {
-    detailQuery.partOrProduct = 1;
-  }
-  detailQuery.partName = row.subProductName;
-  detailShow.value = true;
-  detailColumns.value = readCodeColumns;
-  loadReadCodeData();
-}
-
-/**
- * Tab 切换
- */
-function handleTabChange(key: number | string) {
-  activeTab.value = String(key);
-  detailColumns.value = key === 'first' ? readCodeColumns : manualReportColumns;
-  if (key === 'first') {
-    loadReadCodeData();
-  } else {
-    loadManualData();
+// 撤回：开始(2)->未开始(1)，完成(3)->开始(2)
+function handleWithdraw(row: any) {
+  if (row.status === STATUS.IN_PROGRESS) {
+    handleStatusChange(row, STATUS.NOT_STARTED);
+  } else if (row.status === STATUS.COMPLETED) {
+    handleStatusChange(row, STATUS.IN_PROGRESS);
   }
 }
+// endregion
 
-/**
- * 加载读码报工数据
- */
-function loadReadCodeData() {
-  const params = {
-    ...detailQuery,
-    pageNum: 1,
-    pageSize: 20,
-  };
-  fetParams(params)
-    .then((data: any) => {
-      detailGridApi.grid.reloadData(data.results);
+// region 工单报工 / 工单冲红
+const reportDrawerRef = ref();
+function handleReport(row: any) {
+  reportDrawerRef.value.open('report', row);
+}
+function handleRedFlush(row: any) {
+  reportDrawerRef.value.open('redFlush', row);
+}
+// endregion
+
+// region 查看详情（Descriptions 只读展示 + 报工/冲红记录列表）
+const detailVisible = ref(false);
+const detailRow = ref<any>({});
+const reportRecords = ref<any[]>([]);
+const reportLoading = ref(false);
+
+function loadReportRecords(id: any) {
+  reportLoading.value = true;
+  smtWorksheetReportDetail(id)
+    .then((res: any) => {
+      const list = res?.results ?? res?.list ?? res ?? [];
+      reportRecords.value = Array.isArray(list) ? list : [];
     })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.loadReadCodeDataFailed'));
+    .catch(() => {
+      reportRecords.value = [];
+    })
+    .finally(() => {
+      reportLoading.value = false;
     });
 }
 
-/**
- * 加载人工报工数据
- */
-function loadManualData() {
-  const params = {
-    ...detailQuery,
-    pageNum: 1,
-    pageSize: 20,
-  };
-  fetchDetailByName(params)
-    .then((data: any) => {
-      detailGridApi.grid.reloadData(data.list);
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.loadManualDataFailed'));
-    });
+function handleViewDetail(row: any) {
+  detailRow.value = row;
+  detailVisible.value = true;
+  loadReportRecords(row.id);
 }
 
-/**
- * 导出报工明细
- */
-function handleExportDetail() {
-  exportDetail(detailQuery)
-    .then((url: any) => {
-      window.open(url);
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.exportFailed'));
-    });
+function handleDetailClose() {
+  detailVisible.value = false;
+  detailRow.value = {};
+  reportRecords.value = [];
 }
 
-/**
- * 新增报工记录
- */
-function handleCreate() {
-  // 重置表单
-  popData.reportDate = listQuery.reportDate;
-  popData.workSheetCode = undefined;
-  popData.workSheetPlanNumber = '';
-  popData.workSheetFinishNumber = '';
-  popData.subPlanNumber = '';
-  popData.produceNotFinishNumber = '';
-  popData.subPlanFinishNumber = '';
-  popData.number = undefined;
-  popData.reportTimeQuantum = undefined;
-
-  workSheetCode1.value = undefined;
-  partPlanCode1.value = undefined;
-  selectedWorkorder.value = null;
-
-  loadWorkorderList();
-  dialogFormVisible.value = true;
+function getReportTypeLabel(flag: any) {
+  return flag === 2
+    ? $t('SMTPlantAdd.reportTypeRedFlush')
+    : $t('SMTPlantAdd.reportTypeReport');
 }
 
-/**
- * 加载工单列表
- */
-function loadWorkorderList() {
-  const params = {
-    taskLineCode: listQuery.taskLineCode,
-    reportDate: popData.reportDate,
-    workSheetCode: workSheetCode1.value,
-    partPlanCode: partPlanCode1.value,
-  };
-  fetchWorkorder(params)
-    .then((data: any) => {
-      workorderGridApi.grid.reloadData(data);
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.getWorkorderListFailed'));
-    });
-}
+const reportColumns = [
+  { title: $t('SMTPlantAdd.reportType'), dataIndex: 'reportFlag', key: 'reportFlag', width: 90 },
+  { title: $t('SMTPlantAdd.qualityNumber'), dataIndex: 'qualityNumber', key: 'qualityNumber', width: 90 },
+  { title: $t('SMTPlantAdd.unqualityNumber'), dataIndex: 'unqualityNumber', key: 'unqualityNumber', width: 90 },
+  { title: $t('SMTPlantAdd.personTime'), dataIndex: 'personTime', key: 'personTime', width: 90 },
+  { title: $t('SMTPlantAdd.equipTime'), dataIndex: 'equipTime', key: 'equipTime', width: 90 },
+  { title: $t('SMTmanagement.updateTime'), dataIndex: 'createTime', key: 'createTime', minWidth: 150 },
+];
+// endregion
 
-/**
- * 查询工单
- */
-function handleSearchWorkorder() {
-  loadWorkorderList();
-}
-
-/**
- * 工单选择
- */
-function handleWorkorderSelect({ checked, row }: any) {
-  if (checked) {
-    // 清除其他选择，只保留当前选择
-    workorderGridApi.grid.clearCheckboxRow();
-    workorderGridApi.grid.setCheckboxRow(row, true);
-    selectedWorkorder.value = row;
-    popData.workSheetCode = row.workSheetCode;
-    popData.workSheetPlanNumber = row.workSheetPlanNumber;
-    popData.workSheetFinishNumber = row.workSheetFinishNumber;
-    popData.subPlanNumber = row.subPlanNumber;
-    popData.produceNotFinishNumber = row.produceNotFinishNumber;
-    popData.subPlanFinishNumber =
-      row.subPlanNumber - row.produceNotFinishNumber;
-  } else {
-    selectedWorkorder.value = null;
-  }
-}
-
-/**
- * 设置行样式
- */
-function setRowStyle({ row }: any) {
-  const numbers = row.delayFinishNumber + row.workSheetFinishNumber;
-  const numbers1 = row.workSheetPlanNumber;
-
-  if (numbers > 0 && numbers < numbers1) {
-    return {
-      color: 'green',
-    };
-  } else if (numbers >= numbers1) {
-    return {
-      color: 'red',
-    };
-  }
-  return {};
-}
-
-/**
- * 提交新增数据
- */
-function handleSubmit() {
-  if (!selectedWorkorder.value) {
-    message.warning($t('SMTPlantAdd.pleaseSelectWorkOrder'));
-    return;
-  }
-  const tempData = {
-    number: popData.number,
-    reportTimeQuantum: popData.reportTimeQuantum,
-    workSheetCode: popData.workSheetCode,
-  };
-  createArticle(tempData)
-    .then(() => {
-      message.success($t('SMTPlantAdd.saveSuccess'));
-      dialogFormVisible.value = false;
-      handleSearch();
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.saveFailed'));
-    });
-}
-
-/**
- * 获取按钮权限
- */
-function getButton() {
-  // TODO: 从后端获取按钮权限
-  addShow.value = true;
-  exportShow.value = true;
-}
-
-// endregion 方法定义
-
-// region 生命周期
-
+// region 初始化
 onMounted(() => {
-  getButton();
-  getProcessList();
+  queryAuth(route.meta.code as string).then((data) => {
+    author.value = data;
+  });
+  loadLineOptions();
 });
-
-// endregion 生命周期
+// endregion
 </script>
 
 <template>
-  <Page content-class="SMTPlantAdd">
-    <!-- 查询表单 -->
-    <Card>
-      <Form :model="listQuery" :rules="rules" layout="inline">
-        <FormItem :label="$t('SMTPlantAdd.reportDate')" name="reportDate" class="!my-2">
-          <DatePicker
-            v-model:value="listQuery.reportDate"
-            disabled
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
+  <Page>
+    <!-- 搜索区域 -->
+    <Card class="!mb-8">
+      <Form :model="queryParams" layout="inline">
+        <FormItem :label="$t('SMTmanagement.workOrderNumber')" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.workSheetCode" />
+        </FormItem>
+        <FormItem :label="$t('SMTmanagement.plannedTime')" style="margin-bottom: 1em">
+          <RangePicker v-model:value="queryParams.plannedTime" />
+        </FormItem>
+        <FormItem :label="$t('SMTmanagement.planNumber')" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.planCode" />
+        </FormItem>
+        <FormItem :label="$t('SMTmanagement.productNumber')" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.productCode" />
+        </FormItem>
+        <FormItem :label="$t('SMTmanagement.productName')" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.productName" />
+        </FormItem>
+        <FormItem :label="$t('SMTmanagement.taskLine')" style="margin-bottom: 1em">
+          <Select
+            v-model:value="queryParams.lineId"
+            :options="lineOptions"
+            :placeholder="$t('baseInfo.selectPlaceholder')"
+            allow-clear
+            style="width: 180px"
           />
         </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.reportProcess')" name="processCode" class="!my-2">
-          <Select
-            v-model:value="listQuery.processCode"
-            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
-            class="!w-48"
-            @change="handleProcessChange"
+        <FormItem style="margin-bottom: 1em">
+          <Button
+            :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
+            type="primary"
+            @click="() => gridApi.reload()"
           >
-            <SelectOption
-              v-for="item in planProcess"
-              :key="item.processCode"
-              :value="item.processCode"
-            >
-              {{ item.processName }}
-            </SelectOption>
-          </Select>
-        </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.taskLine')" name="taskLineCode" class="!my-2">
-          <Select
-            v-model:value="listQuery.taskLineCode"
-            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
-            class="!w-48"
-            @change="handleTaskLineChange"
-          >
-            <SelectOption
-              v-for="item in taskLineList"
-              :key="item.id"
-              :value="item.id"
-            >
-              {{ item.lineName }}
-            </SelectOption>
-          </Select>
-        </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.partName')" class="!my-2">
-          <Input
-            v-model:value="listQuery.partName"
-            allow-clear
-            :placeholder="$t('SMTPlantAdd.pleaseInput')"
-            class="!w-48"
-            @press-enter="handleSearch"
-          />
-        </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.partOrProduct')" class="!my-2">
-          <Select
-            v-model:value="listQuery.partOrProduct"
-            allow-clear
-            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
-            class="!w-48"
-          >
-            <SelectOption
-              v-for="item in productList"
-              :key="item.value"
-              :value="item.value"
-            >
-              {{ item.label }}
-            </SelectOption>
-          </Select>
-        </FormItem>
-        <FormItem>
-          <Space>
-            <Button
-              type="primary"
-              :disabled="!canSearchOrExport"
-              @click="handleSearch"
-            >
-              <Icon icon="mdi:search" class="mr-1" />
-              {{ $t('SMTPlantAdd.query') }}
-            </Button>
-            <Button
-              v-if="exportShow"
-              type="primary"
-              :disabled="!canSearchOrExport"
-              @click="handleExport"
-            >
-              <Icon icon="mdi:export" class="mr-1" />
-              {{ $t('SMTPlantAdd.export') }}
-            </Button>
-          </Space>
+            {{ $t('common.search') }}
+          </Button>
         </FormItem>
       </Form>
     </Card>
 
-    <!-- 主表格 -->
-    <Card v-show="tableShow" style="margin-top: 16px">
-      <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.dailyPlanAndCompletionOverview') }}</h3>
-        <Button v-if="addShow" type="primary" @click="handleCreate">
-          <Icon icon="mdi:plus" class="mr-1" />
-          {{ $t('SMTPlantAdd.add') }}
-        </Button>
-      </div>
+    <!-- 表格区域 -->
+    <Card>
       <Grid>
-        <template #subProductName="{ row }">
-          <span class="cursor-pointer text-blue-500" @click="handleDetail(row)">
-            {{ row.subProductName }}
-          </span>
+        <template #toolbar-actions></template>
+        <!-- 状态 -->
+        <template #statusSlot="{ row }">
+          <span>{{ getStatusLabel(row.status) }}</span>
         </template>
-        <template #productPlan="{ row }">
-          <span>{{
-            row.productPlan === false
-              ? $t('SMTPlantAdd.part')
-              : row.productPlan === true
-                ? $t('SMTPlantAdd.product')
-                : ''
-          }}</span>
+
+        <!-- 操作列 -->
+        <template #action="{ row }">
+          <Space>
+            <Tooltip v-if="canStart(row.status)">
+              <template #title>{{ $t('SMTPlantAdd.start') }}</template>
+              <Button
+                type="link"
+                @click="handleStatusChange(row, STATUS.IN_PROGRESS)"
+              >
+                <Icon icon="mdi:play-circle-outline" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+            <Tooltip v-if="canEnd(row.status)">
+              <template #title>{{ $t('SMTPlantAdd.end') }}</template>
+              <Button
+                type="link"
+                @click="handleStatusChange(row, STATUS.COMPLETED)"
+              >
+                <Icon icon="mdi:stop-circle-outline" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+            <Tooltip v-if="canPause(row.status)">
+              <template #title>{{ $t('SMTPlantAdd.pause') }}</template>
+              <Button
+                type="link"
+                @click="handleStatusChange(row, STATUS.PAUSED)"
+              >
+                <Icon icon="mdi:pause-circle-outline" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+            <Tooltip v-if="canResume(row.status)">
+              <template #title>{{ $t('SMTPlantAdd.resume') }}</template>
+              <Button
+                type="link"
+                @click="handleStatusChange(row, STATUS.IN_PROGRESS)"
+              >
+                <Icon icon="mdi:restore" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+            <Tooltip v-if="canWithdraw(row.status)">
+              <template #title>{{ $t('SMTPlantAdd.withdraw') }}</template>
+              <Button
+                type="link"
+                @click="handleWithdraw(row)"
+              >
+                <Icon icon="mdi:undo" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+            <Tooltip v-if="canReport(row.status)">
+              <template #title>{{ $t('SMTPlantAdd.workOrderReport') }}</template>
+              <Button
+                type="link"
+                @click="handleReport(row)"
+              >
+                <Icon icon="mdi:file-document-edit-outline" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+            <Tooltip v-if="canRedFlush(row.status)">
+              <template #title>{{ $t('SMTPlantAdd.workOrderRedFlush') }}</template>
+              <Button
+                type="link"
+                @click="handleRedFlush(row)"
+              >
+                <Icon icon="mdi:file-cancel-outline" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+            <Tooltip>
+              <template #title>{{ $t('SMTPlantAdd.viewDetail') }}</template>
+              <Button type="link" @click="handleViewDetail(row)">
+                <Icon icon="mdi:eye-outline" class="inline-block align-middle text-2xl" />
+              </Button>
+            </Tooltip>
+          </Space>
         </template>
       </Grid>
     </Card>
 
-    <!-- 详情表格 -->
-    <Card v-if="detailShow" style="margin-top: 16px">
-      <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.reportDetails') }}</h3>
-        <Button v-if="exportShow" type="primary" @click="handleExportDetail">
-          <Icon icon="mdi:export" class="mr-1" />
-          {{ $t('SMTPlantAdd.export') }}
-        </Button>
-      </div>
-      <Tabs v-model:active-key="activeTab" @change="handleTabChange">
-        <TabPane key="first" :tab="$t('SMTPlantAdd.readCodeReport')">
-          <DetailGrid>
-            <template #partOrProduct="{ row }">
-              <span>{{
-                row.partOrProduct === 1
-                  ? $t('SMTPlantAdd.part')
-                  : row.partOrProduct === 2
-                    ? $t('SMTPlantAdd.product')
-                    : ''
-              }}</span>
-            </template>
-            <template #isLater="{ row }">
-              <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
-              }}</span>
-            </template>
-            <template #dataType="{ row }">
-              <span>{{
-                row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
-              }}</span>
-            </template>
-          </DetailGrid>
-        </TabPane>
-        <TabPane key="second" :tab="$t('SMTPlantAdd.manualReport')">
-          <DetailGrid>
-            <template #partOrProduct="{ row }">
-              <span>{{
-                row.partOrProduct === 1
-                  ? $t('SMTPlantAdd.part')
-                  : row.partOrProduct === 2
-                    ? $t('SMTPlantAdd.product')
-                    : ''
-              }}</span>
-            </template>
-            <template #isLater="{ row }">
-              <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
-              }}</span>
-            </template>
-            <template #dataType="{ row }">
-              <span>{{
-                row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
-              }}</span>
-            </template>
-          </DetailGrid>
-        </TabPane>
-      </Tabs>
-    </Card>
-
-    <!-- 新增报工记录弹窗 -->
+    <!-- 工单详情抽屉（Descriptions 只读查看） -->
     <Drawer
-      v-model:open="dialogFormVisible"
-      :mask-closable="false"
-      :title="$t('SMTPlantAdd.addReportRecord')"
-      :footer-style="{ textAlign: 'right' }"
-      width="90%"
+      v-model:open="detailVisible"
+      :title="$t('SMTPlantAdd.viewDetail')"
+      width="600"
+      :destroy-on-close="true"
+      @close="handleDetailClose"
     >
-      <Form :model="popData" :rules="dialogRules" layout="vertical">
-        <FormItem :label="$t('SMTPlantAdd.reportDate')" name="reportDate">
-          <Input v-model:value="popData.reportDate" disabled />
-        </FormItem>
+      <Descriptions bordered :column="1" size="small">
+        <DescriptionsItem :label="$t('SMTmanagement.workOrderNumber')">
+          {{ detailRow.workSheetCode }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('SMTmanagement.plannedTime')">
+          {{ detailRow.planDateStart }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('SMTmanagement.planDateStop')">
+          {{ detailRow.planDateStop }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('SMTmanagement.planNumber')">
+          {{ detailRow.planCode }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('SMTmanagement.productName')">
+          {{ detailRow.productName }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('SMTmanagement.productNumber')">
+          {{ detailRow.productCode }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('SMTPlantAdd.status')">
+          {{ getStatusLabel(detailRow.status) }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('SMTmanagement.remark')">
+          {{ detailRow.remark }}
+        </DescriptionsItem>
+      </Descriptions>
 
-        <div class="grid grid-cols-2 gap-4">
-          <FormItem :label="$t('SMTPlantAdd.reportProcess')" name="processName">
-            <Input v-model:value="popData.processName" disabled />
-          </FormItem>
-          <FormItem :label="$t('SMTPlantAdd.taskLine')" name="lineName">
-            <Input v-model:value="popData.lineName" disabled />
-          </FormItem>
-        </div>
-
-        <Card :title="$t('SMTPlantAdd.selectWorkOrder')" style="margin-bottom: 16px">
-          <Form layout="inline">
-            <FormItem :label="$t('SMTPlantAdd.workOrderCode')">
-              <Input
-                v-model:value="workSheetCode1"
-                allow-clear
-                :placeholder="$t('SMTPlantAdd.pleaseInputWorkOrderCode')"
-                style="width: 200px"
-              />
-            </FormItem>
-            <FormItem :label="$t('SMTPlantAdd.partPlanCode')">
-              <Input
-                v-model:value="partPlanCode1"
-                allow-clear
-                :placeholder="$t('SMTPlantAdd.pleaseInputPartPlanCode')"
-                style="width: 200px"
-              />
-            </FormItem>
-            <FormItem>
-              <Button type="primary" @click="handleSearchWorkorder">
-                {{ $t('SMTPlantAdd.queryWorkOrder') }}
-              </Button>
-            </FormItem>
-          </Form>
-          <WorkorderGrid>
-            <template #isProductPlan="{ row }">
-              <span>{{
-                row.isProductPlan === false
-                  ? $t('SMTPlantAdd.part')
-                  : row.isProductPlan === true
-                    ? $t('SMTPlantAdd.product')
-                    : ''
-              }}</span>
-            </template>
-          </WorkorderGrid>
-        </Card>
-
-        <div class="grid grid-cols-2 gap-4">
-          <FormItem :label="$t('SMTPlantAdd.workOrderPlanQuantity')">
-            <span>{{ popData.workSheetPlanNumber }}</span>
-          </FormItem>
-          <FormItem :label="$t('SMTPlantAdd.workOrderCompletedQuantity')">
-            <span>{{ popData.workSheetFinishNumber }}</span>
-          </FormItem>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <FormItem :label="$t('SMTPlantAdd.partPlanQuantity')">
-            <span>{{ popData.subPlanNumber }}</span>
-          </FormItem>
-          <FormItem :label="$t('SMTPlantAdd.partPlanCompletedQuantity')">
-            <span>{{ popData.subPlanFinishNumber }}</span>
-          </FormItem>
-        </div>
-
-        <FormItem :label="$t('SMTPlantAdd.reportTimeSlot')" name="reportTimeQuantum">
-          <Select
-            v-model:value="popData.reportTimeQuantum"
-            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
-            style="width: 100%"
-          >
-            <SelectOption v-for="item in bgTime" :key="item" :value="item">
-              {{ item }}
-            </SelectOption>
-          </Select>
-        </FormItem>
-
-        <FormItem :label="$t('SMTPlantAdd.inputQuantity')" name="number">
-          <InputNumber
-            v-model:value="popData.number"
-            :max="999999999999"
-            :min="0"
-            :placeholder="$t('SMTPlantAdd.pleaseInputQuantity')"
-            style="width: 100%"
-          />
-        </FormItem>
-      </Form>
-
-      <template #footer>
-        <Space>
-          <Button @click="dialogFormVisible = false">{{ $t('SMTPlantAdd.cancel') }}</Button>
-          <Button type="primary" @click="handleSubmit">{{ $t('SMTPlantAdd.save') }}</Button>
-        </Space>
-      </template>
+      <div class="!mt-6 font-bold">{{ $t('SMTPlantAdd.reportRecords') }}</div>
+      <Table
+        class="!mt-2"
+        :columns="reportColumns"
+        :data-source="reportRecords"
+        :loading="reportLoading"
+        :pagination="false"
+        size="small"
+        row-key="id"
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.dataIndex === 'reportFlag'">
+            {{ getReportTypeLabel(record.reportFlag) }}
+          </template>
+        </template>
+      </Table>
     </Drawer>
+
+    <!-- 工单报工 / 工单冲红抽屉 -->
+    <WorkSheetReportDrawer ref="reportDrawerRef" @refresh="() => gridApi.reload()" />
   </Page>
 </template>
-
-<style scoped>
-.SMTPlantAdd :deep(.vxe-grid) {
-  font-size: 14px;
-}
-</style>

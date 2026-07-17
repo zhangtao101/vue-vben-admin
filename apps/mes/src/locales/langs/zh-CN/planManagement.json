@@ -52,5 +52,7 @@
   "inputProductionUnfinishedQuantity": "请输入生产未完成数",
   "productionUnfinishedMustBeNumber": "生产未完成数必须为数字值",
   "printNotReady": "打印功能暂未完成",
-  "uploadFailed": "文件上传失败"
+  "uploadFailed": "文件上传失败",
+  "fileBinding": "文件绑定",
+  "downloadFile": "下载文件"
 }

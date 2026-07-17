@@ -56,5 +56,6 @@
   "erpDocument": "ERP 문서",
   "print2428": "24*28 인쇄",
   "print2414": "24*14 인쇄",
-  "printFeatureNotCompleted": "인쇄 기능은 아직 구현되지 않았습니다"
+  "printFeatureNotCompleted": "인쇄 기능은 아직 구현되지 않았습니다",
+  "workOrderImport": "작업지시서 가져오기"
 }

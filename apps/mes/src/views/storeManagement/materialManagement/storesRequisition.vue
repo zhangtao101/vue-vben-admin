@@ -975,7 +975,7 @@ onMounted(async () => {
         <Row>
           <Col :span="24" class="!mb-4">
             <Button type="primary" @click="addRow" class="mr-4">{{ $t('storesRequisition.addRow') }}</Button>
-            <Button class="mr-4" type="primary" @click="openPlanImport">{{ $t('storesRequisition.planImport') }}</Button>
+            <Button class="mr-4" type="primary" @click="openPlanImport">{{ $t('storesRequisition.workOrderImport') }}</Button>
           </Col>
         </Row>
         <Row>

@@ -142,5 +142,6 @@
   "supplier": "공급업체",
   "useProcess": "사용 공정",
   "designBOM": "설계 BOM",
-  "multiLevelExpand": "다단계 전개"
+  "multiLevelExpand": "다단계 전개",
+  "productImage": "제품 이미지"
 }

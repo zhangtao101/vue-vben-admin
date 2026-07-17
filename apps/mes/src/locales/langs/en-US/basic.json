@@ -282,6 +282,7 @@
   "requiredField": "This field is required",
   "pleaseSelectAtLeastOne": "Please select at least one record",
   "confirmDeleteTitle": "Are you sure to delete?",
+  "delete": "Delete",
   "printNotReady": "Print function is not yet available",
   "shortageTracking": {
     "queryTitle": "Shortage Tracking Query",

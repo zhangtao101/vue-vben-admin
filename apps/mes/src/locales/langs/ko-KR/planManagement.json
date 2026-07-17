@@ -52,5 +52,7 @@
   "inputProductionUnfinishedQuantity": "미완료 수량을 입력하세요",
   "productionUnfinishedMustBeNumber": "미완료 수량은 숫자여야 합니다",
   "printNotReady": "인쇄 기능 준비 안 됨",
-  "uploadFailed": "파일 업로드 실패"
+  "uploadFailed": "파일 업로드 실패",
+  "fileBinding": "파일 바인딩",
+  "downloadFile": "파일 다운로드"
 }

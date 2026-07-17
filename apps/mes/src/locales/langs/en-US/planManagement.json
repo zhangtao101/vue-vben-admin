@@ -52,5 +52,7 @@
   "inputProductionUnfinishedQuantity": "Please input unfinished quantity",
   "productionUnfinishedMustBeNumber": "Unfinished quantity must be a number",
   "printNotReady": "Print function not ready",
-  "uploadFailed": "File upload failed"
+  "uploadFailed": "File upload failed",
+  "fileBinding": "File Binding",
+  "downloadFile": "Download File"
 }

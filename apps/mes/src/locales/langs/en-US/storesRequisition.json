@@ -57,7 +57,7 @@
   "print2428": "24*28 Print",
   "print2414": "24*14 Print",
   "printFeatureNotCompleted": "Print feature is not yet implemented",
-  "planImport": "Plan Import",
+  "workOrderImport": "Work Order Import",
   "workOrderCodeRequired": "Work order code is required",
   "importFailedNoDetailData": "Import failed, no detail data"
 }

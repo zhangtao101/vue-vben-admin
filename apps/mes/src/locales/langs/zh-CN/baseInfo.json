@@ -142,5 +142,6 @@
   "supplier": "供应厂商",
   "useProcess": "使用工序",
   "designBOM": "设计BOM",
-  "multiLevelExpand": "多级展开"
+  "multiLevelExpand": "多级展开",
+  "productImage": "产品图片"
 }

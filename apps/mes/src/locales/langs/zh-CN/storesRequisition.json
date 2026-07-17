@@ -57,7 +57,7 @@
   "print2428": "24*28打印",
   "print2414": "24*14打印",
   "printFeatureNotCompleted": "打印功能暂未完成",
-  "planImport": "计划导入",
+  "workOrderImport": "工单导入",
   "workOrderCodeRequired": "工单号不能为空",
   "importFailedNoDetailData": "导入失败，未获取到详情数据"
 }

@@ -496,7 +496,11 @@ defineExpose({ open });
     <template #footer>
       <Space>
         <Button @click="handleClose">{{ $t('common.cancel') }}</Button>
-        <Button type="primary" :loading="saveLoading" @click="handleSubmit">
+        <Button
+          type="primary"
+          :loading="saveLoading"
+          @click="handleSubmit"
+        >
           {{ $t('common.save') }}
         </Button>
       </Space>
