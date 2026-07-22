@@ -9,6 +9,7 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -36,6 +37,7 @@ import {
   deleteMoldArchiveById,
   getMoldArchivePageList,
   getMoldCategorySelectList,
+  queryPrintTemplateDetails,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -60,8 +62,12 @@ const categoryOptions = ref<any[]>([]);
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
+  checkboxConfig: {
+    highlight: true,
+  },
   columns: [
     { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
+    { type: 'checkbox', width: 60 },
     { field: 'moldCode', title: $t('moldArchiveMgmt.moldCode'), minWidth: 200 },
     { field: 'moldName', title: $t('moldArchiveMgmt.moldName'), minWidth: 150 },
     {
@@ -346,6 +352,21 @@ function getUsagePercentColor(row: any) {
 
 // endregion
 
+// region 打印
+
+
+function print() {
+  queryPrintTemplateDetails('模具档案打印').then((res: any) => {
+    const templateRef = JSON.parse(res.printData);
+    const hiprintTemplate = new hiprint.PrintTemplate({
+      template: templateRef,
+    });
+    hiprintTemplate.print(gridApi.grid.getCheckboxRecords(), { leftOffset: -1, topOffset: -1 });
+  });
+}
+
+// endregion
+
 // region 权限控制
 
 /** 用户权限列表：用于控制按钮显示和操作权限 */
@@ -469,9 +490,18 @@ onMounted(() => {
           <Button
             v-if="author.includes('新增')"
             type="primary"
+            class="ml-4!"
             @click="handleAdd"
           >
             {{ $t('common.add') }}
+          </Button>
+          <Button
+            v-if="author.includes('打印')"
+            type="primary"
+            class="ml-4!"
+            @click="print"
+          >
+            {{ $t('common.batchPrinting') }}
           </Button>
           <Upload
             v-if="author.includes('新增')"
