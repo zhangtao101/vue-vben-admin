@@ -78,6 +78,11 @@
   "importMoldInfo": "模具信息导入",
   "importProductMold": "模具产品导入",
   "importSupplierBinding": "供应商导入",
+  "selectPrintType": "选择打印类别",
+  "printTypeSelectContent": "请选择打印类别",
+  "printTypeSteelMesh": "钢网打印",
+  "printTypeFixture": "夹具打印",
+  "selectRecordsFirst": "请先选择要打印的记录",
   "detail": {
     "baseInfo": "基本信息",
     "lifespanInfo": "寿命信息",

@@ -355,8 +355,41 @@ function getUsagePercentColor(row: any) {
 // region 打印
 
 
+/**
+ * 点击打印按钮，弹出选择框让用户选择打印类别。
+ * 1. 钢网打印对应 '模具档案打印'
+ * 2. 夹具打印对应 '夹具打印'
+ * @since 2026-07-23
+ */
 function print() {
-  queryPrintTemplateDetails('模具档案打印').then((res: any) => {
+  const checkedRecords = gridApi.grid.getCheckboxRecords();
+  if (!checkedRecords || checkedRecords.length === 0) {
+    message.warning($t('moldArchiveMgmt.selectRecordsFirst'));
+    return;
+  }
+  Modal.confirm({
+    cancelText: $t('moldArchiveMgmt.printTypeFixture'),
+    okText: $t('moldArchiveMgmt.printTypeSteelMesh'),
+    okType: 'primary',
+    onOk() {
+      executePrint('模具档案打印');
+    },
+    onCancel() {
+      executePrint('夹具打印');
+    },
+    cancelButtonProps: {},
+    title: $t('moldArchiveMgmt.selectPrintType'),
+    content: $t('moldArchiveMgmt.printTypeSelectContent'),
+  });
+}
+
+/**
+ * 执行实际打印。
+ * @param {string} templateName - 打印模板名称
+ * @since 2026-07-23
+ */
+function executePrint(templateName: string) {
+  queryPrintTemplateDetails(templateName).then((res: any) => {
     const templateRef = JSON.parse(res.printData);
     const hiprintTemplate = new hiprint.PrintTemplate({
       template: templateRef,
