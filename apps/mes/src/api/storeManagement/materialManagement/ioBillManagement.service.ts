@@ -53,6 +53,17 @@ export function inboundAndOutboundDocumentsAreAudited(params: any) {
 }
 
 /**
+ * 出入库单据撤审
+ * @param params - 包含 formId 的参数对象
+ */
+export function inboundAndOutboundDocumentsAreAuditBack(params: any) {
+  return requestClient.put(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/wms/warehouseRecord/auditBack`,
+    params,
+  );
+}
+
+/**
  * 根据物料编码查询物料特征
  * @param params
  */

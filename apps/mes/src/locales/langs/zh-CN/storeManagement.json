@@ -38,7 +38,9 @@
     "syncFormCode": "单据同步",
     "pleaseEnterFormCode": "请输入单据编号",
     "syncSuccess": "同步单据成功",
-    "syncFailed": "同步单据失败"
+    "syncFailed": "同步单据失败",
+    "auditBack": "撤审",
+    "confirmAuditBack": "是否确认撤审该条数据?"
   },
   "inventoryManagement": {
     "materialNumber": "材料编号",

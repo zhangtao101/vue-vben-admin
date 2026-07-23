@@ -55,6 +55,7 @@ import { JsonViewer } from 'vue3-json-viewer';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  inboundAndOutboundDocumentsAreAuditBack,
   inboundAndOutboundDocumentsAreAudited,
   inboundAndOutboundDocumentsAreDeleted,
   inboundAndOutboundDocumentsAreInserted,
@@ -704,6 +705,30 @@ function handleAudit(row: any, isPass: boolean) {
   });
 }
 
+/**
+ * 撤审处理
+ * 将已审核通过的单据撤回审核状态
+ *
+ * @param row 当前撤审的单据数据
+ */
+function handleAuditBack(row: any) {
+  Modal.confirm({
+    cancelText: $t('common.cancel'),
+    okText: $t('common.confirm'),
+    okType: 'primary',
+    title: $t('storeManagement.ioBillManagement.confirmAuditBack'),
+
+    onOk() {
+      inboundAndOutboundDocumentsAreAuditBack({
+        formId: row.id,
+      }).then(() => {
+        message.success($t('common.successfulOperation'));
+        gridApi.reload();
+      });
+    },
+  });
+}
+
 // endregion
 
 // region 权限控制
@@ -856,6 +881,22 @@ onMounted(() => {
               class="mr-4"
               type="link"
               @click="handleAudit(row, false)"
+            />
+          </Tooltip>
+
+          <!-- 撤审 -->
+          <Tooltip v-if="row.auditState === 1 && author.includes('审核')">
+            <template #title>{{ $t('storeManagement.ioBillManagement.auditBack') }}</template>
+            <Button
+              :icon="
+                h(Icon, {
+                  icon: 'mdi:undo',
+                  class: 'inline-block size-6',
+                })
+              "
+              class="mr-4"
+              type="link"
+              @click="handleAuditBack(row)"
             />
           </Tooltip>
 

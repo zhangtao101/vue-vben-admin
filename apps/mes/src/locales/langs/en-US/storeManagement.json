@@ -38,7 +38,9 @@
     "syncFormCode": "Sync Form Code",
     "pleaseEnterFormCode": "Please enter form code",
     "syncSuccess": "Sync form code successfully",
-    "syncFailed": "Sync form code failed"
+    "syncFailed": "Sync form code failed",
+    "auditBack": "Revoke Audit",
+    "confirmAuditBack": "Are you sure to revoke audit for this record?"
   },
   "inventoryManagement": {
     "materialNumber": "Material Number",
