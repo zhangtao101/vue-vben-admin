@@ -2,3 +2,4 @@ export * from './jobManage.setvice';
 export * from './planFinish.service';
 export * from './SMTmanagement.service';
 export * from './workOrderStatusQuery.service';
+export * from './xmlManage.service';
