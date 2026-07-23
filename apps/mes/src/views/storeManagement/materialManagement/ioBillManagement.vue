@@ -887,10 +887,8 @@ onMounted(() => {
           <!-- 撤审 -->
           <Tooltip v-if="row.auditState === 1 && author.includes('审核')">
             <template #title>
-{{
-              $t('storeManagement.ioBillManagement.auditBack')
-            }}
-</template>
+              {{ $t('storeManagement.ioBillManagement.auditBack') }}
+            </template>
             <Button
               :icon="
                 h(Icon, {
