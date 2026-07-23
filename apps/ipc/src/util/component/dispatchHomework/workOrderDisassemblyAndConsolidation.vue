@@ -1,15 +1,22 @@
 <script setup lang="ts">
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { h, onMounted, ref, watch } from 'vue';
 
 import { $t } from '@vben/locales';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
   Col,
   DatePicker,
+  Descriptions,
+  DescriptionsItem,
+  Divider,
+  Drawer,
   Form,
   FormItem,
   Input,
@@ -20,6 +27,7 @@ import {
   Select,
   Space,
   Spin,
+  Table,
   Textarea,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
@@ -27,7 +35,11 @@ import dayjs from 'dayjs';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getLineProductCheck,
+  getMergeSplitWorkSheet,
+  listPoOrderByWorksheetCode,
+  listSoOrderByPoOrderCode,
   mergeWorkSheet,
+  saveMergeWorkSheet,
   searchProduceWorkSheetList,
   splitWorkSheet,
 } from '#/api';
@@ -130,10 +142,70 @@ const gridEvents: any = {
       ...row,
     };
     queryingDeviceInformation();
+    console.log(currentRow.value);
+  },
+  checkboxChange: ({ records }: any) => {
+    if (!records || records.length === 0) {
+      poOrderData.value = [];
+      return;
+    }
+    const wsCodes = records
+      .map((item: any) => item.workSheetCode)
+      .filter(Boolean)
+      .join(',');
+    if (!wsCodes) {
+      poOrderData.value = [];
+      return;
+    }
+    poOrderLoading.value = true;
+    listPoOrderByWorksheetCode({ worksheetCodes: wsCodes })
+      .then((data: any) => {
+        poOrderData.value = data || [];
+      })
+      .finally(() => {
+        poOrderLoading.value = false;
+      });
   },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+// region PO订单数据回显
+const poOrderData = ref<any[]>([]);
+const poOrderLoading = ref(false);
+
+const poOrderGridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { field: 'orderCode', title: 'PO单号', minWidth: 120 },
+    { field: 'seq', title: '行号', minWidth: 80 },
+    { field: 'productCode', title: '产品编号', minWidth: 120 },
+    { field: 'productName', title: '产品名称', minWidth: 200 },
+    { field: 'orderNumber', title: '订单数量', minWidth: 100 },
+    { field: 'deliveryDate', title: '交期', minWidth: 120 },
+    { field: 'worksheetCode', title: '工单号', minWidth: 150 },
+    { field: 'planCode', title: '计划号', minWidth: 120 },
+  ],
+  height: 300,
+  stripe: true,
+  toolbarConfig: {
+    refresh: true,
+    zoom: true,
+  },
+};
+const [PoOrderGrid, poOrderGridApi] = useVbenVxeGrid({
+  gridOptions: poOrderGridOptions,
+});
+
+// 监听poOrderData变化，更新表格数据
+watch(poOrderData, (newData) => {
+  console.log(poOrderGridApi.grid);
+  setTimeout(() => {
+    poOrderGridApi.grid.reloadData(newData);
+  }, 500);
+});
+// endregion
 
 // region 查询数据
 
@@ -242,22 +314,233 @@ const showAdditional = ref(false);
 // 操作状态 1: 拆单 2:合单
 const status = ref(1);
 
+// region 拆单重组抽屉
+// 拆单顶部抽屉
+const splitDrawerVisible = ref(false);
+const splitDrawerLoading = ref(false);
+const splitNumberInput = ref<number>(1);
+const splitResultList = ref<any[]>([]);
+const splitSaveLoading = ref(false);
+
+// 拆分结果表格列定义
+const splitColumns: any[] = [
+  { title: '工单号', dataIndex: 'workSheetCode', key: 'workSheetCode', width: 160 },
+  { title: '计划号', dataIndex: 'planCode', key: 'planCode', width: 120 },
+  { title: '产品编号', dataIndex: 'productCode', key: 'productCode', width: 150 },
+  { title: '产品名称', dataIndex: 'productName', key: 'productName', width: 200 },
+  { title: '工单计划数', dataIndex: 'workSheetPlanNumber', key: 'workSheetPlanNumber', width: 100 },
+  { title: '线别', dataIndex: 'lineName', key: 'lineName', width: 100 },
+  { title: '备注', dataIndex: 'remark', key: 'remark', width: 120 },
+  { title: '绑定状态', key: 'bindStatus', width: 100 },
+  { title: '操作', key: 'action', width: 80, fixed: 'right' as any },
+];
+
+// 绑定右侧抽屉
+const bindDrawerVisible = ref(false);
+const bindDrawerLoading = ref(false);
+const currentBindRow = ref<any>({});
+const poSoData = ref<{ poDetails: any[]; soDetails: any[] }>({
+  poDetails: [],
+  soDetails: [],
+});
+const bindForm = ref({
+  poOrderCode: undefined as string | undefined,
+  soOrderCode: undefined as string | undefined,
+  deliveryDate: undefined as string | undefined,
+  poOrderNumber: 0,
+  soOrderNumber: 0,
+  productCode: '',
+  productName: '',
+});
+
+// 绑定数据存储 (key: workSheetCode, value: choseDetail[])
+const bindingsMap = ref<Record<string, any[]>>({});
+
 /**
- * 拆单
+ * 拆单-打开拆单抽屉
  */
 function openOrder() {
-  // 获取当前选中的表格行
   const checkboxRecords = gridApi.grid.getCheckboxRecords();
-  if (checkboxRecords.length === 1) {
-    additional.value.id = checkboxRecords[0].id;
-    additional.value.quantityNotOffLine =
-      checkboxRecords[0].produceNotFinishNumber;
-    showAdditional.value = true;
-    status.value = 1;
-  } else {
+  if (checkboxRecords.length !== 1) {
     message.error('请选择一条数据进行拆单!');
+    return;
+  }
+  currentRow.value = checkboxRecords[0];
+  splitNumberInput.value = 1;
+  splitResultList.value = [];
+  bindingsMap.value = {};
+  splitDrawerVisible.value = true;
+}
+
+/**
+ * 拆单-执行拆分
+ */
+function executeSplit() {
+  if (!splitNumberInput.value || splitNumberInput.value < 1) {
+    message.error('请输入有效的拆分批数!');
+    return;
+  }
+  splitDrawerLoading.value = true;
+  getMergeSplitWorkSheet({
+    id: currentRow.value.id,
+    splitNumber: splitNumberInput.value,
+  })
+    .then((data: any) => {
+      splitResultList.value = (data || []).map((item: any) => ({
+        ...item,
+        _bound: false,
+      }));
+    })
+    .finally(() => {
+      splitDrawerLoading.value = false;
+    });
+}
+
+/**
+ * 拆单-打开绑定抽屉
+ */
+function openBindDrawer(row: any) {
+  currentBindRow.value = row;
+  bindForm.value = {
+    poOrderCode: undefined,
+    soOrderCode: undefined,
+    deliveryDate: undefined,
+    poOrderNumber: 0,
+    soOrderNumber: 0,
+    productCode: row.productCode || '',
+    productName: row.productName || '',
+  };
+
+  bindDrawerLoading.value = true;
+  const wsCodes = currentRow.value.workSheetCode;
+  listSoOrderByPoOrderCode({ worksheetCodes: wsCodes })
+    .then((data: any) => {
+      poSoData.value = data || { poDetails: [], soDetails: [] };
+      bindDrawerVisible.value = true;
+    })
+    .finally(() => {
+      bindDrawerLoading.value = false;
+    });
+}
+
+/**
+ * 拆单-PO单号选择变化
+ */
+function onPoSelect(value: any) {
+  const po = poSoData.value.poDetails.find(
+    (item: any) => item.orderCode === String(value),
+  );
+  if (po) {
+    bindForm.value.poOrderNumber = po.orderNumber;
   }
 }
+
+/**
+ * 拆单-SO单号选择变化
+ */
+function onSoSelect(value: any) {
+  const so = poSoData.value.soDetails.find(
+    (item: any) => item.orderCode === String(value),
+  );
+  if (so) {
+    bindForm.value.soOrderNumber = so.orderNumber;
+    bindForm.value.productCode = so.productCode || '';
+    bindForm.value.productName = so.productName || '';
+  }
+}
+
+/**
+ * 拆单-确认绑定
+ */
+function confirmBinding() {
+  if (
+    !bindForm.value.poOrderCode ||
+    !bindForm.value.soOrderCode ||
+    !bindForm.value.deliveryDate
+  ) {
+    message.error('请完善绑定信息：PO单号、SO单号、交期为必填项!');
+    return;
+  }
+
+  const choseDetail: any = {
+    deliveryDate: dayjs(bindForm.value.deliveryDate).format('YYYY-MM-DD'),
+    poOrderCode: bindForm.value.poOrderCode,
+    poOrderNumber: bindForm.value.poOrderNumber,
+    processName: '',
+    processType: currentBindRow.value.processType,
+    productCode: bindForm.value.productCode,
+    productName: bindForm.value.productName,
+    soOrderCode: bindForm.value.soOrderCode,
+    soOrderNumber: bindForm.value.soOrderNumber,
+    worksheetCode: currentBindRow.value.workSheetCode,
+  };
+
+  const key = currentBindRow.value.workSheetCode;
+  if (!bindingsMap.value[key]) {
+    bindingsMap.value[key] = [];
+  }
+  // 检查是否已绑定相同PO+SO
+  const exist = bindingsMap.value[key].find(
+    (item: any) =>
+      item.poOrderCode === choseDetail.poOrderCode &&
+      item.soOrderCode === choseDetail.soOrderCode,
+  );
+  if (exist) {
+    message.warning('该PO+SO组合已绑定，请勿重复绑定!');
+    return;
+  }
+  bindingsMap.value[key].push(choseDetail);
+
+  // 标记该行为已绑定
+  const targetRow = splitResultList.value.find(
+    (item: any) => item.workSheetCode === key,
+  );
+  if (targetRow) {
+    targetRow._bound = true;
+    targetRow._bindCount = bindingsMap.value[key].length;
+  }
+
+  bindDrawerVisible.value = false;
+  message.success('绑定成功!');
+}
+
+/**
+ * 拆单-保存拆分重组结果
+ */
+function saveSplitResult() {
+  // 检查所有行是否都已绑定
+  const unbound = splitResultList.value.filter((item: any) => !item._bound);
+  if (unbound.length > 0) {
+    message.error(`请为所有拆分结果绑定SOPO单号! 当前未绑定: ${unbound.map((r: any) => r.workSheetCode).join(', ')}`);
+    return;
+  }
+
+  const params = splitResultList.value.map((row: any) => ({
+    choseDetails: bindingsMap.value[row.workSheetCode] || [],
+    worksheet: row,
+  }));
+
+  splitSaveLoading.value = true;
+  saveMergeWorkSheet(params)
+    .then(() => {
+      message.success('保存成功!');
+      splitDrawerVisible.value = false;
+      gridApi.reload();
+    })
+    .finally(() => {
+      splitSaveLoading.value = false;
+    });
+}
+
+/**
+ * 拆单-获取当前行的绑定信息文本
+ */
+function getBindStatusText(row: any) {
+  const list = bindingsMap.value[row.workSheetCode] || [];
+  if (list.length === 0) return '未绑定';
+  return `已绑定(${list.length})`;
+}
+// endregion
 
 /**
  * 合单
@@ -377,6 +660,14 @@ function orderSubmit() {
   </Card>
   <!-- endregion -->
 
+  <!-- region PO订单回显 -->
+  <Card v-show="poOrderData.length > 0" class="mb-5" title="PO订单回显">
+    <Spin :spinning="poOrderLoading">
+      <PoOrderGrid />
+    </Spin>
+  </Card>
+  <!-- endregion -->
+
   <!-- region 资源指派 -->
   <Spin :spinning="deviceListLoading">
     <Card
@@ -395,6 +686,192 @@ function orderSubmit() {
       />
     </Card>
   </Spin>
+  <!-- endregion -->
+
+  <!-- region 拆单重组-顶部抽屉 -->
+  <Drawer
+    v-model:open="splitDrawerVisible"
+    placement="top"
+    :height="540"
+    title="拆单重组"
+    @close="splitResultList = []"
+  >
+    <Form layout="inline" class="mb-4">
+      <FormItem label="拆分批数">
+        <InputNumber
+          v-model:value="splitNumberInput"
+          :min="1"
+          :max="99"
+          placeholder="请输入拆分批数"
+        />
+      </FormItem>
+      <FormItem>
+        <Button
+          type="primary"
+          :loading="splitDrawerLoading"
+          @click="executeSplit"
+        >
+          拆分
+        </Button>
+      </FormItem>
+    </Form>
+
+    <Spin :spinning="splitDrawerLoading">
+      <Table
+        v-if="splitResultList.length > 0"
+        :data-source="splitResultList"
+        :columns="splitColumns"
+        :pagination="false"
+        :scroll="{ x: 1100 }"
+        row-key="workSheetCode"
+        size="small"
+        bordered
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'bindStatus'">
+            <span :style="{ color: record._bound ? '#52c41a' : '#ff4d4f' }">
+              {{ getBindStatusText(record) }}
+            </span>
+          </template>
+          <template v-if="column.key === 'action'">
+            <Button
+              type="link"
+              size="small"
+              title="绑定SOPO单号"
+              :icon="h(Icon, { icon: 'mdi:link-variant' })"
+              @click="openBindDrawer(record)"
+            />
+          </template>
+        </template>
+      </Table>
+    </Spin>
+
+    <div
+      v-if="splitResultList.length > 0"
+      class="mt-4 flex justify-end"
+    >
+      <Button
+        type="primary"
+        :loading="splitSaveLoading"
+        @click="saveSplitResult"
+      >
+        保存
+      </Button>
+    </div>
+  </Drawer>
+  <!-- endregion -->
+
+  <!-- region 绑定SOPO单号-右侧抽屉 -->
+  <Drawer
+    v-model:open="bindDrawerVisible"
+    placement="right"
+    title="绑定SOPO单号"
+    :width="560"
+    @close="poSoData = { poDetails: [], soDetails: [] }"
+  >
+    <Spin :spinning="bindDrawerLoading">
+      <div class="mb-4">
+        <Descriptions
+          :column="2"
+          size="small"
+          bordered
+        >
+          <DescriptionsItem label="工单号">
+            {{ currentBindRow.workSheetCode }}
+          </DescriptionsItem>
+          <DescriptionsItem label="产品编号">
+            {{ currentBindRow.productCode }}
+          </DescriptionsItem>
+          <DescriptionsItem label="产品名称" :span="2">
+            {{ currentBindRow.productName }}
+          </DescriptionsItem>
+          <DescriptionsItem label="计划号">
+            {{ currentBindRow.planCode }}
+          </DescriptionsItem>
+          <DescriptionsItem label="工单计划数">
+            {{ currentBindRow.workSheetPlanNumber }}
+          </DescriptionsItem>
+        </Descriptions>
+      </div>
+
+      <Divider />
+
+      <Form
+        :model="bindForm"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 18 }"
+        label-align="right"
+      >
+        <FormItem label="PO单号" required>
+          <Select
+            v-model:value="bindForm.poOrderCode"
+            placeholder="请选择PO单号"
+            show-search
+            option-filter-prop="label"
+            @change="onPoSelect"
+          >
+            <Select.Option
+              v-for="item in poSoData.poDetails"
+              :key="item.detailId"
+              :value="item.orderCode"
+              :label="item.orderCode"
+            >
+              {{ item.orderCode }} - {{ item.productName }}
+            </Select.Option>
+          </Select>
+        </FormItem>
+        <FormItem label="SO单号" required>
+          <Select
+            v-model:value="bindForm.soOrderCode"
+            placeholder="请选择SO单号"
+            show-search
+            option-filter-prop="label"
+            @change="onSoSelect"
+          >
+            <Select.Option
+              v-for="item in poSoData.soDetails"
+              :key="item.detailId"
+              :value="item.orderCode"
+              :label="item.orderCode"
+            >
+              {{ item.orderCode }}({{ item.seq }}) - {{ item.productName }}
+            </Select.Option>
+          </Select>
+        </FormItem>
+        <FormItem label="产品编号">
+          <Input v-model:value="bindForm.productCode" disabled />
+        </FormItem>
+        <FormItem label="产品名称">
+          <Input v-model:value="bindForm.productName" disabled />
+        </FormItem>
+        <FormItem label="PO数量">
+          <InputNumber
+            v-model:value="bindForm.poOrderNumber"
+            disabled
+            class="w-full"
+          />
+        </FormItem>
+        <FormItem label="SO数量">
+          <InputNumber
+            v-model:value="bindForm.soOrderNumber"
+            disabled
+            class="w-full"
+          />
+        </FormItem>
+        <FormItem label="交期" required>
+          <DatePicker
+            v-model:value="bindForm.deliveryDate"
+            placeholder="请选择交期"
+            class="w-full"
+          />
+        </FormItem>
+      </Form>
+
+      <div class="flex justify-end mt-4">
+        <Button type="primary" @click="confirmBinding"> 确认绑定 </Button>
+      </div>
+    </Spin>
+  </Drawer>
   <!-- endregion -->
 
   <Card v-if="showAdditional" class="mb-24">

@@ -132,3 +132,44 @@ export function getProcessTypeList() {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/plan/worksheet/getProcessTypeList`,
   );
 }
+
+/**
+ * 根据单据列表获取对应的明细清单
+ * @param params 参数 { worksheetCodes: string } 工单号，多个用逗号分隔
+ */
+export function listPoOrderByWorksheetCode(params: { worksheetCodes: string }) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/merge/worksheet/listPoOrderByWorksheetCode?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 根据单据列表获取对应的PO单列表和SO单列表
+ * @param params 参数 { worksheetCodes: string } 工单号，多个用逗号分隔
+ */
+export function listSoOrderByPoOrderCode(params: { worksheetCodes: string }) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/merge/worksheet/listSoOrderByPoOrderCode?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 拆单重组-拆分（获取拆分结果）
+ * @param params 参数 { id?: number, splitNumber?: number } 工单ID和拆分批数
+ */
+export function getMergeSplitWorkSheet(params: { id?: number; splitNumber?: number }) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/merge/worksheet/splitWorkSheet?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 拆单重组保存
+ * @param params 参数 工单与SOPO单信息数组
+ */
+export function saveMergeWorkSheet(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/merge/worksheet/mergeWorkSheet`,
+    params,
+  );
+}
