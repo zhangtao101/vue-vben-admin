@@ -34,7 +34,7 @@
   "deliveryDate": "Delivery Date",
   "poOrderNumber": "PO Qty",
   "soOrderNumber": "SO Qty",
-  "mergeSave": "Merge & Save",
-  "mergeSuccess": "Merge saved successfully",
+  "mergeSave": "Generate Work Order",
+  "mergeSuccess": "Work order generation completed",
   "close": "Close"
 }

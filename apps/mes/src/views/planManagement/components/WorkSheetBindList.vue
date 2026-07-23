@@ -66,7 +66,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'produceNotFinishNumber', title: $t('workSheetBind.produceNotFinishNumber'), minWidth: 100 },
     { field: 'status', title: $t('workSheetBind.status'), minWidth: 80 },
   ],
-  height: 500,
+  height: 300,
   checkboxConfig: {
     highlight: true,
   },
@@ -153,7 +153,7 @@ const unbindWsCode = ref('');
 const unbindWsCodeOptions = computed(() => {
   const set = new Set<string>();
   detailList.value.forEach((row: any) => {
-    if (row.worksheetCode) {
+    if (row.worksheetCode && row.status === 1) {
       set.add(row.worksheetCode);
     }
   });
@@ -166,7 +166,7 @@ const detailGridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'checkbox', width: 50, title: '' },
     { type: 'seq', width: 50, title: $t('page.common.serialNumber') },
-    { field: 'worksheetCode', title: $t('workSheetBind.workSheetCode'), minWidth: 140, showOverflow: true },
+    { field: 'worksheetCode', title: $t('workSheetBind.workSheetCode'), minWidth: 140, showOverflow: true, slots: { default: 'worksheetCode_default' } },
     { field: 'processName', title: $t('workSheetBind.processType'), minWidth: 80 },
     { field: 'poOrderCode', title: $t('workSheetBind.poOrderCode'), minWidth: 160, showOverflow: true },
     { field: 'productCode', title: $t('workSheetBind.detailProductCode'), minWidth: 150, showOverflow: true },
@@ -176,7 +176,7 @@ const detailGridOptions: VxeGridProps<any> = {
     { field: 'poOrderNumber', title: $t('workSheetBind.poOrderNumber'), minWidth: 100 },
     { field: 'soOrderNumber', title: $t('workSheetBind.soOrderNumber'), minWidth: 100 },
   ],
-  height: 300,
+  height: 500,
   stripe: true,
   checkboxConfig: {
     highlight: true,
@@ -213,6 +213,20 @@ function closeBind() {
 }
 
 /**
+ * 刷新明细列表
+ * @since 2026-07-23
+ */
+function refreshDetailList() {
+  if (selectedWsCodes.value) {
+    mergeWorksheetListPoOrderByWorksheetCode({ worksheetCodes: selectedWsCodes.value })
+      .then((data: any) => {
+        detailList.value = Array.isArray(data) ? data : (data?.data || []);
+        detailGridApi.setGridOptions({ data: detailList.value });
+      });
+  }
+}
+
+/**
  * 打开解绑弹窗
  * @since 2026-07-23
  */
@@ -234,13 +248,7 @@ function handleUnbindConfirm() {
       message.success($t('workSheetBind.unbindSuccess'));
       unbindModalVisible.value = false;
       gridApi.query();
-      if (selectedWsCodes.value) {
-        mergeWorksheetListPoOrderByWorksheetCode({ worksheetCodes: selectedWsCodes.value })
-          .then((data: any) => {
-            detailList.value = Array.isArray(data) ? data : (data?.data || []);
-            detailGridApi.setGridOptions({ data: detailList.value });
-          });
-      }
+      refreshDetailList();
     });
 }
 
@@ -261,13 +269,7 @@ function handleMergeSave() {
       message.success($t('workSheetBind.mergeSuccess'));
       selectedDetailRows.value = [];
       gridApi.query();
-      if (selectedWsCodes.value) {
-        mergeWorksheetListPoOrderByWorksheetCode({ worksheetCodes: selectedWsCodes.value })
-          .then((data: any) => {
-            detailList.value = Array.isArray(data) ? data : (data?.data || []);
-            detailGridApi.setGridOptions({ data: detailList.value });
-          });
-      }
+      refreshDetailList();
     });
 }
 // endregion
@@ -328,18 +330,21 @@ function handleMergeSave() {
         </template>
 
         <DetailGrid>
+          <template #worksheetCode_default="{ row }">
+            <span>{{ row.status === -1 ? '' : row.worksheetCode }}</span>
+          </template>
           <template #toolbar-tools>
             <Space>
               <Button
                 type="primary"
-                :disabled="selectedDetailRows.length === 0"
+                :disabled="selectedDetailRows.length === 0 || props.processType === 99"
                 @click="handleMergeSave"
               >
                 {{ $t('workSheetBind.mergeSave') }}
               </Button>
               <Button
                 danger
-                :disabled="detailList.length === 0"
+                :disabled="detailList.length === 0 || props.processType === 99"
                 @click="openUnbindModal"
               >
                 {{ $t('workSheetBind.unbind') }}

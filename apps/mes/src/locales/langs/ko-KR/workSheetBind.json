@@ -34,7 +34,7 @@
   "deliveryDate": "납기일",
   "poOrderNumber": "PO 수량",
   "soOrderNumber": "SO 수량",
-  "mergeSave": "분할 재구성 저장",
-  "mergeSuccess": "분할 재구성 저장 성공",
+  "mergeSave": "작업지시 생성",
+  "mergeSuccess": "작업지시 생성 완료",
   "close": "닫기"
 }

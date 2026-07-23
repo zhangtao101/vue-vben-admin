@@ -3,5 +3,5 @@ import WorkSheetBindList from './components/WorkSheetBindList.vue';
 </script>
 
 <template>
-  <WorkSheetBindList :process-type="98" />
+  <WorkSheetBindList :process-type="97" />
 </template>

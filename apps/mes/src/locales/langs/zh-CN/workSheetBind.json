@@ -34,7 +34,7 @@
   "deliveryDate": "交期",
   "poOrderNumber": "PO单数量",
   "soOrderNumber": "SO单数量",
-  "mergeSave": "拆单重组保存",
-  "mergeSuccess": "拆单重组保存成功",
+  "mergeSave": "生成工单",
+  "mergeSuccess": "工单生成完成",
   "close": "关闭"
 }
