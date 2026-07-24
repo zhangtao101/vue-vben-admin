@@ -20,6 +20,7 @@ import {
   Drawer,
   Form,
   FormItem,
+  Image,
   Input,
   InputNumber,
   message,
@@ -86,6 +87,12 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'unit', title: $t('baseInfo.unit'), minWidth: 100 },
     { field: 'minPackNumber', title: $t('baseInfo.minPackageQuantity'), minWidth: 90 },
     { field: 'safeLevel', title: $t('baseInfo.safetyQuantity'), minWidth: 80 },
+    {
+      field: 'imagePath',
+      minWidth: 100,
+      slots: { default: 'imagePath' },
+      title: $t('baseInfo.productImage'),
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -700,6 +707,15 @@ function downloadTemplate() {
                   @click="showMSD(row)"
                 />
               </Tooltip>
+            </template>
+            <template #imagePath="{ row }">
+              <Image
+                v-if="row.imagePath"
+                :src="row.imagePath"
+                :width="60"
+                fallback="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PC9zdmc+"
+              />
+              <span v-else>-</span>
             </template>
             <template #selectedState="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
