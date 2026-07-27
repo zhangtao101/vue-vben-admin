@@ -41,7 +41,7 @@ import MaterialSelectDialog from './MaterialSelectDialog.vue';
 // Props
 const props = defineProps<{
   open: boolean;
-  recordId?: null | string;
+  recordId?: any;
 }>();
 
 // Emits

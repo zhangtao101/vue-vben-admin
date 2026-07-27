@@ -11,6 +11,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { reactive, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -28,7 +29,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteLabelRecord, fetchLabelList, setRecordPrint } from '#/api';
+import { deleteLabelRecord, fetchLabelList, fetchLabelRecordDetail, queryPrintTemplateDetails, setRecordPrint } from '#/api';
 import { $t } from '#/locales';
 
 import LabelDetailDrawer from '../labelManagement/LabelDetailDrawer.vue';
@@ -212,10 +213,34 @@ function handlePrint() {
     return;
   }
   const ids = selection.map((item: any) => item.id);
-  setRecordPrint(ids)
+  // 获取所有选中记录的标签明细
+  const detailPromises = selection.map((item: any) =>
+    fetchLabelRecordDetail(item.id),
+  );
+  Promise.all(detailPromises)
+    .then((results: any[]) => {
+      // 合并所有标签列表
+      const allLabels = results.flatMap((res: any) => res.labelList || []);
+      if (allLabels.length === 0) {
+        message.warning($t('storeManagement.labelPrint.noPrintData'));
+        return;
+      }
+      // 查询打印模板并打印
+      return queryPrintTemplateDetails('物料打印').then((res: any) => {
+        const templateRef = JSON.parse(res.printData);
+        const hiprintTemplate = new hiprint.PrintTemplate({
+          template: templateRef,
+        });
+        hiprintTemplate.print(allLabels, { leftOffset: -1, topOffset: -1 });
+        // 标记为已打印
+        return setRecordPrint(ids);
+      });
+    })
     .then(() => {
-      message.success($t('storeManagement.labelPrint.printSuccess'));
-      gridApi.reload();
+      if (ids.length > 0) {
+        message.success($t('storeManagement.labelPrint.printSuccess'));
+        gridApi.reload();
+      }
     })
     .catch((error: any) => {
       message.error(error.message || $t('common.operationFailed'));
