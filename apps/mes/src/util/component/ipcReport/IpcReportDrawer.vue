@@ -918,7 +918,7 @@ const itemColumns = [
       >
         <Button :disabled="readonly">
           <template #icon>
-            <Icon component="mdi:cloud-upload" />
+            <Icon icon="mdi:cloud-upload" />
           </template>
           {{ $t('common.upload') }}
         </Button>
@@ -950,7 +950,7 @@ const itemColumns = [
                 @click="handleDeleteFile(record.id)"
               >
                 <template #icon>
-                  <Icon component="mdi:delete" />
+                  <Icon icon="mdi:delete" />
                 </template>
               </Button>
             </template>
