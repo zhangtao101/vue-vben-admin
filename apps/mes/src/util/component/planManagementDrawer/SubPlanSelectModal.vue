@@ -53,7 +53,7 @@ const queryParams = ref<any>({
   productName: '',
   processType: undefined,
   isFinish: '2',
-  isPlanWork: '2',
+  // isPlanWork: '2',
 });
 
 // 表格配置
@@ -156,7 +156,7 @@ function open() {
     productName: '',
     processType: undefined,
     isFinish: '2',
-    isPlanWork: '2',
+    // isPlanWork: '2',
   };
   show.value = true;
   nextTick(() => {
@@ -200,12 +200,12 @@ defineExpose({ open, queryParams });
           <Radio value="2">{{ $t('SMTmanagement.unfinished') }}</Radio>
         </RadioGroup>
       </FormItem>
-      <FormItem :label="$t('SMTmanagement.isPlanWork')" style="margin-bottom: 8px">
+      <!-- <FormItem :label="$t('SMTmanagement.isPlanWork')" style="margin-bottom: 8px">
         <RadioGroup v-model:value="queryParams.isPlanWork">
           <Radio value="1">{{ $t('SMTmanagement.arranged') }}</Radio>
           <Radio value="2">{{ $t('SMTmanagement.unarranged') }}</Radio>
         </RadioGroup>
-      </FormItem>
+      </FormItem> -->
       <FormItem style="margin-bottom: 8px">
         <Button type="primary" @click="() => gridApi.reload()">
           {{ $t('common.search') }}
