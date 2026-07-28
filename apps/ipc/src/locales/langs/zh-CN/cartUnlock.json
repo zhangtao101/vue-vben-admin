@@ -1,0 +1,14 @@
+{
+  "title": "台车解锁",
+  "cartCode": "台车代码",
+  "cartName": "台车名称",
+  "cartStatus": "台车状态",
+  "currentLoadQty": "当前装载数量",
+  "maxLoadQty": "最大装载数量",
+  "lockStatus": "锁定状态",
+  "isDeleted": "是否删除",
+  "lockCode": "锁定代码",
+  "unlockCode": "解锁代码",
+  "unlock": "解锁",
+  "unlockSuccess": "解锁成功"
+}

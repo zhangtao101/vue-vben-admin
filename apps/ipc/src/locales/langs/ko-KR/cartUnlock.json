@@ -1,0 +1,14 @@
+{
+  "title": "카트 잠금 해제",
+  "cartCode": "카트 코드",
+  "cartName": "카트 명칭",
+  "cartStatus": "카트 상태",
+  "currentLoadQty": "현재 적재 수량",
+  "maxLoadQty": "최대 적재 수량",
+  "lockStatus": "잠금 상태",
+  "isDeleted": "삭제 여부",
+  "lockCode": "잠금 코드",
+  "unlockCode": "잠금 해제 코드",
+  "unlock": "잠금 해제",
+  "unlockSuccess": "잠금이 해제되었습니다"
+}

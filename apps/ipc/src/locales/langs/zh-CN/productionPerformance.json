@@ -1,0 +1,22 @@
+{
+  "title": "生产业绩生产/取消",
+  "workOrder": "工单号",
+  "workOrderPlaceholder": "请输入工单号",
+  "productionList": "生产列表",
+  "lotList": "生产LOT列表",
+  "colStackerId": "堆垛机ID",
+  "colMaterialProductCode": "材料/产品代码",
+  "colMaterialProductName": "材料/产品名称",
+  "colProdInstrSerial": "生产指示序列",
+  "colLotId": "LOTID",
+  "colQty": "数量",
+  "colUnit": "单位",
+  "colHandleTime": "处理时间",
+  "genPerformance": "业绩生成",
+  "cancelPerformance": "业绩取消",
+  "plsSelectLot": "请先选择LOT",
+  "genSuccess": "业绩生成成功",
+  "cancelSuccess": "业绩取消成功",
+  "productA": "产品A",
+  "productB": "产品B"
+}

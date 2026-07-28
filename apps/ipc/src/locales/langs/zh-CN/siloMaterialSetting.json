@@ -1,0 +1,15 @@
+{
+  "title": "各筒仓材料设置",
+  "group": "设备组",
+  "groupPlaceholder": "请选择设备组",
+  "groupA": "设备组A",
+  "groupB": "设备组B",
+  "deviceList": "设备代码列表",
+  "equipCode": "设备代码",
+  "equipName": "设备名称",
+  "materialCode": "材料代码",
+  "materialName": "材料名称",
+  "save": "保存",
+  "plsSelect": "请先选择设备",
+  "saveSuccess": "保存成功"
+}

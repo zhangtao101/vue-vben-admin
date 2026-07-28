@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { NotificationItem } from '@vben/layouts';
 
 import { computed, ref, watch } from 'vue';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
+import { MdiLightSettings } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -14,10 +14,12 @@ import {
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
+import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
+import SectionSetting from '#/util/component/sectionSetting.vue';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-const notifications = ref<NotificationItem[]>([
+const notifications = ref<any[]>([
   {
     avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
     date: '3小时前',
@@ -52,20 +54,19 @@ const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
+const sectionSettingRef = ref();
 const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
 );
 
 const menus = computed(() => [
-  // {
-  //   handler: () => {
-  //     openWindow(VBEN_DOC_URL, {
-  //       target: '_blank',
-  //     });
-  //   },
-  //   icon: BookOpenText,
-  //   text: $t('ui.widgets.document'),
-  // },
+  {
+    handler: () => {
+      sectionSettingRef.value?.open();
+    },
+    icon: MdiLightSettings,
+    text: $t('ui.widgets.sectionSetting'),
+  },
   // {
   //   handler: () => {
   //     openWindow(VBEN_GITHUB_URL, {
@@ -92,6 +93,10 @@ const avatar = computed(() => {
 
 async function handleLogout() {
   await authStore.logout(false);
+}
+
+function handleSectionRefresh() {
+  window.location.reload();
 }
 
 function handleNoticeClear() {
@@ -150,4 +155,8 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
+  <SectionSetting
+    ref="sectionSettingRef"
+    @refresh="handleSectionRefresh"
+  />
 </template>

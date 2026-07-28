@@ -138,6 +138,7 @@
     "document": "Document",
     "qa": "Q&A",
     "setting": "Settings",
+    "sectionSetting": "Section Settings",
     "logoutTip": "Do you want to logout?",
     "viewAll": "View All Messages",
     "notifications": "Notifications",

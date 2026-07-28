@@ -1,0 +1,22 @@
+{
+  "title": "생산 실적 생성/취소",
+  "workOrder": "작업지시 번호",
+  "workOrderPlaceholder": "작업지시 번호를 입력하세요",
+  "productionList": "생산 목록",
+  "lotList": "생산 LOT 목록",
+  "colStackerId": "적재기 ID",
+  "colMaterialProductCode": "자재/제품 코드",
+  "colMaterialProductName": "자재/제품 명칭",
+  "colProdInstrSerial": "생산 지시 일련번호",
+  "colLotId": "LOTID",
+  "colQty": "수량",
+  "colUnit": "단위",
+  "colHandleTime": "처리 시간",
+  "genPerformance": "실적 생성",
+  "cancelPerformance": "실적 취소",
+  "plsSelectLot": "먼저 LOT을 선택하세요",
+  "genSuccess": "실적이 생성되었습니다",
+  "cancelSuccess": "실적이 취소되었습니다",
+  "productA": "제품 A",
+  "productB": "제품 B"
+}

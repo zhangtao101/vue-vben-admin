@@ -387,6 +387,9 @@ catalogs:
     jordium-gantt-vue3:
       specifier: ^1.8.0
       version: 1.11.5
+    jsbarcode:
+      specifier: ^3.12.3
+      version: 3.12.3
     json-bigint:
       specifier: ^1.0.0
       version: 1.0.0
@@ -1032,7 +1035,7 @@ importers:
         specifier: 'catalog:'
         version: 1.11.5(vue@3.5.35(typescript@6.0.3))
       jsbarcode:
-        specifier: ^3.12.3
+        specifier: 'catalog:'
         version: 3.12.3
       mpegts.js:
         specifier: 'catalog:'

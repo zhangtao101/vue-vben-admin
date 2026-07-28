@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import AndonCall from '#/util/component/steps/andonCall.vue';
+import CartLabelIssue from '#/util/component/steps/cartLabelIssue.vue';
+import CartLoadUnload from '#/util/component/steps/cartLoadUnload.vue';
+import CartLotChange from '#/util/component/steps/cartLotChange.vue';
+import DefectRegistration from '#/util/component/steps/defectRegistration.vue';
 import DeviceClearing from '#/util/component/steps/deviceClearing.vue';
+import DosingWeigh from '#/util/component/steps/dosingWeigh.vue';
 import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
 import EquipmentLocationInformation from '#/util/component/steps/equipmentLocationInformation.vue';
 import EquipmentMonitoringInformation from '#/util/component/steps/equipmentMonitoringInformation.vue';
@@ -13,12 +18,22 @@ import LampInstallationRecord from '#/util/component/steps/lampInstallationRecor
 import ManufactureEntry from '#/util/component/steps/manufactureEntry.vue';
 import MaterialFeeding from '#/util/component/steps/materialFeeding.vue';
 import MaterialFeedingSlitting from '#/util/component/steps/materialFeedingSlitting.vue';
+import MixedWaterFailedTransfer from '#/util/component/steps/mixedWaterFailedTransfer.vue';
+import MixedWaterLotGeneration from '#/util/component/steps/mixedWaterLotGeneration.vue';
+import MixedWaterProgress from '#/util/component/steps/mixedWaterProgress.vue';
+import MixedWorkProgress from '#/util/component/steps/mixedWorkProgress.vue';
 import MoldUpInfo from '#/util/component/steps/moldUpInfo.vue';
 import MultiStationScan from '#/util/component/steps/multiStationScan.vue';
+import NoodleDropInfo from '#/util/component/steps/noodleDropInfo.vue';
+import NoodleMachineUse from '#/util/component/steps/noodleMachineUse.vue';
+import NoodleMaking from '#/util/component/steps/noodleMaking.vue';
+import PackagingOperation from '#/util/component/steps/packagingOperation.vue';
+import PackagingProgress from '#/util/component/steps/packagingProgress.vue';
 import ParamTemplate from '#/util/component/steps/paramTemplate.vue';
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
+import ProductionPerformance from '#/util/component/steps/productionPerformance.vue';
 import RecipeExecution from '#/util/component/steps/recipeExecution.vue';
 import RemainingMaterialDown from '#/util/component/steps/remainingMaterialDown.vue';
 import ReportForWorkExit from '#/util/component/steps/reportForWorkExit.vue';
@@ -26,9 +41,11 @@ import ResourceInspection from '#/util/component/steps/resourceInspection.vue';
 import ScanningHomework from '#/util/component/steps/scanningHomework.vue';
 import ScanTask from '#/util/component/steps/scanTask.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
+import SiloMaterialSetting from '#/util/component/steps/siloMaterialSetting.vue';
 import SingleStationScan from '#/util/component/steps/singleStationScan.vue';
 import SmtFeeding from '#/util/component/steps/smtFeeding.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
+import TrayLoadUnload from '#/util/component/steps/trayLoadUnload.vue';
 
 /**
  * 定义组件接收的 props，用于传递工步执行所需的相关信息
@@ -472,6 +489,176 @@ defineProps({
       :function-id="step.id"
       :show-type-number="step.type"
       v-if="step.type === 101"
+    />
+
+    <!-- 混合水LOT生成：根据工步类型为 102 时，渲染混合水LOT生成组件，并传递相关参数 -->
+    <MixedWaterLotGeneration
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 102"
+    />
+
+    <!-- 配料原料称重：根据工步类型为 103 时，渲染配料原料称重组件，并传递相关参数 -->
+    <DosingWeigh
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 103"
+    />
+
+    <!-- 称量托盘加载/卸载：根据工步类型为 104 时，渲染称量托盘加载/卸载组件，并传递相关参数 -->
+    <TrayLoadUnload
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 104"
+    />
+
+    <!-- 混合水作业进度：根据工步类型为 105 时，渲染混合水作业进度组件，并传递相关参数 -->
+    <MixedWaterProgress
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 105"
+    />
+
+    <!-- 混合水/Mix 工作指示失败传输：根据工步类型为 106 时，渲染混合水工作指示失败传输组件，并传递相关参数 -->
+    <MixedWaterFailedTransfer
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 106"
+    />
+
+    <!-- 混合工作进度：根据工步类型为 107 时，渲染混合工作进度组件，并传递相关参数 -->
+    <MixedWorkProgress
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 107"
+    />
+
+    <!-- 各筒仓材料设置：根据工步类型为 108 时，渲染各筒仓材料设置组件，并传递相关参数 -->
+    <SiloMaterialSetting
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 108"
+    />
+
+    <!-- 制面作业：根据工步类型为 109 时，渲染制面作业组件，并传递相关参数 -->
+    <NoodleMaking
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 109"
+    />
+
+    <!-- 落面信息：根据工步类型为 110 时，渲染落面信息组件，并传递相关参数 -->
+    <NoodleDropInfo
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 110"
+    />
+
+    <!-- 面机使用明细登记：根据工步类型为 111 时，渲染面机使用明细登记组件，并传递相关参数 -->
+    <NoodleMachineUse
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 111"
+    />
+
+    <!-- 包装工作进度：根据工步类型为 112 时，渲染包装工作进度组件，并传递相关参数 -->
+    <PackagingProgress
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 112"
+    />
+
+    <!-- 成品不良登记：根据工步类型为 113 时，渲染成品不良登记组件，并传递相关参数 -->
+    <DefectRegistration
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 113"
+    />
+
+    <!-- 生产业绩生产/取消：根据工步类型为 114 时，渲染生产业绩组件，并传递相关参数 -->
+    <ProductionPerformance
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 114"
+    />
+
+    <!-- 包装作业进行：根据工步类型为 115 时，渲染包装作业组件，并传递相关参数 -->
+    <PackagingOperation
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 115"
+    />
+
+    <!-- 台车标签发行：根据工步类型为 116 时，渲染台车标签发行组件，并传递相关参数 -->
+    <CartLabelIssue
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 116"
+    />
+
+    <!-- 台车装载/卸货：根据工步类型为 117 时，渲染台车装载/卸货组件，并传递相关参数 -->
+    <CartLoadUnload
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 117"
+    />
+
+    <!-- 台车LOT变更：根据工步类型为 118 时，渲染台车LOT变更组件，并传递相关参数 -->
+    <CartLotChange
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 118"
     />
 
     <!-- 设备点位信息：根据工步类型为 999 时，渲染设备点位信息组件，并传递相关参数 -->

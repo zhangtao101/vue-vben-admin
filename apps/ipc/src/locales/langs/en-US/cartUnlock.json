@@ -1,0 +1,14 @@
+{
+  "title": "Cart Unlock",
+  "cartCode": "Cart Code",
+  "cartName": "Cart Name",
+  "cartStatus": "Cart Status",
+  "currentLoadQty": "Current Load Qty",
+  "maxLoadQty": "Max Load Qty",
+  "lockStatus": "Lock Status",
+  "isDeleted": "Deleted",
+  "lockCode": "Lock Code",
+  "unlockCode": "Unlock Code",
+  "unlock": "Unlock",
+  "unlockSuccess": "Unlocked successfully"
+}

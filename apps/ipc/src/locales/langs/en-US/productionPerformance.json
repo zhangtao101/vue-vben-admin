@@ -1,0 +1,22 @@
+{
+  "title": "Production Performance Generate/Cancel",
+  "workOrder": "Work Order No.",
+  "workOrderPlaceholder": "Enter work order no.",
+  "productionList": "Production List",
+  "lotList": "Production LOT List",
+  "colStackerId": "Stacker ID",
+  "colMaterialProductCode": "Material/Product Code",
+  "colMaterialProductName": "Material/Product Name",
+  "colProdInstrSerial": "Production Instruction Serial",
+  "colLotId": "LOTID",
+  "colQty": "Qty",
+  "colUnit": "Unit",
+  "colHandleTime": "Handle Time",
+  "genPerformance": "Generate Performance",
+  "cancelPerformance": "Cancel Performance",
+  "plsSelectLot": "Please select a LOT first",
+  "genSuccess": "Performance generated successfully",
+  "cancelSuccess": "Performance cancelled successfully",
+  "productA": "Product A",
+  "productB": "Product B"
+}
