@@ -1,4 +1,5 @@
 export * from './bomCategory.service';
+export * from './codingTemplateUnionMaintenance.service';
 export * from './controlSet.service';
 export * from './electricityTimeSlotRule.service';
 export * from './materialBaseManagement.service';
@@ -8,5 +9,6 @@ export * from './plantCalendarLook.service';
 export * from './printTemplateMaintenance.service';
 export * from './productBom.service';
 export * from './productCategory.service';
+export * from './productGroupMaintenance.service';
 export * from './productInform.service';
 export * from './productLineSet.service';
