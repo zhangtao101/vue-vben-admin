@@ -653,6 +653,7 @@ onMounted(() => {
                     v-model:value="editData.productGroupCode"
                     :options="productGroupOptions"
                     :placeholder="$t('baseInfo.selectProductGroup')"
+                    :disabled="!isAdd"
                     show-search
                     :filter-option="false"
                     :not-found-content="productGroupFetching ? undefined : null"
@@ -667,6 +668,7 @@ onMounted(() => {
                   <Input
                     v-model:value="editData.printCode"
                     :placeholder="$t('baseInfo.inputPrintCode')"
+                    :disabled="!isAdd"
                   />
                 </FormItem>
               </Col>
