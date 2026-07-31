@@ -6,12 +6,13 @@ import { computed, markRaw } from 'vue';
 import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
+// import { getUserAuthorFlag } from "#/api";
 import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
-
+// getUserAuthorFlag();
 const formSchema = computed((): VbenFormSchema[] => {
   return [
     {

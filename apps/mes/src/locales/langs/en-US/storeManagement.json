@@ -151,6 +151,7 @@
     "selectPrintLabel": "Please select labels to print",
     "selectDeleteLabel": "Please select labels to delete",
     "printSuccess": "Set as print status successfully",
+    "noPrintData": "No printable data available",
     "judgeSuccess": "Judge successfully",
     "deleteSuccess": "Delete successfully",
     "expressCode": "Express Code",

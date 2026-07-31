@@ -24,6 +24,7 @@ import {
   Row,
   Space,
   Tooltip,
+  Upload,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -40,7 +41,7 @@ import MaterialSelectDialog from './MaterialSelectDialog.vue';
 // Props
 const props = defineProps<{
   open: boolean;
-  recordId?: null | string;
+  recordId?: any;
 }>();
 
 // Emits
@@ -314,15 +315,13 @@ function handleContractConfirm(contracts: any[]) {
 /**
  * Excel导入
  */
-function handleExcelImport(e: any) {
+function handleExcelImport(file: any) {
   importVisible.value = false;
-  const file = e.target.files[0];
-  if (!file) return;
 
   const fileType = file.name.slice(file.name.lastIndexOf('.'));
   if (fileType !== '.xlsx' && fileType !== '.xls') {
     message.warning($t('storeManagement.labelPrint.invalidFileType'));
-    return;
+    return false;
   }
 
   const param = new FormData();
@@ -346,7 +345,7 @@ function handleExcelImport(e: any) {
       );
     });
 
-  e.target.value = '';
+  return false;
 }
 
 /**
@@ -505,21 +504,15 @@ function handleClose() {
           <Button type="primary" @click="handleContractImport">
             {{ $t('storeManagement.labelPrint.contractImport') }}
           </Button>
-          <span class="ant-btn ant-btn-primary">
-            {{ $t('storeManagement.labelPrint.excelImport') }}
-            <input
-              type="file"
-              accept=".xls,.xlsx"
-              style="
-                position: absolute;
-                top: 0;
-                right: 0;
-                font-size: 100px;
-                opacity: 0;
-              "
-              @change="handleExcelImport"
-            />
-          </span>
+          <Upload
+            :show-upload-list="false"
+            accept=".xls,.xlsx"
+            :before-upload="handleExcelImport"
+          >
+            <Button type="primary">
+              {{ $t('storeManagement.labelPrint.excelImport') }}
+            </Button>
+          </Upload>
         </Space>
       </div>
 

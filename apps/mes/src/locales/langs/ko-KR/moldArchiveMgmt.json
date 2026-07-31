@@ -78,6 +78,11 @@
   "importMoldInfo": "금형 정보 가져오기",
   "importProductMold": "제품 금형 가져오기",
   "importSupplierBinding": "공급업체 바인딩 가져오기",
+  "selectPrintType": "인쇄 유형 선택",
+  "printTypeSelectContent": "인쇄 유형을 선택하세요",
+  "printTypeSteelMesh": "스틸 메쉬 인쇄",
+  "printTypeFixture": "지그 인쇄",
+  "selectRecordsFirst": "먼저 인쇄할 레코드를 선택하세요",
   "detail": {
     "baseInfo": "기본 정보",
     "lifespanInfo": "수명 정보",
