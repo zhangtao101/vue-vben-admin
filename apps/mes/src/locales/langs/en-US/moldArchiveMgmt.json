@@ -78,6 +78,11 @@
   "importMoldInfo": "Import Mold Info",
   "importProductMold": "Import Product Mold",
   "importSupplierBinding": "Import Supplier Binding",
+  "selectPrintType": "Select Print Type",
+  "printTypeSelectContent": "Please select print type",
+  "printTypeSteelMesh": "Steel Mesh Print",
+  "printTypeFixture": "Fixture Print",
+  "selectRecordsFirst": "Please select records to print first",
   "detail": {
     "baseInfo": "Basic Info",
     "lifespanInfo": "Lifespan Info",

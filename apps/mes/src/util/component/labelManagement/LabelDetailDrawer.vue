@@ -5,6 +5,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { watch } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import { $t } from '@vben/locales';
 
@@ -17,12 +18,13 @@ import {
   fetchLabelRecordDetail,
   judgeReturn,
   printLabel,
+  queryPrintTemplateDetails,
 } from '#/api';
 
 // Props
 const props = defineProps<{
   open: boolean;
-  recordId: null | string;
+  recordId: any;
 }>();
 
 // Emits
@@ -213,13 +215,20 @@ function handlePrint() {
     return;
   }
   const ids = selection.map((item: any) => item.id);
-  printLabel(ids)
-    .then(() => {
-      message.success($t('storeManagement.labelPrint.printSuccess'));
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('common.operationFailed'));
+  queryPrintTemplateDetails('物料打印').then((res: any) => {
+    const templateRef = JSON.parse(res.printData);
+    const hiprintTemplate = new hiprint.PrintTemplate({
+      template: templateRef,
     });
+    hiprintTemplate.print(selection, { leftOffset: -1, topOffset: -1 });
+    return printLabel(ids);
+  })
+  .then(() => {
+    message.success($t('storeManagement.labelPrint.printSuccess'));
+  })
+  .catch((error: any) => {
+    message.error(error.message || $t('common.operationFailed'));
+  });
 }
 
 /**

@@ -151,6 +151,7 @@
     "selectPrintLabel": "请选择需要打印的标签",
     "selectDeleteLabel": "请选择要删除的标签",
     "printSuccess": "已设为打印状态",
+    "noPrintData": "没有可打印的数据",
     "judgeSuccess": "判定成功",
     "deleteSuccess": "删除成功",
     "expressCode": "快递单号",
