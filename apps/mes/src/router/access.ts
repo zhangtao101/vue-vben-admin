@@ -61,7 +61,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
           title: $t('page.dashboard.title'),
         },
         name: 'Dashboard',
-        path: '/',
+        path: '/dashboard',
         children: [
           // 暂时注销分析页及工作台, 因为没有相应的接口
           // {
@@ -84,7 +84,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
           // },
           {
             name: 'Welcome',
-            path: '/welcome',
+            path: 'welcome',
             component: '/dashboard/welcome/index',
             meta: {
               affixTab: true,
