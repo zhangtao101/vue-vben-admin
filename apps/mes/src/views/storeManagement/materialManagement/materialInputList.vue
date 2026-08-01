@@ -39,6 +39,7 @@ const queryParams = ref<any>({
   materialName: '',
   materialCode: '',
   enterOut: 1,
+  detailFlag : -1,
 });
 
 const dateRange = ref<any>(null);
