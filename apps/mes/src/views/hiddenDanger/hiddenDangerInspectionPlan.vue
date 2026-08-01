@@ -125,6 +125,14 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // 查询参数
 const queryParams = ref<any>({});
+
+/**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {};
+  gridApi.reload();
+}
 /**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取用户列表数据，并更新前端的数据显示和分页信息。
@@ -323,7 +331,7 @@ function addAll() {
  * 删除计划详情
  * @param index 计划详情索引
  */
-function removeDetail(index: number) {
+function removeDetail(index: any) {
   editItem.value.details.splice(index, 1);
 }
 // endregion
@@ -622,6 +630,9 @@ onMounted(() => {
             @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
+          </Button>
+          <Button style="margin-left: 8px" @click="handleReset">
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>

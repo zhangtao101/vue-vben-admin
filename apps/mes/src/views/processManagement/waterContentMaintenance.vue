@@ -129,6 +129,14 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 const queryParams = ref<any>({});
 
 /**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {};
+  gridApi.reload();
+}
+
+/**
  * queryData - 负责根据当前的查询参数、分页信息和日期范围，从后端服务查询数据。
  * 该函数会更新表格的加载状态，并在查询完成后更新数据列表和总条数。
  */
@@ -235,7 +243,7 @@ function close() {
  * addLine - 在表单状态数组的指定索引位置添加一个新的空行。
  * @param {number} index - 需要添加空行的索引位置。
  */
-function addLine(index: number) {
+function addLine(index: any) {
   // 检查 formState 数组在指定索引位置是否有值，如果没有，则初始化为空数组。
   if (!formState.value[index]) {
     formState.value[index] = [];
@@ -247,11 +255,11 @@ function addLine(index: number) {
 
 /**
  * delLine - 删除表单状态数组中的一行，并根据该行是否具有唯一标识符（如 `id`）来决定操作。
- * @param {number} rowIndex - 需要删除的行的索引位置。
- * @param {number} index - 需要删除的行的索引位置。
+ * @param {any} rowIndex - 需要删除的行的索引位置。
+ * @param {any} index - 需要删除的行的索引位置。
  * @param {object} item - 需要删除的行的数据对象。
  */
-function delLine(rowIndex: number, index: number, item: any) {
+function delLine(rowIndex: any, index: any, item: any) {
   // 弹出确认对话框，询问用户是否确定删除。
   Modal.confirm({
     // 当用户点击确认按钮时执行的函数。
@@ -319,9 +327,9 @@ function queryMoistureContent(key: any) {
 /**
  * submit - 提交表单数据，根据数据是否已有 `id` 来决定是更新数据还是保存新数据。
  * @param {object} item - 当前要提交的表单项数据。
- * @param {number} index - 当前表单项在数组中的索引。
+ * @param {any} index - 当前表单项在数组中的索引。
  */
-function submit(item: any, index: number) {
+function submit(item: any, index: any) {
   // 验证表单数据的有效性。
   formRef.value.validate().then(() => {
     // 构建提交参数对象，包含当前表单项数据和其他必要信息。
@@ -480,6 +488,9 @@ onMounted(() => {
             @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
+          </Button>
+          <Button style="margin-left: 8px" @click="handleReset">
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>

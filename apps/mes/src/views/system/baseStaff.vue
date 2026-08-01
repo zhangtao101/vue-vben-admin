@@ -174,6 +174,18 @@ const queryParams = ref({
 });
 
 /**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {
+    perName: '',
+    stationName: '',
+    workNumber: '',
+  };
+  gridApi.reload();
+}
+
+/**
  * 查询数据
  */
 function queryData({ page, pageSize }: any) {
@@ -562,6 +574,9 @@ onMounted(() => {
               @click="() => gridApi.reload()"
             >
               {{ $t('common.search') }}
+            </Button>
+            <Button style="margin-left: 8px" @click="handleReset">
+              {{ $t('common.reset') }}
             </Button>
           </FormItem>
         </Form>

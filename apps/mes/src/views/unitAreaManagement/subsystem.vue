@@ -362,12 +362,9 @@ function meterClose() {
  */
 function selectAll(check: boolean) {
   // 过滤出包含 meterKey.value 的仪表
-  // eslint-disable-next-line array-callback-return
-  const arr = meterList.value.map((item: any) => {
-    if (item.label.includes(meterKey.value)) {
-      return item.value;
-    }
-  });
+  const arr = meterList.value
+    .filter((item: any) => item.label.includes(meterKey.value))
+    .map((item: any) => item.value);
   if (check) {
     checkedRow.value.equipmentCode.push(...arr);
     checkedRow.value.equipmentCode = [
@@ -413,6 +410,16 @@ function queryUnitPartitions() {
 const queryParams = ref<any>({
   runningStatus: -1,
 });
+
+/**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {
+    runningStatus: -1,
+  };
+  gridApi.reload();
+}
 // 状态列表
 const statusOptions = ref([
   {
@@ -644,6 +651,9 @@ onMounted(() => {
             @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
+          </Button>
+          <Button style="margin-left: 8px" @click="handleReset">
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>

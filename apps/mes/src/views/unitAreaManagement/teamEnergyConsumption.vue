@@ -306,6 +306,14 @@ function queryUnitPartitions() {
 const queryParams = ref<any>({});
 
 /**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {};
+  gridApi.reload();
+}
+
+/**
  * 查询数据
  * 这个函数用于向服务器发送请求，获取列表数据，并更新前端的数据显示和分页信息。
  */
@@ -391,6 +399,9 @@ onMounted(() => {
             @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
+          </Button>
+          <Button style="margin-left: 8px" @click="handleReset">
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>

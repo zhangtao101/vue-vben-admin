@@ -281,6 +281,20 @@ const queryParams = ref<any>({
   // 隐患 1，风险2
   type: 1,
 });
+
+/**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {
+    location: '',
+    level: -1,
+    state: -1,
+    searchTime: [],
+    type: 1,
+  };
+  gridApi.reload();
+}
 // 类型
 const typeList = [
   {
@@ -624,6 +638,9 @@ onMounted(() => {
             @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
+          </Button>
+          <Button style="margin-left: 8px" @click="handleReset">
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>

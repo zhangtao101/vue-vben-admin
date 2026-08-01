@@ -138,6 +138,17 @@ function handleSearch() {
   gridApi.reload();
 }
 
+/**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {
+    changeCode: '',
+    changeType: '',
+  };
+  gridApi.reload();
+}
+
 // endregion
 
 // region 详情抽屉
@@ -389,6 +400,9 @@ onMounted(() => {
           <Button type="primary" @click="handleSearch">
             <Icon icon="mdi:magnify" class="mr-2" />
             {{ $t('common.search') }}
+          </Button>
+          <Button style="margin-left: 8px" @click="handleReset">
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>

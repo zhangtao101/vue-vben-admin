@@ -31,7 +31,6 @@ const materialGroups = ref([
 ]);
 
 const handleSearch = () => {
-  console.log('搜索:', queryForm.value);
   middleGridRef?.reload();
   bottomTableShow.value = true;
 
@@ -48,6 +47,7 @@ const handleReset = () => {
     dateRange: undefined,
   };
   bottomTableShow.value = false;
+  middleGridRef?.reload();
 };
 
 /**
@@ -160,7 +160,6 @@ const [MiddleTable, middleGridRef] = useVbenVxeGrid({
 });
 
 const handleMaterialUpdate = () => {
-  console.log('物料更新');
   middleGridRef?.reload();
 };
 

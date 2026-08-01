@@ -131,6 +131,16 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 const queryParams = ref<any>({
   result: '',
 });
+
+/**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {
+    result: '',
+  };
+  gridApi.reload();
+}
 // 查询类型
 const queryType = ref<any>(1);
 // 类型列表
@@ -551,6 +561,9 @@ onMounted(() => {
             @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
+          </Button>
+          <Button style="margin-left: 8px" @click="handleReset">
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>

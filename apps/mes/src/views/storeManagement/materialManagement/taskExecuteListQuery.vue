@@ -54,19 +54,47 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'taskCode', title: $t('storeManagement.taskExecuteListQuery.taskCode'), minWidth: 200 },
-    { field: 'formCode', title: $t('storeManagement.taskExecuteListQuery.formCode'), minWidth: 150 },
-    { field: 'boxCode', title: $t('storeManagement.taskExecuteListQuery.boxCode'), minWidth: 120 },
-    { field: 'inStorageCode', title: $t('storeManagement.taskExecuteListQuery.inStorageCode'), minWidth: 200 },
-    { field: 'storageCode', title: $t('storeManagement.taskExecuteListQuery.targetStorageCode'), minWidth: 200 },
+    {
+      field: 'taskCode',
+      title: $t('storeManagement.taskExecuteListQuery.taskCode'),
+      minWidth: 200,
+    },
+    {
+      field: 'formCode',
+      title: $t('storeManagement.taskExecuteListQuery.formCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'boxCode',
+      title: $t('storeManagement.taskExecuteListQuery.boxCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'inStorageCode',
+      title: $t('storeManagement.taskExecuteListQuery.inStorageCode'),
+      minWidth: 200,
+    },
+    {
+      field: 'storageCode',
+      title: $t('storeManagement.taskExecuteListQuery.targetStorageCode'),
+      minWidth: 200,
+    },
     {
       field: 'taskState',
       title: $t('storeManagement.taskExecuteListQuery.taskState'),
       minWidth: 100,
       slots: { default: 'taskState' },
     },
-    { field: 'createTime', title: $t('storeManagement.taskExecuteListQuery.createTime'), minWidth: 170 },
-    { field: 'updateTime', title: $t('storeManagement.taskExecuteListQuery.updateTime'), minWidth: 170 },
+    {
+      field: 'createTime',
+      title: $t('storeManagement.taskExecuteListQuery.createTime'),
+      minWidth: 170,
+    },
+    {
+      field: 'updateTime',
+      title: $t('storeManagement.taskExecuteListQuery.updateTime'),
+      minWidth: 170,
+    },
   ],
   height: 500,
   pagerConfig: {
@@ -96,7 +124,13 @@ const gridEvents: VxeGridListeners<any> = {};
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // ========== 数据查询 ==========
-function queryData({ pageNum, pageSize }: { pageNum: number; pageSize: number }) {
+function queryData({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
   return new Promise((resolve) => {
     const params: any = {
       ...queryParams.value,
@@ -144,10 +178,7 @@ function handleReset() {
           :label="$t('storeManagement.taskExecuteListQuery.formCode')"
           style="margin-bottom: 1em"
         >
-          <Input
-            v-model:value="queryParams.formCode"
-            allow-clear
-          />
+          <Input v-model:value="queryParams.formCode" allow-clear />
         </FormItem>
 
         <!-- 外箱码/货架号 -->
@@ -155,10 +186,7 @@ function handleReset() {
           :label="$t('storeManagement.taskExecuteListQuery.packingCode')"
           style="margin-bottom: 1em"
         >
-          <Input
-            v-model:value="queryParams.packingCode"
-            allow-clear
-          />
+          <Input v-model:value="queryParams.packingCode" allow-clear />
         </FormItem>
 
         <!-- 货架储位号 -->
@@ -166,10 +194,7 @@ function handleReset() {
           :label="$t('storeManagement.taskExecuteListQuery.storageCode')"
           style="margin-bottom: 1em"
         >
-          <Input
-            v-model:value="queryParams.storageCode"
-            allow-clear
-          />
+          <Input v-model:value="queryParams.storageCode" allow-clear />
         </FormItem>
 
         <!-- 料号 -->
@@ -177,10 +202,7 @@ function handleReset() {
           :label="$t('storeManagement.taskExecuteListQuery.materialCode')"
           style="margin-bottom: 1em"
         >
-          <Input
-            v-model:value="queryParams.materialCode"
-            allow-clear
-          />
+          <Input v-model:value="queryParams.materialCode" allow-clear />
         </FormItem>
 
         <!-- 查询 & 重置 -->

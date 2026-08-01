@@ -147,6 +147,17 @@ function handleSearch() {
   gridApi.reload();
 }
 
+/**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {
+    pageNum: 1,
+    pageSize: 10,
+  };
+  gridApi.reload();
+}
+
 // endregion
 
 // region 新增/编辑
@@ -564,6 +575,7 @@ onMounted(() => {
             <Icon icon="mdi:magnify" class="mr-2" />
             查询
           </Button>
+          <Button style="margin-left: 8px" @click="handleReset"> 重置 </Button>
         </FormItem>
       </Form>
     </Card>

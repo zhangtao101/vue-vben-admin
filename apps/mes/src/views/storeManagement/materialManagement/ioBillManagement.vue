@@ -265,6 +265,16 @@ function handleSyncFormCode() {
 }
 
 /**
+ * 重置查询条件并重新查询
+ */
+function handleReset() {
+  queryParams.value = {
+    enterOut: -99,
+  };
+  gridApi.reload();
+}
+
+/**
  * 关闭编辑抽屉
  * 清空表单数据并重置相关状态
  */
@@ -815,6 +825,9 @@ onMounted(() => {
               @click="handleSyncFormCode"
             >
               {{ $t('storeManagement.ioBillManagement.syncFormCode') }}
+            </Button>
+            <Button @click="handleReset">
+              {{ $t('common.reset') }}
             </Button>
           </Space>
         </FormItem>
