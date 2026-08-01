@@ -173,7 +173,9 @@ onMounted(() => {
 
     <!-- region 表格主体 -->
     <Card>
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
     <!-- endregion -->
   </Page>

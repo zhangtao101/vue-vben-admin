@@ -578,6 +578,7 @@ onMounted(() => {
         </Button>
       </div>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workSheetCode="{ row }">
           <span
             class="cursor-pointer text-blue-500 underline"

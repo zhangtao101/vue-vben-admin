@@ -334,7 +334,9 @@ function handleDetail() {
 
       <!-- 产品明细表 -->
       <Card :title="$t('tracingModule.materialBatchTrace.productList')">
-        <Grid />
+        <Grid>
+          <template #toolbar-tools></template>
+        </Grid>
       </Card>
     </template>
 

@@ -141,6 +141,7 @@ onMounted(() => {
     <!-- 表格 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #action="{ row }">
           <Space>
             <Tooltip v-if="permissions.view">

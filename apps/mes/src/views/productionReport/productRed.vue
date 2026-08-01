@@ -186,6 +186,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workSheetCode="{ row }">
           <Button class="mr-4" type="link" @click="showEdit(row)">
             {{ row.workSheetCode }}

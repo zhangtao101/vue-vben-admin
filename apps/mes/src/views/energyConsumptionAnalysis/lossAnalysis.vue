@@ -265,6 +265,7 @@ onMounted(() => {
     <!-- region 数据表格区域 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>

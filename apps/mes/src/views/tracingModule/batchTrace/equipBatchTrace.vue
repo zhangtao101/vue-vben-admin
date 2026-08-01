@@ -383,7 +383,9 @@ const disabledEndDate = (current: any) => {
           </Button>
         </div>
       </template>
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
   </Page>
 </template>

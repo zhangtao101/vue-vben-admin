@@ -223,6 +223,7 @@ function handleDetail(row: any) {
         <!-- 流转记录表格 -->
         <Card v-if="hasTableData" :title="$t('tracingModule.productTrace.processTrace')">
           <Grid>
+            <template #toolbar-tools></template>
             <template #action="{ row }">
               <Button
                 v-if="row.status === 1"

@@ -206,6 +206,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #action="{ row }">
           <!-- 查看详情 -->
           <Tooltip>

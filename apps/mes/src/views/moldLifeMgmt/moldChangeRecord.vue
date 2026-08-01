@@ -243,7 +243,9 @@ function handleReset() {
 
     <!-- 表格区域 -->
     <Card>
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
   </Page>
 </template>
