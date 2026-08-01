@@ -42,6 +42,20 @@
     "auditBack": "撤审",
     "confirmAuditBack": "是否确认撤审该条数据?"
   },
+  "taskExecuteListQuery": {
+    "title": "RCS任务执行列表",
+    "formCode": "单据号",
+    "packingCode": "外箱码/货架号",
+    "storageCode": "货架储位号",
+    "materialCode": "料号",
+    "taskCode": "任务号",
+    "boxCode": "箱码/货架",
+    "inStorageCode": "来源储位",
+    "targetStorageCode": "目标储位",
+    "taskState": "执行状态",
+    "createTime": "创建时间",
+    "updateTime": "更新时间"
+  },
   "inventoryManagement": {
     "materialNumber": "材料编号",
     "materialName": "材料名称",

@@ -42,6 +42,20 @@
     "auditBack": "Revoke Audit",
     "confirmAuditBack": "Are you sure to revoke audit for this record?"
   },
+  "taskExecuteListQuery": {
+    "title": "RCS Task Execution List",
+    "formCode": "Form Code",
+    "packingCode": "Box Code / Shelf No",
+    "storageCode": "Shelf Storage Code",
+    "materialCode": "Material Code",
+    "taskCode": "Task Code",
+    "boxCode": "Box Code / Shelf",
+    "inStorageCode": "Source Storage",
+    "targetStorageCode": "Target Storage",
+    "taskState": "Task State",
+    "createTime": "Create Time",
+    "updateTime": "Update Time"
+  },
   "inventoryManagement": {
     "materialNumber": "Material Number",
     "materialName": "Material Name",
