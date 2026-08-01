@@ -198,12 +198,12 @@ function handleReset() {
         </FormItem>
 
         <!-- 料号 -->
-        <FormItem
+        <!-- <FormItem
           :label="$t('storeManagement.taskExecuteListQuery.materialCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.materialCode" allow-clear />
-        </FormItem>
+        </FormItem> -->
 
         <!-- 查询 & 重置 -->
         <FormItem style="margin-bottom: 1em">
