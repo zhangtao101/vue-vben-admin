@@ -614,6 +614,7 @@ function downloadTemplate() {
             </Col>
           </Row>
           <Grid>
+            <template #toolbar-tools></template>
             <template #action="{ row }">
               <!-- 编辑按钮 -->
               <Tooltip v-if="author.includes('编辑')">

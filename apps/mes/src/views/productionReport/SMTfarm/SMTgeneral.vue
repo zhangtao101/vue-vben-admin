@@ -622,6 +622,7 @@ onMounted(() => {
         </Button>
       </div>
       <ProductGrid>
+        <template #toolbar-tools></template>
         <template #sum="{ row }">
           <span
             class="cursor-pointer text-blue-500 underline"

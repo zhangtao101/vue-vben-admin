@@ -560,6 +560,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #result="{ row }">
           {{
             row.result === 0

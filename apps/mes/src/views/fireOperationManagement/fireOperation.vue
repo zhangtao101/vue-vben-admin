@@ -486,6 +486,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #status="{ row, column }">
           {{ getStatusText(row[column.field]) }}
         </template>

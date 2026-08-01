@@ -441,7 +441,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
-        <template #toolbar-actions>
+        <template #toolbar-tools>
           <Space>
             <!-- 导出 -->
             <Button type="primary" @click="exportFile">

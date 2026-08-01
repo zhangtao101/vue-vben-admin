@@ -431,6 +431,7 @@ watch(detailTab, () => {
 
     <Card class="!mb-8">
       <MainGrid>
+        <template #toolbar-tools></template>
         <template #inventoryTime="{ row }">
           {{ formatDateOnly(row.inventoryTime) }}
         </template>
@@ -447,6 +448,7 @@ watch(detailTab, () => {
           :tab="$t('storeManagement.materialInventory.inventoryDetail')"
         >
           <DetailGrid>
+            <template #toolbar-tools></template>
             <template #detailOperateTime="{ row }">
               {{ formatDateOnly(row.operateTime) }}
             </template>
@@ -457,6 +459,7 @@ watch(detailTab, () => {
           :tab="$t('storeManagement.materialInventory.profitLossDetail')"
         >
           <DetailGrid>
+            <template #toolbar-tools></template>
             <template #detailOperateTime="{ row }">
               {{ formatDateOnly(row.operateTime) }}
             </template>

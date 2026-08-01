@@ -400,7 +400,7 @@ onMounted(() => {
     <!-- 表格区域 -->
     <Card>
       <Grid>
-        <template #toolbar-actions>
+        <template #toolbar-tools>
           <Space>
             <!-- 新增 -->
             <Button

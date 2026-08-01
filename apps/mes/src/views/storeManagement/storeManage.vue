@@ -150,7 +150,9 @@ onMounted(() => {
     <!-- endregion -->
 
     <Card class="!mb-8">
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
   </Page>
 </template>

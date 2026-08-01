@@ -666,6 +666,7 @@ onMounted(async () => {
     <!-- 表格区域 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #repairType="{ row }">
           <Tag :color="repairTypeColorMap[row.repairType] || 'default'">
             {{ formatRepairType(row.repairType) }}
