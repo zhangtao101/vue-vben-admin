@@ -54,7 +54,10 @@
     "targetStorageCode": "目标储位",
     "taskState": "执行状态",
     "createTime": "创建时间",
-    "updateTime": "更新时间"
+    "updateTime": "更新时间",
+    "notExecuted": "未执行",
+    "executing": "执行中",
+    "executionCompleted": "执行完成"
   },
   "inventoryManagement": {
     "materialNumber": "材料编号",

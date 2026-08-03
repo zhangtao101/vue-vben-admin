@@ -30,13 +30,20 @@ import { rcsTaskExecutionListQuery } from '#/api';
 import { $t } from '#/locales';
 
 // ========== 执行状态映射 ==========
-const taskStateMap: Record<number, { color: string; label: string }> = {
-  '-2': { color: 'default', label: '已取消' },
-  '-1': { color: 'warning', label: '待执行' },
-  '0': { color: 'processing', label: '执行中' },
-  '1': { color: 'success', label: '已完成' },
-  '2': { color: 'error', label: '执行失败' },
+const taskStateColorMap: Record<number, string> = {
+  '-1': 'warning',
+  '1': 'processing',
+  '2': 'success',
 };
+
+function getTaskStateLabel(taskState: number): string {
+  const labelMap: Record<number, string> = {
+    '-1': $t('storeManagement.taskExecuteListQuery.notExecuted'),
+    '1': $t('storeManagement.taskExecuteListQuery.executing'),
+    '2': $t('storeManagement.taskExecuteListQuery.executionCompleted'),
+  };
+  return labelMap[taskState] ?? String(taskState ?? '');
+}
 
 /**
  * 主表格查询参数
@@ -229,8 +236,8 @@ function handleReset() {
       <Grid>
         <!-- 执行状态插槽 -->
         <template #taskState="{ row }">
-          <Tag :color="taskStateMap[row.taskState]?.color ?? 'default'">
-            {{ taskStateMap[row.taskState]?.label ?? row.taskState }}
+          <Tag :color="taskStateColorMap[row.taskState] ?? 'default'">
+            {{ getTaskStateLabel(row.taskState) }}
           </Tag>
         </template>
       </Grid>

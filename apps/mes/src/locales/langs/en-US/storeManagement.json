@@ -54,7 +54,10 @@
     "targetStorageCode": "Target Storage",
     "taskState": "Task State",
     "createTime": "Create Time",
-    "updateTime": "Update Time"
+    "updateTime": "Update Time",
+    "notExecuted": "Not Executed",
+    "executing": "Executing",
+    "executionCompleted": "Execution Completed"
   },
   "inventoryManagement": {
     "materialNumber": "Material Number",
