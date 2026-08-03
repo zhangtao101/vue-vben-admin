@@ -1,5 +1,6 @@
 {
   "meterType": "Meter Type",
+  "equipmentType": "Equipment Type",
   "Total": "Total",
   "NotEnabled": "Not Enabled",
   "Enabled": "Enabled",

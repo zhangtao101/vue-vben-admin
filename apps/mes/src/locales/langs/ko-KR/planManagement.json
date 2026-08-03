@@ -52,5 +52,20 @@
   "inputProductionUnfinishedQuantity": "미완료 수량을 입력하세요",
   "productionUnfinishedMustBeNumber": "미완료 수량은 숫자여야 합니다",
   "printNotReady": "인쇄 기능 준비 안 됨",
-  "uploadFailed": "파일 업로드 실패"
+  "uploadFailed": "파일 업로드 실패",
+  "planCalendar": {
+    "equipmentInspectionPlan": "검사 계획",
+    "equipmentMaintenancePlan": "유지보수 계획",
+    "planCode": "계획 코드",
+    "planName": "계획 이름",
+    "planDetail": "계획 상세",
+    "triggerType": "트리거 유형",
+    "equipmentGroup": "장비 그룹",
+    "equipmentCodes": "장비 코드",
+    "firstExecuteTime": "첫 실행 시간",
+    "operator": "작업자",
+    "remark": "비고",
+    "equipmentCode": "장비 코드",
+    "selectDateRange": "날짜 범위 선택"
+  }
 }

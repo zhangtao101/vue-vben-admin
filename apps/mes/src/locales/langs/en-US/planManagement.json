@@ -52,5 +52,20 @@
   "inputProductionUnfinishedQuantity": "Please input unfinished quantity",
   "productionUnfinishedMustBeNumber": "Unfinished quantity must be a number",
   "printNotReady": "Print function not ready",
-  "uploadFailed": "File upload failed"
+  "uploadFailed": "File upload failed",
+  "planCalendar": {
+    "equipmentInspectionPlan": "Inspection Plan",
+    "equipmentMaintenancePlan": "Maintenance Plan",
+    "planCode": "Plan Code",
+    "planName": "Plan Name",
+    "planDetail": "Plan Detail",
+    "triggerType": "Trigger Type",
+    "equipmentGroup": "Equipment Group",
+    "equipmentCodes": "Equipment Codes",
+    "firstExecuteTime": "First Execute Time",
+    "operator": "Operator",
+    "remark": "Remark",
+    "equipmentCode": "Equipment Code",
+    "selectDateRange": "Select Date Range"
+  }
 }

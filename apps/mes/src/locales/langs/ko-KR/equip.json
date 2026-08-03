@@ -1,5 +1,6 @@
 {
   "meterType": "계량기 유형",
+  "equipmentType": "장비 유형",
   "Total": "합계",
   "NotEnabled": "미사용",
   "Enabled": "사용",

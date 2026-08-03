@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TreeProps } from 'ant-design-vue';
+
 /**
  * [INPUT]: 依赖 ant-design-vue、@iconify/vue、vxe-table 的组件，以及 queryScadaEquipNamePage 等 API
  * [OUTPUT]: 对外提供设备名称维护页面组件
@@ -8,7 +10,7 @@
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { h, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -19,26 +21,31 @@ import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
+  Col,
+  DirectoryTree,
   Drawer,
   Form,
   FormItem,
   Input,
   message,
   Modal,
+  Row,
   Space,
   Tooltip,
+  TreeSelect,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteScadaEquipName,
+  getEquipNameTree,
   insertScadaEquipName,
   queryScadaEquipNameCodeQuote,
   queryScadaEquipNamePage,
   updateScadaEquipName,
 } from '#/api';
 import { $t } from '#/locales';
-import { queryAuth } from '#/util';
+import { flattenTree, queryAuth } from '#/util';
 
 // 路由信息
 const route = useRoute();
@@ -250,6 +257,81 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
+// region 树形菜单操作
+
+// 树搜索文本
+const treeSearchText = ref('');
+// 当前展开的节点
+const expandedKeys = ref<string[]>([]);
+// 树节点数据
+const treeData = ref<any[]>([]);
+// 展平后的树节点数据（用于搜索自动展开）
+const flatteningNodeData = ref<any>([]);
+
+/**
+ * 查询设备类型树
+ * @since 2026-08-03
+ */
+function queryTree() {
+  getEquipNameTree().then((data) => {
+    if (data && data.length > 0) {
+      treeData.value = data;
+    }
+    flatteningNodeData.value = flattenTree(
+      { children: treeData.value },
+      'children',
+    );
+  });
+}
+
+/**
+ * 获取树节点的父级 key
+ * @param key 当前节点 key
+ * @param tree 树形数据
+ * @returns 父级 key，找不到则返回 undefined
+ * @since 2026-08-03
+ */
+function getParentKey(
+  key: string,
+  tree: TreeProps['treeData'],
+): string | undefined {
+  if (!tree) return undefined;
+  let parentKey: string | undefined;
+  for (const node of tree) {
+    if (
+      node.children &&
+      node.children.some((item: any) => item.equipmentNameCode === key)
+    ) {
+      return node.equipmentNameCode;
+    }
+    if (node.children) {
+      parentKey = getParentKey(key, node.children);
+      if (parentKey) return parentKey;
+    }
+  }
+  return parentKey;
+}
+
+/**
+ * 监听树搜索文本变化，自动展开匹配的节点
+ * @since 2026-08-03
+ */
+watch(treeSearchText, () => {
+  expandedKeys.value = treeSearchText.value ? flatteningNodeData.value
+      .map((item: any) => {
+        if (item.equipmentName?.includes(treeSearchText.value)) {
+          return getParentKey(item.equipmentNameCode, treeData.value);
+        }
+        return null;
+      })
+      .filter(
+        (item: any, i: number, self: any) =>
+          item && self.indexOf(item) === i,
+      ) : [];
+});
+
+// endregion
+
 // region 权限查询
 // 当前页面按钮权限列表
 const author = ref<string[]>([]);
@@ -263,6 +345,8 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
+  // 加载设备类型树
+  queryTree();
 });
 
 // endregion
@@ -295,51 +379,101 @@ onMounted(() => {
     </Card>
     <!-- endregion -->
 
-    <!-- region 表格主体 -->
-    <Card>
-      <Grid>
-        <template #toolbar-tools>
-          <!-- 新增按钮 -->
-          <Button
-            v-if="author.includes('新增')"
-            type="primary"
-            @click="editRow()"
+    <!-- region 树形菜单 + 表格主体 -->
+    <Row :gutter="16">
+      <!-- region 树形菜单 -->
+      <Col :lg="6" :md="9" :sm="9" :xl="6" :xs="6">
+        <Card class="h-[80vh] overflow-y-auto">
+          <Input
+            v-model:value="treeSearchText"
+            :placeholder="$t('system.sysButton.enterKeyword')"
+            style="margin-bottom: 8px"
+          />
+          <DirectoryTree
+            v-model:expanded-keys="expandedKeys"
+            :auto-expand-parent="false"
+            :field-names="{
+              children: 'children',
+              title: 'equipmentName',
+              key: 'equipmentNameCode',
+            }"
+            :tree-data="treeData"
           >
-            {{ $t('common.add') }}
-          </Button>
-        </template>
-        <template #action="{ row }">
-          <!-- 编辑按钮 -->
-          <Tooltip>
-            <template #title>{{ $t('common.view') }}</template>
-            <Button type="link" @click="showDetails(row)">
-              <Icon icon="mdi:eye" class="inline-block align-middle text-2xl" />
-            </Button>
-          </Tooltip>
-          <!-- 编辑按钮 -->
-          <Tooltip v-if="author.includes('编辑')">
-            <template #title>{{ $t('common.edit') }}</template>
-            <Button type="link" @click="editRow(row)">
-              <Icon
-                icon="mdi:edit-outline"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
+            <template #title="{ equipmentName }">
+              <span v-if="equipmentName?.includes(treeSearchText)">
+                {{
+                  equipmentName.substring(
+                    0,
+                    equipmentName.indexOf(treeSearchText),
+                  )
+                }}
+                <span style="color: #f50">{{ treeSearchText }}</span>
+                {{
+                  equipmentName.substring(
+                    equipmentName.indexOf(treeSearchText) +
+                      treeSearchText.length,
+                  )
+                }}
+              </span>
+              <span v-else>{{ equipmentName }}</span>
+            </template>
+          </DirectoryTree>
+        </Card>
+      </Col>
+      <!-- endregion -->
 
-          <!-- 删除数据 -->
-          <Tooltip v-if="author.includes('删除')">
-            <template #title>{{ $t('common.delete') }}</template>
-            <Button type="link" @click="delRow(row)" danger>
-              <Icon
-                icon="mdi-light:delete"
-                class="inline-block align-middle text-2xl"
-              />
-            </Button>
-          </Tooltip>
-        </template>
-      </Grid>
-    </Card>
+      <!-- region 表格主体 -->
+      <Col :lg="18" :md="15" :sm="15" :xl="18" :xs="18">
+        <Card>
+          <Grid>
+            <template #toolbar-tools>
+              <!-- 新增按钮 -->
+              <Button
+                v-if="author.includes('新增')"
+                type="primary"
+                @click="editRow()"
+              >
+                {{ $t('common.add') }}
+              </Button>
+            </template>
+            <template #action="{ row }">
+              <!-- 查看按钮 -->
+              <Tooltip>
+                <template #title>{{ $t('common.view') }}</template>
+                <Button type="link" @click="showDetails(row)">
+                  <Icon
+                    icon="mdi:eye"
+                    class="inline-block align-middle text-2xl"
+                  />
+                </Button>
+              </Tooltip>
+              <!-- 编辑按钮 -->
+              <Tooltip v-if="author.includes('编辑')">
+                <template #title>{{ $t('common.edit') }}</template>
+                <Button type="link" @click="editRow(row)">
+                  <Icon
+                    icon="mdi:edit-outline"
+                    class="inline-block align-middle text-2xl"
+                  />
+                </Button>
+              </Tooltip>
+
+              <!-- 删除数据 -->
+              <Tooltip v-if="author.includes('删除')">
+                <template #title>{{ $t('common.delete') }}</template>
+                <Button type="link" @click="delRow(row)" danger>
+                  <Icon
+                    icon="mdi-light:delete"
+                    class="inline-block align-middle text-2xl"
+                  />
+                </Button>
+              </Tooltip>
+            </template>
+          </Grid>
+        </Card>
+      </Col>
+      <!-- endregion -->
+    </Row>
     <!-- endregion -->
 
     <!-- region 新增/编辑 抽屉 -->
@@ -371,6 +505,22 @@ onMounted(() => {
           <Input
             v-model:value="checkedRow.equipmentNameCode"
             disabled
+          />
+        </FormItem>
+        <!-- 设备类型 -->
+        <FormItem :label="$t('equip.equipmentType')" name="typeLevel">
+          <TreeSelect
+            v-model:value="checkedRow.typeLevel"
+            :disabled="isShowDetails"
+            :field-names="{
+              children: 'children',
+              label: 'equipmentName',
+              value: 'id',
+            }"
+            :tree-data="treeData"
+            allow-clear
+            show-search
+            tree-node-filter-prop="equipmentName"
           />
         </FormItem>
         <!-- 备注 -->

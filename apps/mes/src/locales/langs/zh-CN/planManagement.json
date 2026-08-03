@@ -52,5 +52,20 @@
   "inputProductionUnfinishedQuantity": "请输入生产未完成数",
   "productionUnfinishedMustBeNumber": "生产未完成数必须为数字值",
   "printNotReady": "打印功能暂未完成",
-  "uploadFailed": "文件上传失败"
+  "uploadFailed": "文件上传失败",
+  "planCalendar": {
+    "equipmentInspectionPlan": "设备点检计划",
+    "equipmentMaintenancePlan": "设备保养计划",
+    "planCode": "计划编号",
+    "planName": "计划名称",
+    "planDetail": "计划详情",
+    "triggerType": "触发类型",
+    "equipmentGroup": "设备组",
+    "equipmentCodes": "设备编号",
+    "firstExecuteTime": "首次执行时间",
+    "operator": "操作人",
+    "remark": "备注",
+    "equipmentCode": "设备编号",
+    "selectDateRange": "日期范围"
+  }
 }

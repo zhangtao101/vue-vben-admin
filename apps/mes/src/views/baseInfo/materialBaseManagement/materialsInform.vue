@@ -83,6 +83,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 150 },
     { field: 'materialDrawingCode', title: $t('baseInfo.materialDrawingNumber'), minWidth: 150 },
     { field: 'materialName', title: $t('baseInfo.materialName'), minWidth: 200 },
+    { field: 'supplier', title: $t('baseInfo.supplier'), minWidth: 120 },
     { field: 'unit', title: $t('baseInfo.unit'), minWidth: 100 },
     { field: 'minPackNumber', title: $t('baseInfo.minPackageQuantity'), minWidth: 90 },
     { field: 'safeLevel', title: $t('baseInfo.safetyQuantity'), minWidth: 80 },

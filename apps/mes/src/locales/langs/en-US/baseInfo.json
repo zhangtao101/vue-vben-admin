@@ -142,5 +142,16 @@
   "supplier": "Supplier",
   "useProcess": "Used Process",
   "designBOM": "Design BOM",
-  "multiLevelExpand": "Multi-level Expand"
+  "multiLevelExpand": "Multi-level Expand",
+  "notifyChannelName": "Notification Name",
+  "notifyChannelType": "Send Channel",
+  "notifyChannelProvider": "Provider",
+  "notifyChannelConfigContent": "Config Content",
+  "notifyChannelAdd": "Add Channel",
+  "notifyChannelEdit": "Edit Channel",
+  "notifyChannelDetail": "Channel Detail",
+  "notifyChannelDeleteConfirm": "Are you sure to delete this channel?",
+  "notifyChannelSelectType": "Send Channel",
+  "appId": "AppId",
+  "appSecret": "AppSecret"
 }

@@ -80,6 +80,7 @@
     "enum-plus": "catalog:",
     "eslint-plugin-vue": "catalog:",
     "exceljs": "catalog:",
+    "jordium-gantt-vue3": "catalog:",
     "lodash-es": "catalog:",
     "qs": "catalog:",
     "sass": "catalog:",

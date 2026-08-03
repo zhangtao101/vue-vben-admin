@@ -71,3 +71,13 @@ export function queryScadaEquipNameCodeQuote(query: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentName/codeIsQuote?${qs.stringify(query)}`,
   );
 }
+
+/**
+ * 获取设备类型树状结构
+ * @returns 返回设备类型树形数据（含多级 children）
+ */
+export function getEquipNameTree() {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentName/getTree`,
+  );
+}

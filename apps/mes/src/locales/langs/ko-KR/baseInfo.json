@@ -142,5 +142,16 @@
   "supplier": "공급업체",
   "useProcess": "사용 공정",
   "designBOM": "설계 BOM",
-  "multiLevelExpand": "다단계 전개"
+  "multiLevelExpand": "다단계 전개",
+  "notifyChannelName": "통지 이름",
+  "notifyChannelType": "발송 채널",
+  "notifyChannelProvider": "서비스 제공업체",
+  "notifyChannelConfigContent": "구성 내용",
+  "notifyChannelAdd": "채널 추가",
+  "notifyChannelEdit": "채널 편집",
+  "notifyChannelDetail": "채널 상세",
+  "notifyChannelDeleteConfirm": "이 채널을 삭제하시겠습니까?",
+  "notifyChannelSelectType": "발송 채널",
+  "appId": "AppId",
+  "appSecret": "AppSecret"
 }

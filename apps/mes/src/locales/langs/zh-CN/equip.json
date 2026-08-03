@@ -1,5 +1,6 @@
 {
   "meterType": "电表类型",
+  "equipmentType": "设备类型",
   "Total": "设备总数",
   "NotEnabled": "未启用设备",
   "Enabled": "启用设备",

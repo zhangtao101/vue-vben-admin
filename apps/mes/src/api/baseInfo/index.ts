@@ -3,6 +3,7 @@ export * from './controlSet.service';
 export * from './electricityTimeSlotRule.service';
 export * from './materialBaseManagement.service';
 export * from './materialsCategory.service';
+export * from './notifyChannel.service';
 export * from './plantCalendar.service';
 export * from './plantCalendarLook.service';
 export * from './printTemplateMaintenance.service';

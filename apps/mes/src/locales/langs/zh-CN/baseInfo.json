@@ -142,5 +142,16 @@
   "supplier": "供应厂商",
   "useProcess": "使用工序",
   "designBOM": "设计BOM",
-  "multiLevelExpand": "多级展开"
+  "multiLevelExpand": "多级展开",
+  "notifyChannelName": "通知名称",
+  "notifyChannelType": "发送渠道",
+  "notifyChannelProvider": "服务商",
+  "notifyChannelConfigContent": "配置内容",
+  "notifyChannelAdd": "新增渠道",
+  "notifyChannelEdit": "编辑渠道",
+  "notifyChannelDetail": "渠道详情",
+  "notifyChannelDeleteConfirm": "是否确认删除该渠道？",
+  "notifyChannelSelectType": "请输入发送渠道",
+  "appId": "AppId",
+  "appSecret": "AppSecret"
 }
