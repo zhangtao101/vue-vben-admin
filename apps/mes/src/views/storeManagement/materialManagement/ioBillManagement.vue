@@ -664,11 +664,12 @@ function queryData({ page, pageSize }: any) {
     // 处理时间范围查询
     if (params.searchTime && params.searchTime.length === 2) {
       params.operateDateStart = params.searchTime[0].format(
-        'YYYY-MM-DD 00:00:00',
+        'YYYY-MM-DD',
       );
       params.operateDateEnd = params.searchTime[1].format(
-        'YYYY-MM-DD 23:59:59',
+        'YYYY-MM-DD',
       );
+      delete params.searchTime;
     }
 
     // 调用接口获取数据
