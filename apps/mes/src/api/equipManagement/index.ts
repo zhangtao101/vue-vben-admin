@@ -18,6 +18,7 @@ export * from './moldMaintenancePlan.service';
 export * from './moldMaintenanceScheme.service';
 export * from './moldMounting.service';
 export * from './notification.service';
+export * from './orderHall.service';
 export * from './repairBasicConfig.service';
 export * from './repairKnowledgeBase.service';
 export * from './repairProcessConfig.service';

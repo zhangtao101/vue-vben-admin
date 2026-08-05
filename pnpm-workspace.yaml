@@ -108,6 +108,10 @@ catalog:
   '@vue-flow/core': ^1.45.0
   '@vue-flow/minimap': ^1.5.3
   '@vue-flow/node-toolbar': ^1.1.1
+  '@vue-office/docx': ^1.6.3
+  '@vue-office/excel': ^1.7.14
+  '@vue-office/pdf': ^2.0.10
+  '@vue-office/pptx': ^1.0.1
   '@vue/shared': ^3.5.35
   '@vue/test-utils': ^2.4.10
   '@vueuse/core': ^14.3.0
@@ -238,6 +242,7 @@ catalog:
   vitest: ^4.1.8
   vue: ^3.5.35
   vue-baidu-map-3x: ^1.0.40
+  vue-demi: ^0.14.10
   vue-eslint-parser: ^10.4.0
   vue-i18n: ^11.4.4
   vue-json-pretty: ^2.6.0
@@ -258,6 +263,10 @@ catalog:
   zod-defaults: 0.1.3
 allowBuilds:
   '@parcel/watcher': true
+  '@vue-office/docx': true
+  '@vue-office/excel': true
+  '@vue-office/pdf': true
+  '@vue-office/pptx': true
   core-js: true
   esbuild: true
   lefthook: true
