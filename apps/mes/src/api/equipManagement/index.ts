@@ -9,6 +9,7 @@ export * from './equipmentRepairAction.service';
 export * from './equipmentSpotCheckScheme.service';
 export * from './equipNameMaintain.service';
 export * from './equipRecord.service';
+export * from './faultKnowledgeWorkbench.service';
 export * from './maintenanceAlert.service';
 export * from './maintenanceTask.service';
 export * from './moldArchiveMgmt.service';
