@@ -207,17 +207,17 @@ function getActionTypeText(type: number) {
 
 <template>
   <Page>
-    <div class="repair-knowledge-page">
+    <div class="repair-knowledge-page flex flex-col" style="min-height: calc(100vh - 200px)">
       <!-- ========== 搜索区域 ========== -->
       <div
-        class="search-wrapper"
-        :class="{ 'search-wrapper--searched': hasSearched }"
+        class="search-wrapper flex items-center flex-1 px-5 py-10 transition-all duration-300"
+        :class="{ 'flex-none !py-4': hasSearched }"
       >
-        <div class="search-content">
-          <h1 class="search-title" v-if="!hasSearched">
+        <div class="search-content w-full max-w-[640px] text-center">
+          <h1 class="search-title text-[32px] font-semibold text-blue-500 dark:text-blue-400 !mb-8 tracking-wider" v-if="!hasSearched">
             {{ $t('knowledgeBaseManage.repairSearch.title') }}
           </h1>
-          <div class="search-input-group items-center">
+          <div class="search-input-group flex gap-3 items-center">
             <Input
               v-model:value="keyword"
               size="large"
@@ -239,7 +239,7 @@ function getActionTypeText(type: number) {
               {{ $t('knowledgeBaseManage.repairSearch.search') }}
             </Button>
           </div>
-          <p class="search-subtitle" v-if="!hasSearched && !loading">
+          <p class="text-gray-400 dark:text-gray-500 mt-6 text-sm" v-if="!hasSearched && !loading">
             {{ $t('knowledgeBaseManage.repairSearch.subtitle') }}
           </p>
         </div>
@@ -248,9 +248,9 @@ function getActionTypeText(type: number) {
       <!-- ========== 加载状态 ========== -->
       <Spin :spinning="loading" v-if="hasSearched">
         <!-- ========== 搜索结果 ========== -->
-        <div class="results-section" v-if="resultList.length > 0">
-          <div class="results-header">
-            <span class="results-count">
+        <div class="results-section max-w-[800px] mx-auto" v-if="resultList.length > 0">
+          <div class="results-header mb-4">
+            <span class="results-count text-sm text-gray-500 dark:text-gray-400">
               {{
                 $t('knowledgeBaseManage.repairSearch.resultCount', {
                   count: total,
@@ -259,39 +259,39 @@ function getActionTypeText(type: number) {
             </span>
           </div>
 
-          <div class="results-list">
+          <div class="results-list flex flex-col gap-3">
             <Card
               v-for="(item, index) in resultList"
               :key="`${item.sourceType}-${item.sourceId}`"
-              class="result-card"
+              class="result-card cursor-pointer transition-shadow duration-200 hover:shadow-md"
               hoverable
               @click="openDetail(item, index)"
             >
-              <div class="result-card-header">
-                <h3 class="result-title">{{ item.title }}</h3>
+              <div class="result-card-header flex items-center justify-between mb-3">
+                <h3 class="result-title !m-0 text-base font-medium text-blue-700 dark:text-blue-300 leading-relaxed">{{ item.title }}</h3>
                 <Tag :color="getSourceTypeColor(item.sourceType)">
                   {{ getSourceTypeTag(item.sourceType) }}
                 </Tag>
               </div>
-              <div class="result-fields">
-                <div class="result-field" v-if="item.faultAnalysis">
-                  <span class="result-field-label">
+              <div class="result-fields flex flex-col gap-1">
+                <div class="result-field flex text-[13px] leading-relaxed" v-if="item.faultAnalysis">
+                  <span class="result-field-label text-gray-400 dark:text-gray-500 shrink-0">
                     {{ $t('knowledgeBaseManage.repairSearch.faultAnalysis') }}：
                   </span>
-                  <span class="result-field-value">{{ item.faultAnalysis }}</span>
+                  <span class="result-field-value text-gray-600 dark:text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap">{{ item.faultAnalysis }}</span>
                 </div>
-                <div class="result-field" v-if="item.solution">
-                  <span class="result-field-label">
+                <div class="result-field flex text-[13px] leading-relaxed" v-if="item.solution">
+                  <span class="result-field-label text-gray-400 dark:text-gray-500 shrink-0">
                     {{ $t('knowledgeBaseManage.repairSearch.solution') }}：
                   </span>
-                  <span class="result-field-value">{{ item.solution }}</span>
+                  <span class="result-field-value text-gray-600 dark:text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap">{{ item.solution }}</span>
                 </div>
               </div>
             </Card>
           </div>
 
           <!-- 分页 -->
-          <div class="results-pagination" v-if="total > pageSize">
+          <div class="results-pagination flex justify-center mt-6" v-if="total > pageSize">
             <Pagination
               :current="pageNum"
               :page-size="pageSize"
@@ -303,7 +303,7 @@ function getActionTypeText(type: number) {
         </div>
 
         <!-- ========== 空结果 ========== -->
-        <div class="results-empty" v-else-if="!loading && hasSearched">
+        <div class="flex justify-center items-center flex-1 py-[60px]" v-else-if="!loading && hasSearched">
           <Empty
             :description="$t('knowledgeBaseManage.repairSearch.noResult')"
           />
@@ -311,7 +311,7 @@ function getActionTypeText(type: number) {
       </Spin>
 
       <!-- ========== 初始空状态 ========== -->
-      <div class="results-empty" v-if="!hasSearched && !loading">
+      <div class="flex justify-center items-center flex-1 py-[60px]" v-if="!hasSearched && !loading">
         <Empty
           :description="$t('knowledgeBaseManage.repairSearch.noSearchYet')"
         />
@@ -326,7 +326,7 @@ function getActionTypeText(type: number) {
       :destroy-on-close="false"
     >
       <template #footer>
-        <div class="drawer-footer">
+        <div class="flex justify-between items-center w-full">
           <Tooltip
             :title="
               hasPrev
@@ -339,7 +339,7 @@ function getActionTypeText(type: number) {
               {{ $t('knowledgeBaseManage.repairSearch.prev') }}
             </Button>
           </Tooltip>
-          <span class="drawer-footer__info">
+          <span class="text-gray-400 dark:text-gray-500 text-sm">
             {{ currentIndex + 1 }} / {{ resultList.length }}
           </span>
           <Tooltip
@@ -358,7 +358,7 @@ function getActionTypeText(type: number) {
       </template>
 
       <Spin :spinning="detailLoading">
-        <div class="detail-content" v-if="detailData">
+        <div class="detail-content py-1" v-if="detailData">
           <!-- 故障分析与解决措施 -->
           <Card
             size="small"
@@ -366,7 +366,7 @@ function getActionTypeText(type: number) {
             class="!mb-4"
             v-if="detailData.faultAnalysis"
           >
-            <p class="detail-text">{{ detailData.faultAnalysis }}</p>
+            <p class="detail-text text-gray-800 dark:text-gray-200 text-sm leading-[1.8] whitespace-pre-wrap break-words">{{ detailData.faultAnalysis }}</p>
           </Card>
 
           <Card
@@ -375,7 +375,7 @@ function getActionTypeText(type: number) {
             class="!mb-4"
             v-if="detailData.solution"
           >
-            <p class="detail-text">{{ detailData.solution }}</p>
+            <p class="detail-text text-gray-800 dark:text-gray-200 text-sm leading-[1.8] whitespace-pre-wrap break-words">{{ detailData.solution }}</p>
           </Card>
 
           <!-- 来源标签 -->
@@ -477,9 +477,9 @@ function getActionTypeText(type: number) {
                   :key="record.id"
                 >
                   <div class="timeline-item">
-                    <div class="timeline-item__header">
+                    <div class="flex justify-between items-center mb-1">
                       <strong>{{ getActionTypeText(record.actionType) }}</strong>
-                      <span class="timeline-item__time">{{
+                      <span class="text-gray-400 dark:text-gray-500 text-xs ml-3">{{
                         record.actionTime
                       }}</span>
                     </div>
@@ -489,7 +489,7 @@ function getActionTypeText(type: number) {
                     <div v-if="record.remark">
                       {{ $t('knowledgeBaseManage.repairSearch.remarkText') }}：{{ record.remark }}
                     </div>
-                    <div class="timeline-item__status-change flex items-center">
+                    <div class="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center">
                       <span v-if="record.beforeStatus !== null && record.beforeStatus !== undefined">
                         {{ getStatusText(record.beforeStatus, 1) }}
                       </span>
@@ -543,7 +543,7 @@ function getActionTypeText(type: number) {
               class="!mb-4"
               v-if="detailData.content"
             >
-              <p class="detail-text">{{ detailData.content }}</p>
+              <p class="detail-text text-gray-800 dark:text-gray-200 text-sm leading-[1.8] whitespace-pre-wrap break-words">{{ detailData.content }}</p>
             </Card>
           </template>
         </div>
@@ -553,51 +553,9 @@ function getActionTypeText(type: number) {
 </template>
 
 <style lang="less" scoped>
-.repair-knowledge-page {
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 200px);
-}
-
-// ========== 搜索区域 ==========
-.search-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  padding: 40px 20px;
-  transition: all 0.3s ease;
-
-  &--searched {
-    flex: none;
-    padding: 16px 0;
-  }
-}
-
-.search-content {
-  width: 100%;
-  max-width: 640px;
-  text-align: center;
-}
-
-.search-title {
-  font-size: 32px;
-  font-weight: 600;
-  color: #1890ff;
-  margin-bottom: 32px;
-  letter-spacing: 2px;
-}
-
-.search-subtitle {
-  color: #999;
-  margin-top: 24px;
-  font-size: 14px;
-}
+// ========== 仅保留 Tailwind 难以处理的样式 ==========
 
 .search-input-group {
-  display: flex;
-  gap: 12px;
-
   :deep(.ant-input-affix-wrapper) {
     flex: 1;
   }
@@ -610,137 +568,9 @@ function getActionTypeText(type: number) {
   }
 }
 
-// ========== 搜索结果 ==========
-.results-section {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.results-header {
-  margin-bottom: 16px;
-}
-
-.results-count {
-  font-size: 14px;
-  color: #666;
-}
-
-.results-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .result-card {
-  cursor: pointer;
-  transition: box-shadow 0.2s;
-
-  &:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  }
-
   :deep(.ant-card-body) {
     padding: 16px 20px;
-  }
-}
-
-.result-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.result-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 500;
-  color: #1a0dab;
-  line-height: 1.4;
-}
-
-.result-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.result-field {
-  display: flex;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.result-field-label {
-  color: #999;
-  flex-shrink: 0;
-}
-
-.result-field-value {
-  color: #555;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.results-pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
-}
-
-.results-empty {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  padding: 60px 0;
-}
-
-// ========== 详情抽屉 ==========
-.detail-content {
-  padding: 4px 0;
-}
-
-.detail-text {
-  color: #333;
-  font-size: 14px;
-  line-height: 1.8;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.drawer-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.drawer-footer__info {
-  color: #999;
-  font-size: 14px;
-}
-
-// ========== 时间线 ==========
-.timeline-item {
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-  }
-
-  &__time {
-    color: #999;
-    font-size: 12px;
-    margin-left: 12px;
-  }
-
-  &__status-change {
-    margin-top: 4px;
-    font-size: 12px;
-    color: #666;
   }
 }
 </style>
