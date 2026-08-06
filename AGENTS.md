@@ -96,6 +96,7 @@ pnpm format           # 代码格式化
 - Vue 组件使用 `<script setup>` 语法
 - 表格组件使用 `useVbenVxeGrid` 封装
 - 组件 import 按外部库 → 内部模块 → 相对路径排序
+- **优先使用 Tailwind CSS 工具类**设置样式，仅在 Tailwind 难以处理时（如 `:deep()` 穿透、复杂动画）才使用 `<style>` 块，减少自定义 CSS 代码
 
 ### 代码注释
 
