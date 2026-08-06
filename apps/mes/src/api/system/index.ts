@@ -2,6 +2,7 @@ export * from './baseDictionary.service';
 export * from './baseOrganization.service';
 export * from './basePosition.service';
 export * from './baseStaff.service';
+export * from './equipmentDebugDocumentManage.service';
 export * from './regionManagement.service';
 export * from './resourceMgmt.service';
 export * from './sysButton.service';

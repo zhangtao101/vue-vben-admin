@@ -5,18 +5,12 @@ import { requestClient } from '#/api/request';
 
 /**
  * 分页条件查询设备台账
- * @param pageNum  当前页码
- * @param pageSize 每页条数
- * @param data     查询/筛选条件
+ * @param params 查询参数（pageSize/pageNum/equipmentNameCode/equipmentName/equipmentCode/useDepartmentCode/assetsStatus）
+ * @since 2026-08-06 接口由 POST 变更为 GET，参数统一走 query string
  */
-export function queryScadaEquipLedgerPage(
-  pageNum: number,
-  pageSize: number,
-  data: any,
-) {
-  return requestClient.post(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentLedger/getEquipmentLedgerDTOByParams?pageNum=${pageNum}&pageSize=${pageSize}`,
-    data,
+export function queryScadaEquipLedgerPage(params: Record<string, any>) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentLedger/getEquipmentLedgerDTOByParams?${qs.stringify(params)}`,
   );
 }
 

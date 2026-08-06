@@ -61,3 +61,12 @@ export async function updateOrganization(params: any) {
     params,
   );
 }
+/**
+ * 设备台账履历查看
+ * @param params pageNum 页码, pageSize 每页展示条数, equipmentCode 设备编号, eventType 事件类型 (1 状态变更 2 位置变动 3 故障记录 4 维修记录 5 点检保养记录)
+ */
+export async function queryLifecycleHistory(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/lifecycleHistory/selectPageByParams?${qs.stringify(params)}`,
+  );
+}

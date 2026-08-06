@@ -47,6 +47,7 @@ import {
   insertFile,
   insertScadaEquipLedger,
   queryEquipmentByName,
+  queryOrganization,
   queryOrganizationTree,
   queryScadaEquipLedgerById,
   queryScadaEquipLedgerPage,
@@ -66,19 +67,30 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { title: $t('equip.sequence'), type: 'seq', width: 50 },
     { field: 'equipmentCode', title: $t('equip.equipmentNumber'), minWidth: 110 },
+    { field: 'equipmentNameCode', title: $t('equip.equipNameCode'), minWidth: 120 },
     { field: 'equipmentName', title: $t('equip.equipName'), minWidth: 120 },
-    { field: 'model', title: $t('equip.model'), minWidth: 150 },
+    { field: 'categoryLevel1', title: $t('equip.categoryLevel1'), minWidth: 120 },
+    { field: 'categoryLevel2', title: $t('equip.categoryLevel2'), minWidth: 120 },
+    { field: 'importanceLevel', title: $t('equip.importanceLevel'), minWidth: 100 },
+    { field: 'maintenanceStrategy', title: $t('equip.maintenanceStrategy'), minWidth: 110 },
+    { field: 'model', title: $t('equip.model'), minWidth: 120 },
+    { field: 'materialCode', title: $t('equip.materialCode'), minWidth: 110 },
     { field: 'manufacturer', title: $t('equip.productionFactory'), minWidth: 100 },
-    { field: 'manufacturingCode', title: $t('equip.productionNumber'), minWidth: 150 },
-    { field: 'manufacturingDate', title: $t('equip.manufacturingDate'), minWidth: 100 },
+    { field: 'manufacturingCode', title: $t('equip.productionNumber'), minWidth: 130 },
+    { field: 'manufacturingDate', title: $t('equip.manufacturingDate'), minWidth: 110 },
     { field: 'supplier', title: $t('equip.supplier'), minWidth: 100 },
-    { field: 'originalValue', title: $t('equip.originalValue'), minWidth: 150 },
-    { field: 'installDate', title: $t('equip.installationDate'), minWidth: 100 },
-    { field: 'useDepartmentName', title: $t('equip.useDepartment'), minWidth: 150 },
-    { field: 'lineType', title: $t('equip.partitioning'), minWidth: 150 },
-    { field: 'location', title: $t('equip.storageLocation'), minWidth: 150 },
-    { field: 'equipmentTypeName', title: $t('equip.equipmentCategory'), minWidth: 150 },
-    { field: 'assetsName', title: $t('equip.assetStatus'), minWidth: 150 },
+    { field: 'purchaseDate', title: $t('equip.purchaseDate'), minWidth: 110 },
+    { field: 'originalValue', title: $t('equip.originalValue'), minWidth: 110 },
+    { field: 'fixedAssetCode', title: $t('equip.fixedAssetCode'), minWidth: 130 },
+    { field: 'installDate', title: $t('equip.installationDate'), minWidth: 110 },
+    { field: 'commissioningDate', title: $t('equip.commissioningDate'), minWidth: 110 },
+    { field: 'useDepartmentName', title: $t('equip.useDepartment'), minWidth: 120 },
+    { field: 'maintenanceDepartment', title: $t('equip.maintenanceDepartment'), minWidth: 110 },
+    { field: 'lineType', title: $t('equip.partitioning'), minWidth: 100 },
+    { field: 'physicalLocation', title: $t('equip.physicalLocation'), minWidth: 120 },
+    { field: 'functionalLocation', title: $t('equip.functionalLocation'), minWidth: 120 },
+    { field: 'equipmentTypeName', title: $t('equip.equipmentCategory'), minWidth: 110 },
+    { field: 'assetsName', title: $t('equip.assetStatus'), minWidth: 100 },
     { field: 'remark', title: $t('equip.remark'), minWidth: 100 },
     {
       field: 'action',
@@ -131,7 +143,8 @@ const editForm = ref();
 const editRules = ref<any>({
   equipmentCode: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
   equipmentNameCode: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
-  assets: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
+  equipmentName: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
+  assetsStatus: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
 });
 
 // 设备名称远程搜索列表
@@ -141,10 +154,39 @@ const equipmentTypeOptions = [
   { value: 1, label: $t('equip.primaryEquipment') },
   { value: 2, label: $t('equip.auxiliaryEquipment') },
 ];
+// 重要等级选项
+const importanceLevelOptions = [
+  { value: 'A', label: 'A：关键设备' },
+  { value: 'B', label: 'B：重要辅助' },
+  { value: 'C', label: 'C：一般资产' },
+];
+// 维护策略选项
+const maintenanceStrategyOptions = [
+  { value: '定期检修', label: '定期检修' },
+  { value: '预防维护', label: '预防维护' },
+  { value: '事后维护', label: '事后维护' },
+];
+// 一级分类选项
+const categoryLevel1Options = [
+  { value: '关键工序生产设备', label: '关键工序生产设备' },
+  { value: '生产设备', label: '生产设备' },
+  { value: '能源设备', label: '能源设备' },
+];
+// 二级分类选项
+const categoryLevel2Options = [
+  { value: '电机减速机', label: '电机减速机' },
+  { value: '电源', label: '电源' },
+  { value: '链条', label: '链条' },
+];
+// 三级分类选项
+const categoryLevel3Options = [
+  { value: 'R47', label: 'R47' },
+  { value: 'SA67', label: 'SA67' },
+];
 // 资产状态选项
 const assetsOptions = [
-  { value: '1', label: $t('equip.enable') },
-  { value: '2', label: $t('equip.disable') },
+  { value: 1, label: $t('equip.enable') },
+  { value: 2, label: $t('equip.disable') },
 ];
 
 // 文件数据
@@ -179,7 +221,8 @@ function onClose() {
  */
 function handleCreate() {
   checkedRow.value = {
-    assets: '1',
+    assetsStatus: 1,
+    equipmentType: 1,
   };
   file1.value = [];
   file2.value = [];
@@ -198,7 +241,6 @@ function handleUpdate(row: any) {
   showEditDrawer.value = true;
   queryScadaEquipLedgerById({ id: row.id }).then((data: any) => {
     checkedRow.value = { ...data };
-    checkedRow.value.assets = data.assets.toString();
     equipNameList.value = [{
       value: data.equipmentNameCode,
       label: data.equipmentName,
@@ -215,7 +257,6 @@ function handleDetail(row: any) {
   showEditDrawer.value = true;
   queryScadaEquipLedgerById({ id: row.id }).then((data: any) => {
     checkedRow.value = { ...data };
-    checkedRow.value.assets = data.assets ? data.assets.toString() : '';
     equipNameList.value = [{
       value: data.equipmentNameCode,
       label: data.equipmentName,
@@ -494,8 +535,8 @@ const queryParams = ref<any>({});
 // 资产状态列表
 const statusList = [
   { label: $t('equip.all'), value: '' },
-  { label: $t('equip.enable'), value: '1' },
-  { label: $t('equip.disable'), value: '2' },
+  { label: $t('equip.enable'), value: 1 },
+  { label: $t('equip.disable'), value: 2 },
 ];
 
 /**
@@ -503,8 +544,8 @@ const statusList = [
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve) => {
-    const params = { ...queryParams.value };
-    queryScadaEquipLedgerPage(page, pageSize, params).then(
+    const params = { pageNum: page, pageSize, ...queryParams.value };
+    queryScadaEquipLedgerPage(params).then(
       ({ total, list }: any) => {
         resolve({ total, items: list });
       },
@@ -550,6 +591,28 @@ function handleDepartmentSelect(_value: any, node: any) {
 
 // endregion
 
+// region 查询组织列表
+
+// 组织列表（多选下拉用）
+const orgList = ref<any[]>([]);
+
+/**
+ * 查询组织列表
+ */
+function queryOrgList() {
+  queryOrganization({
+    pageNum: 1,
+    pageSize: 999,
+  }).then(({ list }: any) => {
+    orgList.value = (list || []).map((item: any) => ({
+      label: `${item.orgFullName}(${item.orgCode})`,
+      value: item.orgCode,
+    }));
+  });
+}
+
+// endregion
+
 // region 权限查询
 
 const author = ref<string[]>([]);
@@ -563,6 +626,7 @@ onMounted(() => {
     author.value = data;
   });
   queryTheUsageDepartment();
+  queryOrgList();
 });
 
 // endregion
@@ -596,7 +660,7 @@ onMounted(() => {
         <!-- 使用部门 -->
         <FormItem :label="$t('equip.useDepartment')" style="margin-bottom: 1em">
           <Input
-            v-model:value="queryParams.useDepartmentName"
+            v-model:value="queryParams.useDepartmentCode"
             allow-clear
             class="!w-48"
             :placeholder="$t('equip.pleaseEnterUseDepartment')"
@@ -605,7 +669,7 @@ onMounted(() => {
         <!-- 资产状态 -->
         <FormItem :label="$t('equip.assetStatus')" style="margin-bottom: 1em">
           <RadioGroup
-            v-model:value="queryParams.assets"
+            v-model:value="queryParams.assetsStatus"
             :options="statusList"
           />
         </FormItem>
@@ -672,7 +736,7 @@ onMounted(() => {
     <Drawer
       v-model:open="showEditDrawer"
       :footer-style="{ textAlign: 'right' }"
-      :width="800"
+      :width="1000"
       class="custom-class"
       placement="right"
       :title="dialogStatus === 'detail' ? $t('equip.view') : dialogStatus === 'update' ? $t('equip.edit') : $t('equip.add')"
@@ -698,7 +762,7 @@ onMounted(() => {
             </FormItem>
           </Col>
           <Col :span="12">
-            <!-- 设备名称 -->
+            <!-- 设备名称编号 -->
             <FormItem :label="$t('equip.equipName')" name="equipmentNameCode">
               <Select
                 v-model:value="checkedRow.equipmentNameCode"
@@ -716,15 +780,88 @@ onMounted(() => {
         </Row>
         <Row :gutter="8">
           <Col :span="12">
-            <!-- 型号 -->
+            <!-- 规格型号 -->
             <FormItem :label="$t('equip.model')" name="model">
               <Input
                 v-model:value="checkedRow.model"
                 :disabled="dialogStatus === 'detail'"
-                :maxlength="20"
+                :maxlength="30"
               />
             </FormItem>
           </Col>
+        </Row>
+        <Row :gutter="8">
+          <Col :span="12">
+            <!-- 一级分类 -->
+            <FormItem :label="$t('equip.categoryLevel1')" name="categoryLevel1">
+              <Select
+                v-model:value="checkedRow.categoryLevel1"
+                :disabled="dialogStatus === 'detail'"
+                allow-clear
+                :options="categoryLevel1Options"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <!-- 二级分类 -->
+            <FormItem :label="$t('equip.categoryLevel2')" name="categoryLevel2">
+              <Select
+                v-model:value="checkedRow.categoryLevel2"
+                :disabled="dialogStatus === 'detail'"
+                allow-clear
+                :options="categoryLevel2Options"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="8">
+          <Col :span="12">
+            <!-- 三级分类 -->
+            <FormItem :label="$t('equip.categoryLevel3')" name="categoryLevel3">
+              <Select
+                v-model:value="checkedRow.categoryLevel3"
+                :disabled="dialogStatus === 'detail'"
+                allow-clear
+                :options="categoryLevel3Options"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <!-- 重要等级 -->
+            <FormItem :label="$t('equip.importanceLevel')" name="importanceLevel">
+              <Select
+                v-model:value="checkedRow.importanceLevel"
+                :disabled="dialogStatus === 'detail'"
+                :options="importanceLevelOptions"
+                :placeholder="$t('equip.pleaseSelect')"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="8">
+          <Col :span="12">
+            <!-- 维护策略 -->
+            <FormItem :label="$t('equip.maintenanceStrategy')" name="maintenanceStrategy">
+              <Select
+                v-model:value="checkedRow.maintenanceStrategy"
+                :disabled="dialogStatus === 'detail'"
+                :options="maintenanceStrategyOptions"
+                :placeholder="$t('equip.pleaseSelect')"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <!-- 物料编码 -->
+            <FormItem :label="$t('equip.materialCode')" name="materialCode">
+              <Input
+                v-model:value="checkedRow.materialCode"
+                :disabled="dialogStatus === 'detail'"
+                :maxlength="30"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="8">
           <Col :span="12">
             <!-- 生产厂家 -->
             <FormItem :label="$t('equip.productionFactory')" name="manufacturer">
@@ -735,18 +872,18 @@ onMounted(() => {
               />
             </FormItem>
           </Col>
-        </Row>
-        <Row :gutter="8">
           <Col :span="12">
-            <!-- 出厂编号 -->
+            <!-- 厂家编号 -->
             <FormItem :label="$t('equip.productionNumber')" name="manufacturingCode">
               <Input
                 v-model:value="checkedRow.manufacturingCode"
                 :disabled="dialogStatus === 'detail'"
-                :maxlength="20"
+                :maxlength="30"
               />
             </FormItem>
           </Col>
+        </Row>
+        <Row :gutter="8">
           <Col :span="12">
             <!-- 出厂日期 -->
             <FormItem :label="$t('equip.manufacturingDate')" name="manufacturingDate">
@@ -758,8 +895,6 @@ onMounted(() => {
               />
             </FormItem>
           </Col>
-        </Row>
-        <Row :gutter="8">
           <Col :span="12">
             <!-- 供应商 -->
             <FormItem :label="$t('equip.supplier')" name="supplier">
@@ -770,6 +905,31 @@ onMounted(() => {
               />
             </FormItem>
           </Col>
+        </Row>
+        <Row :gutter="8">
+          <Col :span="12">
+            <!-- 采购日期 -->
+            <FormItem :label="$t('equip.purchaseDate')" name="purchaseDate">
+              <DatePicker
+                v-model:value="checkedRow.purchaseDate"
+                :disabled="dialogStatus === 'detail'"
+                style="width: 100%"
+                value-format="YYYY-MM-DD"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <!-- 采购来源 -->
+            <FormItem :label="$t('equip.purchaseSource')" name="purchaseSource">
+              <Input
+                v-model:value="checkedRow.purchaseSource"
+                :disabled="dialogStatus === 'detail'"
+                :maxlength="30"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="8">
           <Col :span="12">
             <!-- 原值 -->
             <FormItem :label="$t('equip.originalValue')" name="originalValue">
@@ -780,8 +940,28 @@ onMounted(() => {
               />
             </FormItem>
           </Col>
+          <Col :span="12">
+            <!-- 固定资产编号 -->
+            <FormItem :label="$t('equip.fixedAssetCode')" name="fixedAssetCode">
+              <Input
+                v-model:value="checkedRow.fixedAssetCode"
+                :disabled="dialogStatus === 'detail'"
+                :maxlength="30"
+              />
+            </FormItem>
+          </Col>
         </Row>
         <Row :gutter="8">
+          <Col :span="12">
+            <!-- 固定资产分类 -->
+            <FormItem :label="$t('equip.fixedAssetCategory')" name="fixedAssetCategory">
+              <Input
+                v-model:value="checkedRow.fixedAssetCategory"
+                :disabled="dialogStatus === 'detail'"
+                :maxlength="30"
+              />
+            </FormItem>
+          </Col>
           <Col :span="12">
             <!-- 安装日期 -->
             <FormItem :label="$t('equip.installationDate')" name="installDate">
@@ -793,9 +973,91 @@ onMounted(() => {
               />
             </FormItem>
           </Col>
+        </Row>
+        <Row :gutter="8">
+          <Col :span="12">
+            <!-- 使用日期 -->
+            <FormItem :label="$t('equip.commissioningDate')" name="commissioningDate">
+              <DatePicker
+                v-model:value="checkedRow.commissioningDate"
+                :disabled="dialogStatus === 'detail'"
+                style="width: 100%"
+                value-format="YYYY-MM-DD"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <!-- 质保期 -->
+            <FormItem :label="$t('equip.warrantyPeriod')" name="warrantyPeriod">
+              <Input
+                v-model:value="checkedRow.warrantyPeriod"
+                :disabled="dialogStatus === 'detail'"
+                :maxlength="20"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="8">
+          <Col :span="12">
+            <!-- 设计使用年限 -->
+            <FormItem :label="$t('equip.serviceLifeYears')" name="serviceLifeYears">
+              <InputNumber
+                v-model:value="checkedRow.serviceLifeYears"
+                :disabled="dialogStatus === 'detail'"
+                style="width: 100%"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <!-- 所属组织 -->
+            <FormItem :label="$t('equip.ownershipOrg')" name="orgCodes">
+              <Select
+                v-model:value="checkedRow.orgCodes"
+                mode="multiple"
+                :disabled="dialogStatus === 'detail'"
+                :options="orgList"
+                :placeholder="$t('equip.pleaseSelect')"
+                style="width: 100%"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="8">
+          <Col :span="12">
+            <!-- 存放位置 -->
+            <FormItem :label="$t('equip.physicalLocation')" name="physicalLocation">
+              <Input
+                v-model:value="checkedRow.physicalLocation"
+                :disabled="dialogStatus === 'detail'"
+                :maxlength="30"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
+            <!-- 使用位置 -->
+            <FormItem :label="$t('equip.functionalLocation')" name="functionalLocation">
+              <Input
+                v-model:value="checkedRow.functionalLocation"
+                :disabled="dialogStatus === 'detail'"
+                :maxlength="30"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="8">
+          <Col :span="12">
+            <!-- 线别 -->
+            <FormItem :label="$t('equip.partitioning')" name="lineType">
+              <Input
+                v-model:value="checkedRow.lineType"
+                :disabled="dialogStatus === 'detail'"
+                :maxlength="20"
+              />
+            </FormItem>
+          </Col>
           <Col :span="12">
             <!-- 使用部门 -->
-            <FormItem :label="$t('equip.useDepartment')" name="useDepartmentName">
+            <FormItem :label="$t('equip.useDepartment')" name="useDepartmentCode">
               <TreeSelect
                 v-model:value="checkedRow.useDepartmentCode"
                 show-search
@@ -815,22 +1077,30 @@ onMounted(() => {
         </Row>
         <Row :gutter="8">
           <Col :span="12">
-            <!-- 拉别 -->
-            <FormItem :label="$t('equip.partitioning')" name="lineType">
-              <Input
-                v-model:value="checkedRow.lineType"
-                :disabled="dialogStatus === 'detail'"
-                :maxlength="20"
+            <!-- 维修部门 -->
+            <FormItem :label="$t('equip.maintenanceDepartment')" name="maintenanceDepartment">
+              <TreeSelect
+                v-model:value="checkedRow.maintenanceDepartment"
+                show-search
+                allow-clear
+                :dropdown-match-select-width="false"
+                :tree-data="listOfDepartments"
+                tree-node-filter-prop="orgFullName"
+                :field-names="{
+                  children: 'children',
+                  label: 'orgFullName',
+                  value: 'orgCode',
+                }"
               />
             </FormItem>
           </Col>
           <Col :span="12">
-            <!-- 存放位置 -->
-            <FormItem :label="$t('equip.storageLocation')" name="location">
+            <!-- 包机人/负责人 -->
+            <FormItem :label="$t('equip.contractedOperator')" name="contractedOperator">
               <Input
-                v-model:value="checkedRow.location"
+                v-model:value="checkedRow.contractedOperator"
                 :disabled="dialogStatus === 'detail'"
-                :maxlength="20"
+                :maxlength="30"
               />
             </FormItem>
           </Col>
@@ -849,9 +1119,9 @@ onMounted(() => {
           </Col>
           <Col :span="12">
             <!-- 资产状态 -->
-            <FormItem :label="$t('equip.assetStatus')" name="assets">
+            <FormItem :label="$t('equip.assetStatus')" name="assetsStatus">
               <RadioGroup
-                v-model:value="checkedRow.assets"
+                v-model:value="checkedRow.assetsStatus"
                 :disabled="dialogStatus === 'detail'"
                 :options="assetsOptions"
               />
@@ -929,11 +1199,32 @@ onMounted(() => {
         <Descriptions.Item :label="$t('equip.equipmentNumber')">
           {{ checkedRow.equipmentCode }}
         </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.equipNameCode')">
+          {{ checkedRow.equipmentNameCode }}
+        </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.equipName')">
           {{ checkedRow.equipmentName }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.model')">
           {{ checkedRow.model }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.categoryLevel1')">
+          {{ checkedRow.categoryLevel1 }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.categoryLevel2')">
+          {{ checkedRow.categoryLevel2 }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.categoryLevel3')">
+          {{ checkedRow.categoryLevel3 }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.importanceLevel')">
+          {{ checkedRow.importanceLevel }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.maintenanceStrategy')">
+          {{ checkedRow.maintenanceStrategy }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.materialCode')">
+          {{ checkedRow.materialCode }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.productionFactory')">
           {{ checkedRow.manufacturer }}
@@ -947,26 +1238,65 @@ onMounted(() => {
         <Descriptions.Item :label="$t('equip.supplier')">
           {{ checkedRow.supplier }}
         </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.purchaseDate')">
+          {{ checkedRow.purchaseDate }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.purchaseSource')">
+          {{ checkedRow.purchaseSource }}
+        </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.originalValue')">
           {{ checkedRow.originalValue }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.fixedAssetCode')">
+          {{ checkedRow.fixedAssetCode }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.fixedAssetCategory')">
+          {{ checkedRow.fixedAssetCategory }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.installationDate')">
           {{ checkedRow.installDate }}
         </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.commissioningDate')">
+          {{ checkedRow.commissioningDate }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.warrantyPeriod')">
+          {{ checkedRow.warrantyPeriod }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.serviceLifeYears')">
+          {{ checkedRow.serviceLifeYears }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.ownershipOrg')">
+          {{ checkedRow.ownershipOrg }}
+        </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.useDepartment')">
           {{ checkedRow.useDepartmentName }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.maintenanceDepartment')">
+          {{ checkedRow.maintenanceDepartment }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.partitioning')">
           {{ checkedRow.lineType }}
         </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.storageLocation')">
-          {{ checkedRow.location }}
+        <Descriptions.Item :label="$t('equip.physicalLocation')">
+          {{ checkedRow.physicalLocation }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.functionalLocation')">
+          {{ checkedRow.functionalLocation }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.contractedOperator')">
+          {{ checkedRow.contractedOperator }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.equipmentCategory')">
           {{ equipmentTypeOptions.find(o => o.value === checkedRow.equipmentType)?.label || '' }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.assetStatus')">
-          {{ assetsOptions.find(o => o.value === checkedRow.assets)?.label || '' }}
+          {{ assetsOptions.find(o => o.value === checkedRow.assetsStatus)?.label || '' }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.cTime')">
+          {{ checkedRow.cTime }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.updateTime')">
+          {{ checkedRow.updateTime }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.remark')" :span="2">
           {{ checkedRow.remark }}
