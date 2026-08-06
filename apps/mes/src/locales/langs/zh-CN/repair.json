@@ -278,7 +278,7 @@
   },
   "repairBasicConfig": {
     "title": "维修基础配置",
-    "configType": "维修类型",
+    "configType": "配置类型",
     "configCode": "配置编码",
     "configName": "配置名称",
     "sortOrder": "排序号",

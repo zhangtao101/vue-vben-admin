@@ -278,7 +278,7 @@
   },
   "repairBasicConfig": {
     "title": "수리 기본 설정",
-    "configType": "설정 유형",
+    "configType": "구성 유형",
     "configCode": "설정 코드",
     "configName": "설정 이름",
     "sortOrder": "정렬 순서",

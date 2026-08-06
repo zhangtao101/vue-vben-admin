@@ -210,7 +210,7 @@ function getActionTypeText(type: number) {
     <div class="repair-knowledge-page flex flex-col" style="min-height: calc(100vh - 200px)">
       <!-- ========== 搜索区域 ========== -->
       <div
-        class="search-wrapper flex items-center flex-1 px-5 py-10 transition-all duration-300"
+        class="search-wrapper flex items-center justify-center flex-1 px-5 py-10 transition-all duration-300"
         :class="{ 'flex-none !py-4': hasSearched }"
       >
         <div class="search-content w-full max-w-[640px] text-center">
@@ -556,12 +556,12 @@ function getActionTypeText(type: number) {
 // ========== 仅保留 Tailwind 难以处理的样式 ==========
 
 .search-input-group {
-  :deep(.ant-input-affix-wrapper) {
+  ::deep(.ant-input-affix-wrapper) {
     flex: 1;
   }
 
   .search-input--large {
-    :deep(.ant-input) {
+    ::deep(.ant-input) {
       font-size: 16px;
       padding: 8px 12px;
     }
@@ -569,7 +569,7 @@ function getActionTypeText(type: number) {
 }
 
 .result-card {
-  :deep(.ant-card-body) {
+  ::deep(.ant-card-body) {
     padding: 16px 20px;
   }
 }

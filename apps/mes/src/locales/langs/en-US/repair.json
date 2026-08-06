@@ -278,7 +278,7 @@
   },
   "repairBasicConfig": {
     "title": "Repair Basic Config",
-    "configType": "Config Type",
+    "configType": "Configuration Type",
     "configCode": "Config Code",
     "configName": "Config Name",
     "sortOrder": "Sort Order",
