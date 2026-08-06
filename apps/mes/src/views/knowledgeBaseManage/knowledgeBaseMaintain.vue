@@ -888,9 +888,9 @@ onMounted(() => {
                 <DescriptionsItem :label="$t('knowledgeBaseManage.manualContent')">
                   {{ selectedNode.rawData.manualContent || '-' }}
                 </DescriptionsItem>
-                <DescriptionsItem :label="$t('knowledgeBaseManage.attachmentUrl')">
+                <!-- <DescriptionsItem :label="$t('knowledgeBaseManage.attachmentUrl')">
                   {{ selectedNode.rawData.attachmentUrl || '-' }}
-                </DescriptionsItem>
+                </DescriptionsItem> -->
                 <DescriptionsItem :label="$t('knowledgeBaseManage.remark')">
                   {{ selectedNode.rawData.remark || '-' }}
                 </DescriptionsItem>
@@ -953,7 +953,7 @@ onMounted(() => {
       @ok="confirmModal"
     >
       <Form layout="vertical">
-        <FormItem
+        <!-- <FormItem
           :label="$t('knowledgeBaseManage.parentCategory')"
           v-if="modalMode === 'addSub' || modalMode === 'edit'"
         >
@@ -971,7 +971,7 @@ onMounted(() => {
             v-model:value="formData.categoryCode"
             disabled
           />
-        </FormItem>
+        </FormItem> -->
         <FormItem :label="$t('knowledgeBaseManage.categoryName')" required>
           <Input
             v-model:value="formData.categoryName"
