@@ -561,7 +561,7 @@ onMounted(() => {
                 />
               </Button>
             </Tooltip>
-            <Tooltip v-if="author.includes('领取') && row.status?.statusCode === 1">
+            <Tooltip v-if="author.includes('领取') && row.statusCode === 1">
               <template #title>{{ $t('repair.orderHall.receive') }}</template>
               <Button type="link" size="small" class="!px-1" @click="handleClaim(row)">
                 <Icon
@@ -573,7 +573,7 @@ onMounted(() => {
             <Tooltip
               v-if="
                 author.includes('分配') &&
-                row.status?.statusCode === 1 &&
+                row.statusCode === 1 &&
                 row.taskType === 'REPAIR'
               "
             >
@@ -588,7 +588,7 @@ onMounted(() => {
             <Popconfirm
               v-if="
                 author.includes('撤回') &&
-                (row.status?.statusCode === 2 || row.status?.statusCode === 3)
+                (row.statusCode === 2 || row.statusCode === 3)
               "
               :title="$t('repair.orderHall.withdrawConfirm')"
               @confirm="handleWithdraw(row)"
