@@ -7,7 +7,6 @@
  * [TIME]: 2026-04-25 10:17:00
  */
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import type { EquipSelectItem } from '#/api';
 
 import { ref, watch } from 'vue';
 
@@ -25,7 +24,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getEquipSelectList } from '#/api';
+import { queryScadaEquipLedgerPage } from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({
@@ -38,13 +37,13 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  select: [rows: EquipSelectItem[]];
+  select: [rows: any[]];
   'update:visible': [value: boolean];
 }>();
 
 interface Props {
   visible: boolean;
-  selectedRows?: EquipSelectItem[];
+  selectedRows?: any[];
 }
 
 // 用于存储已选中的 equipmentCode，用于在表格加载后恢复选中状态
@@ -138,7 +137,7 @@ function handleGridLoadEvent() {
     const grid = (gridApi as any).grid;
     if (grid) {
       const tableData = grid.getData();
-      tableData.forEach((row: EquipSelectItem) => {
+      tableData.forEach((row: any) => {
         if (
           row.equipmentCode &&
           selectedCodes.value.includes(row.equipmentCode)
@@ -176,7 +175,7 @@ function queryData({
       pageSize,
     };
 
-    getEquipSelectList(params)
+    queryScadaEquipLedgerPage(params)
       .then((res: any) => {
         resolve({
           total: res.total || 0,

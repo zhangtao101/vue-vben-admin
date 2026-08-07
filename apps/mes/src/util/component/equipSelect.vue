@@ -10,7 +10,7 @@ import { Button, Drawer, Input, Space } from 'ant-design-vue';
 import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { queryEquipList } from '#/api';
+import { queryScadaEquipLedgerPage } from '#/api';
 
 // 使用 defineProps 方法定义组件的属性
 const defaultProps = defineProps({
@@ -166,7 +166,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 function queryData() {
   return new Promise((resolve, reject) => {
     // 调用 queryEquipList API 函数，传递查询参数和分页信息
-    queryEquipList({
+    queryScadaEquipLedgerPage({
       pageNum: 1,
       pageSize: 9999,
     })

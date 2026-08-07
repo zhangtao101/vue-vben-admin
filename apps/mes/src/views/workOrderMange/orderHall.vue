@@ -241,7 +241,7 @@ function handleClaim(row: any) {
  * @since 2026-08-04 09:00:00
  */
 function handleWithdraw(row: any) {
-  withdrawOrderHallRepairTask(Number(row.id || row.taskId))
+  withdrawOrderHallRepairTask(row.taskId)
     .then(() => {
       message.success($t('repair.orderHall.withdrawSuccess'));
       gridApi.reload();
