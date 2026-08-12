@@ -47,6 +47,8 @@
     "to": "至",
     "noTimeRange": "未设置时间范围",
     "confirmExport": "确认导出",
-    "downloadTemplate": "模板下载"
+    "downloadTemplate": "模板下载",
+    "query": "查询",
+    "reset": "重置"
   }
 }

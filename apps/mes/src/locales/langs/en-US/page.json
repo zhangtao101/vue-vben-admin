@@ -47,6 +47,8 @@
     "to": "to",
     "noTimeRange": "No time range set",
     "confirmExport": "Confirm Export",
-    "downloadTemplate": "Download Template"
+    "downloadTemplate": "Download Template",
+    "query": "Query",
+    "reset": "Reset"
   }
 }

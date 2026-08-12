@@ -47,6 +47,8 @@
     "to": "부터",
     "noTimeRange": "기간이 설정되지 않았습니다",
     "confirmExport": "내보내기 확인",
-    "downloadTemplate": "템플릿 다운로드"
+    "downloadTemplate": "템플릿 다운로드",
+    "query": "조회",
+    "reset": "초기화"
   }
 }
