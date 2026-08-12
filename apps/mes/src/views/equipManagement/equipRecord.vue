@@ -13,7 +13,6 @@ import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { MdiSearch } from '@vben/icons';
-import { useAccessStore } from '@vben/stores';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -36,18 +35,11 @@ import {
   Space,
   Textarea,
   Tooltip,
-  TreeSelect,
-  Upload,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  deleteFile,
-  fetchFileList,
-  insertFile,
   insertScadaEquipLedger,
-  queryEquipmentByName,
-  queryOrganizationTree,
   queryScadaEquipLedgerById,
   queryScadaEquipLedgerPage,
   updateScadaEquipLedger,
@@ -66,19 +58,17 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { title: $t('equip.sequence'), type: 'seq', width: 50 },
     { field: 'equipmentCode', title: $t('equip.equipmentNumber'), minWidth: 110 },
+    { field: 'equipmentNameCode', title: $t('equip.equipmentNameCode'), minWidth: 120 },
     { field: 'equipmentName', title: $t('equip.equipName'), minWidth: 120 },
-    { field: 'model', title: $t('equip.model'), minWidth: 150 },
-    { field: 'manufacturer', title: $t('equip.productionFactory'), minWidth: 100 },
-    { field: 'manufacturingCode', title: $t('equip.productionNumber'), minWidth: 150 },
+    { field: 'equipmentTypeName', title: $t('equip.equipmentCategory'), minWidth: 120 },
+    { field: 'manufacturer', title: $t('equip.manufacturer'), minWidth: 100 },
+    { field: 'manufacturingCode', title: $t('equip.productionNumber'), minWidth: 120 },
     { field: 'manufacturingDate', title: $t('equip.manufacturingDate'), minWidth: 100 },
-    { field: 'supplier', title: $t('equip.supplier'), minWidth: 100 },
-    { field: 'originalValue', title: $t('equip.originalValue'), minWidth: 150 },
     { field: 'installDate', title: $t('equip.installationDate'), minWidth: 100 },
-    { field: 'useDepartmentName', title: $t('equip.useDepartment'), minWidth: 150 },
-    { field: 'lineType', title: $t('equip.partitioning'), minWidth: 150 },
-    { field: 'location', title: $t('equip.storageLocation'), minWidth: 150 },
-    { field: 'equipmentTypeName', title: $t('equip.equipmentCategory'), minWidth: 150 },
-    { field: 'assetsName', title: $t('equip.assetStatus'), minWidth: 150 },
+    { field: 'assets', title: $t('equip.assetStatus'), minWidth: 100, slots: { default: 'assets' } },
+    { field: 'replaceCycle', title: $t('equip.replaceCycle'), minWidth: 100 },
+    { field: 'actualUseHours', title: $t('equip.actualUseHours'), minWidth: 120 },
+    { field: 'cTime', title: $t('equip.lastUsedDate'), minWidth: 120 },
     { field: 'remark', title: $t('equip.remark'), minWidth: 100 },
     {
       field: 'action',
@@ -131,35 +121,13 @@ const editForm = ref();
 const editRules = ref<any>({
   equipmentCode: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
   equipmentNameCode: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
-  assets: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
 });
 
-// 设备名称远程搜索列表
-const equipNameList = ref<any[]>([]);
 // 设备类别选项
 const equipmentTypeOptions = [
   { value: 1, label: $t('equip.primaryEquipment') },
   { value: 2, label: $t('equip.auxiliaryEquipment') },
 ];
-// 资产状态选项
-const assetsOptions = [
-  { value: '1', label: $t('equip.enable') },
-  { value: '2', label: $t('equip.disable') },
-];
-
-// 文件数据
-const file1 = ref<any[]>([]); // 安装验收单
-const file2 = ref<any[]>([]); // 其他附件
-// Upload 组件用文件列表
-const uploadFileList1 = ref<any[]>([]);
-const uploadFileList2 = ref<any[]>([]);
-
-// 文件上传 accessStore
-const accessStore = useAccessStore();
-
-function getUploadUrl() {
-  return `/ht/${import.meta.env.VITE_GLOB_MES_FILE}/file/upload`;
-}
 
 /**
  * 关闭抽屉
@@ -167,25 +135,13 @@ function getUploadUrl() {
 function onClose() {
   checkedRow.value = {};
   showEditDrawer.value = false;
-  file1.value = [];
-  file2.value = [];
-  uploadFileList1.value = [];
-  uploadFileList2.value = [];
-  equipNameList.value = [];
 }
 
 /**
  * 新增
  */
 function handleCreate() {
-  checkedRow.value = {
-    assets: '1',
-  };
-  file1.value = [];
-  file2.value = [];
-  uploadFileList1.value = [];
-  uploadFileList2.value = [];
-  equipNameList.value = [];
+  checkedRow.value = {};
   dialogStatus.value = 'create';
   showEditDrawer.value = true;
 }
@@ -198,12 +154,6 @@ function handleUpdate(row: any) {
   showEditDrawer.value = true;
   queryScadaEquipLedgerById({ id: row.id }).then((data: any) => {
     checkedRow.value = { ...data };
-    checkedRow.value.assets = data.assets.toString();
-    equipNameList.value = [{
-      value: data.equipmentNameCode,
-      label: data.equipmentName,
-    }];
-    getFileList(data.id);
   });
 }
 
@@ -215,12 +165,6 @@ function handleDetail(row: any) {
   showEditDrawer.value = true;
   queryScadaEquipLedgerById({ id: row.id }).then((data: any) => {
     checkedRow.value = { ...data };
-    checkedRow.value.assets = data.assets ? data.assets.toString() : '';
-    equipNameList.value = [{
-      value: data.equipmentNameCode,
-      label: data.equipmentName,
-    }];
-    getFileList(data.id);
   });
 }
 
@@ -249,13 +193,6 @@ function delRow(_row: any) {
 function submit() {
   editForm.value.validate().then(() => {
     const data = { ...checkedRow.value };
-    // 附件信息
-    if (file1.value.length > 0) {
-      data.file1 = file1.value[0];
-    }
-    if (file2.value.length > 0) {
-      data.file2 = file2.value[0];
-    }
     const ob = dialogStatus.value === 'update'
       ? updateScadaEquipLedger(data)
       : insertScadaEquipLedger(data);
@@ -269,223 +206,6 @@ function submit() {
 
 // endregion
 
-// region 文件上传
-
-/**
- * 获取文件列表
- */
-function getFileList(code: string) {
-  file1.value = [];
-  file2.value = [];
-  uploadFileList1.value = [];
-  uploadFileList2.value = [];
-  // 安装验收单
-  fetchFileList({
-    moduleType: 1,
-    attachmentCode: 'AZYSD',
-    code,
-  }).then((data: any) => {
-    if (data && data.length > 0) {
-      const latest = data[data.length - 1];
-      file1.value = [latest];
-      uploadFileList1.value = [{
-        uid: latest.id,
-        name: latest.fileName,
-        status: 'done',
-        url: latest.fileUrl || latest.filePath,
-      }];
-    }
-  });
-  // 其他附件
-  fetchFileList({
-    moduleType: 1,
-    attachmentCode: 'QTFJ',
-    code,
-  }).then((data: any) => {
-    if (data && data.length > 0) {
-      const latest = data[data.length - 1];
-      file2.value = [latest];
-      uploadFileList2.value = [{
-        uid: latest.id,
-        name: latest.fileName,
-        status: 'done',
-        url: latest.fileUrl || latest.filePath,
-      }];
-    }
-  });
-}
-
-/**
- * 安装验收单上传变更
- */
-function handleFile1Change(info: any) {
-  const { file } = info;
-  if (file.status === 'done') {
-    const resp = file.response || {};
-    const fileData: any = {
-      attachmentCode: 'AZYSD',
-      code: checkedRow.value.id,
-      moduleType: 1,
-      fileName: file.name,
-      filePath: resp.remoteFilename || resp.data?.remoteFilename,
-      fileUrl: resp.fileUrl || resp.data?.fileUrl,
-    };
-    if (dialogStatus.value === 'update') {
-      insertFile(fileData).then((id: any) => {
-        fileData.id = id;
-        file1.value = [fileData];
-        uploadFileList1.value = [{
-          uid: id,
-          name: file.name,
-          status: 'done',
-          url: resp.fileUrl || resp.data?.fileUrl,
-        }];
-        message.success($t('equip.uploadSuccess'));
-      });
-    } else {
-      file1.value = [fileData];
-      uploadFileList1.value = [{
-        uid: -1,
-        name: file.name,
-        status: 'done',
-      }];
-      message.success($t('equip.uploadSuccess'));
-    }
-  } else if (file.status === 'error') {
-    message.error($t('equip.uploadFailed'));
-  }
-}
-
-/**
- * 其他附件上传变更
- */
-function handleFile2Change(info: any) {
-  const { file } = info;
-  if (file.status === 'done') {
-    const resp = file.response || {};
-    const fileData: any = {
-      attachmentCode: 'QTFJ',
-      code: checkedRow.value.id,
-      moduleType: 1,
-      fileName: file.name,
-      filePath: resp.remoteFilename || resp.data?.remoteFilename,
-      fileUrl: resp.fileUrl || resp.data?.fileUrl,
-    };
-    if (dialogStatus.value === 'update') {
-      insertFile(fileData).then((id: any) => {
-        fileData.id = id;
-        file2.value = [fileData];
-        uploadFileList2.value = [{
-          uid: id,
-          name: file.name,
-          status: 'done',
-          url: resp.fileUrl || resp.data?.fileUrl,
-        }];
-        message.success($t('equip.uploadSuccess'));
-      });
-    } else {
-      file2.value = [fileData];
-      uploadFileList2.value = [{
-        uid: -1,
-        name: file.name,
-        status: 'done',
-      }];
-      message.success($t('equip.uploadSuccess'));
-    }
-  } else if (file.status === 'error') {
-    message.error($t('equip.uploadFailed'));
-  }
-}
-
-/**
- * 文件预览回调（点击文件名下载）
- */
-function handleFile1Preview(file: any) {
-  const item = file1.value.find((f: any) => f.fileName === file.name);
-  if (item) fileDown(item);
-}
-
-function handleFile2Preview(file: any) {
-  const item = file2.value.find((f: any) => f.fileName === file.name);
-  if (item) fileDown(item);
-}
-
-/**
- * 文件移除回调
- */
-function handleFile1Remove() {
-  const item = file1.value[0];
-  if (item && dialogStatus.value === 'update' && item.id) {
-    deleteFile(item.id).then(() => {
-      file1.value = [];
-      message.success($t('equip.deleteSuccess'));
-    });
-  } else {
-    file1.value = [];
-  }
-}
-
-function handleFile2Remove() {
-  const item = file2.value[0];
-  if (item && dialogStatus.value === 'update' && item.id) {
-    deleteFile(item.id).then(() => {
-      file2.value = [];
-      message.success($t('equip.deleteSuccess'));
-    });
-  } else {
-    file2.value = [];
-  }
-}
-
-/**
- * 文件下载
- */
-function fileDown(row: any) {
-  const url = row.fileUrl || row.filePath;
-  if (url) {
-    window.location.href = `${url}?attname=${row.fileName}`;
-  }
-}
-
-// endregion
-
-// region 设备名称远程搜索
-
-/**
- * 远程搜索设备名称
- */
-function getEquipName(query: string) {
-  if (query) {
-    queryEquipmentByName(query).then((data: any) => {
-      equipNameList.value = (data || []).map((item: any) => ({
-        value: item.code,
-        label: item.name,
-      }));
-    });
-  } else {
-    equipNameList.value = [];
-  }
-}
-
-/**
- * 设备名称下拉框获取焦点时清空列表
- */
-function getFocus() {
-  equipNameList.value = [];
-}
-
-/**
- * 选择设备名称后回填设备编码
- */
-function handleEquipNameSelect(value: any) {
-  const selected = equipNameList.value.find((item: any) => item.value === value);
-  if (selected) {
-    checkedRow.value.equipmentName = selected.label;
-  }
-}
-
-// endregion
-
 // region 查询数据
 
 // 查询参数
@@ -493,9 +213,9 @@ const queryParams = ref<any>({});
 
 // 资产状态列表
 const statusList = [
-  { label: $t('equip.all'), value: '' },
-  { label: $t('equip.enable'), value: '1' },
-  { label: $t('equip.disable'), value: '2' },
+  { label: $t('equip.all'), value:  undefined },
+  { label: $t('equip.normal'), value: '1' },
+  { label: $t('equip.deleted'), value: '2' },
 ];
 
 /**
@@ -514,42 +234,6 @@ function queryData({ page, pageSize }: any) {
 
 // endregion
 
-// region 查询使用部门
-
-// 部门列表
-const listOfDepartments = ref<any>([]);
-
-/**
- * 递归处理部门树，设置 disabled 属性（公司类型禁用）
- */
-function changeStatus(org: any) {
-  org.disabled = org.orgType === '公司';
-  if (org.children && org.children.length > 0) {
-    org.children.forEach((item: any) => {
-      changeStatus(item);
-    });
-  }
-}
-
-/**
- * 查询使用部门
- */
-function queryTheUsageDepartment() {
-  queryOrganizationTree().then((data) => {
-    changeStatus(data);
-    listOfDepartments.value = [data];
-  });
-}
-
-/**
- * 使用部门选择回调：将选中节点的 orgFullName 赋给 useDepartmentName
- */
-function handleDepartmentSelect(_value: any, node: any) {
-  checkedRow.value.useDepartmentName = node.orgFullName;
-}
-
-// endregion
-
 // region 权限查询
 
 const author = ref<string[]>([]);
@@ -562,7 +246,6 @@ onMounted(() => {
   queryAuth(route.meta.code as string).then((data) => {
     author.value = data;
   });
-  queryTheUsageDepartment();
 });
 
 // endregion
@@ -635,6 +318,9 @@ onMounted(() => {
             {{ $t('common.add') }}
           </Button>
         </template>
+        <template #assets="{ row }">
+          <span>{{ row.assets === 1 ? $t('equip.normal') : $t('equip.deleted') }}</span>
+        </template>
         <template #action="{ row }">
           <!-- 查看按钮 -->
           <Tooltip>
@@ -692,7 +378,6 @@ onMounted(() => {
             <FormItem :label="$t('equip.equipmentNumber')" name="equipmentCode">
               <Input
                 v-model:value="checkedRow.equipmentCode"
-                :disabled="dialogStatus === 'detail'"
                 :maxlength="20"
               />
             </FormItem>
@@ -700,161 +385,75 @@ onMounted(() => {
           <Col :span="12">
             <!-- 设备名称 -->
             <FormItem :label="$t('equip.equipName')" name="equipmentNameCode">
-              <Select
+              <Input
                 v-model:value="checkedRow.equipmentNameCode"
-                show-search
-                :disabled="dialogStatus === 'detail'"
-                :placeholder="$t('equip.pleaseEnterEquipmentName')"
-                :filter-option="false"
-                :options="equipNameList"
-                @search="getEquipName"
-                @focus="getFocus"
-                @select="handleEquipNameSelect"
+                :maxlength="50"
               />
             </FormItem>
           </Col>
         </Row>
         <Row :gutter="8">
-          <Col :span="12">
-            <!-- 型号 -->
-            <FormItem :label="$t('equip.model')" name="model">
-              <Input
-                v-model:value="checkedRow.model"
-                :disabled="dialogStatus === 'detail'"
-                :maxlength="20"
-              />
-            </FormItem>
-          </Col>
           <Col :span="12">
             <!-- 生产厂家 -->
             <FormItem :label="$t('equip.productionFactory')" name="manufacturer">
               <Input
                 v-model:value="checkedRow.manufacturer"
-                :disabled="dialogStatus === 'detail'"
                 :maxlength="30"
               />
             </FormItem>
           </Col>
-        </Row>
-        <Row :gutter="8">
           <Col :span="12">
             <!-- 出厂编号 -->
             <FormItem :label="$t('equip.productionNumber')" name="manufacturingCode">
               <Input
                 v-model:value="checkedRow.manufacturingCode"
-                :disabled="dialogStatus === 'detail'"
                 :maxlength="20"
               />
             </FormItem>
           </Col>
+        </Row>
+        <Row :gutter="8">
           <Col :span="12">
             <!-- 出厂日期 -->
             <FormItem :label="$t('equip.manufacturingDate')" name="manufacturingDate">
               <DatePicker
                 v-model:value="checkedRow.manufacturingDate"
-                :disabled="dialogStatus === 'detail'"
                 style="width: 100%"
                 value-format="YYYY-MM-DD"
               />
             </FormItem>
           </Col>
-        </Row>
-        <Row :gutter="8">
-          <Col :span="12">
-            <!-- 供应商 -->
-            <FormItem :label="$t('equip.supplier')" name="supplier">
-              <Input
-                v-model:value="checkedRow.supplier"
-                :disabled="dialogStatus === 'detail'"
-                :maxlength="30"
-              />
-            </FormItem>
-          </Col>
-          <Col :span="12">
-            <!-- 原值 -->
-            <FormItem :label="$t('equip.originalValue')" name="originalValue">
-              <InputNumber
-                v-model:value="checkedRow.originalValue"
-                :disabled="dialogStatus === 'detail'"
-                style="width: 100%"
-              />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row :gutter="8">
           <Col :span="12">
             <!-- 安装日期 -->
             <FormItem :label="$t('equip.installationDate')" name="installDate">
               <DatePicker
                 v-model:value="checkedRow.installDate"
-                :disabled="dialogStatus === 'detail'"
                 style="width: 100%"
                 value-format="YYYY-MM-DD"
               />
             </FormItem>
           </Col>
-          <Col :span="12">
-            <!-- 使用部门 -->
-            <FormItem :label="$t('equip.useDepartment')" name="useDepartmentName">
-              <TreeSelect
-                v-model:value="checkedRow.useDepartmentCode"
-                show-search
-                allow-clear
-                :dropdown-match-select-width="false"
-                :tree-data="listOfDepartments"
-                tree-node-filter-prop="orgFullName"
-                :field-names="{
-                  children: 'children',
-                  label: 'orgFullName',
-                  value: 'orgCode',
-                }"
-                @select="handleDepartmentSelect"
-              />
-            </FormItem>
-          </Col>
         </Row>
         <Row :gutter="8">
           <Col :span="12">
-            <!-- 拉别 -->
-            <FormItem :label="$t('equip.partitioning')" name="lineType">
-              <Input
-                v-model:value="checkedRow.lineType"
-                :disabled="dialogStatus === 'detail'"
-                :maxlength="20"
-              />
-            </FormItem>
-          </Col>
-          <Col :span="12">
-            <!-- 存放位置 -->
-            <FormItem :label="$t('equip.storageLocation')" name="location">
-              <Input
-                v-model:value="checkedRow.location"
-                :disabled="dialogStatus === 'detail'"
-                :maxlength="20"
-              />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row :gutter="8">
-          <Col :span="12">
-            <!-- 设备类别 -->
+            <!-- 设备类型 -->
             <FormItem :label="$t('equip.equipmentCategory')" name="equipmentType">
               <Select
                 v-model:value="checkedRow.equipmentType"
-                :disabled="dialogStatus === 'detail'"
                 :options="equipmentTypeOptions"
                 :placeholder="$t('equip.pleaseSelect')"
               />
             </FormItem>
           </Col>
           <Col :span="12">
-            <!-- 资产状态 -->
-            <FormItem :label="$t('equip.assetStatus')" name="assets">
-              <RadioGroup
-                v-model:value="checkedRow.assets"
-                :disabled="dialogStatus === 'detail'"
-                :options="assetsOptions"
+            <!-- 更换周期 -->
+            <FormItem :label="$t('equip.replaceCycle')" name="replaceCycle">
+              <InputNumber
+                v-model:value="checkedRow.replaceCycle"
+                :maxlength="50"
+                style="width: calc(100% - 46px); margin-right: 6px"
               />
+              <span>{{ $t('equip.hours') }}</span>
             </FormItem>
           </Col>
         </Row>
@@ -864,58 +463,9 @@ onMounted(() => {
             <FormItem :label="$t('equip.remark')" name="remark">
               <Textarea
                 v-model:value="checkedRow.remark"
-                :disabled="dialogStatus === 'detail'"
                 :autosize="{ minRows: 2, maxRows: 4 }"
                 :maxlength="256"
               />
-            </FormItem>
-          </Col>
-          <Col :span="12">
-            <FormItem :label="`${$t('equip.installationAcceptanceForm') }:`" name="file1">
-              <Upload
-                v-if="dialogStatus !== 'detail'"
-                v-model:file-list="uploadFileList1"
-                name="file"
-                :multiple="false"
-                :action="getUploadUrl()"
-                :headers="{ Authorization: `${accessStore.accessToken}` }"
-                @change="handleFile1Change"
-                @preview="handleFile1Preview"
-                @remove="handleFile1Remove"
-              >
-                <Button>
-                  <Icon icon="mdi:cloud-upload" class="inline-block align-middle text-xl text-[#5085ff]" />
-                  {{ $t('equip.upload') }}
-                </Button>
-              </Upload>
-              <div v-else v-for="item in file1" :key="item.id">
-                <span class="cursor-pointer text-blue-500" @click="fileDown(item)">{{ item.fileName }}</span>
-              </div>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row :gutter="8">
-          <Col :span="12">
-            <FormItem :label="`${$t('equip.otherAttachments') }:`" name="file2">
-              <Upload
-                v-if="dialogStatus !== 'detail'"
-                v-model:file-list="uploadFileList2"
-                name="file"
-                :multiple="false"
-                :action="getUploadUrl()"
-                :headers="{ Authorization: `${accessStore.accessToken}` }"
-                @change="handleFile2Change"
-                @preview="handleFile2Preview"
-                @remove="handleFile2Remove"
-              >
-                <Button>
-                  <Icon icon="mdi:cloud-upload" class="inline-block align-middle text-xl text-[#5085ff]" />
-                  {{ $t('equip.upload') }}
-                </Button>
-              </Upload>
-              <div v-else v-for="item in file2" :key="item.id">
-                <span class="cursor-pointer text-blue-500" @click="fileDown(item)">{{ item.fileName }}</span>
-              </div>
             </FormItem>
           </Col>
         </Row>
@@ -932,8 +482,8 @@ onMounted(() => {
         <Descriptions.Item :label="$t('equip.equipName')">
           {{ checkedRow.equipmentName }}
         </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.model')">
-          {{ checkedRow.model }}
+        <Descriptions.Item :label="$t('equip.equipmentTypeCode')">
+          {{ checkedRow.equipmentNameCode }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.productionFactory')">
           {{ checkedRow.manufacturer }}
@@ -944,42 +494,17 @@ onMounted(() => {
         <Descriptions.Item :label="$t('equip.manufacturingDate')">
           {{ checkedRow.manufacturingDate }}
         </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.supplier')">
-          {{ checkedRow.supplier }}
-        </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.originalValue')">
-          {{ checkedRow.originalValue }}
-        </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.installationDate')">
           {{ checkedRow.installDate }}
-        </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.useDepartment')">
-          {{ checkedRow.useDepartmentName }}
-        </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.partitioning')">
-          {{ checkedRow.lineType }}
-        </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.storageLocation')">
-          {{ checkedRow.location }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.equipmentCategory')">
           {{ equipmentTypeOptions.find(o => o.value === checkedRow.equipmentType)?.label || '' }}
         </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.assetStatus')">
-          {{ assetsOptions.find(o => o.value === checkedRow.assets)?.label || '' }}
+        <Descriptions.Item :label="$t('equip.replaceCycle')">
+          {{ checkedRow.replaceCycle }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.remark')" :span="2">
           {{ checkedRow.remark }}
-        </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.installationAcceptanceForm')" :span="2">
-          <div v-for="item in file1" :key="item.id">
-            <span class="cursor-pointer text-blue-500" @click="fileDown(item)">{{ item.fileName }}</span>
-          </div>
-        </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.otherAttachments')" :span="2">
-          <div v-for="item in file2" :key="item.id">
-            <span class="cursor-pointer text-blue-500" @click="fileDown(item)">{{ item.fileName }}</span>
-          </div>
         </Descriptions.Item>
       </Descriptions>
 
