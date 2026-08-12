@@ -11,4 +11,11 @@ export * from './productBom.service';
 export * from './productCategory.service';
 export * from './productGroupMaintenance.service';
 export * from './productInform.service';
+export * from './productionAreaManage.service';
+export * from './productionLineManage.service';
+export * from './productionLineStaffBind.service';
 export * from './productLineSet.service';
+export * from './subProductionLineHangTray.service';
+export * from './subProductionLineManage.service';
+export * from './teamGroupManage.service';
+
