@@ -56,5 +56,18 @@
   "planType": "계획 유형",
   "orderDate": "주문 날짜",
   "deliverDate": "납품 날짜",
-  "materialTypeName": "자재 유형"
+  "materialTypeName": "자재 유형",
+  "goodQty": "양품 수량",
+  "defectQty": "불량 수량",
+  "remainQty": "잔여 수량",
+  "outputReport": "실적 보고",
+  "status": "상태",
+  "statusProduction": "생산",
+  "statusInProgress": "진행 중",
+  "statusCompleted": "완료",
+  "statusEnded": "종료",
+  "endWorkOrder": "작업 종료",
+  "endWorkOrderConfirm": "이 작업 지시서를 종료하시겠습니까?",
+  "endWorkOrderSuccess": "작업 지시서가 종료되었습니다!",
+  "total": "합계"
 }

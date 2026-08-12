@@ -56,5 +56,18 @@
   "planType": "计划类别",
   "orderDate": "订单日期",
   "deliverDate": "交货日期",
-  "materialTypeName": "材料类别"
+  "materialTypeName": "材料类别",
+  "goodQty": "合格品数量",
+  "defectQty": "不良品数量",
+  "remainQty": "剩余数量",
+  "outputReport": "结束上报",
+  "status": "状态",
+  "statusProduction": "生产",
+  "statusInProgress": "进行中",
+  "statusCompleted": "完成",
+  "statusEnded": "结束",
+  "endWorkOrder": "结束工单",
+  "endWorkOrderConfirm": "确认结束该工单？",
+  "endWorkOrderSuccess": "工单结束成功！",
+  "total": "合计"
 }

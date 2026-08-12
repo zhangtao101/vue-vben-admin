@@ -56,5 +56,18 @@
   "planType": "Plan Type",
   "orderDate": "Order Date",
   "deliverDate": "Delivery Date",
-  "materialTypeName": "Material Type"
+  "materialTypeName": "Material Type",
+  "goodQty": "Good Qty",
+  "defectQty": "Defect Qty",
+  "remainQty": "Remain Qty",
+  "outputReport": "Output Report",
+  "status": "Status",
+  "statusProduction": "Production",
+  "statusInProgress": "In Progress",
+  "statusCompleted": "Completed",
+  "statusEnded": "Ended",
+  "endWorkOrder": "End Work Order",
+  "endWorkOrderConfirm": "Confirm to end this work order?",
+  "endWorkOrderSuccess": "Work order ended successfully!",
+  "total": "Total"
 }

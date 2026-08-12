@@ -43,10 +43,12 @@ import {
   smtWorksheetDelete,
   smtWorksheetExport,
   smtWorksheetSearch,
+  worksheetUpdateStatus,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
+import OutputReportDrawer from '../../util/component/planManagementDrawer/OutputReportDrawer.vue';
 import WorkSheetDrawer from '../../util/component/planManagementDrawer/WorkSheetDrawer.vue';
 
 // 路由信息
@@ -121,6 +123,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'workSheetPlanNumber',
       title: $t('SMTmanagement.workSheetPlanNumber'),
       minWidth: 110,
+      fixed: 'right',
     },
     {
       field: 'workSheetFinishNumber',
@@ -186,16 +189,41 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'updateTimeSlot' },
     },
     {
+      field: 'status',
+      title: $t('SMTmanagement.status'),
+      minWidth: 100,
+      slots: { default: 'statusSlot' },
+    },
+    {
+      field: 'goodQty',
+      title: $t('SMTmanagement.goodQty'),
+      minWidth: 110,
+      fixed: 'right',
+    },
+    {
+      field: 'defectQty',
+      title: $t('SMTmanagement.defectQty'),
+      minWidth: 110,
+      fixed: 'right',
+    },
+    {
+      field: 'remainQty',
+      title: $t('SMTmanagement.remainQty'),
+      minWidth: 110,
+      fixed: 'right',
+    },
+    {
       field: 'action',
       title: $t('common.action'),
       fixed: 'right',
-      minWidth: 280,
+      minWidth: 250,
       slots: { default: 'action' },
     },
   ],
   height: 500,
   stripe: true,
   sortConfig: { multiple: true },
+  showFooter: true,
   proxyConfig: {
     ajax: {
       query: async ({ page }: any) => {
@@ -205,6 +233,62 @@ const gridOptions: VxeGridProps<any> = {
         });
       },
     },
+  },
+  footerMethod: ({ columns }: any) => {
+    const s = summaryData.value;
+    if (!s || Object.keys(s).length === 0) return [];
+    return [
+      columns.map((col: any) => {
+        if (col.type === 'seq') return $t('SMTmanagement.total');
+        if (col.field === 'workSheetPlanNumber') return s.workSheetPlanNumber ?? '';
+        if (col.field === 'goodQty') return s.goodQty ?? '';
+        if (col.field === 'defectQty') return s.defectQty ?? '';
+        if (col.field === 'remainQty') return s.remainQty ?? '';
+        return '-';
+      }),
+    ];
+  },
+  footerSpanMethod: ({ column }: any) => {
+    const s = summaryData.value;
+    if (!s || Object.keys(s).length === 0) return;
+    const col = column;
+    // 序号列开始合并前8列显示"合计"
+    if (col.type === 'seq') return { rowspan: 1, colspan: 8 };
+    // 被前8列合并覆盖的列（workSheetCode 到 sideNo）
+    if (
+      [
+        'lineName',
+        'planCode',
+        'planDateStart',
+        'planDateStop',
+        'sideNo',
+        'subProductName',
+        'workSheetCode',
+      ].includes(col.field)
+    ) {
+      return { rowspan: 0, colspan: 0 };
+    }
+    // productName 列开始合并后13列
+    if (col.field === 'productName') return { rowspan: 1, colspan: 13 };
+    // 被后13列合并覆盖的列（subPlanNumber 到 status）
+    if (
+      [
+        'produceNotFinishNumber',
+        'produceUnarrangedNumber',
+        'produceWorkshop',
+        'productCode',
+        'remark',
+        'status',
+        'subPlanCode',
+        'subPlanNumber',
+        'subProductCode',
+        'updateTime',
+        'updateUsername',
+        'worksheetCodea',
+      ].includes(col.field)
+    ) {
+      return { rowspan: 0, colspan: 0 };
+    }
   },
   toolbarConfig: {
     custom: true,
@@ -223,6 +307,7 @@ const gridEvents: VxeGridListeners<any> = {
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+const summaryData = ref<any>({});
 // endregion
 
 // region 查询数据
@@ -246,6 +331,7 @@ function queryData({ page, pageSize }: any) {
       pageSize,
     })
       .then((res: any) => {
+        summaryData.value = res?.summary ?? {};
         resolve({
           total: res?.total ?? 0,
           items: res?.results ?? res?.list ?? [],
@@ -311,6 +397,7 @@ function handleDesc() {
 
 // region 新增/编辑/修改时间
 const workSheetDrawerRef = ref();
+const outputReportDrawerRef = ref();
 
 function handleCreate() {
   workSheetDrawerRef.value.open('create');
@@ -320,8 +407,17 @@ function handleUpdate(row: any) {
   workSheetDrawerRef.value.open('update', row);
 }
 
-function handleTimeChange(row: any) {
-  workSheetDrawerRef.value.open('timeChange', row);
+// function handleTimeChange(row: any) {
+//   workSheetDrawerRef.value.open('timeChange', row);
+// }
+
+/**
+ * 打开结束上报抽屉
+ * @param row 工单行数据
+ * @since 2026-08-11
+ */
+function handleOutputReport(row: any) {
+  outputReportDrawerRef.value.open(row);
 }
 // endregion
 
@@ -335,8 +431,17 @@ function handleDelete(row: any) {
 // endregion
 
 // region 条码打印
-function handleBarcodePrint(_row: any) {
-  message.info($t('planManagement.printNotReady'));
+// function handleBarcodePrint(_row: any) {
+//   message.info($t('planManagement.printNotReady'));
+// }
+// endregion
+
+// region 结束工单
+function handleEndWorkOrder(row: any) {
+  worksheetUpdateStatus({ id: row.id, status: '4' }).then(() => {
+    message.success($t('SMTmanagement.endWorkOrderSuccess'));
+    gridApi.reload();
+  });
 }
 // endregion
 
@@ -464,6 +569,11 @@ onMounted(() => {
           <span>{{ row.updateTime == null ? row.createTime : row.updateTime }}</span>
         </template>
 
+        <!-- 状态 -->
+        <template #statusSlot="{ row }">
+          <span>{{ row.status === 1 ? $t('SMTmanagement.statusProduction') : row.status === 2 ? $t('SMTmanagement.statusInProgress') : row.status === 3 ? $t('SMTmanagement.statusCompleted') : row.status === 4 ? $t('SMTmanagement.statusEnded') : '-' }}</span>
+        </template>
+
         <!-- 操作列 -->
         <template #action="{ row }">
           <!-- 编辑 -->
@@ -494,7 +604,7 @@ onMounted(() => {
             </Popconfirm>
           </Tooltip>
           <!-- 条码打印 -->
-          <Tooltip v-if="author.includes('条码打印')">
+          <!-- <Tooltip v-if="author.includes('条码打印')">
             <template #title>{{ $t('SMTmanagement.barcodePrint') }}</template>
             <Button type="link" @click="handleBarcodePrint(row)">
               <Icon
@@ -502,9 +612,9 @@ onMounted(() => {
                 class="inline-block align-middle text-2xl"
               />
             </Button>
-          </Tooltip>
+          </Tooltip> -->
           <!-- 修改时间 -->
-          <Tooltip v-if="author.includes('修改时间')">
+          <!-- <Tooltip v-if="author.includes('修改时间')">
             <template #title>{{ $t('SMTmanagement.changeTime') }}</template>
             <Button type="link" @click="handleTimeChange(row)">
               <Icon
@@ -512,6 +622,36 @@ onMounted(() => {
                 class="inline-block align-middle text-2xl"
               />
             </Button>
+          </Tooltip> -->
+          <!-- 结束上报 -->
+          <Tooltip v-if="author.includes('编辑') && row.status === 3">
+            <template #title>{{ $t('SMTmanagement.outputReport') }}</template>
+            <Button
+              type="link"
+              @click="handleOutputReport(row)"
+            >
+              <Icon
+                icon="mdi:file-document-edit-outline"
+                class="inline-block align-middle text-2xl"
+              />
+            </Button>
+          </Tooltip>
+          <!-- 结束工单 -->
+          <Tooltip v-if="author.includes('编辑') && row.status === 3">
+            <template #title>{{ $t('SMTmanagement.endWorkOrder') }}</template>
+            <Popconfirm
+              :cancel-text="$t('common.cancel')"
+              :ok-text="$t('common.confirm')"
+              :title="$t('SMTmanagement.endWorkOrderConfirm')"
+              @confirm="handleEndWorkOrder(row)"
+            >
+              <Button type="link">
+                <Icon
+                  icon="mdi:stop-circle-outline"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Popconfirm>
           </Tooltip>
         </template>
       </Grid>
@@ -519,6 +659,8 @@ onMounted(() => {
 
     <!-- 工单抽屉 -->
     <WorkSheetDrawer ref="workSheetDrawerRef" @refresh="() => gridApi.reload()" />
+    <!-- 结束上报抽屉 -->
+    <OutputReportDrawer ref="outputReportDrawerRef" @refresh="() => gridApi.reload()" />
   </Page>
 </template>
 
