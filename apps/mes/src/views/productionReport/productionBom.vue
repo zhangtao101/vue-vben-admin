@@ -30,8 +30,7 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
-
-import ProductionBomDrawer from './components/ProductionBomDrawer.vue';
+import ProductionBomDrawer from '#/util//component/productionReport/ProductionBomDrawer.vue';
 
 const route = useRoute();
 
