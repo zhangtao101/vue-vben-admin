@@ -210,5 +210,18 @@
   "userName": "사용자 이름",
   "state": "상태",
   "hangTray": "마운트 트레이",
-  "selectHangTrayPlaceholder": "마운트 트레이를 선택하세요"
+  "selectHangTrayPlaceholder": "마운트 트레이를 선택하세요",
+  "palletCode": "팔레트 코드",
+  "palletName": "팔레트 이름",
+  "inputPalletCode": "팔레트 코드를 입력하세요",
+  "inputPalletName": "팔레트 이름을 입력하세요",
+  "loadCapacity": "정격 하중 용량",
+  "inputLoadCapacity": "정격 하중 용량을 입력하세요",
+  "trolleyCode": "트롤리 코드",
+  "trolleyName": "트롤리 이름",
+  "inputTrolleyCode": "트롤리 코드를 입력하세요",
+  "inputTrolleyName": "트롤리 이름을 입력하세요",
+  "palletCapacity": "팔레트 적재 수량",
+  "inputPalletCapacity": "팔레트 적재 수량을 입력하세요",
+  "selectStatus": "상태를 선택하세요"
 }

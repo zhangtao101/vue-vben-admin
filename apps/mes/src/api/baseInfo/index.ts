@@ -18,4 +18,6 @@ export * from './productLineSet.service';
 export * from './subProductionLineHangTray.service';
 export * from './subProductionLineManage.service';
 export * from './teamGroupManage.service';
+export * from './trayManage.service';
+export * from './trolleyManage.service';
 

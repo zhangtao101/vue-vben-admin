@@ -210,5 +210,18 @@
   "userName": "用户名称",
   "state": "状态",
   "hangTray": "挂载托盘",
-  "selectHangTrayPlaceholder": "请选择挂载托盘"
+  "selectHangTrayPlaceholder": "请选择挂载托盘",
+  "palletCode": "托盘编码",
+  "palletName": "托盘名称",
+  "inputPalletCode": "请输入托盘编码",
+  "inputPalletName": "请输入托盘名称",
+  "loadCapacity": "额定承载量",
+  "inputLoadCapacity": "请输入额定承载量",
+  "trolleyCode": "台车编码",
+  "trolleyName": "台车名称",
+  "inputTrolleyCode": "请输入台车编码",
+  "inputTrolleyName": "请输入台车名称",
+  "palletCapacity": "可装托盘数量",
+  "inputPalletCapacity": "请输入可装托盘数量",
+  "selectStatus": "请选择状态"
 }

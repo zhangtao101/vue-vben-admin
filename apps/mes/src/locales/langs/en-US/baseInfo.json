@@ -210,5 +210,18 @@
   "userName": "User Name",
   "state": "Status",
   "hangTray": "Mounted Tray",
-  "selectHangTrayPlaceholder": "Please select mounted tray"
+  "selectHangTrayPlaceholder": "Please select mounted tray",
+  "palletCode": "Pallet Code",
+  "palletName": "Pallet Name",
+  "inputPalletCode": "Please enter pallet code",
+  "inputPalletName": "Please enter pallet name",
+  "loadCapacity": "Load Capacity",
+  "inputLoadCapacity": "Please enter load capacity",
+  "trolleyCode": "Trolley Code",
+  "trolleyName": "Trolley Name",
+  "inputTrolleyCode": "Please enter trolley code",
+  "inputTrolleyName": "Please enter trolley name",
+  "palletCapacity": "Pallet Capacity",
+  "inputPalletCapacity": "Please enter pallet capacity",
+  "selectStatus": "Please select status"
 }
