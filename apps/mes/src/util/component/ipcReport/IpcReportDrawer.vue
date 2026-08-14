@@ -33,6 +33,7 @@ import {
   fetchIpcReportDetail,
   fetchSendFormDetail,
   getCheckNumber,
+  getIqcItemList,
   saveIpcReportFile,
   updateIpcReport,
 } from '#/api';
@@ -41,7 +42,7 @@ import MaterialSelectDrawer from './MaterialSelectDrawer.vue';
 
 // Props
 const props = defineProps<{
-  id: string;
+  id: any;
   mode: 'create' | 'update' | 'view';
   visible: boolean;
 }>();
@@ -67,36 +68,7 @@ const formData = ref<any>({
   sendDate: '',
   remark: '',
   detailList: [],
-  itemResults: [
-    {
-      itemCodeName: '包装',
-      itemCode: 1,
-      checkResult: '',
-      judgeResult: 1,
-      flawResult: '',
-    },
-    {
-      itemCodeName: '外观',
-      itemCode: 2,
-      checkResult: '',
-      judgeResult: 1,
-      flawResult: '',
-    },
-    {
-      itemCodeName: '尺寸',
-      itemCode: 3,
-      checkResult: '',
-      judgeResult: 1,
-      flawResult: '',
-    },
-    {
-      itemCodeName: '性能',
-      itemCode: 4,
-      checkResult: '',
-      judgeResult: 1,
-      flawResult: '',
-    },
-  ],
+  itemResults: [],
   iqcFlaw: {
     isOther: 1,
     fatalFlaw: '',
@@ -207,36 +179,7 @@ function resetForm() {
     sendDate: '',
     remark: '',
     detailList: [],
-    itemResults: [
-      {
-        itemCodeName: '包装',
-        itemCode: 1,
-        checkResult: '',
-        judgeResult: 1,
-        flawResult: '',
-      },
-      {
-        itemCodeName: '外观',
-        itemCode: 2,
-        checkResult: '',
-        judgeResult: 1,
-        flawResult: '',
-      },
-      {
-        itemCodeName: '尺寸',
-        itemCode: 3,
-        checkResult: '',
-        judgeResult: 1,
-        flawResult: '',
-      },
-      {
-        itemCodeName: '性能',
-        itemCode: 4,
-        checkResult: '',
-        judgeResult: 1,
-        flawResult: '',
-      },
-    ],
+    itemResults: [],
     iqcFlaw: {
       isOther: 1,
       fatalFlaw: '',
@@ -249,6 +192,19 @@ function resetForm() {
     type: 1,
   };
   uploadFileList.value = [];
+  loadIqcItems();
+}
+
+// 加载IQC检验项
+function loadIqcItems() {
+  getIqcItemList().then((data: any) => {
+    if (data) {
+      formData.value.itemResults = data.map((item: any) => ({
+        ...item,
+        itemCodeName: item.itemName,
+      }));
+    }
+  });
 }
 
 // 加载详情
