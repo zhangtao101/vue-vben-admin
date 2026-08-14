@@ -294,11 +294,15 @@ function printFile() {
   const codes: {
     barcode1: string;
     barcode2: string;
+    barcode3: string;
   }[] = [];
-  for (let i = 0, size = selectedRows.length; i < size; i += 2) {
+  for (let i = 0, size = selectedRows.length; i < size; i += 3) {
     codes.push({
       barcode1: selectedRows[i].wareLocationName,
       barcode2: selectedRows[i + 1]
+        ? selectedRows[i + 1].wareLocationName
+        : undefined,
+      barcode3: selectedRows[i + 2]
         ? selectedRows[i + 1].wareLocationName
         : undefined,
     });
