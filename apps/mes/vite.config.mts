@@ -33,6 +33,7 @@ export default defineConfig(async () => {
             // target: 'http://192.168.199.205:8050',
             // target: 'http://192.168.31.58:8050',
             target: 'http://192.168.0.102:8060',
+            // target: 'http://192.168.0.206:8050',
             // target: 'http://192.168.0.63:8060',
             // target: 'http://192.168.0.102:8050',
             // target: 'http://192.168.0.60:8060',
