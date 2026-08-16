@@ -663,12 +663,8 @@ function queryData({ page, pageSize }: any) {
 
     // 处理时间范围查询
     if (params.searchTime && params.searchTime.length === 2) {
-      params.operateDateStart = params.searchTime[0].format(
-        'YYYY-MM-DD',
-      );
-      params.operateDateEnd = params.searchTime[1].format(
-        'YYYY-MM-DD',
-      );
+      params.operateDateStart = params.searchTime[0].format('YYYY-MM-DD');
+      params.operateDateEnd = params.searchTime[1].format('YYYY-MM-DD');
       delete params.searchTime;
     }
 
