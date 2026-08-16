@@ -22,6 +22,7 @@ import {
   message,
   Modal,
   Row,
+  Select,
   Space,
   Tooltip,
 } from 'ant-design-vue';
@@ -30,6 +31,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createLabelRecord,
   fetchLabelRecordDetail,
+  listWordListByParentCode,
   updateLabelRecord,
   uploadLabelExcel,
 } from '#/api';
@@ -61,6 +63,21 @@ const contractDialogVisible = ref(false);
 const materialDialogVisible = ref(false);
 const currentMaterialIndex = ref<number>(-1);
 
+// 单据类型下拉选项（数据来源：BQDB 字典）
+const formTypeOptions = ref<any[]>([]);
+
+/**
+ * 加载单据类型选项
+ */
+function loadFormTypeOptions() {
+  listWordListByParentCode('BQDB').then((data: any) => {
+    formTypeOptions.value = (data || []).map((item: any) => ({
+      label: item.wordName,
+      value: item.wordCode,
+    }));
+  });
+}
+
 // 表单数据
 const formData = reactive({
   id: null as null | string,
@@ -74,80 +91,97 @@ const formData = reactive({
 
 // 表格列配置
 const gridColumns: any[] = [
+  // 标签类型（如收货标签/发货标签等）
   {
     field: 'labelType',
     title: $t('storeManagement.labelPrint.labelType'),
     width: 80,
     slots: { default: 'labelType' },
   },
+  // 标签编码（标签唯一编号）
   {
     field: 'labelCode',
     title: $t('storeManagement.labelPrint.labelCode'),
     width: 180,
   },
+  // 物料编码
   {
     field: 'materialCode',
     title: $t('storeManagement.labelPrint.materialCode'),
     width: 120,
   },
+  // 物料名称（带批次号展示）
   {
     field: 'materialName',
     title: $t('storeManagement.labelPrint.materialName'),
     width: 300,
     slots: { default: 'materialName' },
   },
+  // 单位（如个/箱/件）
   { field: 'unit', title: $t('storeManagement.labelPrint.unit'), width: 80 },
+  // 标签数量（本次打印的标签张数）
   {
     field: 'labelNumber',
     title: $t('storeManagement.labelPrint.labelNumber'),
     width: 80,
   },
+  // 包装数量（每包/箱的数量，含底部合计）
   {
     field: 'packageNumber',
     title: $t('storeManagement.labelPrint.packageNumber'),
     width: 120,
     slots: { default: 'packageNumber', footer: 'footerPackageNumber' },
   },
+  // 采购计划单号
   {
     field: 'purchasePlanCode',
     title: $t('storeManagement.labelPrint.purchasePlanCode'),
     width: 120,
     slots: { default: 'purchasePlanCode' },
   },
+  // 合同号/单据号（手填）
   {
     field: 'contractCode',
     title: $t('storeManagement.labelPrint.billCode'),
     width: 120,
+    slots: { default: 'contractCode' },
   },
+  // 单据类型（下拉选择，数据来源 BQDB 字典）
   {
     field: 'formType',
     title: $t('storeManagement.labelPrint.formType'),
-    width: 100,
+    width: 250,
+    slots: { default: 'formType' },
   },
+  // 制造商名称（超长省略显示 tooltip）
   {
     field: 'manufacturerName',
     title: $t('storeManagement.labelPrint.manufacturerName'),
     width: 150,
     showOverflow: 'tooltip',
   },
+  // 生产日期
   {
     field: 'produceDate',
     title: $t('storeManagement.labelPrint.produceDate'),
     width: 140,
     slots: { default: 'produceDate' },
   },
+  // 有效期至
   {
     field: 'validDate',
     title: $t('storeManagement.labelPrint.validDate'),
     width: 140,
     slots: { default: 'validDate' },
   },
+  // 批次号
   {
     field: 'batchCode',
     title: $t('storeManagement.labelPrint.batchCode'),
     width: 150,
     slots: { default: 'batchCode' },
   },
+  // 操作列（删除/编辑等，固定右侧）
   {
     field: 'action',
     title: $t('common.operation'),
@@ -191,6 +225,7 @@ watch(
   () => props.open,
   (val) => {
     if (val) {
+      loadFormTypeOptions();
       if (props.recordId) {
         loadDetail();
       } else {
@@ -566,6 +601,21 @@ function handleClose() {
           <Input
             v-model:value="row.purchasePlanCode"
             :disabled="row.addDisabled"
+          />
+        </template>
+        <template #contractCode="{ row }">
+          <Input
+            v-model:value="row.contractCode"
+            :disabled="row.addDisabled"
+            :maxlength="50"
+          />
+        </template>
+        <template #formType="{ row }">
+          <Select
+            v-model:value="row.formType"
+            :options="formTypeOptions"
+            :disabled="row.addDisabled"
+            class="!w-48"
           />
         </template>
         <template #produceDate="{ row }">

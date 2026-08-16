@@ -228,3 +228,12 @@ export async function deleteLabelReplica(id: string) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/labelReplica/delete/${id}`,
   );
 }
+
+/**
+ * 获取标签打印明细内容
+ */
+export async function fetchLabelTemplate(labelRecordIdList: string[]) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/wms/label/labelprint/labelTemplate?labelRecordIdList=${labelRecordIdList.join(',')}`,
+  );
+}

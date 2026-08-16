@@ -179,7 +179,11 @@
     "outboundOrder": "出库单",
     "transferOrder": "调拨单",
     "typeName": "类别",
-    "workOrderCode": "工单号"
+    "workOrderCode": "工单号",
+    "selectPrintTemplate": "选择打印模板",
+    "finishedProductTemplate": "成品条码打印标签",
+    "workOrderTemplate": "随工单打印标签",
+    "materialLabelCardTemplate": "物料标签卡打印标签"
   },
   "inspectionSlip": {
     "formCode": "送检单号",

@@ -4,19 +4,31 @@
  */
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import { $t } from '@vben/locales';
 
-import { Button, Drawer, message, Modal, Space, Tag } from 'ant-design-vue';
+import {
+  Button,
+  Drawer,
+  message,
+  Modal,
+  Radio,
+  RadioGroup,
+  Space,
+  Tag,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteLabelDetail,
   enterWarehouse,
   fetchLabelRecordDetail,
+  fetchLabelTemplate,
   judgeReturn,
   printLabel,
+  queryPrintTemplateDetails,
 } from '#/api';
 
 // Props
@@ -177,6 +189,27 @@ const gridOptions: VxeGridProps<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
+// 打印模板选项（值为模板名称，展示国际化）
+const printTemplates = [
+  {
+    label: $t('storeManagement.labelPrint.finishedProductTemplate'),
+    value: '成品条码打印标签',
+  },
+  {
+    label: $t('storeManagement.labelPrint.workOrderTemplate'),
+    value: '随工单打印标签',
+  },
+  {
+    label: $t('storeManagement.labelPrint.materialLabelCardTemplate'),
+    value: '物料标签卡打印标签',
+  },
+];
+
+// 打印弹窗状态
+const printModalVisible = ref(false);
+const selectedTemplate = ref(printTemplates[0]?.value || '');
+const printIds = ref<string[]>([]);
+
 // 监听打开状态，加载数据
 watch(
   () => props.open,
@@ -204,7 +237,7 @@ function loadLabelDetail() {
 }
 
 /**
- * 打印
+ * 打印（先选择打印模板）
  */
 function handlePrint() {
   const selection = gridApi.grid.getCheckboxRecords();
@@ -212,10 +245,38 @@ function handlePrint() {
     message.warning($t('storeManagement.labelPrint.selectPrintLabel'));
     return;
   }
-  const ids = selection.map((item: any) => item.id);
-  printLabel(ids)
-    .then(() => {
-      message.success($t('storeManagement.labelPrint.printSuccess'));
+  printIds.value = selection.map((item: any) => item.id);
+  selectedTemplate.value = printTemplates[0]?.value || '';
+  printModalVisible.value = true;
+}
+
+/**
+ * 执行打印
+ */
+function doPrint() {
+  Promise.all([
+    queryPrintTemplateDetails(selectedTemplate.value),
+    fetchLabelTemplate(printIds.value),
+  ])
+    .then(([templateRes, dataRes]: any) => {
+      try {
+        const templateRef = JSON.parse(templateRes.printData);
+        const hiprintTemplate = new hiprint.PrintTemplate({
+          template: templateRef,
+        });
+        hiprintTemplate.print(dataRes || [], {
+          leftOffset: -1,
+          topOffset: -1,
+        });
+        printModalVisible.value = false;
+        // 打印后更新打印状态
+        printLabel(printIds.value).then(() => {
+          message.success($t('storeManagement.labelPrint.printSuccess'));
+          loadLabelDetail();
+        });
+      } catch {
+        console.error('模板解析失败');
+      }
     })
     .catch((error: any) => {
       message.error(error.message || $t('common.operationFailed'));
@@ -354,4 +415,21 @@ function handleClose() {
       </template>
     </Grid>
   </Drawer>
+  <Modal
+    v-model:open="printModalVisible"
+    :title="$t('storeManagement.labelPrint.selectPrintTemplate')"
+    :ok-text="$t('common.confirm')"
+    :cancel-text="$t('common.cancel')"
+    @ok="doPrint"
+  >
+    <RadioGroup v-model:value="selectedTemplate">
+      <Radio
+        v-for="item in printTemplates"
+        :key="item.value"
+        :value="item.value"
+      >
+        {{ item.label }}
+      </Radio>
+    </RadioGroup>
+  </Modal>
 </template>

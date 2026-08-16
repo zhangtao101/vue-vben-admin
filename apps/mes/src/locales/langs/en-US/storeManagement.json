@@ -179,7 +179,11 @@
     "outboundOrder": "Outbound Order",
     "transferOrder": "Transfer Order",
     "typeName": "Type Name",
-    "workOrderCode": "Work Order Code"
+    "workOrderCode": "Work Order Code",
+    "selectPrintTemplate": "Select Print Template",
+    "finishedProductTemplate": "Finished Product Barcode Label",
+    "workOrderTemplate": "Work Order Label",
+    "materialLabelCardTemplate": "Material Label Card Label"
   },
   "inspectionSlip": {
     "formCode": "Form Code",

@@ -8,6 +8,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, reactive, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -25,6 +26,8 @@ import {
   Input,
   message,
   Modal,
+  Radio,
+  RadioGroup,
   Select,
   SelectOption,
   Space,
@@ -42,7 +45,9 @@ import {
   exportLabelDetail,
   fetchLabelDetailList,
   fetchLabelList,
+  fetchLabelTemplate,
   judgeReturn,
+  queryPrintTemplateDetails,
   setRecordPrint,
 } from '#/api';
 
@@ -318,6 +323,29 @@ const currentRecordId = ref<null | string>(null);
 const formDialogVisible = ref(false);
 const editRecordId = ref<null | string>(null);
 
+// 打印模板选项（值为模板名称，展示国际化）
+const printTemplates = [
+  {
+    label: $t('storeManagement.labelPrint.finishedProductTemplate'),
+    value: '成品条码打印标签',
+  },
+  {
+    label: $t('storeManagement.labelPrint.workOrderTemplate'),
+    value: '随工单打印标签',
+  },
+  {
+    label: $t('storeManagement.labelPrint.materialLabelCardTemplate'),
+    value: '物料标签卡打印标签',
+  },
+];
+
+// 打印弹窗状态
+const printModalVisible = ref(false);
+const selectedTemplate = ref(printTemplates[0].value);
+const printIds = ref<string[]>([]);
+// 打印成功后的回调
+let printSuccessHandler: () => void = () => {};
+
 // endregion 状态定义
 
 // region 方法定义
@@ -440,7 +468,7 @@ function handleDeleteRecord(row: any) {
 }
 
 /**
- * 打印标签
+ * 打印标签（标签打印页，先选择打印模板）
  */
 function handlePrint() {
   const selection = labelPrintGridApi.grid.getCheckboxRecords();
@@ -449,10 +477,65 @@ function handlePrint() {
     return;
   }
   const ids = selection.map((item: any) => item.id);
-  setRecordPrint(ids)
-    .then(() => {
-      message.success($t('storeManagement.labelPrint.printSuccess'));
-      labelPrintGridApi.reload();
+  printIds.value = ids;
+  selectedTemplate.value = printTemplates[0]?.value || '';
+  printModalVisible.value = true;
+  // 打印成功后更新记录打印状态
+  printSuccessHandler = () => {
+    setRecordPrint(ids)
+      .then(() => {
+        message.success($t('storeManagement.labelPrint.printSuccess'));
+        labelPrintGridApi.reload();
+      })
+      .catch((error: any) => {
+        message.error(error.message || $t('common.operationFailed'));
+      });
+  };
+}
+
+/**
+ * 打印标签（标签查询页，先选择打印模板）
+ */
+function handleQueryPrint() {
+  const selection = labelQueryGridApi.grid.getCheckboxRecords();
+  if (selection.length === 0) {
+    message.warning($t('storeManagement.labelPrint.selectLabel'));
+    return;
+  }
+  const ids = selection.map((item: any) => item.id);
+  printIds.value = ids;
+  selectedTemplate.value = printTemplates[0]?.value || '';
+  printModalVisible.value = true;
+  // 打印成功后刷新标签查询列表
+  printSuccessHandler = () => {
+    message.success($t('storeManagement.labelPrint.printSuccess'));
+    labelQueryGridApi.reload();
+  };
+}
+
+/**
+ * 执行打印
+ */
+function doPrint() {
+  Promise.all([
+    queryPrintTemplateDetails(selectedTemplate.value),
+    fetchLabelTemplate(printIds.value),
+  ])
+    .then(([templateRes, dataRes]: any) => {
+      try {
+        const templateRef = JSON.parse(templateRes.printData);
+        const hiprintTemplate = new hiprint.PrintTemplate({
+          template: templateRef,
+        });
+        hiprintTemplate.print(dataRes || [], {
+          leftOffset: -1,
+          topOffset: -1,
+        });
+        printModalVisible.value = false;
+        printSuccessHandler();
+      } catch {
+        console.error('模板解析失败');
+      }
     })
     .catch((error: any) => {
       message.error(error.message || $t('common.operationFailed'));
@@ -740,7 +823,7 @@ onMounted(() => {
 
         <Card class="!mt-4">
           <Space class="!mb-4">
-            <Button type="primary" @click="handlePrint">
+            <Button type="primary" @click="handleQueryPrint">
               {{ $t('common.print') }}
             </Button>
             <Button
@@ -790,6 +873,25 @@ onMounted(() => {
       :record-id="editRecordId"
       @success="handleFormSuccess"
     />
+
+    <!-- 打印模板选择弹窗 -->
+    <Modal
+      v-model:open="printModalVisible"
+      :title="$t('storeManagement.labelPrint.selectPrintTemplate')"
+      :ok-text="$t('common.confirm')"
+      :cancel-text="$t('common.cancel')"
+      @ok="doPrint"
+    >
+      <RadioGroup v-model:value="selectedTemplate">
+        <Radio
+          v-for="item in printTemplates"
+          :key="item.value"
+          :value="item.value"
+        >
+          {{ item.label }}
+        </Radio>
+      </RadioGroup>
+    </Modal>
   </Page>
 </template>
 
