@@ -183,7 +183,11 @@
     "selectPrintTemplate": "选择打印模板",
     "finishedProductTemplate": "成品条码打印标签",
     "workOrderTemplate": "随工单打印标签",
-    "materialLabelCardTemplate": "物料标签卡打印标签"
+    "materialLabelCardTemplate": "物料标签卡打印标签",
+    "lineName": "线别/模组",
+    "lineNamePlaceholder": "1/B-105（1为线别，B-105为模组）",
+    "classType": "班别",
+    "materialOrderNo": "物料编码号"
   },
   "inspectionSlip": {
     "formCode": "送检单号",

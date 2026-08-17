@@ -341,7 +341,7 @@ const printTemplates = [
 
 // 打印弹窗状态
 const printModalVisible = ref(false);
-const selectedTemplate = ref(printTemplates[0].value);
+const selectedTemplate = ref(printTemplates[0]?.value || '');
 const printIds = ref<string[]>([]);
 // 打印成功后的回调
 let printSuccessHandler: () => void = () => {};

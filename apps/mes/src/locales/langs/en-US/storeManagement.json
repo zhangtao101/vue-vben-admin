@@ -183,7 +183,11 @@
     "selectPrintTemplate": "Select Print Template",
     "finishedProductTemplate": "Finished Product Barcode Label",
     "workOrderTemplate": "Work Order Label",
-    "materialLabelCardTemplate": "Material Label Card Label"
+    "materialLabelCardTemplate": "Material Label Card Label",
+    "lineName": "Line/Module",
+    "lineNamePlaceholder": "1/B-105 (1 is line, B-105 is module)",
+    "classType": "Shift",
+    "materialOrderNo": "Material Order No."
   },
   "inspectionSlip": {
     "formCode": "Form Code",

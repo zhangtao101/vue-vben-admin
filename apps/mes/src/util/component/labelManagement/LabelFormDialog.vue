@@ -117,6 +117,13 @@ const gridColumns: any[] = [
     width: 300,
     slots: { default: 'materialName' },
   },
+  // 物料编码号（即物料序列号，手填）
+  {
+    field: 'materialOrderNo',
+    title: $t('storeManagement.labelPrint.materialOrderNo'),
+    width: 150,
+    slots: { default: 'materialOrderNo' },
+  },
   // 单位（如个/箱/件）
   { field: 'unit', title: $t('storeManagement.labelPrint.unit'), width: 80 },
   // 标签数量（本次打印的标签张数）
@@ -180,6 +187,27 @@ const gridColumns: any[] = [
     title: $t('storeManagement.labelPrint.batchCode'),
     width: 150,
     slots: { default: 'batchCode' },
+  },
+  // 线别/模组（手填，格式：线别/模组，如 1/B-105）
+  {
+    field: 'lineName',
+    title: $t('storeManagement.labelPrint.lineName'),
+    width: 150,
+    slots: { default: 'lineName' },
+  },
+  // 班别（手填）
+  {
+    field: 'classType',
+    title: $t('storeManagement.labelPrint.classType'),
+    width: 100,
+    slots: { default: 'classType' },
+  },
+  // 备注（手填）
+  {
+    field: 'remark',
+    title: $t('storeManagement.labelPrint.remark'),
+    width: 150,
+    slots: { default: 'remark' },
   },
   // 操作列（删除/编辑等，固定右侧）
   {
@@ -395,6 +423,10 @@ function handleAddRow() {
     addDisabled: false,
     materialCode: '',
     materialName: '',
+    materialOrderNo: '',
+    lineName: '',
+    classType: '',
+    remark: '',
   });
 }
 
@@ -634,6 +666,41 @@ function handleClose() {
         </template>
         <template #batchCode="{ row }">
           <Input v-model:value="row.batchCode" :maxlength="20" />
+        </template>
+        <template #materialOrderNo="{ row }">
+          <Input
+            v-model:value="row.materialOrderNo"
+            :disabled="row.addDisabled"
+            :maxlength="50"
+          />
+        </template>
+        <template #lineName="{ row }">
+          <Tooltip>
+            <template #title>
+              {{ $t('storeManagement.labelPrint.lineNamePlaceholder') }}
+            </template>
+            <Input
+              v-model:value="row.lineName"
+              :disabled="row.addDisabled"
+              :placeholder="
+                $t('storeManagement.labelPrint.lineNamePlaceholder')
+              "
+            />
+          </Tooltip>
+        </template>
+        <template #classType="{ row }">
+          <Input
+            v-model:value="row.classType"
+            :disabled="row.addDisabled"
+            :maxlength="20"
+          />
+        </template>
+        <template #remark="{ row }">
+          <Input
+            v-model:value="row.remark"
+            :disabled="row.addDisabled"
+            :maxlength="50"
+          />
         </template>
         <template #action="{ row, $rowIndex }">
           <Tooltip>
