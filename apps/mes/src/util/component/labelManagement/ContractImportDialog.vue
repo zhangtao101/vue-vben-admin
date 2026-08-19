@@ -59,6 +59,7 @@ function loadFormTypeOptions() {
       label: item.wordName,
       value: item.wordCode,
     }));
+    queryParams.typeCode = formTypeOptions.value[0].value;
   });
 }
 
@@ -313,6 +314,15 @@ function handleClose() {
     @cancel="handleClose"
   >
     <Form layout="inline" class="!mb-4">
+      <FormItem :label="$t('storeManagement.labelPrint.singleType')">
+        <Select
+          v-model:value="queryParams.typeCode"
+          :options="formTypeOptions"
+          :placeholder="$t('storeManagement.labelPrint.singleType')"
+          allow-clear
+          style="width: 150px"
+        />
+      </FormItem>
       <FormItem :label="$t('storeManagement.labelPrint.billCode')">
         <Input
           v-model:value="queryParams.code"
@@ -339,15 +349,6 @@ function handleClose() {
             $t('common.pleaseEnter') +
             $t('storeManagement.labelPrint.materialName')
           "
-          style="width: 150px"
-        />
-      </FormItem>
-      <FormItem :label="$t('storeManagement.labelPrint.singleType')">
-        <Select
-          v-model:value="queryParams.typeCode"
-          :options="formTypeOptions"
-          :placeholder="$t('storeManagement.labelPrint.singleType')"
-          allow-clear
           style="width: 150px"
         />
       </FormItem>
