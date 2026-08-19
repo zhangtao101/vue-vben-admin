@@ -137,6 +137,7 @@
     "chooseMaterial": "选择物料",
     "choose": "选择",
     "contractImport": "采购合同导入",
+    "billImport": "单据导入",
     "excelImport": "excel导入",
     "excelDownload": "excel下载",
     "addRow": "增加",
@@ -187,7 +188,8 @@
     "lineName": "线别/模组",
     "lineNamePlaceholder": "1/B-105（1为线别，B-105为模组）",
     "classType": "班别",
-    "materialOrderNo": "物料编码号"
+    "materialOrderNo": "物料编码号",
+    "singleType": "单别"
   },
   "inspectionSlip": {
     "formCode": "送检单号",

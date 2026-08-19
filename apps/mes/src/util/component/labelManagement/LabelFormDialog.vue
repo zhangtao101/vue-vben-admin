@@ -33,7 +33,6 @@ import {
   fetchLabelRecordDetail,
   listWordListByParentCode,
   updateLabelRecord,
-  uploadLabelExcel,
 } from '#/api';
 
 import ContractImportDialog from './ContractImportDialog.vue';
@@ -357,18 +356,10 @@ function handleContractConfirm(contracts: any[]) {
     const count = Number.parseInt(element.lableNumber, 10);
     for (let index = 0; index < count; index++) {
       formData.labelList.push({
+        ...element,
         labelType: 1,
         labelNumber: 1,
         addDisabled: true,
-        formType: element.formType,
-        contractCode: element.contractCode,
-        contractDetailId: element.contractDetailId,
-        materialCode: element.materialCode,
-        materialName: element.materialName,
-        unit: element.unit,
-        packageNumber: element.packageNumber,
-        manufacturerName: element.manufacturerName,
-        purchasePlanCode: element.purchasePlanCode,
       });
     }
   });
@@ -377,40 +368,40 @@ function handleContractConfirm(contracts: any[]) {
 /**
  * Excel导入
  */
-function handleExcelImport(e: any) {
-  importVisible.value = false;
-  const file = e.target.files[0];
-  if (!file) return;
+// function handleExcelImport(e: any) {
+//   importVisible.value = false;
+//   const file = e.target.files[0];
+//   if (!file) return;
 
-  const fileType = file.name.slice(file.name.lastIndexOf('.'));
-  if (fileType !== '.xlsx' && fileType !== '.xls') {
-    message.warning($t('storeManagement.labelPrint.invalidFileType'));
-    return;
-  }
+//   const fileType = file.name.slice(file.name.lastIndexOf('.'));
+//   if (fileType !== '.xlsx' && fileType !== '.xls') {
+//     message.warning($t('storeManagement.labelPrint.invalidFileType'));
+//     return;
+//   }
 
-  const param = new FormData();
-  param.append('file', file, file.name);
+//   const param = new FormData();
+//   param.append('file', file, file.name);
 
-  uploadLabelExcel(param)
-    .then((list: any) => {
-      const uploadList = (list || []).map((item: any) => ({
-        ...item,
-        labelType: 1,
-        formType: '',
-        labelNumber: 1,
-        addDisabled: false,
-      }));
-      formData.labelList.push(...uploadList);
-      message.success($t('storeManagement.labelPrint.uploadSuccess'));
-    })
-    .catch((error: any) => {
-      message.error(
-        error.message || $t('storeManagement.labelPrint.uploadFailed'),
-      );
-    });
+//   uploadLabelExcel(param)
+//     .then((list: any) => {
+//       const uploadList = (list || []).map((item: any) => ({
+//         ...item,
+//         labelType: 1,
+//         formType: '',
+//         labelNumber: 1,
+//         addDisabled: false,
+//       }));
+//       formData.labelList.push(...uploadList);
+//       message.success($t('storeManagement.labelPrint.uploadSuccess'));
+//     })
+//     .catch((error: any) => {
+//       message.error(
+//         error.message || $t('storeManagement.labelPrint.uploadFailed'),
+//       );
+//     });
 
-  e.target.value = '';
-}
+//   e.target.value = '';
+// }
 
 /**
  * 增加一行
@@ -570,23 +561,34 @@ function handleClose() {
       <div v-if="importVisible" class="!mb-4 p-2 bg-gray-100">
         <Space>
           <Button type="primary" @click="handleContractImport">
-            {{ $t('storeManagement.labelPrint.contractImport') }}
+            {{ $t('storeManagement.labelPrint.billImport') }}
           </Button>
-          <span class="ant-btn ant-btn-primary">
-            {{ $t('storeManagement.labelPrint.excelImport') }}
+          <!-- <span
+            style="
+              position: relative;
+              display: inline-block;
+              overflow: hidden;
+              vertical-align: top;
+            "
+          >
+            <Button type="primary">
+              {{ $t('storeManagement.labelPrint.excelImport') }}
+            </Button>
             <input
               type="file"
               accept=".xls,.xlsx"
               style="
                 position: absolute;
                 top: 0;
-                right: 0;
-                font-size: 100px;
+                left: 0;
+                width: 100%;
+                height: 100%;
                 opacity: 0;
+                cursor: pointer;
               "
               @change="handleExcelImport"
             />
-          </span>
+          </span> -->
         </Space>
       </div>
 

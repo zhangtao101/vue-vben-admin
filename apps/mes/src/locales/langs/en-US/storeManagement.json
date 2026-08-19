@@ -137,6 +137,7 @@
     "chooseMaterial": "Choose Material",
     "choose": "Choose",
     "contractImport": "Contract Import",
+    "billImport": "Bill Import",
     "excelImport": "Excel Import",
     "excelDownload": "Excel Download",
     "addRow": "Add Row",
@@ -187,7 +188,8 @@
     "lineName": "Line/Module",
     "lineNamePlaceholder": "1/B-105 (1 is line, B-105 is module)",
     "classType": "Shift",
-    "materialOrderNo": "Material Order No."
+    "materialOrderNo": "Material Order No.",
+    "singleType": "Order Type"
   },
   "inspectionSlip": {
     "formCode": "Form Code",

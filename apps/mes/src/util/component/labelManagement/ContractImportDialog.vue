@@ -16,10 +16,15 @@ import {
   InputNumber,
   message,
   Modal,
+  Select,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { fetchContractList, fetchToReceivePlanList } from '#/api';
+import {
+  fetchContractList,
+  fetchToReceivePlanList,
+  listWordListByParentCode,
+} from '#/api';
 
 // Props
 const props = defineProps<{
@@ -37,9 +42,25 @@ const queryParams = reactive({
   code: undefined as string | undefined,
   materialCode: undefined as string | undefined,
   materialName: undefined as string | undefined,
+  typeCode: undefined as string | undefined,
   pageNum: 1,
   pageSize: 10,
 });
+
+// 单别下拉选项（数据来源：BQDB 字典）
+const formTypeOptions = ref<any[]>([]);
+
+/**
+ * 加载单别选项
+ */
+function loadFormTypeOptions() {
+  listWordListByParentCode('BQDB').then((data: any) => {
+    formTypeOptions.value = (data || []).map((item: any) => ({
+      label: item.wordName,
+      value: item.wordCode,
+    }));
+  });
+}
 
 // 选择数据
 const contractSelection = ref<any[]>([]);
@@ -109,6 +130,18 @@ const gridColumns: any[] = [
     title: $t('storeManagement.labelPrint.formType'),
     width: 100,
   },
+  {
+    field: 'lineName',
+    title: $t('storeManagement.labelPrint.lineName'),
+    width: 120,
+    slots: { default: 'lineName' },
+  },
+  {
+    field: 'classType',
+    title: $t('storeManagement.labelPrint.classType'),
+    width: 100,
+    slots: { default: 'classType' },
+  },
   { field: 'unit', title: $t('storeManagement.labelPrint.unit'), width: 80 },
   {
     field: 'originalPackageNumber',
@@ -124,6 +157,7 @@ const gridColumns: any[] = [
     field: 'remark',
     title: $t('storeManagement.labelPrint.remark'),
     width: 150,
+    slots: { default: 'remark' },
   },
 ];
 
@@ -170,6 +204,7 @@ watch(
   () => props.open,
   (val) => {
     if (val) {
+      loadFormTypeOptions();
       contractSelection.value = [];
       gridApi.reload();
     }
@@ -189,6 +224,8 @@ function queryContractList({ page, pageSize }: any) {
       const list = (results || []).map((item: any) => ({
         ...item,
         formType: '采购合同',
+        lineName: '',
+        classType: '',
         nowPackageNumber: '',
         lableNumber: null,
         packageNumber: '',
@@ -305,6 +342,15 @@ function handleClose() {
           style="width: 150px"
         />
       </FormItem>
+      <FormItem :label="$t('storeManagement.labelPrint.singleType')">
+        <Select
+          v-model:value="queryParams.typeCode"
+          :options="formTypeOptions"
+          :placeholder="$t('storeManagement.labelPrint.singleType')"
+          allow-clear
+          style="width: 150px"
+        />
+      </FormItem>
       <FormItem>
         <Button type="primary" @click="handleQuery">
           {{ $t('common.search') }}
@@ -337,6 +383,15 @@ function handleClose() {
       </template>
       <template #deliveryDate="{ row }">
         {{ row.deliveryDate?.slice(0, 10) || '' }}
+      </template>
+      <template #lineName="{ row }">
+        <Input v-model:value="row.lineName" :maxlength="50" />
+      </template>
+      <template #classType="{ row }">
+        <Input v-model:value="row.classType" :maxlength="20" />
+      </template>
+      <template #remark="{ row }">
+        <Input v-model:value="row.remark" :maxlength="50" />
       </template>
     </Grid>
   </Modal>
