@@ -45,6 +45,7 @@ import {
   exportLabelDetail,
   fetchLabelDetailList,
   fetchLabelList,
+  fetchLabelPrintDetailByLabelIds,
   fetchLabelTemplate,
   judgeReturn,
   queryPrintTemplateDetails,
@@ -343,6 +344,8 @@ const printTemplates = [
 const printModalVisible = ref(false);
 const selectedTemplate = ref(printTemplates[0]?.value || '');
 const printIds = ref<string[]>([]);
+// 打印数据查询来源标志位：record-按标签记录ID查询，label-按标签ID查询
+const printQueryType = ref<'label' | 'record'>('record');
 // 打印成功后的回调
 let printSuccessHandler: () => void = () => {};
 
@@ -385,10 +388,10 @@ function queryLabelDetailList({ page, pageSize }: any) {
       pageSize,
     };
     fetchLabelDetailList(params)
-      .then(({ total, results }) => {
+      .then(({ total, list }) => {
         resolve({
           total,
-          items: results,
+          items: list,
         });
       })
       .catch((error) => {
@@ -478,6 +481,8 @@ function handlePrint() {
   }
   const ids = selection.map((item: any) => item.id);
   printIds.value = ids;
+  // 打印页通过标签记录ID获取打印数据
+  printQueryType.value = 'record';
   selectedTemplate.value = printTemplates[0]?.value || '';
   printModalVisible.value = true;
   // 打印成功后更新记录打印状态
@@ -504,6 +509,8 @@ function handleQueryPrint() {
   }
   const ids = selection.map((item: any) => item.id);
   printIds.value = ids;
+  // 查询页通过标签ID获取打印数据
+  printQueryType.value = 'label';
   selectedTemplate.value = printTemplates[0]?.value || '';
   printModalVisible.value = true;
   // 打印成功后刷新标签查询列表
@@ -517,10 +524,12 @@ function handleQueryPrint() {
  * 执行打印
  */
 function doPrint() {
-  Promise.all([
-    queryPrintTemplateDetails(selectedTemplate.value),
-    fetchLabelTemplate(printIds.value),
-  ])
+  // 根据打印来源标志位选择查询接口：record 用记录ID，label 用标签ID
+  const fetchData =
+    printQueryType.value === 'label'
+      ? fetchLabelPrintDetailByLabelIds(printIds.value)
+      : fetchLabelTemplate(printIds.value);
+  Promise.all([queryPrintTemplateDetails(selectedTemplate.value), fetchData])
     .then(([templateRes, dataRes]: any) => {
       try {
         const templateRef = JSON.parse(templateRes.printData);

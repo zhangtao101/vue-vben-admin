@@ -237,3 +237,12 @@ export async function fetchLabelTemplate(labelRecordIdList: string[]) {
     `${import.meta.env.VITE_GLOB_MES_WMS}/wms/label/labelprint/labelTemplate?labelRecordIdList=${labelRecordIdList.join(',')}`,
   );
 }
+
+/**
+ * 根据标签ID列表获取标签打印明细内容
+ */
+export function fetchLabelPrintDetailByLabelIds(labelIdList: string[]) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/label/labelprint/labelTemplate/bylabelId?labelIdList=${labelIdList.join(',')}`,
+  );
+}
