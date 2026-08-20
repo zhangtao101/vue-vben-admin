@@ -127,7 +127,7 @@ const gridColumns: any[] = [
     slots: { default: 'deliveryDate' },
   },
   {
-    field: 'formType',
+    field: 'purchaseTypeName',
     title: $t('storeManagement.labelPrint.formType'),
     width: 100,
   },
@@ -224,7 +224,7 @@ function queryContractList({ page, pageSize }: any) {
     }).then(({ total, results }: any) => {
       const list = (results || []).map((item: any) => ({
         ...item,
-        formType: '采购合同',
+        // formType: '采购合同',
         lineName: '',
         classType: '',
         nowPackageNumber: '',
