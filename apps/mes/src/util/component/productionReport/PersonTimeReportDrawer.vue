@@ -4,7 +4,7 @@
  * 用于新增一条人时机时填报数据：选择生产日期与组织架构（工作区/产线/子产线/班组），
  * 填写总工时、总人数、总人时后提交保存，提交时通过 [] 包裹调用批量保存接口。
  */
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import {
   Button,
@@ -183,21 +183,6 @@ function handleWorkGroupChange(value: any) {
   formData.value.workGroupCode = value || '';
 }
 
-/**
- * 监听总工时与总人数变化，自动计算总人时（总人时 = 总工时 × 总人数）。
- * 任一字段为空时清空总人时。
- * @since 2026-08-13 00:00:00
- */
-watch(
-  () => [formData.value.totalTimeMinutes, formData.value.totalPersons],
-  ([totalTimeMinutes, totalPersons]: any[]) => {
-    formData.value.totalPersonTimeMinutes =
-      totalTimeMinutes != null && totalPersons != null
-        ? Number(totalTimeMinutes) * Number(totalPersons)
-        : null;
-  },
-);
-
 // 打开时预加载工作区下拉选项
 onMounted(() => {
   loadGroupOptions();
@@ -364,7 +349,6 @@ function handleClose() {
           v-model:value="formData.totalPersonTimeMinutes"
           :min="0"
           :precision="0"
-          disabled
           style="width: 100%"
         />
       </FormItem>

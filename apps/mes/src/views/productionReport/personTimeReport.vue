@@ -272,19 +272,12 @@ const modifiedMap = ref(new Map<number, any>());
 const modifiedRows = computed(() => [...modifiedMap.value.values()]);
 
 /**
- * 行内编辑变化：记录被修改的行；总工时或总人数变化时自动计算总人时。
+ * 行内编辑变化：记录被修改的行（只要发生编辑变动即记录，含改回原值）。
  * @param row - 被修改的表格行数据。
  * @param field - 发生变化的字段名（可选）。
  * @since 2026-08-13 00:00:00
  */
-function handleFieldChange(row: any, field?: string) {
-  // 总工时或总人数变化时，自动计算总人时 = 总工时 × 总人数
-  if (field === 'totalTimeMinutes' || field === 'totalPersons') {
-    row.totalPersonTimeMinutes =
-      row.totalTimeMinutes != null && row.totalPersons != null
-        ? Number(row.totalTimeMinutes) * Number(row.totalPersons)
-        : null;
-  }
+function handleFieldChange(row: any, _field?: string) {
   const next = new Map(modifiedMap.value);
   next.set(row.id, { ...row });
   modifiedMap.value = next;
@@ -565,14 +558,15 @@ onMounted(() => {
           />
         </template>
 
-        <!-- 行内编辑插槽：总人时(人·分钟)，由总工时 × 总人数自动计算，不可编辑 -->
+        <!-- 行内编辑插槽：总人时(人·分钟)，手动填写 -->
         <template #totalPersonTimeMinutesEdit="{ row }">
           <InputNumber
             v-model:value="row.totalPersonTimeMinutes"
             :min="0"
             :precision="0"
-            disabled
+            :disabled="!author.includes('保存')"
             style="width: 100%"
+            @change="handleFieldChange(row, 'totalPersonTimeMinutes')"
           />
         </template>
 
