@@ -89,6 +89,7 @@
   "beInOrder": "준비 완료",
   "readyToWithdraw": "출고 준비",
   "scanCodePrompt": "특정 요소 객체를 제공하세요!",
+  "selectFile": "파일 선택",
   "processEntryIntoTheStation": "공정 스테이션 진입",
   "processReporting": "공정 보고",
   "judgmentFailed": "현재 검증 결과가 실패했습니다. 성공 후 다시 시도하세요!",

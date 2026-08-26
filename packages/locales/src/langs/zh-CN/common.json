@@ -89,6 +89,7 @@
   "beInOrder": "就绪",
   "readyToWithdraw": "就绪撤回",
   "scanCodePrompt": "请传入具体的元素对象!",
+  "selectFile": "选择文件",
   "processEntryIntoTheStation": "工序进站",
   "processReporting": "工序报工",
   "judgmentFailed": "当前校验结果失败, 请成功后再重试!",

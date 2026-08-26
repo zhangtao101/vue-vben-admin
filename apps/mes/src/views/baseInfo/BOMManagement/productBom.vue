@@ -5,7 +5,7 @@ import { h, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MdiEyeOutline, MdiSearch } from '@vben/icons';
+import { MdiEditOutline, MdiEyeOutline, MdiSearch } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
 import {
@@ -14,13 +14,15 @@ import {
   Checkbox,
   Col,
   DirectoryTree,
+  Drawer,
   Form,
   FormItem,
-  Image,
   Input,
+  InputNumber,
   message,
   Modal,
   Row,
+  Space,
   Tabs,
   Tooltip,
   Upload,
@@ -31,8 +33,9 @@ import {
   downloadProductBomTemplate,
   getBomDetailList,
   getBomDetailTree,
-  getProductBomList,
   getProductBomTypeTree,
+  selectProductBom,
+  updateBomDetail,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -49,15 +52,15 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     { field: 'bomTypeName', title: $t('baseInfo.bomCategory'), minWidth: 80 },
-    { field: 'productTypeName', title: $t('baseInfo.productCategory'), minWidth: 80 },
+    {
+      field: 'productTypeName',
+      title: $t('baseInfo.productCategory'),
+      minWidth: 80,
+    },
     { field: 'productCode', title: $t('baseInfo.productCode'), minWidth: 100 },
     { field: 'productName', title: $t('baseInfo.productName'), minWidth: 100 },
-    {
-      field: 'imagePath',
-      minWidth: 80,
-      slots: { default: 'imagePath' },
-      title: '产品图片',
-    },
+    { field: 'lineCode', title: $t('baseInfo.lineCode'), minWidth: 100 },
+    { field: 'lineName', title: $t('baseInfo.lineName'), minWidth: 100 },
     {
       field: 'isLock',
       title: $t('baseInfo.locked'),
@@ -76,9 +79,17 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'selectedState' },
       minWidth: 100,
     },
-    { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 100 },
+    {
+      field: 'materialCode',
+      title: $t('baseInfo.materialCode'),
+      minWidth: 100,
+    },
     { field: 'remark', title: $t('baseInfo.remarkDescription'), minWidth: 100 },
-    { field: 'sourceProduct', title: $t('baseInfo.sourceProduct'), minWidth: 100 },
+    {
+      field: 'sourceProduct',
+      title: $t('baseInfo.sourceProduct'),
+      minWidth: 100,
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -128,12 +139,14 @@ const selectedKey = ref<any>(undefined);
 
 // 查询参数
 const queryParams = ref({
-  // 类别编号
+  // 产品编号
   productCode: '',
-  // 类别名称
+  // 产品名称
   productName: '',
   // BOM类别编号
   bomTypeCode: '',
+  // 产线编号
+  lineCode: '',
 });
 
 /**
@@ -142,9 +155,12 @@ const queryParams = ref({
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = queryParams.value;
-    params.bomTypeCode = selectedKey.value && selectedKey.value.typeCode ? selectedKey.value.typeCode : '';
-    // 调用 listStations API函数，传递查询参数和分页信息
-    getProductBomList({
+    params.bomTypeCode =
+      selectedKey.value && selectedKey.value.typeCode
+        ? selectedKey.value.typeCode
+        : '';
+    // 调用 selectProductBom API函数，传递查询参数和分页信息
+    selectProductBom({
       ...params, // 展开queryParams.value中的所有查询参数
       pageNum: page, // 当前页码。
       pageSize, // 每页显示的数据条数。
@@ -242,20 +258,43 @@ const designGridOptions: VxeGridProps<any> = {
       slots: { default: 'isLowerestLevel' },
     },
     { field: 'orderNumber', title: $t('baseInfo.orderNumber'), width: 80 },
-    { field: 'materialTypeName', title: $t('baseInfo.materialCategory'), minWidth: 120 },
-    { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 120 },
-    { field: 'materialName', title: $t('baseInfo.partOrMaterialName'), minWidth: 200 },
+    {
+      field: 'materialTypeName',
+      title: $t('baseInfo.materialCategory'),
+      minWidth: 120,
+    },
+    {
+      field: 'materialCode',
+      title: $t('baseInfo.materialCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'materialName',
+      title: $t('baseInfo.partOrMaterialName'),
+      minWidth: 200,
+    },
     { field: 'codeNumber', title: $t('baseInfo.codeName'), width: 100 },
     { field: 'perDosage', title: $t('baseInfo.perDosage'), width: 100 },
     { field: 'perQuantity', title: $t('baseInfo.perQuantity'), width: 100 },
     { field: 'singleDosage', title: $t('baseInfo.singleDosage'), width: 100 },
     { field: 'unit', title: $t('baseInfo.unit'), width: 80 },
-    { field: 'conversionFaction', title: $t('baseInfo.conversionFaction'), width: 100 },
-    { field: 'auxiliaryDoage', title: $t('baseInfo.auxiliaryDoage'), width: 100 },
+    {
+      field: 'conversionFaction',
+      title: $t('baseInfo.conversionFaction'),
+      width: 100,
+    },
+    {
+      field: 'auxiliaryDoage',
+      title: $t('baseInfo.auxiliaryDoage'),
+      width: 100,
+    },
     { field: 'auxiliaryUnit', title: $t('baseInfo.auxiliaryUnit'), width: 100 },
     { field: 'productCode', title: $t('baseInfo.productCode'), width: 120 },
     { field: 'supplier', title: $t('baseInfo.supplier'), width: 120 },
     { field: 'useProcess', title: $t('baseInfo.useProcess'), width: 120 },
+    { field: 'measureError', title: $t('baseInfo.measureError'), width: 100 },
+    { field: 'baseQty', title: $t('baseInfo.baseQty'), width: 100 },
+    { field: 'batchQty', title: $t('baseInfo.batchQty'), width: 110 },
     { field: 'remark', title: $t('baseInfo.remarkDescription'), minWidth: 150 },
   ],
   height: 500,
@@ -278,21 +317,51 @@ const expandGridOptions: VxeGridProps<any> = {
       slots: { default: 'isLowerestLevel' },
     },
     { field: 'orderNumber', title: $t('baseInfo.orderNumber'), width: 80 },
-    { field: 'materialTypeName', title: $t('baseInfo.materialCategory'), minWidth: 120 },
-    { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 120 },
-    { field: 'materialName', title: $t('baseInfo.partOrMaterialName'), minWidth: 200 },
+    {
+      field: 'materialTypeName',
+      title: $t('baseInfo.materialCategory'),
+      minWidth: 120,
+    },
+    {
+      field: 'materialCode',
+      title: $t('baseInfo.materialCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'materialName',
+      title: $t('baseInfo.partOrMaterialName'),
+      minWidth: 200,
+    },
     { field: 'codeNumber', title: $t('baseInfo.codeName'), width: 100 },
     { field: 'perDosage', title: $t('baseInfo.perDosage'), width: 100 },
     { field: 'perQuantity', title: $t('baseInfo.perQuantity'), width: 100 },
     { field: 'singleDosage', title: $t('baseInfo.singleDosage'), width: 100 },
     { field: 'unit', title: $t('baseInfo.unit'), width: 80 },
-    { field: 'conversionFaction', title: $t('baseInfo.conversionFaction'), width: 100 },
-    { field: 'auxiliaryDoage', title: $t('baseInfo.auxiliaryDoage'), width: 100 },
+    {
+      field: 'conversionFaction',
+      title: $t('baseInfo.conversionFaction'),
+      width: 100,
+    },
+    {
+      field: 'auxiliaryDoage',
+      title: $t('baseInfo.auxiliaryDoage'),
+      width: 100,
+    },
     { field: 'auxiliaryUnit', title: $t('baseInfo.auxiliaryUnit'), width: 100 },
     { field: 'productCode', title: $t('baseInfo.productCode'), width: 120 },
     { field: 'supplier', title: $t('baseInfo.supplier'), width: 120 },
     { field: 'useProcess', title: $t('baseInfo.useProcess'), width: 120 },
+    { field: 'measureError', title: $t('baseInfo.measureError'), width: 100 },
+    { field: 'baseQty', title: $t('baseInfo.baseQty'), width: 100 },
+    { field: 'batchQty', title: $t('baseInfo.batchQty'), width: 110 },
     { field: 'remark', title: $t('baseInfo.remarkDescription'), minWidth: 150 },
+    {
+      field: 'action',
+      title: $t('baseInfo.action'),
+      width: 100,
+      fixed: 'right',
+      slots: { default: 'action' },
+    },
   ],
   height: 500,
   data: expandGridData,
@@ -347,6 +416,73 @@ function handleTabChange(key: number | string) {
   if (key === 'second') {
     loadExpandBom(bomCode.value);
   }
+}
+
+// endregion
+
+// region 修改 BOM 详情
+
+// 修改抽屉是否显示
+const editDrawerVisible = ref(false);
+// 保存中状态（防止重复提交）
+const editSaving = ref(false);
+// 当前编辑的行（用于展示物料信息）
+const editRow = ref<any>({});
+// 修改表单数据
+const editForm = reactive({
+  id: 0,
+  measureError: 0,
+  baseQty: 0,
+  batchQty: 0,
+});
+
+/**
+ * 打开修改抽屉
+ * @param row - 被修改的 BOM 明细行数据。
+ * @since 2026-08-24 00:00:00
+ */
+function openEditModal(row: any) {
+  editRow.value = row;
+  editForm.id = row.id;
+  editForm.measureError = row.measureError ?? 0;
+  editForm.baseQty = row.baseQty ?? 0;
+  editForm.batchQty = row.batchQty ?? 0;
+  editDrawerVisible.value = true;
+}
+
+/**
+ * 关闭修改抽屉，清空所有状态
+ * @since 2026-08-24 00:00:00
+ */
+function handleEditClose() {
+  editDrawerVisible.value = false;
+  editRow.value = {};
+  editForm.id = 0;
+  editForm.measureError = 0;
+  editForm.baseQty = 0;
+  editForm.batchQty = 0;
+}
+
+/**
+ * 保存修改（测量误差、基准数量、单批次数量）
+ * @since 2026-08-24 00:00:00
+ */
+function handleEditSave() {
+  editSaving.value = true;
+  updateBomDetail({ ...editForm })
+    .then(() => {
+      message.success($t('basic.editSuccess'));
+      handleEditClose();
+      // 根据当前 Tab 刷新对应的详情表格
+      if (activeTabKey.value === 'second') {
+        loadExpandBom(bomCode.value);
+      } else {
+        loadDesignBom(bomCode.value);
+      }
+    })
+    .finally(() => {
+      editSaving.value = false;
+    });
 }
 
 // endregion
@@ -425,6 +561,10 @@ onMounted(() => {
         >
           <Input v-model:value="queryParams.productName" />
         </FormItem>
+        <!-- 产线编号 -->
+        <FormItem :label="$t('baseInfo.lineCode')" style="margin-bottom: 1em">
+          <Input v-model:value="queryParams.lineCode" />
+        </FormItem>
 
         <FormItem>
           <Button
@@ -481,15 +621,6 @@ onMounted(() => {
                 {{ $t('common.templateDownload') }}
               </Button>
             </template>
-            <template #imagePath="{ row }">
-              <Image
-                v-if="row.imagePath"
-                :src="row.imagePath"
-                :width="60"
-                fallback="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PC9zdmc+"
-              />
-              <span v-else>-</span>
-            </template>
             <template #selectedState="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
@@ -514,7 +645,11 @@ onMounted(() => {
     <!-- 查看 BOM 详情 -->
     <Modal
       v-model:open="detailModalVisible"
-      :title="activeTabKey === 'first' ? $t('baseInfo.designBOM') : $t('baseInfo.multiLevelExpand')"
+      :title="
+        activeTabKey === 'first'
+          ? $t('baseInfo.designBOM')
+          : $t('baseInfo.multiLevelExpand')
+      "
       width="90%"
       :footer="null"
     >
@@ -531,13 +666,80 @@ onMounted(() => {
             <template #isLowerestLevel="{ row }">
               <Checkbox :checked="row.isLowerestLevel" :disabled="true" />
             </template>
+            <template #action="{ row }">
+              <Tooltip>
+                <template #title>{{ $t('common.edit') }}</template>
+                <Button
+                  v-if="author.includes('编辑')"
+                  :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
+                  type="link"
+                  @click="openEditModal(row)"
+                />
+              </Tooltip>
+            </template>
           </ExpandGrid>
         </Tabs.TabPane>
       </Tabs>
       <div style="margin-top: 16px; text-align: right">
-        <Button @click="detailModalVisible = false">{{ $t('common.cancel') }}</Button>
+        <Button @click="detailModalVisible = false">
+          {{ $t('common.cancel') }}
+        </Button>
       </div>
     </Modal>
+
+    <!-- 修改 BOM 详情 -->
+    <Drawer
+      v-model:open="editDrawerVisible"
+      :title="$t('common.edit')"
+      width="480px"
+      :destroy-on-close="true"
+      @close="handleEditClose"
+      :footer-style="{ textAlign: 'right' }"
+    >
+      <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+        <FormItem :label="$t('baseInfo.partOrMaterialName')">
+          <Input :value="editRow.materialName" disabled />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.materialCode')">
+          <Input :value="editRow.materialCode" disabled />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.measureError')">
+          <InputNumber
+            v-model:value="editForm.measureError"
+            :min="0"
+            :precision="0"
+            style="width: 100%"
+          />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.baseQty')">
+          <InputNumber
+            v-model:value="editForm.baseQty"
+            :min="0"
+            :precision="0"
+            style="width: 100%"
+          />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.batchQty')">
+          <InputNumber
+            v-model:value="editForm.batchQty"
+            :min="0"
+            :precision="0"
+            style="width: 100%"
+          />
+        </FormItem>
+      </Form>
+
+      <template #footer>
+        <Space>
+          <Button @click="handleEditClose">
+            {{ $t('common.cancel') }}
+          </Button>
+          <Button type="primary" :loading="editSaving" @click="handleEditSave">
+            {{ $t('common.confirm') }}
+          </Button>
+        </Space>
+      </template>
+    </Drawer>
   </Page>
 </template>
 

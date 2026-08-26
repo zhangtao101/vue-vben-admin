@@ -89,6 +89,7 @@
   "beInOrder": "Ready",
   "readyToWithdraw": "Ready to Withdraw",
   "scanCodePrompt": "Please provide a specific element object!",
+  "selectFile": "Select File",
   "processEntryIntoTheStation": "Process Entry into Station",
   "processReporting": "Process Reporting",
   "judgmentFailed": "Current verification result failed, please try again after success!",
