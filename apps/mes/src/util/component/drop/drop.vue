@@ -146,6 +146,10 @@ const editId = ref();
  * @param row 工步数据
  */
 function openOperationSettings(row: any): void {
+  if (!row.id) {
+    message.warning($t('当前节点暂未保存, 请先保存后再继续操作'));
+    return;
+  }
   if (props.isRouter) {
     const arr: any[] = nodes.value.filter((edge: any) => edge.id === row.elId);
     if (arr.length > 0) {

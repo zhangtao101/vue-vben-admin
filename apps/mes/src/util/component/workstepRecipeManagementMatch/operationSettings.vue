@@ -28,13 +28,16 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  checkParamNode,
   deleteSRunSetting,
   insertFunctionOpinfo,
   listCatchTemplateDetail,
+  listFunctionTypeById,
   performASetupQuery,
   runSettingAudit,
   runSettingUpdateStatus,
   updateFunctionOpinfo,
+  updateOpFunctionSet,
   updateOpList,
 } from '#/api';
 import { $t } from '#/locales';
@@ -152,6 +155,10 @@ const formula = ref<any>({});
 const matching = ref<any>({});
 // 工步信息
 const step = ref<any>({});
+// 工步类型下拉绑定值（step.type === '901' 时使用）
+const workStepType = ref<any>();
+// 工步类型下拉选项（step.type === '901' 时使用，来自 listFunctionTypeById）
+const workStepTypeOptions = ref<any>([]);
 
 /**
  * 打开抽屉
@@ -162,31 +169,48 @@ function openDrawer(
   stepTypeMessage: any,
   listOfSteps: any,
 ) {
-  // 赋值工步列表
-  stepList.value = [];
-  listOfSteps.forEach((item: any) => {
-    stepList.value.push({
-      label: item.functionTypeName,
-      value: item.data.functionId,
+  // 抽屉初始化逻辑
+  const initDrawer = () => {
+    // 赋值工步列表
+    stepList.value = [];
+    listOfSteps.forEach((item: any) => {
+      stepList.value.push({
+        label: item.functionTypeName,
+        value: item.data.functionId,
+      });
     });
-  });
-  // 赋值配方
-  formula.value = {
-    ...formulaMessage,
-  };
-  // 赋值同步信息
-  matching.value = {
-    ...matchingMessage,
-  };
-  // 赋值工步信息
-  step.value = {
-    ...stepTypeMessage,
+    // 赋值配方
+    formula.value = {
+      ...formulaMessage,
+    };
+    // 赋值同步信息
+    matching.value = {
+      ...matchingMessage,
+    };
+    // 赋值工步信息
+    step.value = {
+      ...stepTypeMessage,
+    };
+
+    // 每次打开抽屉重新加载工步类型下拉选项
+    loadWorkStepTypeOptions();
+
+    visible.value = true;
+    queryTableData();
+    queryTheProcessRecipe();
+    queryAuthor();
   };
 
-  visible.value = true;
-  queryTableData();
-  queryTheProcessRecipe();
-  queryAuthor();
+  // 仅非 901 类型工步先校验条件节点设置，校验通过后再打开抽屉
+  if (stepTypeMessage.type === '901') {
+    initDrawer();
+  } else {
+    checkParamNode({
+      id: stepTypeMessage.id,
+    }).then(() => {
+      initDrawer();
+    });
+  }
 }
 
 /**
@@ -195,6 +219,38 @@ function openDrawer(
 function closeDrawer() {
   visible.value = false;
   gridApi.grid.reloadData([]);
+}
+
+/**
+ * 加载工步类型下拉选项（step.type === '901' 时使用）
+ */
+function loadWorkStepTypeOptions() {
+  listFunctionTypeById({
+    id: step.value.id,
+  }).then((data: any) => {
+    workStepTypeOptions.value = (data || []).map((item: any) => ({
+      label: item.functionTypeName,
+      value: item.functionType,
+    }));
+    // 下拉初始值取工步已绑定的工步类型
+    workStepType.value = step.value.bindingFunctionType;
+  });
+}
+
+/**
+ * 保存 901 工步绑定的工步类型
+ */
+function saveWorkStepType() {
+  if (!workStepType.value) {
+    message.warning($t('baseInfo.selectPlaceholder'));
+    return;
+  }
+  updateOpFunctionSet({
+    bindingFunctionType: workStepType.value,
+    id: step.value.id,
+  }).then(() => {
+    message.success($t('common.successfulOperation'));
+  });
 }
 // endregion
 
@@ -480,7 +536,7 @@ function addRow() {
  * 删除行
  * @param index
  */
-function removeRow(index: number) {
+function removeRow(index: any) {
   editItem.value.opdetails.splice(index, 1);
 }
 
@@ -560,10 +616,12 @@ defineExpose({
         {{ step.functionTypeName }}
       </DescriptionsItem>
     </Descriptions>
-    <Button class="my-4" type="primary" @click="showSettingDrawer({}, true)">
-      {{ $t('common.add') }}
-    </Button>
-    <Grid>
+    <!-- 非 901 类型：显示添加工步按钮与工步设置表格 -->
+    <template v-if="step.type !== '901'">
+      <Button class="my-4" type="primary" @click="showSettingDrawer({}, true)">
+        {{ $t('common.add') }}
+      </Button>
+      <Grid>
       <template #isUse="{ row }">
         <RadioGroup
           v-model:value="row.isUse"
@@ -639,6 +697,22 @@ defineExpose({
         </Tooltip>
       </template>
     </Grid>
+    </template>
+    <!-- 901 类型：显示工步类型下拉选择 -->
+    <template v-else>
+      <div class="my-4 flex items-center gap-2">
+        <span class="shrink-0">{{ $t('operationFormula.workStepType') }}</span>
+        <Select
+          v-model:value="workStepType"
+          :options="workStepTypeOptions"
+          class="flex-1"
+          :placeholder="$t('baseInfo.selectPlaceholder')"
+        />
+        <Button type="primary" @click="saveWorkStepType">
+          {{ $t('common.save') }}
+        </Button>
+      </div>
+    </template>
   </Drawer>
 
   <Drawer
