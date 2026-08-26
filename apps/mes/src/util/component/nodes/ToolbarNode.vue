@@ -8,7 +8,7 @@ import { NodeToolbar } from '@vue-flow/node-toolbar';
 import { Button, Tooltip } from 'ant-design-vue';
 
 const props = defineProps(['id', 'data', 'hideOptions']);
-const emit = defineEmits(['showCreate', 'delNode', 'update', 'bind']);
+const emit = defineEmits(['showCreate', 'delNode', 'update', 'bind', 'rename']);
 // const { updateNodeData } = useVueFlow();
 // region 类型选择
 
@@ -36,6 +36,16 @@ function update() {
     functionTypeName: props.data.functionTypeName,
     type: props.data.type,
     bindingFunctionType: props.data.bindingFunctionType,
+  });
+}
+
+/**
+ * 重命名
+ */
+function rename() {
+  emit('rename', {
+    elId: props.id,
+    label: props.data.label,
   });
 }
 
@@ -68,6 +78,12 @@ function bind() {
       <template #title>{{ $t('common.edit') }}</template>
       <Button type="link" @click="update()">
         <Icon icon="mdi:pencil" class="text-xl" />
+      </Button>
+    </Tooltip>
+    <Tooltip v-if="!['start', 'end'].includes(id)">
+      <template #title>{{ $t('common.rename') }}</template>
+      <Button type="link" @click="rename()">
+        <Icon icon="mdi:rename-box" class="text-xl" />
       </Button>
     </Tooltip>
     <Tooltip

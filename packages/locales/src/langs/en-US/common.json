@@ -34,6 +34,7 @@
   "create": "Create",
   "match": "Match",
   "bind": "Bind",
+  "rename": "Rename",
   "dispatch": "Dispatch",
   "yes": "Yes",
   "no": "No",

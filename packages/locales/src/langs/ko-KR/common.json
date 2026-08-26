@@ -34,6 +34,7 @@
   "create": "생성",
   "match": "일치",
   "bind": "바인딩",
+  "rename": "이름 바꾸기",
   "dispatch": "발송",
   "yes": "예",
   "no": "아니요",
