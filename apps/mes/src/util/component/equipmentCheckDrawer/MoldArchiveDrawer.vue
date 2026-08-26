@@ -43,36 +43,32 @@ import { $t } from '#/locales';
 
 import MoldProductSelectDrawer from './MoldProductSelectDrawer.vue';
 
-// ========== Props & Emits ==========
-
-interface Props {
-  visible?: boolean;
-  mode?: 'add' | 'edit' | 'view';
-  row?: any | null;
-}
-
-interface Emits {
-  (e: 'update:visible', value: boolean): void;
-  (e: 'refresh'): void;
-}
-
 defineOptions({
   name: 'MoldArchiveDrawer',
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-  mode: 'add',
-  row: null,
-});
+const emit = defineEmits<{
+  refresh: [];
+}>();
 
-const emit = defineEmits<Emits>();
+// ========== 抽屉控制 ==========
+const show = ref(false);
+const currentMode = ref<'add' | 'edit' | 'view'>('add');
+const currentRowData = ref<any>(null);
+
+function open(mode: 'add' | 'edit' | 'view', row?: any | null) {
+  currentMode.value = mode;
+  currentRowData.value = row ?? null;
+  show.value = true;
+  initData();
+}
+
+defineExpose({ open });
 
 // ========== 状态 ==========
 
 const loading = ref(false);
 const submitting = ref(false);
-const drawerVisible = ref(props.visible);
 
 /** 当前激活的 Tab Key */
 const activeTabKey = ref('baseInfo');
@@ -118,7 +114,7 @@ const recoveryModeOptions = [
 // ========== 标题 ==========
 
 const drawerTitle = computed(() => {
-  switch (props.mode) {
+  switch (currentMode.value) {
     case 'add': {
       return $t('moldArchiveMgmt.addTitle');
     }
@@ -134,31 +130,11 @@ const drawerTitle = computed(() => {
   }
 });
 
-// ========== 监听 ==========
-
-watch(
-  () => props.visible,
-  (val) => {
-    drawerVisible.value = val;
-    if (val) {
-      initData();
-    }
-  },
-);
-
-watch(drawerVisible, (val) => {
-  emit('update:visible', val);
-  // 抽屉关闭时重置 Tab
-  if (!val) {
-    activeTabKey.value = 'baseInfo';
-  }
-});
-
 /**
  * 监听 Tab 切换，仅在查看模式下且切换到产品绑定 Tab 时加载数据。
  */
 watch(activeTabKey, (key) => {
-  if (props.mode === 'view' && key === 'productBinding') {
+  if (currentMode.value === 'view' && key === 'productBinding') {
     reloadProductGrid();
   }
 });
@@ -169,9 +145,9 @@ function initData() {
   loadCategoryOptions();
   loadSupplierOptions();
 
-  if (props.mode === 'add') {
+  if (currentMode.value === 'add') {
     resetFormData();
-  } else if (props.mode === 'edit' || props.mode === 'view') {
+  } else if (currentMode.value === 'edit' || currentMode.value === 'view') {
     loadDetail();
   }
 }
@@ -211,8 +187,8 @@ function loadDetail() {
   loading.value = true;
 
   // 查看模式下只加载基础信息，产品绑定数据在 Tab 切换时懒加载
-  if (props.mode === 'view') {
-    getMoldArchiveDetail(props.row.id)
+  if (currentMode.value === 'view') {
+    getMoldArchiveDetail(currentRowData.value.id)
       .then((detailRes) => {
         currentRow.value = { ...detailRes };
         productRelationList.value = currentRow.value.productRelations;
@@ -222,8 +198,8 @@ function loadDetail() {
       });
   } else {
     Promise.all([
-      getMoldArchiveDetail(props.row.id),
-      getProductRelations(props.row.id),
+      getMoldArchiveDetail(currentRowData.value.id),
+      getProductRelations(currentRowData.value.id),
     ])
       .then(([detailRes, prodRes]) => {
         currentRow.value = { ...detailRes };
@@ -424,7 +400,7 @@ const [ViewProductGrid, viewProductGridApi] = useVbenVxeGrid({
  */
 function reloadProductGrid() {
   setTimeout(() => {
-    if (props.mode === 'view') {
+    if (currentMode.value === 'view') {
       viewProductGridApi.grid.loadData(productRelationList.value);
     } else {
       productGridApi.grid.loadData(productRelationList.value);
@@ -511,7 +487,15 @@ const editRules = ref<any>({
  * 关闭抽屉，重置状态。
  */
 function handleClose() {
-  drawerVisible.value = false;
+  show.value = false;
+  // 关闭抽屉时清空所有状态，回到初始状态
+  currentMode.value = 'add';
+  currentRowData.value = null;
+  loading.value = false;
+  submitting.value = false;
+  currentRow.value = {};
+  productRelationList.value = [];
+  activeTabKey.value = 'baseInfo';
 }
 
 /**
@@ -540,7 +524,7 @@ function handleSubmit() {
 
 <template>
   <Drawer
-    v-model:open="drawerVisible"
+    :open="show"
     :loading="loading"
     :title="drawerTitle"
     :width="700"
@@ -549,7 +533,7 @@ function handleSubmit() {
     @close="handleClose"
   >
     <!-- 详情模式：使用描述列表展示 -->
-    <template v-if="mode === 'view'">
+    <template v-if="currentMode === 'view'">
       <Tabs v-model:active-key="activeTabKey">
         <Tabs.TabPane
           key="baseInfo"
@@ -610,18 +594,30 @@ function handleSubmit() {
                 {{ currentRow?.usagePercent }}%
               </Tag>
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('moldArchiveMgmt.warningThreshold')">
+            <!-- <DescriptionsItem :label="$t('moldArchiveMgmt.warningThreshold')">
               {{ currentRow?.warningThreshold }}%
-            </DescriptionsItem>
-            <DescriptionsItem :label="$t('moldArchiveMgmt.blockThreshold')">
+            </DescriptionsItem> -->
+            <!-- <DescriptionsItem :label="$t('moldArchiveMgmt.blockThreshold')">
               {{ currentRow?.blockThreshold }}%
-            </DescriptionsItem>
+            </DescriptionsItem> -->
             <DescriptionsItem :label="$t('moldArchiveMgmt.recoveryMode')">
               {{ getRecoveryModeLabel(currentRow?.recoveryMode) }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('moldArchiveMgmt.standardCapacity')">
-              {{ currentRow?.standardCapacity || '-' }}
+            <DescriptionsItem
+              v-if="currentRow?.recoveryMode === 'PERCENT'"
+              :label="$t('moldArchiveMgmt.recoveryPercent')"
+            >
+              {{ currentRow?.recoveryPercent || '-' }}%
             </DescriptionsItem>
+            <DescriptionsItem
+              v-if="currentRow?.recoveryMode === 'FIXED'"
+              :label="$t('moldArchiveMgmt.recoveryFixed')"
+            >
+              {{ currentRow?.recoveryFixed || '-' }}
+            </DescriptionsItem>
+            <!-- <DescriptionsItem :label="$t('moldArchiveMgmt.standardCapacity')">
+              {{ currentRow?.standardCapacity || '-' }}
+            </DescriptionsItem> -->
           </Descriptions>
         </Tabs.TabPane>
 
@@ -711,24 +707,24 @@ function handleSubmit() {
         </FormItem>
 
         <!-- 预警阈值 -->
-        <FormItem :label="$t('moldArchiveMgmt.warningThreshold')">
+        <!-- <FormItem :label="$t('moldArchiveMgmt.warningThreshold')">
           <InputNumber
             v-model:value="currentRow.warningThreshold"
             :max="100"
             :min="0"
             style="width: 100%"
           />
-        </FormItem>
+        </FormItem> -->
 
         <!-- 拦截阈值 -->
-        <FormItem :label="$t('moldArchiveMgmt.blockThreshold')">
+        <!-- <FormItem :label="$t('moldArchiveMgmt.blockThreshold')">
           <InputNumber
             v-model:value="currentRow.blockThreshold"
             :max="100"
             :min="0"
             style="width: 100%"
           />
-        </FormItem>
+        </FormItem> -->
 
         <!-- 恢复模式 -->
         <FormItem :label="$t('moldArchiveMgmt.recoveryMode')">
@@ -772,13 +768,13 @@ function handleSubmit() {
         </FormItem>
 
         <!-- 标准产能 -->
-        <FormItem :label="$t('moldArchiveMgmt.standardCapacity')">
+        <!-- <FormItem :label="$t('moldArchiveMgmt.standardCapacity')">
           <InputNumber
             v-model:value="currentRow.standardCapacity"
             :min="0"
             style="width: 100%"
           />
-        </FormItem>
+        </FormItem> -->
       </Form>
 
       <!-- 产品绑定区域 -->
@@ -832,7 +828,7 @@ function handleSubmit() {
           {{ $t('common.cancel') }}
         </Button>
         <Button
-          v-if="mode !== 'view'"
+          v-if="currentMode !== 'view'"
           type="primary"
           :loading="submitting"
           @click="handleSubmit"

@@ -1,0 +1,7 @@
+{
+  "templateNumber": "템플릿 번호",
+  "templateName": "템플릿 이름",
+  "proceName": "공정 이름",
+  "templateType": "템플릿 유형",
+  "subordinateProcess": "소속 공정"
+}

@@ -1,0 +1,81 @@
+{
+  "defectCodeSet": {
+    "defectName": "불량 명칭",
+    "defectCode": "불량 코드",
+    "responsibleProcess": "책임 공정",
+    "responsibleWorkshop": "책임 작업장"
+  },
+  "qualityCheck": {
+    "qualityEntering": {
+      "title": "품질 입력",
+      "formCode": "양식 코드",
+      "formName": "양식 이름",
+      "formTypeName": "양식 유형",
+      "productReferenceName": "제품 참조",
+      "recordCode": "기록 코드",
+      "worksheetCode": "작업 지시서 코드",
+      "productCode": "제품 코드",
+      "productName": "제품 이름",
+      "planCode": "계획 코드",
+      "subProductCode": "하위 제품 코드",
+      "checkTime": "검사 시간",
+      "judgeResult": "판정 결과",
+      "sendNumber": "투입 수량",
+      "preparationNumber": "준비 수량",
+      "qualifiedNumber": "합격/불합격 수량",
+      "recordStatus": "기록 상태",
+      "auditType": "감사 상태",
+      "operateUserName": "작업자",
+      "operateTime": "작업 시간",
+      "dateRange": "날짜 범위",
+      "enter": "입력",
+      "dataAction": "데이터 작업",
+      "formAction": "양식 작업"
+    },
+    "qualityBaseSet": {
+      "specialMaintain": {
+        "name": "특수 특성 이름",
+        "symbol": "특수 특성 기호",
+        "remark": "비고"
+      },
+      "measureMaintain": {
+        "name": "측정 방법 이름"
+      },
+      "qualityCheckForm": {
+        "code": "품질 양식 코드",
+        "name": "품질 양식 이름",
+        "workshop": "소속 작업장",
+        "version": "버전 번호",
+        "type": "유형",
+        "correlation": "제품 연관",
+        "sendCheck": "표본 수량",
+        "view": "검사 항목 보기"
+      },
+      "formQualityCheckItem": {
+        "title": "양식 품질 검사 항목",
+        "view": "기준 보기",
+        "maintenance": "검사 상세 유지보수",
+        "name": "품질 검사 항목",
+        "process": "소속 공정"
+      },
+      "qualityCheckDetail": {
+        "name": "품질 검사 항목 이름",
+        "code": "품질 검사 항목 코드",
+        "details": "품질 검사 항목 상세"
+      },
+      "standardItem": {
+        "basic": "품질 검사 항목 기본 정보",
+        "code": "제품 코드",
+        "type": "기준 유형",
+        "metricType": "측정 유형",
+        "measureMethod": "측정 방법",
+        "judgeDescription": "판정 설명",
+        "numberType": "숫자 유형",
+        "max": "최대값",
+        "min": "최소값",
+        "standardValue": "표준값",
+        "unit": "단위"
+      }
+    }
+  }
+}

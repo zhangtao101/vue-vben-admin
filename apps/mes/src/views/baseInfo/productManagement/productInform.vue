@@ -449,6 +449,7 @@ onMounted(() => {
             {{ $t('common.templateDownload') }}
           </Button>
           <Grid>
+            <template #toolbar-tools></template>
             <template #selectedState="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>

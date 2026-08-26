@@ -1,0 +1,10 @@
+{
+  "barCodeRules": "바코드 관리",
+  "basicTitle": "기본 정보 관리",
+  "bomCategory": "BOM 분류",
+  "bomManagement": "BOM 관리",
+  "maintainQualityMaterials": "품질 자재 유지 관리",
+  "materialsCategory": "자재 분류",
+  "materialsInform": "자재 정보",
+  "outProcessBom": "외주 BOM"
+}

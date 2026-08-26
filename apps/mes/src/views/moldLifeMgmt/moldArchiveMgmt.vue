@@ -9,6 +9,7 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -36,6 +37,7 @@ import {
   deleteMoldArchiveById,
   getMoldArchivePageList,
   getMoldCategorySelectList,
+  queryPrintTemplateDetails,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -60,8 +62,12 @@ const categoryOptions = ref<any[]>([]);
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
+  checkboxConfig: {
+    highlight: true,
+  },
   columns: [
     { type: 'seq', width: 50, title: $t('basic.laborHourEvaluation.sequence') },
+    { type: 'checkbox', width: 60 },
     { field: 'moldCode', title: $t('moldArchiveMgmt.moldCode'), minWidth: 200 },
     { field: 'moldName', title: $t('moldArchiveMgmt.moldName'), minWidth: 150 },
     {
@@ -196,22 +202,14 @@ function queryData({
 
 // region 抽屉控制
 
-/** 抽屉显示/隐藏状态 */
-const drawerVisible = ref(false);
-
-/** 抽屉模式：add-新增，edit-编辑，view-查看 */
-const drawerMode = ref<'add' | 'edit' | 'view'>('add');
-
-/** 当前操作的行数据 */
-const currentRow = ref<any>(null);
+/** 抽屉组件引用 */
+const archiveDrawerRef = ref();
 
 /**
  * 打开新增抽屉。
  */
 function handleAdd() {
-  drawerMode.value = 'add';
-  currentRow.value = null;
-  drawerVisible.value = true;
+  archiveDrawerRef.value.open('add');
 }
 
 /**
@@ -219,9 +217,7 @@ function handleAdd() {
  * @param {any} row - 当前操作的行数据对象
  */
 function handleEdit(row: any) {
-  drawerMode.value = 'edit';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  archiveDrawerRef.value.open('edit', row);
 }
 
 /**
@@ -229,9 +225,7 @@ function handleEdit(row: any) {
  * @param {any} row - 当前操作的行数据对象
  */
 function handleView(row: any) {
-  drawerMode.value = 'view';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  archiveDrawerRef.value.open('view', row);
 }
 
 // endregion
@@ -354,6 +348,54 @@ function getUsagePercentColor(row: any) {
     return 'orange';
   }
   return 'green';
+}
+
+// endregion
+
+// region 打印
+
+
+/**
+ * 点击打印按钮，弹出选择框让用户选择打印类别。
+ * 1. 钢网打印对应 '模具档案打印'
+ * 2. 夹具打印对应 '夹具打印'
+ * @since 2026-07-23
+ */
+function print() {
+  const checkedRecords = gridApi.grid.getCheckboxRecords();
+  if (!checkedRecords || checkedRecords.length === 0) {
+    message.warning($t('moldArchiveMgmt.selectRecordsFirst'));
+    return;
+  }
+  Modal.confirm({
+    cancelText: $t('moldArchiveMgmt.printTypeFixture'),
+    okText: $t('moldArchiveMgmt.printTypeSteelMesh'),
+    okType: 'primary',
+    onOk() {
+      executePrint('模具档案打印');
+    },
+    onCancel() {
+      executePrint('夹具打印');
+    },
+    cancelButtonProps: {},
+    title: $t('moldArchiveMgmt.selectPrintType'),
+    content: $t('moldArchiveMgmt.printTypeSelectContent'),
+  });
+}
+
+/**
+ * 执行实际打印。
+ * @param {string} templateName - 打印模板名称
+ * @since 2026-07-23
+ */
+function executePrint(templateName: string) {
+  queryPrintTemplateDetails(templateName).then((res: any) => {
+    const templateRef = JSON.parse(res.printData);
+    const hiprintTemplate = new hiprint.PrintTemplate({
+      template: templateRef,
+    });
+    hiprintTemplate.print(gridApi.grid.getCheckboxRecords(), { leftOffset: -1, topOffset: -1 });
+  });
 }
 
 // endregion
@@ -481,9 +523,18 @@ onMounted(() => {
           <Button
             v-if="author.includes('新增')"
             type="primary"
+            class="ml-4!"
             @click="handleAdd"
           >
             {{ $t('common.add') }}
+          </Button>
+          <Button
+            v-if="author.includes('打印')"
+            type="primary"
+            class="ml-4!"
+            @click="print"
+          >
+            {{ $t('common.batchPrinting') }}
           </Button>
           <Upload
             v-if="author.includes('新增')"
@@ -622,12 +673,7 @@ onMounted(() => {
     </Card>
 
     <!-- 新增/编辑/详情抽屉 -->
-    <MoldArchiveDrawer
-      v-model:visible="drawerVisible"
-      :mode="drawerMode"
-      :row="currentRow"
-      @refresh="gridApi.query()"
-    />
+    <MoldArchiveDrawer ref="archiveDrawerRef" @refresh="gridApi.query()" />
   </Page>
 </template>
 

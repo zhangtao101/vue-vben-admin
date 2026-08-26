@@ -1,0 +1,11 @@
+{
+  "checkType": "점검 유형",
+  "checkCriteria": "점검 기준",
+  "riskClassification": "위험 분류",
+  "checkItem": "점검 항목",
+  "checkArea": "점검 구역",
+  "areaCode": "구역 코드",
+  "submitter": "제출자",
+  "submissionTime": "제출 시간",
+  "updateTime": "수정 시간"
+}

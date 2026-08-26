@@ -227,27 +227,19 @@ function handleReset() {
 }
 
 // ========== 抽屉控制 ==========
-const drawerVisible = ref(false);
-const drawerMode = ref<'add' | 'edit' | 'view'>('add');
-const currentRow = ref<MaintenanceScheme | null>(null);
+const schemeDrawerRef = ref();
 
 // ========== 打开抽屉 ==========
 function handleAdd() {
-  drawerMode.value = 'add';
-  currentRow.value = null;
-  drawerVisible.value = true;
+  schemeDrawerRef.value.open('add');
 }
 
 function handleEdit(row: MaintenanceScheme) {
-  drawerMode.value = 'edit';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  schemeDrawerRef.value.open('edit', row);
 }
 
 function handleView(row: MaintenanceScheme) {
-  drawerMode.value = 'view';
-  currentRow.value = row;
-  drawerVisible.value = true;
+  schemeDrawerRef.value.open('view', row);
 }
 
 // ========== 删除 ==========
@@ -355,7 +347,9 @@ onMounted(() => {
         </FormItem>
 
         <FormItem style="margin-bottom: 1em">
-          <Button type="primary" @click="gridApi.reload()">{{ $t('common.query') }}</Button>
+          <Button type="primary" @click="gridApi.reload()">
+            {{ $t('common.query') }}
+          </Button>
         </FormItem>
       </Form>
     </Card>
@@ -471,11 +465,6 @@ onMounted(() => {
     </Card>
 
     <!-- 抽屉组件 -->
-    <TallySchemeDrawer
-      v-model:visible="drawerVisible"
-      :mode="drawerMode"
-      :row="currentRow"
-      @refresh="gridApi.reload()"
-    />
+    <TallySchemeDrawer ref="schemeDrawerRef" @refresh="gridApi.reload()" />
   </Page>
 </template>

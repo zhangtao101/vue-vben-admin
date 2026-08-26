@@ -811,6 +811,7 @@ onMounted(() => {
         </Button>
       </div>
       <Grid>
+        <template #toolbar-tools></template>
         <template #subProductName="{ row }">
           <span class="cursor-pointer text-blue-500" @click="handleDetail(row)">
             {{ row.subProductName }}

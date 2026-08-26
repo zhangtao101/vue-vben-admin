@@ -398,6 +398,7 @@ onMounted(() => {
     <Card>
       <div>
         <Grid>
+          <template #toolbar-tools></template>
           <template #action="{ row }">
             <Button type="link" class="!p-1" @click="showDetails(row)">
               <Icon icon="mdi:eye" class="text-xl" />

@@ -1,0 +1,19 @@
+{
+  "enable": "사용",
+  "forbidden": "사용 안 함",
+  "onTheJob": "재직 중",
+  "leavingJob": "퇴직",
+  "male": "남성",
+  "female": "여성",
+  "regularEmployee": "정규직",
+  "outsourcedStaff": "외주 직원",
+  "unmarried": "미혼",
+  "beMarried": "기혼",
+  "good": "양호",
+  "illness": "질병",
+  "mob": "대중",
+  "member": "구성원",
+  "partyMember": "당원",
+  "yes": "예",
+  "no": "아니요"
+}

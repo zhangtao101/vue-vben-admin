@@ -104,6 +104,12 @@ const innerGridOptions: VxeGridProps<any> = {
       slots: { default: 'planDateStart' },
     },
     {
+      field: 'planDateStop',
+      title: '结束时间',
+      minWidth: 200,
+      slots: { default: 'planDateStop' },
+    },
+    {
       field: 'workSheetPlanNumber',
       title: '工单计划数',
       minWidth: 100,
@@ -330,6 +336,7 @@ function handleSubmit() {
       lineId: item.lineId,
       lineName: item.lineName,
       planDateStart: item.planDateStart,
+      planDateStop: item.planDateStop,
       remark: item.remark,
       workSheetPlanNumber: item.workSheetPlanNumber,
       worksheetCodea: item.worksheetCodea,
@@ -424,6 +431,19 @@ defineExpose({ open });
           format="YYYY-MM-DD"
           value-format="YYYY-MM-DD"
           :disabled-date="(current: any) => current < dayjs().subtract(1, 'day')"
+        />
+      </template>
+      <!-- 结束时间 -->
+      <template #planDateStop="{ row }">
+        <DatePicker
+          v-model:value="row.planDateStop"
+          type="date"
+          style="width: 160px"
+          placeholder="选择日期"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+          :disabled="!row.planDateStart"
+          :disabled-date="(current: any) => row.planDateStart ? current < dayjs(row.planDateStart).startOf('day') : false"
         />
       </template>
       <!-- 工单计划数 -->

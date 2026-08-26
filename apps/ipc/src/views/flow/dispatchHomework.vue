@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -24,24 +24,33 @@ const checkedBottomNavigation = ref(bottomNavigation[0]);
 // 定义一个响应式变量，用于存储页面元素的宽度，默认值为 0
 const elementWidth = ref(0);
 
-// 在组件挂载完成后执行的操作
-onMounted(() => {
-  // 获取页面元素的宽度
+// 保存窗口 resize 事件监听器引用，便于组件卸载时移除，避免内存泄漏
+let resizeHandler: (() => void) | null = null;
+
+// 更新页面元素宽度的函数
+function updateElementWidth() {
   // 使用 document.querySelector('#page') 获取页面元素，并通过 offsetWidth 获取其宽度
   // 如果页面元素不存在，则返回 0
   elementWidth.value =
     (document.querySelector('#page') as any)?.offsetWidth || 0;
+}
+
+// 在组件挂载完成后执行的操作
+onMounted(() => {
+  updateElementWidth();
 
   // 添加窗口大小调整事件监听器
   // 当窗口大小发生变化时，触发 debounce 函数，延迟 500 毫秒后更新 elementWidth 的值
-  window.addEventListener(
-    'resize',
-    debounce(() => {
-      // 更新页面元素的宽度
-      elementWidth.value =
-        (document.querySelector('#page') as any)?.offsetWidth || 0;
-    }, 500),
-  );
+  resizeHandler = debounce(updateElementWidth, 500);
+  window.addEventListener('resize', resizeHandler);
+});
+
+// 在组件卸载时移除 resize 监听器，避免监听器累积导致内存泄漏
+onUnmounted(() => {
+  if (resizeHandler) {
+    window.removeEventListener('resize', resizeHandler);
+    resizeHandler = null;
+  }
 });
 </script>
 

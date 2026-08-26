@@ -235,7 +235,9 @@ onMounted(() => {
       <!-- region 表格主体 -->
       <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
         <Card class="h-[60vh] overflow-y-auto">
-          <Grid />
+          <Grid>
+            <template #toolbar-tools></template>
+          </Grid>
         </Card>
       </Col>
       <!-- endregion -->

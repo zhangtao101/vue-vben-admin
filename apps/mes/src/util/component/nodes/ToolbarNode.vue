@@ -34,6 +34,8 @@ function update() {
     elId: props.id,
     id: props.data.functionId,
     functionTypeName: props.data.functionTypeName,
+    type: props.data.type,
+    bindingFunctionType: props.data.bindingFunctionType,
   });
 }
 
@@ -45,6 +47,8 @@ function bind() {
     elId: props.id,
     id: props.data.functionId,
     functionTypeName: props.data.functionTypeName,
+    type: props.data.type,
+    bindingFunctionType: props.data.bindingFunctionType,
   });
 }
 

@@ -286,9 +286,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
     <Card class="!mt-4">
       <Grid>
         <template #toolbar-actions>
-          <span class="mr-4"
-            >{{ $t('basic.laborHourEvaluation.assemblyType') }}:</span
-          >
+          <span class="mr-4">{{ $t('basic.laborHourEvaluation.assemblyType') }}:</span>
           <RadioGroup v-model:value="assemblyType" button-style="solid">
             <RadioButton value="machine">
               {{ $t('basic.laborHourEvaluation.machineAssembly') }}

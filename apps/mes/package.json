@@ -62,7 +62,7 @@
     "gsap": "catalog:",
     "html2canvas": "catalog:",
     "jordium-gantt-vue3": "catalog:",
-    "jsbarcode": "^3.12.3",
+    "jsbarcode": "catalog:",
     "mpegts.js": "catalog:",
     "mqtt": "catalog:",
     "pinia": "catalog:",

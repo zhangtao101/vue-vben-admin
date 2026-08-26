@@ -10,7 +10,7 @@ import type { Rule } from 'ant-design-vue/es/form';
 
 import type { InspectionPlan } from '#/api';
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -43,28 +43,32 @@ import { $t } from '#/locales';
 import EquipCheckPlanEquipmentDrawer from './EquipCheckPlanEquipmentDrawer.vue';
 import EquipCheckPlanItemDrawer from './EquipCheckPlanItemDrawer.vue';
 
-interface Props {
-  visible: boolean;
-  mode: 'add' | 'edit' | 'view';
-  row?: InspectionPlan | null;
-}
-
-interface Emits {
-  (e: 'update:visible', value: boolean): void;
-  (e: 'refresh'): void;
-}
-
 defineOptions({
   name: 'EquipCheckPlanDrawer',
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-  mode: 'add',
-  row: null,
-});
+const emit = defineEmits<{
+  refresh: [];
+}>();
 
-const emit = defineEmits<Emits>();
+// ========== 抽屉控制 ==========
+const show = ref(false);
+const currentMode = ref<'add' | 'edit' | 'view'>('add');
+const currentRowData = ref<InspectionPlan | null>(null);
+
+function open(mode: 'add' | 'edit' | 'view', row?: InspectionPlan | null) {
+  currentMode.value = mode;
+  currentRowData.value = row ?? null;
+  show.value = true;
+  loadSchemeOptions('');
+  if (mode === 'view' || mode === 'edit') {
+    loadDetail();
+  } else {
+    resetForm();
+  }
+}
+
+defineExpose({ open });
 
 // ========== 状态 ==========
 // 加载状态：控制详情加载时的 Spin 显示
@@ -119,6 +123,9 @@ const statusOptions = [
 const formRef = ref();
 
 const rules: Record<string, Rule[]> = {
+  planCode: [
+    { required: true, message: `请输入${$t('equipCheckPlan.planCode')}` },
+  ],
   planName: [
     { required: true, message: `请输入${$t('equipCheckPlan.planName')}` },
   ],
@@ -136,20 +143,7 @@ const rules: Record<string, Rule[]> = {
   ],
 };
 
-// ========== 监听 ==========
-watch(
-  () => props.visible,
-  (val) => {
-    if (val) {
-      loadSchemeOptions('');
-      if (props.mode === 'view' || props.mode === 'edit') {
-        loadDetail();
-      } else {
-        resetForm();
-      }
-    }
-  },
-);
+// 数据加载已移至 open() 方法中
 
 // ========== 加载方案列表（远程搜索） ==========
 // 搜索防抖定时器：300ms 防抖延迟，避免频繁请求
@@ -215,9 +209,9 @@ function handleSchemeChange(value: any) {
  * @since 2026-04-25 10:17:00
  */
 function loadDetail() {
-  if (!props.row?.id) return;
+  if (!currentRowData.value?.id) return;
   loading.value = true;
-  getInspectionPlanById(props.row.id)
+  getInspectionPlanById(currentRowData.value.id)
     .then((res: any) => {
       const data = res || {};
       formData.value = {
@@ -278,7 +272,7 @@ function handleSubmit() {
     .then(() => {
       submitting.value = true;
       const api =
-        props.mode === 'edit' && props.row?.id
+        currentMode.value === 'edit' && currentRowData.value?.id
           ? updateInspectionPlan
           : createInspectionPlan;
 
@@ -297,13 +291,15 @@ function handleSubmit() {
         firstExecuteTime,
         effectiveDate,
         endDate,
-        ...(props.mode === 'edit' ? { id: props.row?.id } : {}),
+        ...(currentMode.value === 'edit'
+          ? { id: currentRowData.value?.id }
+          : {}),
       };
 
       api(params as any)
         .then(() => {
           message.success($t('common.successfulOperation'));
-          emit('update:visible', false);
+          show.value = false;
           emit('refresh');
         })
         .finally(() => {
@@ -323,7 +319,30 @@ function handleSubmit() {
  * @since 2026-04-25 10:17:00
  */
 function handleClose() {
-  emit('update:visible', false);
+  show.value = false;
+  // 关闭抽屉时清空所有状态，回到初始状态
+  currentMode.value = 'add';
+  currentRowData.value = null;
+  loading.value = false;
+  submitting.value = false;
+  fetching.value = false;
+  searchKeyword.value = '';
+  formData.value = {
+    planCode: '',
+    planName: '',
+    schemeId: '',
+    firstExecuteTime: undefined,
+    frequencyValue: 1,
+    frequencyUnit: 'DAY',
+    effectiveDate: undefined,
+    endDate: undefined,
+    status: 'ACTIVE',
+    remark: '',
+  };
+  schemeOptions.value = [];
+  selectedSchemeName.value = '';
+  equipmentDrawerVisible.value = false;
+  itemDrawerVisible.value = false;
 }
 
 // ========== 格式化频率 ==========
@@ -348,70 +367,71 @@ const drawerTitle = computed(() => {
     edit: $t('equipCheckPlan.editTitle'),
     view: $t('equipCheckPlan.viewTitle'),
   };
-  return titles[props.mode] || '';
+  return titles[currentMode.value] || '';
 });
 </script>
 
 <template>
   <Drawer
-    :open="visible"
+    :open="show"
     :title="drawerTitle"
-    width="800"
+    :width="800"
     :destroy-on-close="true"
-    @update:open="(val) => emit('update:visible', val)"
+    :footer-style="{ textAlign: 'right' }"
+    @close="handleClose"
   >
     <Spin :spinning="loading">
-      <template v-if="mode === 'view' && props.row">
+      <template v-if="currentMode === 'view' && currentRowData">
         <Descriptions :column="2" bordered>
           <DescriptionsItem :label="$t('equipCheckPlan.planCode')">
-            {{ props.row.planCode || '-' }}
+            {{ currentRowData.planCode || '-' }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.planName')">
-            {{ props.row.planName }}
+            {{ currentRowData.planName }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.status')">
             {{
-              props.row.status === 'ACTIVE'
+              currentRowData.status === 'ACTIVE'
                 ? $t('equipCheckPlan.statusOptions.ACTIVE')
                 : $t('equipCheckPlan.statusOptions.DISABLED')
             }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.schemeName')" :span="2">
-            {{ props.row.schemeName }}
+            {{ currentRowData.schemeName }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.inspectionType')">
             {{
-              props.row.inspectionType === 'INSPECTION'
+              currentRowData.inspectionType === 'INSPECTION'
                 ? $t('equipCheckPlan.inspectionTypeOptions.INSPECTION')
                 : $t('equipCheckPlan.inspectionTypeOptions.PATROL')
             }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.equipmentGroup')">
-            {{ props.row.equipmentGroup }}
+            {{ currentRowData.equipmentGroup }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.equipmentCount')">
-            {{ props.row.equipmentCount }}
+            {{ currentRowData.equipmentCount }}
           </DescriptionsItem>
           <DescriptionsItem
             :label="$t('equipCheckPlan.equipmentCodes')"
             :span="2"
           >
-            {{ props.row.equipmentCodes }}
+            {{ currentRowData.equipmentCodes }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.firstExecuteTime')">
-            {{ props.row.firstExecuteTime }}
+            {{ currentRowData.firstExecuteTime }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.frequencyValue')">
-            {{ formatFrequency(props.row) }}
+            {{ formatFrequency(currentRowData) }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.effectiveDate')">
-            {{ props.row.effectiveDate }}
+            {{ currentRowData.effectiveDate }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.endDate')">
-            {{ props.row.endDate }}
+            {{ currentRowData.endDate }}
           </DescriptionsItem>
           <DescriptionsItem :label="$t('equipCheckPlan.remark')" :span="2">
-            {{ props.row.remark }}
+            {{ currentRowData.remark }}
           </DescriptionsItem>
         </Descriptions>
       </template>
@@ -423,17 +443,18 @@ const drawerTitle = computed(() => {
         :model="formData"
         :rules="rules"
       >
-        <FormItem
-          v-if="mode !== 'add'"
-          :label="$t('equipCheckPlan.planCode')"
-        >
-          <Input v-model:value="formData.planCode" disabled />
+        <FormItem :label="$t('equipCheckPlan.planCode')" name="planCode">
+          <Input
+            v-model:value="formData.planCode"
+            :disabled="currentMode !== 'add'"
+            :placeholder="$t('equipCheckPlan.planCodePlaceholder')"
+          />
         </FormItem>
 
         <FormItem :label="$t('equipCheckPlan.planName')" name="planName">
           <Input
             v-model:value="formData.planName"
-            :disabled="mode === 'view'"
+            :disabled="currentMode === 'view'"
             :placeholder="$t('equipCheckPlan.keywordPlaceholder')"
           />
         </FormItem>
@@ -441,7 +462,7 @@ const drawerTitle = computed(() => {
         <FormItem :label="$t('equipCheckPlan.schemeName')" name="schemeId">
           <Select
             v-model:value="formData.schemeId"
-            :disabled="mode === 'view'"
+            :disabled="currentMode === 'view'"
             :filter-option="false"
             :not-found-content="fetching ? '加载中...' : '无匹配结果'"
             show-search
@@ -546,14 +567,14 @@ const drawerTitle = computed(() => {
     </Spin>
 
     <!-- 底部按钮 -->
-    <template v-if="mode !== 'view'" #footer>
-      <Space class="w-full justify-end">
+    <template v-if="currentMode !== 'view'" #footer>
+      <Space>
         <Button @click="handleClose">
-          {{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.cancel') }}
+          {{ $t('common.cancel') }}
         </Button>
         <Button type="primary" :loading="submitting" @click="handleSubmit">
           <Icon icon="mdi:check" class="inline-block align-middle" />
-          {{ $t('equipmentSpotCheckScheme.equipmentSelectDrawer.confirm') }}
+          {{ $t('common.confirm') }}
         </Button>
       </Space>
     </template>

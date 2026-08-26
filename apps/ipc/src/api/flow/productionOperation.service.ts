@@ -552,3 +552,13 @@ export function listByMode(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/listByMode?${qs.stringify(params)}`,
   );
 }
+/**
+ * 进站撤回
+ * @param params 参数 { workstationCode: string }
+ */
+export function sheetBack(params: any) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/sheet/inout/sheetBack`,
+    params,
+  );
+}

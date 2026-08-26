@@ -1,0 +1,15 @@
+{
+  "packingAndPicking": "포장 및 피킹",
+  "boxCode": "박스 코드",
+  "startPicking": "피킹 시작",
+  "pickingComplete": "피킹 완료",
+  "picking": "피킹",
+  "hasLabel": "라벨 있음",
+  "materialCode": "자재 코드",
+  "materialName": "자재명",
+  "materialCharacteristics": "자재 특성",
+  "quantity": "수량",
+  "unit": "단위",
+  "materialLabel": "자재 라벨",
+  "remark": "비고"
+}

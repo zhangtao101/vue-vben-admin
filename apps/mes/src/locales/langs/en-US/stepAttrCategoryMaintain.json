@@ -1,0 +1,15 @@
+{
+  "functionAttributeType": "Attribute Category Code",
+  "functionAttributeTypeName": "Attribute Category Name",
+  "attributeFlag": "Attribute Flag",
+  "iseUse": "Enable/Disable",
+  "addInfo": "Add Attribute Category",
+  "editInfo": "Edit Attribute Category",
+  "viewInfo": "Attribute Category Details",
+  "businessFill": "Business Fill",
+  "dataCollection": "Data Collection",
+  "externalReference": "External Reference",
+  "logicCalculation": "Logic Calculation",
+  "placeholderInput": "Please enter",
+  "placeholderSelect": "Please select"
+}

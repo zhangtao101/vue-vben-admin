@@ -31,7 +31,7 @@ import { auditIqc, fetchIqcDetail } from '#/api';
 // Props
 interface Props {
   visible?: boolean;
-  id?: string;
+  id?: any;
 }
 
 const props = defineProps<Props>();

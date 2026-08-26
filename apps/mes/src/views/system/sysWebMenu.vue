@@ -430,6 +430,7 @@ onMounted(() => {
           </div>
 
           <Grid>
+            <template #toolbar-tools></template>
             <template #isEnable_default="{ row }">
               <Switch
                 v-model:checked="row.isEnable"

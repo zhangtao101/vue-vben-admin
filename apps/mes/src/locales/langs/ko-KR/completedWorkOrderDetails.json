@@ -1,0 +1,16 @@
+{
+  "energyConsumptionDetails": "에너지 소비 상세",
+  "workReportDetails": "작업 보고 상세",
+  "feedingDetails": "투입 상세",
+  "warehouseEntryDetails": "창고 입고 상세",
+  "parameterDetails": "파라미터 상세",
+  "detailedSettingsOfTheParameterPressEquipment": "프레스 장비 파라미터 상세 설정",
+  "date": "날짜",
+  "worksheetCode": "작업 지시 번호",
+  "workstationName": "작업장명",
+  "productCode": "제품 코드",
+  "productName": "제품명",
+  "planNumber": "계획 수량",
+  "inStorageNumber": "입고 수량",
+  "action": "작업"
+}

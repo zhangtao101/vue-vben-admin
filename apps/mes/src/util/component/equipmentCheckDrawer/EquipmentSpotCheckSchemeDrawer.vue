@@ -8,7 +8,7 @@
  */
 import type { InspectionScheme, InspectionSchemeSubmit } from '#/api';
 
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -45,41 +45,42 @@ defineOptions({
   name: 'EquipmentSpotCheckSchemeDrawer',
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-  mode: 'add',
-  row: null,
-});
-
 // Emits
 const emit = defineEmits<{
   refresh: [];
-  'update:visible': [value: boolean];
 }>();
 
-// Props 定义
-interface Props {
-  visible: boolean;
-  mode: 'add' | 'edit' | 'view';
-  row?: InspectionScheme | null;
+// ========== 抽屉控制 ==========
+const show = ref(false);
+const currentMode = ref<'add' | 'edit' | 'view'>('add');
+
+function open(mode: 'add' | 'edit' | 'view', row?: InspectionScheme | null) {
+  currentMode.value = mode;
+  show.value = true;
+  loadEquipmentGroupOptions();
+
+  if (mode === 'view' && row?.id) {
+    currentRow.value = row;
+    loadViewDetail(row.id);
+  } else if (mode === 'edit' && row?.id) {
+    loadEditDetail(row.id);
+  } else {
+    currentRow.value = null;
+    selectedEquipments.value = [];
+    formData.value = {
+      schemeCode: '',
+      schemeName: '',
+      inspectionType: 'INSPECTION',
+      equipmentGroup: '',
+      equipmentCodes: '',
+      status: 'ACTIVE',
+      remark: '',
+      details: [],
+    };
+  }
 }
 
-// ========== 抽屉控制 ==========
-// 抽屉内部可见性状态：与 props.visible 双向绑定
-const drawerVisible = ref(props.visible);
-
-// 监听 props 变化
-watch(
-  () => props.visible,
-  (val) => {
-    drawerVisible.value = val;
-  },
-);
-
-// 监听抽屉内部状态变化
-watch(drawerVisible, (val) => {
-  emit('update:visible', val);
-});
+defineExpose({ open });
 
 // ========== 下拉选项 ==========
 // 点检类型选项：INSPECTION-点检、PATROL-巡检
@@ -137,6 +138,13 @@ const currentRow = ref<InspectionScheme | null>(null);
 
 // ========== 表单验证规则 ==========
 const rules: any = {
+  schemeCode: [
+    {
+      required: true,
+      message: `请输入${$t('equipmentSpotCheckScheme.schemeCode')}`,
+      trigger: 'blur',
+    },
+  ],
   schemeName: [
     {
       required: true,
@@ -169,92 +177,54 @@ const rules: any = {
   ],
 };
 
-// ========== 监听抽屉打开并加载数据 ==========
-// 监听抽屉可见性变化，打开时根据 mode 加载数据或重置表单
-watch(
-  () => props.visible,
-  (val) => {
-    if (val) {
-      // 加载设备组下拉选项
-      loadEquipmentGroupOptions();
-      if (props.mode === 'view' && props.row?.id) {
-        // 查看模式：加载详情
-        currentRow.value = props.row;
-        getInspectionSchemeById(props.row.id).then((res: any) => {
-          currentRow.value = res;
-          // 加载已选设备
-          if (res.equipmentCodes) {
-            const codes = res.equipmentCodes.split(',').filter(Boolean);
-            Promise.all(
-              codes.map((code: string) => queryScadaEquipLedgerByCode(code)),
-            ).then((results: any[]) => {
-              selectedEquipments.value = results
-                .filter(Boolean)
-                .map((r: any) => ({
-                  equipGroupCode: r.equipGroupCode,
-                  equipGroupName: r.equipGroupName,
-                  equipmentCode: r.equipmentCode,
-                  equipmentName: r.equipmentName,
-                  location: r.location,
-                  model: r.model,
-                  useDepartmentName: r.useDepartmentName,
-                }));
-            });
-          }
-        });
-      } else if (props.mode === 'edit' && props.row?.id) {
-        // 编辑模式：加载详情并填充表单
-        getInspectionSchemeById(props.row.id).then((res: any) => {
-          const details = res.details || [];
-          formData.value = {
-            id: res.id,
-            schemeCode: res.schemeCode || '',
-            schemeName: res.schemeName,
-            inspectionType: res.inspectionType,
-            equipmentGroup: res.equipmentGroup || '',
-            equipmentCodes: res.equipmentCodes || '',
-            status: res.status,
-            remark: res.remark || '',
-            details,
-          };
-          // 加载已选设备
-          if (res.equipmentCodes) {
-            const codes = res.equipmentCodes.split(',').filter(Boolean);
-            Promise.all(
-              codes.map((code: string) => queryScadaEquipLedgerByCode(code)),
-            ).then((results: any[]) => {
-              selectedEquipments.value = results
-                .filter(Boolean)
-                .map((r: any) => ({
-                  equipGroupCode: r.equipGroupCode,
-                  equipGroupName: r.equipGroupName,
-                  equipmentCode: r.equipmentCode,
-                  equipmentName: r.equipmentName,
-                  location: r.location,
-                  model: r.model,
-                  useDepartmentName: r.useDepartmentName,
-                }));
-            });
-          }
-        });
-      } else {
-        // 新增模式
-        currentRow.value = null;
-        selectedEquipments.value = [];
-        formData.value = {
-          schemeCode: '',
-          schemeName: '',
-          inspectionType: 'INSPECTION',
-          equipmentGroup: '',
-          equipmentCodes: '',
-          status: 'ACTIVE',
-          remark: '',
-          details: [],
-        };
-      }
-    }
-  },
-);
+// ========== 加载查看详情 ==========
+function loadViewDetail(id: number) {
+  getInspectionSchemeById(id).then((res: any) => {
+    currentRow.value = res;
+    loadSelectedEquipments(res.equipmentCodes);
+  });
+}
+
+// ========== 加载编辑详情 ==========
+function loadEditDetail(id: number) {
+  getInspectionSchemeById(id).then((res: any) => {
+    const details = res.details || [];
+    formData.value = {
+      id: res.id,
+      schemeCode: res.schemeCode || '',
+      schemeName: res.schemeName,
+      inspectionType: res.inspectionType,
+      equipmentGroup: res.equipmentGroup || '',
+      equipmentCodes: res.equipmentCodes || '',
+      status: res.status,
+      remark: res.remark || '',
+      details,
+    };
+    loadSelectedEquipments(res.equipmentCodes);
+  });
+}
+
+// ========== 加载已选设备 ==========
+function loadSelectedEquipments(equipmentCodes?: string) {
+  if (!equipmentCodes) {
+    selectedEquipments.value = [];
+    return;
+  }
+  const codes = equipmentCodes.split(',').filter(Boolean);
+  Promise.all(
+    codes.map((code: string) => queryScadaEquipLedgerByCode(code)),
+  ).then((results: any[]) => {
+    selectedEquipments.value = results.filter(Boolean).map((r: any) => ({
+      equipGroupCode: r.equipGroupCode,
+      equipGroupName: r.equipGroupName,
+      equipmentCode: r.equipmentCode,
+      equipmentName: r.equipmentName,
+      location: r.location,
+      model: r.model,
+      useDepartmentName: r.useDepartmentName,
+    }));
+  });
+}
 
 // ========== 关闭抽屉 ==========
 /**
@@ -264,7 +234,24 @@ watch(
  * @since 2026-04-25 10:17:00
  */
 function handleClose() {
-  drawerVisible.value = false;
+  show.value = false;
+  // 关闭抽屉时清空所有状态，回到初始状态
+  currentMode.value = 'add';
+  formData.value = {
+    schemeCode: '',
+    schemeName: '',
+    inspectionType: 'INSPECTION',
+    equipmentGroup: '',
+    equipmentCodes: '',
+    status: 'ACTIVE',
+    remark: '',
+    details: [],
+  };
+  currentRow.value = null;
+  selectedCheckItems.value = [];
+  selectedEquipments.value = [];
+  checkItemDrawerVisible.value = false;
+  equipmentDrawerVisible.value = false;
 }
 
 // ========== 提交表单 ==========
@@ -279,7 +266,9 @@ function handleSubmit() {
     .validate()
     .then(() => {
       const api =
-        props.mode === 'add' ? createInspectionScheme : updateInspectionScheme;
+        currentMode.value === 'add'
+          ? createInspectionScheme
+          : updateInspectionScheme;
 
       api(formData.value).then(() => {
         message.success($t('common.successfulOperation'));
@@ -401,19 +390,20 @@ function removeEquipment(index: number) {
 
 <template>
   <Drawer
-    v-model:open="drawerVisible"
+    v-model:open="show"
     :title="
-      mode === 'add'
+      currentMode === 'add'
         ? $t('equipmentSpotCheckScheme.addTitle')
-        : mode === 'edit'
+        : currentMode === 'edit'
           ? $t('equipmentSpotCheckScheme.editTitle')
           : $t('equipmentSpotCheckScheme.detailTitle')
     "
-    width="900"
+    :width="900"
     :destroy-on-close="true"
+    :footer-style="{ textAlign: 'right' }"
     @close="handleClose"
   >
-    <template v-if="mode === 'view' && currentRow">
+    <template v-if="currentMode === 'view' && currentRow">
       <!-- 查看模式 -->
       <Descriptions :column="2" bordered>
         <DescriptionsItem :label="$t('equipmentSpotCheckScheme.schemeCode')">
@@ -459,7 +449,7 @@ function removeEquipment(index: number) {
       <!-- 已选设备展示区域 -->
       <div
         v-if="selectedEquipments.length > 0"
-        class="mt-4 p-3 border border-gray-200 rounded bg-gray-50"
+        class="mt-4 p-3 border border-gray-200 rounded bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
       >
         <h4 class="mb-2 font-medium">
           {{
@@ -543,12 +533,22 @@ function removeEquipment(index: number) {
       <!-- 新增/编辑模式 -->
       <Form ref="formRef" :model="formData" :rules="rules" layout="vertical">
         <Row :gutter="16">
-          <Col v-if="mode !== 'add'" :span="8">
-            <FormItem :label="$t('equipmentSpotCheckScheme.schemeCode')">
-              <Input v-model:value="formData.schemeCode" disabled />
+          <Col :span="8">
+            <FormItem
+              :label="$t('equipmentSpotCheckScheme.schemeCode')"
+              name="schemeCode"
+            >
+              <Input
+                v-model:value="formData.schemeCode"
+                :disabled="currentMode !== 'add'"
+                :placeholder="
+                  $t('equipmentSpotCheckScheme.schemeCodePlaceholder')
+                "
+                :maxlength="100"
+              />
             </FormItem>
           </Col>
-          <Col :span="mode === 'add' ? 12 : 8">
+          <Col :span="8">
             <FormItem
               :label="$t('equipmentSpotCheckScheme.schemeName')"
               name="schemeName"
@@ -560,11 +560,11 @@ function removeEquipment(index: number) {
                 "
                 :maxlength="100"
                 show-count
-                :disabled="mode === 'edit'"
+                :disabled="currentMode === 'edit'"
               />
             </FormItem>
           </Col>
-          <Col :span="mode === 'add' ? 12 : 8">
+          <Col :span="8">
             <FormItem
               :label="$t('equipmentSpotCheckScheme.inspectionType')"
               name="inspectionType"
@@ -574,7 +574,7 @@ function removeEquipment(index: number) {
                 :placeholder="
                   $t('equipmentSpotCheckScheme.inspectionTypePlaceholder')
                 "
-                :disabled="mode === 'edit'"
+                :disabled="currentMode === 'edit'"
               >
                 <SelectOption
                   v-for="item in inspectionTypeOptions"
@@ -629,12 +629,12 @@ function removeEquipment(index: number) {
         <!-- 已选设备展示区域 -->
         <div
           v-if="selectedEquipments.length > 0"
-          class="mb-4 p-3 border border-gray-200 rounded bg-gray-50"
+          class="mb-4 p-3 border border-gray-200 rounded bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
         >
           <Row
             :gutter="8"
             align="middle"
-            class="pb-2 mb-2 border-b border-gray-200"
+            class="pb-2 mb-2 border-b border-gray-200 dark:border-gray-600"
           >
             <Col :span="6">
               <span class="font-medium">{{
@@ -730,12 +730,14 @@ function removeEquipment(index: number) {
           <div class="mb-2 font-medium">
             {{ $t('equipmentSpotCheckScheme.item') }}
           </div>
-          <div class="border border-gray-200 rounded p-3 bg-gray-50">
+          <div
+            class="border border-gray-200 rounded p-3 bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
+          >
             <!-- 表头 -->
             <Row
               :gutter="8"
               align="middle"
-              class="pb-2 mb-2 border-b border-gray-200"
+              class="pb-2 mb-2 border-b border-gray-200 dark:border-gray-600"
             >
               <Col :span="4">
                 <span class="font-medium">{{
@@ -768,7 +770,7 @@ function removeEquipment(index: number) {
             <div
               v-for="(item, index) in formData.details"
               :key="index"
-              class="mb-2 pb-2 border-b border-dashed border-gray-200 last:mb-0 last:pb-0 last:border-b-0"
+              class="mb-2 pb-2 border-b border-dashed border-gray-200 last:mb-0 last:pb-0 last:border-b-0 dark:border-gray-600"
             >
               <Row :gutter="8" align="middle">
                 <Col :span="4">
@@ -825,12 +827,18 @@ function removeEquipment(index: number) {
 
     <!-- 底部按钮插槽 -->
     <template #footer>
-      <Space class="w-full justify-end">
+      <Space>
         <Button @click="handleClose">
-          {{ mode === 'view' ? '关闭' : '取消' }}
+          {{
+            currentMode === 'view' ? $t('common.close') : $t('common.cancel')
+          }}
         </Button>
-        <Button v-if="mode !== 'view'" type="primary" @click="handleSubmit">
-          确认
+        <Button
+          v-if="currentMode !== 'view'"
+          type="primary"
+          @click="handleSubmit"
+        >
+          {{ $t('common.confirm') }}
         </Button>
       </Space>
     </template>
@@ -869,6 +877,15 @@ function removeEquipment(index: number) {
 .detail-table th {
   font-weight: 500;
   background-color: #fafafa;
+}
+
+:global(.dark) .detail-table thead th,
+:global(.dark) .detail-table tbody td {
+  border-color: #424242;
+}
+
+:global(.dark) .detail-table thead th {
+  background-color: #1f2937;
 }
 
 .text-center {

@@ -138,10 +138,10 @@ defineExpose({ open });
 
 .print-title {
   padding-bottom: 10px;
-  text-align: center;
-  font-weight: 800;
-  font-size: 22px;
   font-family: '宋体';
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
 }
 
 .print-date {

@@ -302,6 +302,7 @@
     "oeeReason": "OEE Reason",
     "moldMaintenanceItem": "Mold Maintenance Item",
     "moldAbnormalReason": "Abnormal Reason",
+    "repairItem": "Repair Item",
     "itemRequirement": "Maintenance Requirement",
     "itemStandard": "Maintenance Standard",
     "repairGroupCode": "Repair Group Code",

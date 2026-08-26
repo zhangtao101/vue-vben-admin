@@ -1,0 +1,12 @@
+{
+  "sn": "제품 SN 코드",
+  "workOrderNumber": "작업지시 번호",
+  "poorOperation": "불량 공정",
+  "reasonsForScrapping": "폐기 사유",
+  "misjudgedQuantity": "오판 수량",
+  "defectiveQuantity": "불량 수량",
+  "scrapQuantity": "폐기 수량",
+  "concessionAcceptanceQuantity": "양품 판정 수량",
+  "poorHandling": "불량 처리",
+  "quantityOfRework": "재작업 수량"
+}

@@ -1,0 +1,15 @@
+{
+  "boxCodeQuery": "박스 코드 조회",
+  "boxCode": "박스 코드",
+  "materialCode": "자재 코드",
+  "materialName": "자재명",
+  "materialDescriptionId": "자재 설명 ID",
+  "materialDescription": "자재 설명",
+  "quantity": "수량",
+  "unit": "단위",
+  "manufacturerName": "제조사명",
+  "batchCode": "배치 코드",
+  "workOrderNumber": "작업지시 번호",
+  "storageLocation": "저장 위치",
+  "pleaseEnterBoxCode": "박스 코드를 입력하세요"
+}

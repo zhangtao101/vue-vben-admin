@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, Card, Form, FormItem, Input, Spin } from 'ant-design-vue';
+import { Button, Card, Form, FormItem, Input, Select, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getLineProductCheck, searchProduceWorkSheetList } from '#/api';
+import { getProcessTypeList } from '#/api/flow/dispatchHomework.service';
 import EquipmentResources from '#/util/component/equipmentResources.vue';
 
 const props = defineProps({
@@ -25,6 +26,22 @@ const queryParams = ref<any>({
   planCode: '',
   workSheetCode: '',
   productName: '',
+  processType: undefined,
+});
+
+// 工单单别列表
+const processTypeList = ref<any>([]);
+
+// 获取工单单别列表
+function fetchProcessTypeList() {
+  getProcessTypeList().then((res: any) => {
+    processTypeList.value = res.data || [];
+  });
+}
+
+// 组件挂载时初始化加载
+onMounted(() => {
+  fetchProcessTypeList();
 });
 
 // endregion
@@ -40,7 +57,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'planCode',
       title: '计划编号',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'workSheetCode',
@@ -48,12 +65,12 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 180,
     },
     {
-      field: 'productCode',
+      field: 'subProductCode',
       title: '产品编码',
       minWidth: 150,
     },
     {
-      field: 'productName',
+      field: 'subProductName',
       title: '产品名称',
       minWidth: 150,
     },
@@ -234,6 +251,23 @@ function completed() {
       <!--产品名称 -->
       <FormItem :label="$t('dispatchHomework.productName')">
         <Input v-model:value="queryParams.productName" />
+      </FormItem>
+      <!--工单单别 -->
+      <FormItem :label="$t('dispatchHomework.processType')">
+        <Select
+          v-model:value="queryParams.processType"
+          :placeholder="$t('dispatchHomework.pleaseSelectProcessType')"
+          allow-clear
+          class="w-40"
+        >
+          <Select.Option
+            v-for="item in processTypeList"
+            :key="item.processType"
+            :value="item.processType"
+          >
+            {{ item.processTypeName }}
+          </Select.Option>
+        </Select>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="gridApi.reload()" class="mr-4">

@@ -124,7 +124,7 @@ export async function queryProductList(
 }
 
 /**
- * 新增产品绑定
+ * 新增产品绑定（支持批量）
  */
 export async function addProductRoute(params: any) {
   return requestClient.post<any>(

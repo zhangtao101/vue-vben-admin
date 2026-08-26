@@ -73,13 +73,10 @@ const configTypeOptions = [
   },
   { label: $t('repair.repairBasicConfig.oeeReason'), value: 'OEE_REASON' },
   {
-    label: $t('repair.repairBasicConfig.moldMaintenanceItem'),
-    value: 'MOLD_MAINTENANCE_ITEM',
-  },
-  {
     label: $t('repair.repairBasicConfig.moldAbnormalReason'),
     value: 'MOLD_ABNORMAL_REASON',
   },
+  { label: $t('repair.repairBasicConfig.repairItem'), value: 'REPAIR_ITEM' },
 ];
 
 // ========== 维修类型映射 ==========
@@ -94,8 +91,8 @@ const configTypeMap: Record<string, string> = {
   REPAIR_PAUSE_REASON: $t('repair.repairBasicConfig.repairPauseReason'),
   EQUIPMENT_OEE_REASON: $t('repair.repairBasicConfig.equipmentOeeReason'),
   OEE_REASON: $t('repair.repairBasicConfig.oeeReason'),
-  MOLD_MAINTENANCE_ITEM: $t('repair.repairBasicConfig.moldMaintenanceItem'),
   MOLD_ABNORMAL_REASON: $t('repair.repairBasicConfig.moldAbnormalReason'),
+  REPAIR_ITEM: $t('repair.repairBasicConfig.repairItem'),
 };
 
 /**
@@ -276,7 +273,6 @@ const importConfigTypes = new Set([
   'EQUIPMENT_OEE_REASON',
   'FAULT_TYPE',
   'MOLD_ABNORMAL_REASON',
-  'MOLD_MAINTENANCE_ITEM',
   'OEE_REASON',
   'REPAIR_PAUSE_REASON',
 ]);

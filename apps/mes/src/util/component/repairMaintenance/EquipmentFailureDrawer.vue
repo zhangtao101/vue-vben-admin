@@ -14,7 +14,6 @@ import {
   Form,
   FormItem,
   Input,
-  InputNumber,
   message,
   Select,
   Space,
@@ -84,7 +83,6 @@ const formData = ref({
   faultLevelCode: undefined as string | undefined,
   faultDescription: '',
   solution: '',
-  sortOrder: undefined as number | undefined,
   parentId: undefined as string | undefined,
 });
 
@@ -102,7 +100,6 @@ function resetForm() {
     faultLevelCode: undefined,
     faultDescription: '',
     solution: '',
-    sortOrder: undefined,
     parentId: props.parentId,
   };
 }
@@ -278,14 +275,14 @@ function handleSubmit() {
         />
       </FormItem>
 
-      <FormItem :label="$t('repair.repairBasicConfig.sortOrder')">
+      <!-- <FormItem :label="$t('repair.repairBasicConfig.sortOrder')">
         <InputNumber
           v-model:value="formData.sortOrder"
           :min="0"
           placeholder="请输入"
           class="!w-full"
         />
-      </FormItem>
+      </FormItem> -->
     </Form>
 
     <template #footer>

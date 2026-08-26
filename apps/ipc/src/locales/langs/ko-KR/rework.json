@@ -1,0 +1,14 @@
+{
+  "materialHandling": "자재 취급",
+  "reworkProcess": "재작업 공정",
+  "theProcessesWithinTheTechnologicalRoute": "공정 경로 내 공정",
+  "processesOutsideTheTechnologicalRoute": "공정 경로 외 공정",
+  "feedingMaterials": "자재 급송",
+  "addMaterials": "자재 추가",
+  "noMaterialsAdded": "추가된 자재 없음",
+  "processNumber": "공정 번호",
+  "processName": "공정명",
+  "openingTitle": "재작업 작업지시를 개설하시겠습니까?",
+  "open": "개설",
+  "notToOpen": "개설 안 함"
+}

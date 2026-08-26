@@ -46,6 +46,7 @@ import {
   queryStoreRequisitionTyle,
   storeRequisitionDelete,
   storeRequisitionInsert,
+  storeRequisitionInsertWork,
   storeRequisitionLock,
   storeRequisitionSign,
   storeRequisitionSuspend,
@@ -60,6 +61,7 @@ import {
 } from '#/util';
 import MaterialSelection from '#/util/component/materialSelection.vue';
 import ErpDocument from '#/util/component/storesRequisitionDrawer/ErpDocument.vue';
+import PlanImportDrawer from '#/util/component/storesRequisitionDrawer/PlanImportDrawer.vue';
 
 // 路由信息
 const route = useRoute();
@@ -291,7 +293,10 @@ function editRow(row?: any, readOnly = false) {
   showEditDrawer.value = true;
   editMessage.value.requireDate = null;
   if (addOrUpdateGridApi) {
-    addOrUpdateGridApi.reload();
+
+    setTimeout(() => {
+      addOrUpdateGridApi.reload();
+    }, 200);
   }
 }
 
@@ -372,6 +377,39 @@ function delDetailRow(row: any) {
 function addRow() {
   addOrUpdateGridApi.grid.insert({
     remarkArr: [],
+  });
+}
+
+// 计划导入抽屉 ref
+const planImportDrawerRef = ref();
+
+/**
+ * 打开计划导入抽屉
+ */
+function openPlanImport() {
+  planImportDrawerRef.value.open();
+}
+
+/**
+ * 计划导入 - 选择工单后确认
+ * @param row 选中的工单行数据
+ */
+function handlePlanSelect(row: any) {
+  if (!row.workSheetCode) {
+    message.error($t('storesRequisition.workOrderCodeRequired'));
+    return;
+  }
+  storeRequisitionInsertWork(row.workSheetCode).then((res: any) => {
+    if (res && res.detailList) {
+      res.detailList.forEach((item: any) => {
+        item.remarkArr = [];
+      });
+      addOrUpdateGridApi.grid.reloadData(res.detailList);
+
+      message.success($t('common.successfulOperation'));
+    } else {
+      message.error($t('storesRequisition.importFailedNoDetailData'));
+    }
   });
 }
 
@@ -922,7 +960,7 @@ onMounted(async () => {
       :height="500"
       placement="top"
       root-class-name="root-class-name"
-      title="$t('storesRequisition.infoEdit')"
+      :title="$t('storesRequisition.infoEdit')"
       @close="close"
     >
       <Form
@@ -936,8 +974,8 @@ onMounted(async () => {
       >
         <Row>
           <Col :span="24" class="!mb-4">
-            <!--            <Button class="mr-4" type="primary">计划导入</Button>-->
-            <Button type="primary" @click="addRow">{{ $t('storesRequisition.addRow') }}</Button>
+            <Button type="primary" @click="addRow" class="mr-4">{{ $t('storesRequisition.addRow') }}</Button>
+            <Button class="mr-4" type="primary" @click="openPlanImport">{{ $t('storesRequisition.planImport') }}</Button>
           </Col>
         </Row>
         <Row>
@@ -1047,7 +1085,7 @@ onMounted(async () => {
 
       <addOrUpdateGrid>
         <template #materialName="{ row }">
-          <Input v-model:value="row.materialName" class="mr-1 w-48" readonly />
+          <Input v-model:value="row.materialName" class="mr-1 w-48!" readonly />
           <Button
             :disabled="!editMessage.applyOrgCode || !row.applyType"
             type="primary"
@@ -1135,7 +1173,7 @@ onMounted(async () => {
       :height="500"
       placement="top"
       root-class-name="root-class-name"
-      title="$t('storesRequisition.selectMaterialTitle')"
+      :title="$t('storesRequisition.selectMaterialTitle')"
     >
       <MaterialSelection
         :apply-org-code="editMessage.applyOrgCode"
@@ -1174,6 +1212,12 @@ onMounted(async () => {
 
     <!-- ERP单据 -->
     <ErpDocument ref="erpDocumentRef" />
+
+    <!-- 计划导入 -->
+    <PlanImportDrawer
+      ref="planImportDrawerRef"
+      @select="handlePlanSelect"
+    />
   </Page>
 </template>
 

@@ -417,7 +417,7 @@ const rootCauseOptions = ref<{ label: string; value: string }[]>([]);
  */
 function fetchRootCauseOptions() {
   getRepairBasicConfigList({
-    configType: 'FAULT_ROOT_CAUSE',
+    configType: 'EQUIP_FAULT_CAUSE',
     status: 'ACTIVE',
   }).then((data) => {
     rootCauseOptions.value = (data || []).map((item: any) => ({
@@ -666,6 +666,7 @@ onMounted(async () => {
     <!-- 表格区域 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #repairType="{ row }">
           <Tag :color="repairTypeColorMap[row.repairType] || 'default'">
             {{ formatRepairType(row.repairType) }}

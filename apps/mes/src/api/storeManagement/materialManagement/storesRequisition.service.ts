@@ -176,3 +176,13 @@ export function exportStoreRequisitionList(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/export?${qs.stringify(params)}`,
   );
 }
+
+/**
+ * 计划导入 - 根据工单号获取详情
+ * @param weekCode 工单号
+ */
+export function storeRequisitionInsertWork(weekCode: string) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/insertWork/${weekCode}`,
+  );
+}

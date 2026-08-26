@@ -4,6 +4,8 @@
   "editTitle": "Edit Equipment Maintenance Plan",
   "viewTitle": "View Equipment Maintenance Plan",
   "planCode": "Plan Code",
+  "planCodePlaceholder": "Please enter plan code",
+  "planCodeRequired": "Plan code is required",
   "planName": "Plan Name",
   "schemeName": "Associated Scheme",
   "planType": "Maintenance Type",

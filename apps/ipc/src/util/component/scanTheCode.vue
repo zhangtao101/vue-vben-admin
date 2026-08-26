@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
@@ -28,7 +28,11 @@ const displayScanCode = ref(false);
 /**
  * 条码扫码器实例，用于调用扫码功能
  */
-let codeReader: BrowserMultiFormatReader;
+let codeReader: BrowserMultiFormatReader | null = null;
+/**
+ * 延迟启动扫码的定时器引用，用于组件卸载时清理，避免定时器泄漏
+ */
+let scanTimer: any = null;
 /**
  * 响应式变量，用于判断当前页面是否使用 http 协议
  */
@@ -63,7 +67,9 @@ function showQrcode() {
   displayScanCode.value = true;
 
   // 延迟执行确保 DOM 更新完成
-  setTimeout(() => {
+  // 保存定时器引用，便于组件卸载时清理，避免定时器泄漏
+  scanTimer = setTimeout(() => {
+    scanTimer = null;
     if (videoInput.value) {
       // 初始化条码阅读器
       codeReader = new BrowserMultiFormatReader();
@@ -90,7 +96,12 @@ function showQrcode() {
  * 此函数会调用扫码器的 reset 方法重置扫码器，并隐藏扫码抽屉。
  */
 function close() {
-  codeReader.reset();
+  // 清除尚未执行的延迟启动定时器
+  clearTimeout(scanTimer);
+  scanTimer = null;
+  // 重置扫码器并释放摄像头资源（若已初始化）
+  codeReader?.reset();
+  codeReader = null;
   displayScanCode.value = false;
 }
 // endregion
@@ -107,6 +118,17 @@ onMounted(() => {
 
   isHttp.value = protocol === 'http:';
   isLocalhost.value = hostname === 'localhost' || hostname === '127.0.0.1';
+});
+
+/**
+ * 组件卸载时的生命周期钩子函数
+ * 清理延迟启动扫码的定时器并释放摄像头资源，避免内存泄漏
+ */
+onUnmounted(() => {
+  clearTimeout(scanTimer);
+  scanTimer = null;
+  codeReader?.reset();
+  codeReader = null;
 });
 // endregion
 </script>

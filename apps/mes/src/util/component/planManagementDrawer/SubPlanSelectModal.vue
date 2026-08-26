@@ -51,9 +51,9 @@ const queryParams = ref<any>({
   planCode: '',
   productCode: '',
   productName: '',
-  processType: 1,
+  processType: undefined,
   isFinish: '2',
-  isPlanWork: '2',
+  // isPlanWork: '2',
 });
 
 // 表格配置
@@ -136,6 +136,10 @@ function loadData({ page, pageSize }: any) {
  * 确认选择
  */
 function handleConfirm() {
+  if (!queryParams.value.processType) {
+    message.warning($t('SMTmanagement.pleaseSelectProcessType'));
+    return;
+  }
   if (selectedRows.value.length === 0) {
     message.warning($t('SMTmanagement.pleaseSelectData'));
     return;
@@ -150,9 +154,9 @@ function open() {
     planCode: '',
     productCode: '',
     productName: '',
-    processType: 1,
+    processType: undefined,
     isFinish: '2',
-    isPlanWork: '2',
+    // isPlanWork: '2',
   };
   show.value = true;
   nextTick(() => {
@@ -182,7 +186,7 @@ defineExpose({ open, queryParams });
       <FormItem :label="$t('SMTmanagement.productName')" style="margin-bottom: 8px">
         <Input v-model:value="queryParams.productName" :placeholder="$t('SMTmanagement.inputProductName')" />
       </FormItem>
-      <FormItem :label="$t('SMTmanagement.processType')" style="margin-bottom: 8px">
+      <FormItem :label="$t('SMTmanagement.processType')" :required="true" style="margin-bottom: 8px">
         <Select
           v-model:value="queryParams.processType"
           :options="processTypeOptions"
@@ -196,12 +200,12 @@ defineExpose({ open, queryParams });
           <Radio value="2">{{ $t('SMTmanagement.unfinished') }}</Radio>
         </RadioGroup>
       </FormItem>
-      <FormItem :label="$t('SMTmanagement.isPlanWork')" style="margin-bottom: 8px">
+      <!-- <FormItem :label="$t('SMTmanagement.isPlanWork')" style="margin-bottom: 8px">
         <RadioGroup v-model:value="queryParams.isPlanWork">
           <Radio value="1">{{ $t('SMTmanagement.arranged') }}</Radio>
           <Radio value="2">{{ $t('SMTmanagement.unarranged') }}</Radio>
         </RadioGroup>
-      </FormItem>
+      </FormItem> -->
       <FormItem style="margin-bottom: 8px">
         <Button type="primary" @click="() => gridApi.reload()">
           {{ $t('common.search') }}

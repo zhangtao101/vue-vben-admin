@@ -310,6 +310,7 @@ function getStateColor(state: string) {
       <!-- 过程追溯表格 -->
       <Card v-if="hasTableData" :title="$t('tracingModule.productTrace.processTrace')">
         <Grid>
+          <template #toolbar-tools></template>
           <template #state="{ row }">
             <Tag :color="getStateColor(row.state)">
               {{ row.state }}

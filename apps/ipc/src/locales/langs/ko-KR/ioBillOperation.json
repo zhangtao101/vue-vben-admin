@@ -1,0 +1,23 @@
+{
+  "ioBillCode": "입출고 전표 코드",
+  "ioBillType": "입출고 전표 유형",
+  "materialCode": "자재 코드",
+  "materialName": "자재명",
+  "time": "전표 시간",
+  "type": "전표 유형",
+  "opType": "조작 유형",
+  "bindBillCode": "연결 전표 코드",
+  "supplierName": "공급업체명",
+  "number": "수량",
+  "materialFeatureId": "자재 특성 ID",
+  "startJob": "작업 시작",
+  "performTaskLists": "작업 수행 목록",
+  "boxCode": "박스 코드",
+  "materialFeature": "자재 특성",
+  "unit": "단위",
+  "storagePosition": "저장 위치",
+  "automatedJobs": "자동 작업",
+  "manualJobs": "수동 작업",
+  "numberOfFaces": "면 수",
+  "labelType": "라벨 유형"
+}

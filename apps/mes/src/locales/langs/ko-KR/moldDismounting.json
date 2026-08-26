@@ -1,0 +1,21 @@
+{
+  "title": "금형 탈착",
+  "equipmentScan": "장비 스캔",
+  "equipmentScanPlaceholder": "장비 코드를 스캔하거나 입력하세요",
+  "equipmentName": "장비명",
+  "process": "공정",
+  "moldCurrentInfo": "장비에 현재 장착된 금형",
+  "moldCode": "금형 코드",
+  "moldName": "금형명",
+  "workOrderNo": "작업 지시",
+  "installTime": "설치 시간",
+  "querying": "금형 정보 조회 중...",
+  "noMoldOnEquipment": "이 장비에 금형이 없습니다",
+  "reset": "초기화",
+  "confirmDismount": "탈착 확인",
+  "querySuccess": "조회 성공",
+  "equipmentQuerySuccess": "장비 정보 조회 성공",
+  "equipmentQueryFail": "장비 정보 조회 실패",
+  "dismountSuccess": "금형 탈착 성공",
+  "dismountFail": "금형 탈착 실패"
+}

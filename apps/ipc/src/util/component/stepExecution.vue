@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AndonCall from '#/util/component/steps/andonCall.vue';
+import BatchUpdate from '#/util/component/steps/batchUpdate.vue';
 import DeviceClearing from '#/util/component/steps/deviceClearing.vue';
 import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
 import EquipmentLocationInformation from '#/util/component/steps/equipmentLocationInformation.vue';
@@ -10,12 +11,15 @@ import FirstInspection from '#/util/component/steps/firstInspection.vue';
 import FormulaDistribution from '#/util/component/steps/formulaDistribution.vue';
 import InsulationVoltage from '#/util/component/steps/insulationVoltage.vue';
 import LampInstallationRecord from '#/util/component/steps/lampInstallationRecord.vue';
+import LiquidLevelTrigger from '#/util/component/steps/liquidLevelTrigger.vue';
+import LocationLock from '#/util/component/steps/locationLock.vue';
 import ManufactureEntry from '#/util/component/steps/manufactureEntry.vue';
 import MaterialFeeding from '#/util/component/steps/materialFeeding.vue';
 import MaterialFeedingSlitting from '#/util/component/steps/materialFeedingSlitting.vue';
 import MoldUpInfo from '#/util/component/steps/moldUpInfo.vue';
 import MultiStationScan from '#/util/component/steps/multiStationScan.vue';
 import ParamTemplate from '#/util/component/steps/paramTemplate.vue';
+import PickUpExecution from '#/util/component/steps/pickUpExecution.vue';
 import ProcessEntryStation from '#/util/component/steps/processEntryStation.vue';
 import ProcessOutbound from '#/util/component/steps/processOutbound.vue';
 import ProcessReporting from '#/util/component/steps/processReporting.vue';
@@ -28,7 +32,11 @@ import ScanTask from '#/util/component/steps/scanTask.vue';
 import Selfinspection from '#/util/component/steps/selfinspection.vue';
 import SingleStationScan from '#/util/component/steps/singleStationScan.vue';
 import SmtFeeding from '#/util/component/steps/smtFeeding.vue';
+import TaskDispatch from '#/util/component/steps/taskDispatch.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
+import TransportMonitor from '#/util/component/steps/transportMonitor.vue';
+import UnloadingDocking from '#/util/component/steps/unloadingDocking.vue';
+import UnloadingDockingTask from '#/util/component/steps/unloadingDockingTask.vue';
 
 /**
  * 定义组件接收的 props，用于传递工步执行所需的相关信息
@@ -462,6 +470,80 @@ defineProps({
       :binding-id="bindingId"
       :function-id="step.id"
       v-if="step.type === 53"
+    />
+    <!-- 液位触发 - 演示：根据工步类型为 100 时，渲染液位触发组件，并传递相关参数 -->
+    <LiquidLevelTrigger
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      :product-code="productCode"
+      :product-name="productName"
+      v-if="step.type === 100"
+    />
+    <!-- 任务下发 - 演示：根据工步类型为 102 时，渲染任务下发组件，并传递相关参数 -->
+    <TaskDispatch
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 102"
+    />
+    <!-- 库位锁定 - 演示：根据工步类型为 103 时，渲染库位锁定组件，并传递相关参数 -->
+    <LocationLock
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 103"
+    />
+    <!-- 取货执行 - 演示：根据工步类型为 104 时，渲染取货执行组件，并传递相关参数 -->
+    <PickUpExecution
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 104"
+    />
+    <!-- 运输监控 - 演示：根据工步类型为 105 时，渲染运输监控组件，并传递相关参数 -->
+    <TransportMonitor
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 105"
+    />
+    <!-- 卸货对接 - 演示：根据工步类型为 106 时，渲染卸货对接组件，并传递相关参数 -->
+    <UnloadingDocking
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 106"
+    />
+    <!-- 卸货对接-任务清单 - 演示：根据工步类型为 107 时，渲染卸货对接任务清单组件，并传递相关参数 -->
+    <UnloadingDockingTask
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 107"
+    />
+    <!-- 批次更新 - 演示：根据工步类型为 108 时，渲染批次更新组件，并传递相关参数 -->
+    <BatchUpdate
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 108"
     />
     <!-- 配方执行 - 和城：根据工步类型为 101 时，渲染配方执行组件，并传递相关参数 -->
     <RecipeExecution
