@@ -207,8 +207,13 @@ function openDrawer(
   } else {
     checkParamNode({
       id: stepTypeMessage.id,
-    }).then(() => {
-      initDrawer();
+    }).then(({result, msg}) => {
+      if (result) {
+        initDrawer();
+      } else {
+        message.error(msg);
+        return;
+      }
     });
   }
 }
