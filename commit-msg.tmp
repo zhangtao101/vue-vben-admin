@@ -1,5 +1,0 @@
-feat(@vben/mes): 新增流程节点重命名功能
-
-- ToolbarNode 新增重命名按钮及 rename 事件
-- drop.vue 新增重命名弹窗及确认逻辑
-- 添加中英文韩文重命名国际化配置
