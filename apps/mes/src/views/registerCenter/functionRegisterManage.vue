@@ -25,12 +25,15 @@ import {
   Tag,
   Tooltip,
 } from 'ant-design-vue';
+// eslint-disable-next-line n/no-extraneous-import
+import { debounce } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteRegisterRecord,
   insertRegisterRecord,
   selectRegisterRecordList,
+  selectTypeList,
   updateRegisterRecord,
 } from '#/api';
 import { $t } from '#/locales';
@@ -152,6 +155,32 @@ const checkedRow = ref<any>({});
 const showViewDrawer = ref(false);
 // 是否显示编辑抽屉
 const showEditDrawer = ref(false);
+// 登记工步远程搜索选项
+const functionTypeOptions = ref<{ label: string; value: string }[]>([]);
+// 登记工步远程搜索加载状态
+const functionTypeLoading = ref(false);
+
+/**
+ * 登记工步远程搜索（防抖），工步类型编号作为关键字
+ */
+const handleFunctionTypeSearch = debounce((val: string) => {
+  functionTypeLoading.value = true;
+  selectTypeList({
+    functionTypeName: val,
+    pageNum: 1,
+    pageSize: 20,
+  })
+    .then((data: any) => {
+      const list = data?.records || data?.rows || data?.list || data || [];
+      functionTypeOptions.value = list.map((item: any) => ({
+        label: item.functionTypeName,
+        value: item.functionType,
+      }));
+    })
+    .finally(() => {
+      functionTypeLoading.value = false;
+    });
+}, 500);
 
 // 抽屉中的form表单对象
 const editForm = ref();
@@ -203,6 +232,8 @@ function viewRow(row: any) {
 function editRow(row?: any) {
   // 新增时默认启用
   checkedRow.value = row ? { ...row } : { isUse: 1 };
+  // 每次打开抽屉重新加载登记工步下拉选项（空关键字取默认前 20 条）
+  handleFunctionTypeSearch('');
   showEditDrawer.value = true;
 }
 
@@ -620,9 +651,15 @@ onMounted(() => {
           :label="$t('functionRegisterManage.registerFunctionType')"
           name="registerFunctionType"
         >
-          <Input
+          <Select
             v-model:value="checkedRow.registerFunctionType"
-            :placeholder="$t('functionRegisterManage.placeholderInput')"
+            :filter-option="false"
+            :loading="functionTypeLoading"
+            :options="functionTypeOptions"
+            :placeholder="$t('functionRegisterManage.placeholderSelect')"
+            allow-clear
+            show-search
+            @search="handleFunctionTypeSearch"
           />
         </FormItem>
         <!-- 权限标记 -->
