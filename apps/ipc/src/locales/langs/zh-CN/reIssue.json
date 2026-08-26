@@ -1,0 +1,19 @@
+{
+  "title": "重新发行",
+  "planDate": "指示日期",
+  "lineCode": "产线编号",
+  "productCode": "产品编号",
+  "workSheetCode": "工单号",
+  "lotCode": "LOT编号",
+  "palletLabel": "托盘编号",
+  "productName": "产品名称",
+  "operation": "操作",
+  "detail": "详情",
+  "detailFailed": "查询详情失败",
+  "materialList": "材料列表",
+  "materialCode": "材料编号",
+  "materialName": "材料名称",
+  "issueWt": "重量",
+  "unit": "单位",
+  "reIssue": "重新发行"
+}

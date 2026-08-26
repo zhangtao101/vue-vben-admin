@@ -1,0 +1,19 @@
+{
+  "title": "Re-issue",
+  "planDate": "Plan Date",
+  "lineCode": "Line Code",
+  "productCode": "Product Code",
+  "workSheetCode": "Work Sheet Code",
+  "lotCode": "LOT Number",
+  "palletLabel": "Pallet Number",
+  "productName": "Product Name",
+  "operation": "Operation",
+  "detail": "Detail",
+  "detailFailed": "Failed to query detail",
+  "materialList": "Material List",
+  "materialCode": "Material Code",
+  "materialName": "Material Name",
+  "issueWt": "Weight",
+  "unit": "Unit",
+  "reIssue": "Re-issue"
+}

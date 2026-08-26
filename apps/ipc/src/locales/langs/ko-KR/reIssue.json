@@ -1,0 +1,19 @@
+{
+  "title": "재발행",
+  "planDate": "지시 날짜",
+  "lineCode": "라인 코드",
+  "productCode": "제품 코드",
+  "workSheetCode": "작업지시서 번호",
+  "lotCode": "LOT 번호",
+  "palletLabel": "팔레트 번호",
+  "productName": "제품 이름",
+  "operation": "작업",
+  "detail": "상세",
+  "detailFailed": "상세 조회에 실패했습니다",
+  "materialList": "자재 목록",
+  "materialCode": "자재 코드",
+  "materialName": "자재 이름",
+  "issueWt": "중량",
+  "unit": "단위",
+  "reIssue": "재발행"
+}

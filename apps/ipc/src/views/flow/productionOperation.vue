@@ -77,6 +77,10 @@ const stepList = ref<any[]>([
   { id: 117, title: '17', type: 117, status: 1 },
   { id: 118, title: '18', type: 118, status: 1 },
   { id: 119, title: '19', type: 119, status: 1 },
+  { id: 120, title: '搅拌机批次LOT管理', type: 120, status: 1 },
+  { id: 121, title: '搅拌机称重', type: 121, status: 1 },
+  { id: 122, title: '托盘投入', type: 122, status: 1 },
+  { id: 123, title: '333333', type: 123, status: 1 },
 ]);
 // 当前选中的工步索引
 const currentStepIndex = ref(0);

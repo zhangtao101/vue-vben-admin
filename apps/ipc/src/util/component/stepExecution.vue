@@ -13,6 +13,8 @@ import EquipmentOperationStatus from '#/util/component/steps/equipmentOperationS
 import ExitReport from '#/util/component/steps/exitReport.vue';
 import FirstInspection from '#/util/component/steps/firstInspection.vue';
 import FormulaDistribution from '#/util/component/steps/formulaDistribution.vue';
+import GravityFreeMixerTrayInput from '#/util/component/steps/gravityFreeMixerTrayInput.vue';
+import GravityFreeMixerWork from '#/util/component/steps/gravityFreeMixerWork.vue';
 import InsulationVoltage from '#/util/component/steps/insulationVoltage.vue';
 import LampInstallationRecord from '#/util/component/steps/lampInstallationRecord.vue';
 import ManufactureEntry from '#/util/component/steps/manufactureEntry.vue';
@@ -22,6 +24,8 @@ import MixedWaterFailedTransfer from '#/util/component/steps/mixedWaterFailedTra
 import MixedWaterLotGeneration from '#/util/component/steps/mixedWaterLotGeneration.vue';
 import MixedWaterProgress from '#/util/component/steps/mixedWaterProgress.vue';
 import MixedWorkProgress from '#/util/component/steps/mixedWorkProgress.vue';
+import MixerLotManage from '#/util/component/steps/mixerLotManage.vue';
+import MixerMaterialWeigh from '#/util/component/steps/mixerMaterialWeigh.vue';
 import MoldUpInfo from '#/util/component/steps/moldUpInfo.vue';
 import MultiStationScan from '#/util/component/steps/multiStationScan.vue';
 import NoodleDropInfo from '#/util/component/steps/noodleDropInfo.vue';
@@ -659,6 +663,46 @@ defineProps({
       :binding-id="bindingId"
       :function-id="step.id"
       v-if="step.type === 118"
+    />
+
+    <!-- 搅拌机批次LOT管理：根据工步类型为 120 时，渲染搅拌机批次LOT管理组件，并传递相关参数 -->
+    <MixerLotManage
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 120"
+    />
+
+    <!-- 搅拌材料称重管理：根据工步类型为 121 时，渲染搅拌材料称重管理组件，并传递相关参数 -->
+    <MixerMaterialWeigh
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 121"
+    />
+
+    <!-- 无重力搅拌托盘投入：根据工步类型为 122 时，渲染无重力搅拌托盘投入组件，并传递相关参数 -->
+    <GravityFreeMixerTrayInput
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 122"
+    />
+
+    <!-- 搅拌作业进行：根据工步类型为 123 时，渲染搅拌作业进行组件，并传递相关参数 -->
+    <GravityFreeMixerWork
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      v-if="step.type === 123"
     />
 
     <!-- 设备点位信息：根据工步类型为 999 时，渲染设备点位信息组件，并传递相关参数 -->
