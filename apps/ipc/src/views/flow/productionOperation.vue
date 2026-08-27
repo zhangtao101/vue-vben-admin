@@ -21,7 +21,7 @@ function query() {
 
 onMounted(() => {
   query();
-  if (import.meta.env.VITE_GLOB_MES_MAIN !== 'HAOSHEN') {
+  if (import.meta.env.VITE_GLOB_APP_TYPE !== 'HAOSHEN') {
     // 每5秒定时调用接口
     timer = setInterval(query, 5000);
   }
@@ -37,8 +37,10 @@ function handleIspitStopChange(val: boolean) {
       timer = null;
     }
   } else {
-    // ispitStop 为 false 时重新启动定时器
-    timer = setInterval(query, 5000);
+    if (import.meta.env.VITE_GLOB_APP_TYPE !== 'HAOSHEN') {
+      // 每5秒定时调用接口
+      timer = setInterval(query, 5000);
+    }
   }
 }
 
