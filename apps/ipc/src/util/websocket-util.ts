@@ -23,6 +23,8 @@ export default function useWebSocket(fun: any, params: any = {}) {
   let heartbeatTimer: any; // 心跳定时器
   // 重连的定时器
   let reconnectTimer: any = null; // 重连定时器
+  // 标记是否已手动关闭（组件卸载或主动 close 后置为 true，阻止异步 connect 继续创建连接）
+  let isClosed = false;
 
   // 获取TOKEN
   const accessStore = useAccessStore();
@@ -30,6 +32,14 @@ export default function useWebSocket(fun: any, params: any = {}) {
   const connect = async () => {
     // 获取 WebSocket 的连接路径，假设这是一个异步函数
     const url = await getWebSocketPath(params.webSocketType);
+    // 若组件已卸载（close 已被调用），不再创建连接，避免连接与定时器泄漏
+    if (isClosed) {
+      return;
+    }
+    // 若已存在旧连接，先关闭旧连接，避免重连时旧连接残留
+    if (socket.value) {
+      socket.value.close();
+    }
     // 创建一个新的 WebSocket 实例
     socket.value = new WebSocket(`${url}?${qs.stringify(params)}`);
     // 监听 WebSocket 的 'open' 事件，表示连接成功
@@ -58,7 +68,7 @@ export default function useWebSocket(fun: any, params: any = {}) {
   // 发送消息的函数
   const sendMessage = (data: any) => {
     // 检查 WebSocket 是否处于 OPEN 状态
-    if (socket.value.readyState === WebSocket.OPEN) {
+    if (socket.value && socket.value.readyState === WebSocket.OPEN) {
       // 将消息序列化为 JSON 格式并发送
       socket.value.send(JSON.stringify(data));
     }
@@ -66,23 +76,39 @@ export default function useWebSocket(fun: any, params: any = {}) {
 
   // 关闭 WebSocket 连接的函数
   const close = () => {
+    // 标记为已关闭，阻止异步 connect 竞态下继续创建连接
+    isClosed = true;
+    // 无论 socket 是否存在，都清除重连和心跳检测的定时器，避免竞态下定时器泄漏
+    clearTimeout(reconnectTimer);
+    clearInterval(heartbeatTimer);
+    reconnectTimer = null;
+    heartbeatTimer = null;
     // 如果 WebSocket 实例存在，则关闭连接
     if (socket.value) {
       socket.value.close();
-      // 清除重连和心跳检测的定时器
-      clearTimeout(reconnectTimer);
-      clearTimeout(heartbeatTimer);
+      socket.value = null;
     }
+    isConnected.value = false;
   };
 
   // 启动心跳检测的函数
   const startHeartbeat = () => {
+    // 若已关闭则不再启动心跳检测，避免定时器泄漏
+    if (isClosed) {
+      return;
+    }
     // 重置心跳检测定时器
     resetHeartbeat();
     // 设置心跳检测定时器
     heartbeatTimer = setInterval(() => {
+      // 若已关闭则停止心跳检测
+      if (isClosed) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+        return;
+      }
       // 检查 WebSocket 是否处于 OPEN 状态
-      if (socket.value.readyState === WebSocket.OPEN) {
+      if (socket.value && socket.value.readyState === WebSocket.OPEN) {
         // 发送心跳消息
         socket.value.send(
           JSON.stringify({
@@ -108,6 +134,10 @@ export default function useWebSocket(fun: any, params: any = {}) {
 
   // 启动重连机制的函数
   const startReconnect = () => {
+    // 若已关闭则不再重连，避免卸载后仍发起连接
+    if (isClosed) {
+      return;
+    }
     // 清除当前的重连定时器
     clearTimeout(reconnectTimer);
     // 设置一个新的重连定时器
