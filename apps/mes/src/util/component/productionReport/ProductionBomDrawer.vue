@@ -3,19 +3,21 @@
  * 生产BOM新增/编辑/查看抽屉
  * 使用单个表单形式编辑，提交时通过 [] 包裹调用批量接口。
  */
-import type { VxeGridProps } from '#/adapter/vxe-table';
+import { computed, ref, watch } from 'vue';
 
-import { computed, ref } from 'vue';
-
-import { Button, Drawer, Form, FormItem, Input, message, Modal, Space, Textarea } from 'ant-design-vue';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  insertProductBom,
-  queryMaterialInfoList,
-  updateProductBom
-} from '#/api';
+  Button,
+  Drawer,
+  Form,
+  FormItem,
+  Input,
+  message,
+  Space,
+} from 'ant-design-vue';
+
+import { insertProductBom } from '#/api';
 import { $t } from '#/locales';
+import MaterialSelect from '#/util/component/MaterialSelect.vue';
 
 defineOptions({
   name: 'ProductionBomDrawer',
@@ -32,148 +34,118 @@ const currentMode = ref<'create' | 'update' | 'view'>('create');
 
 // 表单数据
 const formData = ref<any>({
+  workSheetId: undefined,
   code: '',
-  planCode: '',
-  parentCode: '',
+  productCode: '',
+  productName: '',
   materialCode: '',
   materialName: '',
-  materialDosage: '',
+  perQuantity: '',
+  baseQty: '',
+  batchQty: '',
   measureError: '',
-  perDosage: '',
   auxiliaryUnit: '',
   unit: '',
-  remark: '',
 });
 
 // 表单校验规则：查看模式下清空，避免只读字段被校验
+// baseQty 有值时，batchQty、measureError 必填
 const rules = computed<Record<string, any>>(() => {
   if (currentMode.value === 'view') {
     return {};
   }
+  const hasBaseQty = hasValue(formData.value.baseQty);
   return {
-    materialCode: [{ required: true, message: $t('productionBom.requireMaterial') }],
+    materialCode: [
+      { required: true, message: $t('productionBom.requireMaterial') },
+    ],
+    batchQty: hasBaseQty
+      ? [
+          {
+            required: true,
+            message: $t('productionBom.baseQtyRequiredBatchQty'),
+          },
+        ]
+      : [],
+    measureError: hasBaseQty
+      ? [
+          {
+            required: true,
+            message: $t('productionBom.baseQtyRequiredMeasureError'),
+          },
+        ]
+      : [],
   };
 });
 
+// 判断字段是否有值
+function hasValue(value: any) {
+  return value !== '' && value !== null && value !== undefined;
+}
+
+// baseQty 变化时清除 batchQty、measureError 的历史校验状态，避免残留错误提示
+watch(
+  () => formData.value.baseQty,
+  () => {
+    formRef.value?.clearValidate(['batchQty', 'measureError']);
+  },
+);
+
 const formRef = ref<any>();
 
-// ============ 物料选择弹窗 ============
-const materialDialogVisible = ref(false);
-const materialQuery = ref({
-  pageNum: 1,
-  pageSize: 10,
-  materialCode: '',
-  materialName: '',
-});
-
-const materialGridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
-  columns: [
-    { type: 'radio', width: 50 },
-    { title: $t('productionBom.materialCode'), field: 'materialCode', minWidth: 120 },
-    { title: $t('productionBom.materialName'), field: 'materialName', minWidth: 150 },
-    { title: $t('productionBom.auxiliaryUnit'), field: 'auxiliaryUnit', minWidth: 120 },
-    { title: $t('productionBom.unit'), field: 'unit', minWidth: 80 },
-  ],
-  radioConfig: { trigger: 'row' },
-  height: 400,
-  pagerConfig: {
-    enabled: true,
-    pageSize: 10,
-    pageSizes: [10, 20, 50, 100],
-  },
-  proxyConfig: {
-    ajax: {
-      query: ({ page }) => {
-        const params = {
-          ...materialQuery.value,
-          pageNum: page.currentPage,
-          pageSize: page.pageSize,
-        };
-        return queryMaterialInfoList(params).then((res: any) => {
-          return {
-            items: res.results || [],
-            total: res.total || 0,
-          };
-        });
-      },
-    },
-  },
-  rowConfig: { keyField: 'materialCode' },
-  showOverflow: 'tooltip',
-  stripe: true,
-};
-
-const [MaterialGrid, materialGridApi] = useVbenVxeGrid({
-  gridOptions: materialGridOptions,
-});
-
-// 根据传入行构建表单数据，新增时返回空对象
-function buildFormData(row?: any) {
+// 根据传入行构建表单数据，新增时返回空对象；workSheetId 不展示，但提交时需要
+function buildFormData(row?: any, workSheetId?: number) {
   if (!row?.id) {
     return {
+      workSheetId,
       code: '',
-      planCode: '',
-      parentCode: '',
+      productCode: '',
+      productName: '',
       materialCode: '',
       materialName: '',
-      materialDosage: '',
+      perQuantity: '',
+      baseQty: '',
+      batchQty: '',
       measureError: '',
-      perDosage: '',
       auxiliaryUnit: '',
       unit: '',
-      remark: '',
     };
   }
   return {
     id: row.id,
+    workSheetId: row.workSheetId,
     code: row.code || '',
-    planCode: row.planCode || '',
-    parentCode: row.parentCode || '',
+    productCode: row.productCode || '',
+    productName: row.productName || '',
     materialCode: row.materialCode || '',
     materialName: row.materialName || '',
-    materialDosage: row.materialDosage || '',
-    measureError: row.measureError || '',
-    perDosage: row.perDosage || '',
+    perQuantity: row.perQuantity ?? '',
+    baseQty: row.baseQty ?? '',
+    batchQty: row.batchQty ?? '',
+    measureError: row.measureError ?? '',
     auxiliaryUnit: row.auxiliaryUnit || '',
     unit: row.unit || '',
-    remark: row.remark || '',
   };
 }
 
-function open(mode: 'create' | 'update' | 'view', row?: any) {
+function open(
+  mode: 'create' | 'update' | 'view',
+  row?: any,
+  workSheetId?: number,
+) {
   currentMode.value = mode;
   show.value = true;
-  formData.value = buildFormData(row);
+  formData.value = buildFormData(row, workSheetId);
 }
 
 defineExpose({ open });
 
-// 打开物料选择弹窗
-function handleOpenMaterialDialog() {
-  materialQuery.value = {
-    pageNum: 1,
-    pageSize: 10,
-    materialCode: '',
-    materialName: '',
-  };
-  materialGridApi.reload();
-  materialDialogVisible.value = true;
-}
-
-function handleConfirmMaterial() {
-  const selectedRow = materialGridApi.grid?.getRadioRecord();
-  if (!selectedRow) {
-    message.warning($t('productionBom.requireMaterial'));
-    return;
-  }
-  const m = selectedRow;
-  formData.value.materialCode = m.materialCode;
-  formData.value.materialName = m.materialName;
-  formData.value.auxiliaryUnit = m.auxiliaryUnit;
-  formData.value.unit = m.unit;
-  materialDialogVisible.value = false;
+// 选中物料后回填表单
+function handleSelectMaterial(material: any) {
+  formData.value.materialCode = material.materialCode;
+  formData.value.materialName = material.materialName;
+  formData.value.auxiliaryUnit = material.auxiliaryUnit;
+  formData.value.unit = material.unit;
 }
 
 function handleSubmit() {
@@ -181,10 +153,8 @@ function handleSubmit() {
     .validate()
     .then(() => {
       const payload = { ...formData.value };
-      // 单个形式编辑，提交时用 [] 包裹调用批量接口
-      const api =
-        currentMode.value === 'create' ? insertProductBom : updateProductBom;
-      return api([payload]);
+      // 新增与编辑统一走 insert 接口（后端按 id 区分新增/修改），单个形式编辑用 [] 包裹调用批量接口
+      return insertProductBom([payload]);
     })
     .then(() => {
       message.success(
@@ -235,18 +205,16 @@ function handleClose() {
           :maxlength="50"
         />
       </FormItem>
-      <FormItem :label="$t('productionBom.planCode')">
+      <FormItem :label="$t('productionBom.productCode')">
         <Input
-          v-model:value="formData.planCode"
-          :placeholder="$t('productionBom.inputPlanCode')"
+          v-model:value="formData.productCode"
           :disabled="currentMode === 'view'"
           :maxlength="50"
         />
       </FormItem>
-      <FormItem :label="$t('productionBom.parentCode')">
+      <FormItem :label="$t('productionBom.productName')">
         <Input
-          v-model:value="formData.parentCode"
-          :placeholder="$t('productionBom.inputParentCode')"
+          v-model:value="formData.productName"
           :disabled="currentMode === 'view'"
           :maxlength="50"
         />
@@ -259,20 +227,17 @@ function handleClose() {
             disabled
             style="flex: 1"
           />
-          <Button
-            v-if="currentMode !== 'view'"
-            type="primary"
-            @click="handleOpenMaterialDialog"
-          >
-            {{ $t('productionBom.selectData') }}
-          </Button>
+          <MaterialSelect
+            :disabled="currentMode === 'view'"
+            @select="handleSelectMaterial"
+          />
         </Space>
       </FormItem>
       <FormItem :label="$t('productionBom.materialName')">
         <Input
           v-model:value="formData.materialName"
           :placeholder="$t('productionBom.inputMaterialName')"
-          :disabled="currentMode === 'view'"
+          disabled
         />
       </FormItem>
       <FormItem :label="$t('productionBom.auxiliaryUnit')">
@@ -281,33 +246,32 @@ function handleClose() {
       <FormItem :label="$t('productionBom.unit')">
         <Input v-model:value="formData.unit" disabled />
       </FormItem>
-      <FormItem :label="$t('productionBom.materialDosage')">
+      <FormItem :label="$t('productionBom.perQuantity')">
         <Input
-          v-model:value="formData.materialDosage"
+          v-model:value="formData.perQuantity"
           :disabled="currentMode === 'view'"
           :maxlength="20"
         />
       </FormItem>
-      <FormItem :label="$t('productionBom.perDosage')">
+      <FormItem :label="$t('productionBom.baseQty')">
         <Input
-          v-model:value="formData.perDosage"
+          v-model:value="formData.baseQty"
           :disabled="currentMode === 'view'"
           :maxlength="20"
         />
       </FormItem>
-      <FormItem :label="$t('productionBom.measureError')">
+      <FormItem :label="$t('productionBom.batchQty')" name="batchQty">
+        <Input
+          v-model:value="formData.batchQty"
+          :disabled="currentMode === 'view'"
+          :maxlength="20"
+        />
+      </FormItem>
+      <FormItem :label="$t('productionBom.measureError')" name="measureError">
         <Input
           v-model:value="formData.measureError"
           :disabled="currentMode === 'view'"
           :maxlength="20"
-        />
-      </FormItem>
-      <FormItem :label="$t('productionBom.remark')">
-        <Textarea
-          v-model:value="formData.remark"
-          :rows="3"
-          :disabled="currentMode === 'view'"
-          :maxlength="200"
         />
       </FormItem>
     </Form>
@@ -325,44 +289,4 @@ function handleClose() {
       </Space>
     </template>
   </Drawer>
-
-  <!-- 物料选择弹窗 -->
-  <Modal
-    v-model:open="materialDialogVisible"
-    :title="$t('productionBom.selectData')"
-    width="80%"
-    :footer-style="{ textAlign: 'right' }"
-    @cancel="materialDialogVisible = false"
-  >
-    <Space class="!mb-4">
-      <Input
-        v-model:value="materialQuery.materialCode"
-        :placeholder="$t('productionBom.inputMaterialCode')"
-        allow-clear
-        @press-enter="materialGridApi.reload"
-      />
-      <Input
-        v-model:value="materialQuery.materialName"
-        :placeholder="$t('productionBom.inputMaterialName')"
-        allow-clear
-        @press-enter="materialGridApi.reload"
-      />
-      <Button type="primary" @click="materialGridApi.reload">
-        {{ $t('productionBom.search') }}
-      </Button>
-    </Space>
-    <MaterialGrid>
-      <template #toolbar-tools></template>
-    </MaterialGrid>
-    <template #footer>
-      <Space>
-        <Button @click="materialDialogVisible = false">
-          {{ $t('productionBom.cancel') }}
-        </Button>
-        <Button type="primary" @click="handleConfirmMaterial">
-          {{ $t('productionBom.confirm') }}
-        </Button>
-      </Space>
-    </template>
-  </Modal>
 </template>
