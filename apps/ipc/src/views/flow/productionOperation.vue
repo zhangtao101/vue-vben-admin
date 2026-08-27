@@ -21,7 +21,7 @@ function query() {
 
 onMounted(() => {
   query();
-  if (import.meta.env.VITE_GLOB_MES_MAIN === 'HAOSHEN') {
+  if (import.meta.env.VITE_GLOB_MES_MAIN !== 'HAOSHEN') {
     // 每5秒定时调用接口
     timer = setInterval(query, 5000);
   }
