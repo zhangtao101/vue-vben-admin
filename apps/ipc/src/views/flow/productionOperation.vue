@@ -22,7 +22,7 @@ function query() {
 onMounted(() => {
   query();
   // 每5秒定时调用接口
-  timer = setInterval(query, 2000);
+  timer = setInterval(query, 5000);
 });
 
 // 监听子组件的 ispitStop 变化
@@ -36,7 +36,7 @@ function handleIspitStopChange(val: boolean) {
     }
   } else {
     // ispitStop 为 false 时重新启动定时器
-    timer = setInterval(query, 2000);
+    timer = setInterval(query, 5000);
   }
 }
 

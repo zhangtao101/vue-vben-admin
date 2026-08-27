@@ -430,7 +430,7 @@ function complete() {
       :show-type-number="step.type"
       v-if="step.type === 41"
     />
-    <!-- 多工位扫码 - 和城：根据工步类型为 41 时，渲染工序报工组件，并传递相关参数 -->
+    <!-- 多工位扫码 - 和城：根据工步类型为 99 时，渲染工序报工组件，并传递相关参数 -->
     <ParamTemplate
       :workstation-code="workstationCode"
       :equip-code="equipCode"
