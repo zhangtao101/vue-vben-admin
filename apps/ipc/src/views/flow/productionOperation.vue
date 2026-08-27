@@ -21,8 +21,10 @@ function query() {
 
 onMounted(() => {
   query();
-  // 每5秒定时调用接口
-  timer = setInterval(query, 5000);
+  if (import.meta.env.VITE_GLOB_MES_MAIN === 'HAOSHEN') {
+    // 每5秒定时调用接口
+    timer = setInterval(query, 5000);
+  }
 });
 
 // 监听子组件的 ispitStop 变化
