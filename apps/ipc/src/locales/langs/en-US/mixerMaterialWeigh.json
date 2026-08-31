@@ -40,5 +40,6 @@
   "issueConfirmTitle": "Issue Confirmation",
   "issueConfirmContent": "Are you sure you want to issue the weighing label for this work order?",
   "issueSuccess": "Issue Success",
-  "issueFailed": "Issue Failed"
+  "issueFailed": "Issue Failed",
+  "clearWeighWeight": "Clear Weighing Weight"
 }

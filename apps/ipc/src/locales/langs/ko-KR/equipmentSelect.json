@@ -1,0 +1,16 @@
+{
+  "title": "설비 선택",
+  "sequence": "No.",
+  "equipmentCode": "설비 코드",
+  "equipmentCodePlaceholder": "설비 코드를 입력하세요",
+  "equipmentName": "설비 이름",
+  "equipmentNamePlaceholder": "설비 이름을 입력하세요",
+  "equipGroupCode": "설비 그룹 코드",
+  "equipGroupCodePlaceholder": "설비 그룹 코드를 입력하세요",
+  "equipGroupName": "설비 그룹 이름",
+  "model": "모델",
+  "location": "위치",
+  "useDepartment": "사용 부서",
+  "cancel": "취소",
+  "confirm": "확인"
+}

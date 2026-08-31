@@ -1,0 +1,8 @@
+{
+  "title": "选择物料",
+  "materialCode": "物料编号",
+  "materialCodePlaceholder": "请输入物料编号",
+  "materialName": "物料名称",
+  "materialNamePlaceholder": "请输入物料名称",
+  "plsSelect": "请先选择物料"
+}

@@ -100,13 +100,20 @@ const gridOptions: VxeGridProps<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
+/** 工序（默认搅拌机 6，可由调用方通过 open 传入覆盖） */
+const processType = ref<number>(6);
+
 /** 查询已发行的托盘列表 */
 async function queryGridList({ page }: any) {
-  const res = await selectIssue({
+  const params: any = {
     ...formatQueryParams(),
     pageNum: page.currentPage,
     pageSize: page.pageSize,
-  });
+  };
+  if (processType.value !== undefined) {
+    params.processType = processType.value;
+  }
+  const res = await selectIssue(params);
   return { total: res.total, items: res.list };
 }
 
@@ -179,7 +186,11 @@ function handleViewDetail(row: any) {
 // endregion
 
 // region 打开 / 关闭
-function open() {
+/** 打开抽屉：可选传入工序，覆盖默认工序 */
+function open(processTypeValue?: number) {
+  if (processTypeValue !== undefined) {
+    processType.value = processTypeValue;
+  }
   show.value = true;
   nextTick(() => {
     gridApi.reload();

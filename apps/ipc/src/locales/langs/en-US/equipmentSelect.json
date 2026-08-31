@@ -1,0 +1,16 @@
+{
+  "title": "Select Equipment",
+  "sequence": "No.",
+  "equipmentCode": "Equipment Code",
+  "equipmentCodePlaceholder": "Please enter equipment code",
+  "equipmentName": "Equipment Name",
+  "equipmentNamePlaceholder": "Please enter equipment name",
+  "equipGroupCode": "Group Code",
+  "equipGroupCodePlaceholder": "Please enter group code",
+  "equipGroupName": "Group Name",
+  "model": "Model",
+  "location": "Location",
+  "useDepartment": "Department",
+  "cancel": "Cancel",
+  "confirm": "Confirm"
+}

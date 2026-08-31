@@ -3,18 +3,26 @@ import { onMounted, ref } from 'vue';
 
 import {
   Button,
+  Card,
   Checkbox,
   Col,
   DatePicker,
   Form,
+  FormItem,
   Input,
   message,
+  Radio,
   Row,
   Space,
   Switch,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import {
+  useVbenVxeGrid,
+  type VxeGridListeners,
+  type VxeGridProps,
+} from '#/adapter/vxe-table';
+import { selectByWorkSheetId, selectWorkSheet, updateStae } from '#/api';
 import { $t } from '#/locales';
 
 /**
@@ -28,175 +36,21 @@ defineProps({
   workstationCode: { type: String, default: '' },
 });
 
-const { RangePicker } = DatePicker;
-
-// region 顶部：查询条件 + 工单列表
+// region 查询条件
 const queryParams = ref<any>({
-  indicateDateRange: [],
-  lineBand: '',
-  worksheetCode: '',
-  indicateStatus: [],
+  startTime: undefined,
+  lineCode: undefined,
+  workSheetCode: undefined,
+  state: undefined,
 });
 
+/** 工单状态单选：undefined全部 1确定 2进行 3完成 */
 const statusOptions = [
-  { label: $t('mixedWaterProgress.statusConfirmed'), value: 'confirmed' },
-  { label: $t('mixedWaterProgress.statusInProgress'), value: 'inProgress' },
-  { label: $t('mixedWaterProgress.statusCompleted'), value: 'completed' },
+  { label: $t('mixedWaterProgress.statusAll'), value: undefined },
+  { label: $t('mixedWaterProgress.statusConfirmed'), value: 1 },
+  { label: $t('mixedWaterProgress.statusInProgress'), value: 2 },
+  { label: $t('mixedWaterProgress.statusCompleted'), value: 3 },
 ];
-
-// 假数据：工单列表（接口就绪后替换为接口返回）
-const fakeWorksheets: any[] = [
-  {
-    indicateDate: '2026-07-19',
-    worksheetCode: 'WO-20260719-001',
-    lineCode: 'L01',
-    lineName: '配料一线',
-    equipCode: 'EQ-01',
-    equipName: '混合机A',
-    productCode: 'P-001',
-    productName: '混合水饮品A',
-    defectiveBatchCount: 0,
-    batchCount: 10,
-    unit: 'KG',
-    indicateStatus: 'confirmed',
-  },
-  {
-    indicateDate: '2026-07-19',
-    worksheetCode: 'WO-20260719-002',
-    lineCode: 'L02',
-    lineName: '配料二线',
-    equipCode: 'EQ-02',
-    equipName: '混合机B',
-    productCode: 'P-002',
-    productName: '混合水饮品B',
-    defectiveBatchCount: 1,
-    batchCount: 8,
-    unit: 'KG',
-    indicateStatus: 'inProgress',
-  },
-  {
-    indicateDate: '2026-07-18',
-    worksheetCode: 'WO-20260718-003',
-    lineCode: 'L01',
-    lineName: '配料一线',
-    equipCode: 'EQ-01',
-    equipName: '混合机A',
-    productCode: 'P-003',
-    productName: '混合水饮品C',
-    defectiveBatchCount: 0,
-    batchCount: 5,
-    unit: 'KG',
-    indicateStatus: 'completed',
-  },
-];
-
-const statusTextMap: Record<string, string> = {
-  confirmed: $t('mixedWaterProgress.statusConfirmed'),
-  inProgress: $t('mixedWaterProgress.statusInProgress'),
-  completed: $t('mixedWaterProgress.statusCompleted'),
-};
-
-const gridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
-  columns: [
-    { type: 'radio', width: 50, title: '' },
-    {
-      field: 'indicateDate',
-      title: $t('mixedWaterProgress.indicateDate'),
-      minWidth: 120,
-    },
-    {
-      field: 'worksheetCode',
-      title: $t('mixedWaterProgress.worksheetCode'),
-      minWidth: 160,
-    },
-    { field: 'lineCode', title: $t('mixedWaterProgress.lineCode'), minWidth: 110 },
-    { field: 'lineName', title: $t('mixedWaterProgress.lineName'), minWidth: 120 },
-    { field: 'equipCode', title: $t('mixedWaterProgress.equipCode'), minWidth: 110 },
-    { field: 'equipName', title: $t('mixedWaterProgress.equipName'), minWidth: 120 },
-    {
-      field: 'productCode',
-      title: $t('mixedWaterProgress.productCode'),
-      minWidth: 120,
-    },
-    {
-      field: 'productName',
-      title: $t('mixedWaterProgress.productName'),
-      minWidth: 140,
-    },
-    {
-      field: 'defectiveBatchCount',
-      title: $t('mixedWaterProgress.defectiveBatchCount'),
-      minWidth: 100,
-    },
-    {
-      field: 'batchCount',
-      title: $t('mixedWaterProgress.batchCount'),
-      minWidth: 90,
-    },
-    { field: 'unit', title: $t('mixedWaterProgress.unit'), minWidth: 80 },
-    {
-      field: 'indicateStatus',
-      title: $t('mixedWaterProgress.indicateStatus'),
-      minWidth: 100,
-      formatter: ({ cellValue }: any) => statusTextMap[cellValue] ?? cellValue,
-    },
-  ],
-  height: 320,
-  stripe: true,
-  radioConfig: { trigger: 'row', highlight: true },
-  proxyConfig: {
-    ajax: {
-      query: async ({ page }) => {
-        return await queryWorksheet({
-          page: page.currentPage,
-          pageSize: page.pageSize,
-        });
-      },
-    },
-  },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
-};
-
-const gridEvents: any = {
-  radioChange: ({ row }: any) => {
-    selectedWorksheet.value = row;
-    loadLotByWorksheet();
-  },
-};
-
-const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
-
-const selectedWorksheet = ref<any>(null);
-
-function queryWorksheet({ page, pageSize }: any) {
-  return new Promise((resolve) => {
-    const { indicateDateRange, lineBand, worksheetCode, indicateStatus } =
-      queryParams.value;
-    let list = fakeWorksheets.filter((item) => {
-      const m1 =
-        !lineBand ||
-        item.lineName.includes(lineBand) ||
-        item.lineCode.includes(lineBand);
-      const m2 = !worksheetCode || item.worksheetCode.includes(worksheetCode);
-      const m3 =
-        !indicateStatus ||
-        indicateStatus.length === 0 ||
-        indicateStatus.includes(item.indicateStatus);
-      const m4 =
-        !indicateDateRange ||
-        indicateDateRange.length !== 2 ||
-        (item.indicateDate >= indicateDateRange[0] &&
-          item.indicateDate <= indicateDateRange[1]);
-      return m1 && m2 && m3 && m4;
-    });
-    const total = list.length;
-    const start = (page - 1) * pageSize;
-    list = list.slice(start, start + pageSize);
-    resolve({ total, items: list });
-  });
-}
 
 function handleQuery() {
   gridApi.reload();
@@ -204,152 +58,246 @@ function handleQuery() {
 
 function handleReset() {
   queryParams.value = {
-    indicateDateRange: [],
-    lineBand: '',
-    worksheetCode: '',
-    indicateStatus: [],
+    startTime: undefined,
+    lineCode: undefined,
+    workSheetCode: undefined,
+    state: undefined,
   };
   gridApi.reload();
 }
 // endregion
 
-// region 批次LOT列表
-const lotData = ref<any[]>([]);
+// region 工单列表（单选，行点击触发，用于加载批次LOT列表）
+/** 单选选中的工单 */
+const selectedWorkSheet = ref<any>(null);
+
+const gridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  height: 320,
+  stripe: true,
+  radioConfig: { trigger: 'row', highlight: true },
+  pagerConfig: {
+    enabled: true,
+    pageSize: 20,
+  },
+  toolbarConfig: {
+    custom: true,
+    refresh: true,
+    zoom: true,
+  },
+  columns: [
+    { type: 'radio', width: 50, title: '' },
+    {
+      field: 'workSheetCode',
+      title: $t('mixedWaterProgress.worksheetCode'),
+      minWidth: 140,
+    },
+    {
+      field: 'productCode',
+      title: $t('mixedWaterProgress.productCode'),
+      minWidth: 110,
+    },
+    {
+      field: 'productName',
+      title: $t('mixedWaterProgress.productName'),
+      minWidth: 160,
+    },
+    {
+      field: 'planDateStart',
+      title: $t('mixedWaterProgress.planDateStart'),
+      minWidth: 110,
+    },
+    {
+      field: 'lineName',
+      title: $t('mixedWaterProgress.lineName'),
+      minWidth: 110,
+    },
+    {
+      field: 'indicateBatch',
+      title: $t('mixedWaterProgress.indicateBatch'),
+      minWidth: 100,
+    },
+    {
+      field: 'remainBatch',
+      title: $t('mixedWaterProgress.remainBatch'),
+      minWidth: 100,
+    },
+  ],
+  proxyConfig: {
+    ajax: {
+      query: queryWorkSheetList,
+    },
+  },
+};
+
+const gridEvents: VxeGridListeners<any> = {
+  radioChange: handleRadioChange,
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+/** 工单展示：混合水工序 processType 固定为 1 */
+async function queryWorkSheetList({ page }: any) {
+  try {
+    const res = await selectWorkSheet({
+      pageNum: page.currentPage,
+      pageSize: page.pageSize,
+      lineCode: queryParams.value.lineCode,
+      startTime: queryParams.value.startTime,
+      processType: 1,
+      workSheetCode: queryParams.value.workSheetCode,
+      state: queryParams.value.state,
+    });
+    return { total: res.total || 0, items: res.list || [] };
+  } catch {
+    message.error($t('mixedWaterProgress.workSheetListLoadFailed'));
+    return { total: 0, items: [] };
+  }
+}
+
+/** 行点击单选：选中工单并加载对应批次LOT列表 */
+function handleRadioChange({ row }: any) {
+  selectedWorkSheet.value = row;
+  lotGridApi.reload();
+}
+// endregion
+
+// region 批次LOT列表（多选，勾选结果用于开始/结束）
+/** 多选勾选的批次LOT id 集合（用于开始/结束） */
+const selectedLotIds = ref<(number | string)[]>([]);
 
 const lotGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  columns: [
-    { type: 'radio', width: 50, title: '' },
-    { field: 'lotId', title: $t('mixedWaterProgress.lotId'), minWidth: 160 },
-    { field: 'trayNo', title: $t('mixedWaterProgress.trayNo'), minWidth: 120 },
-    {
-      field: 'batchCount',
-      title: $t('mixedWaterProgress.batchCount'),
-      minWidth: 90,
-    },
-    {
-      field: 'startTime',
-      title: $t('mixedWaterProgress.startTime'),
-      minWidth: 160,
-    },
-    {
-      field: 'endTime',
-      title: $t('mixedWaterProgress.endTime'),
-      minWidth: 160,
-    },
-    {
-      field: 'materialLoaded',
-      title: $t('mixedWaterProgress.materialLoaded'),
-      minWidth: 110,
-      formatter: ({ cellValue }: any) =>
-        cellValue ? $t('mixedWaterProgress.yes') : $t('mixedWaterProgress.no'),
-    },
-    {
-      field: 'batchStarted',
-      title: $t('mixedWaterProgress.batchStarted'),
-      minWidth: 120,
-      formatter: ({ cellValue }: any) =>
-        cellValue ? $t('mixedWaterProgress.yes') : $t('mixedWaterProgress.no'),
-    },
-    {
-      field: 'batchEnded',
-      title: $t('mixedWaterProgress.batchEnded'),
-      minWidth: 120,
-      formatter: ({ cellValue }: any) =>
-        cellValue ? $t('mixedWaterProgress.yes') : $t('mixedWaterProgress.no'),
-    },
-  ],
-  data: lotData.value,
   height: 340,
   stripe: true,
-  radioConfig: { trigger: 'row', highlight: true },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
-};
-
-const lotGridEvents: any = {
-  radioChange: ({ row }: any) => {
-    selectedLot.value = row;
+  checkboxConfig: { highlight: true, range: true, trigger: 'row'},
+  columns: [
+    { type: 'checkbox', width: 50, title: '' },
+    {
+      field: 'lotCode',
+      title: $t('mixedWaterProgress.lotCode'),
+      minWidth: 100,
+    },
+    {
+      field: 'fullLabel',
+      title: $t('mixedWaterProgress.fullLabel'),
+      minWidth: 140,
+    },
+    {
+      field: 'looseLabel',
+      title: $t('mixedWaterProgress.looseLabel'),
+      minWidth: 140,
+    },
+    {
+      field: 'looseUse',
+      title: $t('mixedWaterProgress.looseUse'),
+      width: 120,
+      slots: { default: 'useCell' },
+    },
+    {
+      field: 'fullUse',
+      title: $t('mixedWaterProgress.fullUse'),
+      width: 120,
+      slots: { default: 'useCell' },
+    },
+  ],
+  pagerConfig: { enabled: false },
+  toolbarConfig: {
+    custom: true,
+    refresh: false,
+    zoom: true,
+  },
+  proxyConfig: {
+    ajax: {
+      query: queryLotList,
+    },
   },
 };
 
+/** 批次LOT多选勾选变化：收集选中的 LOT id，用于开始/结束按钮 */
+function handleLotCheckboxChange() {
+  const records = lotGridApi.grid.getCheckboxRecords?.() ?? [];
+  selectedLotIds.value = records.map((record: any) => record.id);
+}
+
+const lotGridEvents: VxeGridListeners<any> = {
+  checkboxChange: handleLotCheckboxChange,
+};
+
 const [LotGrid, lotGridApi] = useVbenVxeGrid({
-  gridOptions: lotGridOptions,
   gridEvents: lotGridEvents,
+  gridOptions: lotGridOptions,
 });
 
-const selectedLot = ref<any>(null);
-
-// 选中工单后加载对应批次LOT（假数据）
-function loadLotByWorksheet() {
-  if (!selectedWorksheet.value) return;
-  const code = selectedWorksheet.value.worksheetCode;
-  lotData.value = Array.from({ length: 3 }, (_, i) => ({
-    lotId: `${code}-LOT-${String(i + 1).padStart(2, '0')}`,
-    trayNo: `TRAY-${String(i + 1).padStart(3, '0')}`,
-    batchCount: (i + 1) * 2,
-    startTime: '',
-    endTime: '',
-    materialLoaded: i % 2 === 0,
-    batchStarted: false,
-    batchEnded: i === 2,
-  }));
-  lotGridApi.grid.loadData([...lotData.value]);
-  selectedLot.value = null;
+/** 根据单选选中的工单查询批次LOT列表 */
+async function queryLotList() {
+  if (!selectedWorkSheet.value) {
+    return { items: [] };
+  }
+  try {
+    const res = await selectByWorkSheetId(selectedWorkSheet.value.id);
+    return { items: Array.isArray(res) ? res : [] };
+  } catch {
+    message.error($t('mixedWaterProgress.lotListLoadFailed'));
+    return { items: [] };
+  }
 }
 // endregion
 
-// region 自动模式 + 开始/结束控制
+// region 自动模式 + 开始/结束控制（作用于多选勾选的批次LOT）
 const autoMode = ref(false);
 
-function formatNow() {
-  const d = new Date();
-  const p = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
-}
-
-function handleStart() {
-  if (!selectedLot.value) {
+/** 开始：对勾选的批次LOT批量开始（自动模式下开始即结束） */
+async function handleStart() {
+  const records = (lotGridApi.grid.getCheckboxRecords?.() ?? []) as any[];
+  if (records.length === 0) {
     message.warning($t('mixedWaterProgress.plsSelectLot'));
     return;
   }
-  if (selectedLot.value.batchStarted) {
-    message.warning($t('mixedWaterProgress.alreadyStarted'));
+  // 只有 isLoad 为 1（已装载）的批次LOT才能开始
+  if (records.some((r) => Number(r.isLoad) !== 1)) {
+    message.warning($t('mixedWaterProgress.startOnlyLoaded'));
     return;
   }
-  const now = formatNow();
-  // 自动模式：开始即自动结束（连贯作业）
-  if (autoMode.value) {
-    selectedLot.value.batchStarted = true;
-    selectedLot.value.startTime = now;
-    selectedLot.value.batchEnded = true;
-    selectedLot.value.endTime = now;
+  const ids = records.map((r) => r.id);
+  try {
+    await updateStae(ids, autoMode.value ? 3 : 2);
     message.success($t('mixedWaterProgress.startSuccess'));
-  } else {
-    selectedLot.value.batchStarted = true;
-    selectedLot.value.startTime = now;
-    message.success($t('mixedWaterProgress.startSuccess'));
+    refreshLotList();
+  } catch {
+    message.error($t('mixedWaterProgress.startFailed'));
   }
-  lotGridApi.grid.loadData([...lotData.value]);
 }
 
-function handleEnd() {
-  if (!selectedLot.value) {
+/** 结束：对勾选的批次LOT批量结束 */
+async function handleEnd() {
+  const records = (lotGridApi.grid.getCheckboxRecords?.() ?? []) as any[];
+  if (records.length === 0) {
     message.warning($t('mixedWaterProgress.plsSelectLot'));
     return;
   }
-  if (!selectedLot.value.batchStarted) {
-    message.warning($t('mixedWaterProgress.alreadyStarted'));
+  // 只有 isTransfer 为 3（已传输）的批次LOT才能结束
+  if (records.some((r) => Number(r.isTransfer) !== 3)) {
+    message.warning($t('mixedWaterProgress.endOnlyTransferred'));
     return;
   }
-  if (selectedLot.value.batchEnded) {
-    message.warning($t('mixedWaterProgress.alreadyEnded'));
-    return;
+  const ids = records.map((r) => r.id);
+  try {
+    await updateStae(ids, 3);
+    message.success($t('mixedWaterProgress.endSuccess'));
+    refreshLotList();
+  } catch {
+    message.error($t('mixedWaterProgress.endFailed'));
   }
-  selectedLot.value.batchEnded = true;
-  selectedLot.value.endTime = formatNow();
-  lotGridApi.grid.loadData([...lotData.value]);
-  message.success($t('mixedWaterProgress.endSuccess'));
+}
+
+/** 操作成功后刷新工单列表与批次LOT列表并清空勾选 */
+function refreshLotList() {
+  gridApi.reload();
+  lotGridApi.reload();
+  selectedLotIds.value = [];
 }
 // endregion
 
@@ -360,37 +308,43 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <!-- 顶部：查询条件 + 工单列表 -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <div class="mb-2 font-bold">{{ $t('mixedWaterProgress.worksheetList') }}</div>
-      <Form layout="inline" class="mb-3 flex-wrap items-end gap-2">
-        <Form.Item :label="$t('mixedWaterProgress.indicateDate')">
-          <RangePicker
-            v-model:value="queryParams.indicateDateRange"
+    <!-- 查询条件 -->
+    <Card :title="$t('mixedWaterProgress.queryCondition')">
+      <Form layout="inline" class="flex flex-wrap gap-2">
+        <FormItem :label="$t('mixedWaterProgress.indicateDate')">
+          <DatePicker
+            v-model:value="queryParams.startTime"
             value-format="YYYY-MM-DD"
-          />
-        </Form.Item>
-        <Form.Item :label="$t('mixedWaterProgress.lineBand')">
-          <Input
-            v-model:value="queryParams.lineBand"
-            :placeholder="$t('mixedWaterProgress.lineBandPlaceholder')"
+            :placeholder="$t('mixedWaterProgress.indicateDatePlaceholder')"
             allow-clear
           />
-        </Form.Item>
-        <Form.Item :label="$t('mixedWaterProgress.worksheetCode')">
+        </FormItem>
+        <FormItem :label="$t('mixedWaterProgress.lineCode')">
           <Input
-            v-model:value="queryParams.worksheetCode"
+            v-model:value="queryParams.lineCode"
+            :placeholder="$t('mixedWaterProgress.lineCodePlaceholder')"
+            allow-clear
+          />
+        </FormItem>
+        <FormItem :label="$t('mixedWaterProgress.worksheetCode')">
+          <Input
+            v-model:value="queryParams.workSheetCode"
             :placeholder="$t('mixedWaterProgress.worksheetPlaceholder')"
             allow-clear
           />
-        </Form.Item>
-        <Form.Item :label="$t('mixedWaterProgress.indicateStatus')">
-          <Checkbox.Group
-            v-model:value="queryParams.indicateStatus"
-            :options="statusOptions"
-          />
-        </Form.Item>
-        <Form.Item>
+        </FormItem>
+        <FormItem :label="$t('mixedWaterProgress.indicateStatus')">
+          <Radio.Group v-model:value="queryParams.state">
+            <Radio
+              v-for="item in statusOptions"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </Radio>
+          </Radio.Group>
+        </FormItem>
+        <FormItem>
           <Space>
             <Button type="primary" @click="handleQuery">
               {{ $t('common.query') }}
@@ -399,21 +353,27 @@ onMounted(() => {
               {{ $t('common.reset') }}
             </Button>
           </Space>
-        </Form.Item>
+        </FormItem>
       </Form>
+    </Card>
+
+    <!-- 工单列表 -->
+    <Card :title="$t('mixedWaterProgress.worksheetList')">
       <Grid>
         <template #toolbar-tools></template>
       </Grid>
-    </div>
+    </Card>
 
     <!-- 批次LOT列表 -->
-    <div class="my-2 rounded-lg border border-border bg-card p-3 shadow-sm">
-      <div class="mb-2 font-bold">{{ $t('mixedWaterProgress.lotList') }}</div>
+    <Card :title="$t('mixedWaterProgress.lotList')">
       <LotGrid>
         <template #toolbar-tools></template>
+        <template #useCell="{ row, column }">
+          <Checkbox :checked="Number(row[column.field]) === 1" disabled />
+        </template>
       </LotGrid>
 
-      <!-- 自动模式开关 + 开始/结束按钮 -->
+      <!-- 自动模式开关 + 开始/结束按钮（作用于多选勾选的工单） -->
       <Row class="mt-3 flex items-center" :gutter="16">
         <Col flex="auto" class="flex items-center gap-2">
           <span class="text-sm font-medium">
@@ -423,15 +383,22 @@ onMounted(() => {
         </Col>
         <Col flex="none">
           <Space>
-            <Button type="primary" @click="handleStart">
+            <Button
+              type="primary"
+              :disabled="selectedLotIds.length === 0"
+              @click="handleStart"
+            >
               {{ $t('mixedWaterProgress.start') }}
             </Button>
-            <Button @click="handleEnd">
+            <Button
+              :disabled="selectedLotIds.length === 0"
+              @click="handleEnd"
+            >
               {{ $t('mixedWaterProgress.end') }}
             </Button>
           </Space>
         </Col>
       </Row>
-    </div>
+    </Card>
   </div>
 </template>

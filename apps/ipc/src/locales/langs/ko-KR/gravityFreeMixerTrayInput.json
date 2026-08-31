@@ -48,5 +48,6 @@
   "loadSuccess": "로드 성공",
   "unloadSuccess": "언로드 성공",
   "loadFailed": "로드 실패",
-  "unloadFailed": "언로드 실패"
+  "unloadFailed": "언로드 실패",
+  "trayChange": "팔레트 변경"
 }

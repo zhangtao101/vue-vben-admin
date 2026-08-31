@@ -1,15 +1,10 @@
 {
   "title": "Silo Material Setting",
-  "group": "Device Group",
-  "groupPlaceholder": "Please select device group",
-  "groupA": "Device Group A",
-  "groupB": "Device Group B",
   "deviceList": "Device Code List",
   "equipCode": "Equipment Code",
   "equipName": "Equipment Name",
   "materialCode": "Material Code",
   "materialName": "Material Name",
-  "save": "Save",
-  "plsSelect": "Please select at least one device",
-  "saveSuccess": "Saved successfully"
+  "updateSuccess": "Updated successfully",
+  "updateFailed": "Failed to update"
 }

@@ -1,0 +1,8 @@
+{
+  "title": "Select Material",
+  "materialCode": "Material Code",
+  "materialCodePlaceholder": "Please enter material code",
+  "materialName": "Material Name",
+  "materialNamePlaceholder": "Please enter material name",
+  "plsSelect": "Please select a material first"
+}

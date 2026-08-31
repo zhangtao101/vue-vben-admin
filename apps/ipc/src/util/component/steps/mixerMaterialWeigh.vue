@@ -40,29 +40,50 @@ defineOptions({
 /**
  * 搅拌材料称重管理：工序步骤组件标准入参（与作业平台其它 steps 组件保持一致）
  */
-defineProps({
+const props = defineProps({
   functionId: { type: Number, default: 0 },
   bindingId: { type: Number, default: 0 },
   worksheetCode: { type: String, default: '' },
   equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序（搅拌机为 6，混合水为 1），由外部传入 */
+  processType: { type: Number, default: 6 },
 });
 
 // region 顶部：查询条件
-/** 工序（搅拌机固定为 6） */
-const processType = 6;
 
 const queryParams = ref<any>({
   lineName: '',
   planDateStart: '',
 });
 
+/** 查询参数格式化：处理时间范围并剔除空值字段 */
+function formatQueryParams() {
+  const params: any = { ...queryParams.value };
+  // 处理时间范围查询
+  if (params.planDateRange && params.planDateRange.length === 2) {
+    params.startTime = params.planDateRange[0];
+    params.endTime = params.planDateRange[1];
+  }
+  delete params.planDateRange;
+  // 剔除空值字段
+  Object.keys(params).forEach((key) => {
+    if (
+      params[key] === undefined ||
+      params[key] === '' ||
+      params[key] === null
+    ) {
+      delete params[key];
+    }
+  });
+  return params;
+}
+
 /** 查询工单列表 */
 async function queryWorkSheetList({ page }: any) {
   const res = await searchLot({
-    lineName: queryParams.value.lineName,
-    processType,
-    planDateStart: queryParams.value.planDateStart,
+    ...formatQueryParams(),
+    processType: props.processType,
     page: page.currentPage,
     pageSize: page.pageSize,
   });
@@ -405,6 +426,16 @@ function openWeighDrawer() {
   });
 }
 
+/** 清空称重重量：将抽屉内材料列表的称重重量（actualWt）一栏全部清空 */
+function handleClearWeighWeight() {
+  const rows = gridApi4.grid?.getTableData?.().fullData || [];
+  rows.forEach((row: any) => {
+    row.actualWt = undefined;
+  });
+  // 刷新表格显示（不触发重新查询，避免接口数据覆盖已清空的值）
+  // gridApi4.grid?.refreshData();
+}
+
 /** 扫码/输入标签后：解析材料编码并匹配表格行，匹配的行显示为黄色并回填材料信息 */
 function handleLabelInput() {
   const code = labelId.value.split('|')[0]?.trim() || '';
@@ -502,9 +533,9 @@ const issuing = ref(false);
 /** 重新发行抽屉实例 */
 const reIssueDrawerRef = ref();
 
-/** 重新发行称重标签：打开重新发行抽屉 */
+/** 重新发行称重标签：打开重新发行抽屉，并传入当前工序 */
 function handleReIssue() {
-  reIssueDrawerRef.value?.open();
+  reIssueDrawerRef.value?.open(props.processType);
 }
 
 /** 发行称重标签：二次确认后调用发行接口 */
@@ -694,16 +725,12 @@ function handleIssue() {
             </div>
           </div>
           <div class="mt-1 flex justify-between text-xs text-muted-foreground">
-            <span
-              >{{ $t('mixerMaterialWeigh.lowerProductWt') }}：{{
+            <span>{{ $t('mixerMaterialWeigh.lowerProductWt') }}：{{
                 currentMaterial?.lowerProductWt
-              }}</span
-            >
-            <span
-              >{{ $t('mixerMaterialWeigh.upperProductWt') }}：{{
+              }}</span>
+            <span>{{ $t('mixerMaterialWeigh.upperProductWt') }}：{{
                 currentMaterial?.upperProductWt
-              }}</span
-            >
+              }}</span>
           </div>
 
           <!-- 称重方式 与 单包重量/个数/加减按钮 同一行左右两栏 -->
@@ -713,9 +740,9 @@ function handleIssue() {
                 {{ $t('mixerMaterialWeigh.packType') }}
               </div>
               <Radio.Group v-model:value="packType">
-                <Radio :value="1">{{
-                  $t('mixerMaterialWeigh.paperBag')
-                }}</Radio>
+                <Radio :value="1">
+                  {{ $t('mixerMaterialWeigh.paperBag') }}
+                </Radio>
                 <Radio :value="2">{{ $t('mixerMaterialWeigh.loose') }}</Radio>
               </Radio.Group>
             </Col>
@@ -760,7 +787,11 @@ function handleIssue() {
             {{ $t('mixerMaterialWeigh.materialList') }}
           </div>
           <Grid4>
-            <template #toolbar-tools></template>
+            <template #toolbar-tools>
+              <Button type="primary" @click="handleClearWeighWeight">
+                {{ $t('mixerMaterialWeigh.clearWeighWeight') }}
+              </Button>
+            </template>
           </Grid4>
         </div>
       </div>

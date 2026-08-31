@@ -48,5 +48,6 @@
   "loadSuccess": "装载成功",
   "unloadSuccess": "卸载成功",
   "loadFailed": "装载失败",
-  "unloadFailed": "卸载失败"
+  "unloadFailed": "卸载失败",
+  "trayChange": "托盘变更"
 }

@@ -28,21 +28,24 @@ import {
   selectWorkSheet,
 } from '#/api';
 import { $t } from '#/locales';
+import PalletChangeDrawer from '#/util/component/drawers/PalletChangeDrawer.vue';
 
 defineOptions({
   name: 'GravityFreeMixerTrayInput',
 });
 
 /**
- * 无重力搅拌托盘投入（工序 type=122）
+ * 托盘投入（工序 type=104 混合水 / 122 无重力搅拌）
  * 页面布局：查询条件 -> 工单列表 -> 左栏批次LOT列表 / 右栏装载列表（托盘号输入 + 卸载/装载）
  */
-defineProps({
+const props = defineProps({
   functionId: { type: Number, default: 0 },
   bindingId: { type: Number, default: 0 },
   worksheetCode: { type: String, default: '' },
   equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序（无重力搅拌为 6，混合水为 1），由外部传入 */
+  processType: { type: Number, default: 6 },
 });
 
 // region 查询条件
@@ -146,7 +149,7 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
-/** 工单展示：processType 固定为 6（无重力搅拌），state 为状态单选（1确定 2进行 3完成） */
+/** 工单展示：processType 由外部传入（6 无重力搅拌 / 1 混合水），state 为状态单选（1确定 2进行 3完成） */
 async function queryWorkSheetList({ page }: any) {
   try {
     const res = await selectWorkSheet({
@@ -154,7 +157,7 @@ async function queryWorkSheetList({ page }: any) {
       pageSize: page.pageSize,
       lineCode: queryParams.value.lineCode,
       startTime: queryParams.value.startTime,
-      processType: 6,
+      processType: props.processType,
       workSheetCode: queryParams.value.workSheetCode,
       state: queryParams.value.state,
     });
@@ -381,6 +384,19 @@ async function handleUnload() {
     submitting.value = false;
   }
 }
+
+/** 托盘变更抽屉引用 */
+const palletChangeDrawerRef = ref<any>(null);
+
+/** 打开托盘变更抽屉：传入当前工序（仅混合水场景显示入口） */
+function handleTrayChange() {
+  palletChangeDrawerRef.value?.open(props.processType);
+}
+
+/** 托盘变更抽屉关闭后刷新批次 LOT 列表 */
+function handlePalletChangeClosed() {
+  lotGridApi.reload();
+}
 // endregion
 
 onMounted(() => {
@@ -455,7 +471,16 @@ onMounted(() => {
       <Col :xs="24" :lg="12">
         <Card :title="$t('gravityFreeMixerTrayInput.lotList')">
           <LotGrid>
-            <template #toolbar-tools></template>
+            <template #toolbar-tools>
+              <Button
+                v-if="props.processType === 1"
+                size="small"
+                type="primary"
+                @click="handleTrayChange"
+              >
+                {{ $t('gravityFreeMixerTrayInput.trayChange') }}
+              </Button>
+            </template>
             <template #useCell="{ row, column }">
               <Checkbox :checked="Number(row[column.field]) === 1" disabled />
             </template>
@@ -490,4 +515,10 @@ onMounted(() => {
       </Col>
     </Row>
   </div>
+
+  <!-- 托盘变更抽屉 -->
+  <PalletChangeDrawer
+    ref="palletChangeDrawerRef"
+    @closed="handlePalletChangeClosed"
+  />
 </template>

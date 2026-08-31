@@ -5,7 +5,6 @@ import CartLoadUnload from '#/util/component/steps/cartLoadUnload.vue';
 import CartLotChange from '#/util/component/steps/cartLotChange.vue';
 import DefectRegistration from '#/util/component/steps/defectRegistration.vue';
 import DeviceClearing from '#/util/component/steps/deviceClearing.vue';
-import DosingWeigh from '#/util/component/steps/dosingWeigh.vue';
 import EquipmentCleaning from '#/util/component/steps/equipmentCleaning.vue';
 import EquipmentLocationInformation from '#/util/component/steps/equipmentLocationInformation.vue';
 import EquipmentMonitoringInformation from '#/util/component/steps/equipmentMonitoringInformation.vue';
@@ -21,9 +20,7 @@ import ManufactureEntry from '#/util/component/steps/manufactureEntry.vue';
 import MaterialFeeding from '#/util/component/steps/materialFeeding.vue';
 import MaterialFeedingSlitting from '#/util/component/steps/materialFeedingSlitting.vue';
 import MixedWaterFailedTransfer from '#/util/component/steps/mixedWaterFailedTransfer.vue';
-import MixedWaterLotGeneration from '#/util/component/steps/mixedWaterLotGeneration.vue';
 import MixedWaterProgress from '#/util/component/steps/mixedWaterProgress.vue';
-import MixedWorkProgress from '#/util/component/steps/mixedWorkProgress.vue';
 import MixerLotManage from '#/util/component/steps/mixerLotManage.vue';
 import MixerMaterialWeigh from '#/util/component/steps/mixerMaterialWeigh.vue';
 import MoldUpInfo from '#/util/component/steps/moldUpInfo.vue';
@@ -49,7 +46,6 @@ import SiloMaterialSetting from '#/util/component/steps/siloMaterialSetting.vue'
 import SingleStationScan from '#/util/component/steps/singleStationScan.vue';
 import SmtFeeding from '#/util/component/steps/smtFeeding.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
-import TrayLoadUnload from '#/util/component/steps/trayLoadUnload.vue';
 
 /**
  * 定义组件接收的 props，用于传递工步执行所需的相关信息
@@ -495,33 +491,36 @@ defineProps({
       v-if="step.type === 101"
     />
 
-    <!-- 混合水LOT生成：根据工步类型为 102 时，渲染混合水LOT生成组件，并传递相关参数 -->
-    <MixedWaterLotGeneration
+    <!-- 混合水LOT生成：根据工步类型为 102 时，渲染搅拌机批次LOT管理组件，工序为 1（混合水） -->
+    <MixerLotManage
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="1"
       v-if="step.type === 102"
     />
 
-    <!-- 配料原料称重：根据工步类型为 103 时，渲染配料原料称重组件，并传递相关参数 -->
-    <DosingWeigh
+    <!-- 混合水材料称重：根据工步类型为 103 时，渲染搅拌材料称重管理组件，工序为 1（混合水） -->
+    <MixerMaterialWeigh
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="1"
       v-if="step.type === 103"
     />
 
-    <!-- 称量托盘加载/卸载：根据工步类型为 104 时，渲染称量托盘加载/卸载组件，并传递相关参数 -->
-    <TrayLoadUnload
+    <!-- 混合水托盘投入：根据工步类型为 104 时，渲染托盘投入组件，工序为 1（混合水） -->
+    <GravityFreeMixerTrayInput
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="1"
       v-if="step.type === 104"
     />
 
@@ -542,16 +541,18 @@ defineProps({
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="1"
       v-if="step.type === 106"
     />
 
-    <!-- 混合工作进度：根据工步类型为 107 时，渲染混合工作进度组件，并传递相关参数 -->
-    <MixedWorkProgress
+    <!-- 混合LOT生成：根据工步类型为 107 时，渲染搅拌机批次LOT管理组件，工序为 2（混合 MIX） -->
+    <MixerLotManage
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="2"
       v-if="step.type === 107"
     />
 
@@ -563,6 +564,19 @@ defineProps({
       :binding-id="bindingId"
       :function-id="step.id"
       v-if="step.type === 108"
+    />
+
+
+
+    <!-- 混合水/Mix 工作指示传输V2：根据工步类型为 119 时，渲染混合水/Mix 工作指示传输V2组件，并传递相关参数 -->
+    <MixedWaterFailedTransfer
+      :workstation-code="workstationCode"
+      :equip-code="equipCode"
+      :worksheet-code="worksheetCode"
+      :binding-id="bindingId"
+      :function-id="step.id"
+      :process-type="2"
+      v-if="step.type === 119"
     />
 
     <!-- 制面作业：根据工步类型为 109 时，渲染制面作业组件，并传递相关参数 -->
@@ -665,33 +679,36 @@ defineProps({
       v-if="step.type === 118"
     />
 
-    <!-- 搅拌机批次LOT管理：根据工步类型为 120 时，渲染搅拌机批次LOT管理组件，并传递相关参数 -->
+    <!-- 搅拌机批次LOT管理：根据工步类型为 120 时，渲染搅拌机批次LOT管理组件，工序为 6（搅拌机） -->
     <MixerLotManage
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="6"
       v-if="step.type === 120"
     />
 
-    <!-- 搅拌材料称重管理：根据工步类型为 121 时，渲染搅拌材料称重管理组件，并传递相关参数 -->
+    <!-- 搅拌材料称重管理：根据工步类型为 121 时，渲染搅拌材料称重管理组件，工序为 6（搅拌机） -->
     <MixerMaterialWeigh
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="6"
       v-if="step.type === 121"
     />
 
-    <!-- 无重力搅拌托盘投入：根据工步类型为 122 时，渲染无重力搅拌托盘投入组件，并传递相关参数 -->
+    <!-- 无重力搅拌托盘投入：根据工步类型为 122 时，渲染托盘投入组件，工序为 6（无重力搅拌） -->
     <GravityFreeMixerTrayInput
       :workstation-code="workstationCode"
       :equip-code="equipCode"
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="6"
       v-if="step.type === 122"
     />
 

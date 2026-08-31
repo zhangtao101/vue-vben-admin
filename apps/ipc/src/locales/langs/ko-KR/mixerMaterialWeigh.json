@@ -40,5 +40,6 @@
   "issueConfirmTitle": "발행 확인",
   "issueConfirmContent": "이 작업지시서의 칭량 라벨을 발행하시겠습니까?",
   "issueSuccess": "발행 성공",
-  "issueFailed": "발행 실패"
+  "issueFailed": "발행 실패",
+  "clearWeighWeight": "칭량 중량 초기화"
 }

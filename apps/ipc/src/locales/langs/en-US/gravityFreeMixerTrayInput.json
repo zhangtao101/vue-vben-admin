@@ -48,5 +48,6 @@
   "loadSuccess": "Loaded successfully",
   "unloadSuccess": "Unloaded successfully",
   "loadFailed": "Failed to load",
-  "unloadFailed": "Failed to unload"
+  "unloadFailed": "Failed to unload",
+  "trayChange": "Pallet Change"
 }

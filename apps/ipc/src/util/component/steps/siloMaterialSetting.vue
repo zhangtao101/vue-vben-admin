@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
-import {
-  Button,
-  Form,
-  message,
-  Select,
-  Space,
-} from 'ant-design-vue';
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
+import { Button, Card, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { searchSilo, updateSilo } from '#/api';
 import { $t } from '#/locales';
+
+import MaterialSelectDrawer from '../drawers/MaterialSelectDrawer.vue';
 
 /**
  * 工序步骤组件标准入参（与作业平台其它 steps 组件保持一致）
@@ -23,64 +22,11 @@ defineProps({
   workstationCode: { type: String, default: '' },
 });
 
-// region 查询条件：设备组选择
-const queryParams = ref<any>({
-  group: undefined,
-});
-
-const groupOptions = [
-  { label: $t('siloMaterialSetting.groupA'), value: 'G1' },
-  { label: $t('siloMaterialSetting.groupB'), value: 'G2' },
-];
-// endregion
-
-// region 设备代码列表（多选）
-// 假数据：接口就绪后替换为接口返回
-const fakeDevices: any[] = [
-  {
-    group: 'G1',
-    equipCode: 'EQ-S01',
-    equipName: '筒仓A',
-    materialCode: 'M-001',
-    materialName: '高筋面粉',
-  },
-  {
-    group: 'G1',
-    equipCode: 'EQ-S02',
-    equipName: '筒仓B',
-    materialCode: 'M-002',
-    materialName: '低筋面粉',
-  },
-  {
-    group: 'G1',
-    equipCode: 'EQ-S03',
-    equipName: '筒仓C',
-    materialCode: 'M-003',
-    materialName: '白砂糖',
-  },
-  {
-    group: 'G2',
-    equipCode: 'EQ-S04',
-    equipName: '筒仓D',
-    materialCode: 'M-004',
-    materialName: '食盐',
-  },
-  {
-    group: 'G2',
-    equipCode: 'EQ-S05',
-    equipName: '筒仓E',
-    materialCode: 'M-005',
-    materialName: '麦芽糊精',
-  },
-];
-
-const deviceData = ref<any[]>([]);
-
+// region 筒仓设备列表（分页查询）
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'checkbox', width: 50, title: '' },
     {
       field: 'equipCode',
       title: $t('siloMaterialSetting.equipCode'),
@@ -95,6 +41,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'materialCode',
       title: $t('siloMaterialSetting.materialCode'),
       minWidth: 140,
+      slots: { default: 'materialCode' },
     },
     {
       field: 'materialName',
@@ -102,55 +49,102 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 160,
     },
   ],
-  data: deviceData.value,
   height: 360,
+  pagerConfig: { enabled: true, pageSize: 10 },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }) => {
+        return await queryData({
+          pageNum: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
   stripe: true,
-  checkboxConfig: { trigger: 'row', highlight: true, range: true },
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
 
-const gridEvents: any = {
-  checkboxChange: ({ records }: any) => {
-    selectedRows.value = records;
-  },
-  checkboxAll: ({ records }: any) => {
-    selectedRows.value = records;
-  },
-};
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
-const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
-
-const selectedRows = ref<any[]>([]);
-
-function loadDevices() {
-  const { group } = queryParams.value;
-  deviceData.value = fakeDevices.filter((d) => !group || d.group === group);
-  gridApi.grid.loadData([...deviceData.value]);
-  selectedRows.value = [];
+/**
+ * 查询筒仓设备列表数据。
+ * @param params 包含 pageNum 和 pageSize 的分页参数
+ * @returns 返回包含总数和数据列表的 Promise
+ * @since 2026-08-31
+ */
+function queryData({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
+  return new Promise((resolve) => {
+    searchSilo({ pageNum, pageSize })
+      .then((res: any) => {
+        const list = (res.list || []).map((item: any) => ({
+          ...item,
+          // 兼容后端字段名不一致：响应为 materiaCode，提交为 materialCode
+          materialCode: item.materialCode ?? item.materiaCode,
+        }));
+        resolve({ total: res.total || 0, items: list });
+      })
+      .catch(() => {
+        resolve({ total: 0, items: [] });
+      });
+  });
 }
 
-function handleQuery() {
-  loadDevices();
-}
-
-function handleReset() {
-  queryParams.value = { group: undefined };
-  loadDevices();
-}
 // endregion
 
-// region 保存
-function handleSave() {
-  if (selectedRows.value.length === 0) {
-    message.warning($t('siloMaterialSetting.plsSelect'));
+// region 物料选择：点击表格内物料编号，弹出抽屉修改
+const materialDrawerRef = ref();
+
+/** 当前正在修改的筒仓设备行 */
+const editingRow = ref<any>(null);
+
+/**
+ * 点击物料编号：打开物料选择抽屉。
+ * @param row 当前行数据
+ * @since 2026-08-31
+ */
+function handleMaterialClick(row: any) {
+  editingRow.value = row;
+  materialDrawerRef.value.open();
+}
+
+/**
+ * 物料选择回调：将选中的物料提交到后端保存，成功后重新加载表格。
+ * @param material 抽屉中选中的物料数据
+ * @since 2026-08-31
+ */
+async function handleMaterialSelect(material: any) {
+  const row = editingRow.value;
+  if (!row) {
     return;
   }
-  message.success($t('siloMaterialSetting.saveSuccess'));
+  const payload = {
+    equipCode: row.equipCode ?? '',
+    equipName: row.equipName ?? '',
+    id: row.id,
+    materialCode: material.materialCode,
+    materialName: material.materialName,
+    purchaseDate: row.purchaseDate ?? '',
+    type: row.type ?? '',
+  };
+  try {
+    await updateSilo(payload);
+    message.success($t('siloMaterialSetting.updateSuccess'));
+    gridApi.reload();
+  } catch {
+    message.error($t('siloMaterialSetting.updateFailed'));
+  }
 }
 // endregion
 
 onMounted(() => {
-  loadDevices();
+  gridApi.reload();
 });
 </script>
 
@@ -158,40 +152,24 @@ onMounted(() => {
   <div class="flex flex-col gap-4 p-4">
     <div class="text-lg font-bold">{{ $t('siloMaterialSetting.title') }}</div>
 
-    <!-- 1. 查询条件 + 2. 设备代码列表 + 3. 保存 -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <Form layout="inline" class="mb-3 flex-wrap items-end gap-2">
-        <Form.Item :label="$t('siloMaterialSetting.group')">
-          <Select
-            v-model:value="queryParams.group"
-            :options="groupOptions"
-            :placeholder="$t('siloMaterialSetting.groupPlaceholder')"
-            allow-clear
-            style="width: 200px"
-          />
-        </Form.Item>
-        <Form.Item>
-          <Space>
-            <Button type="primary" @click="handleQuery">
-              {{ $t('common.query') }}
-            </Button>
-            <Button @click="handleReset">
-              {{ $t('common.reset') }}
-            </Button>
-          </Space>
-        </Form.Item>
-      </Form>
-
+    <!-- 设备代码列表 -->
+    <Card>
       <div class="mb-2 font-bold">{{ $t('siloMaterialSetting.deviceList') }}</div>
       <Grid>
         <template #toolbar-tools></template>
+        <template #materialCode="{ row }">
+          <Button type="link" class="px-1" @click="handleMaterialClick(row)">
+            <Icon icon="mdi:pencil-outline" class="inline-block align-middle" />
+            {{ row.materialCode || '-' }}
+          </Button>
+        </template>
       </Grid>
+    </Card>
 
-      <div class="mt-3 flex justify-end">
-        <Button type="primary" @click="handleSave">
-          {{ $t('siloMaterialSetting.save') }}
-        </Button>
-      </div>
-    </div>
+    <!-- 物料选择抽屉 -->
+    <MaterialSelectDrawer
+      ref="materialDrawerRef"
+      @select="handleMaterialSelect"
+    />
   </div>
 </template>

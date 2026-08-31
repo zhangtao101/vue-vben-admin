@@ -1,5 +1,6 @@
 {
   "title": "면 투입 정보",
+  "queryCondition": "조회 조건",
   "productDate": "생산일자",
   "productDatePlaceholder": "생산일자를 선택하세요",
   "line": "면 라인",
@@ -30,11 +31,11 @@
   "colUserId": "사용자 ID",
   "colUserName": "사용자명",
   "colRemark": "비고",
+  "operation": "작업",
   "entryForm": "면 투입 정보 입력",
   "shift": "조",
   "shiftPlaceholder": "조를 선택하세요",
-  "shiftMorning": "조간",
-  "shiftMiddle": "중간",
+  "shiftDay": "주간",
   "shiftNight": "야간",
   "weight": "중량",
   "weightPlaceholder": "중량을 입력하세요",
@@ -43,7 +44,15 @@
   "delete": "삭제",
   "save": "저장",
   "register": "등록",
-  "plsFillRequired": "필수 항목을 입력하세요 (생산일자, 면 라인, 중량)",
+  "plsFillRequired": "필수 항목을 입력하세요 (생산일자, 면 라인, 구역, 등급, 중량)",
   "saveSuccess": "저장되었습니다",
-  "registerSuccess": "등록되었습니다"
+  "registerSuccess": "등록되었습니다",
+  "saveFailed": "저장 실패",
+  "registerFailed": "등록 실패",
+  "deleteSuccess": "삭제되었습니다",
+  "deleteFailed": "삭제 실패",
+  "deleteConfirmTitle": "삭제 확인",
+  "deleteConfirmContent": "이 낙면 기록을 삭제하시겠습니까?",
+  "listLoadFailed": "목록 로드 실패",
+  "optionsLoadFailed": "옵션 로드 실패"
 }

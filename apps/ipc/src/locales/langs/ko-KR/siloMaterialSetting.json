@@ -1,15 +1,10 @@
 {
   "title": "각 사일로 재료 설정",
-  "group": "설비 그룹",
-  "groupPlaceholder": "설비 그룹을 선택하세요",
-  "groupA": "설비 그룹 A",
-  "groupB": "설비 그룹 B",
   "deviceList": "설비 코드 목록",
   "equipCode": "설비 코드",
   "equipName": "설비 명칭",
   "materialCode": "자재 코드",
   "materialName": "자재 명칭",
-  "save": "저장",
-  "plsSelect": "설비를 하나 이상 선택하세요",
-  "saveSuccess": "저장되었습니다"
+  "updateSuccess": "수정되었습니다",
+  "updateFailed": "수정 실패"
 }

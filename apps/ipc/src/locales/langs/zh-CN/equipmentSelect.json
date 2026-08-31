@@ -1,0 +1,16 @@
+{
+  "title": "选择设备",
+  "sequence": "序号",
+  "equipmentCode": "设备编码",
+  "equipmentCodePlaceholder": "请输入设备编码",
+  "equipmentName": "设备名称",
+  "equipmentNamePlaceholder": "请输入设备名称",
+  "equipGroupCode": "设备分组编码",
+  "equipGroupCodePlaceholder": "请输入设备分组编码",
+  "equipGroupName": "设备分组名称",
+  "model": "型号",
+  "location": "位置",
+  "useDepartment": "使用部门",
+  "cancel": "取消",
+  "confirm": "确认"
+}
