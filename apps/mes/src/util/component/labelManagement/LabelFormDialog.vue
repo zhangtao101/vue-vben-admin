@@ -422,6 +422,25 @@ function handleAddRow() {
 }
 
 /**
+ * 复制最后一行：将表格最后一行数据复制为新行追加到末尾。
+ * @returns {void} 无返回值，表格为空时给出警告提示。
+ * @since 2026-09-01 00:00:00
+ */
+function handleCopyLastRow() {
+  if (formData.labelList.length === 0) {
+    message.warning($t('storeManagement.labelPrint.selectData'));
+    return;
+  }
+  const lastRow = formData.labelList[formData.labelList.length - 1];
+  formData.labelList.push({
+    ...lastRow,
+    addDisabled: false,
+    deleteDisabled: false,
+    _X_ROW_KEY: undefined,
+  });
+}
+
+/**
  * 清空表格
  */
 function handleEmptyRow() {
@@ -546,6 +565,9 @@ function handleClose() {
         </Button>
         <Button type="primary" @click="handleAddRow">
           {{ $t('storeManagement.labelPrint.addRow') }}
+        </Button>
+        <Button type="primary" @click="handleCopyLastRow">
+          {{ $t('storeManagement.labelPrint.copyRow') }}
         </Button>
         <Button type="primary" @click="handleEmptyRow">
           {{ $t('storeManagement.labelPrint.emptyRow') }}

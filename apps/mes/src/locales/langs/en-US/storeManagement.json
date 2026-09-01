@@ -219,6 +219,7 @@
     "excelImport": "Excel Import",
     "excelDownload": "Excel Download",
     "addRow": "Add Row",
+    "copyRow": "Copy Row",
     "emptyRow": "Clear",
     "confirmImport": "Confirm Import",
     "selectData": "Please select data",

@@ -219,6 +219,7 @@
     "excelImport": "excel导入",
     "excelDownload": "excel下载",
     "addRow": "增加",
+    "copyRow": "复制",
     "emptyRow": "清空",
     "confirmImport": "确定导入",
     "selectData": "请选择数据",
