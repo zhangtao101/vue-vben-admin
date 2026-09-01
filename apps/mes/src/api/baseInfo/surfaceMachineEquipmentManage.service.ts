@@ -65,8 +65,8 @@ export interface SurfaceMachineCreateParams {
 
 /** 修改面机参数 */
 export interface SurfaceMachineUpdateParams {
-  /** 主键，必填 */
-  id: number;
+  /** 主键，编辑时必填 */
+  id?: number;
   /** 管理号码，必填 */
   equipCode: string;
   /** 管理名称，必填 */

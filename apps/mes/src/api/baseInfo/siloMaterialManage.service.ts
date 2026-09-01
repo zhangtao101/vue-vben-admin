@@ -61,8 +61,8 @@ export interface SiloMaterialCreateParams {
 
 /** 修改筒仓设备参数 */
 export interface SiloMaterialUpdateParams {
-  /** 主键，必填 */
-  id: number;
+  /** 主键，编辑时必填 */
+  id?: number;
   /** 设备编号，必填 */
   equipCode: string;
   /** 设备名称，必填 */

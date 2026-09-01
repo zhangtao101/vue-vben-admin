@@ -262,7 +262,7 @@ function handleSubmit() {
       type,
     };
     if (editMode.value) {
-      updateSurfaceMachine({ id: id ?? 0, ...params }).then(() => {
+      updateSurfaceMachine({ id, ...params }).then(() => {
         message.success($t('baseInfo.updateSuccess'));
         handleClose();
         gridApi.reload();

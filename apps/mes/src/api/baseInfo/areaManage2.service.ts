@@ -55,8 +55,8 @@ export interface AreaManage2CreateParams {
 
 /** 修改区域参数 */
 export interface AreaManage2UpdateParams {
-  /** 主键，必填 */
-  id: number;
+  /** 主键，编辑时必填 */
+  id?: number;
   /** 区域编号，必填 */
   areaCode: string;
   /** 区域名称，必填 */

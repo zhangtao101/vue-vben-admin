@@ -235,14 +235,18 @@ function handleDelete(row: any) {
 function handleSubmit() {
   formRef.value?.validate().then(() => {
     const { areaCode, areaName, id, lineGroupId, remark } = formData.value;
+    if (!lineGroupId) {
+      message.warning($t('baseInfo.selectAreaLineGroup'));
+      return;
+    }
     const params = {
       areaCode,
       areaName,
-      lineGroupId: lineGroupId ?? 0,
+      lineGroupId,
       remark,
     };
     if (editMode.value) {
-      updateAreaManage2({ id: id ?? 0, ...params }).then(() => {
+      updateAreaManage2({ id, ...params }).then(() => {
         message.success($t('baseInfo.updateSuccess'));
         handleClose();
         gridApi.reload();

@@ -196,7 +196,7 @@ function handleSubmit() {
       gradeName,
     };
     if (editMode.value) {
-      updateLevel({ id: id ?? 0, ...params }).then(() => {
+      updateLevel({ id, ...params }).then(() => {
         message.success($t('baseInfo.updateSuccess'));
         handleClose();
         gridApi.reload();

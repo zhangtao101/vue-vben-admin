@@ -294,7 +294,7 @@ function handleSubmit() {
       type,
     };
     if (editMode.value) {
-      updateSiloMaterial({ id: id ?? 0, ...params }).then(() => {
+      updateSiloMaterial({ id, ...params }).then(() => {
         message.success($t('baseInfo.updateSuccess'));
         handleClose();
         gridApi.reload();

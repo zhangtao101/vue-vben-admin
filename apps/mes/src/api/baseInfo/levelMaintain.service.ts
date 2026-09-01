@@ -43,8 +43,8 @@ export interface LevelCreateParams {
 
 /** 修改等级参数 */
 export interface LevelUpdateParams {
-  /** 主键，必填 */
-  id: number;
+  /** 主键，编辑时必填 */
+  id?: number;
   /** 等级编号，必填 */
   gradeCode: string;
   /** 等级名称，必填 */
