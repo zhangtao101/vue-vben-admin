@@ -78,7 +78,7 @@ const gridOptions: VxeGridProps<any> = {
     highlight: true,
     reserve: true,
     checkMethod: ({ row }) => {
-      return row.arrivalState !== 1
+      return row.arrivalState !== 1;
     },
   },
   columns: [
@@ -378,13 +378,12 @@ function handleViewDetail(row: any) {
   detailData.value = {};
   detailVisible.value = true;
   detailLoading.value = true;
-  setTimeout(
-    () => {
-      detailGridApi.grid.reloadData([]);
-      queryDeliveryDetail(row.deliveryNo, {
-        ent: row.ent,
-        site: row.site,
-      })
+  setTimeout(() => {
+    detailGridApi.grid.reloadData([]);
+    queryDeliveryDetail(row.deliveryNo, {
+      ent: row.ent,
+      site: row.site,
+    })
       .then((data: any) => {
         detailData.value = data;
         detailGridApi.grid.reloadData(data.bodyList || []);
@@ -392,9 +391,7 @@ function handleViewDetail(row: any) {
       .finally(() => {
         detailLoading.value = false;
       });
-    },
-    200,
-  );
+  }, 200);
 }
 
 // 页面初始化：加载当前路由对应的操作权限

@@ -34,11 +34,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  batchManualResend,
-  queryArrivalDetail,
-  queryArrivalList,
-} from '#/api';
+import { batchManualResend, queryArrivalDetail, queryArrivalList } from '#/api';
 import { queryAuth } from '#/util';
 
 // 当前用户操作权限集合，用于控制按钮显隐
@@ -80,7 +76,7 @@ const gridOptions: VxeGridProps<any> = {
     highlight: true,
     reserve: true,
     checkMethod: ({ row }) => {
-      return row.syncStatus !== 1
+      return row.syncStatus !== 1;
     },
   },
   columns: [
@@ -132,9 +128,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'arrivedTotalPackageQty',
-      title: $t(
-        'storeManagement.arrivalOrderManage.arrivedTotalPackageQty',
-      ),
+      title: $t('storeManagement.arrivalOrderManage.arrivedTotalPackageQty'),
       width: 110,
     },
     {
