@@ -1,7 +1,9 @@
+export * from './areaManage2.service';
 export * from './bomCategory.service';
 export * from './codingTemplateUnionMaintenance.service';
 export * from './controlSet.service';
 export * from './electricityTimeSlotRule.service';
+export * from './levelMaintain.service';
 export * from './materialBaseManagement.service';
 export * from './materialsCategory.service';
 export * from './plantCalendar.service';
@@ -15,9 +17,10 @@ export * from './productionAreaManage.service';
 export * from './productionLineManage.service';
 export * from './productionLineStaffBind.service';
 export * from './productLineSet.service';
+export * from './siloMaterialManage.service';
 export * from './subProductionLineHangTray.service';
 export * from './subProductionLineManage.service';
+export * from './surfaceMachineEquipmentManage.service';
 export * from './teamGroupManage.service';
 export * from './trayManage.service';
 export * from './trolleyManage.service';
-
