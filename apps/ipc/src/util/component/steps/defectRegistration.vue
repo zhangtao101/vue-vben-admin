@@ -1,20 +1,26 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue';
+import { onMounted, reactive } from 'vue';
 
 import {
   Button,
-  Col,
   DatePicker,
+  Descriptions,
+  DescriptionsItem,
   Form,
   Input,
   InputNumber,
   message,
-  Row,
   Select,
   Space,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import {
+  queryDefectRecord,
+  saveDefectRecord,
+  selectDefectByPallet,
+  transferDefectRecords,
+} from '#/api';
 import { $t } from '#/locales';
 
 /**
@@ -32,8 +38,8 @@ const { RangePicker } = DatePicker;
 
 // region 1. 查询条件
 const transferStatusOptions = [
-  { label: $t('defectRegistration.transferred'), value: 'transferred' },
-  { label: $t('defectRegistration.notTransferred'), value: 'notTransferred' },
+  { label: $t('defectRegistration.transferred'), value: 1 },
+  { label: $t('defectRegistration.notTransferred'), value: 2 },
 ];
 
 const queryForm = reactive<any>({
@@ -41,46 +47,24 @@ const queryForm = reactive<any>({
   trayNo: '',
   transferred: undefined,
 });
-
-function handleQuery() {
-  // TODO: 接口就绪后替换为真实查询
-}
-
-function handleReset() {
-  queryForm.defectDate = undefined;
-  queryForm.trayNo = '';
-  queryForm.transferred = undefined;
-}
 // endregion
 
-// region 2. 不良列表（假数据，接口就绪后替换为接口返回）
-const fakeList: any[] = [
-  {
-    defectDate: '2026-07-21',
-    trayNo: 'T-001',
-    scrapQty: 10,
-    reworkQty: 5,
-    transferred: false,
-  },
-  {
-    defectDate: '2026-07-20',
-    trayNo: 'T-002',
-    scrapQty: 8,
-    reworkQty: 0,
-    transferred: true,
-  },
-];
-
+// region 2. 不良列表（接口分页查询）
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
+    { type: 'checkbox', width: 50, title: '' },
     {
-      field: 'defectDate',
+      field: 'produceDate',
       title: $t('defectRegistration.colDefectDate'),
       minWidth: 140,
     },
-    { field: 'trayNo', title: $t('defectRegistration.colTrayNo'), minWidth: 120 },
+    {
+      field: 'palletLabel',
+      title: $t('defectRegistration.colTrayNo'),
+      minWidth: 120,
+    },
     {
       field: 'scrapQty',
       title: $t('defectRegistration.colScrapQty'),
@@ -92,22 +76,65 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 140,
     },
     {
-      field: 'transferred',
+      field: 'isTransfer',
       title: $t('defectRegistration.colTransferred'),
       minWidth: 120,
       formatter: ({ cellValue }) =>
-        cellValue
+        cellValue === 1
           ? $t('defectRegistration.transferred')
           : $t('defectRegistration.notTransferred'),
     },
   ],
-  data: fakeList,
   height: 360,
+  rowConfig: { keyField: 'id', isHover: true },
   stripe: true,
+  pagerConfig: { enabled: true, pageSize: 20 },
   toolbarConfig: { custom: true, refresh: true, zoom: true },
+  proxyConfig: {
+    ajax: {
+      query: queryDefectList,
+    },
+  },
 };
 
-const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
+/** 点击表格行（勾选列除外）切换选中状态，支持多选后传输 */
+const gridEvents: any = {
+  cellClick: ({ row, column }: any) => {
+    if (column.type === 'checkbox') return;
+    gridApi.grid.toggleCheckboxRow(row);
+  },
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+
+/** 分页查询不良品记录 */
+function queryDefectList({ page }: any) {
+  const { defectDate, trayNo, transferred } = queryForm;
+  const [startTime, endTime] = defectDate ?? [];
+  const params: any = {
+    endTime,
+    isTransfer: transferred,
+    pageNum: page.currentPage,
+    pageSize: page.pageSize,
+    palletLabel: trayNo || undefined,
+    startTime,
+  };
+  return queryDefectRecord(params).then((res: any) => ({
+    total: res?.total || 0,
+    items: res?.list || [],
+  }));
+}
+
+function handleQuery() {
+  gridApi.reload();
+}
+
+function handleReset() {
+  queryForm.defectDate = undefined;
+  queryForm.trayNo = '';
+  queryForm.transferred = undefined;
+  gridApi.reload();
+}
 // endregion
 
 // region 3. 登记表单（托盘号带出下列参数，废弃/返工数量为手动输入）
@@ -121,84 +148,74 @@ const customerTypeOptions = [
   { label: $t('defectRegistration.customerDirect'), value: 'direct' },
 ];
 
-const form = reactive<any>({
-  trayNo: '',
-  materialProductCode: '',
-  halalType: undefined,
-  stackQty: undefined,
-  prodInstrSerial: '',
-  mesWorkOrder: '',
-  productionDate: '',
-  validity: '',
-  customerType: undefined,
-  customerName: '',
-  scrapQty: undefined,
-  reworkQty: undefined,
-});
-
-/** 输入托盘号后带出下列参数（接口就绪后替换为真实查询） */
-function fetchTrayInfo(trayNo: string) {
-  if (!trayNo) {
-    form.materialProductCode = '';
-    form.halalType = undefined;
-    form.stackQty = undefined;
-    form.prodInstrSerial = '';
-    form.mesWorkOrder = '';
-    form.productionDate = '';
-    form.validity = '';
-    form.customerType = undefined;
-    form.customerName = '';
-    return;
-  }
-  form.materialProductCode = 'P-001';
-  form.halalType = 'halal';
-  form.stackQty = 120;
-  form.prodInstrSerial = 'SEQ-20260721-001';
-  form.mesWorkOrder = 'WO-20260721-001';
-  form.productionDate = '2026-07-21';
-  form.validity = '2026-10-21';
-  form.customerType = 'agent';
-  form.customerName = 'ABC Trading';
-  message.success($t('defectRegistration.fetchInfoSuccess'));
+/** 清真类型值转显示文本 */
+function halalTypeLabel(val?: string) {
+  return halalTypeOptions.find((o) => o.value === val)?.label ?? (val || '-');
 }
 
-watch(
-  () => form.trayNo,
-  (val) => {
-    fetchTrayInfo(val);
-  },
-);
+/** 客户类型值转显示文本 */
+function customerTypeLabel(val?: string) {
+  return customerTypeOptions.find((o) => o.value === val)?.label ?? (val || '-');
+}
 
-/** 重置表单（保留清空所有字段） */
+const form = reactive<any>({});
+
+/** 清空托盘带出参数（保留托盘号输入框本身） */
+function resetTrayInfo() {
+  Object.assign(form, {
+    palletLabel: form.palletLabel,
+  });
+}
+
+/** 输入托盘号后根据接口带出相关参数 */
+function fetchTrayInfo(palletLabel: string) {
+  if (!palletLabel) {
+    resetTrayInfo();
+    return;
+  }
+  selectDefectByPallet(palletLabel).then((result: any) => {
+    if (!result?.id) {
+      resetTrayInfo();
+      return;
+    }
+    // 等价于 { ...form, ...result }：整体展开合并，同时保留 reactive 响应式
+    Object.assign(form, result);
+    message.success($t('defectRegistration.fetchInfoSuccess'));
+  });
+}
+
+function handleTrayNoChange() {
+  fetchTrayInfo(form.palletLabel);
+}
+
+/** 重置表单（清空所有字段） */
 function resetForm() {
-  form.trayNo = '';
-  form.materialProductCode = '';
-  form.halalType = undefined;
-  form.stackQty = undefined;
-  form.prodInstrSerial = '';
-  form.mesWorkOrder = '';
-  form.productionDate = '';
-  form.validity = '';
-  form.customerType = undefined;
-  form.customerName = '';
+  resetTrayInfo();
+  form.palletLabel = '';
   form.scrapQty = undefined;
   form.reworkQty = undefined;
 }
 
-/** 将表单数据写入不良列表 */
-function appendToList(transferred: boolean) {
-  fakeList.unshift({
-    defectDate: form.productionDate || '2026-07-21',
-    trayNo: form.trayNo,
-    scrapQty: form.scrapQty,
+/** 构建保存/传输提交数据 */
+function buildSubmitData() {
+  return {
+    custName: form.custName,
+    custType: form.custType,
+    lotCode: form.lotCode,
+    palletLabel: form.palletLabel,
+    produceDate: form.produceDate,
     reworkQty: form.reworkQty,
-    transferred,
-  });
-  gridApi.grid.loadData([...fakeList]);
+    scrapQty: form.scrapQty,
+    stackQty: form.stackQty,
+    type: form.type,
+    validDate: form.validDate,
+    workSheetCode: form.workSheetCode,
+  };
 }
 
+/** 保存不良品记录（登记未传输） */
 function handleSave() {
-  if (!form.trayNo) {
+  if (!form.palletLabel) {
     message.warning($t('defectRegistration.plsFillRequired'));
     return;
   }
@@ -206,25 +223,33 @@ function handleSave() {
     message.warning($t('defectRegistration.plsFillQty'));
     return;
   }
-  appendToList(false);
-  resetForm();
-  message.success($t('defectRegistration.saveSuccess'));
+  saveDefectRecord({ ...buildSubmitData(), isTransfer: 2 }).then(() => {
+    message.success($t('defectRegistration.saveSuccess'));
+    resetForm();
+    gridApi.reload();
+  });
 }
 
+/** 传输所选不良品记录（需先勾选不良列表中的记录） */
 function handleTransfer() {
-  if (!form.trayNo) {
-    message.warning($t('defectRegistration.plsFillRequired'));
+  const records: any[] = gridApi.grid.getCheckboxRecords();
+  if (records.length === 0) {
+    message.warning($t('defectRegistration.plsSelectRecord'));
     return;
   }
-  if (form.scrapQty == null || form.reworkQty == null) {
-    message.warning($t('defectRegistration.plsFillQty'));
-    return;
-  }
-  appendToList(true);
-  resetForm();
-  message.success($t('defectRegistration.transferSuccess'));
+  transferDefectRecords({
+    ids: records.map((record: any) => String(record.id)),
+    state: 1,
+  }).then(() => {
+    message.success($t('defectRegistration.transferSuccess'));
+    gridApi.reload();
+  });
 }
 // endregion
+
+onMounted(() => {
+  gridApi.reload();
+});
 </script>
 
 <template>
@@ -233,48 +258,45 @@ function handleTransfer() {
 
     <!-- 1. 查询条件 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <Form layout="vertical" :model="queryForm">
-        <Row :gutter="16">
-          <Col :xs="24" :sm="12" :md="8" :lg="6">
-            <Form.Item :label="$t('defectRegistration.defectRegDate')">
-              <RangePicker
-                v-model:value="queryForm.defectDate"
-                class="w-full"
-                :placeholder="[
-                  $t('defectRegistration.defectRegDatePlaceholder'),
-                  $t('defectRegistration.defectRegDatePlaceholder'),
-                ]"
-              />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8" :lg="6">
-            <Form.Item :label="$t('defectRegistration.trayNo')">
-              <Input
-                v-model:value="queryForm.trayNo"
-                :placeholder="$t('defectRegistration.trayNoPlaceholder')"
-                allow-clear
-              />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8" :lg="6">
-            <Form.Item :label="$t('defectRegistration.transferStatus')">
-              <Select
-                v-model:value="queryForm.transferred"
-                :options="transferStatusOptions"
-                :placeholder="$t('defectRegistration.transferStatusPlaceholder')"
-                allow-clear
-              />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="24" :md="24" :lg="6" class="flex items-end">
-            <Space>
-              <Button type="primary" @click="handleQuery">
-                {{ $t('common.query') }}
-              </Button>
-              <Button @click="handleReset">{{ $t('common.reset') }}</Button>
-            </Space>
-          </Col>
-        </Row>
+      <Form
+        layout="inline"
+        :model="queryForm"
+        class="flex flex-wrap items-end gap-2"
+      >
+        <Form.Item :label="$t('defectRegistration.defectRegDate')">
+          <RangePicker
+            v-model:value="queryForm.defectDate"
+            value-format="YYYY-MM-DD"
+            class="w-64!"
+            :placeholder="[
+              $t('defectRegistration.defectRegDatePlaceholder'),
+              $t('defectRegistration.defectRegDatePlaceholder'),
+            ]"
+          />
+        </Form.Item>
+        <Form.Item :label="$t('defectRegistration.trayNo')">
+          <Input
+            v-model:value="queryForm.trayNo"
+            :placeholder="$t('defectRegistration.trayNoPlaceholder')"
+            allow-clear
+          />
+        </Form.Item>
+        <Form.Item :label="$t('defectRegistration.transferStatus')">
+          <Select
+            v-model:value="queryForm.transferred"
+            :options="transferStatusOptions"
+            :placeholder="$t('defectRegistration.transferStatusPlaceholder')"
+            allow-clear
+          />
+        </Form.Item>
+        <Form.Item>
+          <Space>
+            <Button type="primary" @click="handleQuery">
+              {{ $t('common.query') }}
+            </Button>
+            <Button @click="handleReset">{{ $t('common.reset') }}</Button>
+          </Space>
+        </Form.Item>
       </Form>
     </div>
 
@@ -286,99 +308,78 @@ function handleTransfer() {
       </Grid>
     </div>
 
-    <!-- 3. 登记表单 -->
+    <!-- 3. 登记表单（每行 4 格：托盘号独占一行，物料代码/清真类型各占 1 格，其余各占 2 格） -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
       <div class="mb-3 font-bold">{{ $t('defectRegistration.entryForm') }}</div>
-      <Form layout="vertical" :model="form">
-        <Row :gutter="16">
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.trayNo')">
-              <Input
-                v-model:value="form.trayNo"
-                :placeholder="$t('defectRegistration.trayNoPlaceholder')"
-                allow-clear
-              />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.materialProductCode')">
-              <Input v-model:value="form.materialProductCode" disabled />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.halalType')">
-              <Select
-                v-model:value="form.halalType"
-                :options="halalTypeOptions"
-                disabled
-                allow-clear
-              />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.stackQty')">
-              <InputNumber v-model:value="form.stackQty" class="w-full" disabled />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.prodInstrSerial')">
-              <Input v-model:value="form.prodInstrSerial" disabled />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.mesWorkOrder')">
-              <Input v-model:value="form.mesWorkOrder" disabled />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.productionDate')">
-              <Input v-model:value="form.productionDate" disabled />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.validity')">
-              <Input v-model:value="form.validity" disabled />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.customerType')">
-              <Select
-                v-model:value="form.customerType"
-                :options="customerTypeOptions"
-                disabled
-                allow-clear
-              />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.customerName')">
-              <Input v-model:value="form.customerName" disabled />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.scrapQty')">
-              <InputNumber
-                v-model:value="form.scrapQty"
-                class="w-full"
-                :min="0"
-                :placeholder="$t('defectRegistration.scrapQty')"
-              />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="12" :md="8">
-            <Form.Item :label="$t('defectRegistration.reworkQty')">
-              <InputNumber
-                v-model:value="form.reworkQty"
-                class="w-full"
-                :min="0"
-                :placeholder="$t('defectRegistration.reworkQty')"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
-      <div class="flex justify-end gap-2">
-        <Button @click="handleTransfer">{{ $t('defectRegistration.transfer') }}</Button>
+      <Descriptions bordered :column="4" size="small">
+        <DescriptionsItem :label="$t('defectRegistration.trayNo')" :span="4">
+          <Input
+            v-model:value="form.palletLabel"
+            :placeholder="$t('defectRegistration.trayNoPlaceholder')"
+            allow-clear
+            @press-enter="handleTrayNoChange"
+          />
+        </DescriptionsItem>
+        <DescriptionsItem
+          :label="$t('defectRegistration.materialProductCode')"
+          :span="2"
+        >
+          {{ form.productCode ? `${form.productCode}__${form.productName}` : '-' }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('defectRegistration.halalType')" :span="1">
+          {{ halalTypeLabel(form.type) }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('defectRegistration.stackQty')" :span="1">
+          {{ form.stackQty ?? '-' }}
+        </DescriptionsItem>
+        <DescriptionsItem
+          :label="$t('defectRegistration.prodInstrSerial')"
+          :span="2"
+        >
+          {{ form.lotCode || '-' }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('defectRegistration.mesWorkOrder')" :span="2">
+          {{ form.workSheetCode || '-' }}
+        </DescriptionsItem>
+        <DescriptionsItem
+          :label="$t('defectRegistration.productionDate')"
+          :span="2"
+        >
+          {{ form.produceDate || '-' }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('defectRegistration.validity')" :span="2">
+          {{ form.validDate || '-' }}
+        </DescriptionsItem>
+        <DescriptionsItem
+          :label="$t('defectRegistration.customerType')"
+          :span="2"
+        >
+          {{ customerTypeLabel(form.custType) }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('defectRegistration.customerName')" :span="2">
+          {{ form.custName || '-' }}
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('defectRegistration.scrapQty')" :span="2">
+          <InputNumber
+            v-model:value="form.scrapQty"
+            class="w-full!"
+            :min="0"
+            :placeholder="$t('defectRegistration.scrapQty')"
+          />
+        </DescriptionsItem>
+        <DescriptionsItem :label="$t('defectRegistration.reworkQty')" :span="2">
+          <InputNumber
+            v-model:value="form.reworkQty"
+            class="w-full!"
+            :min="0"
+            :placeholder="$t('defectRegistration.reworkQty')"
+          />
+        </DescriptionsItem>
+      </Descriptions>
+      <div class="flex justify-end gap-2 mt-4!">
+        <Button @click="handleTransfer">
+          {{ $t('defectRegistration.transfer') }}
+        </Button>
         <Button type="primary" @click="handleSave">
           {{ $t('defectRegistration.save') }}
         </Button>

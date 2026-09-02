@@ -36,5 +36,6 @@
   "plsFillQty": "폐기 수량과 재작업 수량을 입력하세요",
   "saveSuccess": "저장되었습니다",
   "transferSuccess": "전송되었습니다",
-  "fetchInfoSuccess": "트레이 정보를 불러왔습니다"
+  "fetchInfoSuccess": "트레이 정보를 불러왔습니다",
+  "plsSelectRecord": "전송할 불량 기록을 먼저 선택하세요"
 }

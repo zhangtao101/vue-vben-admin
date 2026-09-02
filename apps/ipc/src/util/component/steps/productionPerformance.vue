@@ -1,9 +1,22 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
-import { Button, Col, Form, Input, message, Row, Space } from 'ant-design-vue';
+import {
+  Button,
+  Col,
+  Drawer,
+  Form,
+  FormItem,
+  Input,
+  InputNumber,
+  message,
+  Modal,
+  Row,
+  Space,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { addFinishRecord, getWorkLot, queryFinishRecord, removeFinishRecords } from '#/api';
 import { $t } from '#/locales';
 
 /**
@@ -19,59 +32,87 @@ defineProps({
 
 // region 1. 查询条件
 const queryForm = reactive<any>({
-  workOrder: '',
+  workSheetCode: '',
 });
 
 function handleQuery() {
-  // TODO: 接口就绪后替换为真实查询（按工单号带出生产列表与 LOT 列表）
+  productionGridApi.reload();
+  lotGridApi.reload();
 }
 
 function handleReset() {
-  queryForm.workOrder = '';
+  queryForm.workSheetCode = '';
+  productionGridApi.reload();
+  lotGridApi.reload();
 }
 // endregion
 
-// region 2.1 左侧：生产列表（假数据，接口就绪后替换为接口返回）
-const productionData = reactive<any[]>([
-  {
-    stackerId: 'S-01',
-    materialProductCode: 'P-001',
-    materialProductName: $t('productionPerformance.productA'),
-    prodInstrSerial: 'SEQ-20260721-001',
+// region 2.1 左侧：子工单列表（getWorkLot，无需分页）
+const lotGridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: [
+    { field: 'lotCode', title: $t('productionPerformance.colLotCode'), minWidth: 200 },
+    { field: 'productName', title: $t('productionPerformance.colProductName'), minWidth: 160 },
+    { field: 'productCode', title: $t('productionPerformance.colProductCode'), minWidth: 100 },
+    { field: 'equipCode', title: $t('productionPerformance.colEquipCode'), minWidth: 120 },
+  ],
+  height: 360,
+  stripe: true,
+  pagerConfig: { enabled: false },
+  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  proxyConfig: {
+    ajax: {
+      query: () => {
+        if (!queryForm.workSheetCode) {
+          return Promise.resolve({ items: [] });
+        }
+        return getWorkLot(queryForm.workSheetCode).then((res: any) => ({
+          items: Array.isArray(res) ? res : [],
+        }));
+      },
+    },
   },
-  {
-    stackerId: 'S-02',
-    materialProductCode: 'P-002',
-    materialProductName: $t('productionPerformance.productB'),
-    prodInstrSerial: 'SEQ-20260721-002',
-  },
-]);
+};
 
+const [LotGrid, lotGridApi] = useVbenVxeGrid({ gridOptions: lotGridOptions });
+// endregion
+
+// region 2.2 右侧：完工记录列表（queryFinishRecord 分页查询）
 const productionGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { field: 'stackerId', title: $t('productionPerformance.colStackerId'), minWidth: 120 },
+    { type: 'checkbox', width: 50, title: '' },
+    { field: 'lotCode', title: $t('productionPerformance.colLotCode'), minWidth: 140 },
+    { field: 'quity', title: $t('productionPerformance.colQuity'), minWidth: 100 },
+    { field: 'unit', title: $t('productionPerformance.colUnit'), minWidth: 80 },
+    { field: 'createTime', title: $t('productionPerformance.colCreateTime'), minWidth: 180 },
     {
-      field: 'materialProductCode',
-      title: $t('productionPerformance.colMaterialProductCode'),
-      minWidth: 160,
-    },
-    {
-      field: 'materialProductName',
-      title: $t('productionPerformance.colMaterialProductName'),
-      minWidth: 160,
-    },
-    {
-      field: 'prodInstrSerial',
-      title: $t('productionPerformance.colProdInstrSerial'),
-      minWidth: 180,
+      field: 'workSheetCode',
+      title: $t('productionPerformance.colWorkSheetCode'),
+      minWidth: 140,
     },
   ],
-  data: productionData,
   height: 360,
   stripe: true,
+  checkboxConfig: { trigger: 'row' },
+  pagerConfig: { enabled: true, pageSize: 20 },
   toolbarConfig: { custom: true, refresh: true, zoom: true },
+  proxyConfig: {
+    ajax: {
+      query: ({ page }: any) => {
+        return queryFinishRecord({
+          workSheetCode: queryForm.workSheetCode || undefined,
+          pageNum: page.currentPage,
+          pageSize: page.pageSize,
+        }).then((res: any) => ({
+          total: res?.total || 0,
+          items: res?.list || [],
+        }));
+      },
+    },
+  },
 };
 
 const [ProductionGrid, productionGridApi] = useVbenVxeGrid({
@@ -79,62 +120,77 @@ const [ProductionGrid, productionGridApi] = useVbenVxeGrid({
 });
 // endregion
 
-// region 2.2 右侧：生产 LOT 列表（多选，假数据）
-const lotData = reactive<any[]>([
-  {
-    lotId: 'LOT-001',
-    qty: 100,
-    unit: 'pcs',
-    handleTime: '2026-07-21 09:00:00',
-  },
-  {
-    lotId: 'LOT-002',
-    qty: 120,
-    unit: 'pcs',
-    handleTime: '2026-07-21 10:30:00',
-  },
-]);
+// region 3.1 业绩生成（addFinishRecord 抽屉）
+const drawerVisible = ref(false);
+const genFormRef = ref<any>();
+const genForm = reactive<any>({
+  lotCode: '',
+  quity: undefined,
+  unit: '',
+});
 
-const lotGridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
-  columns: [
-    { type: 'checkbox', width: 50, title: '' },
-    { field: 'lotId', title: $t('productionPerformance.colLotId'), minWidth: 140 },
-    { field: 'qty', title: $t('productionPerformance.colQty'), minWidth: 100 },
-    { field: 'unit', title: $t('productionPerformance.colUnit'), minWidth: 80 },
-    { field: 'handleTime', title: $t('productionPerformance.colHandleTime'), minWidth: 180 },
-  ],
-  data: lotData,
-  height: 360,
-  stripe: true,
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+const genRules = {
+  lotCode: [{ required: true, message: $t('productionPerformance.lotCodePlaceholder') }],
+  quity: [{ required: true, message: $t('productionPerformance.quityPlaceholder') }],
+  unit: [{ required: true, message: $t('productionPerformance.unitPlaceholder') }],
 };
 
-const [LotGrid, lotGridApi] = useVbenVxeGrid({ gridOptions: lotGridOptions });
+function handleGenPerformance() {
+  if (!queryForm.workSheetCode) {
+    message.warning($t('productionPerformance.workSheetCodePlaceholder'));
+    return;
+  }
+  // 左侧子工单列表仅作展示，LOT 代码在抽屉内填写
+  genForm.lotCode = '';
+  genForm.quity = undefined;
+  genForm.unit = '';
+  drawerVisible.value = true;
+}
+
+function handleGenSubmit() {
+  genFormRef.value.validate().then(() => {
+    addFinishRecord({
+      lotCode: genForm.lotCode,
+      quity: genForm.quity,
+      unit: genForm.unit,
+      workSheetCode: queryForm.workSheetCode,
+    }).then(() => {
+      message.success($t('productionPerformance.genSuccess'));
+      drawerVisible.value = false;
+      productionGridApi.reload();
+    });
+  });
+}
+
+/** 关闭抽屉：重置所有状态 */
+function handleGenClose() {
+  drawerVisible.value = false;
+  genForm.lotCode = '';
+  genForm.quity = undefined;
+  genForm.unit = '';
+}
 // endregion
 
-// region 3. 按钮：业绩生成 / 业绩取消
-function getSelectedLots(): any[] {
-  return lotGridApi.grid.getCheckboxRecords();
-}
-
-function handleGenPerformance() {
-  const rows = getSelectedLots();
-  if (rows.length === 0) {
-    message.warning($t('productionPerformance.plsSelectLot'));
-    return;
-  }
-  message.success($t('productionPerformance.genSuccess'));
-}
-
+// region 3.2 业绩取消（removeFinishRecords 批量删除，需先勾选右侧完工记录）
 function handleCancelPerformance() {
-  const rows = getSelectedLots();
+  const rows: any[] = productionGridApi.grid.getCheckboxRecords();
   if (rows.length === 0) {
     message.warning($t('productionPerformance.plsSelectLot'));
     return;
   }
-  message.success($t('productionPerformance.cancelSuccess'));
+  Modal.confirm({
+    cancelText: $t('common.cancel'),
+    content: $t('productionPerformance.cancelConfirm'),
+    okText: $t('common.confirm'),
+    okType: 'danger',
+    onOk: () => {
+      const ids = rows.map((row: any) => String(row.id));
+      return removeFinishRecords(ids).then(() => {
+        message.success($t('productionPerformance.cancelSuccess'));
+        productionGridApi.reload();
+      });
+    },
+  });
 }
 // endregion
 </script>
@@ -145,47 +201,48 @@ function handleCancelPerformance() {
 
     <!-- 1. 查询条件 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <Form layout="vertical" :model="queryForm">
-        <Row :gutter="16">
-          <Col :xs="24" :sm="12" :md="8" :lg="6">
-            <Form.Item :label="$t('productionPerformance.workOrder')">
-              <Input
-                v-model:value="queryForm.workOrder"
-                :placeholder="$t('productionPerformance.workOrderPlaceholder')"
-                allow-clear
-              />
-            </Form.Item>
-          </Col>
-          <Col :xs="24" :sm="24" :md="24" :lg="6" class="flex items-end">
-            <Space>
-              <Button type="primary" @click="handleQuery">
-                {{ $t('common.query') }}
-              </Button>
-              <Button @click="handleReset">{{ $t('common.reset') }}</Button>
-            </Space>
-          </Col>
-        </Row>
+      <Form
+        layout="inline"
+        :model="queryForm"
+        class="flex flex-wrap items-end gap-2"
+      >
+        <FormItem :label="$t('productionPerformance.workSheetCode')">
+          <Input
+            v-model:value="queryForm.workSheetCode"
+            :placeholder="$t('productionPerformance.workSheetCodePlaceholder')"
+            allow-clear
+            @press-enter="handleQuery"
+          />
+        </FormItem>
+        <FormItem>
+          <Space>
+            <Button type="primary" @click="handleQuery">
+              {{ $t('common.query') }}
+            </Button>
+            <Button @click="handleReset">{{ $t('common.reset') }}</Button>
+          </Space>
+        </FormItem>
       </Form>
     </div>
 
     <!-- 2. 左右两个区域 -->
     <Row :gutter="16">
-      <!-- 2.1 左侧：生产列表 -->
-      <Col :xs="24" :lg="12">
-        <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-          <div class="mb-2 font-bold">{{ $t('productionPerformance.productionList') }}</div>
-          <ProductionGrid>
-            <template #toolbar-tools></template>
-          </ProductionGrid>
-        </div>
-      </Col>
-      <!-- 2.2 右侧：生产 LOT 列表（多选） -->
+      <!-- 2.1 左侧：子工单列表 -->
       <Col :xs="24" :lg="12">
         <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
           <div class="mb-2 font-bold">{{ $t('productionPerformance.lotList') }}</div>
           <LotGrid>
             <template #toolbar-tools></template>
           </LotGrid>
+        </div>
+      </Col>
+      <!-- 2.2 右侧：完工记录列表 -->
+      <Col :xs="24" :lg="12">
+        <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
+          <div class="mb-2 font-bold">{{ $t('productionPerformance.productionList') }}</div>
+          <ProductionGrid>
+            <template #toolbar-tools></template>
+          </ProductionGrid>
         </div>
       </Col>
     </Row>
@@ -199,5 +256,57 @@ function handleCancelPerformance() {
         {{ $t('productionPerformance.cancelPerformance') }}
       </Button>
     </div>
+
+    <!-- 4. 业绩生成抽屉 -->
+    <Drawer
+      v-model:open="drawerVisible"
+      :title="$t('productionPerformance.genTitle')"
+      :width="500"
+      :destroy-on-close="true"
+      :footer-style="{ textAlign: 'right' }"
+      @close="handleGenClose"
+    >
+      <Form
+        ref="genFormRef"
+        :model="genForm"
+        :rules="genRules"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 18 }"
+      >
+        <!-- 工单号：外部查询条件，只读展示 -->
+        <FormItem :label="$t('productionPerformance.workSheetCode')" name="workSheetCode">
+          <Input :value="queryForm.workSheetCode" disabled />
+        </FormItem>
+        <FormItem :label="$t('productionPerformance.lotCode')" name="lotCode">
+          <Input
+            v-model:value="genForm.lotCode"
+            :placeholder="$t('productionPerformance.lotCodePlaceholder')"
+          />
+        </FormItem>
+        <FormItem :label="$t('productionPerformance.quity')" name="quity">
+          <InputNumber
+            v-model:value="genForm.quity"
+            :min="0"
+            :placeholder="$t('productionPerformance.quityPlaceholder')"
+            style="width: 100%"
+          />
+        </FormItem>
+        <FormItem :label="$t('productionPerformance.unit')" name="unit">
+          <Input
+            v-model:value="genForm.unit"
+            :placeholder="$t('productionPerformance.unitPlaceholder')"
+          />
+        </FormItem>
+      </Form>
+
+      <template #footer>
+        <Space>
+          <Button @click="handleGenClose">{{ $t('common.cancel') }}</Button>
+          <Button type="primary" @click="handleGenSubmit">
+            {{ $t('common.confirm') }}
+          </Button>
+        </Space>
+      </template>
+    </Drawer>
   </div>
 </template>

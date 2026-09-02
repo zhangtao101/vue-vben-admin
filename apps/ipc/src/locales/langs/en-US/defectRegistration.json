@@ -36,5 +36,6 @@
   "plsFillQty": "Please fill scrap qty and rework qty",
   "saveSuccess": "Saved successfully",
   "transferSuccess": "Transferred successfully",
-  "fetchInfoSuccess": "Tray info fetched successfully"
+  "fetchInfoSuccess": "Tray info fetched successfully",
+  "plsSelectRecord": "Please select the defect records to transfer first"
 }

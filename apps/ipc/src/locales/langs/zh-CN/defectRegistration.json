@@ -36,5 +36,6 @@
   "plsFillQty": "请填写废弃数量与返工数量",
   "saveSuccess": "保存成功",
   "transferSuccess": "传输成功",
-  "fetchInfoSuccess": "托盘信息获取成功"
+  "fetchInfoSuccess": "托盘信息获取成功",
+  "plsSelectRecord": "请先勾选要传输的不良记录"
 }
