@@ -52,7 +52,7 @@ const queryParams = ref({
 /** 配置类型下拉选项列表 */
 const configTypeOptions = [
   { label: $t('repair.repairBasicConfig.repairType'), value: 'REPAIR_TYPE' },
-  { label: $t('repair.repairBasicConfig.faultLevel'), value: 'FAULT_LEVEL' },
+  // { label: $t('repair.repairBasicConfig.faultLevel'), value: 'FAULT_LEVEL' },
   {
     label: $t('repair.repairBasicConfig.equipmentGroup'),
     value: 'EQUIPMENT_GROUP',
@@ -83,7 +83,7 @@ const configTypeOptions = [
 /** 配置类型编码到中文名称的映射 */
 const configTypeMap: Record<string, string> = {
   REPAIR_TYPE: $t('repair.repairBasicConfig.repairType'),
-  FAULT_LEVEL: $t('repair.repairBasicConfig.faultLevel'),
+  // FAULT_LEVEL: $t('repair.repairBasicConfig.faultLevel'),
   EQUIPMENT_GROUP: $t('repair.repairBasicConfig.equipmentGroup'),
   URGENT_LEVEL: $t('repair.repairBasicConfig.urgentLevel'),
   FAULT_TYPE: $t('repair.repairBasicConfig.faultType'),
