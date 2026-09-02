@@ -566,8 +566,6 @@ defineProps({
       v-if="step.type === 108"
     />
 
-
-
     <!-- 混合水/Mix 工作指示传输V2：根据工步类型为 119 时，渲染混合水/Mix 工作指示传输V2组件，并传递相关参数 -->
     <MixedWaterFailedTransfer
       :workstation-code="workstationCode"
@@ -616,6 +614,7 @@ defineProps({
       :worksheet-code="worksheetCode"
       :binding-id="bindingId"
       :function-id="step.id"
+      :process-type="4"
       v-if="step.type === 112"
     />
 

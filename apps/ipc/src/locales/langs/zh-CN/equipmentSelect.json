@@ -12,5 +12,6 @@
   "location": "位置",
   "useDepartment": "使用部门",
   "cancel": "取消",
-  "confirm": "确认"
+  "confirm": "确认",
+  "onlyOne": "单选模式下只能选择一台设备"
 }

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { EquipSelectItem } from '#/api';
+
 import { ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
@@ -10,15 +13,13 @@ import {
   Drawer,
   FormItem,
   Input,
+  message,
   Row,
   Space,
 } from 'ant-design-vue';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
-import { type EquipSelectItem, getEquipSelectList } from '#/api';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getEquipSelectList } from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({ name: 'EquipmentSelectDrawer' });
@@ -35,6 +36,9 @@ const show = ref(false);
 // ========== 已选状态 ==========
 // 已选中的 equipmentCode 列表，用于数据加载完成后恢复选中状态
 const selectedCodes = ref<string[]>([]);
+
+// 是否单选：为 true 时确认阶段仅允许选择一台设备
+const singleSelect = ref(false);
 
 // ========== 查询参数 ==========
 // 设备查询参数：包含设备编码、设备名称、设备分组编码
@@ -82,6 +86,9 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 120,
     },
   ],
+  checkboxConfig: {
+    trigger: 'row',
+  },
   height: 400,
   pagerConfig: {
     enabled: true,
@@ -173,10 +180,12 @@ function queryData({
 /**
  * 打开抽屉。
  * @param selectedRows 已选中的设备行数据，用于打开后恢复选中状态（可选）
+ * @param single 是否单选，默认为 false（多选）
  * @since 2026-08-31
  */
-function open(selectedRows?: EquipSelectItem[]) {
+function open(selectedRows?: EquipSelectItem[], single = false) {
   show.value = true;
+  singleSelect.value = single;
   // 清空表格选中状态
   const grid = (gridApi as any).grid;
   if (grid && grid.clearCheckboxRow) {
@@ -221,6 +230,7 @@ function handleReset() {
 function handleClose() {
   show.value = false;
   // 关闭时清空所有可变状态，避免下次打开残留旧值
+  singleSelect.value = false;
   selectedCodes.value = [];
   queryParams.value = {
     equipmentCode: '',
@@ -231,11 +241,15 @@ function handleClose() {
 
 // ========== 确认选择 ==========
 /**
- * 确认选择，触发 emit 事件返回选中的设备列表并关闭抽屉。
+ * 确认选择：单选模式下仅允许选择一台设备，校验通过后触发 emit 事件并关闭抽屉。
  * @since 2026-08-31
  */
 function handleConfirm() {
   const selectedRecords = (gridApi as any).grid.getCheckboxRecords();
+  if (singleSelect.value && selectedRecords.length > 1) {
+    message.warning($t('equipmentSelect.onlyOne'));
+    return;
+  }
   emit('select', selectedRecords);
   handleClose();
 }
@@ -254,10 +268,7 @@ function handleConfirm() {
     <Card class="!mb-4">
       <Row :gutter="16" align="middle">
         <Col :span="6">
-          <FormItem
-            :label="$t('equipmentSelect.equipmentCode')"
-            class="!mb-0"
-          >
+          <FormItem :label="$t('equipmentSelect.equipmentCode')" class="!mb-0">
             <Input
               v-model:value="queryParams.equipmentCode"
               :placeholder="$t('equipmentSelect.equipmentCodePlaceholder')"
@@ -267,10 +278,7 @@ function handleConfirm() {
           </FormItem>
         </Col>
         <Col :span="6">
-          <FormItem
-            :label="$t('equipmentSelect.equipmentName')"
-            class="!mb-0"
-          >
+          <FormItem :label="$t('equipmentSelect.equipmentName')" class="!mb-0">
             <Input
               v-model:value="queryParams.equipmentName"
               :placeholder="$t('equipmentSelect.equipmentNamePlaceholder')"
@@ -280,10 +288,7 @@ function handleConfirm() {
           </FormItem>
         </Col>
         <Col :span="6">
-          <FormItem
-            :label="$t('equipmentSelect.equipGroupCode')"
-            class="!mb-0"
-          >
+          <FormItem :label="$t('equipmentSelect.equipGroupCode')" class="!mb-0">
             <Input
               v-model:value="queryParams.equipGroupCode"
               :placeholder="$t('equipmentSelect.equipGroupCodePlaceholder')"

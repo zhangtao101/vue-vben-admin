@@ -4,6 +4,7 @@ export * from './cartWeighing.service';
 export * from './ctuCartonPicking.service';
 export * from './dispatchHomework.service';
 export * from './errorLog.service';
+export * from './gravityFreeMixerWork.service';
 export * from './ioBillOperation.service';
 export * from './materialWeighing.service';
 export * from './noodleSpill.service';

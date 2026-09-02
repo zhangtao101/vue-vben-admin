@@ -12,5 +12,6 @@
   "location": "위치",
   "useDepartment": "사용 부서",
   "cancel": "취소",
-  "confirm": "확인"
+  "confirm": "확인",
+  "onlyOne": "단일 선택 모드에서는 한 대의 설비만 선택할 수 있습니다"
 }

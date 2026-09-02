@@ -12,5 +12,6 @@
   "location": "Location",
   "useDepartment": "Department",
   "cancel": "Cancel",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "onlyOne": "Only one device can be selected in single-select mode"
 }

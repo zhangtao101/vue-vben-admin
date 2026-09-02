@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, reactive, ref } from 'vue';
 
 import {
@@ -14,7 +16,7 @@ import {
   Switch,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 import PackagingMaterialDrawer from '#/util/component/PackagingMaterialDrawer.vue';
 
@@ -43,9 +45,9 @@ const productOptions = [
 ];
 
 const form = reactive<any>({
-  line: undefined,
-  workOrder: '',
-  product: undefined,
+  lineCode: undefined,
+  workSheetCode: '',
+  productCode: undefined,
   operator: '',
   workOrderRemark: '',
 });
@@ -250,7 +252,7 @@ const workStatus = ref<'idle' | 'running'>('idle');
 const materialDrawerRef = ref<any>();
 
 function handleMaterialLoad() {
-  materialDrawerRef.value?.open();
+  materialDrawerRef.value?.open(form);
 }
 
 function handleStart() {
@@ -286,11 +288,17 @@ onMounted(() => {
       <!-- 1.1 左侧：工单信息 + 指标 -->
       <Col :xs="24" :lg="12">
         <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-          <div class="mb-3 font-bold">{{ $t('packagingOperation.formTitle') }}</div>
-          <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="form">
+          <div class="mb-3 font-bold">
+            {{ $t('packagingOperation.formTitle') }}
+          </div>
+          <Form
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 18 }"
+            :model="form"
+          >
             <Form.Item :label="$t('packagingOperation.line')">
               <Select
-                v-model:value="form.line"
+                v-model:value="form.lineCode"
                 :options="lineOptions"
                 :placeholder="$t('packagingOperation.linePlaceholder')"
                 allow-clear
@@ -298,14 +306,14 @@ onMounted(() => {
             </Form.Item>
             <Form.Item :label="$t('packagingOperation.workOrder')">
               <Input
-                v-model:value="form.workOrder"
+                v-model:value="form.workSheetCode"
                 :placeholder="$t('packagingOperation.workOrderPlaceholder')"
                 allow-clear
               />
             </Form.Item>
             <Form.Item :label="$t('packagingOperation.product')">
               <Select
-                v-model:value="form.product"
+                v-model:value="form.productCode"
                 :options="productOptions"
                 :placeholder="$t('packagingOperation.productPlaceholder')"
                 allow-clear
@@ -329,7 +337,9 @@ onMounted(() => {
 
           <!-- 指标数：标题在上、数字在下 -->
           <div class="mt-3 rounded-md border border-border bg-muted/40 p-3">
-            <div class="mb-2 font-bold">{{ $t('packagingOperation.metrics') }}</div>
+            <div class="mb-2 font-bold">
+              {{ $t('packagingOperation.metrics') }}
+            </div>
             <Row :gutter="12">
               <Col
                 v-for="item in metricItems"
@@ -340,7 +350,9 @@ onMounted(() => {
                 <div
                   class="flex h-full flex-col items-center justify-center rounded-md border border-border bg-card py-3"
                 >
-                  <div class="text-sm text-muted-foreground">{{ item.title }}</div>
+                  <div class="text-sm text-muted-foreground">
+                    {{ item.title }}
+                  </div>
                   <div class="mt-1 text-2xl font-bold text-primary">
                     {{ metrics[item.key] }}
                   </div>
@@ -354,7 +366,9 @@ onMounted(() => {
       <!-- 1.2 右侧：投入材料 + 零点/重量控制 -->
       <Col :xs="24" :lg="12">
         <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-          <div class="mb-3 font-bold">{{ $t('packagingOperation.materialTitle') }}</div>
+          <div class="mb-3 font-bold">
+            {{ $t('packagingOperation.materialTitle') }}
+          </div>
           <MaterialGrid>
             <template #toolbar-tools></template>
           </MaterialGrid>
@@ -390,7 +404,9 @@ onMounted(() => {
 
     <!-- 2. 推车列表表格 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <div class="mb-2 font-bold">{{ $t('packagingOperation.tableTitle') }}</div>
+      <div class="mb-2 font-bold">
+        {{ $t('packagingOperation.tableTitle') }}
+      </div>
       <Grid>
         <template #toolbar-actions>
           <Input
@@ -427,10 +443,14 @@ onMounted(() => {
     <Row :gutter="16">
       <Col :xs="24" :lg="12">
         <Button @click="openConnectModal">
-            {{ $t('packagingOperation.connectTitle') }}
-          </Button>
+          {{ $t('packagingOperation.connectTitle') }}
+        </Button>
       </Col>
-      <Col :xs="24" :lg="12" class="flex items-end justify-end gap-2 text-right">
+      <Col
+        :xs="24"
+        :lg="12"
+        class="flex items-end justify-end gap-2 text-right"
+      >
         <Button @click="handleMaterialLoad">
           {{ $t('packagingOperation.materialLoad') }}
         </Button>
