@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 import {
   Button,
   Col,
+  Descriptions,
+  DescriptionsItem,
   Form,
   FormItem,
   Input,
@@ -12,9 +14,11 @@ import {
   Select,
   Space,
   Switch,
+  Tag,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { cartLoad, cartUnload, queryCartList, queryLotDetail } from '#/api';
 import { $t } from '#/locales';
 
 /**
@@ -22,10 +26,9 @@ import { $t } from '#/locales';
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 // region 1. 查询条件
@@ -41,80 +44,123 @@ const cartTypeOptions = [
   { label: 'B类台车', value: 'B' },
 ];
 
+// 装载状态取值与后台 loadFlag 对齐：1 已装载，-1 未装载
 const loadStatusOptions = [
   { label: $t('cartLoadUnload.loaded'), value: '1' },
-  { label: $t('cartLoadUnload.unloaded'), value: '0' },
+  { label: $t('cartLoadUnload.unloaded'), value: '-1' },
 ];
 // endregion
 
-// region 2.1 左侧台车列表（假数据，接口就绪后替换为接口返回）
-const cartData = reactive<any[]>([
-  {
-    cartCode: 'CART-001',
-    cartName: '台车1',
-    cartType: 'A',
-    isLoaded: '是',
-    lotId: 'LOT-001',
-    qty: 100,
-  },
-  {
-    cartCode: 'CART-002',
-    cartName: '台车2',
-    cartType: 'B',
-    isLoaded: '否',
-    lotId: 'LOT-002',
-    qty: 0,
-  },
-]);
+// region 2.1 左侧台车列表（数据来自后台 queryCartList 接口，字段与返回 results 对齐）
+/**
+ * 加载台车列表：携带查询条件与分页参数调用 queryCartList
+ * @param param0 page 分页信息（由表格 proxy 提供）
+ * @returns { total, items } 供表格渲染
+ */
+function queryCartPage({ page }: any) {
+  const params: any = {
+    // 仅查询未删除的台车
+    deleteFlag: '-1',
+    // 装载状态：1 已装载，-1 未装载
+    loadFlag: queryForm.loadStatus,
+    pageNum: page.currentPage,
+    pageSize: page.pageSize,
+  };
+  // 有值条件才参与过滤（后台无此参数则自动忽略）
+  if (queryForm.cartType) {
+    params.cartType = queryForm.cartType;
+  }
+  if (queryForm.cartCode) {
+    params.cartCode = queryForm.cartCode;
+  }
+  if (queryForm.cartName) {
+    params.cartName = queryForm.cartName;
+  }
+  return queryCartList(params)
+    .then((res: any) => {
+      const { total = 0, results = [] } = res ?? {};
+      return { total, items: results };
+    })
+    .catch(() => ({ total: 0, items: [] }));
+}
 
 const cartGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { field: 'cartCode', title: $t('cartLoadUnload.colCartCode'), minWidth: 130 },
-    { field: 'cartName', title: $t('cartLoadUnload.colCartName'), minWidth: 130 },
-    { field: 'cartType', title: $t('cartLoadUnload.colCartType'), minWidth: 110 },
-    { field: 'isLoaded', title: $t('cartLoadUnload.colIsLoaded'), minWidth: 100 },
-    { field: 'lotId', title: $t('cartLoadUnload.colLotId'), minWidth: 130 },
-    { field: 'qty', title: $t('cartLoadUnload.colQty'), minWidth: 90 },
+    { type: 'radio', width: 50, title: '' },
+    {
+      field: 'cartCode',
+      title: $t('cartLoadUnload.colCartCode'),
+      minWidth: 80,
+    },
+    {
+      field: 'cartName',
+      title: $t('cartLoadUnload.colCartName'),
+      minWidth: 100,
+    },
+    {
+      field: 'catTypeName',
+      title: $t('cartLoadUnload.colCartType'),
+      minWidth: 100,
+    },
+    {
+      field: 'loadFlag',
+      title: $t('cartLoadUnload.colIsLoaded'),
+      minWidth: 80,
+      slots: { default: 'loadFlag' },
+    },
+    { field: 'lotId', title: $t('cartLoadUnload.colLotId'), minWidth: 250 },
+    { field: 'quantity', title: $t('cartLoadUnload.colQty'), minWidth: 90 },
   ],
-  data: cartData,
   height: 340,
+  radioConfig: { highlight: true, trigger: 'row' },
+  pagerConfig: { enabled: true, pageSize: 20, pageSizes: [10, 20, 50, 100] },
+  proxyConfig: {
+    ajax: {
+      query: queryCartPage,
+    },
+  },
   stripe: true,
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
 
-const [CartGrid] = useVbenVxeGrid({ gridOptions: cartGridOptions });
+const [CartGrid, cartGridApi] = useVbenVxeGrid({
+  gridOptions: cartGridOptions,
+});
 // endregion
 
-// region 2.2 右侧装载信息表单
-const loadForm = reactive<any>({
-  lotId: '',
-  productCode: '',
-  productName: '',
-  sapSerialNo: '',
-  productionDate: '',
-  expiryDate: '',
-  qty: 0,
-  loader: '',
-  operator: '',
-});
+// region 2.2 右侧装载信息（字段直接使用 queryLotDetail 接口返回键，不做自定义映射）
+const loadForm = reactive<any>({});
 
+/** 清空接口带出的展示字段（保留 lotId 输入值） */
+function resetLoadInfo() {
+  [
+    'productCode',
+    'productName',
+    'sapSeq',
+    'lotCreateTime',
+    'validDate',
+    'number',
+    'equipCode',
+    'opUser',
+    'workSheetCode',
+  ].forEach((key: string) => {
+    delete loadForm[key];
+  });
+}
+
+/** 按扫码输入的 LotId 查询批次详情，并带出装载信息 */
 function handleLotidQuery() {
-  if (!loadForm.lotId) {
-    // 清空其他字段
-    loadForm.productCode = '';
-    loadForm.productName = '';
-    loadForm.sapSerialNo = '';
-    loadForm.productionDate = '';
-    loadForm.expiryDate = '';
-    loadForm.qty = 0;
-    loadForm.loader = '';
-    loadForm.operator = '';
+  const lotId = String(loadForm.lotId ?? '').trim();
+  if (!lotId) {
+    resetLoadInfo();
     return;
   }
-  // TODO: 接口就绪后替换为真实查询（按 LOTID 带出装载信息）
-  // fetchLoadInfo({ lotId: loadForm.lotId }).then((res) => { ... });
+  queryLotDetail({ lotId }).then((data: any) => {
+    // 直接以接口返回对象整体展开赋值，后台字段即展示字段
+    Object.assign(loadForm, data ?? {});
+  });
 }
 // endregion
 
@@ -126,27 +172,62 @@ const printOptionList = [
 ];
 const labelSwitch = ref(false);
 
+/** 初始化：将查询条件、装载信息、打印选项等回归初始状态并刷新列表 */
 function handleInit() {
-  // TODO: 初始化接口
-  message.success($t('cartLoadUnload.initSuccess'));
+  handleReset();
+  loadForm.lotId = '';
+  resetLoadInfo();
+  printOption.value = '1';
+  labelSwitch.value = false;
 }
 
+/** 装载：需在左侧单选台车，并扫码 LOT 查询出批次信息 */
 function handleLoad() {
-  // TODO: 装载接口
-  message.success($t('cartLoadUnload.loadSuccess'));
+  const selectedCart: any = cartGridApi.grid.getRadioRecord();
+  if (!selectedCart?.cartCode) {
+    message.warning($t('cartLoadUnload.plsSelectCart'));
+    return;
+  }
+  if (!loadForm.lotId) {
+    message.warning($t('cartLoadUnload.plsInputLotId'));
+    return;
+  }
+  if (!loadForm.workSheetCode || loadForm.number == null) {
+    message.warning($t('cartLoadUnload.plsQueryLot'));
+    return;
+  }
+  cartLoad({
+    cartCode: selectedCart.cartCode,
+    lotId: loadForm.lotId,
+    number: loadForm.number,
+    worksheetCode: loadForm.workSheetCode,
+  }).then(() => {
+    message.success($t('cartLoadUnload.loadSuccess'));
+    // 装载成功后刷新台车列表并清空批次信息
+    loadForm.lotId = '';
+    resetLoadInfo();
+    handleQuery();
+  });
 }
 
+/** 卸货：需在左侧单选台车 */
 function handleUnload() {
-  // TODO: 卸货接口
-  message.success($t('cartLoadUnload.unloadSuccess'));
+  const selectedCart: any = cartGridApi.grid.getRadioRecord();
+  if (!selectedCart?.cartCode) {
+    message.warning($t('cartLoadUnload.plsSelectCart'));
+    return;
+  }
+  cartUnload({ cartCode: selectedCart.cartCode }).then(() => {
+    message.success($t('cartLoadUnload.unloadSuccess'));
+    handleQuery();
+  });
 }
 // endregion
 
 // region 4. 查询
+/** 触发表格重新查询（携带当前查询条件） */
 function handleQuery() {
-  // TODO: 接口就绪后替换为真实查询（按台车类型/代码/名称/装载状态过滤台车列表）
-  // const params: any = { ...queryForm };
-  // fetchCartList(params).then((res) => { ... });
+  cartGridApi.reload();
 }
 
 function handleReset() {
@@ -157,10 +238,6 @@ function handleReset() {
   handleQuery();
 }
 // endregion
-
-onMounted(() => {
-  handleQuery();
-});
 </script>
 
 <template>
@@ -203,7 +280,9 @@ onMounted(() => {
       </FormItem>
       <FormItem>
         <Space>
-          <Button type="primary" @click="handleQuery">{{ $t('common.query') }}</Button>
+          <Button type="primary" @click="handleQuery">{{
+            $t('common.query')
+          }}</Button>
           <Button @click="handleReset">{{ $t('common.reset') }}</Button>
         </Space>
       </FormItem>
@@ -212,74 +291,66 @@ onMounted(() => {
     <!-- 2. 左右两栏 -->
     <Row :gutter="16">
       <!-- 2.1 左侧：台车列表 -->
-      <Col :span="12">
+      <Col :span="16">
         <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
           <div class="mb-2 font-bold">
             {{ $t('cartLoadUnload.cartList') }}
           </div>
-          <CartGrid />
+          <CartGrid>
+            <template #loadFlag="{ row }">
+              <Tag :color="Number(row.loadFlag) === 1 ? 'success' : 'default'">
+                {{
+                  Number(row.loadFlag) === 1
+                    ? $t('cartLoadUnload.loaded')
+                    : $t('cartLoadUnload.unloaded')
+                }}
+              </Tag>
+            </template>
+          </CartGrid>
         </div>
       </Col>
 
       <!-- 2.2 右侧：装载信息表单 -->
-      <Col :span="12">
+      <Col :span="8">
         <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
           <div class="mb-2 font-bold">
             {{ $t('cartLoadUnload.loadInfo') }}
           </div>
-          <Form :model="loadForm" layout="vertical">
-            <FormItem :label="$t('cartLoadUnload.lotId')">
+          <!-- lotId 支持扫码输入，独占一行 -->
+          <Descriptions :column="1" bordered size="small">
+            <DescriptionsItem :label="$t('cartLoadUnload.lotId')" :span="1">
               <Input
                 v-model:value="loadForm.lotId"
+                allow-clear
                 :placeholder="$t('cartLoadUnload.plsInputLotId')"
-                @change="handleLotidQuery"
+                @press-enter="handleLotidQuery"
               />
-            </FormItem>
-            <Row :gutter="12">
-              <Col :span="12">
-                <FormItem :label="$t('cartLoadUnload.productCode')">
-                  <Input v-model:value="loadForm.productCode" readonly />
-                </FormItem>
-              </Col>
-              <Col :span="12">
-                <FormItem :label="$t('cartLoadUnload.productName')">
-                  <Input v-model:value="loadForm.productName" readonly />
-                </FormItem>
-              </Col>
-              <Col :span="12">
-                <FormItem :label="$t('cartLoadUnload.sapSerialNo')">
-                  <Input v-model:value="loadForm.sapSerialNo" readonly />
-                </FormItem>
-              </Col>
-              <Col :span="12">
-                <FormItem :label="$t('cartLoadUnload.productionDate')">
-                  <Input v-model:value="loadForm.productionDate" readonly />
-                </FormItem>
-              </Col>
-              <Col :span="12">
-                <FormItem :label="$t('cartLoadUnload.expiryDate')">
-                  <Input v-model:value="loadForm.expiryDate" readonly />
-                </FormItem>
-              </Col>
-              <Col :span="12">
-                <FormItem :label="$t('cartLoadUnload.qty')">
-                  <Input
-                    :value="String(loadForm.qty)" readonly
-                  />
-                </FormItem>
-              </Col>
-              <Col :span="12">
-                <FormItem :label="$t('cartLoadUnload.loader')">
-                  <Input v-model:value="loadForm.loader" readonly />
-                </FormItem>
-              </Col>
-              <Col :span="12">
-                <FormItem :label="$t('cartLoadUnload.operator')">
-                  <Input v-model:value="loadForm.operator" readonly />
-                </FormItem>
-              </Col>
-            </Row>
-          </Form>
+            </DescriptionsItem>
+            <DescriptionsItem :label="$t('cartLoadUnload.productCode')">
+              {{ loadForm.productCode || '-' }}
+            </DescriptionsItem>
+            <DescriptionsItem :label="$t('cartLoadUnload.productName')">
+              {{ loadForm.productName || '-' }}
+            </DescriptionsItem>
+            <DescriptionsItem :label="$t('cartLoadUnload.sapSerialNo')">
+              {{ loadForm.sapSeq || '-' }}
+            </DescriptionsItem>
+            <DescriptionsItem :label="$t('cartLoadUnload.productionDate')">
+              {{ loadForm.lotCreateTime || '-' }}
+            </DescriptionsItem>
+            <DescriptionsItem :label="$t('cartLoadUnload.expiryDate')">
+              {{ loadForm.validDate || '-' }}
+            </DescriptionsItem>
+            <DescriptionsItem :label="$t('cartLoadUnload.qty')">
+              {{ loadForm.number ?? '-' }}
+            </DescriptionsItem>
+            <DescriptionsItem :label="$t('cartLoadUnload.loader')">
+              {{ loadForm.equipCode || '-' }}
+            </DescriptionsItem>
+            <DescriptionsItem :label="$t('cartLoadUnload.operator')">
+              {{ loadForm.opUser || '-' }}
+            </DescriptionsItem>
+          </Descriptions>
         </div>
       </Col>
     </Row>
@@ -302,8 +373,12 @@ onMounted(() => {
         <div class="flex justify-end">
           <Space>
             <Button @click="handleInit">{{ $t('cartLoadUnload.init') }}</Button>
-            <Button type="primary" @click="handleLoad">{{ $t('cartLoadUnload.load') }}</Button>
-            <Button @click="handleUnload">{{ $t('cartLoadUnload.unload') }}</Button>
+            <Button type="primary" @click="handleLoad">{{
+              $t('cartLoadUnload.load')
+            }}</Button>
+            <Button @click="handleUnload">{{
+              $t('cartLoadUnload.unload')
+            }}</Button>
           </Space>
         </div>
       </Col>

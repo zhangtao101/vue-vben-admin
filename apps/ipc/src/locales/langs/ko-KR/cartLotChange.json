@@ -11,6 +11,7 @@
   "operator": "작업자",
   "productionDate": "생산일",
   "expiryDate": "유효기간",
+  "prodExpiryDate": "생산일 / 유효기간",
   "lineName": "라인명",
   "qty": "수량",
   "loader": "로더",
@@ -21,10 +22,13 @@
   "colCartType": "카트 유형",
   "colIsLoaded": "적재 여부",
   "colLotId": "LOTID",
+  "colMaxLoadQty": "최대 적재량",
   "colQty": "수량",
   "plsSelect": "선택해 주세요",
   "yes": "예",
   "no": "아니요",
   "save": "저장",
-  "saveSuccess": "저장 성공"
+  "saveSuccess": "저장 성공",
+  "saveFail": "저장 실패",
+  "plsQueryLot": "먼저 배치 상세를 조회해 주세요"
 }

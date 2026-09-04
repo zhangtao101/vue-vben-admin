@@ -37,12 +37,11 @@ import PackagingMaterialDrawer from '#/util/component/PackagingMaterialDrawer.vu
  */
 const props = defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
   /** 工序：由外部传入 */
   processType: { type: Number, default: 4 },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 // region 1. 查询条件：子产线 / 工单

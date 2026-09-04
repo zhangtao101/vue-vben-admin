@@ -42,12 +42,11 @@ defineOptions({
  */
 const props = defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
   /** 工序（搅拌机为 6，混合水为 1），由外部传入 */
   processType: { type: Number, default: 6 },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 // region 顶部：查询条件
@@ -725,12 +724,16 @@ function handleIssue() {
             </div>
           </div>
           <div class="mt-1 flex justify-between text-xs text-muted-foreground">
-            <span>{{ $t('mixerMaterialWeigh.lowerProductWt') }}：{{
+            <span
+              >{{ $t('mixerMaterialWeigh.lowerProductWt') }}：{{
                 currentMaterial?.lowerProductWt
-              }}</span>
-            <span>{{ $t('mixerMaterialWeigh.upperProductWt') }}：{{
+              }}</span
+            >
+            <span
+              >{{ $t('mixerMaterialWeigh.upperProductWt') }}：{{
                 currentMaterial?.upperProductWt
-              }}</span>
+              }}</span
+            >
           </div>
 
           <!-- 称重方式 与 单包重量/个数/加减按钮 同一行左右两栏 -->

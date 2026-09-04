@@ -12,12 +12,8 @@ import {
   getSstationProces,
   workstationListAcquisition,
 } from '#/api';
-import { useSectionStore } from '#/store';
 import StepExecution from '#/util/component/stepExecution.vue';
 import VerticalStepBar from '#/util/component/verticalStepBar.vue';
-
-// 工段信息（左上角展示，来自工段设置）
-const sectionStore = useSectionStore();
 
 // region 工作站与工序选择（左上角）
 const workstationList = ref<any[]>([]);
@@ -51,9 +47,10 @@ function queryListOfOperationItems() {
     (stationProcesses: any[]) => {
       processList.value = stationProcesses || [];
       // 默认选中第一个工序
-      selectedProcessCode.value = processList.value.length > 0
-        ? processList.value[0].processCode
-        : undefined;
+      selectedProcessCode.value =
+        processList.value.length > 0
+          ? processList.value[0].processCode
+          : undefined;
       processChange(selectedProcessCode.value);
     },
   );
@@ -76,19 +73,32 @@ function processChange(processCode?: any) {
   // 操作事项取当前工序绑定的作业标签（details）
   listOfOperationItems.value = currentProcess?.details || [];
   // 默认选中第一个操作事项
-  theSelectedOperation.value = listOfOperationItems.value.length > 0
-    ? listOfOperationItems.value[0].id
-    : undefined;
+  theSelectedOperation.value =
+    listOfOperationItems.value.length > 0
+      ? listOfOperationItems.value[0].id
+      : undefined;
+  operationItemChange();
 }
 
 /**
  * 操作事项切换：根据标签页ID查询对应的工步列表
  */
 function operationItemChange() {
-  // 暂先打印返回数据，便于确认接口结构
   getOpFunctionsByOpdetail({ opDetailId: theSelectedOperation.value }).then(
-    (data: any) => {
-      console.log('工步列表:', data);
+    (data: any[]) => {
+      // 接口数据转工步列表格式：id 对应 id，functionType 对应 type，
+      // functionTypeName 对应 title，status 默认 1
+      stepList.value = (data || []).map((item: any) => ({
+        id: item.id,
+        title: item.functionTypeName,
+        type: item.functionType,
+        status: 1,
+      }));
+      // 默认选中第一个工步
+      currentStepIndex.value = 0;
+      currentWorkingStep.value = stepList.value[0]
+        ? { ...stepList.value[0] }
+        : undefined;
     },
   );
 }
@@ -135,16 +145,6 @@ function stepChange(item: any) {
 }
 // endregion
 
-// region 假数据 - 工单信息（供步骤执行使用）
-const fakeWorkOrder = ref({
-  worksheetCode: 'WO-2026-0001',
-  productCode: 'P-1001',
-  productName: '示例产品A',
-});
-// 当前选中的工序绑定 ID
-const checkedProcessId = ref(1001);
-// endregion
-
 onMounted(() => {
   currentWorkingStep.value = stepList.value[currentStepIndex.value];
   queryListOfWorkstations();
@@ -161,7 +161,10 @@ onMounted(() => {
           <Select
             v-model:value="selectedWorkstation"
             :options="workstationList"
-            :field-names="{ label: 'workstationName', value: 'workstationCode' }"
+            :field-names="{
+              label: 'workstationName',
+              value: 'workstationCode',
+            }"
             placeholder="请选择工作站"
             class="!w-44"
             @change="queryListOfOperationItems"
@@ -233,11 +236,8 @@ onMounted(() => {
         <div class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
           <StepExecution
             class="min-h-0 flex-1"
-            :workstation-code="sectionStore.sectionCode"
-            :worksheet-code="fakeWorkOrder.worksheetCode"
-            :product-code="fakeWorkOrder.productCode"
-            :product-name="fakeWorkOrder.productName"
-            :binding-id="checkedProcessId"
+            :workstation-code="selectedWorkstation"
+            :process-code="selectedProcessCode"
             :step="currentWorkingStep"
             v-if="currentWorkingStep"
           />

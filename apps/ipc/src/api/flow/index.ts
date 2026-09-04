@@ -1,4 +1,6 @@
 export * from './barcodeInspection.service';
+export * from './cartLabelIssue.service';
+export * from './cartLoadUnload.service';
 export * from './cartonCodeQuery.service';
 export * from './cartWeighing.service';
 export * from './ctuCartonPicking.service';
@@ -9,6 +11,7 @@ export * from './gravityFreeMixerWork.service';
 export * from './ioBillOperation.service';
 export * from './materialWeighing.service';
 export * from './noodleSpill.service';
+export * from './packagingOperation.service';
 export * from './palletLoading.service';
 export * from './printTemplateMaintenance.service';
 export * from './productionOperation.service';

@@ -8,89 +8,145 @@ import {
   FormItem,
   Input,
   message,
+  Modal,
   Select,
   Space,
+  Tag,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { cancelCartInput, queryCartList } from '#/api';
 import { $t } from '#/locales';
 import CartLock from '#/util/component/steps/cartLock.vue';
-import CartUnlock from '#/util/component/steps/cartUnlock.vue';
 
 /**
  * 工序步骤组件标准入参（与作业平台其它 steps 组件保持一致）
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
-// region 1. 查询条件
+// region 1. 查询条件（参数与后台 queryCartList 对齐）
 const queryForm = reactive<any>({
-  cartType: undefined,
+  cartType: '',
   cartCode: '',
-  cartName: '',
-  loadStatus: undefined,
+  lotId: '',
+  loadFlag: undefined,
+  // 默认只查未删除台车
+  deleteFlag: '-1',
 });
 
-const cartTypeOptions = [
-  { label: 'A类台车', value: 'A' },
-  { label: 'B类台车', value: 'B' },
+const loadFlagOptions = [
+  { label: $t('cartLabelIssue.loaded'), value: '1' },
+  { label: $t('cartLabelIssue.unloaded'), value: '-1' },
 ];
 
-const loadStatusOptions = [
-  { label: $t('cartLabelIssue.loaded'), value: '1' },
-  { label: $t('cartLabelIssue.unloaded'), value: '0' },
+const deleteFlagOptions = [
+  { label: $t('cartLabelIssue.notDeleted'), value: '-1' },
+  { label: $t('cartLabelIssue.deleted'), value: '1' },
 ];
 // endregion
 
-// region 2. 表格数据（假数据，接口就绪后替换为接口返回）
-const cartData = reactive<any[]>([
-  {
-    cartCode: 'CART-001',
-    cartName: '台车1',
-    cartType: 'A',
-    lotId: 'LOT-001',
-    maxLoadQty: 200,
-    isLocked: '否',
-    isDeleted: '否',
-  },
-  {
-    cartCode: 'CART-002',
-    cartName: '台车2',
-    cartType: 'B',
-    lotId: 'LOT-002',
-    maxLoadQty: 200,
-    isLocked: '是',
-    isDeleted: '否',
-  },
-]);
+// region 2. 表格（数据来自后台 queryCartList 接口，字段与返回 results 对齐）
+/** 锁定标记编码 → 多语言文本 */
+function getLockFlagText(lockFlag: null | string | undefined) {
+  const lockFlagMap: Record<string, string> = {
+    CLEANING: $t('cartLabelIssue.lockCleaning'),
+    REPAIR: $t('cartLabelIssue.lockRepair'),
+    'CLEAN END': $t('cartLabelIssue.lockCleanEnd'),
+    'REPAIR END': $t('cartLabelIssue.lockRepairEnd'),
+  };
+  return lockFlag
+    ? (lockFlagMap[lockFlag] ?? lockFlag)
+    : $t('cartLabelIssue.lockNone');
+}
+
+/**
+ * 加载台车列表：携带查询条件与分页参数调用 queryCartList
+ * @param param0 page 分页信息（由表格 proxy 提供）
+ * @returns { total, items } 供表格渲染
+ */
+function queryCartPage({ page }: any) {
+  const params = {
+    ...queryForm,
+    pageNum: page.currentPage,
+    pageSize: page.pageSize,
+  };
+  return queryCartList(params)
+    .then((res: any) => {
+      const { total = 0, results = [] } = res ?? {};
+      return { total, items: results };
+    })
+    .catch(() => ({ total: 0, items: [] }));
+}
 
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
     { type: 'checkbox', width: 50, title: '' },
-    { field: 'cartCode', title: $t('cartLabelIssue.colCartCode'), minWidth: 140 },
-    { field: 'cartName', title: $t('cartLabelIssue.colCartName'), minWidth: 140 },
-    { field: 'cartType', title: $t('cartLabelIssue.colCartType'), minWidth: 110 },
-    { field: 'lotId', title: $t('cartLabelIssue.colLotId'), minWidth: 140 },
-    { field: 'maxLoadQty', title: $t('cartLabelIssue.colMaxLoadQty'), minWidth: 120 },
-    { field: 'isLocked', title: $t('cartLabelIssue.colIsLocked'), minWidth: 100 },
-    { field: 'isDeleted', title: $t('cartLabelIssue.colIsDeleted'), minWidth: 100 },
+    {
+      field: 'cartCode',
+      title: $t('cartLabelIssue.colCartCode'),
+      minWidth: 140,
+    },
+    {
+      field: 'cartName',
+      title: $t('cartLabelIssue.colCartName'),
+      minWidth: 150,
+    },
+    {
+      field: 'catTypeName',
+      title: $t('cartLabelIssue.colCatTypeName'),
+      minWidth: 130,
+    },
+    { field: 'lotId', title: $t('cartLabelIssue.colLotId'), minWidth: 200 },
+    {
+      field: 'maxLoadQuantity',
+      title: $t('cartLabelIssue.colMaxLoadQty'),
+      minWidth: 120,
+    },
+    {
+      field: 'quantity',
+      title: $t('cartLabelIssue.colQuantity'),
+      minWidth: 100,
+    },
+    {
+      field: 'loadFlag',
+      title: $t('cartLabelIssue.colLoadFlag'),
+      minWidth: 100,
+      slots: { default: 'loadFlag' },
+    },
+    {
+      field: 'lockFlag',
+      title: $t('cartLabelIssue.colLockFlag'),
+      minWidth: 130,
+      slots: { default: 'lockFlag' },
+    },
+    {
+      field: 'deleteFlag',
+      title: $t('cartLabelIssue.colDeleteFlag'),
+      minWidth: 110,
+      slots: { default: 'deleteFlag' },
+    },
     {
       field: 'action',
       title: $t('cartLabelIssue.colAction'),
-      minWidth: 160,
+      minWidth: 240,
       fixed: 'right',
       slots: { default: 'action' },
     },
   ],
-  data: cartData,
   height: 420,
+  pagerConfig: { enabled: true, pageSize: 20, pageSizes: [10, 20, 50, 100] },
+  proxyConfig: {
+    ajax: {
+      query: queryCartPage,
+    },
+  },
   stripe: true,
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
@@ -99,24 +155,17 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 // endregion
 
 // region 3. 查询与功能按钮
+/** 触发表格重新查询（携带当前查询条件） */
 function handleQuery() {
-  // TODO: 接口就绪后替换为真实查询（按台车类型/代码/名称/装载状态过滤）
-  // const params: any = {
-  //   workstationCode: props.workstationCode,
-  //   functionId: props.functionId,
-  //   bindingId: props.bindingId,
-  //   worksheetCode: props.worksheetCode,
-  //   equipCode: props.equipCode,
-  //   ...queryForm,
-  // };
-  // fetchCartLabelList(params).then((res) => { ... });
+  gridApi.reload();
 }
 
 function handleReset() {
-  queryForm.cartType = undefined;
+  queryForm.cartType = '';
   queryForm.cartCode = '';
-  queryForm.cartName = '';
-  queryForm.loadStatus = undefined;
+  queryForm.lotId = '';
+  queryForm.loadFlag = undefined;
+  queryForm.deleteFlag = '-1';
   handleQuery();
 }
 
@@ -141,20 +190,57 @@ function handleCartIssue() {
 }
 // endregion
 
-// region 4. 操作列：复用台车锁定 / 台车解锁组件（抽屉形式）
+// region 4. 操作列：锁定 / 删除 / 解锁
+/** 当前操作的台车行（锁定/解锁抽屉带入回显） */
+const currentCartRow = ref<any>(null);
+
+/** 抽屉显隐 */
 const lockDrawerVisible = ref(false);
-function handleLockDelete() {
+/** 抽屉操作模式：lock 锁定 / unlock 解锁 */
+const drawerMode = ref<'lock' | 'unlock'>('lock');
+
+function handleLock(row: any) {
+  currentCartRow.value = row;
+  drawerMode.value = 'lock';
   lockDrawerVisible.value = true;
 }
 
-const unlockDrawerVisible = ref(false);
-function handleUnlock() {
-  unlockDrawerVisible.value = true;
+function handleUnlock(row: any) {
+  currentCartRow.value = row;
+  drawerMode.value = 'unlock';
+  lockDrawerVisible.value = true;
+}
+
+/** 锁定/解锁成功：关闭抽屉并重新加载台车列表 */
+function handleActionSuccess() {
+  lockDrawerVisible.value = false;
+  handleQuery();
+}
+
+/** 删除台车：弹出二次确认框，确认后调用大车删除接口并刷新列表 */
+function handleDelete(row: any) {
+  if (!row?.cartCode) {
+    return;
+  }
+  Modal.confirm({
+    title: $t('cartLabelIssue.deleteConfirmTitle'),
+    content: $t('cartLabelIssue.deleteConfirmContent'),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
+    okType: 'danger',
+    onOk: () =>
+      cancelCartInput({ cartCode: row.cartCode }).then(() => {
+        message.success($t('cartLabelIssue.deleteSuccess'));
+        handleQuery();
+      }),
+  });
 }
 // endregion
 
 onMounted(() => {
-  handleQuery();
+  setTimeout(() => {
+    handleQuery();
+  }, 200);
 });
 </script>
 
@@ -163,11 +249,10 @@ onMounted(() => {
     <!-- 1. 查询条件 -->
     <Form :model="queryForm" layout="inline">
       <FormItem :label="$t('cartLabelIssue.cartType')">
-        <Select
+        <Input
           v-model:value="queryForm.cartType"
           :allow-clear="true"
-          :options="cartTypeOptions"
-          :placeholder="$t('cartLabelIssue.plsSelect')"
+          :placeholder="$t('cartLabelIssue.plsInput')"
           style="width: 160px"
         />
       </FormItem>
@@ -179,26 +264,37 @@ onMounted(() => {
           style="width: 160px"
         />
       </FormItem>
-      <FormItem :label="$t('cartLabelIssue.cartName')">
+      <FormItem :label="$t('cartLabelIssue.lotId')">
         <Input
-          v-model:value="queryForm.cartName"
+          v-model:value="queryForm.lotId"
           :allow-clear="true"
           :placeholder="$t('cartLabelIssue.plsInput')"
-          style="width: 160px"
+          style="width: 200px"
         />
       </FormItem>
       <FormItem :label="$t('cartLabelIssue.loadStatus')">
         <Select
-          v-model:value="queryForm.loadStatus"
+          v-model:value="queryForm.loadFlag"
           :allow-clear="true"
-          :options="loadStatusOptions"
+          :options="loadFlagOptions"
           :placeholder="$t('cartLabelIssue.plsSelect')"
-          style="width: 160px"
+          style="width: 140px"
+        />
+      </FormItem>
+      <FormItem :label="$t('cartLabelIssue.colDeleteFlag')">
+        <Select
+          v-model:value="queryForm.deleteFlag"
+          :allow-clear="true"
+          :options="deleteFlagOptions"
+          :placeholder="$t('cartLabelIssue.plsSelect')"
+          style="width: 140px"
         />
       </FormItem>
       <FormItem>
         <Space>
-          <Button type="primary" @click="handleQuery">{{ $t('common.query') }}</Button>
+          <Button type="primary" @click="handleQuery">{{
+            $t('common.query')
+          }}</Button>
           <Button @click="handleReset">{{ $t('common.reset') }}</Button>
         </Space>
       </FormItem>
@@ -217,47 +313,70 @@ onMounted(() => {
           </Button>
         </Space>
       </template>
-      <template #action>
+      <template #loadFlag="{ row }">
+        <Tag :color="Number(row.loadFlag) === 1 ? 'success' : 'default'">
+          {{
+            Number(row.loadFlag) === 1
+              ? $t('cartLabelIssue.loaded')
+              : $t('cartLabelIssue.unloaded')
+          }}
+        </Tag>
+      </template>
+      <template #lockFlag="{ row }">
+        <Tag :color="row.lockFlag ? 'warning' : 'default'">
+          {{ getLockFlagText(row.lockFlag) }}
+        </Tag>
+      </template>
+      <template #deleteFlag="{ row }">
+        <Tag :color="Number(row.deleteFlag) === 1 ? 'error' : 'success'">
+          {{
+            Number(row.deleteFlag) === 1
+              ? $t('cartLabelIssue.deleted')
+              : $t('cartLabelIssue.notDeleted')
+          }}
+        </Tag>
+      </template>
+      <template #action="{ row }">
         <Space>
-          <Button type="link" @click="handleLockDelete">
-            {{ $t('cartLabelIssue.opLockDelete') }}
+          <Button
+            type="link"
+            :disabled="!!row.lockFlag"
+            @click="handleLock(row)"
+          >
+            {{ $t('cartLabelIssue.opLock') }}
           </Button>
-          <Button type="link" @click="handleUnlock">
+          <Button
+            type="link"
+            :disabled="!row.lockFlag"
+            @click="handleUnlock(row)"
+          >
             {{ $t('cartLabelIssue.opUnlock') }}
+          </Button>
+          <Button type="link" @click="handleDelete(row)" danger>
+            {{ $t('cartLabelIssue.opDelete') }}
           </Button>
         </Space>
       </template>
     </Grid>
 
-    <!-- 锁定/删除 抽屉：复用台车锁定组件（原 type 116），从顶部弹出 -->
+    <!-- 锁定/解锁 抽屉：复用台车锁定组件（原 type 116），按 mode 区分锁定/解锁，从顶部弹出，带入当前行台车信息 -->
     <Drawer
       v-model:open="lockDrawerVisible"
-      :title="$t('cartLabelIssue.lockTitle')"
-      :height="500"
+      :title="
+        drawerMode === 'lock'
+          ? $t('cartLabelIssue.lockTitle')
+          : $t('cartLabelIssue.unlockTitle')
+      "
+      height="100%"
       placement="top"
     >
       <CartLock
         :workstation-code="workstationCode"
-        :equip-code="equipCode"
-        :worksheet-code="worksheetCode"
-        :binding-id="bindingId"
         :function-id="functionId"
-      />
-    </Drawer>
-
-    <!-- 解锁 抽屉：复用台车解锁组件（原 type 117），从顶部弹出 -->
-    <Drawer
-      v-model:open="unlockDrawerVisible"
-      :title="$t('cartLabelIssue.unlockTitle')"
-      :height="500"
-      placement="top"
-    >
-      <CartUnlock
-        :workstation-code="workstationCode"
-        :equip-code="equipCode"
-        :worksheet-code="worksheetCode"
-        :binding-id="bindingId"
-        :function-id="functionId"
+        :cart-row="currentCartRow"
+        :mode="drawerMode"
+        @success="handleActionSuccess"
+        v-if="lockDrawerVisible"
       />
     </Drawer>
   </div>

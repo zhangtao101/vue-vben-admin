@@ -34,5 +34,7 @@
   "unload": "卸货",
   "initSuccess": "初始化成功",
   "loadSuccess": "装载成功",
-  "unloadSuccess": "卸货成功"
+  "unloadSuccess": "卸货成功",
+  "plsSelectCart": "请先选择台车",
+  "plsQueryLot": "请先扫码查询LOTID"
 }

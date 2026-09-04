@@ -39,10 +39,9 @@ import { $t } from '#/locales';
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 const { RangePicker } = DatePicker;
@@ -81,7 +80,10 @@ async function loadOptions() {
     const lineRes = await listProductionLines({ pageNum: 1, pageSize: 1000 });
     lineOptions.value = (lineRes?.list ?? []).map((item: any) => {
       lineNameMap.set(item.lineCode, item.lineName);
-      return { label: `${item.lineCode}(${item.lineName})`, value: item.lineCode };
+      return {
+        label: `${item.lineCode}(${item.lineName})`,
+        value: item.lineCode,
+      };
     });
   } catch {
     message.error($t('noodleMachineUse.optionsLoadFailed'));
@@ -94,24 +96,41 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    ({ type: 'radio', width: 50, radioConfig: { trigger: 'row' } } as any),
-    { field: 'equipCode', title: $t('noodleMachineUse.colEquipCode'), minWidth: 110 },
+    { type: 'radio', width: 50, radioConfig: { trigger: 'row' } } as any,
+    {
+      field: 'equipCode',
+      title: $t('noodleMachineUse.colEquipCode'),
+      minWidth: 110,
+    },
     {
       field: 'type',
       title: $t('noodleMachineUse.colType'),
       minWidth: 110,
       formatter: ({ cellValue }) =>
-        machineTypeOptions.find((o) => o.value === cellValue)?.label || cellValue,
+        machineTypeOptions.find((o) => o.value === cellValue)?.label ||
+        cellValue,
     },
-    { field: 'lineCode', title: $t('noodleMachineUse.colLineCode'), minWidth: 110 },
-    { field: 'lineName', title: $t('noodleMachineUse.colLineName'), minWidth: 130 },
+    {
+      field: 'lineCode',
+      title: $t('noodleMachineUse.colLineCode'),
+      minWidth: 110,
+    },
+    {
+      field: 'lineName',
+      title: $t('noodleMachineUse.colLineName'),
+      minWidth: 130,
+    },
     {
       field: 'productionDate',
       title: $t('noodleMachineUse.colProductionDate'),
       minWidth: 130,
       slots: { default: 'productionDateCell' },
     },
-    { field: 'usageHours', title: $t('noodleMachineUse.colUsageHours'), minWidth: 100 },
+    {
+      field: 'usageHours',
+      title: $t('noodleMachineUse.colUsageHours'),
+      minWidth: 100,
+    },
     { field: 'remark', title: $t('noodleMachineUse.colRemark'), minWidth: 140 },
     {
       field: 'operation',
@@ -356,8 +375,16 @@ onMounted(() => {
         <template #operationCell="{ row }">
           <Tooltip>
             <template #title>{{ $t('noodleMachineUse.delete') }}</template>
-            <Button type="link" danger class="px-1" @click="handleRowDelete(row)">
-              <Icon icon="mdi:delete-outline" class="inline-block align-middle text-lg" />
+            <Button
+              type="link"
+              danger
+              class="px-1"
+              @click="handleRowDelete(row)"
+            >
+              <Icon
+                icon="mdi:delete-outline"
+                class="inline-block align-middle text-lg"
+              />
             </Button>
           </Tooltip>
         </template>

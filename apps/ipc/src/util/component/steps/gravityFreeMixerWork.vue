@@ -34,10 +34,9 @@ import ReIssueDrawer from '../drawers/ReIssueDrawer.vue';
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 // region 查询条件

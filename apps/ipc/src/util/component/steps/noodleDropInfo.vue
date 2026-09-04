@@ -41,10 +41,9 @@ import { $t } from '#/locales';
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 const { RangePicker } = DatePicker;
@@ -77,15 +76,24 @@ async function loadOptions() {
     ]);
     lineOptions.value = (lineRes?.list ?? []).map((item: any) => {
       lineNameMap.set(item.lineCode, item.lineName);
-      return { label: `${item.lineCode}(${item.lineName})`, value: item.lineCode };
+      return {
+        label: `${item.lineCode}(${item.lineName})`,
+        value: item.lineCode,
+      };
     });
     areaOptions.value = (areaRes?.list ?? []).map((item: any) => {
       areaNameMap.set(item.areaCode, item.areaName);
-      return { label: `${item.areaCode}(${item.areaName})`, value: item.areaCode };
+      return {
+        label: `${item.areaCode}(${item.areaName})`,
+        value: item.areaCode,
+      };
     });
     gradeOptions.value = (gradeRes?.list ?? []).map((item: any) => {
       gradeNameMap.set(item.gradeCode, item.gradeName);
-      return { label: `${item.gradeCode}(${item.gradeName})`, value: item.gradeCode };
+      return {
+        label: `${item.gradeCode}(${item.gradeName})`,
+        value: item.gradeCode,
+      };
     });
   } catch {
     message.error($t('noodleDropInfo.optionsLoadFailed'));
@@ -98,22 +106,42 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    ({ type: 'radio', width: 50, radioConfig: { trigger: 'row' } } as any),
+    { type: 'radio', width: 50, radioConfig: { trigger: 'row' } } as any,
     {
       field: 'productionDate',
       title: $t('noodleDropInfo.colProductDate'),
       minWidth: 130,
       slots: { default: 'productionDateCell' },
     },
-    { field: 'lineCode', title: $t('noodleDropInfo.colLineCode'), minWidth: 110 },
-    { field: 'lineName', title: $t('noodleDropInfo.colLineName'), minWidth: 130 },
-    { field: 'areaCode', title: $t('noodleDropInfo.colAreaCode'), minWidth: 100 },
-    { field: 'areaName', title: $t('noodleDropInfo.colAreaName'), minWidth: 100 },
+    {
+      field: 'lineCode',
+      title: $t('noodleDropInfo.colLineCode'),
+      minWidth: 110,
+    },
+    {
+      field: 'lineName',
+      title: $t('noodleDropInfo.colLineName'),
+      minWidth: 130,
+    },
+    {
+      field: 'areaCode',
+      title: $t('noodleDropInfo.colAreaCode'),
+      minWidth: 100,
+    },
+    {
+      field: 'areaName',
+      title: $t('noodleDropInfo.colAreaName'),
+      minWidth: 100,
+    },
     { field: 'gradeCode', title: $t('noodleDropInfo.colGrade'), minWidth: 90 },
     { field: 'quantity', title: $t('noodleDropInfo.colQty'), minWidth: 100 },
     { field: 'unit', title: $t('noodleDropInfo.colUnit'), minWidth: 90 },
     { field: 'userCode', title: $t('noodleDropInfo.colUserId'), minWidth: 110 },
-    { field: 'userName', title: $t('noodleDropInfo.colUserName'), minWidth: 110 },
+    {
+      field: 'userName',
+      title: $t('noodleDropInfo.colUserName'),
+      minWidth: 110,
+    },
     { field: 'remark', title: $t('noodleDropInfo.colRemark'), minWidth: 140 },
     {
       field: 'operation',
@@ -383,8 +411,16 @@ onMounted(() => {
         <template #operationCell="{ row }">
           <Tooltip>
             <template #title>{{ $t('noodleDropInfo.delete') }}</template>
-            <Button type="link" danger class="px-1" @click="handleRowDelete(row)">
-              <Icon icon="mdi:delete-outline" class="inline-block align-middle text-lg" />
+            <Button
+              type="link"
+              danger
+              class="px-1"
+              @click="handleRowDelete(row)"
+            >
+              <Icon
+                icon="mdi:delete-outline"
+                class="inline-block align-middle text-lg"
+              />
             </Button>
           </Tooltip>
         </template>

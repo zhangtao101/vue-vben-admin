@@ -1,0 +1,22 @@
+{
+  "title": "Select Work Order",
+  "planDateRange": "Plan Date",
+  "planDateStart": "Start Date",
+  "planDateEnd": "End Date",
+  "workOrder": "Work Order No.",
+  "workOrderPlaceholder": "Enter work order no.",
+  "status": "Status",
+  "statusPlaceholder": "Select status",
+  "statusNotStarted": "Not Started",
+  "statusRunning": "In Progress",
+  "statusFinished": "Completed",
+  "colWorkSheetCode": "Work Order No.",
+  "colProductCode": "Product Code",
+  "colProductName": "Product Name",
+  "colPlanDateStart": "Plan Date",
+  "colPlanDateStop": "End Date",
+  "colPlanNumber": "Plan Qty",
+  "colFinishNumber": "Finish Qty",
+  "colStatus": "Status",
+  "plsSelect": "Please select a work order"
+}

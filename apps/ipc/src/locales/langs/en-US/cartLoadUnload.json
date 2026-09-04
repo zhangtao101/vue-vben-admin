@@ -34,5 +34,7 @@
   "unload": "Unload",
   "initSuccess": "Initialized successfully",
   "loadSuccess": "Loaded successfully",
-  "unloadSuccess": "Unloaded successfully"
+  "unloadSuccess": "Unloaded successfully",
+  "plsSelectCart": "Please select a cart first",
+  "plsQueryLot": "Please scan the LOTID first"
 }

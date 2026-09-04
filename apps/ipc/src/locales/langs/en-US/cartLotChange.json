@@ -11,6 +11,7 @@
   "operator": "Operator",
   "productionDate": "Production Date",
   "expiryDate": "Expiry Date",
+  "prodExpiryDate": "Production Date / Expiry Date",
   "lineName": "Line Name",
   "qty": "Quantity",
   "loader": "Loader",
@@ -21,10 +22,13 @@
   "colCartType": "Cart Type",
   "colIsLoaded": "Is Loaded",
   "colLotId": "LOTID",
+  "colMaxLoadQty": "Max Load Qty",
   "colQty": "Quantity",
   "plsSelect": "Please select",
   "yes": "Yes",
   "no": "No",
   "save": "Save",
-  "saveSuccess": "Save successfully"
+  "saveSuccess": "Save successfully",
+  "saveFail": "Save failed",
+  "plsQueryLot": "Please query the lot details first"
 }

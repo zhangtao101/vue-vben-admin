@@ -38,12 +38,11 @@ import EquipmentSelectDrawer from '../drawers/EquipmentSelectDrawer.vue';
  */
 const props = defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
   /** 工序（搅拌机为 6，混合水为 1），由外部传入 */
   processType: { type: Number, default: 6 },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 const queryParams = ref<any>({
@@ -146,7 +145,7 @@ function handleReset() {
 const batchQty = ref<number>(1);
 
 /** 设备编号（工序 2 混合 MIX 时展示并随生成接口提交） */
-const equipCodeInput = ref<string>(props.equipCode);
+const equipCodeInput = ref<string>('');
 
 /** 设备选择抽屉 ref */
 const equipmentDrawerRef = ref();

@@ -16,10 +16,9 @@ import MaterialSelectDrawer from '../drawers/MaterialSelectDrawer.vue';
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 // region 筒仓设备列表（分页查询）
@@ -154,7 +153,9 @@ onMounted(() => {
 
     <!-- 设备代码列表 -->
     <Card>
-      <div class="mb-2 font-bold">{{ $t('siloMaterialSetting.deviceList') }}</div>
+      <div class="mb-2 font-bold">
+        {{ $t('siloMaterialSetting.deviceList') }}
+      </div>
       <Grid>
         <template #toolbar-tools></template>
         <template #materialCode="{ row }">

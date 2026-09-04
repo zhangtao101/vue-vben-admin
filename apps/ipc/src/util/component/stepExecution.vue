@@ -46,6 +46,7 @@ import SiloMaterialSetting from '#/util/component/steps/siloMaterialSetting.vue'
 import SingleStationScan from '#/util/component/steps/singleStationScan.vue';
 import SmtFeeding from '#/util/component/steps/smtFeeding.vue';
 import Transcoding from '#/util/component/steps/transcoding.vue';
+import WeightMeasureList from '#/util/component/steps/weightMeasureList.vue';
 
 /**
  * 定义组件接收的 props，用于传递工步执行所需的相关信息
@@ -83,6 +84,11 @@ defineProps({
   },
   // 产品名称，用于显示当前生产的产品名称
   productName: {
+    type: String,
+    default: '',
+  },
+  // 工序编号
+  processCode: {
     type: String,
     default: '',
   },
@@ -494,231 +500,195 @@ defineProps({
     <!-- 混合水LOT生成：根据工步类型为 102 时，渲染搅拌机批次LOT管理组件，工序为 1（混合水） -->
     <MixerLotManage
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="1"
+      :process-code="processCode"
       v-if="step.type === 102"
     />
 
     <!-- 混合水材料称重：根据工步类型为 103 时，渲染搅拌材料称重管理组件，工序为 1（混合水） -->
     <MixerMaterialWeigh
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="1"
+      :process-code="processCode"
       v-if="step.type === 103"
     />
 
     <!-- 混合水托盘投入：根据工步类型为 104 时，渲染托盘投入组件，工序为 1（混合水） -->
     <GravityFreeMixerTrayInput
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="1"
+      :process-code="processCode"
       v-if="step.type === 104"
     />
 
     <!-- 混合水作业进度：根据工步类型为 105 时，渲染混合水作业进度组件，并传递相关参数 -->
     <MixedWaterProgress
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 105"
     />
 
     <!-- 混合水/Mix 工作指示失败传输：根据工步类型为 106 时，渲染混合水工作指示失败传输组件，并传递相关参数 -->
     <MixedWaterFailedTransfer
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="1"
+      :process-code="processCode"
       v-if="step.type === 106"
     />
 
     <!-- 混合LOT生成：根据工步类型为 107 时，渲染搅拌机批次LOT管理组件，工序为 2（混合 MIX） -->
     <MixerLotManage
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="2"
+      :process-code="processCode"
       v-if="step.type === 107"
     />
 
     <!-- 各筒仓材料设置：根据工步类型为 108 时，渲染各筒仓材料设置组件，并传递相关参数 -->
     <SiloMaterialSetting
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 108"
     />
 
     <!-- 混合水/Mix 工作指示传输V2：根据工步类型为 119 时，渲染混合水/Mix 工作指示传输V2组件，并传递相关参数 -->
     <MixedWaterFailedTransfer
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="2"
+      :process-code="processCode"
       v-if="step.type === 119"
     />
 
     <!-- 制面作业：根据工步类型为 109 时，渲染制面作业组件，并传递相关参数 -->
     <NoodleMaking
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 109"
     />
 
     <!-- 落面信息：根据工步类型为 110 时，渲染落面信息组件，并传递相关参数 -->
     <NoodleDropInfo
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 110"
     />
 
     <!-- 面机使用明细登记：根据工步类型为 111 时，渲染面机使用明细登记组件，并传递相关参数 -->
     <NoodleMachineUse
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 111"
     />
 
     <!-- 包装工作进度：根据工步类型为 112 时，渲染包装工作进度组件，并传递相关参数 -->
     <PackagingProgress
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="4"
+      :process-code="processCode"
       v-if="step.type === 112"
     />
 
     <!-- 成品不良登记：根据工步类型为 113 时，渲染成品不良登记组件，并传递相关参数 -->
     <DefectRegistration
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 113"
     />
 
     <!-- 生产业绩生产/取消：根据工步类型为 114 时，渲染生产业绩组件，并传递相关参数 -->
     <ProductionPerformance
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 114"
     />
 
     <!-- 包装作业进行：根据工步类型为 115 时，渲染包装作业组件，并传递相关参数 -->
     <PackagingOperation
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 115"
     />
 
     <!-- 台车标签发行：根据工步类型为 116 时，渲染台车标签发行组件，并传递相关参数 -->
     <CartLabelIssue
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 116"
     />
 
     <!-- 台车装载/卸货：根据工步类型为 117 时，渲染台车装载/卸货组件，并传递相关参数 -->
     <CartLoadUnload
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 117"
     />
 
     <!-- 台车LOT变更：根据工步类型为 118 时，渲染台车LOT变更组件，并传递相关参数 -->
     <CartLotChange
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 118"
     />
 
     <!-- 搅拌机批次LOT管理：根据工步类型为 120 时，渲染搅拌机批次LOT管理组件，工序为 6（搅拌机） -->
     <MixerLotManage
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="6"
+      :process-code="processCode"
       v-if="step.type === 120"
     />
 
     <!-- 搅拌材料称重管理：根据工步类型为 121 时，渲染搅拌材料称重管理组件，工序为 6（搅拌机） -->
     <MixerMaterialWeigh
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="6"
+      :process-code="processCode"
       v-if="step.type === 121"
     />
 
     <!-- 无重力搅拌托盘投入：根据工步类型为 122 时，渲染托盘投入组件，工序为 6（无重力搅拌） -->
     <GravityFreeMixerTrayInput
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
       :process-type="6"
+      :process-code="processCode"
       v-if="step.type === 122"
     />
 
     <!-- 搅拌作业进行：根据工步类型为 123 时，渲染搅拌作业进行组件，并传递相关参数 -->
     <GravityFreeMixerWork
       :workstation-code="workstationCode"
-      :equip-code="equipCode"
-      :worksheet-code="worksheetCode"
-      :binding-id="bindingId"
       :function-id="step.id"
+      :process-code="processCode"
       v-if="step.type === 123"
+    />
+
+    <!-- 重量测量列表：根据工步类型为 124 时，渲染重量测量列表组件，并传递相关参数 -->
+    <WeightMeasureList
+      :workstation-code="workstationCode"
+      :function-id="step.id"
+      :process-code="processCode"
+      v-if="step.type === 124"
     />
 
     <!-- 设备点位信息：根据工步类型为 999 时，渲染设备点位信息组件，并传递相关参数 -->

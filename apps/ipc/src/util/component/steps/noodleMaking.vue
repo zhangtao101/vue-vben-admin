@@ -20,12 +20,10 @@ import { $t } from '#/locales';
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
-
 
 // region 查询条件：产线 / 产品名称 / 生产日期
 const queryParams = ref<any>({
@@ -221,7 +219,11 @@ const realtimeBlocks = ref<any[]>([
     key: 'cutting',
     title: $t('noodleMaking.cutting'),
     params: [
-      { label: $t('noodleMaking.cutCount'), value: 1500, unit: $t('noodleMaking.pcs') },
+      {
+        label: $t('noodleMaking.cutCount'),
+        value: 1500,
+        unit: $t('noodleMaking.pcs'),
+      },
       {
         label: $t('noodleMaking.abnormalAlarm'),
         value: $t('noodleMaking.normal'),
@@ -363,7 +365,8 @@ onMounted(() => {
               >
                 <span class="text-muted-foreground">{{ param.label }}</span>
                 <span :class="alarmClass(param)" class="font-semibold">
-                  {{ param.value }}<template v-if="param.unit"> {{ param.unit }}</template>
+                  {{ param.value
+                  }}<template v-if="param.unit"> {{ param.unit }}</template>
                 </span>
               </div>
             </div>

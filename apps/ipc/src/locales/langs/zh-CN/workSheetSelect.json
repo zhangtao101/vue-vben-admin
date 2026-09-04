@@ -1,0 +1,22 @@
+{
+  "title": "选择工单",
+  "planDateRange": "指示日期",
+  "planDateStart": "开始日期",
+  "planDateEnd": "结束日期",
+  "workOrder": "工单号",
+  "workOrderPlaceholder": "请输入工单号",
+  "status": "状态",
+  "statusPlaceholder": "请选择状态",
+  "statusNotStarted": "未开始",
+  "statusRunning": "进行中",
+  "statusFinished": "已完成",
+  "colWorkSheetCode": "工单号",
+  "colProductCode": "产品编号",
+  "colProductName": "产品名称",
+  "colPlanDateStart": "指示日期",
+  "colPlanDateStop": "结束日期",
+  "colPlanNumber": "计划数量",
+  "colFinishNumber": "完成数量",
+  "colStatus": "状态",
+  "plsSelect": "请选择工单"
+}

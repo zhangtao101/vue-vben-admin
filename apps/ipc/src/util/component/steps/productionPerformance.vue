@@ -16,7 +16,12 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
-import { addFinishRecord, getWorkLot, queryFinishRecord, removeFinishRecords } from '#/api';
+import {
+  addFinishRecord,
+  getWorkLot,
+  queryFinishRecord,
+  removeFinishRecords,
+} from '#/api';
 import { $t } from '#/locales';
 
 /**
@@ -24,10 +29,9 @@ import { $t } from '#/locales';
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 // region 1. 查询条件
@@ -52,10 +56,26 @@ const lotGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { field: 'lotCode', title: $t('productionPerformance.colLotCode'), minWidth: 200 },
-    { field: 'productName', title: $t('productionPerformance.colProductName'), minWidth: 160 },
-    { field: 'productCode', title: $t('productionPerformance.colProductCode'), minWidth: 100 },
-    { field: 'equipCode', title: $t('productionPerformance.colEquipCode'), minWidth: 120 },
+    {
+      field: 'lotCode',
+      title: $t('productionPerformance.colLotCode'),
+      minWidth: 200,
+    },
+    {
+      field: 'productName',
+      title: $t('productionPerformance.colProductName'),
+      minWidth: 160,
+    },
+    {
+      field: 'productCode',
+      title: $t('productionPerformance.colProductCode'),
+      minWidth: 100,
+    },
+    {
+      field: 'equipCode',
+      title: $t('productionPerformance.colEquipCode'),
+      minWidth: 120,
+    },
   ],
   height: 360,
   stripe: true,
@@ -84,10 +104,22 @@ const productionGridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'checkbox', width: 50, title: '' },
-    { field: 'lotCode', title: $t('productionPerformance.colLotCode'), minWidth: 140 },
-    { field: 'quity', title: $t('productionPerformance.colQuity'), minWidth: 100 },
+    {
+      field: 'lotCode',
+      title: $t('productionPerformance.colLotCode'),
+      minWidth: 140,
+    },
+    {
+      field: 'quity',
+      title: $t('productionPerformance.colQuity'),
+      minWidth: 100,
+    },
     { field: 'unit', title: $t('productionPerformance.colUnit'), minWidth: 80 },
-    { field: 'createTime', title: $t('productionPerformance.colCreateTime'), minWidth: 180 },
+    {
+      field: 'createTime',
+      title: $t('productionPerformance.colCreateTime'),
+      minWidth: 180,
+    },
     {
       field: 'workSheetCode',
       title: $t('productionPerformance.colWorkSheetCode'),
@@ -130,9 +162,15 @@ const genForm = reactive<any>({
 });
 
 const genRules = {
-  lotCode: [{ required: true, message: $t('productionPerformance.lotCodePlaceholder') }],
-  quity: [{ required: true, message: $t('productionPerformance.quityPlaceholder') }],
-  unit: [{ required: true, message: $t('productionPerformance.unitPlaceholder') }],
+  lotCode: [
+    { required: true, message: $t('productionPerformance.lotCodePlaceholder') },
+  ],
+  quity: [
+    { required: true, message: $t('productionPerformance.quityPlaceholder') },
+  ],
+  unit: [
+    { required: true, message: $t('productionPerformance.unitPlaceholder') },
+  ],
 };
 
 function handleGenPerformance() {
@@ -230,7 +268,9 @@ function handleCancelPerformance() {
       <!-- 2.1 左侧：子工单列表 -->
       <Col :xs="24" :lg="12">
         <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-          <div class="mb-2 font-bold">{{ $t('productionPerformance.lotList') }}</div>
+          <div class="mb-2 font-bold">
+            {{ $t('productionPerformance.lotList') }}
+          </div>
           <LotGrid>
             <template #toolbar-tools></template>
           </LotGrid>
@@ -239,7 +279,9 @@ function handleCancelPerformance() {
       <!-- 2.2 右侧：完工记录列表 -->
       <Col :xs="24" :lg="12">
         <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-          <div class="mb-2 font-bold">{{ $t('productionPerformance.productionList') }}</div>
+          <div class="mb-2 font-bold">
+            {{ $t('productionPerformance.productionList') }}
+          </div>
           <ProductionGrid>
             <template #toolbar-tools></template>
           </ProductionGrid>
@@ -274,7 +316,10 @@ function handleCancelPerformance() {
         :wrapper-col="{ span: 18 }"
       >
         <!-- 工单号：外部查询条件，只读展示 -->
-        <FormItem :label="$t('productionPerformance.workSheetCode')" name="workSheetCode">
+        <FormItem
+          :label="$t('productionPerformance.workSheetCode')"
+          name="workSheetCode"
+        >
           <Input :value="queryForm.workSheetCode" disabled />
         </FormItem>
         <FormItem :label="$t('productionPerformance.lotCode')" name="lotCode">

@@ -14,10 +14,7 @@ import {
   Tabs,
 } from 'ant-design-vue';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
+import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
 import {
   queueAddBatch,
   queueDelete,
@@ -34,12 +31,11 @@ defineOptions({ name: 'MixedWaterFailedTransfer' });
  */
 const props = defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
   /** 工序：由外部传入，混合水暂时固定为 1 */
   processType: { type: Number, default: 1 },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 const { RangePicker } = DatePicker;
@@ -169,7 +165,9 @@ const leftGridOptions: VxeGridProps<any> = {
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
 
-const [LeftGrid, leftGridApi] = useVbenVxeGrid({ gridOptions: leftGridOptions });
+const [LeftGrid, leftGridApi] = useVbenVxeGrid({
+  gridOptions: leftGridOptions,
+});
 // endregion
 
 // region 右表：已选队列列表（多出 顺序 字段）
@@ -194,7 +192,7 @@ const rightGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   rowConfig: {
-    drag: true
+    drag: true,
   },
   columns: [
     { type: 'checkbox', width: 50, title: '' },
@@ -232,7 +230,9 @@ const rightGridOptions: VxeGridProps<any> = {
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
 
-const [RightGrid, rightGridApi] = useVbenVxeGrid({ gridOptions: rightGridOptions });
+const [RightGrid, rightGridApi] = useVbenVxeGrid({
+  gridOptions: rightGridOptions,
+});
 // endregion
 
 // region 数据加载与转移
@@ -329,7 +329,7 @@ function handleSave() {
     message.warning($t('mixedWaterFailedTransfer.plsSelectRight'));
     return;
   }
-  const line = lineTabs.value.find(l => l.key === activeLine.value);
+  const line = lineTabs.value.find((l) => l.key === activeLine.value);
 
   const data = rightData.map((row, index) => ({
     id: row.id,
@@ -416,11 +416,7 @@ onUnmounted(() => {
       class="rounded-lg border border-border bg-card p-3 shadow-sm"
     >
       <Tabs v-model:active-key="activeLine" @change="handleTabChange">
-        <TabPane
-          v-for="tab in lineTabs"
-          :key="tab.key"
-          :tab="tab.label"
-        />
+        <TabPane v-for="tab in lineTabs" :key="tab.key" :tab="tab.label" />
       </Tabs>
 
       <Row :gutter="16" class="items-stretch">
@@ -444,7 +440,10 @@ onUnmounted(() => {
           class="flex! justify-center"
           :class="{ 'flex-col ': !isStacked }"
         >
-          <div class="flex items-center gap-3" :class="{ 'flex-col': !isStacked }">
+          <div
+            class="flex items-center gap-3"
+            :class="{ 'flex-col': !isStacked }"
+          >
             <Button
               shape="circle"
               type="primary"

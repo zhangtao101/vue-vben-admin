@@ -28,10 +28,9 @@ import { $t } from '#/locales';
  */
 defineProps({
   functionId: { type: Number, default: 0 },
-  bindingId: { type: Number, default: 0 },
-  worksheetCode: { type: String, default: '' },
-  equipCode: { type: String, default: '' },
   workstationCode: { type: String, default: '' },
+  /** 工序编号，由外部传入 */
+  processCode: { type: String, default: '' },
 });
 
 const { RangePicker } = DatePicker;
@@ -155,7 +154,9 @@ function halalTypeLabel(val?: string) {
 
 /** 客户类型值转显示文本 */
 function customerTypeLabel(val?: string) {
-  return customerTypeOptions.find((o) => o.value === val)?.label ?? (val || '-');
+  return (
+    customerTypeOptions.find((o) => o.value === val)?.label ?? (val || '-')
+  );
 }
 
 const form = reactive<any>({});
@@ -302,7 +303,9 @@ onMounted(() => {
 
     <!-- 2. 不良列表 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <div class="mb-2 font-bold">{{ $t('defectRegistration.defectList') }}</div>
+      <div class="mb-2 font-bold">
+        {{ $t('defectRegistration.defectList') }}
+      </div>
       <Grid>
         <template #toolbar-tools></template>
       </Grid>
@@ -324,7 +327,9 @@ onMounted(() => {
           :label="$t('defectRegistration.materialProductCode')"
           :span="2"
         >
-          {{ form.productCode ? `${form.productCode}__${form.productName}` : '-' }}
+          {{
+            form.productCode ? `${form.productCode}__${form.productName}` : '-'
+          }}
         </DescriptionsItem>
         <DescriptionsItem :label="$t('defectRegistration.halalType')" :span="1">
           {{ halalTypeLabel(form.type) }}
@@ -338,7 +343,10 @@ onMounted(() => {
         >
           {{ form.lotCode || '-' }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('defectRegistration.mesWorkOrder')" :span="2">
+        <DescriptionsItem
+          :label="$t('defectRegistration.mesWorkOrder')"
+          :span="2"
+        >
           {{ form.workSheetCode || '-' }}
         </DescriptionsItem>
         <DescriptionsItem
@@ -356,7 +364,10 @@ onMounted(() => {
         >
           {{ customerTypeLabel(form.custType) }}
         </DescriptionsItem>
-        <DescriptionsItem :label="$t('defectRegistration.customerName')" :span="2">
+        <DescriptionsItem
+          :label="$t('defectRegistration.customerName')"
+          :span="2"
+        >
           {{ form.custName || '-' }}
         </DescriptionsItem>
         <DescriptionsItem :label="$t('defectRegistration.scrapQty')" :span="2">

@@ -11,6 +11,7 @@
   "operator": "操作工",
   "productionDate": "生产日期",
   "expiryDate": "有效期",
+  "prodExpiryDate": "生产日期/有效期",
   "lineName": "产线名称",
   "qty": "数量",
   "loader": "装载机",
@@ -21,10 +22,13 @@
   "colCartType": "台车类型",
   "colIsLoaded": "是否装载",
   "colLotId": "LOTID",
+  "colMaxLoadQty": "最大装载量",
   "colQty": "数量",
   "plsSelect": "请选择",
   "yes": "是",
   "no": "否",
   "save": "保存",
-  "saveSuccess": "保存成功"
+  "saveSuccess": "保存成功",
+  "saveFail": "保存失败",
+  "plsQueryLot": "请先查询批次详情"
 }

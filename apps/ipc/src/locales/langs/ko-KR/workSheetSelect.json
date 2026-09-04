@@ -1,0 +1,22 @@
+{
+  "title": "작업지시 선택",
+  "planDateRange": "지시 일자",
+  "planDateStart": "시작일",
+  "planDateEnd": "종료일",
+  "workOrder": "작업지시 번호",
+  "workOrderPlaceholder": "작업지시 번호를 입력하세요",
+  "status": "상태",
+  "statusPlaceholder": "상태를 선택하세요",
+  "statusNotStarted": "시작 전",
+  "statusRunning": "진행 중",
+  "statusFinished": "완료됨",
+  "colWorkSheetCode": "작업지시 번호",
+  "colProductCode": "제품 코드",
+  "colProductName": "제품명",
+  "colPlanDateStart": "지시 일자",
+  "colPlanDateStop": "종료일",
+  "colPlanNumber": "지시 수량",
+  "colFinishNumber": "생산 수량",
+  "colStatus": "상태",
+  "plsSelect": "작업지시를 선택하세요"
+}
