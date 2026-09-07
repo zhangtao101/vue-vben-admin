@@ -85,7 +85,7 @@ const selectedWorkSheet = ref<any>(null);
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  height: 300,
+  height: 250,
   stripe: true,
   radioConfig: { trigger: 'row', highlight: true },
   pagerConfig: {
@@ -180,7 +180,7 @@ function handleWorksheetRadioChange({ row }: any) {
 const lotGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  height: 360,
+  height: 300,
   stripe: true,
   columns: [
     {
@@ -213,9 +213,9 @@ const lotGridOptions: VxeGridProps<any> = {
   ],
   pagerConfig: { enabled: false },
   toolbarConfig: {
-    custom: true,
+    custom: false,
     refresh: false,
-    zoom: true,
+    zoom: false,
   },
   proxyConfig: {
     ajax: {
@@ -259,7 +259,7 @@ function packTypeFormatter({ cellValue }: any) {
 const loadGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  height: 360,
+  height: 250,
   stripe: true,
   checkboxConfig: { highlight: true, range: true },
   columns: [
@@ -406,7 +406,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 查询条件 -->
-    <Card :title="$t('gravityFreeMixerTrayInput.queryCondition')">
+    <Card>
       <Form layout="inline" class="flex flex-wrap gap-2">
         <FormItem :label="$t('gravityFreeMixerTrayInput.indicateDate')">
           <DatePicker
@@ -459,16 +459,16 @@ onMounted(() => {
     </Card>
 
     <!-- 工单列表 -->
-    <Card :title="$t('gravityFreeMixerTrayInput.workSheetList')">
+    <Card>
       <Grid>
-        <template #toolbar-tools></template>
+        <!-- <template #toolbar-tools></template> -->
       </Grid>
     </Card>
 
     <!-- 左栏批次LOT列表 / 右栏装载列表 -->
     <Row :gutter="16">
       <Col :xs="24" :lg="12">
-        <Card :title="$t('gravityFreeMixerTrayInput.lotList')">
+        <Card>
           <LotGrid>
             <template #toolbar-tools>
               <Button
@@ -487,7 +487,7 @@ onMounted(() => {
         </Card>
       </Col>
       <Col :xs="24" :lg="12">
-        <Card :title="$t('gravityFreeMixerTrayInput.loadList')">
+        <Card>
           <div class="mb-3 flex flex-wrap items-center gap-2">
             <Input
               v-model:value="inputPalletLabel"
@@ -500,7 +500,7 @@ onMounted(() => {
             />
           </div>
           <LoadGrid>
-            <template #toolbar-tools></template>
+            <!-- <template #toolbar-tools></template> -->
           </LoadGrid>
           <div class="mt-3 flex justify-end gap-2">
             <Button :loading="submitting" @click="handleUnload">

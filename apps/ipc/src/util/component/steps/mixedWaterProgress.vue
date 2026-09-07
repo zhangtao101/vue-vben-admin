@@ -73,7 +73,7 @@ const selectedWorkSheet = ref<any>(null);
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  height: 320,
+  height: 280,
   stripe: true,
   radioConfig: { trigger: 'row', highlight: true },
   pagerConfig: {
@@ -169,7 +169,7 @@ const selectedLotIds = ref<(number | string)[]>([]);
 const lotGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  height: 340,
+  height: 280,
   stripe: true,
   checkboxConfig: { highlight: true, range: true, trigger: 'row' },
   columns: [
@@ -308,7 +308,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 查询条件 -->
-    <Card :title="$t('mixedWaterProgress.queryCondition')">
+    <Card>
       <Form layout="inline" class="flex flex-wrap gap-2">
         <FormItem :label="$t('mixedWaterProgress.indicateDate')">
           <DatePicker
@@ -357,16 +357,16 @@ onMounted(() => {
     </Card>
 
     <!-- 工单列表 -->
-    <Card :title="$t('mixedWaterProgress.worksheetList')">
+    <Card>
       <Grid>
-        <template #toolbar-tools></template>
+        <!-- <template #toolbar-tools></template> -->
       </Grid>
     </Card>
 
     <!-- 批次LOT列表 -->
-    <Card :title="$t('mixedWaterProgress.lotList')">
+    <Card>
       <LotGrid>
-        <template #toolbar-tools></template>
+        <!-- <template #toolbar-tools></template> -->
         <template #useCell="{ row, column }">
           <Checkbox :checked="Number(row[column.field]) === 1" disabled />
         </template>

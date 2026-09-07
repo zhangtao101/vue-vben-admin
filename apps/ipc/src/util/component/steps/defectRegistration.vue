@@ -3,6 +3,7 @@ import { onMounted, reactive } from 'vue';
 
 import {
   Button,
+  Card,
   DatePicker,
   Descriptions,
   DescriptionsItem,
@@ -84,7 +85,7 @@ const gridOptions: VxeGridProps<any> = {
           : $t('defectRegistration.notTransferred'),
     },
   ],
-  height: 360,
+  height: 300,
   rowConfig: { keyField: 'id', isHover: true },
   stripe: true,
   pagerConfig: { enabled: true, pageSize: 20 },
@@ -255,10 +256,8 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div class="text-lg font-bold">{{ $t('defectRegistration.title') }}</div>
-
     <!-- 1. 查询条件 -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
+    <Card>
       <Form
         layout="inline"
         :model="queryForm"
@@ -299,21 +298,17 @@ onMounted(() => {
           </Space>
         </Form.Item>
       </Form>
-    </div>
+    </Card>
 
     <!-- 2. 不良列表 -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <div class="mb-2 font-bold">
-        {{ $t('defectRegistration.defectList') }}
-      </div>
+    <Card>
       <Grid>
-        <template #toolbar-tools></template>
+        <!-- <template #toolbar-tools></template> -->
       </Grid>
-    </div>
+    </Card>
 
     <!-- 3. 登记表单（每行 4 格：托盘号独占一行，物料代码/清真类型各占 1 格，其余各占 2 格） -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <div class="mb-3 font-bold">{{ $t('defectRegistration.entryForm') }}</div>
+    <Card>
       <Descriptions bordered :column="4" size="small">
         <DescriptionsItem :label="$t('defectRegistration.trayNo')" :span="4">
           <Input
@@ -395,6 +390,6 @@ onMounted(() => {
           {{ $t('defectRegistration.save') }}
         </Button>
       </div>
-    </div>
+    </Card>
   </div>
 </template>

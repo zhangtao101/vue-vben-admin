@@ -334,7 +334,7 @@ async function handlePerformanceRegistration() {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 查询条件 -->
-    <Card :title="$t('gravityFreeMixerWork.queryCondition')">
+    <Card>
       <Form layout="inline" class="flex flex-wrap gap-2">
         <FormItem :label="$t('gravityFreeMixerWork.palletLabel')">
           <Input
@@ -359,7 +359,7 @@ async function handlePerformanceRegistration() {
     </Card>
 
     <!-- 工单信息 -->
-    <Card :title="$t('gravityFreeMixerWork.workSheetInfo')">
+    <Card>
       <Descriptions bordered :column="2" size="small">
         <DescriptionsItem :label="$t('gravityFreeMixerWork.lineName')">
           {{ workSheetInfo.lineName || '-' }}

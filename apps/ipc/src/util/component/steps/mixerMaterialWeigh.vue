@@ -208,7 +208,7 @@ const materialGridOptions: VxeGridProps<any> = {
     },
     { field: 'unit', title: $t('mixerMaterialWeigh.unit'), minWidth: 80 },
   ],
-  height: 320,
+  height: 250,
   stripe: true,
   // 材料列表仅展示查询结果，不需要分页与手动查询
   pagerConfig: { enabled: false },
@@ -283,7 +283,7 @@ const recordGridOptions: VxeGridProps<any> = {
     },
     { field: 'unit', title: $t('mixerMaterialWeigh.unit'), minWidth: 80 },
   ],
-  height: 320,
+  height: 250,
   stripe: true,
   // 称重记录仅展示保存结果，不需要分页与手动查询
   pagerConfig: { enabled: false },
@@ -389,7 +389,7 @@ const drawerGridOptions: VxeGridProps<any> = {
       minWidth: 100,
     },
   ],
-  height: 220,
+  height: 200,
   stripe: false,
   // 与扫码标签材料编码匹配的行显示为黄色，已称重（称重重量有值）的行显示为绿色
   rowClassName: ({ row }: any) => {
@@ -569,7 +569,7 @@ function handleIssue() {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 顶部：查询条件 -->
-    <Card :title="$t('mixerMaterialWeigh.queryCondition')">
+    <Card>
       <Form layout="inline" class="mb-3 flex-wrap items-end gap-2">
         <Form.Item :label="$t('mixerMaterialWeigh.lineName')">
           <Input
@@ -599,25 +599,25 @@ function handleIssue() {
     </Card>
 
     <!-- 中部：工单列表（单选） -->
-    <Card :title="$t('mixerMaterialWeigh.workSheetList')">
+    <Card>
       <Grid>
-        <template #toolbar-tools></template>
+        <!-- <template #toolbar-tools></template> -->
       </Grid>
     </Card>
 
     <!-- 下部：左右两栏 -->
     <Row :gutter="16">
       <Col :xs="24" :lg="12">
-        <Card :title="$t('mixerMaterialWeigh.materialList')">
+        <Card>
           <Grid2>
-            <template #toolbar-tools></template>
+            <!-- <template #toolbar-tools></template> -->
           </Grid2>
         </Card>
       </Col>
       <Col :xs="24" :lg="12">
-        <Card :title="$t('mixerMaterialWeigh.weighRecordList')">
+        <Card>
           <Grid3>
-            <template #toolbar-tools></template>
+            <!-- <template #toolbar-tools></template> -->
           </Grid3>
           <div class="mt-2 flex justify-end">
             <Space>
@@ -724,16 +724,14 @@ function handleIssue() {
             </div>
           </div>
           <div class="mt-1 flex justify-between text-xs text-muted-foreground">
-            <span
-              >{{ $t('mixerMaterialWeigh.lowerProductWt') }}：{{
-                currentMaterial?.lowerProductWt
-              }}</span
-            >
-            <span
-              >{{ $t('mixerMaterialWeigh.upperProductWt') }}：{{
-                currentMaterial?.upperProductWt
-              }}</span
-            >
+            <span>
+              {{ $t('mixerMaterialWeigh.lowerProductWt') }}：
+              {{ currentMaterial?.lowerProductWt }}
+            </span>
+            <span>
+              {{ $t('mixerMaterialWeigh.upperProductWt') }}：
+              {{ currentMaterial?.upperProductWt }}
+            </span>
           </div>
 
           <!-- 称重方式 与 单包重量/个数/加减按钮 同一行左右两栏 -->

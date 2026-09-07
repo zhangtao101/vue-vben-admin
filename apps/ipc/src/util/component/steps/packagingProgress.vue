@@ -277,7 +277,7 @@ const baseGridOptions: VxeGridProps<any> = {
       minWidth: 160,
     },
   ],
-  height: 360,
+  height: 260,
   stripe: true,
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
@@ -369,8 +369,6 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div class="text-lg font-bold">{{ $t('packagingProgress.title') }}</div>
-
     <!-- 左右两栏布局 -->
     <Row :gutter="16" class="items-stretch">
       <!-- 左栏：完整可操作 -->
@@ -378,15 +376,12 @@ onMounted(() => {
         <div class="flex flex-col gap-4">
           <!-- 1. 工单信息表单 -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-            <div class="mb-3 font-bold">
-              {{ $t('packagingProgress.formTitle') }}
-            </div>
             <Form
               :label-col="{ span: 4 }"
               :wrapper-col="{ span: 20 }"
               :model="form"
             >
-              <FormItem :label="$t('packagingProgress.subLine')">
+              <FormItem :label="$t('packagingProgress.subLine')" class="mb-2!">
                 <Select
                   v-model:value="form.subLine"
                   :options="subLineOptions"
@@ -395,7 +390,10 @@ onMounted(() => {
                   @change="handleSubLineChange"
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.workOrder')">
+              <FormItem
+                :label="$t('packagingProgress.workOrder')"
+                class="mb-2!"
+              >
                 <Select
                   v-model:value="form.workOrder"
                   :options="workOrderOptions"
@@ -404,21 +402,24 @@ onMounted(() => {
                   @change="handleWorkOrderChange"
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.product')">
+              <FormItem :label="$t('packagingProgress.product')" class="mb-2!">
                 <Input
                   v-model:value="leftPanel.form.product"
                   :placeholder="$t('packagingProgress.productPlaceholder')"
                   disabled
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.line')">
+              <FormItem :label="$t('packagingProgress.line')" class="mb-2!">
                 <Input
                   v-model:value="leftPanel.form.line"
                   :placeholder="$t('packagingProgress.linePlaceholder')"
                   disabled
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.workOrderRemark')">
+              <FormItem
+                :label="$t('packagingProgress.workOrderRemark')"
+                class="mb-2!"
+              >
                 <Textarea
                   v-model:value="leftPanel.form.remark"
                   :placeholder="$t('packagingProgress.remarkPlaceholder')"
@@ -426,7 +427,10 @@ onMounted(() => {
                   disabled
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.printCode')">
+              <FormItem
+                :label="$t('packagingProgress.printCode')"
+                class="mb-2!"
+              >
                 <Row :gutter="16">
                   <Col
                     v-for="key in inkjetItems"
@@ -452,9 +456,6 @@ onMounted(() => {
 
           <!-- 2. 指标数：标题在上、数字在下 -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-            <div class="mb-3 font-bold">
-              {{ $t('packagingProgress.metrics') }}
-            </div>
             <Row :gutter="16">
               <Col
                 v-for="item in metricItems"
@@ -480,11 +481,11 @@ onMounted(() => {
 
           <!-- 3. 加载材料列表 -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-            <div class="mb-2 font-bold">
+            <!-- <div class="mb-2 font-bold">
               {{ $t('packagingProgress.materialList') }}
-            </div>
+            </div> -->
             <LeftGrid>
-              <template #toolbar-tools></template>
+              <!-- <template #toolbar-tools></template> -->
             </LeftGrid>
           </div>
 
@@ -508,15 +509,12 @@ onMounted(() => {
         <div class="flex flex-col gap-4">
           <!-- 1. 工单信息表单（只读） -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-            <div class="mb-3 font-bold">
-              {{ $t('packagingProgress.formTitle') }}
-            </div>
             <Form
               :label-col="{ span: 4 }"
               :wrapper-col="{ span: 20 }"
               :model="rightPanel.form"
             >
-              <FormItem :label="$t('packagingProgress.subLine')">
+              <FormItem :label="$t('packagingProgress.subLine')" class="mb-2!">
                 <Select
                   v-model:value="rightPanel.form.subLine"
                   :options="subLineOptions"
@@ -524,35 +522,44 @@ onMounted(() => {
                   disabled
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.workOrder')">
+              <FormItem
+                :label="$t('packagingProgress.workOrder')"
+                class="mb-2!"
+              >
                 <Input
                   v-model:value="rightPanel.form.workOrder"
                   :placeholder="$t('packagingProgress.workOrderPlaceholder')"
                   disabled
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.product')">
+              <FormItem :label="$t('packagingProgress.product')" class="mb-2!">
                 <Input
                   v-model:value="rightPanel.form.product"
                   :placeholder="$t('packagingProgress.productPlaceholder')"
                   disabled
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.line')">
+              <FormItem :label="$t('packagingProgress.line')" class="mb-2!">
                 <Input
                   v-model:value="rightPanel.form.line"
                   :placeholder="$t('packagingProgress.linePlaceholder')"
                   disabled
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.workOrderRemark')">
+              <FormItem
+                :label="$t('packagingProgress.workOrderRemark')"
+                class="mb-2!"
+              >
                 <Textarea
                   v-model:value="rightPanel.form.remark"
                   :placeholder="$t('packagingProgress.remarkPlaceholder')"
                   disabled
                 />
               </FormItem>
-              <FormItem :label="$t('packagingProgress.printCode')">
+              <FormItem
+                :label="$t('packagingProgress.printCode')"
+                class="mb-2!"
+              >
                 <Row :gutter="16">
                   <Col
                     v-for="key in inkjetItems"
@@ -578,9 +585,6 @@ onMounted(() => {
 
           <!-- 2. 指标数：标题在上、数字在下 -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-            <div class="mb-3 font-bold">
-              {{ $t('packagingProgress.metrics') }}
-            </div>
             <Row :gutter="16">
               <Col
                 v-for="item in metricItems"
@@ -606,11 +610,11 @@ onMounted(() => {
 
           <!-- 3. 加载材料列表（只读，禁止交互） -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-            <div class="mb-2 font-bold">
+            <!-- <div class="mb-2 font-bold">
               {{ $t('packagingProgress.materialList') }}
-            </div>
+            </div> -->
             <RightGrid>
-              <template #toolbar-tools></template>
+              <!-- <template #toolbar-tools></template> -->
             </RightGrid>
           </div>
 

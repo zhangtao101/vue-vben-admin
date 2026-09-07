@@ -107,7 +107,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     { field: 'unit', title: $t('mixerLotManage.unit'), minWidth: 80 },
   ],
-  height: 500,
+  height: 250,
   stripe: true,
   radioConfig: { trigger: 'row', highlight: true },
   pagerConfig: { enabled: true, pageSize: 20 },
@@ -116,7 +116,7 @@ const gridOptions: VxeGridProps<any> = {
       query: queryWorkSheetList,
     },
   },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const gridEvents: any = {
@@ -354,7 +354,7 @@ const gridOptions2: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: getBatchColumns(),
-  height: 500,
+  height: 200,
   stripe: true,
   checkboxConfig: { trigger: 'row', highlight: true },
   pagerConfig: { enabled: false, pageSize: 20 },
@@ -501,7 +501,7 @@ function refreshBatchGrid() {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 顶部：查询条件 -->
-    <Card :title="$t('mixerLotManage.queryCondition')">
+    <Card>
       <Form layout="inline" class="mb-3 flex-wrap items-end gap-2">
         <Form.Item :label="$t('mixerLotManage.lineName')">
           <Input
@@ -531,9 +531,9 @@ function refreshBatchGrid() {
     </Card>
 
     <!-- 中间：搅拌机工单列表 -->
-    <Card :title="$t('mixerLotManage.workSheetList')">
+    <Card>
       <Grid>
-        <template #toolbar-tools></template>
+        <!-- <template #toolbar-tools></template> -->
       </Grid>
     </Card>
 
@@ -575,9 +575,8 @@ function refreshBatchGrid() {
     </div>
 
     <!-- 下方：批次列表（按选中的工单实时查询） -->
-    <Card :title="$t('mixerLotManage.batchList')">
+    <Card>
       <Grid2>
-        <template #toolbar-tools></template>
         <template #state="{ row }">
           <Tag :color="stateColorMap[row.state] || 'default'">
             {{ formatState(row.state) }}

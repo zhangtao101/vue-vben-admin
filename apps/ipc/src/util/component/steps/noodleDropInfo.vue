@@ -151,7 +151,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'operationCell' },
     },
   ],
-  height: 400,
+  height: 350,
   rowConfig: { keyField: 'id', isHover: true },
   radioConfig: { trigger: 'row', highlight: true },
   stripe: true,
@@ -349,7 +349,7 @@ onMounted(() => {
     <div class="text-lg font-bold">{{ $t('noodleDropInfo.title') }}</div>
 
     <!-- 1. 查询条件 -->
-    <Card :title="$t('noodleDropInfo.queryCondition')">
+    <Card>
       <Form layout="inline" class="flex flex-wrap gap-2">
         <Form.Item :label="$t('noodleDropInfo.productDate')">
           <RangePicker
@@ -398,7 +398,7 @@ onMounted(() => {
     </Card>
 
     <!-- 2. 落面信息列表 -->
-    <Card :title="$t('noodleDropInfo.dropList')">
+    <Card>
       <Grid>
         <template #toolbar-tools>
           <Button size="small" @click="handleExport">
@@ -428,7 +428,7 @@ onMounted(() => {
     </Card>
 
     <!-- 3. 录入表单 + 4. 右对齐按钮 -->
-    <Card :title="$t('noodleDropInfo.entryForm')">
+    <Card>
       <Form layout="vertical" :model="form">
         <Row :gutter="16">
           <Col :xs="24" :sm="12" :md="8" :lg="6">
