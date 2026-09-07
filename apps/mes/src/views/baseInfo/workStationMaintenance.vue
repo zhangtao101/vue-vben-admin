@@ -1084,6 +1084,7 @@ onMounted(async () => {
             v-model:value="checkedRow.workstationType"
             :disabled="isShowStatus"
             :options="workStationType"
+            @change="queryProcessByType"
           />
           <!--          @change="queryProcessByType"-->
         </FormItem>

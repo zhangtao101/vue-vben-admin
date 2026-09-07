@@ -429,27 +429,27 @@ onMounted(() => {
       <!-- region 表格主体 -->
       <Col :lg="16" :md="16" :sm="16" :xl="18" :xs="16">
         <Card class="h-[60vh] overflow-y-auto">
-          <!-- 导入 -->
-          <!-- 导入按钮 -->
-          <Upload
-            v-model:file-list="fileList"
-            :action="action"
-            :headers="headers"
-            :show-upload-list="false"
-            name="file"
-            @change="handleChange"
-          >
-            <Button type="primary">
-              {{ $t('common.import') }}
-            </Button>
-          </Upload>
-
-          <!-- 模板下载 -->
-          <Button class="ml-4" type="primary" @click="downloadTemplate">
-            {{ $t('common.templateDownload') }}
-          </Button>
           <Grid>
-            <template #toolbar-tools></template>
+            <template #toolbar-tools>
+              <!-- 导入按钮 -->
+              <Upload
+                v-model:file-list="fileList"
+                :action="action"
+                :headers="headers"
+                :show-upload-list="false"
+                name="file"
+                @change="handleChange"
+              >
+                <Button type="primary">
+                  {{ $t('common.import') }}
+                </Button>
+              </Upload>
+
+              <!-- 模板下载 -->
+              <Button class="ml-4" type="primary" @click="downloadTemplate">
+                {{ $t('common.templateDownload') }}
+              </Button>
+            </template>
             <template #selectedState="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
