@@ -7,6 +7,7 @@ export * from './equipmentInfo.service';
 export * from './equipmentMaintenancePlan.service';
 export * from './equipmentRepairAction.service';
 export * from './equipmentSpotCheckScheme.service';
+export * from './equipmentUpperDieQuantityMaintain.service';
 export * from './equipNameMaintain.service';
 export * from './equipRecord.service';
 export * from './maintenanceAlert.service';
