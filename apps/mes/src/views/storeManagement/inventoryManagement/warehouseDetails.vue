@@ -16,6 +16,7 @@ import {
   Form,
   FormItem,
   Input,
+  message,
   RangePicker,
   Row,
   Tree,
@@ -23,6 +24,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  exportScadaWarehouseStockByLabel,
+  exportScadaWarehouseStockByMaterial,
   queryScadaLogicalWarehouseTree,
   queryScadaPhysicalWarehouseTree,
   queryScadaWarehouseStockByLocation,
@@ -293,6 +296,62 @@ onMounted(() => {
 });
 
 // endregion
+
+// region 导出
+
+/**
+ * 构建库存汇总（上方表格）导出参数：查询条件 + 日期处理 + 树节点
+ */
+function buildStockExportParams() {
+  const params: any = { ...queryParams.value };
+  // 处理日期范围
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  // 添加选中的树节点参数
+  if (selectedNode.value) {
+    Object.assign(params, selectedNode.value);
+  }
+  return params;
+}
+
+/**
+ * 按材料导出库存（上方表格）
+ */
+function exportStockByMaterial() {
+  const params: any = buildStockExportParams();
+  exportScadaWarehouseStockByMaterial(params).then((data) => {
+    window.open(data);
+  });
+}
+
+/**
+ * 按标签导出库存明细（下方表格）
+ */
+function exportStockByLabel() {
+  // 未选中上方表格物料时提示
+  if (!selectedRow.value?.materialCode) {
+    message.warning(
+      $t('storeManagement.inventoryManagement.pleaseSelectMaterial'),
+    );
+    return;
+  }
+  const params: any = {
+    materialCode: selectedRow.value.materialCode,
+    batchCode: queryParams.value.batchCode,
+  };
+  // 添加选中的树节点参数
+  if (selectedNode.value) {
+    Object.assign(params, selectedNode.value);
+  }
+  exportScadaWarehouseStockByLabel(params).then((data) => {
+    window.open(data);
+  });
+}
+
+// endregion
 </script>
 
 <template>
@@ -390,7 +449,12 @@ onMounted(() => {
         <!-- 上方库存汇总表格 -->
         <Card class="!mb-8">
           <Grid>
-            <template #toolbar-tools></template>
+            <template #toolbar-tools>
+              <!-- 导出按钮 -->
+              <Button type="primary" @click="exportStockByMaterial()">
+                {{ $t('common.export') }}
+              </Button>
+            </template>
             <template #status="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
@@ -400,7 +464,12 @@ onMounted(() => {
         <!-- 下方库存明细表格 -->
         <Card class="!mb-8">
           <GridBottom>
-            <template #toolbar-tools></template>
+            <template #toolbar-tools>
+              <!-- 导出按钮 -->
+              <Button type="primary" @click="exportStockByLabel()">
+                {{ $t('common.export') }}
+              </Button>
+            </template>
           </GridBottom>
         </Card>
       </Col>

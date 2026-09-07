@@ -84,7 +84,8 @@
     "storageCode": "所在储位",
     "wareHouse": "所在仓库",
     "wareArea": "所在库区",
-    "wareLocation": "所在库位"
+    "wareLocation": "所在库位",
+    "pleaseSelectMaterial": "请先选择物料"
   },
   "batchLock": {
     "batch": "批次",
