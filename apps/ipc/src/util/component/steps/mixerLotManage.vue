@@ -158,7 +158,7 @@ const selectedEquipments = ref<EquipSelectItem[]>([]);
  * @since 2026-08-31
  */
 function handleOpenEquipSelect() {
-  equipmentDrawerRef.value.open(selectedEquipments.value);
+  equipmentDrawerRef.value.open(selectedEquipments.value, false, 1);
 }
 
 /**
@@ -396,6 +396,11 @@ function handleBatchStart() {
     message.warning($t('mixerLotManage.plsSelectBatch'));
     return;
   }
+  // 仅状态为「生成」（state === 1）的批次允许开始
+  if (records.some((record: any) => Number(record.state) !== 1)) {
+    message.warning($t('mixerLotManage.startOnlyGenerated'));
+    return;
+  }
   Modal.confirm({
     title: $t('mixerLotManage.startConfirmTitle'),
     content: $t('mixerLotManage.startConfirmContent'),
@@ -443,11 +448,16 @@ function handleBatchFinish() {
   });
 }
 
-/** 删除：二次确认后删除勾选的批次 */
+/** 删除：仅允许删除「生成」（state === 1）状态的批次 */
 function handleBatchDelete() {
   const records = selectedBatchRecords.value;
   if (records.length === 0) {
     message.warning($t('mixerLotManage.plsSelectBatch'));
+    return;
+  }
+  // 仅状态为「生成」（state === 1）的批次允许删除
+  if (records.some((record: any) => Number(record.state) !== 1)) {
+    message.warning($t('mixerLotManage.deleteOnlyGenerated'));
     return;
   }
   Modal.confirm({
@@ -472,6 +482,11 @@ function handlePlanQueueDelete() {
   const records = selectedBatchRecords.value;
   if (records.length === 0) {
     message.warning($t('mixerLotManage.plsSelectBatch'));
+    return;
+  }
+  // 仅状态为「生成」（state === 1）的批次允许删除
+  if (records.some((record: any) => Number(record.state) !== 1)) {
+    message.warning($t('mixerLotManage.deleteOnlyGenerated'));
     return;
   }
   Modal.confirm({

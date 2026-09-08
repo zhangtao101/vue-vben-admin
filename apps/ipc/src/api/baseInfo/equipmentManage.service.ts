@@ -50,10 +50,6 @@ export interface EquipSelectParams {
 export function getEquipSelectList(params: EquipSelectParams) {
   return requestClient.post(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentLedger/getEquipmentLedgerDTOByParams?pageNum=${params.pageNum || 1}&pageSize=${params.pageSize || 20}`,
-    {
-      equipmentCode: params.equipmentCode,
-      equipmentName: params.equipmentName,
-      equipGroupCode: params.equipGroupCode,
-    },
+    params,
   );
 }

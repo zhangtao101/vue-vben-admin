@@ -53,5 +53,7 @@
   "finishSuccess": "结束成功",
   "finishFailed": "结束失败",
   "deleteSuccess": "删除成功",
-  "deleteFailed": "删除失败"
+  "deleteFailed": "删除失败",
+  "deleteOnlyGenerated": "仅状态为【生成】的批次可以删除，请重新选择",
+  "startOnlyGenerated": "仅状态为【生成】的批次可以开始，请重新选择"
 }

@@ -47,6 +47,8 @@ const queryParams = ref({
   equipmentName: '',
   equipGroupCode: '',
 });
+// 设备类型
+const equipmentTypeVal = ref<number | undefined>(0);
 
 // ========== 表格配置 ==========
 const gridOptions: VxeGridProps<any> = {
@@ -154,6 +156,10 @@ function queryData({
       ...queryParams.value,
       pageNum,
       pageSize,
+      equipmentType:
+        equipmentTypeVal.value && equipmentTypeVal.value > 0
+          ? equipmentTypeVal.value
+          : undefined,
     };
 
     getEquipSelectList(params)
@@ -181,11 +187,17 @@ function queryData({
  * 打开抽屉。
  * @param selectedRows 已选中的设备行数据，用于打开后恢复选中状态（可选）
  * @param single 是否单选，默认为 false（多选）
+ * @param equipmentType 设备类型，默认为 0（全部）
  * @since 2026-08-31
  */
-function open(selectedRows?: EquipSelectItem[], single = false) {
+function open(
+  selectedRows?: EquipSelectItem[],
+  single = false,
+  equipmentType?: number,
+) {
   show.value = true;
   singleSelect.value = single;
+  equipmentTypeVal.value = equipmentType;
   // 清空表格选中状态
   const grid = (gridApi as any).grid;
   if (grid && grid.clearCheckboxRow) {

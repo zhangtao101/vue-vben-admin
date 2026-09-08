@@ -53,5 +53,7 @@
   "finishSuccess": "Finished successfully",
   "finishFailed": "Failed to finish",
   "deleteSuccess": "Deleted successfully",
-  "deleteFailed": "Failed to delete"
+  "deleteFailed": "Failed to delete",
+  "deleteOnlyGenerated": "Only batches with status [Generated] can be deleted, please reselect",
+  "startOnlyGenerated": "Only batches with status [Generated] can be started, please reselect"
 }
