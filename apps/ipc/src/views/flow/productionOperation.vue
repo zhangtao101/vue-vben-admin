@@ -77,7 +77,7 @@ function processChange(processCode?: any) {
     listOfOperationItems.value.length > 0
       ? listOfOperationItems.value[0].id
       : undefined;
-  operationItemChange();
+  // operationItemChange();
 }
 
 /**
