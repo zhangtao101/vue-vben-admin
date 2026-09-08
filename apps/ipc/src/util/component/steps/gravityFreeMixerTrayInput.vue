@@ -194,19 +194,8 @@ const lotGridOptions: VxeGridProps<any> = {
       minWidth: 140,
     },
     {
-      field: 'looseLabel',
-      title: $t('gravityFreeMixerTrayInput.looseLabel'),
-      minWidth: 140,
-    },
-    {
       field: 'looseUse',
       title: $t('gravityFreeMixerTrayInput.looseUse'),
-      width: 120,
-      slots: { default: 'useCell' },
-    },
-    {
-      field: 'fullUse',
-      title: $t('gravityFreeMixerTrayInput.fullUse'),
       width: 120,
       slots: { default: 'useCell' },
     },
