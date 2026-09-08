@@ -32,5 +32,8 @@
   "startSuccess": "작업이 시작되었습니다",
   "endSuccess": "작업이 종료되었습니다",
   "alreadyRunning": "작업이 이미 진행 중입니다",
-  "notStarted": "작업이 아직 시작되지 않았습니다"
+  "notStarted": "작업이 아직 시작되지 않았습니다",
+  "packTypeSingle": "단포",
+  "packTypeMulti": "다포",
+  "packTypeBag": "재료포"
 }

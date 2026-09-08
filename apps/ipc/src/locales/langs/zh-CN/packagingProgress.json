@@ -32,5 +32,8 @@
   "startSuccess": "工作已开始",
   "endSuccess": "工作已结束",
   "alreadyRunning": "工作已在进行中",
-  "notStarted": "工作尚未开始"
+  "notStarted": "工作尚未开始",
+  "packTypeSingle": "单包",
+  "packTypeMulti": "多包",
+  "packTypeBag": "料包"
 }

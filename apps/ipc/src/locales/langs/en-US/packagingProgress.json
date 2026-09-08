@@ -32,5 +32,8 @@
   "startSuccess": "Work started",
   "endSuccess": "Work ended",
   "alreadyRunning": "Work is already running",
-  "notStarted": "Work has not started yet"
+  "notStarted": "Work has not started yet",
+  "packTypeSingle": "Single Pack",
+  "packTypeMulti": "Multi Pack",
+  "packTypeBag": "Material Bag"
 }

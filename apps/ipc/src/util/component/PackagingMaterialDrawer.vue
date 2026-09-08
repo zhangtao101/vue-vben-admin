@@ -25,6 +25,7 @@ import {
   Input,
   InputNumber,
   message,
+  Radio,
   Row,
   Space,
 } from 'ant-design-vue';
@@ -74,6 +75,9 @@ const drawerQuery = reactive<any>({
   deviceCode: '',
   tagId: '',
 });
+
+/** 标签输入框实例（打开抽屉后自动聚焦） */
+const tagIdRef = ref();
 
 /** 设备选择抽屉 ref */
 const equipmentDrawerRef = ref();
@@ -164,7 +168,14 @@ const [BomGrid, bomGridApi] = useVbenVxeGrid({ gridOptions: bomGridOptions });
 // 已扫码加载的物料列表数据
 const loadData = ref<any[]>([]);
 
-// 加载列表网格配置：单选列 + 物料代码/名称/加载数量/单位，数量与单位列支持插槽自定义
+/** 包装类型单选组选项：3 单包 / 4 多包 / 5 料包 */
+const packTypeOptions = [
+  { label: $t('packagingMaterialDrawer.packTypeSingle'), value: 3 },
+  { label: $t('packagingMaterialDrawer.packTypeMulti'), value: 4 },
+  { label: $t('packagingMaterialDrawer.packTypeBag'), value: 5 },
+];
+
+// 加载列表网格配置：单选列 + 物料代码/名称/加载数量/包装类型/单位，数量/包装类型/单位列支持插槽自定义
 const loadGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -191,6 +202,12 @@ const loadGridOptions: VxeGridProps<any> = {
       title: $t('packagingMaterialDrawer.colUnit'),
       minWidth: 80,
       slots: { default: 'load_unit' },
+    },
+    {
+      field: 'packType',
+      title: $t('packagingMaterialDrawer.colPackType'),
+      minWidth: 220,
+      slots: { default: 'load_packType' },
     },
   ],
   data: loadData.value,
@@ -222,6 +239,10 @@ function open(row?: any) {
   // 透传外部表单全部字段（含 id 等非展示字段），未传字段用默认值兜底
   Object.assign(baseInfo, getDefaultBaseInfo(), row);
   show.value = true;
+  // 抽屉渲染完成后聚焦标签输入框，便于直接扫码
+  setTimeout(() => {
+    tagIdRef.value?.focus();
+  }, 500);
   setTimeout(() => {
     // BOM 列表按 baseInfo.id 请求接口
     bomGridApi.reload();
@@ -294,6 +315,7 @@ async function handleLoad() {
     scanLabel: row.scanLabel,
     unit: row.unit,
     palletLabel: drawerQuery.deviceCode,
+    packType: row.packType,
   }));
   addLabelBatch(params).then(() => {
     message.success($t('packagingMaterialDrawer.loadSuccess'));
@@ -553,6 +575,7 @@ defineExpose({ open });
                 <Col :xs="12" :sm="12">
                   <Form.Item :label="$t('packagingMaterialDrawer.tagId')">
                     <Input
+                      ref="tagIdRef"
                       v-model:value="drawerQuery.tagId"
                       :placeholder="
                         $t('packagingMaterialDrawer.tagIdPlaceholder')
@@ -585,6 +608,16 @@ defineExpose({ open });
                   class="w-16"
                 />
                 <span v-else>{{ row.unit }}</span>
+              </template>
+              <!-- 包装类型：所有条目均可单选（3单包/4多包/5料包） -->
+              <template #load_packType="{ row }">
+                <Radio.Group
+                  v-model:value="row.packType"
+                  :options="packTypeOptions"
+                  option-type="button"
+                  button-style="solid"
+                  size="small"
+                />
               </template>
             </LoadGrid>
           </div>

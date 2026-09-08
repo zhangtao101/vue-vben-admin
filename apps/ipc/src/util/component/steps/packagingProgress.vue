@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/searchSubLine/searchWeightRecord/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉。
+ * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/searchSubLine/searchWeightRecordList/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉。
  * [OUTPUT]: 对外提供 packagingProgress 包装工序步骤组件（步骤组件标准入参 functionId/bindingId/worksheetCode/equipCode/workstationCode/processType）。
  * [POS]: 属于包装工序步骤组件，负责子产线/工单查询、左右两栏工单信息展示、称重记录列表与工作开始/结束控制。
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -12,6 +12,7 @@ import { onMounted, reactive, ref } from 'vue';
 
 import {
   Button,
+  CheckboxGroup,
   Col,
   Form,
   FormItem,
@@ -26,7 +27,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getPlanWorkSheet,
   searchSubLine,
-  searchWeightRecord,
+  searchWeightRecordList,
   selectLineByWorkSheetId,
 } from '#/api';
 import { $t } from '#/locales';
@@ -151,6 +152,8 @@ function createPanel() {
       subLineProductionQty: 0,
     },
     workStatus: 'idle',
+    /** 称重记录包装类型筛选（3单包/4多包/5料包），默认全选 */
+    packTypes: [3, 4, 5] as number[],
   });
 }
 
@@ -221,6 +224,7 @@ function resetPanel(panel: any) {
   panel.metrics.stackQty = 0;
   panel.metrics.subLineProductionQty = 0;
   panel.workStatus = 'idle';
+  panel.packTypes = [3, 4, 5];
 }
 
 /**
@@ -236,23 +240,51 @@ function resetPanels() {
 // endregion
 
 // region 3. 加载称重记录列表
+/** 包装类型多选选项：3 单包 / 4 多包 / 5 料包 */
+const packTypeOptions = [
+  { label: $t('packagingProgress.packTypeSingle'), value: 3 },
+  { label: $t('packagingProgress.packTypeMulti'), value: 4 },
+  { label: $t('packagingProgress.packTypeBag'), value: 5 },
+];
+
 /**
  * 生成称重记录查询函数：面板无工单 id 时返回空数据。
- * @param {object} panel - 目标面板（leftPanel/rightPanel），用于读取 form.id。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel），用于读取 form.id 与 packTypes 筛选。
  * @returns {function} 查询函数，供 vxe-grid proxyConfig 调用，返回 { items, total }。
  * @throws 接口失败时由统一错误处理层提示，此处不额外捕获。
- * @since 2026-09-02 00:00:00
+ * @since 2026-09-08 00:00:00
  */
 function createWeightQuery(panel: any) {
   return () => {
     if (!panel.form.id) {
       return Promise.resolve({ items: [], total: 0 });
     }
-    return searchWeightRecord(panel.form.id).then((res: any) => {
+    const params: any = { id: panel.form.id };
+    // 包装类型筛选：多选值转逗号分隔字符串（如 "3,4,5"），未选时不过滤
+    const type = (panel.packTypes ?? []).join(',');
+    if (type) {
+      params.type = type;
+    }
+    return searchWeightRecordList(params).then((res: any) => {
       const list = res?.list ?? res ?? [];
       return { items: list, total: list.length };
     });
   };
+}
+
+/**
+ * 包装类型筛选变化后重新加载对应面板的称重记录列表。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @param {object} gridApi - 面板对应表格的 api（leftGridApi/rightGridApi）。
+ * @returns {void} 无返回值。
+ * @throws 不主动抛出异常。
+ * @since 2026-09-08 00:00:00
+ */
+function handlePackTypeChange(panel: any, gridApi: any) {
+  if (!panel.form.id) {
+    return;
+  }
+  gridApi.reload();
 }
 
 // 称重记录网格基础配置：左右两栏共用，按面板查询函数差异化
@@ -485,7 +517,13 @@ onMounted(() => {
               {{ $t('packagingProgress.materialList') }}
             </div> -->
             <LeftGrid>
-              <!-- <template #toolbar-tools></template> -->
+              <template #toolbar-tools>
+                <CheckboxGroup
+                  v-model:value="leftPanel.packTypes"
+                  :options="packTypeOptions"
+                  @change="handlePackTypeChange(leftPanel, leftGridApi)"
+                />
+              </template>
             </LeftGrid>
           </div>
 
@@ -614,7 +652,13 @@ onMounted(() => {
               {{ $t('packagingProgress.materialList') }}
             </div> -->
             <RightGrid>
-              <!-- <template #toolbar-tools></template> -->
+              <template #toolbar-tools>
+                <CheckboxGroup
+                  v-model:value="rightPanel.packTypes"
+                  :options="packTypeOptions"
+                  @change="handlePackTypeChange(rightPanel, rightGridApi)"
+                />
+              </template>
             </RightGrid>
           </div>
 

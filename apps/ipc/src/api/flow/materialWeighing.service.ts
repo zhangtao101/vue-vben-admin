@@ -114,3 +114,17 @@ export function selectMaterial(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/weight/label/selectMaterial?${qs.stringify(params)}`,
   );
 }
+
+/**
+ * 展示称重记录
+ * @param params 查询参数
+ * @param params.id id
+ * @param params.type 包装类型，3 单包、4 多包、5 料包，可多选传逗号分隔，如 "3,4,5"
+ * @returns 称重记录列表
+ * @since 2026-09-08 00:00:00
+ */
+export function searchWeightRecordList(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/weight/label/searchRecord?${qs.stringify(params)}`,
+  );
+}
