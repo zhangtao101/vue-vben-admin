@@ -34,6 +34,8 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 
+import NoodleMachineSelectDrawer from '../drawers/NoodleMachineSelectDrawer.vue';
+
 /**
  * 工序步骤组件标准入参（与作业平台其它 steps 组件保持一致）
  */
@@ -219,10 +221,6 @@ function handleReset() {
   gridApi.reload();
 }
 
-function handleExport() {
-  gridApi.grid.exportData({ type: 'csv', filename: 'noodleMachineUse' });
-}
-
 /** 删除指定面机使用明细（二次确认后执行） */
 function handleRowDelete(row: any) {
   if (row?.id == null) {
@@ -308,6 +306,24 @@ function handleFormReset() {
   form.value = emptyForm();
   gridApi.grid?.clearRadioRow();
 }
+
+/** 面机选择抽屉引用 */
+const noodleMachineDrawerRef = ref();
+
+/**
+ * 面机选择结果回填：回填面机代码，若类型在可选范围内则自动带出
+ * @param row 抽屉选中的面机设备数据
+ * @since 2026-09-08
+ */
+function handleSelectNoodleMachine(row: any) {
+  if (!row?.equipCode) {
+    return;
+  }
+  form.value.equipCode = row.equipCode;
+  if (machineTypeOptions.some((item) => item.value === row.type)) {
+    form.value.type = row.type;
+  }
+}
 // endregion
 
 onMounted(() => {
@@ -362,11 +378,6 @@ onMounted(() => {
     <!-- 2. 面机使用明细列表 -->
     <Card>
       <Grid>
-        <template #toolbar-tools>
-          <Button size="small" @click="handleExport">
-            {{ $t('noodleMachineUse.export') }}
-          </Button>
-        </template>
         <template #productionDateCell="{ row }">
           {{ formatDate(row.productionDate) }}
         </template>
@@ -395,13 +406,22 @@ onMounted(() => {
         <Row :gutter="16">
           <Col :xs="24" :sm="12" :md="8" :lg="6">
             <Form.Item :label="$t('noodleMachineUse.machineCode')">
-              <Select
-                v-model:value="form.equipCode"
-                :options="machineCodeOptions"
-                :placeholder="$t('noodleMachineUse.machineCodePlaceholder')"
-                allow-clear
-                show-search
-              />
+              <div class="flex w-full">
+                <Input
+                  v-model:value="form.equipCode"
+                  readonly
+                  :placeholder="$t('noodleMachineUse.machineCodePlaceholder')"
+                  class="min-w-0 flex-1 rounded-r-none"
+                />
+                <Button
+                  type="primary"
+                  class="rounded-l-none"
+                  @click="noodleMachineDrawerRef?.open()"
+                >
+                  <Icon icon="mdi:magnify" class="inline-block align-middle" />
+                  {{ $t('noodleMachineSelect.select') }}
+                </Button>
+              </div>
             </Form.Item>
           </Col>
           <Col :xs="24" :sm="12" :md="8" :lg="6">
@@ -465,5 +485,11 @@ onMounted(() => {
         </Button>
       </div>
     </Card>
+
+    <!-- 面机选择抽屉 -->
+    <NoodleMachineSelectDrawer
+      ref="noodleMachineDrawerRef"
+      @select="handleSelectNoodleMachine"
+    />
   </div>
 </template>

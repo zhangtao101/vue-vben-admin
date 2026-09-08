@@ -1,0 +1,13 @@
+{
+  "title": "Select Noodle Machine",
+  "equipCode": "Noodle Machine Code",
+  "equipCodePlaceholder": "Enter noodle machine code",
+  "type": "Noodle Machine Type",
+  "typePlaceholder": "Enter noodle machine type",
+  "select": "Select",
+  "colEquipCode": "Noodle Machine Code",
+  "colEquipName": "Noodle Machine Name",
+  "colType": "Noodle Machine Type",
+  "colReplaceCycle": "Replace Cycle (h)",
+  "plsSelect": "Please select a noodle machine"
+}

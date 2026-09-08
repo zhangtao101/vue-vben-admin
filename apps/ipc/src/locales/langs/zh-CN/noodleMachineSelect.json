@@ -1,0 +1,13 @@
+{
+  "title": "选择面机",
+  "equipCode": "面机代码",
+  "equipCodePlaceholder": "请输入面机代码",
+  "type": "面机类型",
+  "typePlaceholder": "请输入面机类型",
+  "select": "选择",
+  "colEquipCode": "面机代码",
+  "colEquipName": "面机名称",
+  "colType": "面机类型",
+  "colReplaceCycle": "更换周期（小时）",
+  "plsSelect": "请选择面机"
+}

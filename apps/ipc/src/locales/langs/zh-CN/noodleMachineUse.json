@@ -18,7 +18,6 @@
   "remark": "备注",
   "remarkPlaceholder": "请输入备注",
   "usageList": "面机使用明细列表",
-  "export": "导出",
   "colEquipCode": "面机代码",
   "colType": "面机类型",
   "colLineCode": "产线代码",
