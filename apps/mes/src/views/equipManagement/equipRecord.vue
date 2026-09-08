@@ -46,6 +46,7 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import SubProductionLineSelectDrawer from '#/util/component/equipmentCheckDrawer/SubProductionLineSelectDrawer.vue';
 
 // 路由信息
 const route = useRoute();
@@ -57,18 +58,39 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('equip.sequence'), type: 'seq', width: 50 },
-    { field: 'equipmentCode', title: $t('equip.equipmentNumber'), minWidth: 110 },
-    { field: 'equipmentNameCode', title: $t('equip.equipmentNameCode'), minWidth: 120 },
-    { field: 'equipmentName', title: $t('equip.equipName'), minWidth: 120 },
-    { field: 'equipmentTypeName', title: $t('equip.equipmentCategory'), minWidth: 120 },
+    {
+      field: 'equipmentCode',
+      title: $t('equip.equipmentNumber'),
+      minWidth: 110,
+    },
+    { field: 'equipmentNameCode', title: $t('equip.equipName'), minWidth: 120 },
+    {
+      field: 'equipmentTypeName',
+      title: $t('equip.equipmentCategory'),
+      minWidth: 120,
+    },
     { field: 'manufacturer', title: $t('equip.manufacturer'), minWidth: 100 },
-    { field: 'manufacturingCode', title: $t('equip.productionNumber'), minWidth: 120 },
-    { field: 'manufacturingDate', title: $t('equip.manufacturingDate'), minWidth: 100 },
-    { field: 'installDate', title: $t('equip.installationDate'), minWidth: 100 },
-    { field: 'assets', title: $t('equip.assetStatus'), minWidth: 100, slots: { default: 'assets' } },
-    { field: 'replaceCycle', title: $t('equip.replaceCycle'), minWidth: 100 },
-    { field: 'actualUseHours', title: $t('equip.actualUseHours'), minWidth: 120 },
-    { field: 'cTime', title: $t('equip.lastUsedDate'), minWidth: 120 },
+    {
+      field: 'manufacturingCode',
+      title: $t('equip.productionNumber'),
+      minWidth: 120,
+    },
+    {
+      field: 'manufacturingDate',
+      title: $t('equip.manufacturingDate'),
+      minWidth: 100,
+    },
+    {
+      field: 'installDate',
+      title: $t('equip.installationDate'),
+      minWidth: 100,
+    },
+    {
+      field: 'assets',
+      title: $t('equip.assetStatus'),
+      minWidth: 100,
+      slots: { default: 'assets' },
+    },
     { field: 'remark', title: $t('equip.remark'), minWidth: 100 },
     {
       field: 'action',
@@ -115,18 +137,25 @@ const showEditDrawer = ref(false);
 // 抽屉状态：create/edit/detail
 const dialogStatus = ref('create');
 
+// 子产线选择抽屉 ref
+const subLineDrawerRef = ref();
+
 // 抽屉中的 form 表单对象
 const editForm = ref();
 // form 表单规则验证
 const editRules = ref<any>({
-  equipmentCode: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
-  equipmentNameCode: [{ message: $t('equip.requiredField'), required: true, trigger: 'change' }],
+  equipmentCode: [
+    { message: $t('equip.requiredField'), required: true, trigger: 'change' },
+  ],
+  equipmentNameCode: [
+    { message: $t('equip.requiredField'), required: true, trigger: 'change' },
+  ],
 });
 
 // 设备类别选项
 const equipmentTypeOptions = [
-  { value: 1, label: $t('equip.primaryEquipment') },
-  { value: 2, label: $t('equip.auxiliaryEquipment') },
+  { value: 1, label: $t('equip.workEquipment') },
+  { value: 2, label: $t('equip.palletizer') },
 ];
 
 /**
@@ -135,6 +164,22 @@ const equipmentTypeOptions = [
 function onClose() {
   checkedRow.value = {};
   showEditDrawer.value = false;
+}
+
+/**
+ * 打开子产线选择抽屉
+ */
+function handleSelectSubLine() {
+  subLineDrawerRef.value?.open(checkedRow.value);
+}
+
+/**
+ * 子产线选中后的回调
+ * @param row 选中的子产线数据
+ */
+function handleSubLineSelected(row: any) {
+  checkedRow.value.subLineId = row?.id;
+  checkedRow.value.subLineName = row?.subLineName;
 }
 
 /**
@@ -193,9 +238,10 @@ function delRow(_row: any) {
 function submit() {
   editForm.value.validate().then(() => {
     const data = { ...checkedRow.value };
-    const ob = dialogStatus.value === 'update'
-      ? updateScadaEquipLedger(data)
-      : insertScadaEquipLedger(data);
+    const ob =
+      dialogStatus.value === 'update'
+        ? updateScadaEquipLedger(data)
+        : insertScadaEquipLedger(data);
     ob.then(() => {
       gridApi.reload();
       message.success($t('common.successfulOperation'));
@@ -213,7 +259,7 @@ const queryParams = ref<any>({});
 
 // 资产状态列表
 const statusList = [
-  { label: $t('equip.all'), value:  undefined },
+  { label: $t('equip.all'), value: undefined },
   { label: $t('equip.normal'), value: '1' },
   { label: $t('equip.deleted'), value: '2' },
 ];
@@ -319,7 +365,9 @@ onMounted(() => {
           </Button>
         </template>
         <template #assets="{ row }">
-          <span>{{ row.assets === 1 ? $t('equip.normal') : $t('equip.deleted') }}</span>
+          <span>{{
+            row.assets === 1 ? $t('equip.normal') : $t('equip.deleted')
+          }}</span>
         </template>
         <template #action="{ row }">
           <!-- 查看按钮 -->
@@ -361,7 +409,13 @@ onMounted(() => {
       :width="800"
       class="custom-class"
       placement="right"
-      :title="dialogStatus === 'detail' ? $t('equip.view') : dialogStatus === 'update' ? $t('equip.edit') : $t('equip.add')"
+      :title="
+        dialogStatus === 'detail'
+          ? $t('equip.view')
+          : dialogStatus === 'update'
+            ? $t('equip.edit')
+            : $t('equip.add')
+      "
       @close="onClose"
     >
       <Form
@@ -376,10 +430,7 @@ onMounted(() => {
           <Col :span="12">
             <!-- 设备编号 -->
             <FormItem :label="$t('equip.equipmentNumber')" name="equipmentCode">
-              <Input
-                v-model:value="checkedRow.equipmentCode"
-                :maxlength="20"
-              />
+              <Input v-model:value="checkedRow.equipmentCode" :maxlength="20" />
             </FormItem>
           </Col>
           <Col :span="12">
@@ -395,16 +446,19 @@ onMounted(() => {
         <Row :gutter="8">
           <Col :span="12">
             <!-- 生产厂家 -->
-            <FormItem :label="$t('equip.productionFactory')" name="manufacturer">
-              <Input
-                v-model:value="checkedRow.manufacturer"
-                :maxlength="30"
-              />
+            <FormItem
+              :label="$t('equip.productionFactory')"
+              name="manufacturer"
+            >
+              <Input v-model:value="checkedRow.manufacturer" :maxlength="30" />
             </FormItem>
           </Col>
           <Col :span="12">
             <!-- 出厂编号 -->
-            <FormItem :label="$t('equip.productionNumber')" name="manufacturingCode">
+            <FormItem
+              :label="$t('equip.productionNumber')"
+              name="manufacturingCode"
+            >
               <Input
                 v-model:value="checkedRow.manufacturingCode"
                 :maxlength="20"
@@ -415,7 +469,10 @@ onMounted(() => {
         <Row :gutter="8">
           <Col :span="12">
             <!-- 出厂日期 -->
-            <FormItem :label="$t('equip.manufacturingDate')" name="manufacturingDate">
+            <FormItem
+              :label="$t('equip.manufacturingDate')"
+              name="manufacturingDate"
+            >
               <DatePicker
                 v-model:value="checkedRow.manufacturingDate"
                 style="width: 100%"
@@ -437,7 +494,10 @@ onMounted(() => {
         <Row :gutter="8">
           <Col :span="12">
             <!-- 设备类型 -->
-            <FormItem :label="$t('equip.equipmentCategory')" name="equipmentType">
+            <FormItem
+              :label="$t('equip.equipmentCategory')"
+              name="equipmentType"
+            >
               <Select
                 v-model:value="checkedRow.equipmentType"
                 :options="equipmentTypeOptions"
@@ -459,6 +519,21 @@ onMounted(() => {
         </Row>
         <Row :gutter="8">
           <Col :span="12">
+            <!-- 子产线：只读输入框 + 选择按钮 -->
+            <FormItem :label="$t('equip.subLine')" name="subLineId">
+              <Input
+                :value="checkedRow.subLineName"
+                :placeholder="$t('equip.pleaseSelectSubLine')"
+                readonly
+                style="width: calc(100% - 46px); margin-right: 6px"
+              />
+              <Button
+                :icon="h(MdiSearch, { class: 'inline-block align-middle' })"
+                @click="handleSelectSubLine"
+              />
+            </FormItem>
+          </Col>
+          <Col :span="12">
             <!-- 备注 -->
             <FormItem :label="$t('equip.remark')" name="remark">
               <Textarea
@@ -470,12 +545,7 @@ onMounted(() => {
           </Col>
         </Row>
       </Form>
-      <Descriptions
-        v-else
-        bordered
-        :column="2"
-        class="!mb-4"
-      >
+      <Descriptions v-else bordered :column="2" class="!mb-4">
         <Descriptions.Item :label="$t('equip.equipmentNumber')">
           {{ checkedRow.equipmentCode }}
         </Descriptions.Item>
@@ -484,6 +554,9 @@ onMounted(() => {
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.equipmentTypeCode')">
           {{ checkedRow.equipmentNameCode }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('equip.subLine')">
+          {{ checkedRow.subLineName }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.productionFactory')">
           {{ checkedRow.manufacturer }}
@@ -498,7 +571,11 @@ onMounted(() => {
           {{ checkedRow.installDate }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.equipmentCategory')">
-          {{ equipmentTypeOptions.find(o => o.value === checkedRow.equipmentType)?.label || '' }}
+          {{
+            equipmentTypeOptions.find(
+              (o) => o.value === checkedRow.equipmentType,
+            )?.label || ''
+          }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.replaceCycle')">
           {{ checkedRow.replaceCycle }}
@@ -523,6 +600,13 @@ onMounted(() => {
         </Space>
       </template>
     </Drawer>
+    <!-- endregion -->
+
+    <!-- region 子产线选择抽屉 -->
+    <SubProductionLineSelectDrawer
+      ref="subLineDrawerRef"
+      @select="handleSubLineSelected"
+    />
     <!-- endregion -->
   </Page>
 </template>
