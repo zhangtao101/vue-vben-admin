@@ -94,6 +94,17 @@ const queryParams = ref({
 // region 字典数据
 const productionLineList = ref<any[]>([]);
 
+// 工序类型选项：value 与后台单别保持一致
+const processTypeOptions = [
+  { value: 1, label: $t('baseInfo.processTypeWaterPreparation') },
+  { value: 2, label: $t('baseInfo.processTypeMixing') },
+  { value: 3, label: $t('baseInfo.processTypeNoodleMaking') },
+  { value: 4, label: $t('baseInfo.processTypePackaging') },
+  { value: 5, label: $t('baseInfo.processTypeVegetablePackaging') },
+  { value: 6, label: $t('baseInfo.processTypeGravityFreeMixing') },
+  { value: 9, label: $t('baseInfo.processTypeProductionInstruction') },
+];
+
 // endregion
 
 // region 抽屉/弹框
@@ -106,17 +117,30 @@ const formData = ref({
   lineId: undefined as number | undefined,
   subLineCode: '',
   subLineName: '',
+  processType: undefined as number | undefined,
 });
 
 const rules: any = {
   lineId: [
-    { required: true, message: $t('baseInfo.selectProductionLine'), trigger: 'change' },
+    {
+      required: true,
+      message: $t('baseInfo.selectProductionLine'),
+      trigger: 'change',
+    },
   ],
   subLineCode: [
-    { required: true, message: $t('baseInfo.inputSubLineCode'), trigger: 'blur' },
+    {
+      required: true,
+      message: $t('baseInfo.inputSubLineCode'),
+      trigger: 'blur',
+    },
   ],
   subLineName: [
-    { required: true, message: $t('baseInfo.inputSubLineName'), trigger: 'blur' },
+    {
+      required: true,
+      message: $t('baseInfo.inputSubLineName'),
+      trigger: 'blur',
+    },
   ],
 };
 
@@ -180,6 +204,7 @@ function handleAdd() {
     lineId: undefined,
     subLineCode: '',
     subLineName: '',
+    processType: undefined,
   };
   showEditDrawer.value = true;
   formRef.value?.clearValidate();
@@ -195,6 +220,7 @@ function handleEdit(row: any) {
     lineId: row.lineId,
     subLineCode: row.subLineCode,
     subLineName: row.subLineName,
+    processType: row.processType,
   };
   showEditDrawer.value = true;
   formRef.value?.clearValidate();
@@ -224,17 +250,27 @@ function handleDelete(row: any) {
  */
 function handleSubmit() {
   formRef.value?.validate().then(() => {
-    const { id, lineId, subLineCode, subLineName } = formData.value;
+    const { id, lineId, subLineCode, subLineName, processType } =
+      formData.value;
     if (editMode.value) {
-      updateSubProductionLine({ id: id!, lineId: lineId!, subLineCode, subLineName }).then(
-        () => {
-          message.success($t('baseInfo.updateSuccess'));
-          handleClose();
-          gridApi.reload();
-        },
-      );
+      updateSubProductionLine({
+        id: id!,
+        lineId: lineId!,
+        subLineCode,
+        subLineName,
+        processType,
+      }).then(() => {
+        message.success($t('baseInfo.updateSuccess'));
+        handleClose();
+        gridApi.reload();
+      });
     } else {
-      createSubProductionLine({ lineId: lineId!, subLineCode, subLineName }).then(() => {
+      createSubProductionLine({
+        lineId: lineId!,
+        subLineCode,
+        subLineName,
+        processType,
+      }).then(() => {
         message.success($t('baseInfo.createSuccess'));
         handleClose();
         gridApi.reload();
@@ -253,6 +289,7 @@ function handleClose() {
     lineId: undefined,
     subLineCode: '',
     subLineName: '',
+    processType: undefined,
   };
   formRef.value?.resetFields();
 }
@@ -397,6 +434,22 @@ function handleClose() {
             :max-length="50"
             :placeholder="$t('baseInfo.inputSubLineName')"
           />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.processType')" name="processType">
+          <Select
+            v-model:value="formData.processType"
+            allow-clear
+            :placeholder="$t('baseInfo.selectProcessType')"
+            style="width: 100%"
+          >
+            <SelectOption
+              v-for="item in processTypeOptions"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </SelectOption>
+          </Select>
         </FormItem>
       </Form>
       <template #footer>

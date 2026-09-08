@@ -126,7 +126,7 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'equipCode',
-      title: $t('baseInfo.hangTray'),
+      title: $t('baseInfo.palletizerCode'),
       minWidth: 200,
       slots: { default: 'equipCode' },
     },
@@ -285,10 +285,7 @@ initEquipOptions();
           />
         </FormItem>
 
-        <FormItem
-          :label="$t('baseInfo.lineCode')"
-          style="margin-bottom: 1em"
-        >
+        <FormItem :label="$t('baseInfo.lineCode')" style="margin-bottom: 1em">
           <Input
             v-model:value="queryParams.lineCode"
             :placeholder="$t('baseInfo.inputLineCode')"

@@ -29,6 +29,8 @@ export interface SubProductionLineItem {
   subLineCode: string;
   /** 子产线名称 */
   subLineName: string;
+  /** 工序类型：1 配水工单、2 混合工单、3 制面工单、4 包装工单、5 蔬菜包装工单、6 无重力搅拌工单、9 生产指示序列 */
+  processType?: number;
   /** 页码 */
   pageNum?: number;
   /** 每页条数 */
@@ -51,6 +53,8 @@ export interface SubProductionLineCreateParams {
   subLineCode: string;
   /** 子产线名称，必填 */
   subLineName: string;
+  /** 工序类型：1 配水工单、2 混合工单、3 制面工单、4 包装工单、5 蔬菜包装工单、6 无重力搅拌工单、9 生产指示序列 */
+  processType?: number;
 }
 
 /** 修改子产线参数 */
@@ -63,6 +67,8 @@ export interface SubProductionLineUpdateParams {
   subLineCode: string;
   /** 子产线名称，必填 */
   subLineName: string;
+  /** 工序类型：1 配水工单、2 混合工单、3 制面工单、4 包装工单、5 蔬菜包装工单、6 无重力搅拌工单、9 生产指示序列 */
+  processType?: number;
 }
 
 // ========== 接口函数 ==========
@@ -72,7 +78,9 @@ export interface SubProductionLineUpdateParams {
  * @param params 查询参数
  * @returns 分页结果
  */
-export async function listSubProductionLines(params: SubProductionLineListParams) {
+export async function listSubProductionLines(
+  params: SubProductionLineListParams,
+) {
   return requestClient.get<SubProductionLineListResult>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/produce/subLine/search?${qs.stringify(params)}`,
   );
@@ -83,7 +91,9 @@ export async function listSubProductionLines(params: SubProductionLineListParams
  * @param params 子产线信息
  * @returns 新增后的子产线
  */
-export async function createSubProductionLine(params: SubProductionLineCreateParams) {
+export async function createSubProductionLine(
+  params: SubProductionLineCreateParams,
+) {
   return requestClient.post<SubProductionLineItem>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/produce/subLine/addSubLine`,
     params,
@@ -95,7 +105,9 @@ export async function createSubProductionLine(params: SubProductionLineCreatePar
  * @param params 子产线信息
  * @returns 修改后的子产线
  */
-export async function updateSubProductionLine(params: SubProductionLineUpdateParams) {
+export async function updateSubProductionLine(
+  params: SubProductionLineUpdateParams,
+) {
   return requestClient.put<SubProductionLineItem>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/produce/subLine/updateLine`,
     params,
