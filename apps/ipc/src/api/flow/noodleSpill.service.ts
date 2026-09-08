@@ -49,6 +49,23 @@ export function searchNoodleSpillRecord(params: any) {
 }
 
 /**
+ * 下载落面记录 Excel
+ * @param params 查询参数
+ * @param params.startTime 开始时间（yyyy-MM-dd）
+ * @param params.endTime 结束时间（yyyy-MM-dd）
+ * @param params.lineCode 制面产线
+ * @param params.areaCode 区域
+ * @param params.gradeCode 等级
+ * @returns 返回 Excel 下载地址
+ * @since 2026-09-08
+ */
+export function downloadNoodleSpillRecordExcel(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/noodle/spill/record/downloadExcel?${qs.stringify(params)}`,
+  );
+}
+
+/**
  * 删除落面记录
  * @param id 记录 id
  * @returns 操作结果

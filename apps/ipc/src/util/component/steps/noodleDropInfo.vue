@@ -28,6 +28,7 @@ import {
 import {
   addNoodleSpillRecord,
   deleteNoodleSpillRecord,
+  downloadNoodleSpillRecordExcel,
   listProductionLines,
   searchAreas,
   searchGrades,
@@ -233,8 +234,26 @@ function handleReset() {
   gridApi.reload();
 }
 
+/**
+ * 导出落面记录：调用下载接口获取 Excel 地址后由浏览器直接下载
+ * @since 2026-09-08
+ */
 function handleExport() {
-  gridApi.grid.exportData({ type: 'csv', filename: 'noodleDropInfo' });
+  const { productDateRange, line, area, grade } = queryParams.value;
+  const params: any = {
+    lineCode: line,
+    areaCode: area,
+    gradeCode: grade,
+  };
+  if (productDateRange?.length === 2) {
+    params.startTime = productDateRange[0];
+    params.endTime = productDateRange[1];
+  }
+  downloadNoodleSpillRecordExcel(params).then((url: any) => {
+    if (url) {
+      window.open(url);
+    }
+  });
 }
 
 /** 删除指定落面记录（二次确认后执行） */
