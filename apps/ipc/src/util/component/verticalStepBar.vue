@@ -46,7 +46,9 @@ function selectStep(index: number, item: any) {
 </script>
 
 <template>
-  <div class="flex h-full w-32 flex-col gap-2 p-4 overflow-x-hidden overflow-y-auto">
+  <div
+    class="flex h-full w-32 flex-col gap-2 p-4 overflow-x-hidden overflow-y-auto"
+  >
     <!-- 循环渲染每个工步 -->
     <div
       v-for="(item, index) of steps"
@@ -59,7 +61,7 @@ function selectStep(index: number, item: any) {
           item.status === -1,
         'border-destructive bg-destructive text-destructive-foreground hover:border-primary hover:bg-destructive hover:text-destructive-foreground dark:border-destructive/60 dark:bg-destructive/20 dark:text-destructive dark:hover:bg-destructive/30':
           item.status === 3,
-        'ring-2 ring-primary': current === index,
+        'ring-4 ring-primary': current === index,
       }"
       @click="selectStep(index, item)"
     >
@@ -70,7 +72,9 @@ function selectStep(index: number, item: any) {
         {{ index + 1 }}
       </div>
       <!-- 工步名称 -->
-      <div class="break-words text-sm font-bold leading-snug">{{ item.title }}</div>
+      <div class="break-words text-sm font-bold leading-snug">
+        {{ item.title }}
+      </div>
     </div>
   </div>
 </template>
