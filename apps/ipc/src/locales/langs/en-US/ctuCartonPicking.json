@@ -8,6 +8,8 @@
   "materialCode": "Material Code",
   "materialName": "Material Name",
   "materialCharacteristics": "Material Characteristics",
+  "productCode": "Product Code",
+  "productName": "Product Name",
   "quantity": "Quantity",
   "unit": "Unit",
   "materialLabel": "Material Label",

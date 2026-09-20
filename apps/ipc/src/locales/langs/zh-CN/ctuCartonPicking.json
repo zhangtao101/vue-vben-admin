@@ -8,6 +8,8 @@
   "materialCode": "物料编号",
   "materialName": "物料名称",
   "materialCharacteristics": "物料特性",
+  "productCode": "产品编号",
+  "productName": "产品名称",
   "quantity": "数量",
   "unit": "单位",
   "materialLabel": "物料标签",
