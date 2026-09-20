@@ -264,9 +264,9 @@ function handleMainTableQuery({ page, pageSize }: any) {
       pageSize,
     };
     spWorkList(params)
-      .then(({ total, list }) => {
+      .then(({ totalSize, list }) => {
         resolve({
-          total,
+          total: totalSize,
           items: list,
         });
       })
