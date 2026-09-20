@@ -562,3 +562,35 @@ export function sheetBack(params: any) {
     params,
   );
 }
+/**
+ * 扫码输入工单获取对应的投料设备列表
+ * @param params 参数 { worksheetCode: string } 工单编号
+ */
+export function getRemainingFeedEquipListByCode(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/opfunction/getRemainingFeedEquipListByCode?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 根据工作站获取工序及其对应作业标签列表
+ * @param params 参数 { workstationCode: string }
+ * @returns 工序列表（含 details 操作标签列表）
+ * @since 2026-09-02
+ */
+export function getSstationProces(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getSstationProces?${qs.stringify(params)}`,
+  );
+}
+/**
+ * 根据标签页ID获取对应的工步列表
+ * @param params 参数 { opDetailId: string | number }
+ * @returns 工步列表
+ * @since 2026-09-02
+ */
+export function getOpFunctionsByOpdetail(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getOpFunctionsByOpdetail?${qs.stringify(params)}`,
+  );
+}

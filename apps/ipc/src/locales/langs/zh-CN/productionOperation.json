@@ -133,5 +133,22 @@
   "workOrderNumberInExecution": "正在执行的工单编号",
   "productNumberInExecution": "正在执行的产品编号",
   "productNameInExecution": "正在执行的产品名称",
-  "productModelInExecution": "正在执行的产品型号"
+  "productModelInExecution": "正在执行的产品型号",
+  "deviceSelection": "设备选择",
+  "seq": "序号",
+  "workOrderCode": "工单号",
+  "materialCode": "料号",
+  "materialName": "物料名称",
+  "materialPlateCode": "标签号",
+  "materialStationCode": "料站编号",
+  "feedUser": "投料人",
+  "feedTime": "上料时间",
+  "availableDownNumber": "可下料数量",
+  "downNumber": "下料数量",
+  "selectFeedingEquipment": "请选择投料设备",
+  "down": "下料",
+  "pleaseInputDownNumber": "请至少填写一个下料数量",
+  "downNumberExceedAvailable": "\"{name}\" 下料数量不能超过可下料数量({number})",
+  "confirmDown": "确认下料",
+  "confirmDownContent": "确认下料共 {count} 条记录吗？"
 }
