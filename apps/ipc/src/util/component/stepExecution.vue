@@ -37,7 +37,6 @@ import Transcoding from '#/util/component/steps/transcoding.vue';
 import TransportMonitor from '#/util/component/steps/transportMonitor.vue';
 import UnloadingDocking from '#/util/component/steps/unloadingDocking.vue';
 import UnloadingDockingTask from '#/util/component/steps/unloadingDockingTask.vue';
-
 /**
  * 定义组件接收的 props，用于传递工步执行所需的相关信息
  */
@@ -74,6 +73,11 @@ defineProps({
   },
   // 产品名称，用于显示当前生产的产品名称
   productName: {
+    type: String,
+    default: '',
+  },
+  // 工序编号
+  processCode: {
     type: String,
     default: '',
   },
