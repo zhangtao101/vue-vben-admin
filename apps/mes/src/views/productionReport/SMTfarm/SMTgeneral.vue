@@ -35,8 +35,8 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import {
-  fetchLineById,
-  fetchProcessByWorkshop,
+  fetchProcessByWorkstation,
+  fetchWorkstationDropdownList,
   manList,
   mouthExelect,
   mouthList,
@@ -192,9 +192,8 @@ const listQuery = reactive({
   pageNum: 1,
   pageSize: 10,
   month: undefined as string | undefined,
-  processCode: undefined as string | undefined,
-  taskLine: undefined as string | undefined,
-  lineName: undefined as string | undefined,
+  workstationCode: undefined as string | undefined,
+  bindingId: undefined as number | undefined,
   partName: undefined as string | undefined,
   isPartOrProduct: undefined as string | undefined,
   workShop: 1,
@@ -204,8 +203,8 @@ const listQuery = reactive({
 const detailQuery = reactive({
   month: undefined as string | undefined,
   day: undefined as string | undefined,
-  processCode: undefined as string | undefined,
-  taskLineCode: undefined as string | undefined,
+  bindingId: undefined as number | undefined,
+  workstationCode: undefined as string | undefined,
   partName: undefined as string | undefined,
   partCode: undefined as string | undefined,
   partOrProduct: undefined as string | undefined,
@@ -217,15 +216,14 @@ const detailQuery = reactive({
 // 当前点击的字段
 const currentField = ref<string>('');
 
-// 工序列表和产线列表
-const planProcess = ref<any[]>([]);
-const taskLineList = ref<any[]>([]);
-let processId = '';
+// 工作站列表和工序列表
+const workstationList = ref<any[]>([]);
+const processList = ref<any[]>([]);
 
 // 表单验证规则
 const rules: any = {
   month: [{ required: true, message: $t('SMTPlantAdd.pleaseSelectMonth'), trigger: 'change' }],
-  processCode: [
+  bindingId: [
     { required: true, message: $t('SMTPlantAdd.pleaseSelectProcess'), trigger: 'change' },
   ],
 };
@@ -245,54 +243,40 @@ function getDefaultMonth() {
 }
 
 /**
- * 查询工序列表
+ * 查询工作站列表
+ *
+ * @since 2026-09-20
  */
-function getProcessList() {
-  const workshop = 1;
-  fetchProcessByWorkshop(workshop)
+function getWorkstationList() {
+  fetchWorkstationDropdownList()
     .then((data: any) => {
-      planProcess.value = data;
+      workstationList.value = data;
     })
     .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
+      message.error(error.message || $t('SMTPlantAdd.getWorkstationListFailed'));
     });
 }
 
 /**
- * 工序变更
+ * 工作站变更，清空已选工序并按工作站编号重新加载工序列表
+ *
+ * @since 2026-09-20
  */
-function handleProcessChange() {
-  processId = '';
-  taskLineList.value = [];
-  listQuery.lineName = undefined;
-  listQuery.taskLine = undefined;
+function handleWorkstationChange() {
+  listQuery.bindingId = undefined;
+  processList.value = [];
 
-  planProcess.value.forEach((item) => {
-    if (item.processCode === listQuery.processCode) {
-      processId = item.id;
-    }
-  });
-
-  if (processId) {
-    fetchLineById(processId)
-      .then((data: any) => {
-        taskLineList.value = data;
-      })
-      .catch((error: any) => {
-        message.error(error.message || $t('SMTPlantAdd.getLineListFailed'));
-      });
+  if (!listQuery.workstationCode) {
+    return;
   }
-}
 
-/**
- * 任务线别变更
- */
-function handleLineChange() {
-  taskLineList.value.forEach((item) => {
-    if (item.lineName === listQuery.lineName) {
-      listQuery.taskLine = item.id;
-    }
-  });
+  fetchProcessByWorkstation(listQuery.workstationCode)
+    .then((data: any) => {
+      processList.value = data;
+    })
+    .catch((error: any) => {
+      message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
+    });
 }
 
 /**
@@ -396,7 +380,7 @@ function handleSearch() {
     message.warning($t('SMTPlantAdd.pleaseSelectMonth'));
     return;
   }
-  if (!listQuery.processCode) {
+  if (!listQuery.bindingId) {
     message.warning($t('SMTPlantAdd.pleaseSelectProcess'));
     return;
   }
@@ -424,8 +408,8 @@ function handleExportMonth() {
 function handleExportProduct() {
   const params = {
     month: listQuery.month,
-    processCode: listQuery.processCode,
-    taskLine: listQuery.taskLine,
+    bindingId: listQuery.bindingId,
+    workstationCode: listQuery.workstationCode,
     partName: listQuery.partName,
     isPartOrProduct: listQuery.isPartOrProduct,
     workShop: 1,
@@ -453,8 +437,8 @@ function handleDetail(row: any, prop: string) {
     detailQuery.day = prop.slice(8, 10);
   }
 
-  detailQuery.processCode = listQuery.processCode;
-  detailQuery.taskLineCode = listQuery.taskLine;
+  detailQuery.bindingId = listQuery.bindingId;
+  detailQuery.workstationCode = listQuery.workstationCode;
   detailQuery.partName = row.part_name;
   detailQuery.partCode = row.part_code;
   detailQuery.partOrProduct = listQuery.isPartOrProduct;
@@ -511,7 +495,7 @@ function handlePageChange({ currentPage, pageSize }: any) {
 
 onMounted(() => {
   getDefaultMonth();
-  getProcessList();
+  getWorkstationList();
 });
 
 // endregion 生命周期
@@ -532,36 +516,35 @@ onMounted(() => {
             style="width: 200px"
           />
         </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.selectProcess')" name="processCode" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.workstation')" name="workstationCode" class="!my-2">
           <Select
-            v-model:value="listQuery.processCode"
+            v-model:value="listQuery.workstationCode"
             :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
-            @change="handleProcessChange"
+            @change="handleWorkstationChange"
           >
             <SelectOption
-              v-for="item in planProcess"
-              :key="item.id"
-              :value="item.processCode"
+              v-for="item in workstationList"
+              :key="item.workstationCode"
+              :value="item.workstationCode"
             >
-              {{ item.processName }}
+              {{ item.workstationName }}
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.selectTaskLine')" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.process')" name="bindingId" class="!my-2">
           <Select
-            v-model:value="listQuery.lineName"
-            allow-clear
-            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
+            v-model:value="listQuery.bindingId"
+            :disabled="!listQuery.workstationCode"
+            :placeholder="$t('SMTPlantAdd.pleaseSelectWorkstation')"
             class="!w-48"
-            @change="handleLineChange"
           >
             <SelectOption
-              v-for="item in taskLineList"
-              :key="item.id"
-              :value="item.lineName"
+              v-for="item in processList"
+              :key="item.bindingId"
+              :value="item.bindingId"
             >
-              {{ item.lineName }}
+              {{ item.processName }}
             </SelectOption>
           </Select>
         </FormItem>

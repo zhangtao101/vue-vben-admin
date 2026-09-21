@@ -42,10 +42,10 @@ import {
   exportDetail,
   exportList,
   fetchDetailByName,
-  fetchLineById,
   fetchList,
-  fetchProcessByWorkshop,
+  fetchProcessByWorkstation,
   fetchWorkorder,
+  fetchWorkstationDropdownList,
   fetParams,
 } from '#/api';
 
@@ -57,8 +57,8 @@ import {
  */
 const mainColumns: any[] = [
   { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-  { field: 'lineName', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
-  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
+  { field: 'workstationName', title: $t('SMTPlantAdd.workstation'), minWidth: 100 },
+  { field: 'processName', title: $t('SMTPlantAdd.process'), minWidth: 80 },
   { field: 'subProductCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
   {
     field: 'subProductName',
@@ -257,11 +257,15 @@ const workorderGridOptions: VxeGridProps<any> = {
   checkboxConfig: {
     highlight: true,
     reserve: true,
+    trigger:"row"
   },
   data: [],
   height: 300,
   rowConfig: {
     isCurrent: true,
+  },
+  pagerConfig: {
+    enabled: false,
   },
   rowStyle: setRowStyle,
   stripe: true,
@@ -284,9 +288,9 @@ const detailShow = ref(false);
 const addShow = ref(false);
 const exportShow = ref(false);
 
-// 计算是否可以查询或导出（需要选择报工工序和任务线别）
+// 计算是否可以查询或导出（需要先选择工作站，再选择工序）
 const canSearchOrExport = computed(() => {
-  return !!(listQuery.processCode && listQuery.taskLineCode);
+  return !!(listQuery.workstationCode && listQuery.bindingId);
 });
 
 // 报工时段选项
@@ -325,40 +329,42 @@ const productList = [
 
 // 查询表单
 const listQuery = reactive({
-  produceWorkshop: 1,
-  processCode: undefined as string | undefined,
-  reportDate: dayjs(new Date()).format('YYYY-MM-DD'),
-  taskLineCode: undefined as number | string | undefined,
+  bindingId: undefined as number | string | undefined,
   partName: undefined as string | undefined,
   partOrProduct: undefined as number | undefined,
+  produceWorkshop: 1,
+  reportDate: dayjs(new Date()).format('YYYY-MM-DD'),
+  workstationCode: undefined as string | undefined,
 });
 
 // 详情查询表单
 const detailQuery = reactive({
-  produceWorkshop: 1,
-  reportDate: undefined as string | undefined,
-  processCode: undefined as string | undefined,
-  taskLineCode: undefined as number | string | undefined,
-  partName: undefined as string | undefined,
-  partOrProduct: undefined as number | undefined,
+  bindingId: undefined as number | string | undefined,
   pageNum: 1,
   pageSize: 20,
+  partName: undefined as string | undefined,
+  partOrProduct: undefined as number | undefined,
+  produceWorkshop: 1,
+  reportDate: undefined as string | undefined,
+  workstationCode: undefined as string | undefined,
 });
 
 // 弹窗表单
 const dialogFormVisible = ref(false);
 const popData = reactive<any>({
-  reportDate: undefined,
-  workSheetCode: undefined,
-  workSheetPlanNumber: '',
-  workSheetFinishNumber: '',
-  subPlanNumber: '',
-  produceNotFinishNumber: '',
-  subPlanFinishNumber: '',
+  equipTime: undefined,
   number: undefined,
-  reportTimeQuantum: undefined,
+  personTime: undefined,
   processName: undefined,
-  lineName: undefined,
+  produceNotFinishNumber: '',
+  reportDate: undefined,
+  reportTimeQuantum: undefined,
+  subPlanFinishNumber: '',
+  subPlanNumber: '',
+  workSheetCode: undefined,
+  workSheetFinishNumber: '',
+  workSheetPlanNumber: '',
+  workstationName: undefined,
 });
 
 // 工单查询
@@ -366,16 +372,17 @@ const workSheetCode1 = ref<string | undefined>(undefined);
 const partPlanCode1 = ref<string | undefined>(undefined);
 const selectedWorkorder = ref<any>(null);
 
-// 工序列表和产线列表
-const planProcess = ref<any[]>([]);
-const taskLineList = ref<any[]>([]);
-let processId = '';
+// 工作站列表和工序列表
+const workstationList = ref<any[]>([]);
+const processList = ref<any[]>([]);
 
 // 表单验证规则
 const rules: any = {
+  bindingId: [
+    { required: true, message: $t('page.common.requiredField'), trigger: 'change' },
+  ],
   reportDate: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
-  processCode: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
-  taskLineCode: [
+  workstationCode: [
     { required: true, message: $t('page.common.requiredField'), trigger: 'change' },
   ],
 };
@@ -393,13 +400,40 @@ const dialogRules: any = {
 // region 方法定义
 
 /**
- * 查询工序列表
+ * 查询工作站列表
+ *
+ * @since 2026-09-20
  */
-function getProcessList() {
-  const workshop = 1;
-  fetchProcessByWorkshop(workshop)
+function getWorkstationList() {
+  fetchWorkstationDropdownList()
     .then((data: any) => {
-      planProcess.value = data;
+      workstationList.value = data;
+    })
+    .catch((error: any) => {
+      message.error(error.message || $t('SMTPlantAdd.getWorkstationListFailed'));
+    });
+}
+
+/**
+ * 工作站变更，清空已选工序并按工作站编号重新加载工序列表
+ *
+ * @since 2026-09-20
+ */
+function handleWorkstationChange() {
+  listQuery.bindingId = undefined;
+  popData.processName = undefined;
+  processList.value = [];
+  workstationList.value.forEach((item) => {
+    if (item.workstationCode === listQuery.workstationCode) {
+      popData.workstationName = item.workstationName;
+    }
+  });
+  if (!listQuery.workstationCode) {
+    return;
+  }
+  fetchProcessByWorkstation(listQuery.workstationCode)
+    .then((data: any) => {
+      processList.value = data;
     })
     .catch((error: any) => {
       message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
@@ -407,35 +441,14 @@ function getProcessList() {
 }
 
 /**
- * 工序变更
+ * 工序变更，回填弹窗中的工序名称
+ *
+ * @since 2026-09-20
  */
 function handleProcessChange() {
-  processId = '';
-  taskLineList.value = [];
-  planProcess.value.forEach((item) => {
-    if (item.processCode === listQuery.processCode) {
-      processId = item.id;
+  processList.value.forEach((item) => {
+    if (item.bindingId === listQuery.bindingId) {
       popData.processName = item.processName;
-    }
-  });
-  if (processId) {
-    fetchLineById(processId)
-      .then((data: any) => {
-        taskLineList.value = data;
-      })
-      .catch((error: any) => {
-        message.error(error.message || $t('SMTPlantAdd.getLineListFailed'));
-      });
-  }
-}
-
-/**
- * 任务线别变更
- */
-function handleTaskLineChange() {
-  taskLineList.value.forEach((item) => {
-    if (item.id === listQuery.taskLineCode) {
-      popData.lineName = item.lineName;
     }
   });
 }
@@ -446,7 +459,7 @@ function handleTaskLineChange() {
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve) => {
-    if (!listQuery.processCode || !listQuery.taskLineCode) {
+    if (!listQuery.workstationCode || !listQuery.bindingId) {
       resolve({ items: [], total: 0 });
       return;
     }
@@ -498,8 +511,8 @@ function handleExport() {
  */
 function handleDetail(row: any) {
   detailQuery.reportDate = listQuery.reportDate;
-  detailQuery.processCode = listQuery.processCode;
-  detailQuery.taskLineCode = listQuery.taskLineCode;
+  detailQuery.workstationCode = listQuery.workstationCode;
+  detailQuery.bindingId = listQuery.bindingId;
   if (row.productPlan === true) {
     detailQuery.partOrProduct = 2;
   } else if (row.productPlan === false) {
@@ -587,6 +600,8 @@ function handleCreate() {
   popData.subPlanFinishNumber = '';
   popData.number = undefined;
   popData.reportTimeQuantum = undefined;
+  popData.personTime = undefined;
+  popData.equipTime = undefined;
 
   workSheetCode1.value = undefined;
   partPlanCode1.value = undefined;
@@ -601,8 +616,9 @@ function handleCreate() {
  */
 function loadWorkorderList() {
   const params = {
-    taskLineCode: listQuery.taskLineCode,
+    bindingId: listQuery.bindingId,
     reportDate: popData.reportDate,
+    workstationCode: listQuery.workstationCode,
     workSheetCode: workSheetCode1.value,
     partPlanCode: partPlanCode1.value,
   };
@@ -671,9 +687,13 @@ function handleSubmit() {
     return;
   }
   const tempData = {
+    bindingId: listQuery.bindingId,
+    equipTime: popData.equipTime,
     number: popData.number,
+    personTime: popData.personTime,
     reportTimeQuantum: popData.reportTimeQuantum,
     workSheetCode: popData.workSheetCode,
+    workstationCode: listQuery.workstationCode,
   };
   createArticle(tempData)
     .then(() => {
@@ -701,7 +721,7 @@ function getButton() {
 
 onMounted(() => {
   getButton();
-  getProcessList();
+  getWorkstationList();
 });
 
 // endregion 生命周期
@@ -720,35 +740,36 @@ onMounted(() => {
             value-format="YYYY-MM-DD"
           />
         </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.reportProcess')" name="processCode" class="!my-2">
+        <FormItem :label="$t('SMTPlantAdd.workstation')" name="workstationCode" class="!my-2">
           <Select
-            v-model:value="listQuery.processCode"
+            v-model:value="listQuery.workstationCode"
             :placeholder="$t('SMTPlantAdd.pleaseSelect')"
+            class="!w-48"
+            @change="handleWorkstationChange"
+          >
+            <SelectOption
+              v-for="item in workstationList"
+              :key="item.workstationCode"
+              :value="item.workstationCode"
+            >
+              {{ item.workstationName }}
+            </SelectOption>
+          </Select>
+        </FormItem>
+        <FormItem :label="$t('SMTPlantAdd.process')" name="bindingId" class="!my-2">
+          <Select
+            v-model:value="listQuery.bindingId"
+            :disabled="!listQuery.workstationCode"
+            :placeholder="$t('SMTPlantAdd.pleaseSelectWorkstation')"
             class="!w-48"
             @change="handleProcessChange"
           >
             <SelectOption
-              v-for="item in planProcess"
-              :key="item.processCode"
-              :value="item.processCode"
+              v-for="item in processList"
+              :key="item.bindingId"
+              :value="item.bindingId"
             >
               {{ item.processName }}
-            </SelectOption>
-          </Select>
-        </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.taskLine')" name="taskLineCode" class="!my-2">
-          <Select
-            v-model:value="listQuery.taskLineCode"
-            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
-            class="!w-48"
-            @change="handleTaskLineChange"
-          >
-            <SelectOption
-              v-for="item in taskLineList"
-              :key="item.id"
-              :value="item.id"
-            >
-              {{ item.lineName }}
             </SelectOption>
           </Select>
         </FormItem>
@@ -802,16 +823,14 @@ onMounted(() => {
     </Card>
 
     <!-- 主表格 -->
-    <Card v-show="tableShow" style="margin-top: 16px">
-      <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.dailyPlanAndCompletionOverview') }}</h3>
-        <Button v-if="addShow" type="primary" @click="handleCreate">
+    <Card v-show="tableShow" style="margin-top: 16px" :title=" $t('SMTPlantAdd.dailyPlanAndCompletionOverview')">
+      <Grid>
+        <template #toolbar-tools>
+          <Button v-if="addShow" type="primary" @click="handleCreate">
           <Icon icon="mdi:plus" class="mr-1" />
           {{ $t('SMTPlantAdd.add') }}
         </Button>
-      </div>
-      <Grid>
-        <template #toolbar-tools></template>
+        </template>
         <template #subProductName="{ row }">
           <span class="cursor-pointer text-blue-500" @click="handleDetail(row)">
             {{ row.subProductName }}
@@ -902,11 +921,11 @@ onMounted(() => {
         </FormItem>
 
         <div class="grid grid-cols-2 gap-4">
+          <FormItem :label="$t('SMTPlantAdd.workstation')" name="workstationName">
+            <Input v-model:value="popData.workstationName" disabled />
+          </FormItem>
           <FormItem :label="$t('SMTPlantAdd.reportProcess')" name="processName">
             <Input v-model:value="popData.processName" disabled />
-          </FormItem>
-          <FormItem :label="$t('SMTPlantAdd.taskLine')" name="lineName">
-            <Input v-model:value="popData.lineName" disabled />
           </FormItem>
         </div>
 
@@ -976,6 +995,29 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
+
+        <div class="grid grid-cols-2 gap-4">
+          <FormItem :label="$t('SMTPlantAdd.personTime')" name="personTime">
+            <InputNumber
+              v-model:value="popData.personTime"
+              :max="2000"
+              :min="0"
+              :precision="2"
+              :placeholder="$t('SMTPlantAdd.pleaseInputPersonTime')"
+              style="width: 100%"
+            />
+          </FormItem>
+          <FormItem :label="$t('SMTPlantAdd.equipTime')" name="equipTime">
+            <InputNumber
+              v-model:value="popData.equipTime"
+              :max="2000"
+              :min="0"
+              :precision="2"
+              :placeholder="$t('SMTPlantAdd.pleaseInputEquipTime')"
+              style="width: 100%"
+            />
+          </FormItem>
+        </div>
 
         <FormItem :label="$t('SMTPlantAdd.inputQuantity')" name="number">
           <InputNumber
