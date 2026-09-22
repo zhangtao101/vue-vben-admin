@@ -1,3 +1,4 @@
+<script setup lang="ts">
 /**
  * [INPUT]: 依赖 ant-design-vue、@vben/locales、detailsTable 子组件
  * [OUTPUT]: 对外提供完工工单详情抽屉组件，调用方通过 ref.show(row) 打开
@@ -5,7 +6,6 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * [TIME]: 2026-06-16 10:26:00
  */
-<script setup lang="ts">
 import { ref } from 'vue';
 
 import { $t } from '@vben/locales';
@@ -19,7 +19,7 @@ const showDrawer = ref(false);
 /** 当前查看的完工工单行数据 */
 const editItem = ref<any>({});
 /** 当前激活的标签页 key（1-6 对应能耗/报工/投料/入库/参数/压机设置） */
-const activeKey = ref('1');
+const activeKey = ref('2');
 
 /**
  * 显示完工工单详情抽屉，设置行数据并打开抽屉。
@@ -113,7 +113,7 @@ defineExpose({
       v-if="editItem.worksheetCode"
     >
       <!-- 能耗明细 -->
-      <TabPane
+      <!-- <TabPane
         key="1"
         :tab="$t('completedWorkOrderDetails.energyConsumptionDetails')"
       >
@@ -123,7 +123,7 @@ defineExpose({
           :worksheet-code="editItem.worksheetCode"
           :workstation-code="editItem.workstationCode"
         />
-      </TabPane>
+      </TabPane> -->
       <!-- 报工明细 -->
       <TabPane key="2" :tab="$t('completedWorkOrderDetails.workReportDetails')">
         <DetailsTable
@@ -159,14 +159,14 @@ defineExpose({
         />
       </TabPane>
       <!-- 参数明细 -->
-      <TabPane key="5" :tab="$t('completedWorkOrderDetails.parameterDetails')">
+      <!-- <TabPane key="5" :tab="$t('completedWorkOrderDetails.parameterDetails')">
         <DetailsTable
           ref="parameterDetails"
           :type="activeKey"
           :worksheet-code="editItem.worksheetCode"
           :workstation-code="editItem.workstationCode"
         />
-      </TabPane>
+      </TabPane> -->
       <!-- 参数压机设备设置明细 -->
       <TabPane
         key="6"
