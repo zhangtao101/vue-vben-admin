@@ -161,7 +161,7 @@ const leftGridOptions: VxeGridProps<any> = {
     },
   },
   stripe: true,
-  checkboxConfig: { highlight: true, range: true },
+  checkboxConfig: { highlight: true, range: true, trigger: 'row' },
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
 
@@ -171,6 +171,22 @@ const [LeftGrid, leftGridApi] = useVbenVxeGrid({
 // endregion
 
 // region 右表：已选队列列表（多出 顺序 字段）
+/** 队列状态值说明：1未开始（无背景色）/ 2失败（红）/ 3成功（黄）/ 4完成（绿） */
+const STATE_ROW_CLASS_MAP: Record<string, string> = {
+  '2': 'row-state-failed',
+  '3': 'row-state-success',
+  '4': 'row-state-finished',
+};
+
+/**
+ * 右表行背景色：按行的 state 字段返回对应样式类
+ * @param row 当前行数据，取其中的 state 字段判断状态
+ * @returns 状态对应的样式类名，1未开始及其它未知状态返回空字符串（保持默认无色）
+ */
+function getStateRowClass({ row }: any) {
+  return STATE_ROW_CLASS_MAP[String(row?.state)] ?? '';
+}
+
 /** 右表加载方法：queueSearch 分页查询 */
 async function queryRightList({ page }: any) {
   try {
@@ -225,8 +241,10 @@ const rightGridOptions: VxeGridProps<any> = {
       query: queryRightList,
     },
   },
+  // 行背景色随 state 变化，优先级高于斑马纹
+  rowClassName: getStateRowClass,
   stripe: true,
-  checkboxConfig: { highlight: true, range: true },
+  checkboxConfig: { highlight: true, range: true, trigger: 'row' },
   toolbarConfig: { custom: true, refresh: true, zoom: true },
 };
 
@@ -330,11 +348,12 @@ function handleSave() {
     return;
   }
   const line = lineTabs.value.find((l) => l.key === activeLine.value);
+  console.log(lineTabs.value, line);
 
   const data = rightData.map((row, index) => ({
     id: row.id,
     lineName: line.label,
-    lineCode: line.code,
+    lineCode: line.key,
     lotCode: row.lotCode ?? '',
     lotId: row.lotId,
     processType: props.processType,
@@ -488,3 +507,21 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* 队列状态行背景色（需覆盖斑马纹，故使用 !important） */
+:deep(.row-state-failed),
+:deep(.row-state-failed) > td {
+  background-color: rgb(255 77 79 / 25%) !important;
+}
+
+:deep(.row-state-success),
+:deep(.row-state-success) > td {
+  background-color: rgb(250 204 21 / 35%) !important;
+}
+
+:deep(.row-state-finished),
+:deep(.row-state-finished) > td {
+  background-color: rgb(82 196 26 / 25%) !important;
+}
+</style>
