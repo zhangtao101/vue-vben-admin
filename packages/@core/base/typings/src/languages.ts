@@ -19,6 +19,7 @@
  */
 export interface SupportedLanguages {
   'en-US': 'English';
+  'ko-KR': '한국어';
   'zh-CN': '简体中文';
 }
 
