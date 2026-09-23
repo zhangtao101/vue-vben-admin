@@ -10,7 +10,7 @@ import { MdiUpdate } from '@vben/icons';
 import { BasicLayout, LockScreen, UserDropdown } from '@vben/layouts';
 import { $t } from '@vben/locales';
 // Notification,
-import { preferences } from '@vben/preferences';
+import { preferences, usePreferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
 import { useAuthStore } from '#/store';
@@ -82,12 +82,35 @@ async function handleLogout() {
 // function handleMakeAll() {
 //   notifications.value.forEach((item) => (item.isRead = true));
 // }
+const { isDark } = usePreferences();
+
 watch(
-  () => preferences.app.watermark,
-  async (enable) => {
+  () => ({
+    enable: preferences.app.watermark,
+    content: preferences.app.watermarkContent,
+    isDark: isDark.value,
+  }),
+  async ({ enable, content, isDark: isDarkValue }) => {
     if (enable) {
+      const watermarkColor = isDarkValue
+        ? 'rgba(255, 255, 255, 0.12)'
+        : 'rgba(0, 0, 0, 0.12)';
+
       await updateWatermark({
-        content: `${userStore.userInfo?.userName}__${preferences.app.watermarkContent}`,
+        advancedStyle: {
+          colorStops: [
+            {
+              color: watermarkColor,
+              offset: 0,
+            },
+            {
+              color: watermarkColor,
+              offset: 1,
+            },
+          ],
+          type: 'linear',
+        },
+        content: content || `${userStore.userInfo?.userName}`,
       });
     } else {
       destroyWatermark();
