@@ -44,7 +44,6 @@
   "loadSuccess": "加载成功",
   "updateSuccess": "加载数量更新成功",
   "plsInputQty": "请输入加载数量",
-  "cannotUnload": "该条目无法进行卸载, 请选择其他条目!",
   "plsSelectDevice": "请先选择设备",
   "noLoadData": "暂无加载数据，请先扫码添加"
 }

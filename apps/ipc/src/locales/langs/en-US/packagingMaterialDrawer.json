@@ -44,7 +44,6 @@
   "loadSuccess": "Loaded successfully",
   "updateSuccess": "Load qty updated successfully",
   "plsInputQty": "Please enter load qty",
-  "cannotUnload": "This item cannot be unloaded, please select another item!",
   "plsSelectDevice": "Please select a device first",
   "noLoadData": "No load data, please scan and add first"
 }

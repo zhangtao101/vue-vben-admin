@@ -25,6 +25,7 @@ import {
   Input,
   InputNumber,
   message,
+  Modal,
   Radio,
   Row,
   Space,
@@ -251,18 +252,7 @@ function open(row?: any) {
 }
 
 /**
- * 判断是否为特殊条目：scanLabel 包含 "|" 时支持行内编辑且不允许卸载。
- * @param {object} row - 加载列表行数据。
- * @returns {boolean} 是否为特殊条目。
- * @throws 不主动抛出异常。
- * @since 2026-09-02 00:00:00
- */
-function isSpecialMaterial(row: any) {
-  return String(row?.scanLabel ?? '').includes('|');
-}
-
-/**
- * 卸载物料：校验已单选一行且非特殊条目后，打开卸载抽屉并回填换算比与当前数量。
+ * 卸载物料：校验已单选一行后，打开卸载抽屉并回填换算比与当前数量。
  * @returns {void} 无返回值，校验不通过时弹出警告。
  * @throws 不主动抛出异常。
  * @since 2026-09-02 00:00:00
@@ -271,11 +261,6 @@ function handleUnload() {
   const row: any = loadGridApi.grid.getRadioRecord();
   if (!row) {
     message.warning($t('packagingMaterialDrawer.plsSelectRow'));
-    return;
-  }
-  // 特殊条目（scanLabel 含 "|"）不允许卸载
-  if (isSpecialMaterial(row)) {
-    message.warning($t('packagingMaterialDrawer.cannotUnload'));
     return;
   }
   // 打开卸载抽屉，数据为当前单选行
@@ -589,25 +574,13 @@ defineExpose({ open });
             </Form>
             <LoadGrid>
               <template #toolbar-tools></template>
-              <!-- 加载数量：特殊条目可编辑，普通条目只读展示 -->
+              <!-- 加载数量：只读展示 -->
               <template #load_actualWt="{ row }">
-                <InputNumber
-                  v-if="isSpecialMaterial(row)"
-                  v-model:value="row.actualWt"
-                  :min="0"
-                  :precision="2"
-                  class="w-24"
-                />
-                <span v-else>{{ row.actualWt }}</span>
+                <span>{{ row.actualWt }}</span>
               </template>
-              <!-- 单位：特殊条目可编辑，普通条目只读展示 -->
+              <!-- 单位：只读展示 -->
               <template #load_unit="{ row }">
-                <Input
-                  v-if="isSpecialMaterial(row)"
-                  v-model:value="row.unit"
-                  class="w-16"
-                />
-                <span v-else>{{ row.unit }}</span>
+                <span>{{ row.unit }}</span>
               </template>
               <!-- 包装类型：所有条目均可单选（3单包/4多包/5料包） -->
               <template #load_packType="{ row }">
@@ -641,11 +614,11 @@ defineExpose({ open });
   </Drawer>
 
   <!-- 卸载抽屉：展示单选行信息与换算比 -->
-  <Drawer
+  <Modal
     v-model:open="unloadShow"
     :destroy-on-close="true"
     :title="$t('packagingMaterialDrawer.unload')"
-    width="750"
+    width="750px"
     @close="handleUnloadClose"
     :footer-style="{ textAlign: 'right' }"
   >
@@ -734,7 +707,7 @@ defineExpose({ open });
         </Button>
       </Space>
     </template>
-  </Drawer>
+  </Modal>
 
   <!-- 设备选择抽屉 -->
   <EquipmentSelectDrawer
