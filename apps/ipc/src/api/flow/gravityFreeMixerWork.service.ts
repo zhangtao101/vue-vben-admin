@@ -194,7 +194,7 @@ export function palletizTransfer(data: {
   workSheetCode: string;
 }) {
   return requestClient.post(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/palletiz/transfer`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/transfer`,
     data,
   );
 }
