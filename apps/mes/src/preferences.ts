@@ -1,5 +1,4 @@
 import {
-  appCopyrightPreferences,
   defineOverridesPreferences,
 } from '@vben/preferences';
 
@@ -24,5 +23,16 @@ export const overridesPreferences = defineOverridesPreferences({
   logo: {
     source: '/logo.png',
   },
-  copyright: appCopyrightPreferences,
+  copyright: {
+    companyName: "",
+    companySiteLink: "",
+    date: "",
+    enable: false,
+    icp: "",
+    icpLink: ""
+  },
+  sidebar: {
+    collapsedButton: false,
+    fixedButton: false
+  },
 });
