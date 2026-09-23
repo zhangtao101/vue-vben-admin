@@ -2,6 +2,7 @@
 import type { NotificationItem } from '@vben/layouts';
 
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
@@ -58,6 +59,8 @@ const menus = computed(() => [
   // },
 ]);
 
+const router = useRouter();
+
 const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
@@ -73,6 +76,60 @@ function handleNoticeClear() {
 function handleMakeAll() {
   notifications.value.forEach((item) => (item.isRead = true));
 }
+
+/**
+ * 标记单条通知为已读
+ * @param id 通知 id
+ */
+function markRead(id: number | string) {
+  const item = notifications.value.find((item) => item.id === id);
+  if (item) {
+    item.isRead = true;
+  }
+}
+
+/**
+ * 移除单条通知
+ * @param id 通知 id
+ */
+function remove(id: number | string) {
+  notifications.value = notifications.value.filter((item) => item.id !== id);
+}
+
+/** 查看全部通知，具体跳转由业务自行扩展 */
+const viewAll = () => {};
+
+const handleClick = (item: NotificationItem) => {
+  // 如果通知项有链接，点击时跳转
+  if (item.link) {
+    navigateTo(item.link, item.query, item.state);
+  }
+};
+
+/**
+ * 跳转通知链接：外部链接新开标签页，内部链接走路由
+ * @param link 链接地址
+ * @param query 路由 query 参数
+ * @param state 路由 state 参数
+ */
+function navigateTo(
+  link: string,
+  query?: Record<string, any>,
+  state?: Record<string, any>,
+) {
+  if (link.startsWith('http://') || link.startsWith('https://')) {
+    // 外部链接，在新标签页打开
+    window.open(link, '_blank');
+  } else {
+    // 内部路由链接，支持 query 参数和 state
+    router.push({
+      path: link,
+      query: query || {},
+      state,
+    });
+  }
+}
+
 const { isDark } = usePreferences();
 
 watch(
@@ -116,7 +173,12 @@ watch(
 </script>
 
 <template>
-  <BasicLayout @clear-preferences-and-logout="handleLogout">
+  <BasicLayout
+    :avatar
+    :text="userStore.userInfo?.userName"
+    @clear-preferences-and-logout="handleLogout"
+    @logout="handleLogout"
+  >
     <template #user-dropdown>
       <UserDropdown
         :avatar
@@ -124,6 +186,7 @@ watch(
         :text="userStore.userInfo?.userName"
         :description="userStore.userInfo?.roleNames.join(',')"
         :tag-text="userStore.userInfo?.perName"
+        @clear-preferences-and-logout="handleLogout"
         @logout="handleLogout"
       />
     </template>
@@ -132,7 +195,11 @@ watch(
         :dot="showDot"
         :notifications="notifications"
         @clear="handleNoticeClear"
+        @read="(item) => item.id && markRead(item.id)"
+        @remove="(item) => item.id && remove(item.id)"
         @make-all="handleMakeAll"
+        @on-click="handleClick"
+        @view-all="viewAll"
       />
     </template>
     <template #extra>
