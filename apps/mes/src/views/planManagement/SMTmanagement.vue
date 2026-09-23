@@ -12,6 +12,7 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -38,6 +39,7 @@ import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  queryPrintTemplateDetails,
   smtAllLineList,
   smtDownloadTemplate,
   smtWorksheetDelete,
@@ -89,7 +91,10 @@ const isAsc = ref<boolean>(false);
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
+  checkboxConfig: { highlight: true, range: true, reserve: true },
+  rowConfig: { keyField: 'id' },
   columns: [
+    { type: 'checkbox', width: 50, fixed: 'left' },
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50, minWidth: 50 },
     {
       field: 'workSheetCode',
@@ -431,9 +436,20 @@ function handleDelete(row: any) {
 // endregion
 
 // region 条码打印
-// function handleBarcodePrint(_row: any) {
-//   message.info($t('planManagement.printNotReady'));
-// }
+
+/**
+ * 单条工单打印
+ *
+ * 打印内容与批量打印一致，仅打印当前点击行
+ *
+ * @param row 当前行工单数据
+ * @since 2026-09-22
+ */
+function handleBarcodePrint(row: any) {
+  printWorksheets([row]);
+function handleBarcodePrint(_row: any) {
+  message.info($t('planManagement.printNotReady'));
+}
 // endregion
 
 // region 结束工单
@@ -446,8 +462,58 @@ function handleEndWorkOrder(row: any) {
 // endregion
 
 // region 打印
+
+/**
+ * 工单打印模板编码
+ */
+const PRINT_TEMPLATE_CODE = '工单管理_流转卡';
+
+/**
+ * 打印工单
+ *
+ * 打印内容包含工单编号、计划号、工单计划数、产品名称
+ *
+ * @param rows 需要打印的工单行数据
+ * @since 2026-09-22
+ */
+function printWorksheets(rows: any[]) {
+  if (!rows || rows.length === 0) {
+    message.warning($t('basic.pleaseSelectAtLeastOne'));
+    return;
+  }
+
+  const printData = rows.map((row: any) => ({
+    workSheetCode: row.workSheetCode,
+    planCode: row.planCode,
+    workSheetPlanNumber: row.workSheetPlanNumber,
+    productName: row.productName,
+    barcode: row.workSheetCode,
+  }));
+
+  queryPrintTemplateDetails(PRINT_TEMPLATE_CODE)
+    .then((res: any) => {
+      try {
+        const templateRef = JSON.parse(res.printData);
+        const hiprintTemplate = new hiprint.PrintTemplate({
+          template: templateRef,
+        });
+        hiprintTemplate.print(printData, { leftOffset: -1, topOffset: -1 });
+      } catch {
+        message.error($t('planManagement.parseTemplateFailed'));
+      }
+    })
+    .catch((error: any) => {
+      message.error(error?.message || $t('planManagement.printFailed'));
+    });
+}
+
+/**
+ * 批量打印选中工单
+ *
+ * @since 2026-09-22
+ */
 function handlePrint() {
-  message.info($t('planManagement.printNotReady'));
+  printWorksheets(gridApi.grid.getCheckboxRecords() || []);
 }
 // endregion
 
@@ -466,22 +532,40 @@ onMounted(() => {
     <!-- 搜索区域 -->
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <FormItem :label="$t('SMTmanagement.workOrderNumber')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('SMTmanagement.workOrderNumber')"
+          style="margin-bottom: 1em"
+        >
           <Input v-model:value="queryParams.workSheetCode" />
         </FormItem>
-        <FormItem :label="$t('SMTmanagement.plannedTime')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('SMTmanagement.plannedTime')"
+          style="margin-bottom: 1em"
+        >
           <RangePicker v-model:value="queryParams.plannedTime" />
         </FormItem>
-        <FormItem :label="$t('SMTmanagement.planNumber')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('SMTmanagement.planNumber')"
+          style="margin-bottom: 1em"
+        >
           <Input v-model:value="queryParams.planCode" />
         </FormItem>
-        <FormItem :label="$t('SMTmanagement.productNumber')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('SMTmanagement.productNumber')"
+          style="margin-bottom: 1em"
+        >
           <Input v-model:value="queryParams.productCode" />
         </FormItem>
-        <FormItem :label="$t('SMTmanagement.productName')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('SMTmanagement.productName')"
+          style="margin-bottom: 1em"
+        >
           <Input v-model:value="queryParams.productName" />
         </FormItem>
-        <FormItem :label="$t('SMTmanagement.taskLine')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('SMTmanagement.taskLine')"
+          style="margin-bottom: 1em"
+        >
           <Select
             v-model:value="queryParams.lineId"
             :options="lineOptions"
@@ -566,12 +650,24 @@ onMounted(() => {
 
         <!-- 操作时间 -->
         <template #updateTimeSlot="{ row }">
-          <span>{{ row.updateTime == null ? row.createTime : row.updateTime }}</span>
+          <span>{{
+            row.updateTime == null ? row.createTime : row.updateTime
+          }}</span>
         </template>
 
         <!-- 状态 -->
         <template #statusSlot="{ row }">
-          <span>{{ row.status === 1 ? $t('SMTmanagement.statusProduction') : row.status === 2 ? $t('SMTmanagement.statusInProgress') : row.status === 3 ? $t('SMTmanagement.statusCompleted') : row.status === 4 ? $t('SMTmanagement.statusEnded') : '-' }}</span>
+          <span>{{
+            row.status === 1
+              ? $t('SMTmanagement.statusProduction')
+              : row.status === 2
+                ? $t('SMTmanagement.statusInProgress')
+                : row.status === 3
+                  ? $t('SMTmanagement.statusCompleted')
+                  : row.status === 4
+                    ? $t('SMTmanagement.statusEnded')
+                    : '-'
+          }}</span>
         </template>
 
         <!-- 操作列 -->
@@ -626,10 +722,7 @@ onMounted(() => {
           <!-- 结束上报 -->
           <Tooltip v-if="author.includes('编辑') && row.status === 3">
             <template #title>{{ $t('SMTmanagement.outputReport') }}</template>
-            <Button
-              type="link"
-              @click="handleOutputReport(row)"
-            >
+            <Button type="link" @click="handleOutputReport(row)">
               <Icon
                 icon="mdi:file-document-edit-outline"
                 class="inline-block align-middle text-2xl"
@@ -658,10 +751,14 @@ onMounted(() => {
     </Card>
 
     <!-- 工单抽屉 -->
-    <WorkSheetDrawer ref="workSheetDrawerRef" @refresh="() => gridApi.reload()" />
+    <WorkSheetDrawer
+      ref="workSheetDrawerRef"
+      @refresh="() => gridApi.reload()"
+    />
     <!-- 结束上报抽屉 -->
-    <OutputReportDrawer ref="outputReportDrawerRef" @refresh="() => gridApi.reload()" />
+    <OutputReportDrawer
+      ref="outputReportDrawerRef"
+      @refresh="() => gridApi.reload()"
+    />
   </Page>
 </template>
-
-

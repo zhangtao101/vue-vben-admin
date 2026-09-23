@@ -35,13 +35,37 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 220,
     },
     { field: 'lineName', title: $t('productRed.batchNumber'), minWidth: 150 },
-    { field: 'processName', title: $t('productRed.reportProcess'), minWidth: 150 },
-    { field: 'productCode', title: $t('productRed.productCode'), minWidth: 150 },
-    { field: 'productName', title: $t('productRed.productName'), minWidth: 200 },
-    { field: 'workSheetPlanNumber', title: $t('productRed.planNumber'), minWidth: 150 },
-    { field: 'workSheetFinishNumber', title: $t('productRed.completedNumber'), minWidth: 150 },
+    {
+      field: 'processName',
+      title: $t('productRed.reportProcess'),
+      minWidth: 150,
+    },
+    {
+      field: 'productCode',
+      title: $t('productRed.productCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productName',
+      title: $t('productRed.productName'),
+      minWidth: 200,
+    },
+    {
+      field: 'workSheetPlanNumber',
+      title: $t('productRed.planNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'workSheetFinishNumber',
+      title: $t('productRed.completedNumber'),
+      minWidth: 150,
+    },
     { field: 'sideNo', title: $t('productRed.endTime'), minWidth: 150 },
-    { field: 'planDateStart', title: $t('productRed.planStartTime'), minWidth: 150 },
+    {
+      field: 'planDateStart',
+      title: $t('productRed.planStartTime'),
+      minWidth: 150,
+    },
   ],
   height: 300,
   stripe: true,
@@ -186,6 +210,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workSheetCode="{ row }">
           <Button class="mr-4" type="link" @click="showEdit(row)">
             {{ row.workSheetCode }}

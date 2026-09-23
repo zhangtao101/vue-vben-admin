@@ -31,14 +31,46 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'mono', title: $t('energyUnitConsumptionMgmt.workOrderNumber'), minWidth: 150 },
-    { field: 'producName', title: $t('energyUnitConsumptionMgmt.productName'), minWidth: 150 },
-    { field: 'producNo', title: $t('energyUnitConsumptionMgmt.productNumber'), minWidth: 150 },
-    { field: 'equipmentName', title: $t('energyUnitConsumptionMgmt.deviceName'), minWidth: 150 },
-    { field: 'equipmentNo', title: $t('energyUnitConsumptionMgmt.deviceNumber'), minWidth: 150 },
-    { field: 'reportqty', title: $t('energyUnitConsumptionMgmt.productQuantity'), minWidth: 150 },
-    { field: 'energy', title: $t('energyUnitConsumptionMgmt.singleEnergyUsage'), minWidth: 150 },
-    { field: 'createTime', title: $t('energyUnitConsumptionMgmt.createTime'), minWidth: 150 },
+    {
+      field: 'mono',
+      title: $t('energyUnitConsumptionMgmt.workOrderNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'producName',
+      title: $t('energyUnitConsumptionMgmt.productName'),
+      minWidth: 150,
+    },
+    {
+      field: 'producNo',
+      title: $t('energyUnitConsumptionMgmt.productNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'equipmentName',
+      title: $t('energyUnitConsumptionMgmt.deviceName'),
+      minWidth: 150,
+    },
+    {
+      field: 'equipmentNo',
+      title: $t('energyUnitConsumptionMgmt.deviceNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'reportqty',
+      title: $t('energyUnitConsumptionMgmt.productQuantity'),
+      minWidth: 150,
+    },
+    {
+      field: 'energy',
+      title: $t('energyUnitConsumptionMgmt.singleEnergyUsage'),
+      minWidth: 150,
+    },
+    {
+      field: 'createTime',
+      title: $t('energyUnitConsumptionMgmt.createTime'),
+      minWidth: 150,
+    },
   ],
   height: 500,
   stripe: true,
@@ -183,7 +215,9 @@ onMounted(() => {
 
     <!-- region 表格主体 -->
     <Card>
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
     <!-- endregion -->
   </Page>

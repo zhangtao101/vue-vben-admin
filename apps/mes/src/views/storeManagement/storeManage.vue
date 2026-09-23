@@ -21,12 +21,36 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
-    { field: 'warehouseCode', title: $t('storeManagement.storeManage.storeCode'), minWidth: 80 },
-    { field: 'warehouseName', title: $t('storeManagement.storeManage.storeName'), minWidth: 80 },
-    { field: 'isUse', title: $t('storeManagement.storeManage.isUse'), minWidth: 80 },
-    { field: 'type', title: $t('storeManagement.storeManage.storeType'), minWidth: 80 },
-    { field: 'warehouseLocation', title: $t('storeManagement.storeManage.storeLocation'), minWidth: 80 },
-    { field: 'remark', title: $t('storeManagement.storeManage.storeRemark'), minWidth: 80 },
+    {
+      field: 'warehouseCode',
+      title: $t('storeManagement.storeManage.storeCode'),
+      minWidth: 80,
+    },
+    {
+      field: 'warehouseName',
+      title: $t('storeManagement.storeManage.storeName'),
+      minWidth: 80,
+    },
+    {
+      field: 'isUse',
+      title: $t('storeManagement.storeManage.isUse'),
+      minWidth: 80,
+    },
+    {
+      field: 'type',
+      title: $t('storeManagement.storeManage.storeType'),
+      minWidth: 80,
+    },
+    {
+      field: 'warehouseLocation',
+      title: $t('storeManagement.storeManage.storeLocation'),
+      minWidth: 80,
+    },
+    {
+      field: 'remark',
+      title: $t('storeManagement.storeManage.storeRemark'),
+      minWidth: 80,
+    },
   ],
   height: 500,
   stripe: true,
@@ -150,7 +174,9 @@ onMounted(() => {
     <!-- endregion -->
 
     <Card class="!mb-8">
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
   </Page>
 </template>

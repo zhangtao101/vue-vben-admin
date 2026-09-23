@@ -63,9 +63,11 @@ function handleWorkshopChange() {
   queryParams.value.proceCode = undefined;
   queryParams.value.controlPointName = undefined;
   if (queryParams.value.produceWorkshop) {
-    getProcessCodeAndName(queryParams.value.produceWorkshop).then((res: any) => {
-      processOptions.value = res || [];
-    });
+    getProcessCodeAndName(queryParams.value.produceWorkshop).then(
+      (res: any) => {
+        processOptions.value = res || [];
+      },
+    );
   }
 }
 
@@ -93,18 +95,68 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'seq', width: 60, title: $t('tracingModule.productTrace.seq') },
-    { field: 'qrcode', title: $t('tracingModule.equipBatchTrace.qrcode'), minWidth: 180 },
-    { field: 'number', title: $t('tracingModule.equipBatchTrace.number'), minWidth: 80 },
-    { field: 'productName', title: $t('tracingModule.productTrace.productName'), minWidth: 200, showOverflow: true },
-    { field: 'productCode', title: $t('tracingModule.productTrace.productCode'), minWidth: 120 },
-    { field: 'partName', title: $t('tracingModule.equipBatchTrace.partName'), minWidth: 200, showOverflow: true },
-    { field: 'partCode', title: $t('tracingModule.equipBatchTrace.partCode'), minWidth: 150 },
-    { field: 'lineName', title: $t('tracingModule.equipBatchTrace.lineName'), minWidth: 130 },
-    { field: 'opTime', title: $t('tracingModule.productTrace.productionTime'), minWidth: 135 },
-    { field: 'planCode', title: $t('tracingModule.productTrace.planCode'), minWidth: 120 },
-    { field: 'packingTime', title: $t('tracingModule.productTrace.packingTime'), minWidth: 135 },
-    { field: 'packingCode', title: $t('tracingModule.productTrace.packingCode'), minWidth: 180 },
-    { field: 'outTime', title: $t('tracingModule.equipBatchTrace.outTime'), minWidth: 135 },
+    {
+      field: 'qrcode',
+      title: $t('tracingModule.equipBatchTrace.qrcode'),
+      minWidth: 180,
+    },
+    {
+      field: 'number',
+      title: $t('tracingModule.equipBatchTrace.number'),
+      minWidth: 80,
+    },
+    {
+      field: 'productName',
+      title: $t('tracingModule.productTrace.productName'),
+      minWidth: 200,
+      showOverflow: true,
+    },
+    {
+      field: 'productCode',
+      title: $t('tracingModule.productTrace.productCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'partName',
+      title: $t('tracingModule.equipBatchTrace.partName'),
+      minWidth: 200,
+      showOverflow: true,
+    },
+    {
+      field: 'partCode',
+      title: $t('tracingModule.equipBatchTrace.partCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'lineName',
+      title: $t('tracingModule.equipBatchTrace.lineName'),
+      minWidth: 130,
+    },
+    {
+      field: 'opTime',
+      title: $t('tracingModule.productTrace.productionTime'),
+      minWidth: 135,
+    },
+    {
+      field: 'planCode',
+      title: $t('tracingModule.productTrace.planCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'packingTime',
+      title: $t('tracingModule.productTrace.packingTime'),
+      minWidth: 135,
+    },
+    {
+      field: 'packingCode',
+      title: $t('tracingModule.productTrace.packingCode'),
+      minWidth: 180,
+    },
+    {
+      field: 'outTime',
+      title: $t('tracingModule.equipBatchTrace.outTime'),
+      minWidth: 135,
+    },
   ],
   height: 500,
   pagerConfig: {
@@ -137,7 +189,13 @@ const gridEvents: VxeGridListeners<any> = {};
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
 // ========== 数据查询 ==========
-function queryData({ pageNum, pageSize }: { pageNum: number; pageSize: number }) {
+function queryData({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
   return new Promise((resolve) => {
     if (!searched.value) {
       resolve({ total: 0, items: [] });
@@ -244,16 +302,15 @@ function handleExport() {
     productCode: queryParams.value.productCode,
   };
 
-  exportEquipBatchList(params)
-    .then((res: any) => {
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'equip_batch_trace.xlsx';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
+  exportEquipBatchList(params).then((res: any) => {
+    const blob = new Blob([res]);
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'equip_batch_trace.xlsx';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  });
 }
 
 // ========== 结束日期禁用逻辑 ==========
@@ -306,7 +363,9 @@ const disabledEndDate = (current: any) => {
         >
           <Select
             v-model:value="queryParams.produceWorkshop"
-            :placeholder="$t('tracingModule.equipBatchTrace.workshopPlaceholder')"
+            :placeholder="
+              $t('tracingModule.equipBatchTrace.workshopPlaceholder')
+            "
             allow-clear
             :options="workshopOptions"
             @change="handleWorkshopChange"
@@ -322,9 +381,16 @@ const disabledEndDate = (current: any) => {
         >
           <Select
             v-model:value="queryParams.proceCode"
-            :placeholder="$t('tracingModule.equipBatchTrace.processPlaceholder')"
+            :placeholder="
+              $t('tracingModule.equipBatchTrace.processPlaceholder')
+            "
             allow-clear
-            :options="processOptions.map((p: any) => ({ label: p.proceName, value: p.proceCode }))"
+            :options="
+              processOptions.map((p: any) => ({
+                label: p.proceName,
+                value: p.proceCode,
+              }))
+            "
             @change="handleProcessChange"
             style="width: 180px"
           />
@@ -340,16 +406,26 @@ const disabledEndDate = (current: any) => {
             v-model:value="queryParams.controlPointName"
             :placeholder="$t('tracingModule.equipBatchTrace.equipPlaceholder')"
             allow-clear
-            :options="equipNameOptions.map((e: any) => ({ label: e.controlPointName, value: e.controlPointName }))"
+            :options="
+              equipNameOptions.map((e: any) => ({
+                label: e.controlPointName,
+                value: e.controlPointName,
+              }))
+            "
             style="width: 180px"
           />
         </FormItem>
 
         <!-- 产品编号 -->
-        <FormItem :label="$t('tracingModule.productTrace.productCode')" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('tracingModule.productTrace.productCode')"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="queryParams.productCode"
-            :placeholder="$t('tracingModule.equipBatchTrace.productCodePlaceholder')"
+            :placeholder="
+              $t('tracingModule.equipBatchTrace.productCodePlaceholder')
+            "
             allow-clear
             style="width: 200px"
             @press-enter="handleSearch"
@@ -383,7 +459,9 @@ const disabledEndDate = (current: any) => {
           </Button>
         </div>
       </template>
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
   </Page>
 </template>

@@ -125,3 +125,12 @@ export async function deleteIpcReportFile(fileId: string) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/iqc/deleteFile/${fileId}`,
   );
 }
+
+/**
+ * 获取IQC检验项列表
+ */
+export async function getIqcItemList() {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_WMS}/iqc/getIqcItemList`,
+  );
+}

@@ -300,7 +300,9 @@ function handleEdit() {
   }
   const selectedRow = selectedRows.value[0];
   if (selectedRow.profitLoss) {
-    message.warning($t('storeManagement.materialInventory.alreadyConvertedToProfitLoss'));
+    message.warning(
+      $t('storeManagement.materialInventory.alreadyConvertedToProfitLoss'),
+    );
     return;
   }
   currentEditRow.value = selectedRow;
@@ -319,12 +321,16 @@ function handleDelete() {
     onOk: () => {
       deleteMaterialInventory(selectedIds.value)
         .then(() => {
-          message.success($t('storeManagement.materialInventory.deleteSuccess'));
+          message.success(
+            $t('storeManagement.materialInventory.deleteSuccess'),
+          );
           clearSelectionAndDetail();
           mainGridApi.reload();
         })
         .catch(() => {
-          message.warning($t('storeManagement.materialInventory.operationFailed'));
+          message.warning(
+            $t('storeManagement.materialInventory.operationFailed'),
+          );
         });
     },
   });
@@ -351,12 +357,16 @@ function issueByType(type: 'issue' | 'profitLoss' | 'unIssue') {
     onOk: () => {
       requestMap[type](selectedIds.value)
         .then(() => {
-          message.success($t('storeManagement.materialInventory.operationSuccess'));
+          message.success(
+            $t('storeManagement.materialInventory.operationSuccess'),
+          );
           clearSelectionAndDetail();
           mainGridApi.reload();
         })
         .catch(() => {
-          message.warning($t('storeManagement.materialInventory.operationFailed'));
+          message.warning(
+            $t('storeManagement.materialInventory.operationFailed'),
+          );
         });
     },
   });
@@ -431,6 +441,7 @@ watch(detailTab, () => {
 
     <Card class="!mb-8">
       <MainGrid>
+        <template #toolbar-tools></template>
         <template #inventoryTime="{ row }">
           {{ formatDateOnly(row.inventoryTime) }}
         </template>
@@ -447,6 +458,7 @@ watch(detailTab, () => {
           :tab="$t('storeManagement.materialInventory.inventoryDetail')"
         >
           <DetailGrid>
+            <template #toolbar-tools></template>
             <template #detailOperateTime="{ row }">
               {{ formatDateOnly(row.operateTime) }}
             </template>
@@ -457,6 +469,7 @@ watch(detailTab, () => {
           :tab="$t('storeManagement.materialInventory.profitLossDetail')"
         >
           <DetailGrid>
+            <template #toolbar-tools></template>
             <template #detailOperateTime="{ row }">
               {{ formatDateOnly(row.operateTime) }}
             </template>

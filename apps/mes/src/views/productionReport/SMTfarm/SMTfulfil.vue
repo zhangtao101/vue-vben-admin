@@ -117,7 +117,11 @@ const detailColumns: any[] = [
   { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
   { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
   { field: 'processName', title: $t('SMTPlantAdd.processName'), minWidth: 200 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workSheetCode'), minWidth: 150 },
+  {
+    field: 'workSheetCode',
+    title: $t('SMTPlantAdd.workSheetCode'),
+    minWidth: 150,
+  },
   { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 120 },
   { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 200 },
   {
@@ -126,9 +130,21 @@ const detailColumns: any[] = [
     title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.planDateStart'), minWidth: 150 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workSheetPlanNumber'), minWidth: 80 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workSheetFinishNumber'), minWidth: 80 },
+  {
+    field: 'planDateStart',
+    title: $t('SMTPlantAdd.planDateStart'),
+    minWidth: 150,
+  },
+  {
+    field: 'workSheetPlanNumber',
+    title: $t('SMTPlantAdd.workSheetPlanNumber'),
+    minWidth: 80,
+  },
+  {
+    field: 'workSheetFinishNumber',
+    title: $t('SMTPlantAdd.workSheetFinishNumber'),
+    minWidth: 80,
+  },
   {
     field: 'isLater',
     slots: { default: 'isLater' },
@@ -136,16 +152,44 @@ const detailColumns: any[] = [
     minWidth: 80,
   },
   { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 150 },
-  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeQuantum'), minWidth: 150 },
+  {
+    field: 'reportTimeQuantum',
+    title: $t('SMTPlantAdd.reportTimeQuantum'),
+    minWidth: 150,
+  },
   { field: 'qcCode', title: $t('SMTPlantAdd.qcCode'), minWidth: 120 },
-  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
-  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 150 },
-  { field: 'partPlanNumber', title: $t('SMTPlantAdd.partPlanNumber'), minWidth: 120 },
-  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.partPlanFinishNumber'), minWidth: 120 },
+  {
+    field: 'reportNumber',
+    title: $t('SMTPlantAdd.reportNumber'),
+    minWidth: 80,
+  },
+  {
+    field: 'partPlanCode',
+    title: $t('SMTPlantAdd.partPlanCode'),
+    minWidth: 150,
+  },
+  {
+    field: 'partPlanNumber',
+    title: $t('SMTPlantAdd.partPlanNumber'),
+    minWidth: 120,
+  },
+  {
+    field: 'partPlanFinishNumber',
+    title: $t('SMTPlantAdd.partPlanFinishNumber'),
+    minWidth: 120,
+  },
   { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 200 },
-  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
+  {
+    field: 'productPlanCode',
+    title: $t('SMTPlantAdd.productPlanCode'),
+    minWidth: 120,
+  },
   { field: 'createTime', title: $t('SMTPlantAdd.createTime'), minWidth: 150 },
-  { field: 'createUserName', title: $t('SMTPlantAdd.createUserName'), minWidth: 80 },
+  {
+    field: 'createUserName',
+    title: $t('SMTPlantAdd.createUserName'),
+    minWidth: 80,
+  },
   {
     field: 'dataType',
     slots: { default: 'dataType' },
@@ -226,9 +270,19 @@ let processId = '';
 
 // 表单验证规则
 const rules: any = {
-  month: [{ required: true, message: $t('SMTPlantAdd.pleaseSelectMonth'), trigger: 'change' }],
+  month: [
+    {
+      required: true,
+      message: $t('SMTPlantAdd.pleaseSelectMonth'),
+      trigger: 'change',
+    },
+  ],
   processCode: [
-    { required: true, message: $t('SMTPlantAdd.pleaseSelectProcess'), trigger: 'change' },
+    {
+      required: true,
+      message: $t('SMTPlantAdd.pleaseSelectProcess'),
+      trigger: 'change',
+    },
   ],
 };
 
@@ -350,10 +404,26 @@ function handlePlanQuery({ page, pageSize }: any) {
       .then(({ total, result, column }) => {
         // 动态生成列
         const cols: any[] = [
-          { field: 'plan_code', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 120 },
-          { field: 'part_code', title: $t('SMTPlantAdd.partCode'), minWidth: 120 },
-          { field: 'part_or_product', title: $t('SMTPlantAdd.partOrProduct'), minWidth: 120 },
-          { field: 'part_name', title: $t('SMTPlantAdd.partName'), minWidth: 240 },
+          {
+            field: 'plan_code',
+            title: $t('SMTPlantAdd.partPlanCode'),
+            minWidth: 120,
+          },
+          {
+            field: 'part_code',
+            title: $t('SMTPlantAdd.partCode'),
+            minWidth: 120,
+          },
+          {
+            field: 'part_or_product',
+            title: $t('SMTPlantAdd.partOrProduct'),
+            minWidth: 120,
+          },
+          {
+            field: 'part_name',
+            title: $t('SMTPlantAdd.partName'),
+            minWidth: 240,
+          },
         ];
 
         column.forEach((col: any) => {
@@ -532,7 +602,11 @@ onMounted(() => {
     <!-- 查询表单 -->
     <Card>
       <Form :model="listQuery" :rules="rules" layout="inline">
-        <FormItem :label="$t('SMTPlantAdd.selectMonth')" name="month" class="!my-2">
+        <FormItem
+          :label="$t('SMTPlantAdd.selectMonth')"
+          name="month"
+          class="!my-2"
+        >
           <DatePicker
             v-model:value="listQuery.month"
             picker="month"
@@ -542,7 +616,11 @@ onMounted(() => {
             style="width: 200px"
           />
         </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.selectProcess')" name="processCode" class="!my-2">
+        <FormItem
+          :label="$t('SMTPlantAdd.selectProcess')"
+          name="processCode"
+          class="!my-2"
+        >
           <Select
             v-model:value="listQuery.processCode"
             :placeholder="$t('SMTPlantAdd.pleaseSelect')"
@@ -621,7 +699,9 @@ onMounted(() => {
     <!-- 月度汇总表格 -->
     <Card v-show="tableShow" style="margin-top: 16px">
       <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.monthlySummary') }}</h3>
+        <h3 class="text-xl font-bold">
+          {{ $t('SMTPlantAdd.monthlySummary') }}
+        </h3>
         <Button type="primary" @click="handleExportMonth">
           <Icon icon="mdi:export" class="mr-1" />
           {{ $t('SMTPlantAdd.export') }}
@@ -640,6 +720,7 @@ onMounted(() => {
         </Button>
       </div>
       <PlanGrid>
+        <template #toolbar-tools></template>
         <template #sum="{ row }">
           <span
             class="cursor-pointer text-blue-500 underline"
@@ -689,7 +770,11 @@ onMounted(() => {
             </template>
             <template #isLater="{ row }">
               <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
+                row.isLater === 2
+                  ? $t('SMTPlantAdd.yes')
+                  : row.isLater === 1
+                    ? $t('SMTPlantAdd.no')
+                    : ''
               }}</span>
             </template>
             <template #dataType="{ row }">

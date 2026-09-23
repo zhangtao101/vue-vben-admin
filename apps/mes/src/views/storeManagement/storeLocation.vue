@@ -46,11 +46,31 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
     { type: 'checkbox', width: 60 },
-    { field: 'wareLocationCode', title: $t('storeManagement.storeLocation.wareLocationCode'), minWidth: 80 },
-    { field: 'wareLocationName', title: $t('storeManagement.storeLocation.wareLocationName'), minWidth: 80 },
-    { field: 'warehouseName', title: $t('storeManagement.storeBlock.physicalWarehouse'), minWidth: 80 },
-    { field: 'wareAreaName', title: $t('storeManagement.storeLocation.physicalWareArea'), minWidth: 80 },
-    { field: 'remark', title: $t('storeManagement.storeManage.storeRemark'), minWidth: 80 },
+    {
+      field: 'wareLocationCode',
+      title: $t('storeManagement.storeLocation.wareLocationCode'),
+      minWidth: 80,
+    },
+    {
+      field: 'wareLocationName',
+      title: $t('storeManagement.storeLocation.wareLocationName'),
+      minWidth: 80,
+    },
+    {
+      field: 'warehouseName',
+      title: $t('storeManagement.storeBlock.physicalWarehouse'),
+      minWidth: 80,
+    },
+    {
+      field: 'wareAreaName',
+      title: $t('storeManagement.storeLocation.physicalWareArea'),
+      minWidth: 80,
+    },
+    {
+      field: 'remark',
+      title: $t('storeManagement.storeManage.storeRemark'),
+      minWidth: 80,
+    },
     {
       title: $t('common.operation'),
       minWidth: 150,
@@ -141,8 +161,12 @@ const editRules = ref<any>({
   wareLocationName: [
     { message: $t('basic.requiredField'), required: true, trigger: 'change' },
   ],
-  warehouseId: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
-  wareAreaId: [{ message: $t('basic.requiredField'), required: true, trigger: 'change' }],
+  warehouseId: [
+    { message: $t('basic.requiredField'), required: true, trigger: 'change' },
+  ],
+  wareAreaId: [
+    { message: $t('basic.requiredField'), required: true, trigger: 'change' },
+  ],
 });
 
 /**
@@ -294,11 +318,15 @@ function printFile() {
   const codes: {
     barcode1: string;
     barcode2: string;
+    barcode3: string;
   }[] = [];
-  for (let i = 0, size = selectedRows.length; i < size; i += 2) {
+  for (let i = 0, size = selectedRows.length; i < size; i += 3) {
     codes.push({
       barcode1: selectedRows[i].wareLocationName,
       barcode2: selectedRows[i + 1]
+        ? selectedRows[i + 1].wareLocationName
+        : undefined,
+      barcode3: selectedRows[i + 2]
         ? selectedRows[i + 1].wareLocationName
         : undefined,
     });

@@ -41,7 +41,6 @@ export const useAuthStore = defineStore('auth', () => {
         accessStore.setAccessToken(Authorization);
 
         // 获取用户信息并存储到 accessStore 中
-        // eslint-disable-next-line unicorn/no-single-promise-in-promise-methods
         const [fetchUserInfoResult] = await Promise.all([fetchUserInfo()]);
 
         userInfo = fetchUserInfoResult;

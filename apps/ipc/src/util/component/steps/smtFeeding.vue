@@ -258,6 +258,7 @@ function submit() {
       functionId: editMessage.value.functionId,
       labelCode: editMessage.value.labelCode,
       feedNumber: editMessage.value.feedNumber,
+      location: editMessage.value.location,
     }).then(() => {
       message.success($t('common.successfulOperation'));
       gridApi.reload();

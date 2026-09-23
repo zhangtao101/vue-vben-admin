@@ -34,8 +34,16 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'typeCode', title: $t('basic.productCategory.categoryNumber'), minWidth: 100 },
-    { field: 'typeName', title: $t('basic.productCategory.categoryName'), minWidth: 100 },
+    {
+      field: 'typeCode',
+      title: $t('basic.productCategory.categoryNumber'),
+      minWidth: 100,
+    },
+    {
+      field: 'typeName',
+      title: $t('basic.productCategory.categoryName'),
+      minWidth: 100,
+    },
     { field: 'typeLevel', title: $t('baseInfo.categoryLevel'), minWidth: 100 },
   ],
   height: 500,
@@ -235,7 +243,9 @@ onMounted(() => {
       <!-- region 表格主体 -->
       <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
         <Card class="h-[60vh] overflow-y-auto">
-          <Grid />
+          <Grid>
+            <template #toolbar-tools></template>
+          </Grid>
         </Card>
       </Col>
       <!-- endregion -->

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { ref } from 'vue';
+import { onUnmounted, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
@@ -189,10 +189,19 @@ function queryDetails(row: any) {
  * 清理作业状态并通知父组件
  */
 function afterClose() {
+  // 清理轮询定时器，避免抽屉关闭后定时器仍触发多余请求
+  clearTimeout(timeoutId);
+  timeoutId = null;
   closeTheAssignment(); // 结束当前作业
   visible.value = false; // 隐藏抽屉
   emit('close'); // 通知父组件关闭事件
 }
+
+// 在组件卸载时清理轮询定时器，避免定时器泄漏及访问已销毁组件导致报错
+onUnmounted(() => {
+  clearTimeout(timeoutId);
+  timeoutId = null;
+});
 
 /**
  * 提交操作详情并完成整个单据

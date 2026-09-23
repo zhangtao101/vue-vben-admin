@@ -29,8 +29,6 @@ import {
   Select,
   SelectOption,
   Space,
-  TabPane,
-  Tabs,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -41,11 +39,10 @@ import {
   createArticle,
   exportDetail,
   exportList,
-  fetchDetailByName,
-  fetchLineById,
   fetchList,
-  fetchProcessByWorkshop,
+  fetchProcessByWorkstation,
   fetchWorkorder,
+  fetchWorkstationDropdownList,
   fetParams,
 } from '#/api';
 
@@ -57,8 +54,12 @@ import {
  */
 const mainColumns: any[] = [
   { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-  { field: 'lineName', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
-  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
+  {
+    field: 'workstationName',
+    title: $t('SMTPlantAdd.workstation'),
+    minWidth: 100,
+  },
+  { field: 'processName', title: $t('SMTPlantAdd.process'), minWidth: 80 },
   { field: 'subProductCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
   {
     field: 'subProductName',
@@ -72,10 +73,26 @@ const mainColumns: any[] = [
     title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'subPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 100 },
-  { field: 'dayPlanNumber', title: $t('SMTPlantAdd.dayPlanNumber'), minWidth: 100 },
-  { field: 'dayFinishNumber', title: $t('SMTPlantAdd.dayFinishNumber'), minWidth: 100 },
-  { field: 'updateTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
+  {
+    field: 'subPlanCode',
+    title: $t('SMTPlantAdd.partPlanCode'),
+    minWidth: 100,
+  },
+  {
+    field: 'dayPlanNumber',
+    title: $t('SMTPlantAdd.dayPlanNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'dayFinishNumber',
+    title: $t('SMTPlantAdd.dayFinishNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'updateTime',
+    title: $t('SMTPlantAdd.operationTime'),
+    minWidth: 135,
+  },
   { field: 'updateUser', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
 ];
 
@@ -121,8 +138,16 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 const readCodeColumns: any[] = [
   { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
   { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
-  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 120 },
+  {
+    field: 'processName',
+    title: $t('SMTPlantAdd.reportProcess'),
+    minWidth: 80,
+  },
+  {
+    field: 'workSheetCode',
+    title: $t('SMTPlantAdd.workOrderCode'),
+    minWidth: 120,
+  },
   { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
   { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 150 },
   {
@@ -132,8 +157,16 @@ const readCodeColumns: any[] = [
     minWidth: 80,
   },
   { field: 'planDateStart', title: $t('SMTPlantAdd.issueDate'), minWidth: 90 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workOrderPlanNumber'), minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workOrderFinishNumber'), minWidth: 100 },
+  {
+    field: 'workSheetPlanNumber',
+    title: $t('SMTPlantAdd.workOrderPlanNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'workSheetFinishNumber',
+    title: $t('SMTPlantAdd.workOrderFinishNumber'),
+    minWidth: 100,
+  },
   {
     field: 'isLater',
     slots: { default: 'isLater' },
@@ -141,15 +174,43 @@ const readCodeColumns: any[] = [
     minWidth: 60,
   },
   { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
-  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeSlot'), minWidth: 90 },
+  {
+    field: 'reportTimeQuantum',
+    title: $t('SMTPlantAdd.reportTimeSlot'),
+    minWidth: 90,
+  },
   { field: 'qcCode', title: $t('SMTPlantAdd.qrCode'), minWidth: 80 },
-  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
-  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 100 },
-  { field: 'partPlanNumber', title: $t('SMTPlantAdd.plannedCompletionNumber'), minWidth: 100 },
-  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.plannedCompletedNumber'), minWidth: 120 },
+  {
+    field: 'reportNumber',
+    title: $t('SMTPlantAdd.reportNumber'),
+    minWidth: 80,
+  },
+  {
+    field: 'partPlanCode',
+    title: $t('SMTPlantAdd.partPlanCode'),
+    minWidth: 100,
+  },
+  {
+    field: 'partPlanNumber',
+    title: $t('SMTPlantAdd.plannedCompletionNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'partPlanFinishNumber',
+    title: $t('SMTPlantAdd.plannedCompletedNumber'),
+    minWidth: 120,
+  },
   { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 150 },
-  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
-  { field: 'createTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
+  {
+    field: 'productPlanCode',
+    title: $t('SMTPlantAdd.productPlanCode'),
+    minWidth: 120,
+  },
+  {
+    field: 'createTime',
+    title: $t('SMTPlantAdd.operationTime'),
+    minWidth: 135,
+  },
   { field: 'createUserName', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
   {
     field: 'dataType',
@@ -160,68 +221,34 @@ const readCodeColumns: any[] = [
 ];
 
 /**
- * 人工报工明细表格配置
+ * 读码报工明细表格配置
+ * 使用 proxyConfig 代理加载，加载方式与主表格一致
  */
-const manualReportColumns: any[] = [
-  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-  { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
-  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 120 },
-  { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
-  { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 150 },
-  {
-    field: 'partOrProduct',
-    slots: { default: 'partOrProduct' },
-    title: $t('SMTPlantAdd.partOrProduct'),
-    minWidth: 80,
-  },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.issueDate'), minWidth: 90 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workOrderPlanNumber'), minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workOrderFinishNumber'), minWidth: 100 },
-  {
-    field: 'isLater',
-    slots: { default: 'isLater' },
-    title: $t('SMTPlantAdd.delay'),
-    minWidth: 60,
-  },
-  { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
-  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeSlot'), minWidth: 90 },
-  { field: 'qcCode', title: $t('SMTPlantAdd.qrCode'), minWidth: 80 },
-  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
-  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 90 },
-  { field: 'partPlanNumber', title: $t('SMTPlantAdd.plannedCompletionNumber'), minWidth: 90 },
-  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.plannedCompletedNumber'), minWidth: 100 },
-  { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 150 },
-  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
-  { field: 'createTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
-  { field: 'createUserName', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
-  {
-    field: 'dataType',
-    slots: { default: 'dataType' },
-    title: $t('SMTPlantAdd.dataSource'),
-    minWidth: 80,
-  },
-];
-
-// 初始化时使用默认值
-const detailColumns = ref(readCodeColumns);
-
-const detailGridOptions: VxeGridProps<any> = {
+const readCodeGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  columns: detailColumns.value,
-  data: [],
+  columns: readCodeColumns,
   height: 300,
   pagerConfig: {
     enabled: true,
     pageSize: 20,
     pageSizes: [20, 30, 50],
   },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }: any) => {
+        return await queryReadCodeData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
   stripe: true,
 };
 
-const [DetailGrid, detailGridApi] = useVbenVxeGrid({
-  gridOptions: detailGridOptions,
+const [ReadCodeGrid, readCodeGridApi] = useVbenVxeGrid({
+  gridOptions: readCodeGridOptions,
 });
 
 // endregion 详情表格配置
@@ -233,21 +260,33 @@ const [DetailGrid, detailGridApi] = useVbenVxeGrid({
  */
 const workorderColumns: any[] = [
   { type: 'checkbox', width: 55 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 150 },
+  {
+    field: 'workSheetCode',
+    title: $t('SMTPlantAdd.workOrderCode'),
+    minWidth: 150,
+  },
   { field: 'sideNo', title: $t('SMTPlantAdd.sideNo'), minWidth: 150 },
   {
     field: 'subProductName',
     title: $t('SMTPlantAdd.partName'),
     minWidth: 150,
   },
-  { field: 'subPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 150 },
+  {
+    field: 'subPlanCode',
+    title: $t('SMTPlantAdd.partPlanCode'),
+    minWidth: 150,
+  },
   {
     field: 'isProductPlan',
     slots: { default: 'isProductPlan' },
     title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.workOrderDate'), minWidth: 150 },
+  {
+    field: 'planDateStart',
+    title: $t('SMTPlantAdd.workOrderDate'),
+    minWidth: 150,
+  },
 ];
 
 const workorderGridOptions: VxeGridProps<any> = {
@@ -257,11 +296,15 @@ const workorderGridOptions: VxeGridProps<any> = {
   checkboxConfig: {
     highlight: true,
     reserve: true,
+    trigger: 'row',
   },
   data: [],
   height: 300,
   rowConfig: {
     isCurrent: true,
+  },
+  pagerConfig: {
+    enabled: false,
   },
   rowStyle: setRowStyle,
   stripe: true,
@@ -278,15 +321,14 @@ const [WorkorderGrid, workorderGridApi] = useVbenVxeGrid({
 
 // region 状态定义
 
-const activeTab = ref<string>('first');
 const tableShow = ref(false);
 const detailShow = ref(false);
 const addShow = ref(false);
 const exportShow = ref(false);
 
-// 计算是否可以查询或导出（需要选择报工工序和任务线别）
+// 计算是否可以查询或导出（需要先选择工作站，再选择工序）
 const canSearchOrExport = computed(() => {
-  return !!(listQuery.processCode && listQuery.taskLineCode);
+  return !!(listQuery.workstationCode && listQuery.bindingId);
 });
 
 // 报工时段选项
@@ -325,40 +367,42 @@ const productList = [
 
 // 查询表单
 const listQuery = reactive({
-  produceWorkshop: 1,
-  processCode: undefined as string | undefined,
-  reportDate: dayjs(new Date()).format('YYYY-MM-DD'),
-  taskLineCode: undefined as number | string | undefined,
+  bindingId: undefined as number | string | undefined,
   partName: undefined as string | undefined,
   partOrProduct: undefined as number | undefined,
+  produceWorkshop: 1,
+  reportDate: dayjs(new Date()).format('YYYY-MM-DD'),
+  workstationCode: undefined as string | undefined,
 });
 
 // 详情查询表单
 const detailQuery = reactive({
-  produceWorkshop: 1,
-  reportDate: undefined as string | undefined,
-  processCode: undefined as string | undefined,
-  taskLineCode: undefined as number | string | undefined,
-  partName: undefined as string | undefined,
-  partOrProduct: undefined as number | undefined,
+  bindingId: undefined as number | string | undefined,
   pageNum: 1,
   pageSize: 20,
+  partName: undefined as string | undefined,
+  partOrProduct: undefined as number | undefined,
+  produceWorkshop: 1,
+  reportDate: undefined as string | undefined,
+  workstationCode: undefined as string | undefined,
 });
 
 // 弹窗表单
 const dialogFormVisible = ref(false);
 const popData = reactive<any>({
-  reportDate: undefined,
-  workSheetCode: undefined,
-  workSheetPlanNumber: '',
-  workSheetFinishNumber: '',
-  subPlanNumber: '',
-  produceNotFinishNumber: '',
-  subPlanFinishNumber: '',
+  equipTime: undefined,
   number: undefined,
-  reportTimeQuantum: undefined,
+  personTime: undefined,
   processName: undefined,
-  lineName: undefined,
+  produceNotFinishNumber: '',
+  reportDate: undefined,
+  reportTimeQuantum: undefined,
+  subPlanFinishNumber: '',
+  subPlanNumber: '',
+  workSheetCode: undefined,
+  workSheetFinishNumber: '',
+  workSheetPlanNumber: '',
+  workstationName: undefined,
 });
 
 // 工单查询
@@ -366,26 +410,57 @@ const workSheetCode1 = ref<string | undefined>(undefined);
 const partPlanCode1 = ref<string | undefined>(undefined);
 const selectedWorkorder = ref<any>(null);
 
-// 工序列表和产线列表
-const planProcess = ref<any[]>([]);
-const taskLineList = ref<any[]>([]);
-let processId = '';
+// 工作站列表和工序列表
+const workstationList = ref<any[]>([]);
+const processList = ref<any[]>([]);
 
 // 表单验证规则
 const rules: any = {
-  reportDate: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
-  processCode: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
-  taskLineCode: [
-    { required: true, message: $t('page.common.requiredField'), trigger: 'change' },
+  bindingId: [
+    {
+      required: true,
+      message: $t('page.common.requiredField'),
+      trigger: 'change',
+    },
+  ],
+  reportDate: [
+    {
+      required: true,
+      message: $t('page.common.requiredField'),
+      trigger: 'change',
+    },
+  ],
+  workstationCode: [
+    {
+      required: true,
+      message: $t('page.common.requiredField'),
+      trigger: 'change',
+    },
   ],
 };
 
 const dialogRules: any = {
-  workSheetCode: [{ required: true, message: $t('SMTPlantAdd.pleaseSelectWorkOrder'), trigger: 'change' }],
-  reportTimeQuantum: [
-    { required: true, message: $t('page.common.requiredField'), trigger: 'change' },
+  workSheetCode: [
+    {
+      required: true,
+      message: $t('SMTPlantAdd.pleaseSelectWorkOrder'),
+      trigger: 'change',
+    },
   ],
-  number: [{ required: true, message: $t('page.common.requiredField'), trigger: 'change' }],
+  reportTimeQuantum: [
+    {
+      required: true,
+      message: $t('page.common.requiredField'),
+      trigger: 'change',
+    },
+  ],
+  number: [
+    {
+      required: true,
+      message: $t('page.common.requiredField'),
+      trigger: 'change',
+    },
+  ],
 };
 
 // endregion 状态定义
@@ -393,13 +468,42 @@ const dialogRules: any = {
 // region 方法定义
 
 /**
- * 查询工序列表
+ * 查询工作站列表
+ *
+ * @since 2026-09-20
  */
-function getProcessList() {
-  const workshop = 1;
-  fetchProcessByWorkshop(workshop)
+function getWorkstationList() {
+  fetchWorkstationDropdownList()
     .then((data: any) => {
-      planProcess.value = data;
+      workstationList.value = data;
+    })
+    .catch((error: any) => {
+      message.error(
+        error.message || $t('SMTPlantAdd.getWorkstationListFailed'),
+      );
+    });
+}
+
+/**
+ * 工作站变更，清空已选工序并按工作站编号重新加载工序列表
+ *
+ * @since 2026-09-20
+ */
+function handleWorkstationChange() {
+  listQuery.bindingId = undefined;
+  popData.processName = undefined;
+  processList.value = [];
+  workstationList.value.forEach((item) => {
+    if (item.workstationCode === listQuery.workstationCode) {
+      popData.workstationName = item.workstationName;
+    }
+  });
+  if (!listQuery.workstationCode) {
+    return;
+  }
+  fetchProcessByWorkstation(listQuery.workstationCode)
+    .then((data: any) => {
+      processList.value = data;
     })
     .catch((error: any) => {
       message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
@@ -407,35 +511,14 @@ function getProcessList() {
 }
 
 /**
- * 工序变更
+ * 工序变更，回填弹窗中的工序名称
+ *
+ * @since 2026-09-20
  */
 function handleProcessChange() {
-  processId = '';
-  taskLineList.value = [];
-  planProcess.value.forEach((item) => {
-    if (item.processCode === listQuery.processCode) {
-      processId = item.id;
+  processList.value.forEach((item) => {
+    if (item.bindingId === listQuery.bindingId) {
       popData.processName = item.processName;
-    }
-  });
-  if (processId) {
-    fetchLineById(processId)
-      .then((data: any) => {
-        taskLineList.value = data;
-      })
-      .catch((error: any) => {
-        message.error(error.message || $t('SMTPlantAdd.getLineListFailed'));
-      });
-  }
-}
-
-/**
- * 任务线别变更
- */
-function handleTaskLineChange() {
-  taskLineList.value.forEach((item) => {
-    if (item.id === listQuery.taskLineCode) {
-      popData.lineName = item.lineName;
     }
   });
 }
@@ -446,7 +529,7 @@ function handleTaskLineChange() {
  */
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve) => {
-    if (!listQuery.processCode || !listQuery.taskLineCode) {
+    if (!listQuery.workstationCode || !listQuery.bindingId) {
       resolve({ items: [], total: 0 });
       return;
     }
@@ -498,8 +581,8 @@ function handleExport() {
  */
 function handleDetail(row: any) {
   detailQuery.reportDate = listQuery.reportDate;
-  detailQuery.processCode = listQuery.processCode;
-  detailQuery.taskLineCode = listQuery.taskLineCode;
+  detailQuery.workstationCode = listQuery.workstationCode;
+  detailQuery.bindingId = listQuery.bindingId;
   if (row.productPlan === true) {
     detailQuery.partOrProduct = 2;
   } else if (row.productPlan === false) {
@@ -507,57 +590,49 @@ function handleDetail(row: any) {
   }
   detailQuery.partName = row.subProductName;
   detailShow.value = true;
-  detailColumns.value = readCodeColumns;
-  loadReadCodeData();
+  reloadDetailGrid();
 }
 
 /**
- * Tab 切换
+ * 刷新报工明细表格
+ * 表格未挂载时由 proxyConfig 首次渲染自动加载
  */
-function handleTabChange(key: number | string) {
-  activeTab.value = String(key);
-  detailColumns.value = key === 'first' ? readCodeColumns : manualReportColumns;
-  if (key === 'first') {
-    loadReadCodeData();
-  } else {
-    loadManualData();
+function reloadDetailGrid() {
+  if (readCodeGridApi?.grid) {
+    readCodeGridApi.reload();
   }
 }
 
 /**
- * 加载读码报工数据
+ * 查询读码报工数据
+ * 用于读码报工表格 proxyConfig 代理加载
  */
-function loadReadCodeData() {
-  const params = {
-    ...detailQuery,
-    pageNum: 1,
-    pageSize: 20,
-  };
-  fetParams(params)
-    .then((data: any) => {
-      detailGridApi.grid.reloadData(data.results);
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.loadReadCodeDataFailed'));
-    });
-}
-
-/**
- * 加载人工报工数据
- */
-function loadManualData() {
-  const params = {
-    ...detailQuery,
-    pageNum: 1,
-    pageSize: 20,
-  };
-  fetchDetailByName(params)
-    .then((data: any) => {
-      detailGridApi.grid.reloadData(data.list);
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.loadManualDataFailed'));
-    });
+function queryReadCodeData({ page, pageSize }: any) {
+  return new Promise((resolve) => {
+    if (!detailQuery.workstationCode || !detailQuery.bindingId) {
+      resolve({ items: [], total: 0 });
+      return;
+    }
+    const params = {
+      ...detailQuery,
+      pageNum: page,
+      pageSize,
+    };
+    fetParams(params)
+      .then((data: any) => {
+        const list = data.results || [];
+        resolve({
+          total: data.total || list.length,
+          items: list,
+        });
+      })
+      .catch((error: any) => {
+        message.error(
+          error.message || $t('SMTPlantAdd.loadReadCodeDataFailed'),
+        );
+        resolve({ items: [], total: 0 });
+      });
+  });
 }
 
 /**
@@ -587,6 +662,8 @@ function handleCreate() {
   popData.subPlanFinishNumber = '';
   popData.number = undefined;
   popData.reportTimeQuantum = undefined;
+  popData.personTime = undefined;
+  popData.equipTime = undefined;
 
   workSheetCode1.value = undefined;
   partPlanCode1.value = undefined;
@@ -601,8 +678,9 @@ function handleCreate() {
  */
 function loadWorkorderList() {
   const params = {
-    taskLineCode: listQuery.taskLineCode,
+    bindingId: listQuery.bindingId,
     reportDate: popData.reportDate,
+    workstationCode: listQuery.workstationCode,
     workSheetCode: workSheetCode1.value,
     partPlanCode: partPlanCode1.value,
   };
@@ -671,9 +749,13 @@ function handleSubmit() {
     return;
   }
   const tempData = {
+    bindingId: listQuery.bindingId,
+    equipTime: popData.equipTime,
     number: popData.number,
+    personTime: popData.personTime,
     reportTimeQuantum: popData.reportTimeQuantum,
     workSheetCode: popData.workSheetCode,
+    workstationCode: listQuery.workstationCode,
   };
   createArticle(tempData)
     .then(() => {
@@ -701,7 +783,7 @@ function getButton() {
 
 onMounted(() => {
   getButton();
-  getProcessList();
+  getWorkstationList();
 });
 
 // endregion 生命周期
@@ -712,7 +794,11 @@ onMounted(() => {
     <!-- 查询表单 -->
     <Card>
       <Form :model="listQuery" :rules="rules" layout="inline">
-        <FormItem :label="$t('SMTPlantAdd.reportDate')" name="reportDate" class="!my-2">
+        <FormItem
+          :label="$t('SMTPlantAdd.reportDate')"
+          name="reportDate"
+          class="!my-2"
+        >
           <DatePicker
             v-model:value="listQuery.reportDate"
             disabled
@@ -720,35 +806,44 @@ onMounted(() => {
             value-format="YYYY-MM-DD"
           />
         </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.reportProcess')" name="processCode" class="!my-2">
+        <FormItem
+          :label="$t('SMTPlantAdd.workstation')"
+          name="workstationCode"
+          class="!my-2"
+        >
           <Select
-            v-model:value="listQuery.processCode"
+            v-model:value="listQuery.workstationCode"
             :placeholder="$t('SMTPlantAdd.pleaseSelect')"
+            class="!w-48"
+            @change="handleWorkstationChange"
+          >
+            <SelectOption
+              v-for="item in workstationList"
+              :key="item.workstationCode"
+              :value="item.workstationCode"
+            >
+              {{ item.workstationName }}
+            </SelectOption>
+          </Select>
+        </FormItem>
+        <FormItem
+          :label="$t('SMTPlantAdd.process')"
+          name="bindingId"
+          class="!my-2"
+        >
+          <Select
+            v-model:value="listQuery.bindingId"
+            :disabled="!listQuery.workstationCode"
+            :placeholder="$t('SMTPlantAdd.pleaseSelectWorkstation')"
             class="!w-48"
             @change="handleProcessChange"
           >
             <SelectOption
-              v-for="item in planProcess"
-              :key="item.processCode"
-              :value="item.processCode"
+              v-for="item in processList"
+              :key="item.bindingId"
+              :value="item.bindingId"
             >
               {{ item.processName }}
-            </SelectOption>
-          </Select>
-        </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.taskLine')" name="taskLineCode" class="!my-2">
-          <Select
-            v-model:value="listQuery.taskLineCode"
-            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
-            class="!w-48"
-            @change="handleTaskLineChange"
-          >
-            <SelectOption
-              v-for="item in taskLineList"
-              :key="item.id"
-              :value="item.id"
-            >
-              {{ item.lineName }}
             </SelectOption>
           </Select>
         </FormItem>
@@ -802,15 +897,18 @@ onMounted(() => {
     </Card>
 
     <!-- 主表格 -->
-    <Card v-show="tableShow" style="margin-top: 16px">
-      <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.dailyPlanAndCompletionOverview') }}</h3>
-        <Button v-if="addShow" type="primary" @click="handleCreate">
-          <Icon icon="mdi:plus" class="mr-1" />
-          {{ $t('SMTPlantAdd.add') }}
-        </Button>
-      </div>
+    <Card
+      v-show="tableShow"
+      style="margin-top: 16px"
+      :title="$t('SMTPlantAdd.dailyPlanAndCompletionOverview')"
+    >
       <Grid>
+        <template #toolbar-tools>
+          <Button v-if="addShow" type="primary" @click="handleCreate">
+            <Icon icon="mdi:plus" class="mr-1" />
+            {{ $t('SMTPlantAdd.add') }}
+          </Button>
+        </template>
         <template #subProductName="{ row }">
           <span class="cursor-pointer text-blue-500" @click="handleDetail(row)">
             {{ row.subProductName }}
@@ -837,54 +935,35 @@ onMounted(() => {
           {{ $t('SMTPlantAdd.export') }}
         </Button>
       </div>
-      <Tabs v-model:active-key="activeTab" @change="handleTabChange">
-        <TabPane key="first" :tab="$t('SMTPlantAdd.readCodeReport')">
-          <DetailGrid>
-            <template #partOrProduct="{ row }">
-              <span>{{
-                row.partOrProduct === 1
-                  ? $t('SMTPlantAdd.part')
-                  : row.partOrProduct === 2
-                    ? $t('SMTPlantAdd.product')
-                    : ''
-              }}</span>
-            </template>
-            <template #isLater="{ row }">
-              <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
-              }}</span>
-            </template>
-            <template #dataType="{ row }">
-              <span>{{
-                row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
-              }}</span>
-            </template>
-          </DetailGrid>
-        </TabPane>
-        <TabPane key="second" :tab="$t('SMTPlantAdd.manualReport')">
-          <DetailGrid>
-            <template #partOrProduct="{ row }">
-              <span>{{
-                row.partOrProduct === 1
-                  ? $t('SMTPlantAdd.part')
-                  : row.partOrProduct === 2
-                    ? $t('SMTPlantAdd.product')
-                    : ''
-              }}</span>
-            </template>
-            <template #isLater="{ row }">
-              <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
-              }}</span>
-            </template>
-            <template #dataType="{ row }">
-              <span>{{
-                row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
-              }}</span>
-            </template>
-          </DetailGrid>
-        </TabPane>
-      </Tabs>
+      <ReadCodeGrid>
+        <template #partOrProduct="{ row }">
+          <span>{{
+            row.partOrProduct === 1
+              ? $t('SMTPlantAdd.part')
+              : row.partOrProduct === 2
+                ? $t('SMTPlantAdd.product')
+                : ''
+          }}</span>
+        </template>
+        <template #isLater="{ row }">
+          <span>{{
+            row.isLater === 2
+              ? $t('SMTPlantAdd.yes')
+              : row.isLater === 1
+                ? $t('SMTPlantAdd.no')
+                : ''
+          }}</span>
+        </template>
+        <template #dataType="{ row }">
+          <span>{{
+            row.dataType === 1
+              ? $t('SMTPlantAdd.readCode')
+              : row.dataType === 2
+                ? $t('SMTPlantAdd.redFlush')
+                : ''
+          }}</span>
+        </template>
+      </ReadCodeGrid>
     </Card>
 
     <!-- 新增报工记录弹窗 -->
@@ -901,15 +980,21 @@ onMounted(() => {
         </FormItem>
 
         <div class="grid grid-cols-2 gap-4">
+          <FormItem
+            :label="$t('SMTPlantAdd.workstation')"
+            name="workstationName"
+          >
+            <Input v-model:value="popData.workstationName" disabled />
+          </FormItem>
           <FormItem :label="$t('SMTPlantAdd.reportProcess')" name="processName">
             <Input v-model:value="popData.processName" disabled />
           </FormItem>
-          <FormItem :label="$t('SMTPlantAdd.taskLine')" name="lineName">
-            <Input v-model:value="popData.lineName" disabled />
-          </FormItem>
         </div>
 
-        <Card :title="$t('SMTPlantAdd.selectWorkOrder')" style="margin-bottom: 16px">
+        <Card
+          :title="$t('SMTPlantAdd.selectWorkOrder')"
+          style="margin-bottom: 16px"
+        >
           <Form layout="inline">
             <FormItem :label="$t('SMTPlantAdd.workOrderCode')">
               <Input
@@ -964,7 +1049,10 @@ onMounted(() => {
           </FormItem>
         </div>
 
-        <FormItem :label="$t('SMTPlantAdd.reportTimeSlot')" name="reportTimeQuantum">
+        <FormItem
+          :label="$t('SMTPlantAdd.reportTimeSlot')"
+          name="reportTimeQuantum"
+        >
           <Select
             v-model:value="popData.reportTimeQuantum"
             :placeholder="$t('SMTPlantAdd.pleaseSelect')"
@@ -975,6 +1063,29 @@ onMounted(() => {
             </SelectOption>
           </Select>
         </FormItem>
+
+        <div class="grid grid-cols-2 gap-4">
+          <FormItem :label="$t('SMTPlantAdd.personTime')" name="personTime">
+            <InputNumber
+              v-model:value="popData.personTime"
+              :max="2000"
+              :min="0"
+              :precision="2"
+              :placeholder="$t('SMTPlantAdd.pleaseInputPersonTime')"
+              style="width: 100%"
+            />
+          </FormItem>
+          <FormItem :label="$t('SMTPlantAdd.equipTime')" name="equipTime">
+            <InputNumber
+              v-model:value="popData.equipTime"
+              :max="2000"
+              :min="0"
+              :precision="2"
+              :placeholder="$t('SMTPlantAdd.pleaseInputEquipTime')"
+              style="width: 100%"
+            />
+          </FormItem>
+        </div>
 
         <FormItem :label="$t('SMTPlantAdd.inputQuantity')" name="number">
           <InputNumber
@@ -989,8 +1100,16 @@ onMounted(() => {
 
       <template #footer>
         <Space>
-          <Button @click="dialogFormVisible = false">{{ $t('SMTPlantAdd.cancel') }}</Button>
-          <Button type="primary" @click="handleSubmit">{{ $t('SMTPlantAdd.save') }}</Button>
+          <Button @click="dialogFormVisible = false">
+{{
+            $t('SMTPlantAdd.cancel')
+          }}
+</Button>
+          <Button type="primary" @click="handleSubmit">
+{{
+            $t('SMTPlantAdd.save')
+          }}
+</Button>
         </Space>
       </template>
     </Drawer>

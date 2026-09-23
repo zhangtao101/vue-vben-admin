@@ -388,7 +388,9 @@ function generateBottomData() {
           {{ $t('basic.shortageTracking.materialUpdate') }}
         </Button>
       </template>
-      <MiddleTable />
+      <MiddleTable>
+        <template #toolbar-tools></template>
+      </MiddleTable>
     </Card>
 
     <!-- 下方时间维度表格 Card -->
@@ -396,7 +398,9 @@ function generateBottomData() {
       :title="$t('basic.shortageTracking.timeTableTitle')"
       v-if="bottomTableShow"
     >
-      <BottomTable />
+      <BottomTable>
+        <template #toolbar-tools></template>
+      </BottomTable>
     </Card>
   </Page>
 </template>

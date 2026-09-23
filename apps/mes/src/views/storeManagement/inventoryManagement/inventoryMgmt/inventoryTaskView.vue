@@ -541,6 +541,7 @@ onMounted(() => {
     <!-- 表格区域 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <!-- 任务状态插槽 -->
         <template #taskState="{ row }">
           <Tag :color="getTaskStateColor(row.taskState)">

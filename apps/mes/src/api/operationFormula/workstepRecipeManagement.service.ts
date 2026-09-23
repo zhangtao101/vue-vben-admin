@@ -87,7 +87,7 @@ export async function insertOpFunctionSet(params: any) {
  * 工步编辑
  */
 export async function updateOpFunctionSet(params: any) {
-  return requestClient.post<any>(
+  return requestClient.put<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/functionset/updateOpFunctionSet`,
     params,
   );
@@ -171,5 +171,25 @@ export async function runSettingAudit(params: any) {
 export async function deleteSRunSetting(id: string) {
   return requestClient.delete<any>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/functionset/opinfo/deleteById/${id}`,
+  );
+}
+
+/**
+ * 条件节点设置校验
+ * @param params { id: number } 节点ID（必填）
+ */
+export async function checkParamNode(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/functionset/checkParamNode?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 根据节点ID获取对应的可绑定工步列表
+ * @param params { id: number } 节点ID（可选）
+ */
+export async function listFunctionTypeById(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/functionset/listFunctionTypeById?${qs.stringify(params)}`,
   );
 }

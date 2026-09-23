@@ -404,10 +404,10 @@ function statusChange() {
  * @param row
  */
 function taskClose(row: any) {
-  const params = { 
+  const params = {
     ...row,
     end: 1,
-   };
+  };
   updateApply(params).then(() => {
     message.success($t('common.successfulOperation'));
     gridApi.reload();
@@ -486,6 +486,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #status="{ row, column }">
           {{ getStatusText(row[column.field]) }}
         </template>

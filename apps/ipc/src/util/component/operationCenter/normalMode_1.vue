@@ -658,17 +658,22 @@ function fullScreen() {
   }
 }
 
+// 移除全屏变化事件监听器
+function removeFullscreenListeners() {
+  document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  document.removeEventListener(
+    'webkitfullscreenchange',
+    handleFullscreenChange,
+  );
+  document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+  document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+}
+
 // 监听全屏变化事件
 function handleFullscreenChange() {
   isItFullScreen.value = !!document.fullscreenElement;
   if (!isItFullScreen.value) {
-    document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    document.removeEventListener(
-      'webkitfullscreenchange',
-      handleFullscreenChange,
-    );
-    document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    removeFullscreenListeners();
   }
 }
 // endregion
@@ -687,6 +692,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   // 将页面缩放比例重置为 100%，确保组件卸载后页面恢复默认缩放比例
   zoom(100);
+  // 移除全屏变化事件监听器，避免组件卸载后监听器残留导致内存泄漏
+  removeFullscreenListeners();
   websocketClose();
   websocketClose2();
 });

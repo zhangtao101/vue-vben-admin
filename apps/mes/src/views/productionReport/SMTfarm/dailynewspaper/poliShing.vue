@@ -37,17 +37,45 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     { field: 'day', title: $t('productionDaily.CodeProduct_1'), minWidth: 200 },
-    { field: 'worksheetCode', title: $t('productionDaily.Product'), minWidth: 200 },
+    {
+      field: 'worksheetCode',
+      title: $t('productionDaily.Product'),
+      minWidth: 200,
+    },
     { field: 'lineName', title: $t('productionDaily.Spec_1'), minWidth: 200 },
-    { field: 'productCode', title: $t('productionDaily.batchClosingStatus'), minWidth: 200 },
-    { field: 'materialName', title: $t('productionDaily.Input'), minWidth: 200 },
-    { field: 'reportNumber', title: $t('productionDaily.Output'), minWidth: 200 },
-    { field: 'qualityNumber', title: $t('productionDaily.PreBrokenTotal'), minWidth: 200 },
+    {
+      field: 'productCode',
+      title: $t('productionDaily.batchClosingStatus'),
+      minWidth: 200,
+    },
+    {
+      field: 'materialName',
+      title: $t('productionDaily.Input'),
+      minWidth: 200,
+    },
+    {
+      field: 'reportNumber',
+      title: $t('productionDaily.Output'),
+      minWidth: 200,
+    },
+    {
+      field: 'qualityNumber',
+      title: $t('productionDaily.PreBrokenTotal'),
+      minWidth: 200,
+    },
     {
       title: $t('productionDaily.InboundRate'),
       children: [
-        { field: 'dlValue', title: $t('productionDaily.target'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Actual'), minWidth: 150 },
+        {
+          field: 'dlValue',
+          title: $t('productionDaily.target'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Actual'),
+          minWidth: 150,
+        },
       ],
     },
     {
@@ -55,45 +83,105 @@ const gridOptions: VxeGridProps<any> = {
       children: [
         { field: 'dlValue', title: $t('productionDaily.Total'), minWidth: 150 },
         { field: 'jlqValue', title: $t('productionDaily.Kiln'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Polish'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Polish'),
+          minWidth: 150,
+        },
       ],
     },
-    { field: 'qualityNumber', title: $t('productionDaily.InputOutputActual'), minWidth: 200 },
+    {
+      field: 'qualityNumber',
+      title: $t('productionDaily.InputOutputActual'),
+      minWidth: 200,
+    },
     {
       title: $t('productionDaily.InboundDefectRate'),
       children: [
         { field: 'dlValue', title: $t('productionDaily.T_8'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.patternPW'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Glaze'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.patternPW'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Glaze'),
+          minWidth: 150,
+        },
         { field: 'jlqValue', title: $t('productionDaily.Pit'), minWidth: 150 },
         { field: 'jlqValue', title: $t('productionDaily.hole'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Scratch'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.bottomLeak'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.flatnessExceeded_1'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Scratch'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.bottomLeak'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.flatnessExceeded_1'),
+          minWidth: 150,
+        },
         { field: 'jlqValue', title: 'OA/OB', minWidth: 150 },
         { field: 'jlqValue', title: 'OBQ', minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Scrap'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.pendingStatus'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Scrap'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.pendingStatus'),
+          minWidth: 150,
+        },
       ],
     },
     {
       title: $t('productionDaily.PreBroken_1'),
       children: [
         { field: 'dlValue', title: $t('productionDaily.Kiln'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Polish'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Polish'),
+          minWidth: 150,
+        },
       ],
     },
     {
       title: $t('productionDaily.Inbound_2'),
       children: [
         { field: 'dlValue', title: $t('productionDaily.T_8'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.patternPW'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Glaze'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.patternPW'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Glaze'),
+          minWidth: 150,
+        },
         { field: 'jlqValue', title: $t('productionDaily.Pit'), minWidth: 150 },
         { field: 'jlqValue', title: $t('productionDaily.hole'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Scratch'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.bottomLeak'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.flatnessExceeded_1'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Scratch'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.bottomLeak'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.flatnessExceeded_1'),
+          minWidth: 150,
+        },
         { field: 'jlqValue', title: 'OA/OB', minWidth: 150 },
         { field: 'jlqValue', title: 'OBQ', minWidth: 150 },
       ],
@@ -103,18 +191,34 @@ const gridOptions: VxeGridProps<any> = {
       children: [
         { field: 'dlValue', title: 'PT', minWidth: 150 },
         { field: 'jlqValue', title: 'OAW', minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Glaze'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Glaze'),
+          minWidth: 150,
+        },
         { field: 'jlqValue', title: $t('productionDaily.Pit'), minWidth: 150 },
         { field: 'jlqValue', title: $t('productionDaily.hole'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.Scratch'), minWidth: 150 },
-        { field: 'jlqValue', title: $t('productionDaily.bottomLeak'), minWidth: 150 },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.Scratch'),
+          minWidth: 150,
+        },
+        {
+          field: 'jlqValue',
+          title: $t('productionDaily.bottomLeak'),
+          minWidth: 150,
+        },
         { field: 'jlqValue', title: 'OAE', minWidth: 150 },
         { field: 'jlqValue', title: 'OA/OB', minWidth: 150 },
         { field: 'jlqValue', title: 'OBQ', minWidth: 150 },
         { field: 'jlqValue', title: 'OBJ', minWidth: 150 },
       ],
     },
-    { field: 'qualityNumber', title: $t('productionDaily.pendingStatus'), minWidth: 200 },
+    {
+      field: 'qualityNumber',
+      title: $t('productionDaily.pendingStatus'),
+      minWidth: 200,
+    },
   ],
   footerData: [{ seq: $t('productionDaily.total') }],
   mergeFooterItems: [{ row: 0, col: 0, rowspan: 1, colspan: 4 }],
@@ -270,6 +374,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>

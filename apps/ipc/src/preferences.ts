@@ -29,8 +29,11 @@ export const overridesPreferences = defineOverridesPreferences({
   },
   copyright: {
     companyName: '',
-    companySiteLink: '/',
-    date: '2026',
+    companySiteLink: '',
+    date: '',
+    enable: false,
+    icp: '',
+    icpLink: '',
   },
   widget: {
     lockScreen: false,

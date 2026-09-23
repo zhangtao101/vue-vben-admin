@@ -5,7 +5,15 @@ import { nextTick, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { Button, Card, Drawer, Form, FormItem, Input, message } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Drawer,
+  Form,
+  FormItem,
+  Input,
+  message,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -122,7 +130,13 @@ const gridOptions: VxeGridProps<any> = {
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 // ========== 表格数据查询 ==========
-function queryTableData({ pageNum, pageSize }: { pageNum: number; pageSize: number }) {
+function queryTableData({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
   return new Promise((resolve) => {
     const params = {
       labelCode: queryParams.value.labelCode,
@@ -163,7 +177,9 @@ function queryTableData({ pageNum, pageSize }: { pageNum: number; pageSize: numb
 // ========== 查询 ==========
 function handleSearch() {
   if (!queryParams.value.labelCode) {
-    message.warning($t('tracingModule.materialBatchTrace.labelBarcodeEntryRequired'));
+    message.warning(
+      $t('tracingModule.materialBatchTrace.labelBarcodeEntryRequired'),
+    );
     return;
   }
   queryParams.value.pageNum = 1;
@@ -178,7 +194,9 @@ function handleSearch() {
 // ========== 导出 ==========
 function handleExport() {
   if (!queryParams.value.labelCode) {
-    message.warning($t('tracingModule.materialBatchTrace.labelBarcodeEntryRequired'));
+    message.warning(
+      $t('tracingModule.materialBatchTrace.labelBarcodeEntryRequired'),
+    );
     return;
   }
 
@@ -186,18 +204,17 @@ function handleExport() {
     labelCode: queryParams.value.labelCode,
   };
 
-  exportMaterialBatchList(params)
-    .then((res: any) => {
-      const blob = new Blob([res], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${$t('tracingModule.materialBatchTrace.title')}.xlsx`;
-      link.click();
-      window.URL.revokeObjectURL(url);
+  exportMaterialBatchList(params).then((res: any) => {
+    const blob = new Blob([res], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${$t('tracingModule.materialBatchTrace.title')}.xlsx`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  });
 }
 
 // ========== 抽屉控制 ==========
@@ -216,17 +233,13 @@ const checkResultMap: Record<string, string> = {
 function handleDetail() {
   if (!materialInfo.value.sendFormId) return;
 
-  getMaterialBatchDetailById(materialInfo.value.sendFormId)
-    .then((res: any) => {
-      const data = { ...res };
-      data.unqualified =
-        (data.checkNumber || 0) - (data.qualifiedNumber || 0);
-      const i18nKey = checkResultMap[String(data.checkResult)] || '';
-      data.checkResultText = i18nKey
-        ? $t(i18nKey)
-        : String(data.checkResult);
-      popData.value = data || {};
-    });
+  getMaterialBatchDetailById(materialInfo.value.sendFormId).then((res: any) => {
+    const data = { ...res };
+    data.unqualified = (data.checkNumber || 0) - (data.qualifiedNumber || 0);
+    const i18nKey = checkResultMap[String(data.checkResult)] || '';
+    data.checkResultText = i18nKey ? $t(i18nKey) : String(data.checkResult);
+    popData.value = data || {};
+  });
   drawerVisible.value = true;
 }
 </script>
@@ -235,10 +248,7 @@ function handleDetail() {
   <Page>
     <!-- 查询区域 -->
     <Card class="!mb-4">
-      <div
-        class="mb-2.5 text-xl font-extrabold
-        leading-8"
-      >
+      <div class="mb-2.5 text-xl font-extrabold leading-8">
         {{ $t('tracingModule.materialBatchTrace.title') }}
       </div>
       <Form layout="inline" :model="queryParams">
@@ -249,7 +259,9 @@ function handleDetail() {
         >
           <Input
             v-model:value="queryParams.labelCode"
-            :placeholder="$t('tracingModule.materialBatchTrace.labelCodePlaceholder')"
+            :placeholder="
+              $t('tracingModule.materialBatchTrace.labelCodePlaceholder')
+            "
             allow-clear
             @press-enter="handleSearch"
           />
@@ -334,7 +346,9 @@ function handleDetail() {
 
       <!-- 产品明细表 -->
       <Card :title="$t('tracingModule.materialBatchTrace.productList')">
-        <Grid />
+        <Grid>
+          <template #toolbar-tools></template>
+        </Grid>
       </Card>
     </template>
 
@@ -427,10 +441,7 @@ function handleDetail() {
         </Card>
 
         <!-- 质检详情表格 -->
-        <Card
-          :title="$t('tracingModule.productTrace.qcDetail')"
-          size="small"
-        >
+        <Card :title="$t('tracingModule.productTrace.qcDetail')" size="small">
           <VxeGrid
             :data="popData.labelList || []"
             border
@@ -438,15 +449,52 @@ function handleDetail() {
             stripe
             :height="300"
             :columns="[
-              { field: 'materialCode', title: $t('tracingModule.materialBatchTrace.materialCode'), minWidth: 100 },
-              { field: 'materialName', title: $t('tracingModule.materialBatchTrace.materialName'), minWidth: 200 },
-              { field: 'unit', title: $t('tracingModule.materialBatchTrace.unit'), minWidth: 80 },
-              { field: 'sendNumber', title: $t('tracingModule.materialBatchTrace.sendNumber'), minWidth: 100 },
-              { field: 'labelCode', title: $t('tracingModule.materialBatchTrace.labelCode'), minWidth: 180 },
-              { field: 'manufacturerName', title: $t('tracingModule.materialBatchTrace.manufacturerName'), minWidth: 150 },
-              { field: 'batchCode', title: $t('tracingModule.materialBatchTrace.batchCode'), minWidth: 120 },
-              { field: 'qualifiedNumber', title: $t('tracingModule.materialBatchTrace.qualifiedNumber'), minWidth: 100 },
-              { field: 'unqualified', title: $t('tracingModule.materialBatchTrace.unqualified'), minWidth: 100, slots: { default: 'unqualified' } },
+              {
+                field: 'materialCode',
+                title: $t('tracingModule.materialBatchTrace.materialCode'),
+                minWidth: 100,
+              },
+              {
+                field: 'materialName',
+                title: $t('tracingModule.materialBatchTrace.materialName'),
+                minWidth: 200,
+              },
+              {
+                field: 'unit',
+                title: $t('tracingModule.materialBatchTrace.unit'),
+                minWidth: 80,
+              },
+              {
+                field: 'sendNumber',
+                title: $t('tracingModule.materialBatchTrace.sendNumber'),
+                minWidth: 100,
+              },
+              {
+                field: 'labelCode',
+                title: $t('tracingModule.materialBatchTrace.labelCode'),
+                minWidth: 180,
+              },
+              {
+                field: 'manufacturerName',
+                title: $t('tracingModule.materialBatchTrace.manufacturerName'),
+                minWidth: 150,
+              },
+              {
+                field: 'batchCode',
+                title: $t('tracingModule.materialBatchTrace.batchCode'),
+                minWidth: 120,
+              },
+              {
+                field: 'qualifiedNumber',
+                title: $t('tracingModule.materialBatchTrace.qualifiedNumber'),
+                minWidth: 100,
+              },
+              {
+                field: 'unqualified',
+                title: $t('tracingModule.materialBatchTrace.unqualified'),
+                minWidth: 100,
+                slots: { default: 'unqualified' },
+              },
             ]"
           >
             <template #unqualified="{ row }">

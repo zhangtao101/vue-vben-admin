@@ -1,7 +1,16 @@
 <script lang="ts" setup>
 import type { ExtendedModalApi, ModalProps } from './modal';
 
-import { computed, nextTick, onDeactivated, ref, unref, watch } from 'vue';
+import {
+  computed,
+  nextTick,
+  onDeactivated,
+  provide,
+  ref,
+  unref,
+  useId,
+  watch,
+} from 'vue';
 
 import { usePriorityValues, useSimpleLocale } from '@vben-core/composables';
 import { Expand, Shrink } from '@vben-core/icons';
@@ -46,6 +55,10 @@ const footerRef = ref();
 
 const { $t } = useSimpleLocale();
 const state = props.modalApi?.useStore?.();
+
+const id = useId();
+// 遮罩层通过该 id 标记，仅当点击发生在当前 Modal 的遮罩上时才允许关闭
+provide('DISMISSABLE_MODAL_ID', id);
 
 const {
   appendToMain,
@@ -94,9 +107,7 @@ const shouldCentered = computed(
 );
 
 const getAppendTo = computed(() => {
-  return appendToMain.value
-    ? `#${ELEMENT_ID_MAIN_CONTENT}>div:not(.absolute)>div`
-    : undefined;
+  return appendToMain.value ? `#${ELEMENT_ID_MAIN_CONTENT}` : undefined;
 });
 
 const { dragging, transform } = useModalDraggable(
@@ -181,8 +192,15 @@ function handleOpenAutoFocus(e: Event) {
 
 // pointer-down-outside
 function pointerDownOutside(e: Event) {
-  if (!closeOnClickModal.value || submitting.value) {
+  const target = e.target as HTMLElement;
+  const isDismissableModal = target?.dataset.dismissableModal;
+  if (
+    !closeOnClickModal.value ||
+    isDismissableModal !== id ||
+    submitting.value
+  ) {
     e.preventDefault();
+    e.stopPropagation();
   }
 }
 
@@ -212,7 +230,7 @@ function handleClosed() {
 </script>
 <template>
   <Dialog
-    :modal="modal"
+    :modal="false"
     :open="state?.isOpen"
     @update:open="() => (!submitting ? modalApi?.close() : undefined)"
   >
@@ -223,24 +241,24 @@ function handleClosed() {
         cn(
           'inset-x-0 top-[10vh] mx-auto flex w-130 flex-col p-0',
           shouldFullscreen ? 'rounded-none' : 'rounded-(--radius)',
-          modalClass,
           {
             'border border-border': bordered,
             'shadow-3xl': !bordered,
             'max-h-[min(80%,calc(100dvh-20px))] max-w-[calc(100vw-20px)]':
               !shouldFullscreen,
-            'top-0 left-0 size-full max-h-full max-w-full transform-[translate(0,0)]!':
+            'top-0 left-0 size-full! max-h-full! max-w-full! transform-[translate(0,0)]!':
               shouldFullscreen,
             'top-1/2': centered && !shouldFullscreen,
             'duration-300': !dragging,
             hidden: isClosed,
           },
+          modalClass,
         )
       "
       :force-mount="getForceMount"
       :modal="modal"
       :open="state?.isOpen"
-      :show-close="closable"
+      :show-close-button="closable"
       :animation-type="animationType"
       :z-index="zIndex"
       :overlay-blur="overlayBlur"
@@ -301,14 +319,20 @@ function handleClosed() {
         <slot></slot>
       </div>
       <VbenLoading v-if="showLoading || submitting" spinning />
-      <VbenIconButton
-        v-if="fullscreenButton"
-        class="absolute top-3 right-10 flex-center size-6 rounded-full px-1 text-lg text-foreground/80 opacity-70 transition-opacity hover:bg-accent hover:text-accent-foreground hover:opacity-100 focus:outline-hidden disabled:pointer-events-none"
-        @click="handleFullscreen"
+      <div
+        v-if="fullscreenButton || $slots.extra"
+        class="absolute top-3 right-10 flex items-center gap-1"
       >
-        <Shrink v-if="fullscreen" class="size-3.5" />
-        <Expand v-else class="size-3.5" />
-      </VbenIconButton>
+        <slot name="extra"></slot>
+        <VbenIconButton
+          v-if="fullscreenButton"
+          class="flex-center size-6 rounded-full px-1 text-lg text-foreground/80 opacity-70 transition-opacity hover:bg-accent hover:text-accent-foreground hover:opacity-100 focus:outline-hidden disabled:pointer-events-none"
+          @click="handleFullscreen"
+        >
+          <Shrink v-if="fullscreen" class="size-3.5" />
+          <Expand v-else class="size-3.5" />
+        </VbenIconButton>
+      </div>
 
       <DialogFooter
         ref="footerRef"

@@ -28,26 +28,102 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'equipCode', title: $t('electricityConsumptionData.equipmentCode'), minWidth: 190 },
-    { field: 'regtime', title: $t('electricityConsumptionData.collectionTime'), minWidth: 190 },
-    { field: 'axxdy', title: $t('electricityConsumptionData.aPhaseVoltage'), minWidth: 190 },
-    { field: 'bxxdy', title: $t('electricityConsumptionData.bPhaseVoltage'), minWidth: 190 },
-    { field: 'cxxdy', title: $t('electricityConsumptionData.cPhaseVoltage'), minWidth: 190 },
-    { field: 'axqdy', title: $t('electricityConsumptionData.aPhaseLineVoltage'), minWidth: 190 },
-    { field: 'bxqdy', title: $t('electricityConsumptionData.bPhaseLineVoltage'), minWidth: 190 },
-    { field: 'cxqdy', title: $t('electricityConsumptionData.cPhaseLineVoltage'), minWidth: 190 },
-    { field: 'axdl', title: $t('electricityConsumptionData.aPhaseCurrent'), minWidth: 190 },
-    { field: 'bxdl', title: $t('electricityConsumptionData.bPhaseCurrent'), minWidth: 190 },
-    { field: 'cxdl', title: $t('electricityConsumptionData.cPhaseCurrent'), minWidth: 190 },
+    {
+      field: 'equipCode',
+      title: $t('electricityConsumptionData.equipmentCode'),
+      minWidth: 190,
+    },
+    {
+      field: 'regtime',
+      title: $t('electricityConsumptionData.collectionTime'),
+      minWidth: 190,
+    },
+    {
+      field: 'axxdy',
+      title: $t('electricityConsumptionData.aPhaseVoltage'),
+      minWidth: 190,
+    },
+    {
+      field: 'bxxdy',
+      title: $t('electricityConsumptionData.bPhaseVoltage'),
+      minWidth: 190,
+    },
+    {
+      field: 'cxxdy',
+      title: $t('electricityConsumptionData.cPhaseVoltage'),
+      minWidth: 190,
+    },
+    {
+      field: 'axqdy',
+      title: $t('electricityConsumptionData.aPhaseLineVoltage'),
+      minWidth: 190,
+    },
+    {
+      field: 'bxqdy',
+      title: $t('electricityConsumptionData.bPhaseLineVoltage'),
+      minWidth: 190,
+    },
+    {
+      field: 'cxqdy',
+      title: $t('electricityConsumptionData.cPhaseLineVoltage'),
+      minWidth: 190,
+    },
+    {
+      field: 'axdl',
+      title: $t('electricityConsumptionData.aPhaseCurrent'),
+      minWidth: 190,
+    },
+    {
+      field: 'bxdl',
+      title: $t('electricityConsumptionData.bPhaseCurrent'),
+      minWidth: 190,
+    },
+    {
+      field: 'cxdl',
+      title: $t('electricityConsumptionData.cPhaseCurrent'),
+      minWidth: 190,
+    },
 
-    { field: 'zszgl', title: $t('electricityConsumptionData.totalApparentPower'), minWidth: 190 },
-    { field: 'glys', title: $t('electricityConsumptionData.powerFactor'), minWidth: 190 },
-    { field: 'dwpl', title: $t('electricityConsumptionData.gridFrequency'), minWidth: 190 },
-    { field: 'zyggl', title: $t('electricityConsumptionData.totalActivePower'), minWidth: 190 },
-    { field: 'zxygdn', title: $t('electricityConsumptionData.forwardActiveEnergy'), minWidth: 190 },
-    { field: 'fxygdn', title: $t('electricityConsumptionData.reverseActiveEnergy'), minWidth: 190 },
-    { field: 'zxwgdn', title: $t('electricityConsumptionData.forwardReactiveEnergy'), minWidth: 190 },
-    { field: 'fxwgdn', title: $t('electricityConsumptionData.reverseReactiveEnergy'), minWidth: 190 },
+    {
+      field: 'zszgl',
+      title: $t('electricityConsumptionData.totalApparentPower'),
+      minWidth: 190,
+    },
+    {
+      field: 'glys',
+      title: $t('electricityConsumptionData.powerFactor'),
+      minWidth: 190,
+    },
+    {
+      field: 'dwpl',
+      title: $t('electricityConsumptionData.gridFrequency'),
+      minWidth: 190,
+    },
+    {
+      field: 'zyggl',
+      title: $t('electricityConsumptionData.totalActivePower'),
+      minWidth: 190,
+    },
+    {
+      field: 'zxygdn',
+      title: $t('electricityConsumptionData.forwardActiveEnergy'),
+      minWidth: 190,
+    },
+    {
+      field: 'fxygdn',
+      title: $t('electricityConsumptionData.reverseActiveEnergy'),
+      minWidth: 190,
+    },
+    {
+      field: 'zxwgdn',
+      title: $t('electricityConsumptionData.forwardReactiveEnergy'),
+      minWidth: 190,
+    },
+    {
+      field: 'fxwgdn',
+      title: $t('electricityConsumptionData.reverseReactiveEnergy'),
+      minWidth: 190,
+    },
   ],
   pagerConfig: {
     pageSizes: [50, 100, 200, 250],
@@ -242,7 +318,9 @@ onMounted(() => {
 
     <!-- region 表格主体 -->
     <Card>
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
     <!-- endregion -->
   </Page>

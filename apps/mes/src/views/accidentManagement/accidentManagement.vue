@@ -41,24 +41,72 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('accidentManagement.serialNumber'), type: 'seq', width: 50 },
-    { field: 'accidentCode', title: $t('accidentManagement.accidentCode'), minWidth: 190 },
+    {
+      field: 'accidentCode',
+      title: $t('accidentManagement.accidentCode'),
+      minWidth: 190,
+    },
     {
       field: 'type',
       title: $t('accidentManagement.accidentType'),
       minWidth: 150,
       slots: { default: 'type' },
     },
-    { field: 'injuredUser', title: $t('accidentManagement.injuredEmployee'), minWidth: 150 },
-    { field: 'worknumber', title: $t('accidentManagement.employeeID'), minWidth: 150 },
-    { field: 'position', title: $t('accidentManagement.department'), minWidth: 150 },
-    { field: 'time', title: $t('accidentManagement.occurrenceTime'), minWidth: 150 },
-    { field: 'eventDescription', title: $t('accidentManagement.accidentDescription'), minWidth: 150 },
-    { field: 'injuredPartList', title: $t('accidentManagement.injuredPart'), minWidth: 150 },
-    { field: 'injuredDescription', title: $t('accidentManagement.descriptionOfInjuryCondition'), minWidth: 150 },
-    { field: 'injuredTypeList', title: $t('accidentManagement.injuryTypeName'), minWidth: 150 },
-    { field: 'manager', title: $t('accidentManagement.departmentSupervisor'), minWidth: 150 },
-    { field: 'reason', title: $t('accidentManagement.accidentReason'), minWidth: 150 },
-    { field: 'measures', title: $t('accidentManagement.rectificationMeasure'), minWidth: 150 },
+    {
+      field: 'injuredUser',
+      title: $t('accidentManagement.injuredEmployee'),
+      minWidth: 150,
+    },
+    {
+      field: 'worknumber',
+      title: $t('accidentManagement.employeeID'),
+      minWidth: 150,
+    },
+    {
+      field: 'position',
+      title: $t('accidentManagement.department'),
+      minWidth: 150,
+    },
+    {
+      field: 'time',
+      title: $t('accidentManagement.occurrenceTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'eventDescription',
+      title: $t('accidentManagement.accidentDescription'),
+      minWidth: 150,
+    },
+    {
+      field: 'injuredPartList',
+      title: $t('accidentManagement.injuredPart'),
+      minWidth: 150,
+    },
+    {
+      field: 'injuredDescription',
+      title: $t('accidentManagement.descriptionOfInjuryCondition'),
+      minWidth: 150,
+    },
+    {
+      field: 'injuredTypeList',
+      title: $t('accidentManagement.injuryTypeName'),
+      minWidth: 150,
+    },
+    {
+      field: 'manager',
+      title: $t('accidentManagement.departmentSupervisor'),
+      minWidth: 150,
+    },
+    {
+      field: 'reason',
+      title: $t('accidentManagement.accidentReason'),
+      minWidth: 150,
+    },
+    {
+      field: 'measures',
+      title: $t('accidentManagement.rectificationMeasure'),
+      minWidth: 150,
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -285,7 +333,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
-        <template #toolbar-actions>
+        <template #toolbar-tools>
           <Button
             type="primary"
             @click="showEditFun()"

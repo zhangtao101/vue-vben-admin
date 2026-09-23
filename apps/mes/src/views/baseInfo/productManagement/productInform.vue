@@ -72,7 +72,11 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('baseInfo.plan'),
       minWidth: 60,
     },
-    { field: 'productTypeName', title: $t('baseInfo.productCategory'), minWidth: 80 },
+    {
+      field: 'productTypeName',
+      title: $t('baseInfo.productCategory'),
+      minWidth: 80,
+    },
     { field: 'productCode', title: $t('baseInfo.productCode'), minWidth: 150 },
     { field: 'productName', title: $t('baseInfo.productName'), minWidth: 150 },
     {
@@ -82,12 +86,36 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 100,
     },
     { field: 'unit', title: $t('baseInfo.measurementUnit'), minWidth: 100 },
-    { field: 'costomerGoodsCode', title: $t('basic.productInform.customerItemNumber'), minWidth: 100 },
-    { field: 'costomerTypeCode', title: $t('basic.productInform.customerModel'), minWidth: 100 },
-    { field: 'produceType', title: $t('basic.productInform.productionType'), minWidth: 100 },
-    { field: 'workTime', title: $t('basic.productInform.standardWorkingHours'), minWidth: 100 },
-    { field: 'packageNum', title: $t('basic.productInform.packagingQuantity'), minWidth: 100 },
-    { field: 'szie', title: $t('basic.productInform.outerBoxSize'), minWidth: 100 },
+    {
+      field: 'costomerGoodsCode',
+      title: $t('basic.productInform.customerItemNumber'),
+      minWidth: 100,
+    },
+    {
+      field: 'costomerTypeCode',
+      title: $t('basic.productInform.customerModel'),
+      minWidth: 100,
+    },
+    {
+      field: 'produceType',
+      title: $t('basic.productInform.productionType'),
+      minWidth: 100,
+    },
+    {
+      field: 'workTime',
+      title: $t('basic.productInform.standardWorkingHours'),
+      minWidth: 100,
+    },
+    {
+      field: 'packageNum',
+      title: $t('basic.productInform.packagingQuantity'),
+      minWidth: 100,
+    },
+    {
+      field: 'szie',
+      title: $t('basic.productInform.outerBoxSize'),
+      minWidth: 100,
+    },
     { field: 'length', title: $t('basic.productInform.long'), minWidth: 100 },
     { field: 'width', title: $t('basic.productInform.wide'), minWidth: 100 },
     { field: 'height', title: $t('basic.productInform.high'), minWidth: 100 },
@@ -335,7 +363,8 @@ function handleChange(info: any) {
     message.success($t('baseInfo.uploadSuccess'));
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || $t('baseInfo.uploadFailed');
+    const errorMessage =
+      info.file.response?.message || $t('baseInfo.uploadFailed');
     // 显示错误消息
     message.error(errorMessage);
   }
@@ -429,31 +458,36 @@ onMounted(() => {
       <!-- region 表格主体 -->
       <Col :lg="16" :md="16" :sm="16" :xl="18" :xs="16">
         <Card class="h-[60vh] overflow-y-auto">
-          <!-- 导入 -->
-          <!-- 导入按钮 -->
-          <Upload
-            v-model:file-list="fileList"
-            :action="action"
-            :headers="headers"
-            :show-upload-list="false"
-            name="file"
-            @change="handleChange"
-          >
-            <Button type="primary">
-              {{ $t('common.import') }}
-            </Button>
-          </Upload>
-
-          <!-- 模板下载 -->
-          <Button class="ml-4" type="primary" @click="downloadTemplate">
-            {{ $t('common.templateDownload') }}
-          </Button>
           <Grid>
+            <template #toolbar-tools>
+              <!-- 导入按钮 -->
+              <Upload
+                v-model:file-list="fileList"
+                :action="action"
+                :headers="headers"
+                :show-upload-list="false"
+                name="file"
+                @change="handleChange"
+              >
+                <Button type="primary">
+                  {{ $t('common.import') }}
+                </Button>
+              </Upload>
+
+              <!-- 模板下载 -->
+              <Button class="ml-4" type="primary" @click="downloadTemplate">
+                {{ $t('common.templateDownload') }}
+              </Button>
+            </template>
             <template #selectedState="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
             <template #isSingleSide="{ row }">
-              {{ row.isSingleSide === 1 ? $t('baseInfo.singleSide') : $t('baseInfo.doubleSide') }}
+              {{
+                row.isSingleSide === 1
+                  ? $t('baseInfo.singleSide')
+                  : $t('baseInfo.doubleSide')
+              }}
             </template>
             <template #action="{ row }">
               <!-- 编辑按钮 -->
@@ -491,7 +525,10 @@ onMounted(() => {
       :title="isEdit ? $t('common.edit') : $t('common.view')"
     >
       <Tabs v-model:active-key="activeTabKey">
-        <Tabs.TabPane key="first" :tab="$t('basic.productInform.productDescription')">
+        <Tabs.TabPane
+          key="first"
+          :tab="$t('basic.productInform.productDescription')"
+        >
           <Form
             :label-col="{ span: 6 }"
             :model="editData"
@@ -712,7 +749,10 @@ onMounted(() => {
             </FormItem>
           </Form>
         </Tabs.TabPane>
-        <Tabs.TabPane key="second" :tab="$t('basic.productInform.printInformation')">
+        <Tabs.TabPane
+          key="second"
+          :tab="$t('basic.productInform.printInformation')"
+        >
           <Form
             :label-col="{ span: 6 }"
             :model="editData"
@@ -766,7 +806,11 @@ onMounted(() => {
           </Form>
         </Tabs.TabPane>
         <!-- 仅在查看时显示产品描述 -->
-        <Tabs.TabPane v-if="!isEdit" key="third" :tab="$t('basic.productInform.productDescription')">
+        <Tabs.TabPane
+          v-if="!isEdit"
+          key="third"
+          :tab="$t('basic.productInform.productDescription')"
+        >
           <div style="min-height: 200px; padding: 20px">
             {{ editData.produceDescription || $t('baseInfo.noDescription') }}
           </div>

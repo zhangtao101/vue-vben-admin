@@ -46,21 +46,61 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: $t('selectionOfRDProcessRoute.workOrderNumber'), minWidth: 190 },
-    { field: 'workstationCode', title: $t('selectionOfRDProcessRoute.workstationCode'), minWidth: 150 },
-    { field: 'routeName', title: $t('selectionOfRDProcessRoute.routeName'), minWidth: 150 },
-    { field: 'routeCode', title: $t('selectionOfRDProcessRoute.routeCode'), minWidth: 150 },
-    { field: 'productCode', title: $t('selectionOfRDProcessRoute.productCode'), minWidth: 150 },
-    { field: 'productName', title: $t('selectionOfRDProcessRoute.productName'), minWidth: 150 },
-    { field: 'planDateStart', title: $t('selectionOfRDProcessRoute.planStartTime'), minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: $t('selectionOfRDProcessRoute.planQuantity'), minWidth: 150 },
+    {
+      field: 'worksheetCode',
+      title: $t('selectionOfRDProcessRoute.workOrderNumber'),
+      minWidth: 190,
+    },
+    {
+      field: 'workstationCode',
+      title: $t('selectionOfRDProcessRoute.workstationCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'routeName',
+      title: $t('selectionOfRDProcessRoute.routeName'),
+      minWidth: 150,
+    },
+    {
+      field: 'routeCode',
+      title: $t('selectionOfRDProcessRoute.routeCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productCode',
+      title: $t('selectionOfRDProcessRoute.productCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productName',
+      title: $t('selectionOfRDProcessRoute.productName'),
+      minWidth: 150,
+    },
+    {
+      field: 'planDateStart',
+      title: $t('selectionOfRDProcessRoute.planStartTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'workSheetPlanNumber',
+      title: $t('selectionOfRDProcessRoute.planQuantity'),
+      minWidth: 150,
+    },
     {
       field: 'workSheetFinishNumber',
       title: $t('selectionOfRDProcessRoute.completedQuantity'),
       minWidth: 180,
     },
-    { field: 'planDateEnd', title: $t('selectionOfRDProcessRoute.estimatedCompletionTime'), minWidth: 150 },
-    { field: 'unit', title: $t('selectionOfRDProcessRoute.unit'), minWidth: 150 },
+    {
+      field: 'planDateEnd',
+      title: $t('selectionOfRDProcessRoute.estimatedCompletionTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'unit',
+      title: $t('selectionOfRDProcessRoute.unit'),
+      minWidth: 150,
+    },
     {
       field: 'state',
       fixed: 'right',
@@ -451,6 +491,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workOrderStatus="{ row }">
           <span> {{ getStatusText(row.state) }} </span>
         </template>

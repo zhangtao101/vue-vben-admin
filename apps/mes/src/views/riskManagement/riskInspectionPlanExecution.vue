@@ -59,21 +59,57 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'riskCode', title: $t('hiddenDangerInspectionTask.checkTheNumber'), minWidth: 150 },
-    { field: 'planCheckTime', title: $t('hiddenDangerInspectionTask.PlannedInspectionDate'), minWidth: 150 },
-    { field: 'checkType', title: $t('hiddenDangerInspectionTask.InspectionCategory'), minWidth: 150 },
-    { field: 'checkCriteria', title: $t('hiddenDangerInspectionTask.InspectionStandard'), minWidth: 150 },
-    { field: 'checkUser', title: $t('hiddenDangerInspectionTask.checkUser'), minWidth: 150 },
-    { field: 'area', title: $t('hiddenDangerInspectionTask.InspectionArea'), minWidth: 150 },
-    { field: 'areaCode', title: $t('hiddenDangerInspectionTask.InspectionItem'), minWidth: 150 },
+    {
+      field: 'riskCode',
+      title: $t('hiddenDangerInspectionTask.checkTheNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'planCheckTime',
+      title: $t('hiddenDangerInspectionTask.PlannedInspectionDate'),
+      minWidth: 150,
+    },
+    {
+      field: 'checkType',
+      title: $t('hiddenDangerInspectionTask.InspectionCategory'),
+      minWidth: 150,
+    },
+    {
+      field: 'checkCriteria',
+      title: $t('hiddenDangerInspectionTask.InspectionStandard'),
+      minWidth: 150,
+    },
+    {
+      field: 'checkUser',
+      title: $t('hiddenDangerInspectionTask.checkUser'),
+      minWidth: 150,
+    },
+    {
+      field: 'area',
+      title: $t('hiddenDangerInspectionTask.InspectionArea'),
+      minWidth: 150,
+    },
+    {
+      field: 'areaCode',
+      title: $t('hiddenDangerInspectionTask.InspectionItem'),
+      minWidth: 150,
+    },
     {
       field: 'result',
       title: $t('hiddenDangerInspectionTask.Result'),
       minWidth: 150,
       slots: { default: 'result' },
     },
-    { field: 'remark', title: $t('hiddenDangerInspectionTask.Remarks'), minWidth: 150 },
-    { field: 'checkTime', title: $t('hiddenDangerInspectionTask.InspectionTime'), minWidth: 150 },
+    {
+      field: 'remark',
+      title: $t('hiddenDangerInspectionTask.Remarks'),
+      minWidth: 150,
+    },
+    {
+      field: 'checkTime',
+      title: $t('hiddenDangerInspectionTask.InspectionTime'),
+      minWidth: 150,
+    },
     {
       field: 'isReport',
       title: $t('hiddenDangerInspectionTask.ReportHiddenDanger'),
@@ -563,6 +599,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #result="{ row }">
           {{
             row.result === 0

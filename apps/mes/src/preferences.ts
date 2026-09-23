@@ -12,11 +12,25 @@ export const overridesPreferences = defineOverridesPreferences({
     accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
     defaultHomePath: '/dashboard/welcome',
+    watermark: false,
+    watermarkContent: '',
   },
   theme: {
     mode: 'light',
   },
   logo: {
     source: '/logo.png',
+  },
+  copyright: {
+    companyName: '',
+    companySiteLink: '',
+    date: '',
+    enable: false,
+    icp: '',
+    icpLink: '',
+  },
+  sidebar: {
+    collapsedButton: false,
+    fixedButton: false,
   },
 });

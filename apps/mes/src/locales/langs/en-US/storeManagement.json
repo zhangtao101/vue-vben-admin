@@ -84,7 +84,8 @@
     "storageCode": "Storage Code",
     "wareHouse": "Warehouse",
     "wareArea": "Ware Area",
-    "wareLocation": "Ware Location"
+    "wareLocation": "Ware Location",
+    "pleaseSelectMaterial": "Please select a material first"
   },
   "batchLock": {
     "batch": "Batch",

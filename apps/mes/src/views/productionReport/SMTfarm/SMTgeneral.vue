@@ -35,8 +35,8 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import {
-  fetchLineById,
-  fetchProcessByWorkshop,
+  fetchProcessByWorkstation,
+  fetchWorkstationDropdownList,
   manList,
   mouthExelect,
   mouthList,
@@ -117,7 +117,11 @@ const detailColumns: any[] = [
   { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
   { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
   { field: 'processName', title: $t('SMTPlantAdd.processName'), minWidth: 200 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workSheetCode'), minWidth: 150 },
+  {
+    field: 'workSheetCode',
+    title: $t('SMTPlantAdd.workSheetCode'),
+    minWidth: 150,
+  },
   { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 120 },
   { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 200 },
   {
@@ -126,9 +130,21 @@ const detailColumns: any[] = [
     title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.planDateStart'), minWidth: 150 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workSheetPlanNumber'), minWidth: 80 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workSheetFinishNumber'), minWidth: 80 },
+  {
+    field: 'planDateStart',
+    title: $t('SMTPlantAdd.planDateStart'),
+    minWidth: 150,
+  },
+  {
+    field: 'workSheetPlanNumber',
+    title: $t('SMTPlantAdd.workSheetPlanNumber'),
+    minWidth: 80,
+  },
+  {
+    field: 'workSheetFinishNumber',
+    title: $t('SMTPlantAdd.workSheetFinishNumber'),
+    minWidth: 80,
+  },
   {
     field: 'isLater',
     slots: { default: 'isLater' },
@@ -136,16 +152,44 @@ const detailColumns: any[] = [
     minWidth: 80,
   },
   { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 150 },
-  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeQuantum'), minWidth: 150 },
+  {
+    field: 'reportTimeQuantum',
+    title: $t('SMTPlantAdd.reportTimeQuantum'),
+    minWidth: 150,
+  },
   { field: 'qcCode', title: $t('SMTPlantAdd.qcCode'), minWidth: 120 },
-  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
-  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 150 },
-  { field: 'partPlanNumber', title: $t('SMTPlantAdd.partPlanNumber'), minWidth: 120 },
-  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.partPlanFinishNumber'), minWidth: 120 },
+  {
+    field: 'reportNumber',
+    title: $t('SMTPlantAdd.reportNumber'),
+    minWidth: 80,
+  },
+  {
+    field: 'partPlanCode',
+    title: $t('SMTPlantAdd.partPlanCode'),
+    minWidth: 150,
+  },
+  {
+    field: 'partPlanNumber',
+    title: $t('SMTPlantAdd.partPlanNumber'),
+    minWidth: 120,
+  },
+  {
+    field: 'partPlanFinishNumber',
+    title: $t('SMTPlantAdd.partPlanFinishNumber'),
+    minWidth: 120,
+  },
   { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 200 },
-  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
+  {
+    field: 'productPlanCode',
+    title: $t('SMTPlantAdd.productPlanCode'),
+    minWidth: 120,
+  },
   { field: 'createTime', title: $t('SMTPlantAdd.createTime'), minWidth: 150 },
-  { field: 'createUserName', title: $t('SMTPlantAdd.createUserName'), minWidth: 80 },
+  {
+    field: 'createUserName',
+    title: $t('SMTPlantAdd.createUserName'),
+    minWidth: 80,
+  },
   {
     field: 'dataType',
     slots: { default: 'dataType' },
@@ -192,9 +236,8 @@ const listQuery = reactive({
   pageNum: 1,
   pageSize: 10,
   month: undefined as string | undefined,
-  processCode: undefined as string | undefined,
-  taskLine: undefined as string | undefined,
-  lineName: undefined as string | undefined,
+  workstationCode: undefined as string | undefined,
+  bindingId: undefined as number | undefined,
   partName: undefined as string | undefined,
   isPartOrProduct: undefined as string | undefined,
   workShop: 1,
@@ -204,8 +247,8 @@ const listQuery = reactive({
 const detailQuery = reactive({
   month: undefined as string | undefined,
   day: undefined as string | undefined,
-  processCode: undefined as string | undefined,
-  taskLineCode: undefined as string | undefined,
+  bindingId: undefined as number | undefined,
+  workstationCode: undefined as string | undefined,
   partName: undefined as string | undefined,
   partCode: undefined as string | undefined,
   partOrProduct: undefined as string | undefined,
@@ -217,16 +260,25 @@ const detailQuery = reactive({
 // 当前点击的字段
 const currentField = ref<string>('');
 
-// 工序列表和产线列表
-const planProcess = ref<any[]>([]);
-const taskLineList = ref<any[]>([]);
-let processId = '';
+// 工作站列表和工序列表
+const workstationList = ref<any[]>([]);
+const processList = ref<any[]>([]);
 
 // 表单验证规则
 const rules: any = {
-  month: [{ required: true, message: $t('SMTPlantAdd.pleaseSelectMonth'), trigger: 'change' }],
-  processCode: [
-    { required: true, message: $t('SMTPlantAdd.pleaseSelectProcess'), trigger: 'change' },
+  month: [
+    {
+      required: true,
+      message: $t('SMTPlantAdd.pleaseSelectMonth'),
+      trigger: 'change',
+    },
+  ],
+  bindingId: [
+    {
+      required: true,
+      message: $t('SMTPlantAdd.pleaseSelectProcess'),
+      trigger: 'change',
+    },
   ],
 };
 
@@ -245,54 +297,42 @@ function getDefaultMonth() {
 }
 
 /**
- * 查询工序列表
+ * 查询工作站列表
+ *
+ * @since 2026-09-20
  */
-function getProcessList() {
-  const workshop = 1;
-  fetchProcessByWorkshop(workshop)
+function getWorkstationList() {
+  fetchWorkstationDropdownList()
     .then((data: any) => {
-      planProcess.value = data;
+      workstationList.value = data;
     })
     .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
+      message.error(
+        error.message || $t('SMTPlantAdd.getWorkstationListFailed'),
+      );
     });
 }
 
 /**
- * 工序变更
+ * 工作站变更，清空已选工序并按工作站编号重新加载工序列表
+ *
+ * @since 2026-09-20
  */
-function handleProcessChange() {
-  processId = '';
-  taskLineList.value = [];
-  listQuery.lineName = undefined;
-  listQuery.taskLine = undefined;
+function handleWorkstationChange() {
+  listQuery.bindingId = undefined;
+  processList.value = [];
 
-  planProcess.value.forEach((item) => {
-    if (item.processCode === listQuery.processCode) {
-      processId = item.id;
-    }
-  });
-
-  if (processId) {
-    fetchLineById(processId)
-      .then((data: any) => {
-        taskLineList.value = data;
-      })
-      .catch((error: any) => {
-        message.error(error.message || $t('SMTPlantAdd.getLineListFailed'));
-      });
+  if (!listQuery.workstationCode) {
+    return;
   }
-}
 
-/**
- * 任务线别变更
- */
-function handleLineChange() {
-  taskLineList.value.forEach((item) => {
-    if (item.lineName === listQuery.lineName) {
-      listQuery.taskLine = item.id;
-    }
-  });
+  fetchProcessByWorkstation(listQuery.workstationCode)
+    .then((data: any) => {
+      processList.value = data;
+    })
+    .catch((error: any) => {
+      message.error(error.message || $t('SMTPlantAdd.getProcessListFailed'));
+    });
 }
 
 /**
@@ -348,9 +388,21 @@ function handleProductQuery({ page, pageSize }: any) {
       .then(({ total, result, column }) => {
         // 动态生成列
         const cols: any[] = [
-          { field: 'part_name', title: $t('SMTPlantAdd.partName'), minWidth: 240 },
-          { field: 'part_or_product', title: $t('SMTPlantAdd.partOrProduct'), minWidth: 120 },
-          { field: 'part_code', title: $t('SMTPlantAdd.partCode'), minWidth: 120 },
+          {
+            field: 'part_name',
+            title: $t('SMTPlantAdd.partName'),
+            minWidth: 240,
+          },
+          {
+            field: 'part_or_product',
+            title: $t('SMTPlantAdd.partOrProduct'),
+            minWidth: 120,
+          },
+          {
+            field: 'part_code',
+            title: $t('SMTPlantAdd.partCode'),
+            minWidth: 120,
+          },
         ];
 
         column.forEach((col: any) => {
@@ -396,7 +448,7 @@ function handleSearch() {
     message.warning($t('SMTPlantAdd.pleaseSelectMonth'));
     return;
   }
-  if (!listQuery.processCode) {
+  if (!listQuery.bindingId) {
     message.warning($t('SMTPlantAdd.pleaseSelectProcess'));
     return;
   }
@@ -424,8 +476,8 @@ function handleExportMonth() {
 function handleExportProduct() {
   const params = {
     month: listQuery.month,
-    processCode: listQuery.processCode,
-    taskLine: listQuery.taskLine,
+    bindingId: listQuery.bindingId,
+    workstationCode: listQuery.workstationCode,
     partName: listQuery.partName,
     isPartOrProduct: listQuery.isPartOrProduct,
     workShop: 1,
@@ -453,8 +505,8 @@ function handleDetail(row: any, prop: string) {
     detailQuery.day = prop.slice(8, 10);
   }
 
-  detailQuery.processCode = listQuery.processCode;
-  detailQuery.taskLineCode = listQuery.taskLine;
+  detailQuery.bindingId = listQuery.bindingId;
+  detailQuery.workstationCode = listQuery.workstationCode;
   detailQuery.partName = row.part_name;
   detailQuery.partCode = row.part_code;
   detailQuery.partOrProduct = listQuery.isPartOrProduct;
@@ -511,7 +563,7 @@ function handlePageChange({ currentPage, pageSize }: any) {
 
 onMounted(() => {
   getDefaultMonth();
-  getProcessList();
+  getWorkstationList();
 });
 
 // endregion 生命周期
@@ -522,7 +574,11 @@ onMounted(() => {
     <!-- 查询表单 -->
     <Card>
       <Form :model="listQuery" :rules="rules" layout="inline">
-        <FormItem :label="$t('SMTPlantAdd.selectMonth')" name="month" class="!my-2">
+        <FormItem
+          :label="$t('SMTPlantAdd.selectMonth')"
+          name="month"
+          class="!my-2"
+        >
           <DatePicker
             v-model:value="listQuery.month"
             picker="month"
@@ -532,36 +588,43 @@ onMounted(() => {
             style="width: 200px"
           />
         </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.selectProcess')" name="processCode" class="!my-2">
+        <FormItem
+          :label="$t('SMTPlantAdd.workstation')"
+          name="workstationCode"
+          class="!my-2"
+        >
           <Select
-            v-model:value="listQuery.processCode"
+            v-model:value="listQuery.workstationCode"
             :placeholder="$t('SMTPlantAdd.pleaseSelect')"
             class="!w-48"
-            @change="handleProcessChange"
+            @change="handleWorkstationChange"
           >
             <SelectOption
-              v-for="item in planProcess"
-              :key="item.id"
-              :value="item.processCode"
+              v-for="item in workstationList"
+              :key="item.workstationCode"
+              :value="item.workstationCode"
             >
-              {{ item.processName }}
+              {{ item.workstationName }}
             </SelectOption>
           </Select>
         </FormItem>
-        <FormItem :label="$t('SMTPlantAdd.selectTaskLine')" class="!my-2">
+        <FormItem
+          :label="$t('SMTPlantAdd.process')"
+          name="bindingId"
+          class="!my-2"
+        >
           <Select
-            v-model:value="listQuery.lineName"
-            allow-clear
-            :placeholder="$t('SMTPlantAdd.pleaseSelect')"
+            v-model:value="listQuery.bindingId"
+            :disabled="!listQuery.workstationCode"
+            :placeholder="$t('SMTPlantAdd.pleaseSelectWorkstation')"
             class="!w-48"
-            @change="handleLineChange"
           >
             <SelectOption
-              v-for="item in taskLineList"
-              :key="item.id"
-              :value="item.lineName"
+              v-for="item in processList"
+              :key="item.bindingId"
+              :value="item.bindingId"
             >
-              {{ item.lineName }}
+              {{ item.processName }}
             </SelectOption>
           </Select>
         </FormItem>
@@ -603,7 +666,9 @@ onMounted(() => {
     <!-- 月度汇总表格 -->
     <Card v-show="tableShow" style="margin-top: 16px">
       <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.monthlySummary') }}</h3>
+        <h3 class="text-xl font-bold">
+          {{ $t('SMTPlantAdd.monthlySummary') }}
+        </h3>
         <Button type="primary" @click="handleExportMonth">
           <Icon icon="mdi:export" class="mr-1" />
           {{ $t('SMTPlantAdd.export') }}
@@ -615,13 +680,16 @@ onMounted(() => {
     <!-- 产品汇总表格 -->
     <Card v-show="tableShow" style="margin-top: 16px">
       <div class="flex items-center justify-between !mb-4">
-        <h3 class="text-xl font-bold">{{ $t('SMTPlantAdd.productSummary') }}</h3>
+        <h3 class="text-xl font-bold">
+          {{ $t('SMTPlantAdd.productSummary') }}
+        </h3>
         <Button type="primary" @click="handleExportProduct">
           <Icon icon="mdi:export" class="mr-1" />
           {{ $t('SMTPlantAdd.export') }}
         </Button>
       </div>
       <ProductGrid>
+        <template #toolbar-tools></template>
         <template #sum="{ row }">
           <span
             class="cursor-pointer text-blue-500 underline"
@@ -671,7 +739,11 @@ onMounted(() => {
             </template>
             <template #isLater="{ row }">
               <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
+                row.isLater === 2
+                  ? $t('SMTPlantAdd.yes')
+                  : row.isLater === 1
+                    ? $t('SMTPlantAdd.no')
+                    : ''
               }}</span>
             </template>
             <template #dataType="{ row }">

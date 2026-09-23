@@ -48,12 +48,36 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'changeCode', title: $t('changeOperation.changeTaskNumber'), minWidth: 120 },
-    { field: 'changeTypeName', title: $t('changeOperation.changeOperationType'), minWidth: 120 },
-    { field: 'changeBeforeVersion', title: $t('changeOperation.changeBeforeVersion'), minWidth: 120 },
-    { field: 'changeAfterVersion', title: $t('changeOperation.changeAfterVersion'), minWidth: 120 },
-    { field: 'stateName', title: $t('changeOperation.changeTaskStatus'), minWidth: 120 },
-    { field: 'changeTime', title: $t('changeOperation.changeTime'), minWidth: 120 },
+    {
+      field: 'changeCode',
+      title: $t('changeOperation.changeTaskNumber'),
+      minWidth: 120,
+    },
+    {
+      field: 'changeTypeName',
+      title: $t('changeOperation.changeOperationType'),
+      minWidth: 120,
+    },
+    {
+      field: 'changeBeforeVersion',
+      title: $t('changeOperation.changeBeforeVersion'),
+      minWidth: 120,
+    },
+    {
+      field: 'changeAfterVersion',
+      title: $t('changeOperation.changeAfterVersion'),
+      minWidth: 120,
+    },
+    {
+      field: 'stateName',
+      title: $t('changeOperation.changeTaskStatus'),
+      minWidth: 120,
+    },
+    {
+      field: 'changeTime',
+      title: $t('changeOperation.changeTime'),
+      minWidth: 120,
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -381,8 +405,16 @@ onMounted(() => {
             v-model:value="queryParams.changeType"
             style="width: 180px !important"
           >
-            <SelectOption :value="1">{{ $t('changeOperation.processParameterTemplateChange') }}</SelectOption>
-            <SelectOption :value="2">{{ $t('changeOperation.processRouteChange') }}</SelectOption>
+            <SelectOption :value="1">
+{{
+              $t('changeOperation.processParameterTemplateChange')
+            }}
+</SelectOption>
+            <SelectOption :value="2">
+{{
+              $t('changeOperation.processRouteChange')
+            }}
+</SelectOption>
           </Select>
         </FormItem>
         <FormItem style="margin-bottom: 1em">
@@ -398,6 +430,7 @@ onMounted(() => {
     <Card>
       <div>
         <Grid>
+          <template #toolbar-tools></template>
           <template #action="{ row }">
             <Button type="link" class="!p-1" @click="showDetails(row)">
               <Icon icon="mdi:eye" class="text-xl" />

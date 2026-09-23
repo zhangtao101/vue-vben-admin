@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import type { NotificationItem } from '@vben/layouts';
 
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
@@ -11,7 +13,7 @@ import {
   Notification,
   UserDropdown,
 } from '@vben/layouts';
-import { preferences } from '@vben/preferences';
+import { preferences, usePreferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
 import { $t } from '#/locales';
@@ -19,36 +21,8 @@ import { useAuthStore } from '#/store';
 import SectionSetting from '#/util/component/sectionSetting.vue';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-const notifications = ref<any[]>([
-  {
-    avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
-    date: '3小时前',
-    isRead: true,
-    message: '描述信息描述信息描述信息',
-    title: '收到了 14 份新周报',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '刚刚',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '朱偏右 回复了你',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '2024-01-01',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '曲丽丽 评论了你',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '代办提醒',
-  },
-]);
+// 消息列表
+const notifications = ref<NotificationItem[]>([]);
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -87,6 +61,8 @@ const menus = computed(() => [
   // },
 ]);
 
+const router = useRouter();
+
 const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
@@ -106,12 +82,89 @@ function handleNoticeClear() {
 function handleMakeAll() {
   notifications.value.forEach((item) => (item.isRead = true));
 }
+
+/**
+ * 标记单条通知为已读
+ * @param id 通知 id
+ */
+function markRead(id: number | string) {
+  const item = notifications.value.find((item) => item.id === id);
+  if (item) {
+    item.isRead = true;
+  }
+}
+
+/**
+ * 移除单条通知
+ * @param id 通知 id
+ */
+function remove(id: number | string) {
+  notifications.value = notifications.value.filter((item) => item.id !== id);
+}
+
+/** 查看全部通知，具体跳转由业务自行扩展 */
+const viewAll = () => {};
+
+const handleClick = (item: NotificationItem) => {
+  // 如果通知项有链接，点击时跳转
+  if (item.link) {
+    navigateTo(item.link, item.query, item.state);
+  }
+};
+
+/**
+ * 跳转通知链接：外部链接新开标签页，内部链接走路由
+ * @param link 链接地址
+ * @param query 路由 query 参数
+ * @param state 路由 state 参数
+ */
+function navigateTo(
+  link: string,
+  query?: Record<string, any>,
+  state?: Record<string, any>,
+) {
+  if (link.startsWith('http://') || link.startsWith('https://')) {
+    // 外部链接，在新标签页打开
+    window.open(link, '_blank');
+  } else {
+    // 内部路由链接，支持 query 参数和 state
+    router.push({
+      path: link,
+      query: query || {},
+      state,
+    });
+  }
+}
+
+const { isDark } = usePreferences();
+
 watch(
-  () => preferences.app.watermark,
-  async (enable) => {
+  () => ({
+    enable: preferences.app.watermark,
+    content: preferences.app.watermarkContent,
+    isDark: isDark.value,
+  }),
+  async ({ enable, content, isDark: isDarkValue }) => {
     if (enable) {
+      const watermarkColor = isDarkValue
+        ? 'rgba(255, 255, 255, 0.12)'
+        : 'rgba(0, 0, 0, 0.12)';
+
       await updateWatermark({
-        content: `${userStore.userInfo?.username}`,
+        advancedStyle: {
+          colorStops: [
+            {
+              color: watermarkColor,
+              offset: 0,
+            },
+            {
+              color: watermarkColor,
+              offset: 1,
+            },
+          ],
+          type: 'linear',
+        },
+        content: content || `${userStore.userInfo?.userName}`,
       });
     } else {
       destroyWatermark();
@@ -124,7 +177,12 @@ watch(
 </script>
 
 <template>
-  <BasicLayout @clear-preferences-and-logout="handleLogout">
+  <BasicLayout
+    :avatar
+    :text="userStore.userInfo?.userName"
+    @clear-preferences-and-logout="handleLogout"
+    @logout="handleLogout"
+  >
     <template #user-dropdown>
       <UserDropdown
         :avatar
@@ -132,6 +190,7 @@ watch(
         :text="userStore.userInfo?.userName"
         :description="userStore.userInfo?.roleNames.join(',')"
         :tag-text="userStore.userInfo?.perName"
+        @clear-preferences-and-logout="handleLogout"
         @logout="handleLogout"
       />
     </template>
@@ -140,7 +199,11 @@ watch(
         :dot="showDot"
         :notifications="notifications"
         @clear="handleNoticeClear"
+        @read="(item) => item.id && markRead(item.id)"
+        @remove="(item) => item.id && remove(item.id)"
         @make-all="handleMakeAll"
+        @on-click="handleClick"
+        @view-all="viewAll"
       />
     </template>
     <template #extra>
@@ -155,8 +218,5 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
-  <SectionSetting
-    ref="sectionSettingRef"
-    @refresh="handleSectionRefresh"
-  />
+  <SectionSetting ref="sectionSettingRef" @refresh="handleSectionRefresh" />
 </template>

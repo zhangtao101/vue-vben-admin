@@ -117,3 +117,15 @@ export function getByMaterialCodeAndName(params: any) {
     )}`,
   );
 }
+
+/**
+ * 根据产品编号和产品名称查询产品基础信息
+ * @param params 参数
+ */
+export function getByProductCodeAndName(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/base/erpProductArchives/getByProductCodeAndName?${qs.stringify(
+      params,
+    )}`,
+  );
+}

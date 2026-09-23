@@ -31,11 +31,31 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'area', title: $t('energyUnitConsumptionMgmt.systemName'), minWidth: 150 },
-    { field: 'energyTotal', title: $t('energyUnitConsumptionMgmt.totalEnergyUsage'), minWidth: 150 },
-    { field: 'energyWork', title: $t('energyUnitConsumptionMgmt.productionEnergy'), minWidth: 150 },
-    { field: 'energyNoWork', title: $t('energyUnitConsumptionMgmt.nonProductionEnergy'), minWidth: 150 },
-    { field: 'createTime', title: $t('energyUnitConsumptionMgmt.createTime'), minWidth: 150 },
+    {
+      field: 'area',
+      title: $t('energyUnitConsumptionMgmt.systemName'),
+      minWidth: 150,
+    },
+    {
+      field: 'energyTotal',
+      title: $t('energyUnitConsumptionMgmt.totalEnergyUsage'),
+      minWidth: 150,
+    },
+    {
+      field: 'energyWork',
+      title: $t('energyUnitConsumptionMgmt.productionEnergy'),
+      minWidth: 150,
+    },
+    {
+      field: 'energyNoWork',
+      title: $t('energyUnitConsumptionMgmt.nonProductionEnergy'),
+      minWidth: 150,
+    },
+    {
+      field: 'createTime',
+      title: $t('energyUnitConsumptionMgmt.createTime'),
+      minWidth: 150,
+    },
   ],
   height: 500,
   stripe: true,
@@ -173,7 +193,9 @@ onMounted(() => {
 
     <!-- region 表格主体 -->
     <Card>
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
     <!-- endregion -->
   </Page>

@@ -1,0 +1,15 @@
+{
+  "functionAttributeType": "属性类别编号",
+  "functionAttributeTypeName": "属性类别名称",
+  "attributeFlag": "属性标记",
+  "iseUse": "启停用",
+  "addInfo": "新增属性类别",
+  "editInfo": "编辑属性类别",
+  "viewInfo": "属性类别详情",
+  "businessFill": "业务填报",
+  "dataCollection": "数采关联",
+  "externalReference": "外部引用",
+  "logicCalculation": "逻辑计算",
+  "placeholderInput": "请输入",
+  "placeholderSelect": "请选择"
+}

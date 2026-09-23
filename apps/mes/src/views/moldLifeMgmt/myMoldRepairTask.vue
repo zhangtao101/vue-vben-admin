@@ -668,6 +668,7 @@ onMounted(async () => {
     <!-- 表格区域 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #repairType="{ row }">
           <Tag :color="repairTypeColorMap[row.repairType] || 'default'">
             {{ formatRepairType(row.repairType) }}
@@ -707,7 +708,11 @@ onMounted(async () => {
             <!-- 待领取状态：领取按钮 -->
             <template v-if="row.status === 'WAITING'">
               <Tooltip v-if="author.includes('领取')">
-                <template #title>{{ $t('repair.myRepairTask.receive') }}</template>
+                <template #title>
+{{
+                  $t('repair.myRepairTask.receive')
+                }}
+</template>
                 <Button type="link" @click="handleReceive(row)" class="px-1">
                   <Icon
                     icon="mdi:hand-front-right-outline"
@@ -716,7 +721,11 @@ onMounted(async () => {
                 </Button>
               </Tooltip>
               <Tooltip v-if="author.includes('指派')">
-                <template #title>{{ $t('repair.myRepairTask.assign') }}</template>
+                <template #title>
+{{
+                  $t('repair.myRepairTask.assign')
+                }}
+</template>
                 <Button type="link" @click="handleAssign(row)" class="px-1">
                   <Icon
                     icon="mdi:account-arrow-right-outline"
@@ -766,7 +775,11 @@ onMounted(async () => {
             <!-- 暂停状态：恢复按钮 -->
             <template v-if="row.status === 'PAUSED' && row.isCurrentUser">
               <Tooltip v-if="author.includes('恢复')">
-                <template #title>{{ $t('repair.myRepairTask.resume') }}</template>
+                <template #title>
+{{
+                  $t('repair.myRepairTask.resume')
+                }}
+</template>
                 <Button type="link" @click="handleResume(row)" class="px-1">
                   <Icon
                     icon="mdi:play-circle-outline"
@@ -793,7 +806,10 @@ onMounted(async () => {
       @ok="confirmAssign"
     >
       <Form>
-        <FormItem :label="$t('repair.myRepairTask.assignRepairByLabel')" required>
+        <FormItem
+          :label="$t('repair.myRepairTask.assignRepairByLabel')"
+          required
+        >
           <Select
             v-model:value="assignRepairBy"
             :placeholder="$t('repair.myRepairTask.assignRepairByPlaceholder')"
@@ -811,7 +827,10 @@ onMounted(async () => {
     >
       <Form>
         <FormItem :label="$t('repair.myRepairTask.pauseReason')" required>
-          <Input v-model:value="pauseReason" :placeholder="$t('repair.myRepairTask.enterPauseReason')" />
+          <Input
+            v-model:value="pauseReason"
+            :placeholder="$t('repair.myRepairTask.enterPauseReason')"
+          />
         </FormItem>
       </Form>
     </Modal>
@@ -834,12 +853,16 @@ onMounted(async () => {
       <template v-else-if="completeState.detail">
         <!-- 基本信息区域 - 不可编辑 -->
         <div class="mb-6">
-          <div class="text-base font-medium mb-3 border-b pb-2">{{ $t('repair.myRepairTask.basicInfoSection') }}</div>
+          <div class="text-base font-medium mb-3 border-b pb-2">
+            {{ $t('repair.myRepairTask.basicInfoSection') }}
+          </div>
           <Descriptions :column="2" bordered size="small">
             <DescriptionsItem :label="$t('repair.repairOrder.requestNo')">
               {{ completeState.detail.requestNo || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.myRepairTask.repairOrderNoLabel')">
+            <DescriptionsItem
+              :label="$t('repair.myRepairTask.repairOrderNoLabel')"
+            >
               {{ completeState.detail.repairNo || '-' }}
             </DescriptionsItem>
             <DescriptionsItem :label="$t('repair.moldRepair.moldCode')">
@@ -865,7 +888,9 @@ onMounted(async () => {
             <DescriptionsItem :label="$t('repair.repairOrder.reportBy')">
               {{ completeState.detail.reportBy || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.myRepairTask.assignRepairByLabel')">
+            <DescriptionsItem
+              :label="$t('repair.myRepairTask.assignRepairByLabel')"
+            >
               {{ completeState.detail.repairBy || '-' }}
             </DescriptionsItem>
             <DescriptionsItem :label="$t('repair.repairTask.faultName')">
@@ -883,13 +908,19 @@ onMounted(async () => {
             <DescriptionsItem :label="$t('repair.repairTask.repairEndTime')">
               {{ completeState.detail.repairEndTime || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.myRepairTask.responseDurationLabel')">
+            <DescriptionsItem
+              :label="$t('repair.myRepairTask.responseDurationLabel')"
+            >
               {{ completeState.detail.responseDuration || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.myRepairTask.repairDurationLabel')">
+            <DescriptionsItem
+              :label="$t('repair.myRepairTask.repairDurationLabel')"
+            >
               {{ completeState.detail.repairDuration || '-' }}
             </DescriptionsItem>
-            <DescriptionsItem :label="$t('repair.myRepairTask.pauseDurationLabel')">
+            <DescriptionsItem
+              :label="$t('repair.myRepairTask.pauseDurationLabel')"
+            >
               {{ completeState.detail.pauseDuration || '-' }}
             </DescriptionsItem>
           </Descriptions>
@@ -897,9 +928,14 @@ onMounted(async () => {
 
         <!-- 可编辑区域 -->
         <div>
-          <div class="text-base font-medium mb-3 border-b pb-2">{{ $t('repair.myRepairTask.repairReportSection') }}</div>
+          <div class="text-base font-medium mb-3 border-b pb-2">
+            {{ $t('repair.myRepairTask.repairReportSection') }}
+          </div>
           <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
-            <FormItem :label="$t('repair.myRepairTask.repairResultLabel')" required>
+            <FormItem
+              :label="$t('repair.myRepairTask.repairResultLabel')"
+              required
+            >
               <Select
                 v-model:value="completeState.result"
                 :placeholder="$t('repair.myRepairTask.repairResultPlaceholder')"
@@ -909,7 +945,10 @@ onMounted(async () => {
             <FormItem :label="$t('repair.myRepairTask.replaceParts')">
               <Switch v-model:checked="completeState.hasReplacedParts" />
             </FormItem>
-            <FormItem v-if="completeState.hasReplacedParts" :label="$t('repair.myRepairTask.selectParts')">
+            <FormItem
+              v-if="completeState.hasReplacedParts"
+              :label="$t('repair.myRepairTask.selectParts')"
+            >
               <div class="flex items-center gap-2">
                 <Input
                   :value="
@@ -917,7 +956,9 @@ onMounted(async () => {
                       .map((r: any) => r.spareName || r)
                       .join(', ')
                   "
-                  :placeholder="$t('repair.myRepairTask.selectPartsPlaceholder')"
+                  :placeholder="
+                    $t('repair.myRepairTask.selectPartsPlaceholder')
+                  "
                   readonly
                 />
                 <Button
@@ -934,7 +975,9 @@ onMounted(async () => {
             <FormItem :label="$t('repair.myRepairTask.rootCauseCategory')">
               <Select
                 v-model:value="completeState.rootCauseCategory"
-                :placeholder="$t('repair.myRepairTask.rootCauseCategoryPlaceholder')"
+                :placeholder="
+                  $t('repair.myRepairTask.rootCauseCategoryPlaceholder')
+                "
                 :options="rootCauseOptions"
                 allow-clear
               />
@@ -942,20 +985,29 @@ onMounted(async () => {
             <FormItem :label="$t('repair.myRepairTask.causeDescription')">
               <Input
                 v-model:value="completeState.rootCauseDetail"
-                :placeholder="$t('repair.myRepairTask.causeDescriptionPlaceholder')"
+                :placeholder="
+                  $t('repair.myRepairTask.causeDescriptionPlaceholder')
+                "
               />
             </FormItem>
             <FormItem :label="$t('repair.myRepairTask.handlingMethod')">
               <Input
                 v-model:value="completeState.repairMethod"
-                :placeholder="$t('repair.myRepairTask.handlingMethodPlaceholder')"
+                :placeholder="
+                  $t('repair.myRepairTask.handlingMethodPlaceholder')
+                "
               />
             </FormItem>
-            <FormItem :label="$t('repair.myRepairTask.repairContentLabel')" required>
+            <FormItem
+              :label="$t('repair.myRepairTask.repairContentLabel')"
+              required
+            >
               <Input.TextArea
                 v-model:value="completeState.content"
                 :rows="4"
-                :placeholder="$t('repair.myRepairTask.repairContentPlaceholder')"
+                :placeholder="
+                  $t('repair.myRepairTask.repairContentPlaceholder')
+                "
               />
             </FormItem>
           </Form>
@@ -964,8 +1016,16 @@ onMounted(async () => {
 
       <template #footer>
         <Space>
-          <Button @click="completeState.visible = false">{{ $t('common.cancel') }}</Button>
-          <Button type="primary" @click="confirmComplete">{{ $t('repair.myRepairTask.confirmComplete') }}</Button>
+          <Button @click="completeState.visible = false">
+{{
+            $t('common.cancel')
+          }}
+</Button>
+          <Button type="primary" @click="confirmComplete">
+{{
+            $t('repair.myRepairTask.confirmComplete')
+          }}
+</Button>
         </Space>
       </template>
     </Drawer>
@@ -993,7 +1053,9 @@ onMounted(async () => {
           <Input.TextArea
             v-model:value="resumeRemark"
             :rows="2"
-            :placeholder="$t('repair.myRepairTask.resumeDescriptionPlaceholder')"
+            :placeholder="
+              $t('repair.myRepairTask.resumeDescriptionPlaceholder')
+            "
           />
         </FormItem>
       </Form>

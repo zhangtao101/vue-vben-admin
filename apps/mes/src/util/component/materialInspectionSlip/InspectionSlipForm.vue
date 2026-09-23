@@ -162,6 +162,9 @@ const labelGridOptions: VxeGridProps<any> = {
   data: [],
   showOverflow: 'tooltip',
   stripe: true,
+  pagerConfig: {
+    enabled: false,
+  },
 };
 
 const [LabelGrid, labelGridApi] = useVbenVxeGrid({
@@ -262,6 +265,9 @@ const selectedGridOptions: VxeGridProps<any> = {
   editConfig: {
     trigger: 'click',
     mode: 'cell',
+  },
+  pagerConfig: {
+    enabled: false,
   },
 };
 

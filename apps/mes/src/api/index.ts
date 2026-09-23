@@ -16,6 +16,7 @@ export * from './processManagement';
 export * from './productionReport';
 export * from './qualityCheck';
 export * from './qualityModule';
+export * from './registerCenter';
 export * from './risk';
 export * from './riskManagement';
 export * from './scada';

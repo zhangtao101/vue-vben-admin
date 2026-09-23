@@ -36,7 +36,11 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'dimension', title: $t('riskManagement.Dimension'), minWidth: 150 },
+    {
+      field: 'dimension',
+      title: $t('riskManagement.Dimension'),
+      minWidth: 150,
+    },
     { field: 'level', title: $t('riskManagement.Level'), minWidth: 120 },
     { field: 'score', title: $t('riskManagement.Score'), minWidth: 120 },
     /* { field: 'createUser', title: '提交人', minWidth: 120 },
@@ -255,7 +259,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
-        <template #toolbar-actions>
+        <template #toolbar-tools>
           <Button
             type="primary"
             @click="showEditFun()"
@@ -315,7 +319,9 @@ onMounted(() => {
         <!-- 维度 -->
         <FormItem
           :label="$t('riskManagement.Dimension')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="dimension"
         >
           <Select
@@ -328,7 +334,9 @@ onMounted(() => {
         <!-- 等级 -->
         <FormItem
           :label="$t('riskManagement.Level')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="level"
         >
           <Input v-model:value="editItem.level" />
@@ -336,7 +344,9 @@ onMounted(() => {
         <!-- 分值 -->
         <FormItem
           :label="$t('riskManagement.Score')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="score"
         >
           <InputNumber v-model:value="editItem.score" :min="0" />

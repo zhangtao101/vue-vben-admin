@@ -31,38 +31,138 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: $t('productionDaily.worksheetCode'), minWidth: 200 },
-    { field: 'batchCode', title: $t('productionDaily.batchCode'), minWidth: 200 },
-    { field: 'productCode', title: $t('productionDaily.productCode'), minWidth: 150 },
-    { field: 'productName', title: $t('productionDaily.productName'), minWidth: 150 },
-    { field: 'workstationCode', title: $t('productionDaily.workstationCode'), minWidth: 150 },
-    { field: 'workstationName', title: $t('productionDaily.workstationName'), minWidth: 150 },
-    { field: 'processCode', title: $t('productionDaily.processCode'), minWidth: 150 },
-    { field: 'processName', title: $t('productionDaily.processName'), minWidth: 150 },
+    {
+      field: 'worksheetCode',
+      title: $t('productionDaily.worksheetCode'),
+      minWidth: 200,
+    },
+    {
+      field: 'batchCode',
+      title: $t('productionDaily.batchCode'),
+      minWidth: 200,
+    },
+    {
+      field: 'productCode',
+      title: $t('productionDaily.productCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productName',
+      title: $t('productionDaily.productName'),
+      minWidth: 150,
+    },
+    {
+      field: 'workstationCode',
+      title: $t('productionDaily.workstationCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'workstationName',
+      title: $t('productionDaily.workstationName'),
+      minWidth: 150,
+    },
+    {
+      field: 'processCode',
+      title: $t('productionDaily.processCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'processName',
+      title: $t('productionDaily.processName'),
+      minWidth: 150,
+    },
     {
       field: 'materialType',
       slots: { default: 'materialType' },
       title: $t('productionDaily.materialType'),
       minWidth: 150,
     },
-    { field: 'cxEquipCode', title: $t('productionDaily.cxEquipCode'), minWidth: 150 },
-    { field: 'personTime', title: $t('productionDaily.personTime'), minWidth: 150 },
-    { field: 'equipTime', title: $t('productionDaily.equipTime'), minWidth: 150 },
-    { field: 'worksheetPlanNumber', title: $t('productionDaily.worksheetPlanNumber'), minWidth: 150 },
-    { field: 'inreportNumber', title: $t('productionDaily.inreportNumber'), minWidth: 150 },
-    { field: 'outreportNumber', title: $t('productionDaily.outreportNumber'), minWidth: 150 },
-    { field: 'unqualityNnumber', title: $t('productionDaily.unqualityNnumber'), minWidth: 150 },
-    { field: 'inwarehouseNumber', title: $t('productionDaily.inwarehouseNumber'), minWidth: 150 },
-    { field: 'materialUseNumber', title: $t('productionDaily.materialUseNumber'), minWidth: 150 },
+    {
+      field: 'cxEquipCode',
+      title: $t('productionDaily.cxEquipCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'personTime',
+      title: $t('productionDaily.personTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'equipTime',
+      title: $t('productionDaily.equipTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'worksheetPlanNumber',
+      title: $t('productionDaily.worksheetPlanNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'inreportNumber',
+      title: $t('productionDaily.inreportNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'outreportNumber',
+      title: $t('productionDaily.outreportNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'unqualityNnumber',
+      title: $t('productionDaily.unqualityNnumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'inwarehouseNumber',
+      title: $t('productionDaily.inwarehouseNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'materialUseNumber',
+      title: $t('productionDaily.materialUseNumber'),
+      minWidth: 150,
+    },
     { field: 'weight', title: $t('productionDaily.weight'), minWidth: 150 },
-    { field: 'jlqEnergyValue', title: $t('productionDaily.jlqEnergyValue'), minWidth: 150 },
-    { field: 'denergyValue', title: $t('productionDaily.denergyValue'), minWidth: 150 },
-    { field: 'trqEnergyValue', title: $t('productionDaily.trqEnergyValue'), minWidth: 150 },
-    { field: 'smjEnergyValue', title: $t('productionDaily.smjEnergyValue'), minWidth: 150 },
-    { field: 'jlqErrorValue', title: $t('productionDaily.jlqErrorValue'), minWidth: 150 },
-    { field: 'derrorValue', title: $t('productionDaily.derrorValue'), minWidth: 150 },
-    { field: 'trqErrorValue', title: $t('productionDaily.trqErrorValue'), minWidth: 150 },
-    { field: 'smjErrorValue', title: $t('productionDaily.smjErrorValue'), minWidth: 150 },
+    {
+      field: 'jlqEnergyValue',
+      title: $t('productionDaily.jlqEnergyValue'),
+      minWidth: 150,
+    },
+    {
+      field: 'denergyValue',
+      title: $t('productionDaily.denergyValue'),
+      minWidth: 150,
+    },
+    {
+      field: 'trqEnergyValue',
+      title: $t('productionDaily.trqEnergyValue'),
+      minWidth: 150,
+    },
+    {
+      field: 'smjEnergyValue',
+      title: $t('productionDaily.smjEnergyValue'),
+      minWidth: 150,
+    },
+    {
+      field: 'jlqErrorValue',
+      title: $t('productionDaily.jlqErrorValue'),
+      minWidth: 150,
+    },
+    {
+      field: 'derrorValue',
+      title: $t('productionDaily.derrorValue'),
+      minWidth: 150,
+    },
+    {
+      field: 'trqErrorValue',
+      title: $t('productionDaily.trqErrorValue'),
+      minWidth: 150,
+    },
+    {
+      field: 'smjErrorValue',
+      title: $t('productionDaily.smjErrorValue'),
+      minWidth: 150,
+    },
   ],
   height: 500,
   stripe: true,
@@ -260,6 +360,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>

@@ -30,7 +30,11 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'printCode', title: $t('basic.printTemplate.printTemplateCode'), minWidth: 150 },
+    {
+      field: 'printCode',
+      title: $t('basic.printTemplate.printTemplateCode'),
+      minWidth: 150,
+    },
     {
       field: 'printState',
       slots: { default: 'printState' },
@@ -121,8 +125,8 @@ function getPrintTypeText(state: number): string {
 
 // 查询参数
 const queryParams = ref<any>({
-  workstationCode: '',
-  workstationName: '',
+  printCode: '',
+  printState: undefined,
 });
 
 /**
@@ -135,7 +139,10 @@ function queryData() {
      * 调用 queryWorkstation 函数，传入查询参数和分页信息。
      * 查询参数包括 queryParams.value 中的所有属性，以及当前页码和每页大小。
      */
-    getAllPrintTemplate()
+    getAllPrintTemplate(
+      queryParams.value.printCode,
+      queryParams.value.printState,
+    )
       .then((data) => {
         // 处理 queryWorkstation 函数返回的 Promise，获取总条数和数据列表。
         resolve({
@@ -160,9 +167,27 @@ const showDrawer = ref(false);
 const editMessage = ref<any>({});
 // 编辑的模板基本信息验证规则
 const editRules = ref({
-  printCode: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
-  printState: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
-  printType: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  printCode: [
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
+  ],
+  printState: [
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
+  ],
+  printType: [
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
+  ],
 } as any);
 // 打印状态
 const statusOptions = [
@@ -174,6 +199,14 @@ const statusOptions = [
     label: $t('basic.printTemplate.forbidden'),
     value: 2,
   },
+];
+// 打印状态（查询专用，含“全部”，值为 undefined 表示不传条件）
+const queryStatusOptions: any[] = [
+  {
+    label: $t('basic.all'),
+    value: undefined,
+  },
+  ...statusOptions,
 ];
 // 打印模板
 /* const printTemplateOptions = [
@@ -241,19 +274,22 @@ onMounted(async () => {});
     <!-- region 搜索 -->
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 工作站编号 -->
+        <!-- 打印模板编号 -->
         <FormItem
-          :label="$t('basic.workStationMaintenance.workStationNumber')"
+          :label="$t('basic.printTemplate.printTemplateCode')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.workstationCode" />
+          <Input v-model:value="queryParams.printCode" />
         </FormItem>
-        <!-- 工作站名称 -->
+        <!-- 打印状态 -->
         <FormItem
-          :label="$t('basic.workStationMaintenance.workstationName')"
+          :label="$t('basic.printTemplate.printStatus')"
           style="margin-bottom: 1em"
         >
-          <Input v-model:value="queryParams.workstationName" />
+          <RadioGroup
+            v-model:value="queryParams.printState"
+            :options="queryStatusOptions"
+          />
         </FormItem>
         <FormItem style="margin-bottom: 1em">
           <Button

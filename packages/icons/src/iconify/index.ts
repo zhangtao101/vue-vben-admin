@@ -26,6 +26,8 @@ export const MdiLightDelete = createIconifyIcon('mdi-light:delete');
 export const MdiLightSettings = createIconifyIcon('mdi-light:settings');
 // 查看
 export const MdiEyeOutline = createIconifyIcon('mdi:eye-outline');
+// 参数明细
+export const MdiListBoxOutline = createIconifyIcon('mdi:list-box-outline');
 // 文件上传
 export const MdiTrayUpload = createIconifyIcon('mdi:tray-upload');
 // 打印

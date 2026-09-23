@@ -4,6 +4,8 @@ export * from './basePosition.service';
 export * from './baseStaff.service';
 export * from './regionManagement.service';
 export * from './resourceMgmt.service';
+export * from './stepAttrCategoryMaintain.service';
+export * from './stepTypeManage.service';
 export * from './sysButton.service';
 export * from './sysRole.service';
 export * from './sysStations.service';

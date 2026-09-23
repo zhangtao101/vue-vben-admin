@@ -41,18 +41,38 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: $t('planManagement.workOrderNumber'), minWidth: 190 },
-    { field: 'workstationCode', title: $t('planManagement.workStationNumber'), minWidth: 150 },
+    {
+      field: 'worksheetCode',
+      title: $t('planManagement.workOrderNumber'),
+      minWidth: 190,
+    },
+    {
+      field: 'workstationCode',
+      title: $t('planManagement.workStationNumber'),
+      minWidth: 150,
+    },
     { field: 'productCode', title: $t('baseInfo.productCode'), minWidth: 150 },
     { field: 'productName', title: $t('baseInfo.productName'), minWidth: 150 },
-    { field: 'planDateStart', title: $t('planManagement.planStartTime'), minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: $t('planManagement.workOrderPlanQuantity'), minWidth: 150 },
+    {
+      field: 'planDateStart',
+      title: $t('planManagement.planStartTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'workSheetPlanNumber',
+      title: $t('planManagement.workOrderPlanQuantity'),
+      minWidth: 150,
+    },
     {
       field: 'workSheetFinishNumber',
       title: $t('planManagement.workOrderCompletedQuantity'),
       minWidth: 180,
     },
-    { field: 'planDateEnd', title: $t('planManagement.estimatedCompletionTime'), minWidth: 150 },
+    {
+      field: 'planDateEnd',
+      title: $t('planManagement.estimatedCompletionTime'),
+      minWidth: 150,
+    },
     { field: 'unit', title: $t('baseInfo.unit'), minWidth: 150 },
     {
       field: 'state',
@@ -389,6 +409,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workOrderStatus="{ row }">
           <span> {{ getStatusText(row.state) }} </span>
         </template>

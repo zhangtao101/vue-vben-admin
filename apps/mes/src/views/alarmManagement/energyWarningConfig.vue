@@ -41,12 +41,36 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'partitionName', title: $t('alarmManagement.partitionName'), minWidth: 190 },
-    { field: 'equipmentCode', title: $t('alarmManagement.meterNumber'), minWidth: 150 },
-    { field: 'equipmentName', title: $t('alarmManagement.meterName'), minWidth: 150 },
-    { field: 'equipmentType', title: $t('alarmManagement.meterType'), minWidth: 150 },
-    { field: 'waringDay', title: $t('alarmManagement.dailyLimit'), minWidth: 150 },
-    { field: 'waringMonth', title: $t('alarmManagement.monthlyLimit'), minWidth: 150 },
+    {
+      field: 'partitionName',
+      title: $t('alarmManagement.partitionName'),
+      minWidth: 190,
+    },
+    {
+      field: 'equipmentCode',
+      title: $t('alarmManagement.meterNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'equipmentName',
+      title: $t('alarmManagement.meterName'),
+      minWidth: 150,
+    },
+    {
+      field: 'equipmentType',
+      title: $t('alarmManagement.meterType'),
+      minWidth: 150,
+    },
+    {
+      field: 'waringDay',
+      title: $t('alarmManagement.dailyLimit'),
+      minWidth: 150,
+    },
+    {
+      field: 'waringMonth',
+      title: $t('alarmManagement.monthlyLimit'),
+      minWidth: 150,
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -312,6 +336,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #action="{ row }">
           <!-- 编辑按钮 ="{ row }" -->
           <Tooltip v-if="author.includes('编辑')">
@@ -359,7 +384,9 @@ onMounted(() => {
         <!-- 仪表编号 -->
         <FormItem
           :label="$t('alarmManagement.meterNumber')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="equipmentCode"
         >
           <Input v-model:value="editItem.equipmentCode" readonly />
@@ -367,7 +394,9 @@ onMounted(() => {
         <!-- 日上限 -->
         <FormItem
           :label="$t('alarmManagement.dailyLimit')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="waringDay"
         >
           <InputNumber v-model:value="editItem.waringDay" />
@@ -375,7 +404,9 @@ onMounted(() => {
         <!-- 月上限 -->
         <FormItem
           :label="$t('alarmManagement.monthlyLimit')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="waringMonth"
         >
           <InputNumber v-model:value="editItem.waringMonth" />
@@ -383,7 +414,9 @@ onMounted(() => {
         <!-- 超时时间 -->
         <FormItem
           :label="$t('alarmManagement.timeout')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="outTime"
         >
           <InputNumber
@@ -394,7 +427,9 @@ onMounted(() => {
         <!-- 处理人 -->
         <FormItem
           :label="$t('alarmManagement.handlers')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="handleUser"
         >
           <template v-for="(item, index) of editItem.handleUser" :key="index">

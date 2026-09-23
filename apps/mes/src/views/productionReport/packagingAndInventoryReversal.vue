@@ -34,19 +34,51 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: $t('packagingAndInventoryReversal.worksheetCode'), minWidth: 190 },
-    { field: 'workstationCode', title: $t('packagingAndInventoryReversal.workstationCode'), minWidth: 150 },
-    { field: 'productCode', title: $t('packagingAndInventoryReversal.productCode'), minWidth: 150 },
-    { field: 'productName', title: $t('packagingAndInventoryReversal.productName'), minWidth: 150 },
-    { field: 'planDateStart', title: $t('packagingAndInventoryReversal.planStartTime'), minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: $t('packagingAndInventoryReversal.planNumber'), minWidth: 150 },
+    {
+      field: 'worksheetCode',
+      title: $t('packagingAndInventoryReversal.worksheetCode'),
+      minWidth: 190,
+    },
+    {
+      field: 'workstationCode',
+      title: $t('packagingAndInventoryReversal.workstationCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productCode',
+      title: $t('packagingAndInventoryReversal.productCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productName',
+      title: $t('packagingAndInventoryReversal.productName'),
+      minWidth: 150,
+    },
+    {
+      field: 'planDateStart',
+      title: $t('packagingAndInventoryReversal.planStartTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'workSheetPlanNumber',
+      title: $t('packagingAndInventoryReversal.planNumber'),
+      minWidth: 150,
+    },
     {
       field: 'workSheetFinishNumber',
       title: $t('packagingAndInventoryReversal.completedQuantity'),
       minWidth: 180,
     },
-    { field: 'planDateEnd', title: $t('packagingAndInventoryReversal.estimatedCompletionTime'), minWidth: 150 },
-    { field: 'unit', title: $t('packagingAndInventoryReversal.unit'), minWidth: 150 },
+    {
+      field: 'planDateEnd',
+      title: $t('packagingAndInventoryReversal.estimatedCompletionTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'unit',
+      title: $t('packagingAndInventoryReversal.unit'),
+      minWidth: 150,
+    },
     {
       field: 'state',
       fixed: 'right',
@@ -366,6 +398,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workOrderStatus="{ row }">
           <span> {{ getStatusText(row.state) }} </span>
         </template>

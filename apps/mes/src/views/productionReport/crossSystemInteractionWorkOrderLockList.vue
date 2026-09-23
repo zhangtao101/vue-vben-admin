@@ -36,19 +36,53 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: $t('crossSystemInteractionWorkOrderLockList.worksheetCode'), minWidth: 190 },
-    { field: 'workstationCode', title: $t('crossSystemInteractionWorkOrderLockList.workstationCode'), minWidth: 150 },
-    { field: 'productCode', title: $t('crossSystemInteractionWorkOrderLockList.productCode'), minWidth: 150 },
-    { field: 'productName', title: $t('crossSystemInteractionWorkOrderLockList.productName'), minWidth: 150 },
-    { field: 'planDateStart', title: $t('crossSystemInteractionWorkOrderLockList.planStartTime'), minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: $t('crossSystemInteractionWorkOrderLockList.planNumber'), minWidth: 150 },
+    {
+      field: 'worksheetCode',
+      title: $t('crossSystemInteractionWorkOrderLockList.worksheetCode'),
+      minWidth: 190,
+    },
+    {
+      field: 'workstationCode',
+      title: $t('crossSystemInteractionWorkOrderLockList.workstationCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productCode',
+      title: $t('crossSystemInteractionWorkOrderLockList.productCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productName',
+      title: $t('crossSystemInteractionWorkOrderLockList.productName'),
+      minWidth: 150,
+    },
+    {
+      field: 'planDateStart',
+      title: $t('crossSystemInteractionWorkOrderLockList.planStartTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'workSheetPlanNumber',
+      title: $t('crossSystemInteractionWorkOrderLockList.planNumber'),
+      minWidth: 150,
+    },
     {
       field: 'workSheetFinishNumber',
       title: $t('crossSystemInteractionWorkOrderLockList.completedQuantity'),
       minWidth: 180,
     },
-    { field: 'planDateEnd', title: $t('crossSystemInteractionWorkOrderLockList.estimatedCompletionTime'), minWidth: 150 },
-    { field: 'unit', title: $t('crossSystemInteractionWorkOrderLockList.unit'), minWidth: 150 },
+    {
+      field: 'planDateEnd',
+      title: $t(
+        'crossSystemInteractionWorkOrderLockList.estimatedCompletionTime',
+      ),
+      minWidth: 150,
+    },
+    {
+      field: 'unit',
+      title: $t('crossSystemInteractionWorkOrderLockList.unit'),
+      minWidth: 150,
+    },
     {
       field: 'state',
       fixed: 'right',
@@ -196,7 +230,9 @@ function unlock(row: any) {
     okType: 'danger',
     onCancel() {
       // 点击取消按钮，显示警告消息
-      message.warning($t('crossSystemInteractionWorkOrderLockList.cancelPrompt'));
+      message.warning(
+        $t('crossSystemInteractionWorkOrderLockList.cancelPrompt'),
+      );
     },
     onOk() {
       unLockByWorksheetCode({
@@ -283,6 +319,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workOrderStatus="{ row }">
           <span> {{ getStatusText(row.state) }} </span>
         </template>

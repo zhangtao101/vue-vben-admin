@@ -172,8 +172,20 @@ const editRules = ref<any>({
       trigger: 'change',
     },
   ],
-  handleType: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
-  direction: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  handleType: [
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
+  ],
+  direction: [
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
+  ],
 });
 // 处理方式
 const handleType = [
@@ -641,6 +653,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #status="{ row }">
           {{ getStatusText(row.status) }}
         </template>

@@ -305,12 +305,16 @@ function queryFormulaData({ page, pageSize }: any) {
     <!-- endregion -->
     <!-- region 表格主体 -->
     <Card class="!mb-8">
-      <Grid />
+      <Grid>
+        <template #toolbar-tools></template>
+      </Grid>
     </Card>
     <!-- endregion -->
     <!-- region 表格主体 -->
     <Card class="!mb-8">
-      <FormulaGrid />
+      <FormulaGrid>
+        <template #toolbar-tools></template>
+      </FormulaGrid>
     </Card>
     <!-- endregion -->
   </Page>

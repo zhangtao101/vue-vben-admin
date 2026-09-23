@@ -33,6 +33,7 @@ import {
   fetchIpcReportDetail,
   fetchSendFormDetail,
   getCheckNumber,
+  getIqcItemList,
   saveIpcReportFile,
   updateIpcReport,
 } from '#/api';
@@ -41,7 +42,7 @@ import MaterialSelectDrawer from './MaterialSelectDrawer.vue';
 
 // Props
 const props = defineProps<{
-  id: string;
+  id: any;
   mode: 'create' | 'update' | 'view';
   visible: boolean;
 }>();
@@ -67,36 +68,7 @@ const formData = ref<any>({
   sendDate: '',
   remark: '',
   detailList: [],
-  itemResults: [
-    {
-      itemCodeName: '包装',
-      itemCode: 1,
-      checkResult: '',
-      judgeResult: 1,
-      flawResult: '',
-    },
-    {
-      itemCodeName: '外观',
-      itemCode: 2,
-      checkResult: '',
-      judgeResult: 1,
-      flawResult: '',
-    },
-    {
-      itemCodeName: '尺寸',
-      itemCode: 3,
-      checkResult: '',
-      judgeResult: 1,
-      flawResult: '',
-    },
-    {
-      itemCodeName: '性能',
-      itemCode: 4,
-      checkResult: '',
-      judgeResult: 1,
-      flawResult: '',
-    },
-  ],
+  itemResults: [],
   iqcFlaw: {
     isOther: 1,
     fatalFlaw: '',
@@ -207,36 +179,7 @@ function resetForm() {
     sendDate: '',
     remark: '',
     detailList: [],
-    itemResults: [
-      {
-        itemCodeName: '包装',
-        itemCode: 1,
-        checkResult: '',
-        judgeResult: 1,
-        flawResult: '',
-      },
-      {
-        itemCodeName: '外观',
-        itemCode: 2,
-        checkResult: '',
-        judgeResult: 1,
-        flawResult: '',
-      },
-      {
-        itemCodeName: '尺寸',
-        itemCode: 3,
-        checkResult: '',
-        judgeResult: 1,
-        flawResult: '',
-      },
-      {
-        itemCodeName: '性能',
-        itemCode: 4,
-        checkResult: '',
-        judgeResult: 1,
-        flawResult: '',
-      },
-    ],
+    itemResults: [],
     iqcFlaw: {
       isOther: 1,
       fatalFlaw: '',
@@ -249,6 +192,19 @@ function resetForm() {
     type: 1,
   };
   uploadFileList.value = [];
+  loadIqcItems();
+}
+
+// 加载IQC检验项
+function loadIqcItems() {
+  getIqcItemList().then((data: any) => {
+    if (data) {
+      formData.value.itemResults = data.map((item: any) => ({
+        ...item,
+        itemCodeName: item.itemName,
+      }));
+    }
+  });
 }
 
 // 加载详情
@@ -324,7 +280,7 @@ function handleMaterialConfirm(data: any) {
   // 对选中的每一行进行处理
   selectedData.forEach((item: any) => {
     item.notQualifiedNumber =
-      Number(item.checkNumber) - Number(item.qualifiedNumber);
+      Number(item.receiveNumber) - Number(item.qualifiedNumber);
   });
 
   // 根据送检单号获取详情数据，填充 detailList
@@ -352,7 +308,7 @@ function handleMaterialConfirm(data: any) {
     // 对detailList进行处理
     formData.value.detailList.forEach((item: any) => {
       item.notQualifiedNumber =
-        Number(item.checkNumber) - Number(item.qualifiedNumber || 0);
+        Number(item.receiveNumber) - Number(item.qualifiedNumber || 0);
       item.sendFormId = item.id;
       delete item.id;
     });
@@ -377,17 +333,33 @@ function handleMaterialConfirm(data: any) {
 
 // 合格数量变化
 function handleQualifiedNumberChange(value: number | string) {
-  if (formData.value.checkNumber) {
-    // 不合格数量 = 抽检数量 - 合格数量
+  if (formData.value.receiveNumber) {
+    // 不合格数量 = 送检数量 - 合格数量
     formData.value.notQualifiedNumber =
-      Number(formData.value.checkNumber) - (Number(value) || 0);
+      Number(formData.value.receiveNumber) - (Number(value) || 0);
   }
+}
+
+// 质检结论变化，合格/让步接收/紧急放行回填合格数量，不合格清零
+function handleCheckResultChange(value: any) {
+  if (value === undefined || value === null) {
+    return;
+  }
+  // 不合格（2）时合格数量清零，其余结论按送检数量回填
+  const qualifiedNumber = value === 2 ? 0 : formData.value.receiveNumber;
+  formData.value.qualifiedNumber = qualifiedNumber;
+  handleQualifiedNumberChange(qualifiedNumber);
+  // 明细表格每行同步，不合格清零，否则取该行抽检数量
+  formData.value.detailList.forEach((record: any) => {
+    record.qualifiedNumber = value === 2 ? 0 : record.checkNumber;
+    handleDetailQualifiedChange(record);
+  });
 }
 
 // 详情表格合格数量变化
 function handleDetailQualifiedChange(record: any) {
   record.notQualifiedNumber =
-    Number(record.checkNumber) - Number(record.qualifiedNumber || 0);
+    Number(record.receiveNumber) - Number(record.qualifiedNumber || 0);
 }
 
 // 标准切换
@@ -582,6 +554,7 @@ const itemColumns = [
                 :placeholder="$t('common.pleaseSelect')"
                 :options="checkResultOptions"
                 :disabled="readonly"
+                @change="handleCheckResultChange"
               />
             </FormItem>
           </Col>
@@ -614,7 +587,7 @@ const itemColumns = [
               <InputNumber
                 v-model:value="formData.qualifiedNumber"
                 :disabled="readonly"
-                :max="formData.checkNumber"
+                :max="formData.receiveNumber"
                 :min="0"
                 style="width: 100%"
                 @change="handleQualifiedNumberChange"
@@ -705,7 +678,15 @@ const itemColumns = [
         bordered
       >
         <template #bodyCell="{ column, record }">
-          <template v-if="column.dataIndex === 'qualifiedNumber'">
+          <template v-if="column.dataIndex === 'batchCode'">
+            <Input
+              v-model:value="record.batchCode"
+              :disabled="readonly"
+              :maxlength="50"
+              style="width: 100%"
+            />
+          </template>
+          <template v-else-if="column.dataIndex === 'qualifiedNumber'">
             <InputNumber
               v-model:value="record.qualifiedNumber"
               :max="record.checkNumber"
@@ -728,12 +709,15 @@ const itemColumns = [
       </Divider>
       <Form
         :model="formData.iqcFlaw"
-        :label-col="{ span: 6 }"
+        :label-col="{ span: 8 }"
         :wrapper-col="{ span: 16 }"
       >
         <Row :gutter="16">
           <Col :span="24">
-            <FormItem :label-col="{ span: 2 }" :wrapper-col="{ span: 20 }">
+            <FormItem
+              :label-col="{ span: 4 }"
+              :wrapper-col="{ span: 20, offset: 4 }"
+            >
               <RadioGroup
                 v-model:value="formData.iqcFlaw.isOther"
                 :disabled="readonly"
@@ -754,7 +738,7 @@ const itemColumns = [
             <Col :span="24">
               <FormItem
                 :label="$t('storeManagement.ipcReport.fatalFlaw')"
-                :label-col="{ span: 2 }"
+                :label-col="{ span: 4 }"
                 :wrapper-col="{ span: 20 }"
               >
                 <RadioGroup
@@ -770,7 +754,7 @@ const itemColumns = [
             <Col :span="24">
               <FormItem
                 :label="$t('storeManagement.ipcReport.seriousFlaw')"
-                :label-col="{ span: 2 }"
+                :label-col="{ span: 4 }"
                 :wrapper-col="{ span: 20 }"
               >
                 <RadioGroup
@@ -788,7 +772,7 @@ const itemColumns = [
             <Col :span="24">
               <FormItem
                 :label="$t('storeManagement.ipcReport.minorFlaw')"
-                :label-col="{ span: 2 }"
+                :label-col="{ span: 4 }"
                 :wrapper-col="{ span: 20 }"
               >
                 <RadioGroup
@@ -805,7 +789,10 @@ const itemColumns = [
         </template>
         <Row v-else :gutter="16">
           <Col :span="24">
-            <FormItem :label-col="{ span: 2 }" :wrapper-col="{ span: 20 }">
+            <FormItem
+              :label-col="{ span: 4 }"
+              :wrapper-col="{ span: 20, offset: 2 }"
+            >
               <Input.TextArea
                 v-model:value="formData.iqcFlaw.remark"
                 :disabled="readonly"
@@ -819,7 +806,7 @@ const itemColumns = [
           <Col :span="24">
             <FormItem
               :label="$t('storeManagement.ipcReport.samplePlan')"
-              :label-col="{ span: 2 }"
+              :label-col="{ span: 4 }"
               :wrapper-col="{ span: 20 }"
             >
               <RadioGroup
@@ -841,7 +828,7 @@ const itemColumns = [
           <Col :span="24">
             <FormItem
               :label="$t('storeManagement.ipcReport.sampleStandard')"
-              :label-col="{ span: 2 }"
+              :label-col="{ span: 4 }"
               :wrapper-col="{ span: 20 }"
             >
               <Checkbox.Group

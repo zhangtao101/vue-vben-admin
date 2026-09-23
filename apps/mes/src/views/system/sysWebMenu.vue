@@ -62,7 +62,12 @@ const gridOptions: VxeGridProps<any> = reactive({
   },
   columns: [
     { type: 'seq', title: '#', width: 60 },
-    { field: 'name', title: $t('system.sysWebMenu.menuName'), minWidth: 150, dragSort: false },
+    {
+      field: 'name',
+      title: $t('system.sysWebMenu.menuName'),
+      minWidth: 150,
+      dragSort: false,
+    },
     { field: 'url', title: $t('system.sysWebMenu.url'), minWidth: 200 },
     {
       field: 'isEnable',
@@ -317,9 +322,27 @@ const editMessage = ref<any>({});
 const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
-  isEnable: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
-  name: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
-  url: [{ message: $t('page.common.requiredField'), required: true, trigger: 'change' }],
+  isEnable: [
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
+  ],
+  name: [
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
+  ],
+  url: [
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
+  ],
 });
 
 /**
@@ -430,6 +453,7 @@ onMounted(() => {
           </div>
 
           <Grid>
+            <template #toolbar-tools></template>
             <template #isEnable_default="{ row }">
               <Switch
                 v-model:checked="row.isEnable"

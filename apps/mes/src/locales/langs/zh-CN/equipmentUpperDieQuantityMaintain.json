@@ -1,0 +1,17 @@
+{
+  "sequence": "序号",
+  "equipmentCode": "设备编码",
+  "equipmentCodePlaceholder": "请输入设备编码",
+  "category": "模具类别",
+  "categoryPlaceholder": "请选择模具类别",
+  "categoryCode": "类别编码",
+  "categoryName": "类别名称",
+  "maxOnMachine": "最大在机模具数",
+  "maxOnMachinePlaceholder": "请输入最大在机模具数",
+  "equipmentCodeRequired": "请输入设备编码",
+  "categoryRequired": "请选择模具类别",
+  "maxOnMachineRequired": "请输入最大在机模具数",
+  "addTitle": "新增上模数量配置",
+  "editTitle": "编辑上模数量配置",
+  "confirmDelete": "确认删除该条配置？"
+}

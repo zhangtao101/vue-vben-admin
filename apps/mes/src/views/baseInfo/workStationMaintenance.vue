@@ -61,11 +61,31 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'workstationCode', title: $t('baseInfo.workStationCode'), minWidth: 150 },
-    { field: 'workstationName', title: $t('baseInfo.workStationName'), minWidth: 150 },
-    { field: 'stationTypeName', title: $t('baseInfo.workStationType'), minWidth: 150 },
-    { field: 'workstationIp', title: $t('baseInfo.workStationIp'), minWidth: 150 },
-    { field: 'auditStateName', title: $t('baseInfo.auditStatus'), minWidth: 150 },
+    {
+      field: 'workstationCode',
+      title: $t('baseInfo.workStationCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'workstationName',
+      title: $t('baseInfo.workStationName'),
+      minWidth: 150,
+    },
+    {
+      field: 'stationTypeName',
+      title: $t('baseInfo.workStationType'),
+      minWidth: 150,
+    },
+    {
+      field: 'workstationIp',
+      title: $t('baseInfo.workStationIp'),
+      minWidth: 150,
+    },
+    {
+      field: 'auditStateName',
+      title: $t('baseInfo.auditStatus'),
+      minWidth: 150,
+    },
     { field: 'auditTime', title: $t('baseInfo.auditTime'), minWidth: 150 },
     { field: 'auditUser', title: $t('baseInfo.auditor'), minWidth: 150 },
     {
@@ -163,13 +183,25 @@ const editForm = ref();
 // form表单规则验证
 const editRules = ref<any>({
   workstationCode: [
-    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
   ],
   workstationName: [
-    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
   ],
   workstationType: [
-    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
   ],
 });
 
@@ -661,7 +693,7 @@ const equipCodeList = ref<string[]>([]);
  */
 function showEquipSelect(row: any) {
   equipCodeList.value = row.equipCodeList;
-  selectedRow .value = row;
+  selectedRow.value = row;
   equipDrawer.value = true;
 }
 
@@ -714,7 +746,8 @@ function handleChange(info: any) {
     message.success($t('page.common.uploadSuccess'));
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || $t('baseInfo.uploadFailed');
+    const errorMessage =
+      info.file.response?.message || $t('baseInfo.uploadFailed');
     // 显示错误消息
     message.error(errorMessage);
   }
@@ -732,7 +765,9 @@ function handleChange(info: any) {
 function handleAudit(row: any, isPass: boolean) {
   // 根据 isPass 的值设置对话框的标题和 audioFun 的状态码
   // 如果 isPass 为 true，表示审核通过，否则表示审核不通过
-  const title = isPass ? $t('baseInfo.confirmPass') : $t('baseInfo.confirmReject');
+  const title = isPass
+    ? $t('baseInfo.confirmPass')
+    : $t('baseInfo.confirmReject');
   const statusCode = isPass ? 2 : 3;
 
   // 调用 Modal.confirm 方法显示一个确认对话框，让用户确认是否执行审核操作
@@ -799,7 +834,10 @@ function audioFun(id: number, status: number) {
  */
 function changeState(row: any) {
   // 根据 row.state 的值设置对话框的标题，确定是启用还是停用配置
-  const title = row.state === 1 ? $t('baseInfo.confirmEnable') : $t('baseInfo.confirmDisable');
+  const title =
+    row.state === 1
+      ? $t('baseInfo.confirmEnable')
+      : $t('baseInfo.confirmDisable');
 
   // 调用 Modal.confirm 方法显示一个确认对话框，让用户确认是否更改配置状态
   Modal.confirm({
@@ -1068,7 +1106,11 @@ onMounted(async () => {
           />
         </FormItem>
         <!-- 工作站IP -->
-        <FormItem :label="$t('baseInfo.workStationIp')" name="workstationIp" style="margin-bottom: 1em">
+        <FormItem
+          :label="$t('baseInfo.workStationIp')"
+          name="workstationIp"
+          style="margin-bottom: 1em"
+        >
           <Input
             v-model:value="checkedRow.workstationIp"
             :disabled="isShowStatus"
@@ -1084,6 +1126,7 @@ onMounted(async () => {
             v-model:value="checkedRow.workstationType"
             :disabled="isShowStatus"
             :options="workStationType"
+            @change="queryProcessByType"
           />
           <!--          @change="queryProcessByType"-->
         </FormItem>

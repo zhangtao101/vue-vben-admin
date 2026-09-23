@@ -128,5 +128,22 @@
   "workstationVerification": "Workstation Verification",
   "manualInspection": "Manual Inspection",
   "qualified": "Qualified",
-  "unqualified": "Unqualified"
+  "unqualified": "Unqualified",
+  "deviceSelection": "Device Selection",
+  "seq": "No.",
+  "workOrderCode": "Work Order No.",
+  "materialCode": "Material No.",
+  "materialName": "Material Name",
+  "materialPlateCode": "Label No.",
+  "materialStationCode": "Material Station No.",
+  "feedUser": "Feeding Operator",
+  "feedTime": "Feeding Time",
+  "availableDownNumber": "Available Down Quantity",
+  "downNumber": "Down Quantity",
+  "selectFeedingEquipment": "Please select feeding equipment",
+  "down": "Down",
+  "pleaseInputDownNumber": "Please enter at least one down quantity",
+  "downNumberExceedAvailable": "\"{name}\" down quantity cannot exceed the available down quantity ({number})",
+  "confirmDown": "Confirm Down",
+  "confirmDownContent": "Confirm to down {count} record(s)?"
 }

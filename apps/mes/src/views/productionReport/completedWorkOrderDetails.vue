@@ -35,12 +35,36 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'time', title: $t('completedWorkOrderDetails.date'), minWidth: 190 },
-    { field: 'worksheetCode', title: $t('completedWorkOrderDetails.worksheetCode'), minWidth: 150 },
-    { field: 'workstationName', title: $t('completedWorkOrderDetails.workstationName'), minWidth: 150 },
-    { field: 'productCode', title: $t('completedWorkOrderDetails.productCode'), minWidth: 150 },
-    { field: 'productName', title: $t('completedWorkOrderDetails.productName'), minWidth: 150 },
-    { field: 'planNumber', title: $t('completedWorkOrderDetails.planNumber'), minWidth: 150 },
+    {
+      field: 'time',
+      title: $t('completedWorkOrderDetails.date'),
+      minWidth: 190,
+    },
+    {
+      field: 'worksheetCode',
+      title: $t('completedWorkOrderDetails.worksheetCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'workstationName',
+      title: $t('completedWorkOrderDetails.workstationName'),
+      minWidth: 150,
+    },
+    {
+      field: 'productCode',
+      title: $t('completedWorkOrderDetails.productCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productName',
+      title: $t('completedWorkOrderDetails.productName'),
+      minWidth: 150,
+    },
+    {
+      field: 'planNumber',
+      title: $t('completedWorkOrderDetails.planNumber'),
+      minWidth: 150,
+    },
     {
       field: 'inNumber',
       title: $t('completedWorkOrderDetails.inStorageNumber'),
@@ -206,6 +230,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #action="{ row }">
           <!-- 查看详情 -->
           <Tooltip>

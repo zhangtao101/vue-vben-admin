@@ -97,13 +97,23 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'ctuCartonPicking',
         path: 'ctuCartonPicking',
-        component: () => import('#/views/flow/ctuCartonPicking.vue'),
+        component: () => import('#/views/flow/ctuCartonPicking qiWang.vue'),
         meta: {
           icon: 'mdi:inbox-full-outline',
           ignoreAccess: true,
           title: $t('menu.ctuCartonPicking'),
         },
       },
+      // {
+      //   name: 'ctuCartonPicking',
+      //   path: 'ctuCartonPicking',
+      //   component: () => import('#/views/flow/ctuCartonPicking.vue'),
+      //   meta: {
+      //     icon: 'mdi:inbox-full-outline',
+      //     ignoreAccess: true,
+      //     title: $t('menu.ctuCartonPicking'),
+      //   },
+      // },
       {
         name: 'batchPrinting',
         path: 'batchPrinting',

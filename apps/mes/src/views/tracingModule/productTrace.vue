@@ -65,19 +65,84 @@ const previewUrl = ref('');
 // ========== BOM 表格 ==========
 const bomColumns: any[] = [
   { title: $t('tracingModule.productTrace.seq'), align: 'center', width: 60 },
-  { title: $t('tracingModule.productTrace.isLowestLevel'), dataIndex: 'isLowestLevel', align: 'center', width: 80 },
-  { title: $t('tracingModule.productTrace.orderNumber'), dataIndex: 'orderNumber', align: 'center', width: 80 },
-  { title: $t('tracingModule.productTrace.parentCode'), dataIndex: 'parentCode', align: 'center', width: 120 },
-  { title: $t('tracingModule.productTrace.materialCode'), dataIndex: 'materialCode', align: 'center', width: 120 },
-  { title: $t('tracingModule.productTrace.materialName'), dataIndex: 'materialName', align: 'center', minWidth: 120 },
-  { title: $t('tracingModule.productTrace.perDosage'), dataIndex: 'perDosage', align: 'center', width: 100 },
-  { title: $t('tracingModule.productTrace.perQuantity'), dataIndex: 'perQuantity', align: 'center', width: 100 },
-  { title: $t('tracingModule.productTrace.singleDosage'), dataIndex: 'singleDosage', align: 'center', width: 100 },
-  { title: $t('tracingModule.productTrace.unit'), dataIndex: 'unit', align: 'center', width: 80 },
-  { title: $t('tracingModule.productTrace.materialDosage'), dataIndex: 'materialDosage', align: 'center', width: 100 },
-  { title: $t('tracingModule.productTrace.auxiliaryDoage'), dataIndex: 'auxiliaryDoage', align: 'center', width: 100 },
-  { title: $t('tracingModule.productTrace.auxiliaryUnit'), dataIndex: 'auxiliaryUnit', align: 'center', width: 100 },
-  { title: $t('tracingModule.productTrace.bomDesage'), dataIndex: 'bomDesage', align: 'center', width: 100 },
+  {
+    title: $t('tracingModule.productTrace.isLowestLevel'),
+    dataIndex: 'isLowestLevel',
+    align: 'center',
+    width: 80,
+  },
+  {
+    title: $t('tracingModule.productTrace.orderNumber'),
+    dataIndex: 'orderNumber',
+    align: 'center',
+    width: 80,
+  },
+  {
+    title: $t('tracingModule.productTrace.parentCode'),
+    dataIndex: 'parentCode',
+    align: 'center',
+    width: 120,
+  },
+  {
+    title: $t('tracingModule.productTrace.materialCode'),
+    dataIndex: 'materialCode',
+    align: 'center',
+    width: 120,
+  },
+  {
+    title: $t('tracingModule.productTrace.materialName'),
+    dataIndex: 'materialName',
+    align: 'center',
+    minWidth: 120,
+  },
+  {
+    title: $t('tracingModule.productTrace.perDosage'),
+    dataIndex: 'perDosage',
+    align: 'center',
+    width: 100,
+  },
+  {
+    title: $t('tracingModule.productTrace.perQuantity'),
+    dataIndex: 'perQuantity',
+    align: 'center',
+    width: 100,
+  },
+  {
+    title: $t('tracingModule.productTrace.singleDosage'),
+    dataIndex: 'singleDosage',
+    align: 'center',
+    width: 100,
+  },
+  {
+    title: $t('tracingModule.productTrace.unit'),
+    dataIndex: 'unit',
+    align: 'center',
+    width: 80,
+  },
+  {
+    title: $t('tracingModule.productTrace.materialDosage'),
+    dataIndex: 'materialDosage',
+    align: 'center',
+    width: 100,
+  },
+  {
+    title: $t('tracingModule.productTrace.auxiliaryDoage'),
+    dataIndex: 'auxiliaryDoage',
+    align: 'center',
+    width: 100,
+  },
+  {
+    title: $t('tracingModule.productTrace.auxiliaryUnit'),
+    dataIndex: 'auxiliaryUnit',
+    align: 'center',
+    width: 100,
+  },
+  {
+    title: $t('tracingModule.productTrace.bomDesage'),
+    dataIndex: 'bomDesage',
+    align: 'center',
+    width: 100,
+  },
 ];
 
 // ========== 主表格配置 ==========
@@ -86,12 +151,36 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'seq', width: 60, title: $t('tracingModule.productTrace.seq') },
-    { field: 'opTime', title: $t('tracingModule.productTrace.time'), minWidth: 150 },
-    { field: 'processName', title: $t('tracingModule.productTrace.processName'), minWidth: 120 },
-    { field: 'processTypeName', title: $t('tracingModule.productTrace.processTypeName'), minWidth: 100 },
-    { field: 'lineName', title: $t('tracingModule.productTrace.lineName'), minWidth: 120 },
-    { field: 'equipName', title: $t('tracingModule.productTrace.equipName'), minWidth: 120 },
-    { field: 'userName', title: $t('tracingModule.productTrace.userName'), minWidth: 100 },
+    {
+      field: 'opTime',
+      title: $t('tracingModule.productTrace.time'),
+      minWidth: 150,
+    },
+    {
+      field: 'processName',
+      title: $t('tracingModule.productTrace.processName'),
+      minWidth: 120,
+    },
+    {
+      field: 'processTypeName',
+      title: $t('tracingModule.productTrace.processTypeName'),
+      minWidth: 100,
+    },
+    {
+      field: 'lineName',
+      title: $t('tracingModule.productTrace.lineName'),
+      minWidth: 120,
+    },
+    {
+      field: 'equipName',
+      title: $t('tracingModule.productTrace.equipName'),
+      minWidth: 120,
+    },
+    {
+      field: 'userName',
+      title: $t('tracingModule.productTrace.userName'),
+      minWidth: 100,
+    },
     {
       field: 'state',
       title: $t('tracingModule.productTrace.state'),
@@ -184,8 +273,8 @@ function handleDetail(row: any) {
   };
 
   const nameKeyMap: Record<string, string> = {
-    '插件': 'tracingModule.productTrace.plugin',
-    '出货': 'tracingModule.productTrace.shipment',
+    插件: 'tracingModule.productTrace.plugin',
+    出货: 'tracingModule.productTrace.shipment',
   };
 
   const i18nKey =
@@ -206,31 +295,30 @@ function handleDetail(row: any) {
 // ========== 贴片页-物料条码点击 ==========
 function _handlePasteMaterialClick(row: any) {
   inspectionVisible.value = true;
-  getSendCheckDetail(row.sendFormId)
-    .then((res: any) => {
-      const detail = res || {};
-      switch (detail.checkResult) {
-        case 1: {
-          detail.checkResultName = $t('tracingModule.productTrace.qualifyStatus');
-          break;
-        }
-        case 2: {
-          detail.checkResultName = $t('tracingModule.productTrace.failStatus');
-          break;
-        }
-        case 3: {
-          detail.checkResultName = $t('tracingModule.productTrace.concession');
-          break;
-        }
-        case 4: {
-          detail.checkResultName = $t('tracingModule.productTrace.urgentRelease');
-          break;
-        }
-        // No default
+  getSendCheckDetail(row.sendFormId).then((res: any) => {
+    const detail = res || {};
+    switch (detail.checkResult) {
+      case 1: {
+        detail.checkResultName = $t('tracingModule.productTrace.qualifyStatus');
+        break;
       }
-      inspectionData.value = detail;
-      inspectionDetailList.value = detail.labelList || [];
-    });
+      case 2: {
+        detail.checkResultName = $t('tracingModule.productTrace.failStatus');
+        break;
+      }
+      case 3: {
+        detail.checkResultName = $t('tracingModule.productTrace.concession');
+        break;
+      }
+      case 4: {
+        detail.checkResultName = $t('tracingModule.productTrace.urgentRelease');
+        break;
+      }
+      // No default
+    }
+    inspectionData.value = detail;
+    inspectionDetailList.value = detail.labelList || [];
+  });
 }
 
 void _handlePasteMaterialClick;
@@ -256,7 +344,10 @@ function getStateColor(state: string) {
           @press-enter="handleSearch"
         >
           <template #prefix>
-            <Icon icon="mdi:barcode-scan" class="text-gray-400 dark:text-gray-500" />
+            <Icon
+              icon="mdi:barcode-scan"
+              class="text-gray-400 dark:text-gray-500"
+            />
           </template>
         </Input>
         <Button type="primary" :loading="loading" @click="handleSearch">
@@ -268,18 +359,28 @@ function getStateColor(state: string) {
 
     <Spin :spinning="loading">
       <!-- 产品基本信息 -->
-      <Card v-if="hearList.productName" :title="$t('tracingModule.productTrace.productInfo')" class="!mb-4">
+      <Card
+        v-if="hearList.productName"
+        :title="$t('tracingModule.productTrace.productInfo')"
+        class="!mb-4"
+      >
         <Descriptions :column="3" bordered size="small">
-          <Descriptions.Item :label="$t('tracingModule.productTrace.productName')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.productName')"
+          >
             {{ hearList.productName }}
           </Descriptions.Item>
           <Descriptions.Item :label="$t('tracingModule.productTrace.planCode')">
             {{ hearList.planCode }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.productCode')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.productCode')"
+          >
             {{ hearList.productCode }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.customerName')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.customerName')"
+          >
             {{ hearList.customerName }}
           </Descriptions.Item>
           <Descriptions.Item :label="$t('tracingModule.productTrace.qrcode')">
@@ -290,7 +391,10 @@ function getStateColor(state: string) {
               {{ $t('tracingModule.productTrace.viewBom') }}
             </Button>
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.relatedBarcode')" :span="2">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.relatedBarcode')"
+            :span="2"
+          >
             <template v-if="qrcodeList.length > 0">
               <Tag
                 v-for="(item, idx) in qrcodeList"
@@ -308,8 +412,12 @@ function getStateColor(state: string) {
       </Card>
 
       <!-- 过程追溯表格 -->
-      <Card v-if="hasTableData" :title="$t('tracingModule.productTrace.processTrace')">
+      <Card
+        v-if="hasTableData"
+        :title="$t('tracingModule.productTrace.processTrace')"
+      >
         <Grid>
+          <template #toolbar-tools></template>
           <template #state="{ row }">
             <Tag :color="getStateColor(row.state)">
               {{ row.state }}
@@ -333,7 +441,10 @@ function getStateColor(state: string) {
       destroy-on-close
     >
       <Tabs default-active-key="first">
-        <Tabs.TabPane key="first" :tab="$t('tracingModule.productTrace.designBom')">
+        <Tabs.TabPane
+          key="first"
+          :tab="$t('tracingModule.productTrace.designBom')"
+        >
           <Table
             :data-source="materialList"
             :columns="bomColumns"
@@ -341,10 +452,15 @@ function getStateColor(state: string) {
             size="small"
             bordered
             row-key="materialCode"
-            :row-class-name="(_record: any, index: number) => (index % 2 === 0 ? '' : 'bg-gray-50 dark:bg-gray-800')"
+            :row-class-name="
+              (_record: any, index: number) =>
+                index % 2 === 0 ? '' : 'bg-gray-50 dark:bg-gray-800'
+            "
           >
             <template #bodyCell="{ column, index, record }">
-              <template v-if="column.title === $t('tracingModule.productTrace.seq')">
+              <template
+                v-if="column.title === $t('tracingModule.productTrace.seq')"
+              >
                 {{ index + 1 }}
               </template>
               <template v-else-if="column.dataIndex === 'isLowerestLevel'">
@@ -372,7 +488,11 @@ function getStateColor(state: string) {
         />
       </template>
       <template #footer>
-        <Button @click="pasteVisible = false">{{ $t('tracingModule.productTrace.close') }}</Button>
+        <Button @click="pasteVisible = false">
+{{
+          $t('tracingModule.productTrace.close')
+        }}
+</Button>
       </template>
     </Drawer>
 
@@ -385,13 +505,14 @@ function getStateColor(state: string) {
       :footer-style="{ textAlign: 'right' }"
     >
       <template v-if="detailRow">
-        <ProcessDetail
-          :row="detailRow"
-          :title="detailTitle"
-        />
+        <ProcessDetail :row="detailRow" :title="detailTitle" />
       </template>
       <template #footer>
-        <Button @click="detailVisible = false">{{ $t('tracingModule.productTrace.close') }}</Button>
+        <Button @click="detailVisible = false">
+{{
+          $t('tracingModule.productTrace.close')
+        }}
+</Button>
       </template>
     </Drawer>
 
@@ -405,49 +526,107 @@ function getStateColor(state: string) {
     >
       <template v-if="inspectionData.formCode">
         <Descriptions :column="3" bordered size="small" class="!mb-4">
-          <Descriptions.Item :label="$t('tracingModule.productTrace.sendCheckFormCode')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.sendCheckFormCode')"
+          >
             {{ inspectionData.formCode }}
           </Descriptions.Item>
           <Descriptions.Item :label="$t('tracingModule.productTrace.sendDate')">
             {{ inspectionData.sendDate }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.sendRemark')" :span="1">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.sendRemark')"
+            :span="1"
+          >
             {{ inspectionData.remark }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.checkResult')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.checkResult')"
+          >
             {{ inspectionData.checkResultName }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.judgeTime')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.judgeTime')"
+          >
             {{ inspectionData.judgeTime }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.receiveNumber')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.receiveNumber')"
+          >
             {{ inspectionData.receiveNumber }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.checkNumber')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.checkNumber')"
+          >
             {{ inspectionData.checkNumber }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.qualifiedNumber')">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.qualifiedNumber')"
+          >
             {{ inspectionData.qualifiedNumber }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.unqualified')">
-            {{ inspectionData.checkNumber - inspectionData.qualifiedNumber || 0 }}
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.unqualified')"
+          >
+            {{
+              inspectionData.checkNumber - inspectionData.qualifiedNumber || 0
+            }}
           </Descriptions.Item>
-          <Descriptions.Item :label="$t('tracingModule.productTrace.checkRemark')" :span="3">
+          <Descriptions.Item
+            :label="$t('tracingModule.productTrace.checkRemark')"
+            :span="3"
+          >
             {{ inspectionData.checkRemark }}
           </Descriptions.Item>
         </Descriptions>
         <Table
           :data-source="inspectionDetailList"
           :columns="[
-            { title: $t('tracingModule.productTrace.materialCode'), dataIndex: 'materialCode', width: 120 },
-            { title: $t('tracingModule.productTrace.materialName'), dataIndex: 'materialName', width: 200 },
-            { title: $t('tracingModule.productTrace.unit'), dataIndex: 'unit', width: 80 },
-            { title: $t('tracingModule.productTrace.sendNumber'), dataIndex: 'sendNumber', width: 100 },
-            { title: $t('tracingModule.productTrace.labelCode'), dataIndex: 'labelCode', width: 120 },
-            { title: $t('tracingModule.productTrace.manufacturerName'), dataIndex: 'manufacturerName', width: 150 },
-            { title: $t('tracingModule.productTrace.batchCode'), dataIndex: 'batchCode', width: 120 },
-            { title: $t('tracingModule.productTrace.qualifiedNumber'), dataIndex: 'qualifiedNumber', width: 100 },
-            { title: $t('tracingModule.productTrace.unqualifiedNumber'), dataIndex: 'unqualifiedNumber', width: 100 },
+            {
+              title: $t('tracingModule.productTrace.materialCode'),
+              dataIndex: 'materialCode',
+              width: 120,
+            },
+            {
+              title: $t('tracingModule.productTrace.materialName'),
+              dataIndex: 'materialName',
+              width: 200,
+            },
+            {
+              title: $t('tracingModule.productTrace.unit'),
+              dataIndex: 'unit',
+              width: 80,
+            },
+            {
+              title: $t('tracingModule.productTrace.sendNumber'),
+              dataIndex: 'sendNumber',
+              width: 100,
+            },
+            {
+              title: $t('tracingModule.productTrace.labelCode'),
+              dataIndex: 'labelCode',
+              width: 120,
+            },
+            {
+              title: $t('tracingModule.productTrace.manufacturerName'),
+              dataIndex: 'manufacturerName',
+              width: 150,
+            },
+            {
+              title: $t('tracingModule.productTrace.batchCode'),
+              dataIndex: 'batchCode',
+              width: 120,
+            },
+            {
+              title: $t('tracingModule.productTrace.qualifiedNumber'),
+              dataIndex: 'qualifiedNumber',
+              width: 100,
+            },
+            {
+              title: $t('tracingModule.productTrace.unqualifiedNumber'),
+              dataIndex: 'unqualifiedNumber',
+              width: 100,
+            },
           ]"
           :pagination="false"
           size="small"
@@ -456,13 +635,22 @@ function getStateColor(state: string) {
         />
       </template>
       <template #footer>
-        <Button @click="inspectionVisible = false">{{ $t('tracingModule.productTrace.close') }}</Button>
+        <Button @click="inspectionVisible = false">
+{{
+          $t('tracingModule.productTrace.close')
+        }}
+</Button>
       </template>
     </Drawer>
 
     <!-- 图片预览 -->
-    <Modal v-model:open="previewVisible" :title="$t('tracingModule.productTrace.preview')" :footer="null" width="700px">
-      <img :src="previewUrl" style="width:100%;height:auto" />
+    <Modal
+      v-model:open="previewVisible"
+      :title="$t('tracingModule.productTrace.preview')"
+      :footer="null"
+      width="700px"
+    >
+      <img :src="previewUrl" style="width: 100%; height: auto" />
     </Modal>
   </Page>
 </template>

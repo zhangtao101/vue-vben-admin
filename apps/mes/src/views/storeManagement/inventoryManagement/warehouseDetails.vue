@@ -16,6 +16,7 @@ import {
   Form,
   FormItem,
   Input,
+  message,
   RangePicker,
   Row,
   Tree,
@@ -23,6 +24,8 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  exportScadaWarehouseStockByLabel,
+  exportScadaWarehouseStockByMaterial,
   queryScadaLogicalWarehouseTree,
   queryScadaPhysicalWarehouseTree,
   queryScadaWarehouseStockByLocation,
@@ -61,14 +64,46 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 80,
       slots: { default: 'status' },
     },
-    { field: 'materialTypeCode', title: $t('storeManagement.inventoryManagement.materialType'), minWidth: 80 },
-    { field: 'materialCode', title: $t('storeManagement.inventoryManagement.materialNumber'), minWidth: 80 },
-    { field: 'materialDrawingCode', title: $t('storeManagement.inventoryManagement.materialDrawingCode'), minWidth: 80 },
-    { field: 'materialName', title: $t('storeManagement.inventoryManagement.materialName'), minWidth: 200 },
-    { field: 'unit', title: $t('storeManagement.labelPrint.unit'), minWidth: 80 },
-    { field: 'stockQuality', title: $t('storeManagement.inventoryManagement.stockQuality'), minWidth: 80 },
-    { field: 'minPackNumber', title: $t('storeManagement.inventoryManagement.minPackNumber'), minWidth: 100 },
-    { field: 'safeLevel', title: $t('storeManagement.inventoryManagement.safeLevel'), minWidth: 80 },
+    {
+      field: 'materialTypeCode',
+      title: $t('storeManagement.inventoryManagement.materialType'),
+      minWidth: 80,
+    },
+    {
+      field: 'materialCode',
+      title: $t('storeManagement.inventoryManagement.materialNumber'),
+      minWidth: 80,
+    },
+    {
+      field: 'materialDrawingCode',
+      title: $t('storeManagement.inventoryManagement.materialDrawingCode'),
+      minWidth: 80,
+    },
+    {
+      field: 'materialName',
+      title: $t('storeManagement.inventoryManagement.materialName'),
+      minWidth: 200,
+    },
+    {
+      field: 'unit',
+      title: $t('storeManagement.labelPrint.unit'),
+      minWidth: 80,
+    },
+    {
+      field: 'stockQuality',
+      title: $t('storeManagement.inventoryManagement.stockQuality'),
+      minWidth: 80,
+    },
+    {
+      field: 'minPackNumber',
+      title: $t('storeManagement.inventoryManagement.minPackNumber'),
+      minWidth: 100,
+    },
+    {
+      field: 'safeLevel',
+      title: $t('storeManagement.inventoryManagement.safeLevel'),
+      minWidth: 80,
+    },
   ],
   rowConfig: {
     isCurrent: true,
@@ -158,19 +193,71 @@ const gridBottomOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
-    { field: 'storageCode', title: $t('storeManagement.inventoryManagement.storageCode'), minWidth: 100 },
-    { field: 'wareHouse', title: $t('storeManagement.inventoryManagement.wareHouse'), minWidth: 100 },
-    { field: 'wareArea', title: $t('storeManagement.inventoryManagement.wareArea'), minWidth: 120 },
-    { field: 'wareLocation', title: $t('storeManagement.inventoryManagement.wareLocation'), minWidth: 80 },
-    { field: 'labelCode', title: $t('storeManagement.labelPrint.labelCode'), minWidth: 150 },
-    { field: 'checkResult', title: $t('storeManagement.inspectionSlip.checkResult'), minWidth: 100 },
-    { field: 'stockQuality', title: $t('storeManagement.inventoryManagement.stockQuality'), minWidth: 100 },
-    { field: 'manufacturerName', title: $t('storeManagement.labelPrint.manufacturerName'), minWidth: 100 },
-    { field: 'validDate', title: $t('storeManagement.labelPrint.validDate'), minWidth: 90 },
-    { field: 'batchCode', title: $t('storeManagement.labelPrint.batchCode'), minWidth: 120 },
-    { field: 'produceDate', title: $t('storeManagement.labelPrint.produceDate'), minWidth: 90 },
-    { field: 'contractCode', title: $t('storeManagement.labelPrint.contractCode'), minWidth: 100 },
-    { field: 'remark', title: $t('storeManagement.labelPrint.remark'), minWidth: 150 },
+    {
+      field: 'storageCode',
+      title: $t('storeManagement.inventoryManagement.storageCode'),
+      minWidth: 100,
+    },
+    {
+      field: 'wareHouse',
+      title: $t('storeManagement.inventoryManagement.wareHouse'),
+      minWidth: 100,
+    },
+    {
+      field: 'wareArea',
+      title: $t('storeManagement.inventoryManagement.wareArea'),
+      minWidth: 120,
+    },
+    {
+      field: 'wareLocation',
+      title: $t('storeManagement.inventoryManagement.wareLocation'),
+      minWidth: 80,
+    },
+    {
+      field: 'labelCode',
+      title: $t('storeManagement.labelPrint.labelCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'checkResult',
+      title: $t('storeManagement.inspectionSlip.checkResult'),
+      minWidth: 100,
+    },
+    {
+      field: 'stockQuality',
+      title: $t('storeManagement.inventoryManagement.stockQuality'),
+      minWidth: 100,
+    },
+    {
+      field: 'manufacturerName',
+      title: $t('storeManagement.labelPrint.manufacturerName'),
+      minWidth: 100,
+    },
+    {
+      field: 'validDate',
+      title: $t('storeManagement.labelPrint.validDate'),
+      minWidth: 90,
+    },
+    {
+      field: 'batchCode',
+      title: $t('storeManagement.labelPrint.batchCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'produceDate',
+      title: $t('storeManagement.labelPrint.produceDate'),
+      minWidth: 90,
+    },
+    {
+      field: 'contractCode',
+      title: $t('storeManagement.labelPrint.contractCode'),
+      minWidth: 100,
+    },
+    {
+      field: 'remark',
+      title: $t('storeManagement.labelPrint.remark'),
+      minWidth: 150,
+    },
   ],
   height: 300,
   stripe: true,
@@ -293,6 +380,62 @@ onMounted(() => {
 });
 
 // endregion
+
+// region 导出
+
+/**
+ * 构建库存汇总（上方表格）导出参数：查询条件 + 日期处理 + 树节点
+ */
+function buildStockExportParams() {
+  const params: any = { ...queryParams.value };
+  // 处理日期范围
+  if (params.searchTime && params.searchTime.length === 2) {
+    params.startTime = params.searchTime[0].format('YYYY-MM-DD');
+    params.endTime = params.searchTime[1].format('YYYY-MM-DD');
+    params.searchTime = undefined;
+  }
+  // 添加选中的树节点参数
+  if (selectedNode.value) {
+    Object.assign(params, selectedNode.value);
+  }
+  return params;
+}
+
+/**
+ * 按材料导出库存（上方表格）
+ */
+function exportStockByMaterial() {
+  const params: any = buildStockExportParams();
+  exportScadaWarehouseStockByMaterial(params).then((data) => {
+    window.open(data);
+  });
+}
+
+/**
+ * 按标签导出库存明细（下方表格）
+ */
+function exportStockByLabel() {
+  // 未选中上方表格物料时提示
+  if (!selectedRow.value?.materialCode) {
+    message.warning(
+      $t('storeManagement.inventoryManagement.pleaseSelectMaterial'),
+    );
+    return;
+  }
+  const params: any = {
+    materialCode: selectedRow.value.materialCode,
+    batchCode: queryParams.value.batchCode,
+  };
+  // 添加选中的树节点参数
+  if (selectedNode.value) {
+    Object.assign(params, selectedNode.value);
+  }
+  exportScadaWarehouseStockByLabel(params).then((data) => {
+    window.open(data);
+  });
+}
+
+// endregion
 </script>
 
 <template>
@@ -390,7 +533,12 @@ onMounted(() => {
         <!-- 上方库存汇总表格 -->
         <Card class="!mb-8">
           <Grid>
-            <template #toolbar-tools></template>
+            <template #toolbar-tools>
+              <!-- 导出按钮 -->
+              <Button type="primary" @click="exportStockByMaterial()">
+                {{ $t('common.export') }}
+              </Button>
+            </template>
             <template #status="{ row, column }">
               <Checkbox v-model:checked="row[column.field]" disabled />
             </template>
@@ -400,7 +548,12 @@ onMounted(() => {
         <!-- 下方库存明细表格 -->
         <Card class="!mb-8">
           <GridBottom>
-            <template #toolbar-tools></template>
+            <template #toolbar-tools>
+              <!-- 导出按钮 -->
+              <Button type="primary" @click="exportStockByLabel()">
+                {{ $t('common.export') }}
+              </Button>
+            </template>
           </GridBottom>
         </Card>
       </Col>

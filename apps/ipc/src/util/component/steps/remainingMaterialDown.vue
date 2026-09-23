@@ -1,21 +1,32 @@
 <script setup lang="ts">
 /**
- * [INPUT]: 依赖 #/api 的 getRemainingFeedListByCode、materialDown 接口获取余料数据并提交下料
- * [OUTPUT]: 对外提供余料下料表格组件，包含余料列表展示、下料数量输入、批量提交功能
+ * [INPUT]: 依赖 #/api 的 getRemainingFeedEquipListByCode 获取投料设备列表、getRemainingFeedListByCode 获取余料数据、materialDown 提交下料
+ * [OUTPUT]: 对外提供余料下料表格组件，包含投料设备选择、余料列表展示、下料数量输入、批量提交功能
  * [POS]: 工步执行子组件，type=52 时由 stepExecution.vue 渲染
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-06-01 09:10:00
+ * [TIME]: 2026-09-11 10:00:00
  */
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onBeforeUnmount, ref } from 'vue';
+import { onBeforeUnmount, ref, watch } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, InputNumber, message, Modal } from 'ant-design-vue';
+import {
+  Button,
+  InputNumber,
+  message,
+  Modal,
+  Select,
+  Spin,
+} from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getRemainingFeedListByCode, materialDown } from '#/api';
+import {
+  getRemainingFeedEquipListByCode,
+  getRemainingFeedListByCode,
+  materialDown,
+} from '#/api';
 import useWebSocket from '#/util/websocket-util';
 
 // region 组件 Props 定义
@@ -42,51 +53,101 @@ const props = defineProps({
   },
 });
 
+// region 投料设备选择
+// 当前选中的投料设备编号，作为余料明细查询的 equipCode 参数
+const selectedEquipCode = ref<string>('');
+// 投料设备下拉选项列表，数据来源：getRemainingFeedEquipListByCode
+const equipList = ref<any[]>([]);
+// 投料设备下拉加载中状态
+const equipFetching = ref(false);
+
+/**
+ * 根据工单编号获取对应的投料设备列表。
+ * 工单编号为空时清空列表与选中值，请求成功后默认不自动选中设备。
+ * @returns {void} 无返回值，结果写入 equipList。
+ * @since 2026-09-11 10:00:00
+ */
+function queryEquipList() {
+  if (!props.worksheetCode) {
+    equipList.value = [];
+    selectedEquipCode.value = '';
+    return;
+  }
+  equipFetching.value = true;
+  getRemainingFeedEquipListByCode({ worksheetCode: props.worksheetCode })
+    .then((data: any) => {
+      equipList.value = data || [];
+      selectedEquipCode.value = '';
+    })
+    .finally(() => {
+      equipFetching.value = false;
+    });
+}
+
+/**
+ * 设备选择变化回调：选择值变动后重新查询余料明细列表。
+ * @returns {void} 无返回值，直接触发 gridApi.query()。
+ * @since 2026-09-11 10:00:00
+ */
+function equipCodeChange() {
+  gridApi.query();
+}
+
+// 工单编号变化时重新拉取投料设备列表
+watch(
+  () => props.worksheetCode,
+  () => {
+    queryEquipList();
+  },
+  { immediate: true },
+);
+// endregion
+
 // region 表格配置
 // VXE Grid 配置：展示余料列表，包含工单号、料号、物料名称、标签号、料站编号、投料人、上料时间、可下料数量、下料数量
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
+    { title: $t('productionOperation.seq'), type: 'seq', width: 50 },
     {
       field: 'worksheetCode',
-      title: '工单号',
+      title: $t('productionOperation.workOrderCode'),
       minWidth: 150,
     },
     {
       field: 'materialCode',
-      title: '料号',
+      title: $t('productionOperation.materialCode'),
       minWidth: 120,
     },
     {
       field: 'materialName',
-      title: '物料名称',
+      title: $t('productionOperation.materialName'),
       minWidth: 120,
     },
     {
       field: 'materialPlateCode',
-      title: '标签号',
+      title: $t('productionOperation.materialPlateCode'),
       minWidth: 140,
     },
     {
       field: 'materialStationCode',
-      title: '料站编号',
+      title: $t('productionOperation.materialStationCode'),
       width: 100,
     },
     {
       field: 'feedUser',
-      title: '投料人',
+      title: $t('productionOperation.feedUser'),
       width: 120,
     },
     {
       field: 'feedTime',
-      title: '上料时间',
+      title: $t('productionOperation.feedTime'),
       width: 160,
     },
     {
       field: 'number',
-      title: '可下料数量',
+      title: $t('productionOperation.availableDownNumber'),
       fixed: 'right',
       width: 110,
     },
@@ -94,7 +155,7 @@ const gridOptions: VxeGridProps<any> = {
       field: '_downNumber',
       slots: { default: 'downNumber' },
       fixed: 'right',
-      title: '下料数量',
+      title: $t('productionOperation.downNumber'),
       width: 140,
     },
   ],
@@ -136,17 +197,27 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 // region 数据加载
 /**
  * 查询余料记录明细（不分页，加载全部），并为每条记录追加 _downNumber 字段用于下料数量输入。
+ * 未选中投料设备时直接返回空数据，不发起请求。
  * @returns {Promise<{ total: number; items: any[] }>} 返回 total（记录总数）与 items（含 _downNumber 的余料列表）。
  * @throws 当接口请求失败时，Promise 被 reject 原始错误。
  * @since 2026-06-01 09:10:00
  */
 function queryData() {
   return new Promise((resolve, reject) => {
+    // 未选择投料设备时，直接返回空列表
+    if (!selectedEquipCode.value) {
+      resolve({
+        total: 0,
+        items: [],
+      });
+      return;
+    }
     getRemainingFeedListByCode({
       workstationCode: props.workstationCode,
       worksheetCode: props.worksheetCode,
       bindingId: props.bindingId,
       functionId: props.functionId,
+      equipCode: selectedEquipCode.value,
     })
       .then((data: any) => {
         const list = (data || []).map((item: any) => ({
@@ -190,7 +261,7 @@ function submitAllDown() {
     }));
 
   if (downList.length === 0) {
-    message.warning('请至少填写一个下料数量');
+    message.warning($t('productionOperation.pleaseInputDownNumber'));
     return;
   }
 
@@ -198,14 +269,19 @@ function submitAllDown() {
   const invalidRow = tableData.find((row: any) => row._downNumber > row.number);
   if (invalidRow) {
     message.warning(
-      `"${invalidRow.materialName}" 下料数量不能超过可下料数量(${invalidRow.number})`,
+      $t('productionOperation.downNumberExceedAvailable', {
+        name: invalidRow.materialName,
+        number: invalidRow.number,
+      }),
     );
     return;
   }
 
   Modal.confirm({
-    title: '确认下料',
-    content: `确认下料共 ${downList.length} 条记录吗？`,
+    title: $t('productionOperation.confirmDown'),
+    content: $t('productionOperation.confirmDownContent', {
+      count: downList.length,
+    }),
     onOk: () => {
       submitting.value = true;
       materialDown(downList)
@@ -250,9 +326,28 @@ onBeforeUnmount(() => {
 
 <template>
   <Grid>
+    <!-- 工具栏左侧：投料设备选择，数据来源为扫码输入工单获取的投料设备列表 -->
+    <template #toolbar-actions>
+      <span class="mr-2">{{ $t('productionOperation.deviceSelection') }}</span>
+      <Select
+        v-model:value="selectedEquipCode"
+        show-search
+        allow-clear
+        :placeholder="$t('productionOperation.selectFeedingEquipment')"
+        style="width: 200px"
+        :field-names="{ label: 'equipmentName', value: 'equipmentCode' }"
+        :not-found-content="equipFetching ? undefined : null"
+        :options="equipList"
+        @change="equipCodeChange"
+      >
+        <template v-if="equipFetching" #notFoundContent>
+          <Spin size="small" />
+        </template>
+      </Select>
+    </template>
     <template #toolbar-tools>
       <Button type="primary" :loading="submitting" @click="submitAllDown">
-        下料
+        {{ $t('productionOperation.down') }}
       </Button>
     </template>
     <template #downNumber="{ row }">

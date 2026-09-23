@@ -50,15 +50,28 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { title: $t('page.common.serialNumber'), type: 'seq', width: 50, minWidth: 50 },
+    {
+      title: $t('page.common.serialNumber'),
+      type: 'seq',
+      width: 50,
+      minWidth: 50,
+    },
     {
       field: 'customerName',
       title: $t('planManagement.customerName'),
       minWidth: 100,
       showOverflow: true,
     },
-    { field: 'orderDate', title: $t('planManagement.orderDate'), minWidth: 100 },
-    { field: 'deliverDate', title: $t('planManagement.deliveryDate'), minWidth: 100 },
+    {
+      field: 'orderDate',
+      title: $t('planManagement.orderDate'),
+      minWidth: 100,
+    },
+    {
+      field: 'deliverDate',
+      title: $t('planManagement.deliveryDate'),
+      minWidth: 100,
+    },
     { field: 'productCode', title: $t('baseInfo.productCode'), minWidth: 150 },
     {
       field: 'productName',
@@ -66,14 +79,46 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 200,
       showOverflow: true,
     },
-    { field: 'orderNumber', title: $t('planManagement.orderQuantity'), minWidth: 100 },
-    { field: 'planNumber', title: $t('planManagement.planQuantity'), minWidth: 100 },
-    { field: 'produceNotFinishNumber', title: $t('planManagement.productionUnfinishedQuantity'), minWidth: 125 },
-    { field: 'planCode', title: $t('planManagement.planNumber'), minWidth: 100 },
-    { field: 'smtFinishNumber', title: $t('planManagement.smtProductionCompleted'), minWidth: 125 },
-    { field: 'chajFinishNumber', title: $t('planManagement.pluginProductionCompleted'), minWidth: 125 },
-    { field: 'buhFinishNumber', title: $t('planManagement.repairSolderingProductionCompleted'), minWidth: 125 },
-    { field: 'zuzFinishNumber', title: $t('planManagement.assemblyProductionCompleted'), minWidth: 125 },
+    {
+      field: 'orderNumber',
+      title: $t('planManagement.orderQuantity'),
+      minWidth: 100,
+    },
+    {
+      field: 'planNumber',
+      title: $t('planManagement.planQuantity'),
+      minWidth: 100,
+    },
+    {
+      field: 'produceNotFinishNumber',
+      title: $t('planManagement.productionUnfinishedQuantity'),
+      minWidth: 125,
+    },
+    {
+      field: 'planCode',
+      title: $t('planManagement.planNumber'),
+      minWidth: 100,
+    },
+    {
+      field: 'smtFinishNumber',
+      title: $t('planManagement.smtProductionCompleted'),
+      minWidth: 125,
+    },
+    {
+      field: 'chajFinishNumber',
+      title: $t('planManagement.pluginProductionCompleted'),
+      minWidth: 125,
+    },
+    {
+      field: 'buhFinishNumber',
+      title: $t('planManagement.repairSolderingProductionCompleted'),
+      minWidth: 125,
+    },
+    {
+      field: 'zuzFinishNumber',
+      title: $t('planManagement.assemblyProductionCompleted'),
+      minWidth: 125,
+    },
     {
       field: 'sendMaterialDate',
       title: $t('planManagement.deliveryDateColumn'),
@@ -81,7 +126,11 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'sendMaterialDateSlot' },
     },
     { field: 'planType', title: $t('planManagement.planType'), minWidth: 100 },
-    { field: 'customerDemandInfo', title: $t('planManagement.customerDemandInfo'), minWidth: 125 },
+    {
+      field: 'customerDemandInfo',
+      title: $t('planManagement.customerDemandInfo'),
+      minWidth: 125,
+    },
     {
       field: 'stockMaterial',
       title: $t('planManagement.inventoryMaterial'),
@@ -104,9 +153,21 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('planManagement.materialChangeDeliveryDate'),
       minWidth: 125,
     },
-    { field: 'contractNumber', title: $t('planManagement.contractNumber'), minWidth: 100 },
-    { field: 'finishedStockNumber', title: $t('planManagement.finishedGoodsInventory'), minWidth: 125 },
-    { field: 'deliverProductsNumber', title: $t('planManagement.shippedQuantity'), minWidth: 100 },
+    {
+      field: 'contractNumber',
+      title: $t('planManagement.contractNumber'),
+      minWidth: 100,
+    },
+    {
+      field: 'finishedStockNumber',
+      title: $t('planManagement.finishedGoodsInventory'),
+      minWidth: 125,
+    },
+    {
+      field: 'deliverProductsNumber',
+      title: $t('planManagement.shippedQuantity'),
+      minWidth: 100,
+    },
     {
       field: 'deliverProductsNotFinishNumber',
       title: $t('planManagement.unshippedQuantity'),
@@ -130,7 +191,11 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 100,
       showOverflow: true,
     },
-    { field: 'materialArriveNotTimely', title: $t('planManagement.materialNotArrived'), minWidth: 120 },
+    {
+      field: 'materialArriveNotTimely',
+      title: $t('planManagement.materialNotArrived'),
+      minWidth: 120,
+    },
     {
       field: 'isPersonFinish',
       title: $t('planManagement.isManualClose'),
@@ -285,7 +350,8 @@ function handleChange(info: any) {
     message.success($t('page.common.uploadSuccess'));
   } else if (info.file.status === 'error') {
     // 获取错误信息，如果存在则显示，否则显示通用错误消息
-    const errorMessage = info.file.response?.message || $t('planManagement.uploadFailed');
+    const errorMessage =
+      info.file.response?.message || $t('planManagement.uploadFailed');
     // 显示错误消息
     message.error(errorMessage);
   }
@@ -303,11 +369,23 @@ const editForm = ref<any>();
 const rules = ref<any>({
   // 表单验证规则可根据需要添加
   sendMaterialDate: [
-    { required: true, message: $t('planManagement.selectDeliveryDate'), trigger: 'change' },
+    {
+      required: true,
+      message: $t('planManagement.selectDeliveryDate'),
+      trigger: 'change',
+    },
   ],
   produceNotFinishNumber: [
-    { required: true, message: $t('planManagement.inputProductionUnfinishedQuantity'), trigger: 'blur' },
-    { type: 'number', message: $t('planManagement.productionUnfinishedMustBeNumber'), trigger: 'blur' },
+    {
+      required: true,
+      message: $t('planManagement.inputProductionUnfinishedQuantity'),
+      trigger: 'blur',
+    },
+    {
+      type: 'number',
+      message: $t('planManagement.productionUnfinishedMustBeNumber'),
+      trigger: 'blur',
+    },
   ],
 });
 /**
@@ -441,7 +519,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
-        <template #toolbar-actions>
+        <template #toolbar-tools>
           <Space>
             <!-- 导出 -->
             <Button type="primary" @click="exportFile">
@@ -480,11 +558,19 @@ onMounted(() => {
         </template>
         <!-- 库存物料 -->
         <template #stockMaterialSlot="{ row }">
-          <span>{{ row.stockMaterial ? $t('planManagement.insufficientMaterial') : $t('planManagement.sufficientMaterial') }}</span>
+          <span>{{
+            row.stockMaterial
+              ? $t('planManagement.insufficientMaterial')
+              : $t('planManagement.sufficientMaterial')
+          }}</span>
         </template>
         <!-- 物料状态 -->
         <template #materialStatusSlot="{ row }">
-          <span>{{ row.materialStatus ? $t('planManagement.insufficientMaterial') : $t('planManagement.sufficientMaterial') }}</span>
+          <span>{{
+            row.materialStatus
+              ? $t('planManagement.insufficientMaterial')
+              : $t('planManagement.sufficientMaterial')
+          }}</span>
         </template>
         <!-- 成品交期回复 -->
         <template #finishDeliverDateResponseSlot="{ row }">
@@ -508,7 +594,9 @@ onMounted(() => {
         </template>
         <!-- 是否人工结案 -->
         <template #isPersonFinishSlot="{ row }">
-          <span>{{ row.isPersonFinish ? $t('status.yes') : $t('status.no') }}</span>
+          <span>{{
+            row.isPersonFinish ? $t('status.yes') : $t('status.no')
+          }}</span>
         </template>
         <!-- 操作 -->
         <template #action="{ row }">
@@ -738,8 +826,12 @@ onMounted(() => {
               :label="$t('planFinish.inventoryMaterials')"
               prop="stockMaterial"
             >
-              <span v-if="editItem.stockMaterial === true">{{ $t('planManagement.sufficientMaterial') }}</span>
-              <span v-else>{{ $t('planManagement.insufficientMaterial') }}</span>
+              <span v-if="editItem.stockMaterial === true">{{
+                $t('planManagement.sufficientMaterial')
+              }}</span>
+              <span v-else>{{
+                $t('planManagement.insufficientMaterial')
+              }}</span>
             </FormItem>
           </Col>
         </Row>

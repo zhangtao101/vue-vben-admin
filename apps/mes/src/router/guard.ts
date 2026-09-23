@@ -72,7 +72,6 @@ async function generateDynamicRoutes(
   const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
   // 当前用户拥有的角色标识列表
   const userRoles = userInfo.roles ?? [];
-
   // 根据角色生成可访问的路由与菜单树
   const { accessibleMenus, accessibleRoutes } = await generateAccess({
     roles: userRoles,
@@ -147,7 +146,12 @@ function setupAccessGuard(router: Router): void {
     }
 
     // 首次进入非核心路由：生成动态路由表
-    const userInfo = await generateDynamicRoutes(router, userStore, authStore, accessStore);
+    const userInfo = await generateDynamicRoutes(
+      router,
+      userStore,
+      authStore,
+      accessStore,
+    );
     // 计算重定向路径：优先使用登录前记录的 redirect，默认首页则使用用户的 homePath
     const redirectPath = (from.query.redirect ??
       (to.path === preferences.app.defaultHomePath

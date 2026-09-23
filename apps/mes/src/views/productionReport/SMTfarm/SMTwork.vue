@@ -55,7 +55,11 @@ const mainColumns: any[] = [
     title: $t('SMTPlantAdd.workSheetCode'),
     minWidth: 150,
   },
-  { field: 'subProductCode', title: $t('SMTPlantAdd.subProductCode'), minWidth: 80 },
+  {
+    field: 'subProductCode',
+    title: $t('SMTPlantAdd.subProductCode'),
+    minWidth: 80,
+  },
   {
     field: 'subProductName',
     title: $t('SMTPlantAdd.subProductName'),
@@ -67,26 +71,50 @@ const mainColumns: any[] = [
     title: $t('SMTPlantAdd.isProductPlan'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.planDateStart'), minWidth: 120 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workSheetPlanNumber'), minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workSheetFinishNumber'), minWidth: 100 },
+  {
+    field: 'planDateStart',
+    title: $t('SMTPlantAdd.planDateStart'),
+    minWidth: 120,
+  },
+  {
+    field: 'workSheetPlanNumber',
+    title: $t('SMTPlantAdd.workSheetPlanNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'workSheetFinishNumber',
+    title: $t('SMTPlantAdd.workSheetFinishNumber'),
+    minWidth: 100,
+  },
   {
     field: 'status',
     slots: { default: 'status' },
     title: $t('SMTPlantAdd.workSheetStatus'),
     minWidth: 80,
   },
-  { field: 'onTimeFinishNumber', title: $t('SMTPlantAdd.onTimeFinishNumber'), minWidth: 100 },
+  {
+    field: 'onTimeFinishNumber',
+    title: $t('SMTPlantAdd.onTimeFinishNumber'),
+    minWidth: 100,
+  },
   {
     field: 'delayStatus',
     slots: { default: 'delayStatus' },
     title: $t('SMTPlantAdd.delayStatus'),
     minWidth: 80,
   },
-  { field: 'delayFinishNumber', title: $t('SMTPlantAdd.delayFinishNumber'), minWidth: 100 },
+  {
+    field: 'delayFinishNumber',
+    title: $t('SMTPlantAdd.delayFinishNumber'),
+    minWidth: 100,
+  },
   { field: 'subPlanCode', title: $t('SMTPlantAdd.subPlanCode'), minWidth: 100 },
   { field: 'updateTime', title: $t('SMTPlantAdd.updateTime'), minWidth: 120 },
-  { field: 'updateUsername', title: $t('SMTPlantAdd.updateUsername'), minWidth: 80 },
+  {
+    field: 'updateUsername',
+    title: $t('SMTPlantAdd.updateUsername'),
+    minWidth: 80,
+  },
 ];
 
 const gridOptions: VxeGridProps<any> = {
@@ -126,7 +154,11 @@ const detailColumns: any[] = [
   { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
   { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
   { field: 'processName', title: $t('SMTPlantAdd.processName'), minWidth: 200 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workSheetCode'), minWidth: 150 },
+  {
+    field: 'workSheetCode',
+    title: $t('SMTPlantAdd.workSheetCode'),
+    minWidth: 150,
+  },
   { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
   { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 200 },
   {
@@ -135,9 +167,21 @@ const detailColumns: any[] = [
     title: $t('SMTPlantAdd.partOrProduct'),
     minWidth: 80,
   },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.planDateStart'), minWidth: 100 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workSheetPlanNumber'), minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workSheetFinishNumber'), minWidth: 100 },
+  {
+    field: 'planDateStart',
+    title: $t('SMTPlantAdd.planDateStart'),
+    minWidth: 100,
+  },
+  {
+    field: 'workSheetPlanNumber',
+    title: $t('SMTPlantAdd.workSheetPlanNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'workSheetFinishNumber',
+    title: $t('SMTPlantAdd.workSheetFinishNumber'),
+    minWidth: 100,
+  },
   {
     field: 'isLater',
     slots: { default: 'isLater' },
@@ -145,16 +189,44 @@ const detailColumns: any[] = [
     minWidth: 100,
   },
   { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
-  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeQuantum'), minWidth: 120 },
+  {
+    field: 'reportTimeQuantum',
+    title: $t('SMTPlantAdd.reportTimeQuantum'),
+    minWidth: 120,
+  },
   { field: 'qcCode', title: $t('SMTPlantAdd.qcCode'), minWidth: 130 },
-  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
-  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 100 },
-  { field: 'partPlanNumber', title: $t('SMTPlantAdd.partPlanNumber'), minWidth: 100 },
-  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.partPlanFinishNumber'), minWidth: 100 },
+  {
+    field: 'reportNumber',
+    title: $t('SMTPlantAdd.reportNumber'),
+    minWidth: 80,
+  },
+  {
+    field: 'partPlanCode',
+    title: $t('SMTPlantAdd.partPlanCode'),
+    minWidth: 100,
+  },
+  {
+    field: 'partPlanNumber',
+    title: $t('SMTPlantAdd.partPlanNumber'),
+    minWidth: 100,
+  },
+  {
+    field: 'partPlanFinishNumber',
+    title: $t('SMTPlantAdd.partPlanFinishNumber'),
+    minWidth: 100,
+  },
   { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 180 },
-  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 150 },
+  {
+    field: 'productPlanCode',
+    title: $t('SMTPlantAdd.productPlanCode'),
+    minWidth: 150,
+  },
   { field: 'createTime', title: $t('SMTPlantAdd.createTime'), minWidth: 160 },
-  { field: 'createUserName', title: $t('SMTPlantAdd.createUserName'), minWidth: 80 },
+  {
+    field: 'createUserName',
+    title: $t('SMTPlantAdd.createUserName'),
+    minWidth: 80,
+  },
   {
     field: 'dataType',
     slots: { default: 'dataType' },
@@ -246,7 +318,13 @@ let processId = '';
 
 // 表单验证规则
 const rules: any = {
-  startDate: [{ required: true, message: $t('SMTPlantAdd.pleaseSelectDate'), trigger: 'change' }],
+  startDate: [
+    {
+      required: true,
+      message: $t('SMTPlantAdd.pleaseSelectDate'),
+      trigger: 'change',
+    },
+  ],
 };
 
 // endregion 状态定义
@@ -264,9 +342,9 @@ function handleMainTableQuery({ page, pageSize }: any) {
       pageSize,
     };
     spWorkList(params)
-      .then(({ total, list }) => {
+      .then(({ totalSize, list }) => {
         resolve({
-          total,
+          total: totalSize,
           items: list,
         });
       })
@@ -330,7 +408,7 @@ function handleProcessChange() {
     }
   });
 
-      if (processId) {
+  if (processId) {
     fetchLineById(processId)
       .then((data: any) => {
         taskLineList.value = data;
@@ -450,10 +528,17 @@ onMounted(() => {
     <!-- 查询表单 -->
     <Card>
       <Form :model="listQuery" :rules="rules" layout="inline">
-        <FormItem :label="$t('SMTPlantAdd.selectDate')" name="startDate" class="!my-2">
+        <FormItem
+          :label="$t('SMTPlantAdd.selectDate')"
+          name="startDate"
+          class="!my-2"
+        >
           <DatePicker.RangePicker
             v-model:value="dateRange"
-            :placeholder="[$t('SMTPlantAdd.startDate'), $t('SMTPlantAdd.endDate')]"
+            :placeholder="[
+              $t('SMTPlantAdd.startDate'),
+              $t('SMTPlantAdd.endDate'),
+            ]"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
             style="width: 230px"
@@ -578,6 +663,7 @@ onMounted(() => {
         </Button>
       </div>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workSheetCode="{ row }">
           <span
             class="cursor-pointer text-blue-500 underline"
@@ -651,7 +737,11 @@ onMounted(() => {
             </template>
             <template #isLater="{ row }">
               <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
+                row.isLater === 2
+                  ? $t('SMTPlantAdd.yes')
+                  : row.isLater === 1
+                    ? $t('SMTPlantAdd.no')
+                    : ''
               }}</span>
             </template>
             <template #dataType="{ row }">

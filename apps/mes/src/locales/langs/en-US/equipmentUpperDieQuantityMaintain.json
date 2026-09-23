@@ -1,0 +1,17 @@
+{
+  "sequence": "No.",
+  "equipmentCode": "Equipment Code",
+  "equipmentCodePlaceholder": "Please enter equipment code",
+  "category": "Mold Category",
+  "categoryPlaceholder": "Please select mold category",
+  "categoryCode": "Category Code",
+  "categoryName": "Category Name",
+  "maxOnMachine": "Max On-Machine Molds",
+  "maxOnMachinePlaceholder": "Please enter the max number of molds on machine",
+  "equipmentCodeRequired": "Equipment code is required",
+  "categoryRequired": "Mold category is required",
+  "maxOnMachineRequired": "Max on-machine molds is required",
+  "addTitle": "Add On-Machine Limit Config",
+  "editTitle": "Edit On-Machine Limit Config",
+  "confirmDelete": "Are you sure to delete this config?"
+}

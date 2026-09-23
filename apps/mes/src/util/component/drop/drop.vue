@@ -9,6 +9,7 @@ import {
   Button,
   Form,
   FormItem,
+  Input,
   InputNumber,
   message,
   Modal,
@@ -46,6 +47,43 @@ function delNode(data: any) {
   removeNodes([data.id]);
   layoutGraph('LR');
 }
+
+// region 节点重命名
+const showRenameModal = ref(false);
+// 重命名的节点id
+const renameId = ref('');
+// 重命名的名称
+const renameLabel = ref('');
+
+/**
+ * 打开重命名弹窗
+ * @param params 节点参数
+ */
+function renameNode(params: any) {
+  renameId.value = params.elId;
+  renameLabel.value = params.label;
+  showRenameModal.value = true;
+}
+
+/**
+ * 确认重命名
+ */
+function renameOk() {
+  if (!renameLabel.value?.trim()) {
+    message.warning($t('请输入节点名称'));
+    return;
+  }
+  const arr: any[] = nodes.value.filter(
+    (edge: any) => edge.id === renameId.value,
+  );
+  if (arr.length > 0) {
+    arr[0].data.label = renameLabel.value.trim();
+  }
+  showRenameModal.value = false;
+  layoutGraph('LR');
+}
+
+// endregion
 
 /**
  * 添加动画效果
@@ -146,6 +184,10 @@ const editId = ref();
  * @param row 工步数据
  */
 function openOperationSettings(row: any): void {
+  if (!row.id) {
+    message.warning($t('当前节点暂未保存, 请先保存后再继续操作'));
+    return;
+  }
   if (props.isRouter) {
     const arr: any[] = nodes.value.filter((edge: any) => edge.id === row.elId);
     if (arr.length > 0) {
@@ -490,6 +532,7 @@ defineExpose({
           @del-node="delNode"
           @update="openOperationSettings"
           @bind="openBind"
+          @rename="renameNode"
           :hide-options="!isUpdate"
         />
       </template>
@@ -501,6 +544,18 @@ defineExpose({
     <!-- 流转时长设置 -->
     <Modal v-model:open="showTimeModal" title="流转时长设置" @ok="timeOk">
       <InputNumber v-model:value="editTime" addon-after="S" />
+    </Modal>
+    <!-- 节点重命名 -->
+    <Modal
+      v-model:open="showRenameModal"
+      :title="$t('common.rename')"
+      @ok="renameOk"
+    >
+      <Input
+        v-model:value="renameLabel"
+        :placeholder="$t('请输入节点名称')"
+        @press-enter="renameOk"
+      />
     </Modal>
     <!-- 工艺参数绑定 -->
     <Modal

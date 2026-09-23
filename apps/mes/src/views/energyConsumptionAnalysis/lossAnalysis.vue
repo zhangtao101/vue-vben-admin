@@ -42,12 +42,38 @@ const gridOptions: VxeGridProps<any> = {
   border: true, // 显示表格边框
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 }, // 自动生成的序号列
-    { field: 'lossNumber', title: $t('energyConsumption.energyConsumptionAnalysis.lossObjectCode'), minWidth: 200 }, // 线损对象的唯一编码
-    { field: 'lossName', title: $t('energyConsumption.energyConsumptionAnalysis.lossObjectName'), minWidth: 200 }, // 线损对象的名称
-    { field: 'allValue', title: $t('energyConsumption.energyConsumptionAnalysis.totalEnergyConsumption'), minWidth: 200 }, // 总能耗数值
-    { field: 'useValue', title: $t('energyConsumption.energyConsumptionAnalysis.usedEnergy'), minWidth: 150 }, // 实际使用的能耗
-    { field: 'lossRate', title: $t('energyConsumption.energyConsumptionAnalysis.lossRate'), minWidth: 150 }, // 线损率百分比
-    { field: 'time', title: $t('energyConsumption.energyConsumptionAnalysis.time'), minWidth: 150 }, // 统计时间点
+    {
+      field: 'lossNumber',
+      title: $t('energyConsumption.energyConsumptionAnalysis.lossObjectCode'),
+      minWidth: 200,
+    }, // 线损对象的唯一编码
+    {
+      field: 'lossName',
+      title: $t('energyConsumption.energyConsumptionAnalysis.lossObjectName'),
+      minWidth: 200,
+    }, // 线损对象的名称
+    {
+      field: 'allValue',
+      title: $t(
+        'energyConsumption.energyConsumptionAnalysis.totalEnergyConsumption',
+      ),
+      minWidth: 200,
+    }, // 总能耗数值
+    {
+      field: 'useValue',
+      title: $t('energyConsumption.energyConsumptionAnalysis.usedEnergy'),
+      minWidth: 150,
+    }, // 实际使用的能耗
+    {
+      field: 'lossRate',
+      title: $t('energyConsumption.energyConsumptionAnalysis.lossRate'),
+      minWidth: 150,
+    }, // 线损率百分比
+    {
+      field: 'time',
+      title: $t('energyConsumption.energyConsumptionAnalysis.time'),
+      minWidth: 150,
+    }, // 统计时间点
   ],
   height: 500, // 固定表格高度
   stripe: true, // 启用斑马纹样式
@@ -93,7 +119,9 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 function getMaterialTypeText(state: number): string {
   switch (state) {
     case 1: {
-      return $t('energyConsumption.energyConsumptionCollectionDetails.rawMaterial');
+      return $t(
+        'energyConsumption.energyConsumptionCollectionDetails.rawMaterial',
+      );
     }
     case 2: {
       return $t('energyConsumption.energyConsumptionCollectionDetails.brick');
@@ -265,6 +293,7 @@ onMounted(() => {
     <!-- region 数据表格区域 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #materialType="{ row }">
           <span> {{ getMaterialTypeText(row.materialType) }} </span>
         </template>

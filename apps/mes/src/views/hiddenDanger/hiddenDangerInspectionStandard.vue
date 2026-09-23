@@ -43,14 +43,46 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'checkType', title: $t('hiddenDangerInspectionStandard.checkType'), minWidth: 190 },
-    { field: 'checkItem', title: $t('hiddenDangerInspectionStandard.checkItem'), minWidth: 190 },
-    { field: 'checkCriteria', title: $t('hiddenDangerInspectionStandard.checkCriteria'), minWidth: 150 },
-    { field: 'area', title: $t('hiddenDangerInspectionStandard.checkArea'), minWidth: 150 },
-    { field: 'areaCode', title: $t('hiddenDangerInspectionStandard.areaCode'), minWidth: 150 },
-    { field: 'createUser', title: $t('hiddenDangerInspectionStandard.submitter'), minWidth: 150 },
-    { field: 'createTime', title: $t('hiddenDangerInspectionStandard.submissionTime'), minWidth: 150 },
-    { field: 'updateTime', title: $t('hiddenDangerInspectionStandard.updateTime'), minWidth: 150 },
+    {
+      field: 'checkType',
+      title: $t('hiddenDangerInspectionStandard.checkType'),
+      minWidth: 190,
+    },
+    {
+      field: 'checkItem',
+      title: $t('hiddenDangerInspectionStandard.checkItem'),
+      minWidth: 190,
+    },
+    {
+      field: 'checkCriteria',
+      title: $t('hiddenDangerInspectionStandard.checkCriteria'),
+      minWidth: 150,
+    },
+    {
+      field: 'area',
+      title: $t('hiddenDangerInspectionStandard.checkArea'),
+      minWidth: 150,
+    },
+    {
+      field: 'areaCode',
+      title: $t('hiddenDangerInspectionStandard.areaCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'createUser',
+      title: $t('hiddenDangerInspectionStandard.submitter'),
+      minWidth: 150,
+    },
+    {
+      field: 'createTime',
+      title: $t('hiddenDangerInspectionStandard.submissionTime'),
+      minWidth: 150,
+    },
+    {
+      field: 'updateTime',
+      title: $t('hiddenDangerInspectionStandard.updateTime'),
+      minWidth: 150,
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -335,7 +367,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
-        <template #toolbar-actions>
+        <template #toolbar-tools>
           <Button
             type="primary"
             @click="showEditFun()"
@@ -395,7 +427,9 @@ onMounted(() => {
         <!-- 工作站选择表单项，验证是否选择 -->
         <FormItem
           :label="$t('hiddenDangerInspectionStandard.checkType')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="checkType"
         >
           <Select
@@ -406,7 +440,9 @@ onMounted(() => {
         <!-- 工作站选择表单项，验证是否选择 -->
         <FormItem
           :label="$t('hiddenDangerInspectionStandard.checkItem')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="checkItem"
         >
           <Input v-model:value="editItem.checkItem" />
@@ -414,7 +450,9 @@ onMounted(() => {
         <!-- 检查标准 -->
         <FormItem
           :label="$t('hiddenDangerInspectionStandard.checkCriteria')"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="checkCriteria"
         >
           <Textarea v-model:value="editItem.checkCriteria" />
@@ -424,7 +462,9 @@ onMounted(() => {
         <FormItem
           :label="$t('hiddenDangerInspectionPlan.inspectionArea')"
           style="margin-bottom: 1em"
-          :rules="[{ required: true, message: $t('page.common.requiredField') }]"
+          :rules="[
+            { required: true, message: $t('page.common.requiredField') },
+          ]"
           name="areaCode"
         >
           <Select

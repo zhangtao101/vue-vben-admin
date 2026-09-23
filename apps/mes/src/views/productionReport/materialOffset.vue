@@ -34,18 +34,46 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-    { field: 'worksheetCode', title: $t('materialOffset.workSheetCode'), minWidth: 190 },
-    { field: 'workstationCode', title: $t('materialOffset.workstationCode'), minWidth: 150 },
-    { field: 'productCode', title: $t('materialOffset.productCode'), minWidth: 150 },
-    { field: 'productName', title: $t('materialOffset.productName'), minWidth: 150 },
-    { field: 'planDateStart', title: $t('materialOffset.planDateStart'), minWidth: 150 },
-    { field: 'workSheetPlanNumber', title: $t('materialOffset.workSheetPlanNumber'), minWidth: 150 },
+    {
+      field: 'worksheetCode',
+      title: $t('materialOffset.workSheetCode'),
+      minWidth: 190,
+    },
+    {
+      field: 'workstationCode',
+      title: $t('materialOffset.workstationCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productCode',
+      title: $t('materialOffset.productCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'productName',
+      title: $t('materialOffset.productName'),
+      minWidth: 150,
+    },
+    {
+      field: 'planDateStart',
+      title: $t('materialOffset.planDateStart'),
+      minWidth: 150,
+    },
+    {
+      field: 'workSheetPlanNumber',
+      title: $t('materialOffset.workSheetPlanNumber'),
+      minWidth: 150,
+    },
     {
       field: 'workSheetFinishNumber',
       title: $t('materialOffset.workSheetFinishNumber'),
       minWidth: 180,
     },
-    { field: 'planDateEnd', title: $t('materialOffset.planDateEnd'), minWidth: 150 },
+    {
+      field: 'planDateEnd',
+      title: $t('materialOffset.planDateEnd'),
+      minWidth: 150,
+    },
     { field: 'unit', title: $t('materialOffset.unit'), minWidth: 150 },
     {
       field: 'state',
@@ -366,6 +394,7 @@ onMounted(() => {
     <!-- region 表格主体 -->
     <Card>
       <Grid>
+        <template #toolbar-tools></template>
         <template #workOrderStatus="{ row }">
           <span> {{ getStatusText(row.state) }} </span>
         </template>

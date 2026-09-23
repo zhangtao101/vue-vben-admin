@@ -33,6 +33,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
       });
       // 后台返回的菜单列表
       const routesBlack = await getAllMenusApi();
+
       // 转换后的菜单列表
       const routes: any[] = mapRouterTree(routesBlack.menu, (node: any) => {
         const item: RouteRecordStringComponent = {
@@ -53,6 +54,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
         };
         return item;
       });
+
       // 添加首页及个人信息页
       routes.push({
         meta: {

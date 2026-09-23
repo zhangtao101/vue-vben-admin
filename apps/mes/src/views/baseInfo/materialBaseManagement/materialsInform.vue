@@ -79,12 +79,32 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 80,
       slots: { default: 'selectedState' },
     },
-    { field: 'materialTypeCode', title: $t('baseInfo.materialCategory'), minWidth: 80 },
-    { field: 'materialCode', title: $t('baseInfo.materialCode'), minWidth: 150 },
-    { field: 'materialDrawingCode', title: $t('baseInfo.materialDrawingNumber'), minWidth: 150 },
-    { field: 'materialName', title: $t('baseInfo.materialName'), minWidth: 200 },
+    {
+      field: 'materialTypeCode',
+      title: $t('baseInfo.materialCategory'),
+      minWidth: 80,
+    },
+    {
+      field: 'materialCode',
+      title: $t('baseInfo.materialCode'),
+      minWidth: 150,
+    },
+    {
+      field: 'materialDrawingCode',
+      title: $t('baseInfo.materialDrawingNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'materialName',
+      title: $t('baseInfo.materialName'),
+      minWidth: 200,
+    },
     { field: 'unit', title: $t('baseInfo.unit'), minWidth: 100 },
-    { field: 'minPackNumber', title: $t('baseInfo.minPackageQuantity'), minWidth: 90 },
+    {
+      field: 'minPackNumber',
+      title: $t('baseInfo.minPackageQuantity'),
+      minWidth: 90,
+    },
     { field: 'safeLevel', title: $t('baseInfo.safetyQuantity'), minWidth: 80 },
     {
       field: 'action',
@@ -217,14 +237,34 @@ const showEditDrawer = ref(false);
 const editMessage = ref({} as any);
 // 编辑对象表单验证规则
 const editRules = ref({
-  downSafe: [{ message: $t('page.common.requiredField'), required: false, trigger: 'change' }],
+  downSafe: [
+    {
+      message: $t('page.common.requiredField'),
+      required: false,
+      trigger: 'change',
+    },
+  ],
   materialCode: [
-    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
   ],
   materialName: [
-    { message: $t('page.common.requiredField'), required: true, trigger: 'change' },
+    {
+      message: $t('page.common.requiredField'),
+      required: true,
+      trigger: 'change',
+    },
   ],
-  upSafe: [{ message: $t('page.common.requiredField'), required: false, trigger: 'change' }],
+  upSafe: [
+    {
+      message: $t('page.common.requiredField'),
+      required: false,
+      trigger: 'change',
+    },
+  ],
 } as any);
 
 /**
@@ -614,6 +654,7 @@ function downloadTemplate() {
             </Col>
           </Row>
           <Grid>
+            <template #toolbar-tools></template>
             <template #action="{ row }">
               <!-- 编辑按钮 -->
               <Tooltip v-if="author.includes('编辑')">
