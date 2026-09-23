@@ -235,7 +235,7 @@ function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = {
       ...queryParams.value,
-      processType: 1,
+      // processType: 1,
       isAsc: isAsc.value ? 1 : 2,
     };
     // 处理日期范围

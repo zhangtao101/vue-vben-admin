@@ -12,8 +12,8 @@ export const overridesPreferences = defineOverridesPreferences({
     accessMode: 'backend',
     name: import.meta.env.VITE_APP_TITLE,
     defaultHomePath: '/dashboard/welcome',
-    watermark: true,
-watermarkContent: '6666',
+    watermark: false,
+    watermarkContent: '',
   },
   theme: {
     mode: 'light',
