@@ -72,7 +72,6 @@ async function generateDynamicRoutes(
   const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
   // 当前用户拥有的角色标识列表
   const userRoles = userInfo.roles ?? [];
-
   // 根据角色生成可访问的路由与菜单树
   const { accessibleMenus, accessibleRoutes } = await generateAccess({
     roles: userRoles,
