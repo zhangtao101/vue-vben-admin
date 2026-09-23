@@ -28,9 +28,12 @@ export const overridesPreferences = defineOverridesPreferences({
     radius: '0.75',
   },
   copyright: {
-    companyName: '',
-    companySiteLink: '/',
-    date: '2026',
+    companyName: "",
+    companySiteLink: "",
+    date: "",
+    enable: false,
+    icp: "",
+    icpLink: ""
   },
   widget: {
     lockScreen: false,
