@@ -41,7 +41,7 @@ async function initSetupVbenForm() {
   });
 }
 
-const useVbenForm = useForm<ComponentType>;
+const useVbenForm = useForm<any>;
 
 export { initSetupVbenForm, useVbenForm, z };
 
