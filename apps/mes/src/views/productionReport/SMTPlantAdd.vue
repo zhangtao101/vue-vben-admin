@@ -29,8 +29,6 @@ import {
   Select,
   SelectOption,
   Space,
-  TabPane,
-  Tabs,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -41,7 +39,6 @@ import {
   createArticle,
   exportDetail,
   exportList,
-  fetchDetailByName,
   fetchList,
   fetchProcessByWorkstation,
   fetchWorkorder,
@@ -160,68 +157,34 @@ const readCodeColumns: any[] = [
 ];
 
 /**
- * 人工报工明细表格配置
+ * 读码报工明细表格配置
+ * 使用 proxyConfig 代理加载，加载方式与主表格一致
  */
-const manualReportColumns: any[] = [
-  { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
-  { field: 'taskLine', title: $t('SMTPlantAdd.taskLine'), minWidth: 100 },
-  { field: 'processName', title: $t('SMTPlantAdd.reportProcess'), minWidth: 80 },
-  { field: 'workSheetCode', title: $t('SMTPlantAdd.workOrderCode'), minWidth: 120 },
-  { field: 'partCode', title: $t('SMTPlantAdd.partCode'), minWidth: 80 },
-  { field: 'partName', title: $t('SMTPlantAdd.partName'), minWidth: 150 },
-  {
-    field: 'partOrProduct',
-    slots: { default: 'partOrProduct' },
-    title: $t('SMTPlantAdd.partOrProduct'),
-    minWidth: 80,
-  },
-  { field: 'planDateStart', title: $t('SMTPlantAdd.issueDate'), minWidth: 90 },
-  { field: 'workSheetPlanNumber', title: $t('SMTPlantAdd.workOrderPlanNumber'), minWidth: 100 },
-  { field: 'workSheetFinishNumber', title: $t('SMTPlantAdd.workOrderFinishNumber'), minWidth: 100 },
-  {
-    field: 'isLater',
-    slots: { default: 'isLater' },
-    title: $t('SMTPlantAdd.delay'),
-    minWidth: 60,
-  },
-  { field: 'reportDate', title: $t('SMTPlantAdd.reportDate'), minWidth: 90 },
-  { field: 'reportTimeQuantum', title: $t('SMTPlantAdd.reportTimeSlot'), minWidth: 90 },
-  { field: 'qcCode', title: $t('SMTPlantAdd.qrCode'), minWidth: 80 },
-  { field: 'reportNumber', title: $t('SMTPlantAdd.reportNumber'), minWidth: 80 },
-  { field: 'partPlanCode', title: $t('SMTPlantAdd.partPlanCode'), minWidth: 90 },
-  { field: 'partPlanNumber', title: $t('SMTPlantAdd.plannedCompletionNumber'), minWidth: 90 },
-  { field: 'partPlanFinishNumber', title: $t('SMTPlantAdd.plannedCompletedNumber'), minWidth: 100 },
-  { field: 'productName', title: $t('SMTPlantAdd.productName'), minWidth: 150 },
-  { field: 'productPlanCode', title: $t('SMTPlantAdd.productPlanCode'), minWidth: 120 },
-  { field: 'createTime', title: $t('SMTPlantAdd.operationTime'), minWidth: 135 },
-  { field: 'createUserName', title: $t('SMTPlantAdd.operator'), minWidth: 80 },
-  {
-    field: 'dataType',
-    slots: { default: 'dataType' },
-    title: $t('SMTPlantAdd.dataSource'),
-    minWidth: 80,
-  },
-];
-
-// 初始化时使用默认值
-const detailColumns = ref(readCodeColumns);
-
-const detailGridOptions: VxeGridProps<any> = {
+const readCodeGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  columns: detailColumns.value,
-  data: [],
+  columns: readCodeColumns,
   height: 300,
   pagerConfig: {
     enabled: true,
     pageSize: 20,
     pageSizes: [20, 30, 50],
   },
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }: any) => {
+        return await queryReadCodeData({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+        });
+      },
+    },
+  },
   stripe: true,
 };
 
-const [DetailGrid, detailGridApi] = useVbenVxeGrid({
-  gridOptions: detailGridOptions,
+const [ReadCodeGrid, readCodeGridApi] = useVbenVxeGrid({
+  gridOptions: readCodeGridOptions,
 });
 
 // endregion 详情表格配置
@@ -282,7 +245,6 @@ const [WorkorderGrid, workorderGridApi] = useVbenVxeGrid({
 
 // region 状态定义
 
-const activeTab = ref<string>('first');
 const tableShow = ref(false);
 const detailShow = ref(false);
 const addShow = ref(false);
@@ -520,57 +482,47 @@ function handleDetail(row: any) {
   }
   detailQuery.partName = row.subProductName;
   detailShow.value = true;
-  detailColumns.value = readCodeColumns;
-  loadReadCodeData();
+  reloadDetailGrid();
 }
 
 /**
- * Tab 切换
+ * 刷新报工明细表格
+ * 表格未挂载时由 proxyConfig 首次渲染自动加载
  */
-function handleTabChange(key: number | string) {
-  activeTab.value = String(key);
-  detailColumns.value = key === 'first' ? readCodeColumns : manualReportColumns;
-  if (key === 'first') {
-    loadReadCodeData();
-  } else {
-    loadManualData();
+function reloadDetailGrid() {
+  if (readCodeGridApi?.grid) {
+    readCodeGridApi.reload();
   }
 }
 
 /**
- * 加载读码报工数据
+ * 查询读码报工数据
+ * 用于读码报工表格 proxyConfig 代理加载
  */
-function loadReadCodeData() {
-  const params = {
-    ...detailQuery,
-    pageNum: 1,
-    pageSize: 20,
-  };
-  fetParams(params)
-    .then((data: any) => {
-      detailGridApi.grid.reloadData(data.results);
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.loadReadCodeDataFailed'));
-    });
-}
-
-/**
- * 加载人工报工数据
- */
-function loadManualData() {
-  const params = {
-    ...detailQuery,
-    pageNum: 1,
-    pageSize: 20,
-  };
-  fetchDetailByName(params)
-    .then((data: any) => {
-      detailGridApi.grid.reloadData(data.list);
-    })
-    .catch((error: any) => {
-      message.error(error.message || $t('SMTPlantAdd.loadManualDataFailed'));
-    });
+function queryReadCodeData({ page, pageSize }: any) {
+  return new Promise((resolve) => {
+    if (!detailQuery.workstationCode || !detailQuery.bindingId) {
+      resolve({ items: [], total: 0 });
+      return;
+    }
+    const params = {
+      ...detailQuery,
+      pageNum: page,
+      pageSize,
+    };
+    fetParams(params)
+      .then((data: any) => {
+        const list = data.results || [];
+        resolve({
+          total: data.total || list.length,
+          items: list,
+        });
+      })
+      .catch((error: any) => {
+        message.error(error.message || $t('SMTPlantAdd.loadReadCodeDataFailed'));
+        resolve({ items: [], total: 0 });
+      });
+  });
 }
 
 /**
@@ -857,54 +809,27 @@ onMounted(() => {
           {{ $t('SMTPlantAdd.export') }}
         </Button>
       </div>
-      <Tabs v-model:active-key="activeTab" @change="handleTabChange">
-        <TabPane key="first" :tab="$t('SMTPlantAdd.readCodeReport')">
-          <DetailGrid>
-            <template #partOrProduct="{ row }">
-              <span>{{
-                row.partOrProduct === 1
-                  ? $t('SMTPlantAdd.part')
-                  : row.partOrProduct === 2
-                    ? $t('SMTPlantAdd.product')
-                    : ''
-              }}</span>
-            </template>
-            <template #isLater="{ row }">
-              <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
-              }}</span>
-            </template>
-            <template #dataType="{ row }">
-              <span>{{
-                row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
-              }}</span>
-            </template>
-          </DetailGrid>
-        </TabPane>
-        <TabPane key="second" :tab="$t('SMTPlantAdd.manualReport')">
-          <DetailGrid>
-            <template #partOrProduct="{ row }">
-              <span>{{
-                row.partOrProduct === 1
-                  ? $t('SMTPlantAdd.part')
-                  : row.partOrProduct === 2
-                    ? $t('SMTPlantAdd.product')
-                    : ''
-              }}</span>
-            </template>
-            <template #isLater="{ row }">
-              <span>{{
-                row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
-              }}</span>
-            </template>
-            <template #dataType="{ row }">
-              <span>{{
-                row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
-              }}</span>
-            </template>
-          </DetailGrid>
-        </TabPane>
-      </Tabs>
+      <ReadCodeGrid>
+        <template #partOrProduct="{ row }">
+          <span>{{
+            row.partOrProduct === 1
+              ? $t('SMTPlantAdd.part')
+              : row.partOrProduct === 2
+                ? $t('SMTPlantAdd.product')
+                : ''
+          }}</span>
+        </template>
+        <template #isLater="{ row }">
+          <span>{{
+            row.isLater === 2 ? $t('SMTPlantAdd.yes') : row.isLater === 1 ? $t('SMTPlantAdd.no') : ''
+          }}</span>
+        </template>
+        <template #dataType="{ row }">
+          <span>{{
+            row.dataType === 1 ? $t('SMTPlantAdd.readCode') : row.dataType === 2 ? $t('SMTPlantAdd.redFlush') : ''
+          }}</span>
+        </template>
+      </ReadCodeGrid>
     </Card>
 
     <!-- 新增报工记录弹窗 -->
