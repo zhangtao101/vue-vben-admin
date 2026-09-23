@@ -123,7 +123,12 @@ watch(
 </script>
 
 <template>
-  <BasicLayout @clear-preferences-and-logout="handleLogout">
+  <BasicLayout
+    :avatar
+    :text="userStore.userInfo?.userName"
+    @clear-preferences-and-logout="handleLogout"
+    @logout="handleLogout"
+  >
     <template #user-dropdown>
       <UserDropdown
         :avatar
@@ -131,6 +136,7 @@ watch(
         :text="userStore.userInfo?.userName"
         :description="userStore.userInfo?.roleNames.join(',')"
         :tag-text="userStore.userInfo?.perName"
+        @clear-preferences-and-logout="handleLogout"
         @logout="handleLogout"
       />
     </template>
