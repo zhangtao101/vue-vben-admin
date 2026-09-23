@@ -35,5 +35,12 @@
   "notStarted": "工作尚未开始",
   "packTypeSingle": "单包",
   "packTypeMulti": "多包",
-  "packTypeBag": "料包"
+  "packTypeBag": "料包",
+  "inkjetTransfer": "喷码传输",
+  "packType": "包装类型",
+  "packTypeBox": "箱包",
+  "packTypeAll": "全部",
+  "isInit": "是否初始化",
+  "planDateStart": "计划开始时间",
+  "workOrderNotSelected": "请先选择工单"
 }

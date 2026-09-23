@@ -35,5 +35,12 @@
   "notStarted": "Work has not started yet",
   "packTypeSingle": "Single Pack",
   "packTypeMulti": "Multi Pack",
-  "packTypeBag": "Material Bag"
+  "packTypeBag": "Material Bag",
+  "inkjetTransfer": "Inkjet Transfer",
+  "packType": "Packing Type",
+  "packTypeBox": "Carton Pack",
+  "packTypeAll": "All",
+  "isInit": "Initialize",
+  "planDateStart": "Plan Start Date",
+  "workOrderNotSelected": "Please select a work order first"
 }

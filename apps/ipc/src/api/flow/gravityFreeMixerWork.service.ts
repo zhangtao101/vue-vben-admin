@@ -176,3 +176,25 @@ export function deleteFinishRecord(id: number) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/palletiz/finish/record/delete/${id}`,
   );
 }
+
+/**
+ * 喷码传输
+ * @param data 提交数据
+ * @param data.isInit 是否初始化：1 是 2 否
+ * @param data.subLineCode 子产线编号
+ * @param data.type 包装类型：单包 1 多包 2 箱包 3 全部 4
+ * @param data.workSheetCode 工单号
+ * @returns 操作结果
+ * @since 2026-09-21
+ */
+export function palletizTransfer(data: {
+  isInit: number;
+  subLineCode: string;
+  type: number;
+  workSheetCode: string;
+}) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/palletiz/transfer`,
+    data,
+  );
+}

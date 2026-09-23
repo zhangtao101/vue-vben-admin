@@ -35,5 +35,12 @@
   "notStarted": "작업이 아직 시작되지 않았습니다",
   "packTypeSingle": "단포",
   "packTypeMulti": "다포",
-  "packTypeBag": "재료포"
+  "packTypeBag": "재료포",
+  "inkjetTransfer": "잉크젯 전송",
+  "packType": "포장 유형",
+  "packTypeBox": "박스포",
+  "packTypeAll": "전체",
+  "isInit": "초기화 여부",
+  "planDateStart": "계획 시작일",
+  "workOrderNotSelected": "작업지시를 먼저 선택하세요"
 }

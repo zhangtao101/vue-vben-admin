@@ -1,15 +1,19 @@
 <script setup lang="ts">
 /**
- * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/searchSubLine/searchWeightRecordList/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉。
+ * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/palletizTransfer/searchSubLine/searchWeightRecordList/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉。
  * [OUTPUT]: 对外提供 packagingProgress 包装工序步骤组件（步骤组件标准入参 functionId/bindingId/worksheetCode/equipCode/workstationCode/processType）。
- * [POS]: 属于包装工序步骤组件，负责子产线/工单查询、左右两栏工单信息展示、称重记录列表与工作开始/结束控制。
+ * [POS]: 属于包装工序步骤组件，负责子产线/工单查询、左右两栏工单信息展示、称重记录列表、工作开始/结束控制与喷码传输弹窗。
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-09-02 00:00:00
+ * [TIME]: 2026-09-21 00:00:00
  */
+import type { Rule } from 'ant-design-vue/es/form';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   CheckboxGroup,
@@ -18,14 +22,20 @@ import {
   FormItem,
   Input,
   message,
+  Modal,
+  Radio,
+  RadioGroup,
   Row,
   Select,
+  Switch,
   Textarea,
+  Tooltip,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getPlanWorkSheet,
+  palletizTransfer,
   searchSubLine,
   searchWeightRecordList,
   selectLineByWorkSheetId,
@@ -55,7 +65,46 @@ const form = reactive<any>({
 /** 子产线下拉选项（接口获取） */
 const subLineOptions = ref<{ label: string; value: string }[]>([]);
 /** 工单下拉选项（根据子产线查询） */
-const workOrderOptions = ref<{ label: string; value: number }[]>([]);
+const workOrderOptions = ref<{ label: string; state: any; value: number }[]>(
+  [],
+);
+/** 工单对应的子产线/产线原始数据，作为喷码传输弹窗的子产线下拉选项来源 */
+const lineList = ref<any[]>([]);
+
+/** 工单状态指示灯：state 为 1 时绿色，其余（含未选中/未开始）灰色 */
+const WORK_ORDER_RUNNING_STATE = '1';
+
+/**
+ * 判断工单状态值是否为「运行中」（state === 1）。
+ * @param {any} state - 工单状态值，兼容数字与字符串。
+ * @returns {boolean} 为 1 返回 true，否则返回 false。
+ * @throws 不主动抛出异常。
+ * @since 2026-09-21 00:00:00
+ */
+function isRunningState(state: any) {
+  return String(state) === WORK_ORDER_RUNNING_STATE;
+}
+
+/** 顶部查询区当前选中工单的状态值（取工单下拉原始数据） */
+const selectedWorkOrderState = computed(() => {
+  const hit = workOrderOptions.value.find(
+    (item: any) => item.value === form.workOrder,
+  );
+  return hit?.state;
+});
+
+/**
+ * 取面板工单的状态指示灯颜色类：state 为 1 显示绿色实心圆，否则灰色。
+ * 面板数据来自 selectLineByWorkSheetId，取不到时回退到顶部选中工单的状态。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @returns {string} 圆点背景色类名（bg-green-500 / bg-gray-400）。
+ * @throws 不主动抛出异常。
+ * @since 2026-09-21 00:00:00
+ */
+function getStateDotClass(panel: any) {
+  const state = panel?.form?.state ?? selectedWorkOrderState.value;
+  return isRunningState(state) ? 'bg-green-500' : 'bg-gray-400';
+}
 
 /**
  * 加载子产线下拉选项，仅页面加载时执行一次。
@@ -89,6 +138,8 @@ function loadWorkOrders() {
     workOrderOptions.value = (res ?? []).map((item: any) => ({
       label: item.workSheetCode,
       value: item.id,
+      // 保留工单状态，供状态指示灯（state === 1 绿色）使用
+      state: item.state,
     }));
   });
 }
@@ -119,6 +170,7 @@ function handleWorkOrderChange(workSheetId: any) {
   }
   selectLineByWorkSheetId(workSheetId).then((res: any) => {
     const lines = res ?? [];
+    lineList.value = lines;
     fillPanel(leftPanel, lines[0]);
     fillPanel(rightPanel, lines[1]);
     loadMaterials();
@@ -236,6 +288,8 @@ function resetPanel(panel: any) {
 function resetPanels() {
   resetPanel(leftPanel);
   resetPanel(rightPanel);
+  // 清空子产线原始数据，避免传输弹窗残留上次的子产线选项
+  lineList.value = [];
 }
 // endregion
 
@@ -393,6 +447,155 @@ function handleWorkEnd(panel: any) {
 }
 // endregion
 
+// region 5. 喷码传输弹窗（子产线 / 工单 / 包装类型 / 是否初始化）
+/** 传输弹窗显示状态 */
+const transferVisible = ref(false);
+/** 传输表单实例，用于提交前校验 */
+const transferFormRef = ref<any>();
+/** 传输提交中状态，控制弹窗确认按钮 loading */
+const transferSubmitting = ref(false);
+/** 传输表单数据：isInit 为开关布尔值，提交时转换为 1（是）/ 2（否） */
+const transferForm = ref<any>({
+  subLineCode: undefined,
+  workSheetCode: '',
+  /** 包装类型：单包 1 / 多包 2 / 箱包 3 / 全部 4 */
+  type: 1,
+  isInit: false,
+});
+
+/** 传输弹窗子产线下拉选项：取自工单对应子产线接口数据，并携带计划开始时间 */
+const transferSubLineOptions = computed(() =>
+  (lineList.value ?? []).map((line: any) => ({
+    label: `${line.lineCode}(${line.lineName})`,
+    value: line.lineCode,
+    planDateStart: line.planDateStart,
+  })),
+);
+
+/** 当前选中子产线对应的计划开始时间，以文本形式展示在工单号后面 */
+const selectedPlanDateStart = computed(() => {
+  const hit = transferSubLineOptions.value.find(
+    (item: any) => item.value === transferForm.value.subLineCode,
+  );
+  return hit?.planDateStart ?? '';
+});
+
+/** 传输表单校验规则 */
+const transferRules: Record<string, Rule[]> = {
+  subLineCode: [
+    {
+      required: true,
+      message: $t('common.pleaseSelect'),
+      trigger: 'change',
+    },
+  ],
+  workSheetCode: [
+    {
+      required: true,
+      message: $t('common.pleaseEnter'),
+      trigger: 'change',
+    },
+  ],
+  type: [
+    {
+      required: true,
+      message: $t('common.pleaseSelect'),
+      trigger: 'change',
+    },
+  ],
+};
+
+/**
+ * 取面板工单号，取不到时回退到顶部下拉选中工单的工单号。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @returns {string} 工单号，均取不到时返回空字符串。
+ * @throws 不主动抛出异常。
+ * @since 2026-09-21 00:00:00
+ */
+function resolveWorkSheetCode(panel: any) {
+  if (panel?.form?.workSheetCode) {
+    return panel.form.workSheetCode;
+  }
+  const hit = workOrderOptions.value.find(
+    (item: any) => item.value === form.workOrder,
+  );
+  return hit?.label ?? '';
+}
+
+/**
+ * 打开喷码传输弹窗：工单号由当前面板带入，子产线默认选中当前面板的子产线。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @returns {void} 无返回值，未选择工单时提示并中断。
+ * @throws 不主动抛出异常。
+ * @since 2026-09-21 00:00:00
+ */
+function openTransfer(panel: any) {
+  const workSheetCode = resolveWorkSheetCode(panel);
+  if (!workSheetCode) {
+    message.warning($t('packagingProgress.workOrderNotSelected'));
+    return;
+  }
+  transferForm.value = {
+    subLineCode: undefined,
+    workSheetCode,
+    type: 1,
+    isInit: false,
+  };
+  transferVisible.value = true;
+}
+
+/**
+ * 关闭喷码传输弹窗并清空全部状态，保证下次打开为初始状态。
+ * @returns {void} 无返回值。
+ * @throws 不主动抛出异常。
+ * @since 2026-09-21 00:00:00
+ */
+function handleTransferClose() {
+  transferVisible.value = false;
+  transferSubmitting.value = false;
+  transferForm.value = {
+    subLineCode: undefined,
+    workSheetCode: '',
+    type: 1,
+    isInit: false,
+  };
+}
+
+/**
+ * 提交喷码传输：校验通过后调用 palletizTransfer。
+ * isInit 为 true 提交 1、false 提交 2。
+ * @returns {void} 无返回值。
+ * @throws 校验失败时静默返回；接口失败时提示错误信息。
+ * @since 2026-09-21 00:00:00
+ */
+function handleTransferSubmit() {
+  transferFormRef.value
+    ?.validate()
+    .then(() => {
+      transferSubmitting.value = true;
+      palletizTransfer({
+        isInit: transferForm.value.isInit ? 1 : 2,
+        subLineCode: transferForm.value.subLineCode,
+        type: transferForm.value.type,
+        workSheetCode: transferForm.value.workSheetCode,
+      })
+        .then(() => {
+          message.success($t('common.successfulOperation'));
+          handleTransferClose();
+        })
+        .catch(() => {
+          message.error($t('common.operationFailure'));
+        })
+        .finally(() => {
+          transferSubmitting.value = false;
+        });
+    })
+    .catch(() => {
+      // 校验失败时由表单自身提示，无需额外处理
+    });
+}
+// endregion
+
 onMounted(() => {
   loadMaterials();
   loadSubLines();
@@ -414,25 +617,55 @@ onMounted(() => {
               :model="form"
             >
               <FormItem :label="$t('packagingProgress.subLine')" class="mb-2!">
-                <Select
-                  v-model:value="form.subLine"
-                  :options="subLineOptions"
-                  :placeholder="$t('packagingProgress.subLinePlaceholder')"
-                  allow-clear
-                  @change="handleSubLineChange"
-                />
+                <div class="flex items-center gap-2">
+                  <Select
+                    v-model:value="form.subLine"
+                    :options="subLineOptions"
+                    :placeholder="$t('packagingProgress.subLinePlaceholder')"
+                    allow-clear
+                    class="flex-1"
+                    @change="handleSubLineChange"
+                  />
+                  <!-- 工单状态指示灯：state === 1 绿色，其余灰色 -->
+                  <span
+                    class="size-3 shrink-0 rounded-full"
+                    :class="getStateDotClass(leftPanel)"
+                  ></span>
+                </div>
               </FormItem>
               <FormItem
                 :label="$t('packagingProgress.workOrder')"
                 class="mb-2!"
               >
-                <Select
-                  v-model:value="form.workOrder"
-                  :options="workOrderOptions"
-                  :placeholder="$t('packagingProgress.workOrderPlaceholder')"
-                  allow-clear
-                  @change="handleWorkOrderChange"
-                />
+                <div class="flex items-center gap-2">
+                  <Select
+                    v-model:value="form.workOrder"
+                    :options="workOrderOptions"
+                    :placeholder="$t('packagingProgress.workOrderPlaceholder')"
+                    allow-clear
+                    class="flex-1"
+                    @change="handleWorkOrderChange"
+                  />
+                  <!-- 喷码传输：弹窗选择子产线/区域代码/是否初始化后提交 -->
+                  <Tooltip :title="$t('packagingProgress.inkjetTransfer')">
+                    <Button
+                      type="primary"
+                      shape="circle"
+                      class="shrink-0"
+                      @click="openTransfer(leftPanel)"
+                    >
+                      <Icon
+                        icon="mdi:transfer-right"
+                        class="inline-block align-middle text-lg"
+                      />
+                    </Button>
+                  </Tooltip>
+                  <!-- 工单状态指示灯：state === 1 绿色，其余灰色 -->
+                  <span
+                    class="size-3 shrink-0 rounded-full"
+                    :class="getStateDotClass(leftPanel)"
+                  ></span>
+                </div>
               </FormItem>
               <FormItem :label="$t('packagingProgress.product')" class="mb-2!">
                 <Input
@@ -553,22 +786,52 @@ onMounted(() => {
               :model="rightPanel.form"
             >
               <FormItem :label="$t('packagingProgress.subLine')" class="mb-2!">
-                <Select
-                  v-model:value="rightPanel.form.subLine"
-                  :options="subLineOptions"
-                  :placeholder="$t('packagingProgress.subLinePlaceholder')"
-                  disabled
-                />
+                <div class="flex items-center gap-2">
+                  <Select
+                    v-model:value="rightPanel.form.subLine"
+                    :options="subLineOptions"
+                    :placeholder="$t('packagingProgress.subLinePlaceholder')"
+                    disabled
+                    class="flex-1"
+                  />
+                  <!-- 工单状态指示灯：state === 1 绿色，其余灰色 -->
+                  <span
+                    class="size-3 shrink-0 rounded-full"
+                    :class="getStateDotClass(rightPanel)"
+                  ></span>
+                </div>
               </FormItem>
               <FormItem
                 :label="$t('packagingProgress.workOrder')"
                 class="mb-2!"
               >
-                <Input
-                  v-model:value="rightPanel.form.workOrder"
-                  :placeholder="$t('packagingProgress.workOrderPlaceholder')"
-                  disabled
-                />
+                <div class="flex items-center gap-2">
+                  <Input
+                    v-model:value="rightPanel.form.workOrder"
+                    :placeholder="$t('packagingProgress.workOrderPlaceholder')"
+                    disabled
+                    class="flex-1"
+                  />
+                  <!-- 喷码传输：弹窗选择子产线/区域代码/是否初始化后提交 -->
+                  <Tooltip :title="$t('packagingProgress.inkjetTransfer')">
+                    <Button
+                      type="primary"
+                      shape="circle"
+                      class="shrink-0"
+                      @click="openTransfer(rightPanel)"
+                    >
+                      <Icon
+                        icon="mdi:transfer-right"
+                        class="inline-block align-middle text-lg"
+                      />
+                    </Button>
+                  </Tooltip>
+                  <!-- 工单状态指示灯：state === 1 绿色，其余灰色 -->
+                  <span
+                    class="size-3 shrink-0 rounded-full"
+                    :class="getStateDotClass(rightPanel)"
+                  ></span>
+                </div>
               </FormItem>
               <FormItem :label="$t('packagingProgress.product')" class="mb-2!">
                 <Input
@@ -680,5 +943,70 @@ onMounted(() => {
 
     <!-- 5. 包装材料加载/卸载抽屉（公共组件） -->
     <PackagingMaterialDrawer ref="materialDrawerRef" @refresh="loadMaterials" />
+
+    <!-- 6. 喷码传输弹窗 -->
+    <Modal
+      v-model:open="transferVisible"
+      :title="$t('packagingProgress.inkjetTransfer')"
+      :ok-text="$t('common.confirm')"
+      :cancel-text="$t('common.cancel')"
+      :confirm-loading="transferSubmitting"
+      :destroy-on-close="true"
+      @ok="handleTransferSubmit"
+      @cancel="handleTransferClose"
+    >
+      <Form
+        ref="transferFormRef"
+        :model="transferForm"
+        :rules="transferRules"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 18 }"
+      >
+        <FormItem :label="$t('packagingProgress.subLine')" name="subLineCode">
+          <Select
+            v-model:value="transferForm.subLineCode"
+            :options="transferSubLineOptions"
+            :placeholder="$t('packagingProgress.subLinePlaceholder')"
+            allow-clear
+          />
+        </FormItem>
+        <FormItem
+          :label="$t('packagingProgress.workOrder')"
+          name="workSheetCode"
+        >
+          <div class="flex items-center gap-2">
+            <Input
+              v-model:value="transferForm.workSheetCode"
+              :placeholder="$t('packagingProgress.workOrderPlaceholder')"
+              disabled
+              class="flex-1"
+            />
+            <!-- 子产线对应的计划开始时间，文本展示 -->
+            <span class="shrink-0 text-sm text-muted-foreground">
+              {{ selectedPlanDateStart }}
+            </span>
+          </div>
+        </FormItem>
+        <FormItem :label="$t('packagingProgress.packType')" name="type">
+          <RadioGroup v-model:value="transferForm.type">
+            <Radio :value="1">
+              {{ $t('packagingProgress.packTypeSingle') }}
+            </Radio>
+            <Radio :value="2">
+              {{ $t('packagingProgress.packTypeMulti') }}
+            </Radio>
+            <Radio :value="3">
+              {{ $t('packagingProgress.packTypeBox') }}
+            </Radio>
+            <Radio :value="4">
+              {{ $t('packagingProgress.packTypeAll') }}
+            </Radio>
+          </RadioGroup>
+        </FormItem>
+        <FormItem :label="$t('packagingProgress.isInit')" name="isInit">
+          <Switch v-model:checked="transferForm.isInit" />
+        </FormItem>
+      </Form>
+    </Modal>
   </div>
 </template>
