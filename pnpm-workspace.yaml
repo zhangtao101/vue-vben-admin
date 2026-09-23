@@ -33,6 +33,10 @@ blockExoticSubdeps: false
 overrides:
   '@ast-grep/napi': 'catalog:'
   '@ctrl/tinycolor': 'catalog:'
+  # 统一 @vue/* 子包版本，避免 vue-router 因 peer 解析差异产生多个实例，
+  # 导致打包后 useRoute()/useRouter() 注入 key 不匹配而返回 undefined
+  '@vue/compiler-sfc': 3.5.41
+  '@vue/runtime-core': 3.5.41
   clsx: 'catalog:'
   pinia: 'catalog:'
   vue: 'catalog:'
@@ -98,7 +102,6 @@ catalog:
   '@types/qrcode': ^1.5.6
   '@types/qs': ^6.15.1
   '@types/sortablejs': ^1.15.9
-  '@typescript-eslint/eslint-plugin': ^8.60.1
   '@typescript-eslint/parser': ^8.68.0
   '@vee-validate/zod': ^4.15.1
   '@videojs-player/vue': ^1.0.0
@@ -153,7 +156,6 @@ catalog:
   eslint-plugin-n: ^18.2.2
   eslint-plugin-perfectionist: ^5.10.0
   eslint-plugin-pnpm: ^1.7.0
-  eslint-plugin-unicorn: ^64.0.0
   eslint-plugin-unused-imports: ^4.4.1
   eslint-plugin-vue: ^10.10.0
   eslint-plugin-yml: ^3.6.0
@@ -227,7 +229,6 @@ catalog:
   unplugin-element-plus: ^0.11.2
   unplugin-vue: ^7.2.0
   uuid: ^12.0.0
-  vee-validate: ^4.15.1
   video.js: ^8.23.4
   vite: ^8.3.0
   vite-plugin-compression: ^0.5.1
