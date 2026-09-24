@@ -49,3 +49,29 @@ export async function loginApi(data: any) {
 export async function getAccessCodesApi() {
   return requestClient.get<string[]>('/auth/codes');
 }
+
+/**
+ * 授权认证接口
+ * 用于提交授权码完成系统授权，业务 code 非 200 时由响应拦截器抛出异常
+ * @param authorCode 授权码
+ * @returns 授权结果，成功时返回接口 data（当前为 null）
+ * @since 2026-09-24
+ */
+export async function testUserAuthorApi(authorCode: string) {
+  return requestClient.get<null>(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/user/testUserAuthor?authorCode=${authorCode}`,
+  );
+}
+
+/**
+ * 本地授权校验
+ * 校验当前环境是否已授权，data 为 1 表示已认证，-1 表示未认证；
+ * 未校验时接口返回 code 402 并由响应拦截器抛出异常
+ * @returns 授权状态，1 已认证，-1 未认证
+ * @since 2026-09-24
+ */
+export async function getUserAuthorFlagApi() {
+  return requestClient.get<number>(
+    `${import.meta.env.VITE_GLOB_MES_USER}/sys/user/getUserAuthorFlag`,
+  );
+}

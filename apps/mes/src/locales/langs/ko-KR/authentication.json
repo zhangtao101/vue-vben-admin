@@ -1,0 +1,9 @@
+{
+  "authorCode": "인증 코드",
+  "authorCodeTip": "인증 코드를 입력하세요",
+  "authorize": "인증",
+  "systemAuthorization": "시스템 인증",
+  "systemAuthorizationSubtitle": "시스템 인증을 완료하려면 인증 코드를 입력하세요",
+  "authorizeSuccess": "인증 성공, 로그인하세요",
+  "authorizeFailed": "인증 실패, 인증 코드를 확인하세요"
+}

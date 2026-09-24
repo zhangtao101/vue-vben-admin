@@ -1,0 +1,9 @@
+{
+  "authorCode": "Authorization Code",
+  "authorCodeTip": "Please enter the authorization code",
+  "authorize": "Authorize",
+  "systemAuthorization": "System Authorization",
+  "systemAuthorizationSubtitle": "Please enter the authorization code to activate the system",
+  "authorizeSuccess": "Authorization succeeded, please sign in",
+  "authorizeFailed": "Authorization failed, please check the authorization code"
+}
