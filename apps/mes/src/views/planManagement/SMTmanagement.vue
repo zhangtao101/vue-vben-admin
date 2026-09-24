@@ -447,8 +447,6 @@ function handleDelete(row: any) {
  */
 function handleBarcodePrint(row: any) {
   printWorksheets([row]);
-function handleBarcodePrint(_row: any) {
-  message.info($t('planManagement.printNotReady'));
 }
 // endregion
 

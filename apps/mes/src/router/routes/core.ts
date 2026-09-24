@@ -195,6 +195,16 @@ const coreRoutes: RouteRecordRaw[] = [
       },
       {
         component: () =>
+          import('#/views/planManagement/packingWorkOrderManage.vue'),
+        meta: {
+          ignoreAccess: true,
+          title: '包装工单管理',
+        },
+        name: 'packingWorkOrderManage',
+        path: 'packingWorkOrderManage',
+      },
+      {
+        component: () =>
           import('#/views/storeManagement/materialManagement/storesRequisition.vue'),
         meta: {
           ignoreAccess: true,
