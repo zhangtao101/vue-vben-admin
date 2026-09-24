@@ -1,0 +1,9 @@
+{
+  "authorCode": "认证码",
+  "authorCodeTip": "请输入认证码",
+  "authorize": "认证",
+  "systemAuthorization": "系统认证",
+  "systemAuthorizationSubtitle": "请输入认证码完成系统授权",
+  "authorizeSuccess": "认证成功，请登录",
+  "authorizeFailed": "认证失败，请检查认证码"
+}
