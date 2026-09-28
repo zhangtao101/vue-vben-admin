@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
+import { onMounted, reactive, ref } from 'vue';
 
 import {
   Button,
@@ -12,15 +14,17 @@ import {
   message,
   Modal,
   Row,
+  Select,
   Space,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addFinishRecord,
   getWorkLot,
   queryFinishRecord,
   removeFinishRecords,
+  selectWorkSheet,
 } from '#/api';
 import { $t } from '#/locales';
 
@@ -39,23 +43,49 @@ const queryForm = reactive<any>({
   workSheetCode: '',
 });
 
+/** 工单下拉选项（selectWorkSheet，包装工序 processType 固定为 4） */
+const workSheetOptions = ref<{ label: string; value: string }[]>([]);
+
+/** 加载工单下拉选项：仅按 processType=4 查询，页面加载时执行一次 */
+function loadWorkSheetOptions() {
+  return selectWorkSheet({ processType: 4 }).then((res: any) => {
+    const list = res?.list ?? [];
+    workSheetOptions.value = list
+      .map((item: any) => item?.workSheetCode)
+      .filter((code: any) => !!code)
+      .map((code: string) => ({ label: code, value: code }));
+  });
+}
+
+onMounted(() => {
+  loadWorkSheetOptions();
+});
+
 function handleQuery() {
+  // 重新查询时清空左侧选中，右侧未选中则不再请求数据
+  selectedLot.value = null;
   productionGridApi.reload();
   lotGridApi.reload();
 }
 
 function handleReset() {
   queryForm.workSheetCode = '';
+  // 重置时同样清空左侧选中
+  selectedLot.value = null;
   productionGridApi.reload();
   lotGridApi.reload();
 }
 // endregion
 
 // region 2.1 左侧：子工单列表（getWorkLot，无需分页）
+/** 左侧单选中的子工单行，右侧完工记录按其 equipCode 查询 */
+const selectedLot = ref<any>(null);
+
 const lotGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
+    { type: 'radio', width: 50, radioConfig: { trigger: 'row' } } as any,
     {
       field: 'lotCode',
       title: $t('productionPerformance.colLotCode'),
@@ -80,10 +110,15 @@ const lotGridOptions: VxeGridProps<any> = {
   height: 360,
   stripe: true,
   pagerConfig: { enabled: false },
+  radioConfig: { highlight: true, trigger: 'row' },
+  rowConfig: { isHover: true },
   toolbarConfig: { custom: true, refresh: true, zoom: true },
   proxyConfig: {
     ajax: {
       query: () => {
+        // 左侧列表重新加载后原选中行失效，清空选中并同步刷新右侧
+        selectedLot.value = null;
+        productionGridApi.reload();
         if (!queryForm.workSheetCode) {
           return Promise.resolve({ items: [] });
         }
@@ -95,7 +130,18 @@ const lotGridOptions: VxeGridProps<any> = {
   },
 };
 
-const [LotGrid, lotGridApi] = useVbenVxeGrid({ gridOptions: lotGridOptions });
+/** 表格事件：左侧单选子工单后，按其 equipCode 刷新右侧完工记录 */
+const lotGridEvents: VxeGridListeners<any> = {
+  radioChange: ({ row }: any) => {
+    selectedLot.value = row ?? null;
+    productionGridApi.reload();
+  },
+};
+
+const [LotGrid, lotGridApi] = useVbenVxeGrid({
+  gridEvents: lotGridEvents,
+  gridOptions: lotGridOptions,
+});
 // endregion
 
 // region 2.2 右侧：完工记录列表（queryFinishRecord 分页查询）
@@ -134,7 +180,12 @@ const productionGridOptions: VxeGridProps<any> = {
   proxyConfig: {
     ajax: {
       query: ({ page }: any) => {
+        // 左侧未选中子工单时，右侧直接返回空列表
+        if (!selectedLot.value) {
+          return Promise.resolve({ items: [], total: 0 });
+        }
         return queryFinishRecord({
+          equipcode: selectedLot.value.equipCode || undefined,
           workSheetCode: queryForm.workSheetCode || undefined,
           pageNum: page.currentPage,
           pageSize: page.pageSize,
@@ -245,11 +296,14 @@ function handleCancelPerformance() {
         class="flex flex-wrap items-end gap-2"
       >
         <FormItem :label="$t('productionPerformance.workSheetCode')">
-          <Input
+          <Select
             v-model:value="queryForm.workSheetCode"
+            :options="workSheetOptions"
             :placeholder="$t('productionPerformance.workSheetCodePlaceholder')"
             allow-clear
-            @press-enter="handleQuery"
+            show-search
+            option-filter-prop="label"
+            class="w-56!"
           />
         </FormItem>
         <FormItem>

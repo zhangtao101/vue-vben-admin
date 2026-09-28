@@ -80,7 +80,7 @@ export function selectPalletLabel(label: string) {
 export function addLabelBatch(
   data: Array<{
     actualWt: number;
-    lotId: number;
+    lotId: number | string;
     materialCode: string;
     materialName: string;
     palletLabel: string;

@@ -65,6 +65,7 @@ function getDefaultBaseInfo() {
     subLineCode: '',
     subLineName: '',
     unit: '',
+    equipCode: '',
   };
 }
 
@@ -294,13 +295,16 @@ async function handleLoad() {
   // 3. 包装数据并调用批量保存接口
   const params = rows.map((row: any) => ({
     actualWt: row.actualWt,
-    lotId: baseInfo.id,
+    // lotId: baseInfo.id,
+    lotId: '',
+    workSheetId: baseInfo.id,
     materialCode: row.materialCode,
     materialName: row.materialName,
     scanLabel: row.scanLabel,
     unit: row.unit,
     palletLabel: drawerQuery.deviceCode,
     packType: row.packType,
+    equipCode: baseInfo.equipCode,
   }));
   addLabelBatch(params).then(() => {
     message.success($t('packagingMaterialDrawer.loadSuccess'));
@@ -517,6 +521,11 @@ defineExpose({ open });
           </DescriptionsItem>
           <DescriptionsItem :label="$t('packagingMaterialDrawer.infoUnit')">
             {{ baseInfo.unit }}
+          </DescriptionsItem>
+          <DescriptionsItem
+            :label="$t('packagingMaterialDrawer.infoEquipCode')"
+          >
+            {{ baseInfo.equipCode }}
           </DescriptionsItem>
         </Descriptions>
       </div>

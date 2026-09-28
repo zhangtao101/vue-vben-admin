@@ -10,6 +10,7 @@
   "infoSubLineCode": "子产线代码",
   "infoSubLineName": "子产线名称",
   "infoUnit": "单位",
+  "infoEquipCode": "堆垛机编号",
   "bomList": "BOM列表",
   "loadList": "加载列表",
   "deviceCode": "设备代码",

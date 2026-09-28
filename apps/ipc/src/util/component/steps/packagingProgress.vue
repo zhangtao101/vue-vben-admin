@@ -172,7 +172,12 @@ function handleWorkOrderChange(workSheetId: any) {
     const lines = res ?? [];
     lineList.value = lines;
     fillPanel(leftPanel, lines[0]);
-    fillPanel(rightPanel, lines[1]);
+    // 右栏仅在存在第二条产线数据时才填充，否则清空，避免残留上一次的数据
+    if (lines[1]) {
+      fillPanel(rightPanel, lines[1]);
+    } else {
+      resetPanel(rightPanel);
+    }
     loadMaterials();
   });
 }
@@ -213,6 +218,14 @@ function createPanel() {
 const leftPanel = createPanel();
 // 右栏面板：结构同左栏，仅底部三个按钮可操作
 const rightPanel = createPanel();
+
+/**
+ * 右栏是否有数据：接口返回第二条产线数据并成功填充后为 true。
+ * 为 false 时右栏整体不渲染。
+ */
+const hasRightPanel = computed(
+  () => !!(rightPanel.form.workOrder || rightPanel.form.id),
+);
 
 // 指标卡片配置：key 与 title，数值从面板 metrics 中取值
 const metricItems = [
@@ -313,7 +326,10 @@ function createWeightQuery(panel: any) {
     if (!panel.form.id) {
       return Promise.resolve({ items: [], total: 0 });
     }
-    const params: any = { id: panel.form.id };
+    const params: any = {
+      workSheetId: panel.form.id,
+      equipCode: panel.form.equipCode,
+    };
     // 包装类型筛选：多选值转逗号分隔字符串（如 "3,4,5"），未选时不过滤
     const type = (panel.packTypes ?? []).join(',');
     if (type) {
@@ -775,8 +791,8 @@ onMounted(() => {
         </div>
       </Col>
 
-      <!-- 右栏：复制结构，仅底部三个按钮可操作 -->
-      <Col :xs="24" :md="12">
+      <!-- 右栏：复制结构，仅底部三个按钮可操作；无第二条产线数据时不展示 -->
+      <Col v-if="hasRightPanel" :xs="24" :md="12">
         <div class="flex flex-col gap-4">
           <!-- 1. 工单信息表单（只读） -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
