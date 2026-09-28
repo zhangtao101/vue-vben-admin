@@ -69,8 +69,6 @@ const selectedRow = ref<any[]>([]);
 // endregion
 
 // region 表格
-
-const gridRef = ref();
 // 表格配置
 const gridOptions: VxeGridProps<any> = {
   align: 'left',
@@ -302,7 +300,7 @@ watch(
     :title="$t('component.equipmentSelect')"
     @close="close"
   >
-    <Grid ref="gridRef">
+    <Grid>
       <template #codeHeader="{ column }">
         <div v-for="(option, index) of column.filters" :key="index">
           <Input

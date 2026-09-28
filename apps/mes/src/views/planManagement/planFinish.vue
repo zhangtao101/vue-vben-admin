@@ -363,8 +363,6 @@ function handleChange(info: any) {
 // 编辑数据
 const editItem = ref<any>({});
 const showEditDrawer = ref(false);
-// 表单对象
-const editForm = ref<any>();
 // 表单验证规则
 const rules = ref<any>({
   // 表单验证规则可根据需要添加
@@ -643,7 +641,6 @@ onMounted(() => {
       @close="close"
     >
       <Form
-        ref="editForm"
         :model="editItem"
         :rules="rules"
         :label-col="{ span: 10 }"

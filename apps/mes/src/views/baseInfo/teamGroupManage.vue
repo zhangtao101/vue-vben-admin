@@ -112,8 +112,8 @@ const formData = ref({
 
 const rules: any = {
   subLineId: [
-    { required: true, message: $t('baseInfo.selectSubProductionLine'), trigger: 'change', asyncValidator: (rule, value, callback) => {
-      return new Promise((resolve, reject) => {
+    { required: true, message: $t('baseInfo.selectSubProductionLine'), trigger: 'change', asyncValidator: (_rule: any, value: any, _callback: any) => {
+      return new Promise((resolve, _reject) => {
         if (value) {
           resolve('too young');  // reject with error message
         } else {

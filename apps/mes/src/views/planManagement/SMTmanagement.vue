@@ -445,9 +445,9 @@ function handleDelete(row: any) {
  * @param row 当前行工单数据
  * @since 2026-09-22
  */
-function handleBarcodePrint(row: any) {
-  printWorksheets([row]);
-}
+// function handleBarcodePrint(row: any) {
+//   printWorksheets([row]);
+// }
 // endregion
 
 // region 结束工单
