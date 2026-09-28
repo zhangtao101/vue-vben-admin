@@ -7,6 +7,8 @@ import fluentMdl2 from '@iconify/json/json/fluent-mdl2.json';
 // eslint-disable-next-line n/no-extraneous-import
 import iconParkSolid from '@iconify/json/json/icon-park-solid.json';
 // eslint-disable-next-line n/no-extraneous-import
+import lucide from '@iconify/json/json/lucide.json';
+// eslint-disable-next-line n/no-extraneous-import
 import mdiLight from '@iconify/json/json/mdi-light.json';
 // eslint-disable-next-line n/no-extraneous-import
 import mdi from '@iconify/json/json/mdi.json';
@@ -23,6 +25,7 @@ export default function loadIconCollection() {
   addCollection(oui);
   addCollection(ep);
   addCollection(mdiLight);
+  addCollection(lucide);
   addCollection(carbon);
   addCollection(fluentMdl2);
   addCollection(svgSpinners);

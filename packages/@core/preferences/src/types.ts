@@ -17,7 +17,6 @@ import type {
   ThemeModeType,
 } from '@vben-core/typings';
 
-type SupportedLanguagesType = 'en-US' | 'ko-KR' | 'zh-CN';
 type CustomPreferencesValue = boolean | number | string;
 
 interface CustomPreferencesOption<TValue extends string = string> {
@@ -77,10 +76,9 @@ type CustomPreferencesField<
   string extends Extract<keyof TCustomPreferences, string>
     ? AnyCustomPreferencesField
     : {
-        [K in Extract<
-          keyof TCustomPreferences,
-          string
-        >]: TCustomPreferences[K] extends boolean
+        [
+          K in Extract<keyof TCustomPreferences, string>
+        ]: TCustomPreferences[K] extends boolean
           ? CustomPreferencesSwitchField<K>
           : TCustomPreferences[K] extends number
             ? CustomPreferencesNumberField<K>

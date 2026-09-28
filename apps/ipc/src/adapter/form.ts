@@ -39,7 +39,7 @@ setupVbenForm<ComponentType>({
   },
 });
 
-const useVbenForm = useForm<ComponentType>;
+const useVbenForm = useForm<any>;
 
 export { useVbenForm, z };
 
