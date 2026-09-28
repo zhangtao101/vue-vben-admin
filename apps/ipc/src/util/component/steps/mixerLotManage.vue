@@ -14,6 +14,7 @@ import {
   message,
   Modal,
   Space,
+  Switch,
   Tag,
 } from 'ant-design-vue';
 
@@ -51,15 +52,14 @@ const queryParams = ref<any>({
 });
 
 /** 查询搅拌机工单列表 */
-async function queryWorkSheetList({ page }: any) {
-  const res = await selectWeekWorkSheet({
+function queryWorkSheetList({ page }: any) {
+  return selectWeekWorkSheet({
     lineName: queryParams.value.lineName,
     processType: props.processType,
     planDateStart: queryParams.value.planDateStart,
     page: page.currentPage,
     pageSize: page.pageSize,
-  });
-  return { total: res.total, items: res.list };
+  }).then((res: any) => ({ total: res.total, items: res.list }));
 }
 
 /** 搅拌机工单列表 */
@@ -262,16 +262,23 @@ const stateColorMap: Record<number, string> = {
   3: 'success',
 };
 
+/** 自动模式开关（仅混合 MIX 工序 processType === 2 展示） */
+const autoMode = ref(false);
+
 /** 查询选中工单的批次 LOT 列表 */
-async function queryBatchList() {
+function queryBatchList() {
   selectedBatchRecords.value = [];
   const ws = selectedWorkSheet.value;
   if (!ws?.id) {
-    return { total: 0, items: [] };
+    autoMode.value = false;
+    return Promise.resolve({ total: 0, items: [] });
   }
-  const res = await selectByWorkSheetId(ws.id);
-  const list = Array.isArray(res) ? res : [];
-  return { total: list.length, items: list };
+  return selectByWorkSheetId(ws.id).then((res: any) => {
+    const list = Array.isArray(res) ? res : [];
+    // 自动模式初始值取第一条批次的状态：workState 为 1 时选中，其余不选中
+    autoMode.value = Number(list[0]?.workState) === 1;
+    return { total: list.length, items: list };
+  });
 }
 
 /** 批次列表列定义：搅拌机 processType === 6 与混合水 processType === 1 字段不同 */
@@ -312,8 +319,13 @@ function getBatchColumns(): any {
       },
     ];
   }
+  // 混合 MIX 工序（processType === 2）批次为单选，其余工序保持多选
+  const selectColumn: any =
+    props.processType === 2
+      ? { type: 'radio', width: 50, title: '' }
+      : { type: 'checkbox', width: 50, title: '' };
   return [
-    { type: 'checkbox', width: 50, title: '' },
+    selectColumn,
     { type: 'seq', width: 50, title: '#' },
     { field: 'lotCode', title: $t('mixerLotManage.lotCode'), minWidth: 120 },
     {
@@ -357,6 +369,7 @@ const gridOptions2: VxeGridProps<any> = {
   height: 200,
   stripe: true,
   checkboxConfig: { trigger: 'row', highlight: true },
+  radioConfig: { trigger: 'row', highlight: true },
   pagerConfig: { enabled: false, pageSize: 20 },
   toolbarConfig: { custom: true, refresh: true, zoom: true },
   proxyConfig: {
@@ -372,6 +385,10 @@ const selectedBatchRecords = ref<any[]>([]);
 const gridEvents2: any = {
   checkboxChange: ({ records }: any) => {
     selectedBatchRecords.value = records || [];
+  },
+  // 混合 MIX 工序（processType === 2）为单选，仅保留当前选中行
+  radioChange: ({ row }: any) => {
+    selectedBatchRecords.value = row ? [row] : [];
   },
 };
 
@@ -406,18 +423,19 @@ function handleBatchStart() {
     content: $t('mixerLotManage.startConfirmContent'),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
-    onOk: async () => {
-      try {
-        await updateStae(
-          records.map((record: any) => record.id),
-          2,
-        );
-        message.success($t('mixerLotManage.startSuccess'));
-        refreshBatchGrid();
-      } catch {
-        message.error($t('mixerLotManage.startFailed'));
-      }
-    },
+    onOk: () =>
+      updateStae(
+        records.map((record: any) => record.id),
+        2,
+        props.processType,
+      )
+        .then(() => {
+          message.success($t('mixerLotManage.startSuccess'));
+          refreshBatchGrid();
+        })
+        .catch(() => {
+          message.error($t('mixerLotManage.startFailed'));
+        }),
   });
 }
 
@@ -433,18 +451,19 @@ function handleBatchFinish() {
     content: $t('mixerLotManage.finishConfirmContent'),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
-    onOk: async () => {
-      try {
-        await updateStae(
-          records.map((record: any) => record.id),
-          3,
-        );
-        message.success($t('mixerLotManage.finishSuccess'));
-        refreshBatchGrid();
-      } catch {
-        message.error($t('mixerLotManage.finishFailed'));
-      }
-    },
+    onOk: () =>
+      updateStae(
+        records.map((record: any) => record.id),
+        3,
+        props.processType,
+      )
+        .then(() => {
+          message.success($t('mixerLotManage.finishSuccess'));
+          refreshBatchGrid();
+        })
+        .catch(() => {
+          message.error($t('mixerLotManage.finishFailed'));
+        }),
   });
 }
 
@@ -465,15 +484,15 @@ function handleBatchDelete() {
     content: $t('mixerLotManage.deleteConfirmContent'),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
-    onOk: async () => {
-      try {
-        await deleteLot(records.map((record: any) => record.id));
-        message.success($t('mixerLotManage.deleteSuccess'));
-        refreshBatchGrid();
-      } catch {
-        message.error($t('mixerLotManage.deleteFailed'));
-      }
-    },
+    onOk: () =>
+      deleteLot(records.map((record: any) => record.id))
+        .then(() => {
+          message.success($t('mixerLotManage.deleteSuccess'));
+          refreshBatchGrid();
+        })
+        .catch(() => {
+          message.error($t('mixerLotManage.deleteFailed'));
+        }),
   });
 }
 
@@ -494,21 +513,45 @@ function handlePlanQueueDelete() {
     content: $t('mixerLotManage.deleteConfirmContent'),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
-    onOk: async () => {
-      try {
-        await deleteLotBatch(records.map((record: any) => record.id));
-        message.success($t('mixerLotManage.deleteSuccess'));
-        refreshBatchGrid();
-      } catch {
-        message.error($t('mixerLotManage.deleteFailed'));
-      }
-    },
+    onOk: () =>
+      deleteLotBatch(records.map((record: any) => record.id))
+        .then(() => {
+          message.success($t('mixerLotManage.deleteSuccess'));
+          refreshBatchGrid();
+        })
+        .catch(() => {
+          message.error($t('mixerLotManage.deleteFailed'));
+        }),
   });
 }
 
 /** 刷新批次列表（重新调用接口查询） */
 function refreshBatchGrid() {
   gridApi2.reload();
+}
+
+/** 自动模式开启：对勾选的批次下发状态 1 */
+function handleAutoModeChange(checked: boolean) {
+  if (!checked) return;
+  const records = selectedBatchRecords.value;
+  if (records.length === 0) {
+    message.warning($t('mixerLotManage.plsSelectBatch'));
+    autoMode.value = false;
+    return;
+  }
+  updateStae(
+    records.map((record: any) => record.id),
+    1,
+    props.processType,
+  )
+    .then(() => {
+      message.success($t('mixerLotManage.startSuccess'));
+      refreshBatchGrid();
+    })
+    .catch(() => {
+      message.error($t('mixerLotManage.startFailed'));
+      autoMode.value = false;
+    });
 }
 // endregion
 </script>
@@ -607,8 +650,18 @@ function refreshBatchGrid() {
           <Checkbox :checked="row.isTransfer === 1" disabled />
         </template>
       </Grid2>
-      <!-- 表格右下角：批次操作按钮（需勾选批次后才能使用） -->
-      <div class="mt-3 flex justify-end gap-3">
+      <!-- 表格下方：左侧自动模式（仅混合 MIX 工序）+ 右侧批次操作按钮（需勾选批次后才能使用） -->
+      <div class="mt-3 flex items-center gap-3">
+        <div v-if="processType === 2" class="flex items-center gap-2">
+          <span class="text-sm font-medium">
+            {{ $t('mixerLotManage.autoMode') }}
+          </span>
+          <Switch
+            v-model:checked="autoMode"
+            @change="(checked: any) => handleAutoModeChange(checked)"
+          />
+        </div>
+        <div class="ml-auto flex gap-3">
         <!-- 搅拌机工序（processType === 6）：开始 / 删除 -->
         <template v-if="processType === 6">
           <Button
@@ -650,6 +703,7 @@ function refreshBatchGrid() {
             {{ $t('common.delete') }}
           </Button>
         </template>
+        </div>
       </div>
     </Card>
 

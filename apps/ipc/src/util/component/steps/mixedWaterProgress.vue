@@ -136,23 +136,25 @@ const gridEvents: VxeGridListeners<any> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
+/** 混合水工序：工单查询与状态更新均固定 processType 为 1 */
+const PROCESS_TYPE = 1;
+
 /** 工单展示：混合水工序 processType 固定为 1 */
-async function queryWorkSheetList({ page }: any) {
-  try {
-    const res = await selectWorkSheet({
-      pageNum: page.currentPage,
-      pageSize: page.pageSize,
-      lineCode: queryParams.value.lineCode,
-      startTime: queryParams.value.startTime,
-      processType: 1,
-      workSheetCode: queryParams.value.workSheetCode,
-      state: queryParams.value.state,
+function queryWorkSheetList({ page }: any) {
+  return selectWorkSheet({
+    pageNum: page.currentPage,
+    pageSize: page.pageSize,
+    lineCode: queryParams.value.lineCode,
+    startTime: queryParams.value.startTime,
+    processType: PROCESS_TYPE,
+    workSheetCode: queryParams.value.workSheetCode,
+    state: queryParams.value.state,
+  })
+    .then((res: any) => ({ total: res.total || 0, items: res.list || [] }))
+    .catch(() => {
+      message.error($t('mixedWaterProgress.workSheetListLoadFailed'));
+      return { total: 0, items: [] };
     });
-    return { total: res.total || 0, items: res.list || [] };
-  } catch {
-    message.error($t('mixedWaterProgress.workSheetListLoadFailed'));
-    return { total: 0, items: [] };
-  }
 }
 
 /** 行点击单选：选中工单并加载对应批次LOT列表 */
@@ -162,8 +164,8 @@ function handleRadioChange({ row }: any) {
 }
 // endregion
 
-// region 批次LOT列表（多选，勾选结果用于开始/结束）
-/** 多选勾选的批次LOT id 集合（用于开始/结束） */
+// region 批次LOT列表（单选，选中结果用于开始/结束）
+/** 单选选中的批次LOT id 集合（用于开始/结束） */
 const selectedLotIds = ref<(number | string)[]>([]);
 
 const lotGridOptions: VxeGridProps<any> = {
@@ -171,9 +173,9 @@ const lotGridOptions: VxeGridProps<any> = {
   border: true,
   height: 280,
   stripe: true,
-  checkboxConfig: { highlight: true, range: true, trigger: 'row' },
+  radioConfig: { highlight: true, trigger: 'row' },
   columns: [
-    { type: 'checkbox', width: 50, title: '' },
+    { type: 'radio', width: 50, title: '' },
     {
       field: 'lotCode',
       title: $t('mixedWaterProgress.lotCode'),
@@ -215,14 +217,13 @@ const lotGridOptions: VxeGridProps<any> = {
   },
 };
 
-/** 批次LOT多选勾选变化：收集选中的 LOT id，用于开始/结束按钮 */
-function handleLotCheckboxChange() {
-  const records = lotGridApi.grid.getCheckboxRecords?.() ?? [];
-  selectedLotIds.value = records.map((record: any) => record.id);
+/** 批次LOT单选变化：记录选中的 LOT id，用于开始/结束按钮 */
+function handleLotRadioChange({ row }: any) {
+  selectedLotIds.value = row ? [row.id] : [];
 }
 
 const lotGridEvents: VxeGridListeners<any> = {
-  checkboxChange: handleLotCheckboxChange,
+  radioChange: handleLotRadioChange,
 };
 
 const [LotGrid, lotGridApi] = useVbenVxeGrid({
@@ -231,65 +232,89 @@ const [LotGrid, lotGridApi] = useVbenVxeGrid({
 });
 
 /** 根据单选选中的工单查询批次LOT列表 */
-async function queryLotList() {
+function queryLotList() {
   if (!selectedWorkSheet.value) {
-    return { items: [] };
+    return Promise.resolve({ items: [] });
   }
-  try {
-    const res = await selectByWorkSheetId(selectedWorkSheet.value.id);
-    return { items: Array.isArray(res) ? res : [] };
-  } catch {
-    message.error($t('mixedWaterProgress.lotListLoadFailed'));
-    return { items: [] };
-  }
+  return selectByWorkSheetId(selectedWorkSheet.value.id)
+    .then((res: any) => ({ items: Array.isArray(res) ? res : [] }))
+    .catch(() => {
+      message.error($t('mixedWaterProgress.lotListLoadFailed'));
+      return { items: [] };
+    });
 }
 // endregion
 
-// region 自动模式 + 开始/结束控制（作用于多选勾选的批次LOT）
+// region 自动模式 + 开始/结束控制（作用于单选选中的批次LOT）
 const autoMode = ref(false);
 
-/** 开始：对勾选的批次LOT批量开始（自动模式下开始即结束） */
-async function handleStart() {
-  const records = (lotGridApi.grid.getCheckboxRecords?.() ?? []) as any[];
-  if (records.length === 0) {
+/** 获取当前单选的批次LOT行 */
+function getSelectedLot(): any {
+  return lotGridApi.grid?.getRadioRecord?.() ?? null;
+}
+
+/** 开始：对选中的批次LOT开始（自动模式下开始即结束） */
+function handleStart() {
+  const record = getSelectedLot();
+  if (!record) {
     message.warning($t('mixedWaterProgress.plsSelectLot'));
     return;
   }
   // 只有 isLoad 为 1（已装载）的批次LOT才能开始
-  if (records.some((r) => Number(r.isLoad) !== 1)) {
+  if (Number(record.isLoad) !== 1) {
     message.warning($t('mixedWaterProgress.startOnlyLoaded'));
     return;
   }
-  const ids = records.map((r) => r.id);
-  try {
-    await updateStae(ids, autoMode.value ? 3 : 2);
-    message.success($t('mixedWaterProgress.startSuccess'));
-    refreshLotList();
-  } catch {
-    message.error($t('mixedWaterProgress.startFailed'));
-  }
+  updateStae([record.id], autoMode.value ? 3 : 2, PROCESS_TYPE)
+    .then(() => {
+      message.success($t('mixedWaterProgress.startSuccess'));
+      refreshLotList();
+    })
+    .catch(() => {
+      message.error($t('mixedWaterProgress.startFailed'));
+    });
 }
 
-/** 结束：对勾选的批次LOT批量结束 */
-async function handleEnd() {
-  const records = (lotGridApi.grid.getCheckboxRecords?.() ?? []) as any[];
-  if (records.length === 0) {
+/** 结束：对选中的批次LOT结束 */
+function handleEnd() {
+  const record = getSelectedLot();
+  if (!record) {
     message.warning($t('mixedWaterProgress.plsSelectLot'));
     return;
   }
   // 只有 isTransfer 为 3（已传输）的批次LOT才能结束
-  if (records.some((r) => Number(r.isTransfer) !== 3)) {
+  if (Number(record.isTransfer) !== 3) {
     message.warning($t('mixedWaterProgress.endOnlyTransferred'));
     return;
   }
-  const ids = records.map((r) => r.id);
-  try {
-    await updateStae(ids, 3);
-    message.success($t('mixedWaterProgress.endSuccess'));
-    refreshLotList();
-  } catch {
-    message.error($t('mixedWaterProgress.endFailed'));
+  updateStae([record.id], 3, PROCESS_TYPE)
+    .then(() => {
+      message.success($t('mixedWaterProgress.endSuccess'));
+      refreshLotList();
+    })
+    .catch(() => {
+      message.error($t('mixedWaterProgress.endFailed'));
+    });
+}
+
+/** 自动模式开启：对选中的批次LOT下发状态 1 */
+function handleAutoModeChange(checked: boolean) {
+  if (!checked) return;
+  const record = getSelectedLot();
+  if (!record) {
+    message.warning($t('mixedWaterProgress.plsSelectLot'));
+    autoMode.value = false;
+    return;
   }
+  updateStae([record.id], 1, PROCESS_TYPE)
+    .then(() => {
+      message.success($t('mixedWaterProgress.startSuccess'));
+      refreshLotList();
+    })
+    .catch(() => {
+      message.error($t('mixedWaterProgress.startFailed'));
+      autoMode.value = false;
+    });
 }
 
 /** 操作成功后刷新工单列表与批次LOT列表并清空勾选 */
@@ -378,18 +403,21 @@ onMounted(() => {
           <span class="text-sm font-medium">
             {{ $t('mixedWaterProgress.autoMode') }}
           </span>
-          <Switch v-model:checked="autoMode" />
+          <Switch
+            v-model:checked="autoMode"
+            @change="(checked: any) => handleAutoModeChange(checked)"
+          />
         </Col>
         <Col flex="none">
           <Space>
             <Button
               type="primary"
-              :disabled="selectedLotIds.length === 0"
+              :disabled="selectedLotIds.length === 0 || autoMode"
               @click="handleStart"
             >
               {{ $t('mixedWaterProgress.start') }}
             </Button>
-            <Button :disabled="selectedLotIds.length === 0" @click="handleEnd">
+            <Button :disabled="selectedLotIds.length === 0 || autoMode" @click="handleEnd">
               {{ $t('mixedWaterProgress.end') }}
             </Button>
           </Space>

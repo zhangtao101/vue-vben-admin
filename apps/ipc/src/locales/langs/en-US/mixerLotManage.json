@@ -55,5 +55,6 @@
   "deleteSuccess": "Deleted successfully",
   "deleteFailed": "Failed to delete",
   "deleteOnlyGenerated": "Only batches with status [Generated] can be deleted, please reselect",
-  "startOnlyGenerated": "Only batches with status [Generated] can be started, please reselect"
+  "startOnlyGenerated": "Only batches with status [Generated] can be started, please reselect",
+  "autoMode": "Auto Mode"
 }
