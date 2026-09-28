@@ -13,6 +13,8 @@ export interface SubProductionLineListParams {
   subLineCode?: string;
   /** 子产线名称，支持模糊查询 */
   subLineName?: string;
+  /** 工序类型：1 配水工单、2 混合工单、3 制面工单、4 包装工单、5 蔬菜包装工单、6 无重力搅拌工单、9 生产指示序列 */
+  processType?: number;
   /** 页码 */
   pageNum?: number;
   /** 每页条数 */
@@ -31,6 +33,8 @@ export interface SubProductionLineItem {
   subLineName: string;
   /** 工序类型：1 配水工单、2 混合工单、3 制面工单、4 包装工单、5 蔬菜包装工单、6 无重力搅拌工单、9 生产指示序列 */
   processType?: number;
+  /** 父产线 id */
+  parentId?: number;
   /** 页码 */
   pageNum?: number;
   /** 每页条数 */
@@ -45,6 +49,18 @@ export interface SubProductionLineListResult {
   total: number;
 }
 
+/** 子产线父产线选项（按工序查询） */
+export interface SubLineParentOption {
+  /** 子产线 id，父产线保存该 id */
+  id: number;
+  /** 子产线编号 */
+  subLineCode: string;
+  /** 子产线名称 */
+  subLineName: string;
+  /** 工序类型 */
+  processType: number;
+}
+
 /** 新增子产线参数 */
 export interface SubProductionLineCreateParams {
   /** 产线 id，必填 */
@@ -55,6 +71,8 @@ export interface SubProductionLineCreateParams {
   subLineName: string;
   /** 工序类型：1 配水工单、2 混合工单、3 制面工单、4 包装工单、5 蔬菜包装工单、6 无重力搅拌工单、9 生产指示序列 */
   processType?: number;
+  /** 父产线 id，非必填 */
+  parentId?: number;
 }
 
 /** 修改子产线参数 */
@@ -69,6 +87,8 @@ export interface SubProductionLineUpdateParams {
   subLineName: string;
   /** 工序类型：1 配水工单、2 混合工单、3 制面工单、4 包装工单、5 蔬菜包装工单、6 无重力搅拌工单、9 生产指示序列 */
   processType?: number;
+  /** 父产线 id，非必填 */
+  parentId?: number;
 }
 
 // ========== 接口函数 ==========
@@ -83,6 +103,19 @@ export async function listSubProductionLines(
 ) {
   return requestClient.get<SubProductionLineListResult>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/produce/subLine/search?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 查询子产线的父产线：按工序查询可选的父产线列表
+ * @param processType 产线工序
+ * @returns 父产线选项列表（保存使用其中的 id）
+ */
+export async function searchSubLineParentByProcessType(
+  processType: number | string,
+) {
+  return requestClient.get<SubLineParentOption[]>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/produce/subLine/searchParent/${processType}`,
   );
 }
 

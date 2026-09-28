@@ -89,6 +89,8 @@
   "equipmentName": "设备名称",
   "equipmentNameCode": "设备名称编码",
   "subLine": "子产线",
+  "subLineCode": "子产线编码",
+  "subLineName": "子产线名称",
   "pleaseSelectSubLine": "请选择子产线",
   "subLineSelectDrawer": {
     "title": "选择子产线",

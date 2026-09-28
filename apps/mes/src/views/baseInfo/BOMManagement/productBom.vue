@@ -141,8 +141,6 @@ const selectedKey = ref<any>(undefined);
 const queryParams = ref({
   // 产品编号
   productCode: '',
-  // 产品名称
-  productName: '',
   // BOM类别编号
   bomTypeCode: '',
   // 产线编号
@@ -547,19 +545,12 @@ onMounted(() => {
   <Page>
     <Card class="!mb-8">
       <Form :model="queryParams" layout="inline">
-        <!-- 类别编号 -->
+        <!-- 产品编号 -->
         <FormItem
-          :label="$t('basic.productBom.code')"
+          :label="$t('baseInfo.productCode')"
           style="margin-bottom: 1em"
         >
           <Input v-model:value="queryParams.productCode" />
-        </FormItem>
-        <!-- 类别名称 -->
-        <FormItem
-          :label="$t('basic.productBom.name')"
-          style="margin-bottom: 1em"
-        >
-          <Input v-model:value="queryParams.productName" />
         </FormItem>
         <!-- 产线编号 -->
         <FormItem :label="$t('baseInfo.lineCode')" style="margin-bottom: 1em">

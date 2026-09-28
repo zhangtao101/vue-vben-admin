@@ -89,6 +89,8 @@
   "equipmentName": "장비명",
   "equipmentNameCode": "장비명 코드",
   "subLine": "하위 라인",
+  "subLineCode": "하위 라인 코드",
+  "subLineName": "하위 라인 이름",
   "pleaseSelectSubLine": "하위 라인을 선택하세요",
   "subLineSelectDrawer": {
     "title": "하위 라인 선택",

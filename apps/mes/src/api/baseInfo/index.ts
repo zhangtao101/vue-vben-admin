@@ -6,6 +6,7 @@ export * from './electricityTimeSlotRule.service';
 export * from './levelMaintain.service';
 export * from './materialBaseManagement.service';
 export * from './materialsCategory.service';
+export * from './noodleProductionLineAndPackingLineRelation.service';
 export * from './plantCalendar.service';
 export * from './plantCalendarLook.service';
 export * from './printTemplateMaintenance.service';

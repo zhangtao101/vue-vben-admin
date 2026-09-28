@@ -28,6 +28,7 @@ import {
   deleteSubProductionLine,
   listProductionLines,
   listSubProductionLines,
+  searchSubLineParentByProcessType,
   updateSubProductionLine,
 } from '#/api';
 import { $t } from '#/locales';
@@ -42,9 +43,10 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'seq', title: $t('baseInfo.serialNumber'), width: 60 },
-    { field: 'lineName', title: $t('baseInfo.productionLine'), minWidth: 150 },
+    { field: 'lineName', title: $t('baseInfo.relatedLine'), minWidth: 150 },
     { field: 'subLineCode', title: $t('baseInfo.subLineCode'), minWidth: 150 },
     { field: 'subLineName', title: $t('baseInfo.subLineName'), minWidth: 150 },
+    { field: 'parentName', title: $t('baseInfo.parentLine'), minWidth: 150 },
     {
       field: 'action',
       fixed: 'right',
@@ -94,6 +96,9 @@ const queryParams = ref({
 // region 字典数据
 const productionLineList = ref<any[]>([]);
 
+/** 父产线选项：按所选工序查询，工序未选择时为空 */
+const parentLineOptions = ref<any[]>([]);
+
 // 工序类型选项：value 与后台单别保持一致
 const processTypeOptions = [
   { value: 1, label: $t('baseInfo.processTypeWaterPreparation') },
@@ -118,6 +123,7 @@ const formData = ref({
   subLineCode: '',
   subLineName: '',
   processType: undefined as number | undefined,
+  parentId: undefined as number | undefined,
 });
 
 const rules: any = {
@@ -164,6 +170,27 @@ function loadProductionLineList() {
 }
 
 /**
+ * 加载父产线选项：需先选择工序，未选择时清空选项
+ */
+function loadParentLineOptions(processType?: number) {
+  if (!processType) {
+    parentLineOptions.value = [];
+    return;
+  }
+  searchSubLineParentByProcessType(processType).then((list: any) => {
+    parentLineOptions.value = Array.isArray(list) ? list : [];
+  });
+}
+
+/**
+ * 工序变更：清空已选父产线并按新工序重新加载父产线选项
+ */
+function handleProcessTypeChange(value: any) {
+  formData.value.parentId = undefined;
+  loadParentLineOptions(value);
+}
+
+/**
  * 加载权限
  */
 function loadAuthor() {
@@ -205,7 +232,9 @@ function handleAdd() {
     subLineCode: '',
     subLineName: '',
     processType: undefined,
+    parentId: undefined,
   };
+  parentLineOptions.value = [];
   showEditDrawer.value = true;
   formRef.value?.clearValidate();
 }
@@ -221,7 +250,10 @@ function handleEdit(row: any) {
     subLineCode: row.subLineCode,
     subLineName: row.subLineName,
     processType: row.processType,
+    parentId: row.parentId,
   };
+  // 编辑时按当前工序加载父产线选项，保证已保存的父产线可正常回显
+  loadParentLineOptions(row.processType);
   showEditDrawer.value = true;
   formRef.value?.clearValidate();
 }
@@ -250,15 +282,16 @@ function handleDelete(row: any) {
  */
 function handleSubmit() {
   formRef.value?.validate().then(() => {
-    const { id, lineId, subLineCode, subLineName, processType } =
+    const { id, lineId, subLineCode, subLineName, processType, parentId } =
       formData.value;
     if (editMode.value) {
       updateSubProductionLine({
-        id: id!,
-        lineId: lineId!,
+        id: id as number,
+        lineId: lineId as number,
         subLineCode,
         subLineName,
         processType,
+        parentId,
       }).then(() => {
         message.success($t('baseInfo.updateSuccess'));
         handleClose();
@@ -266,10 +299,11 @@ function handleSubmit() {
       });
     } else {
       createSubProductionLine({
-        lineId: lineId!,
+        lineId: lineId as number,
         subLineCode,
         subLineName,
         processType,
+        parentId,
       }).then(() => {
         message.success($t('baseInfo.createSuccess'));
         handleClose();
@@ -290,7 +324,9 @@ function handleClose() {
     subLineCode: '',
     subLineName: '',
     processType: undefined,
+    parentId: undefined,
   };
+  parentLineOptions.value = [];
   formRef.value?.resetFields();
 }
 </script>
@@ -441,6 +477,7 @@ function handleClose() {
             allow-clear
             :placeholder="$t('baseInfo.selectProcessType')"
             style="width: 100%"
+            @change="handleProcessTypeChange"
           >
             <SelectOption
               v-for="item in processTypeOptions"
@@ -448,6 +485,28 @@ function handleClose() {
               :value="item.value"
             >
               {{ item.label }}
+            </SelectOption>
+          </Select>
+        </FormItem>
+        <!-- 父产线：非必填，需先选择工序后才能选择 -->
+        <FormItem :label="$t('baseInfo.parentLine')" name="parentId">
+          <Select
+            v-model:value="formData.parentId"
+            allow-clear
+            :disabled="!formData.processType"
+            :placeholder="
+              formData.processType
+                ? $t('baseInfo.selectParentLine')
+                : $t('baseInfo.selectProcessTypeFirst')
+            "
+            style="width: 100%"
+          >
+            <SelectOption
+              v-for="item in parentLineOptions"
+              :key="item.id"
+              :value="item.id"
+            >
+              {{ `${item.subLineCode}(${item.subLineName})` }}
             </SelectOption>
           </Select>
         </FormItem>

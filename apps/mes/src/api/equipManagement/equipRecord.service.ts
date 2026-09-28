@@ -188,3 +188,15 @@ export function insertScadaEquipLedger(data: EquipmentLedgerInsertParams) {
     data,
   );
 }
+
+/**
+ * 删除设备台账
+ * @param id 设备台账主键ID
+ * @returns 删除结果
+ * @since 2026-09-28
+ */
+export function deleteScadaEquipLedger(id: number | string) {
+  return requestClient.delete<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/equipmentLedger/delete/${id}`,
+  );
+}

@@ -89,6 +89,8 @@
   "equipmentName": "Equipment Name",
   "equipmentNameCode": "Equipment Name Code",
   "subLine": "Sub-production Line",
+  "subLineCode": "Sub-production Line Code",
+  "subLineName": "Sub-production Line Name",
   "pleaseSelectSubLine": "Please select sub-production line",
   "subLineSelectDrawer": {
     "title": "Select Sub-production Line",

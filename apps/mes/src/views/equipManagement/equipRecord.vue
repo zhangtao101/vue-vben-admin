@@ -39,6 +39,7 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  deleteScadaEquipLedger,
   insertScadaEquipLedger,
   queryScadaEquipLedgerById,
   queryScadaEquipLedgerPage,
@@ -85,6 +86,8 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('equip.installationDate'),
       minWidth: 100,
     },
+    { field: 'subLineCode', title: $t('equip.subLineCode'), minWidth: 110 },
+    { field: 'subLineName', title: $t('equip.subLineName'), minWidth: 110 },
     {
       field: 'assets',
       title: $t('equip.assetStatus'),
@@ -158,6 +161,12 @@ const equipmentTypeOptions = [
   { value: 2, label: $t('equip.palletizer') },
 ];
 
+// 查询区设备类别选项：RadioGroup 无法清空，追加“全部”用于取消筛选
+const equipmentTypeQueryOptions = [
+  { value: undefined, label: $t('page.common.all') },
+  ...equipmentTypeOptions,
+];
+
 /**
  * 关闭抽屉
  */
@@ -216,7 +225,7 @@ function handleDetail(row: any) {
 /**
  * 删除数据
  */
-function delRow(_row: any) {
+function delRow(row: any) {
   Modal.confirm({
     cancelText: $t('common.cancel'),
     okText: $t('common.confirm'),
@@ -225,8 +234,10 @@ function delRow(_row: any) {
       message.warning($t('equip.cancelDelete'));
     },
     onOk() {
-      // 由于新版 API 暂无用引用校验，直接提示删除功能请使用接口
-      message.info($t('equip.deleteNotReady'));
+      return deleteScadaEquipLedger(row.id).then(() => {
+        message.success($t('equip.deleteSuccess'));
+        gridApi.reload();
+      });
     },
     title: $t('equip.confirmDeleteRecord'),
   });
@@ -322,13 +333,14 @@ onMounted(() => {
             :placeholder="$t('equip.pleaseEnterEquipmentName')"
           />
         </FormItem>
-        <!-- 使用部门 -->
-        <FormItem :label="$t('equip.useDepartment')" style="margin-bottom: 1em">
-          <Input
-            v-model:value="queryParams.useDepartmentName"
-            allow-clear
-            class="!w-48"
-            :placeholder="$t('equip.pleaseEnterUseDepartment')"
+        <!-- 设备类型 -->
+        <FormItem
+          :label="$t('equip.equipmentCategory')"
+          style="margin-bottom: 1em"
+        >
+          <RadioGroup
+            v-model:value="queryParams.equipmentType"
+            :options="equipmentTypeQueryOptions"
           />
         </FormItem>
         <!-- 资产状态 -->

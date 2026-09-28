@@ -18,6 +18,7 @@ import {
   InputNumber,
   message,
   Modal,
+  RadioGroup,
   Space,
   Tag,
   Tooltip,
@@ -104,10 +105,17 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 // region 查询条件
 const queryParams = ref({
   equipCode: undefined as string | undefined,
+  isDelete: undefined as number | undefined,
   type: undefined as string | undefined,
   pageNum: 1,
   pageSize: 10,
 });
+
+/** 状态选项：正常不传参（undefined），停用对应已删除 2 */
+const statusOptions = [
+  { label: $t('baseInfo.normal'), value: undefined },
+  { label: $t('common.delete'), value: 2 },
+];
 
 // endregion
 
@@ -187,6 +195,7 @@ function handleSearch() {
 function handleReset() {
   queryParams.value = {
     equipCode: undefined,
+    isDelete: undefined,
     type: undefined,
     pageNum: 1,
     pageSize: 10,
@@ -314,6 +323,12 @@ function handleClose() {
             :placeholder="$t('baseInfo.selectPlaceholder')"
             style="width: 200px"
             @press-enter="handleSearch"
+          />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.status')">
+          <RadioGroup
+            v-model:value="queryParams.isDelete"
+            :options="statusOptions"
           />
         </FormItem>
         <FormItem>
