@@ -24,13 +24,15 @@ import {
 } from '#/api';
 
 const props = defineProps({
+  /** 申请部门编码，不传则不过滤组织 */
   applyOrgCode: {
     type: String,
-    required: true,
+    default: undefined,
   },
+  /** 申领类别（物料类型），不传则不过滤类型 */
   applyMaterialType: {
     type: Number,
-    required: true,
+    default: undefined,
   },
 });
 // 事件定义
@@ -76,8 +78,16 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('component.semiFinished'),
       minWidth: 80,
     },
-    { field: 'materialCode', title: $t('storesRequisition.materialNumber'), minWidth: 150 },
-    { field: 'materialName', title: $t('storesRequisition.materialName'), minWidth: 250 },
+    {
+      field: 'materialCode',
+      title: $t('storesRequisition.materialNumber'),
+      minWidth: 150,
+    },
+    {
+      field: 'materialName',
+      title: $t('storesRequisition.materialName'),
+      minWidth: 250,
+    },
     { field: 'unit', title: $t('component.unit'), minWidth: 150 },
   ],
   height: 500,
@@ -94,6 +104,9 @@ const gridOptions: VxeGridProps<any> = {
         });
       },
     },
+  },
+  radioConfig: {
+    trigger: 'row',
   },
   scrollY: {
     enabled: true,

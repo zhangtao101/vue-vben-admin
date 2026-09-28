@@ -163,8 +163,6 @@ export interface EquipListResult {
 export interface GenerateWorkSheetParams {
   /** 批次印字编号 */
   batchPrint?: string;
-  /** 创建人 */
-  createUser: string;
   /** 勾选的 SAP 工单项次ID列表 */
   ids: number[];
   /** 生产指示日期（工单开始时间） */

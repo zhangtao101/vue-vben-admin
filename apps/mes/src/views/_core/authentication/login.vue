@@ -16,8 +16,14 @@ defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
 
-/** 当前是否已通过授权认证（接口返回 1 已认证，-1 未认证） */
-const authorized = ref(false);
+/** 是否启用授权认证：由环境变量 VITE_APP_IS_VERIFY 控制，为 false 时不启用验证，直接正常登录 */
+const IS_VERIFY = import.meta.env.VITE_APP_IS_VERIFY === 'true';
+
+/**
+ * 当前是否已通过授权认证（接口返回 1 已认证，-1 未认证）
+ * 未启用认证时默认为已认证，直接进入账号密码登录
+ */
+const authorized = ref(!IS_VERIFY);
 /** 认证码提交中的加载状态 */
 const authorizing = ref(false);
 
@@ -89,11 +95,11 @@ function fetchAuthorFlag(): Promise<boolean> {
 }
 
 /**
- * 表单提交处理：未认证时提交认证码，已认证时执行登录
+ * 表单提交处理：启用认证且未认证时提交认证码，其余情况执行登录
  * @param values 表单数据
  */
 function handleSubmit(values: Recordable<any>) {
-  if (!authorized.value) {
+  if (IS_VERIFY && !authorized.value) {
     authorizing.value = true;
     testUserAuthorApi(values.authorCode)
       .then(() => fetchAuthorFlag())
@@ -116,9 +122,11 @@ function handleSubmit(values: Recordable<any>) {
   authStore.authLogin(values);
 }
 
-// 页面加载完成后获取认证状态，未认证时展示认证码输入
+// 页面加载完成后获取认证状态，未启用认证时无需查询，直接展示登录表单
 onMounted(() => {
-  fetchAuthorFlag();
+  if (IS_VERIFY) {
+    fetchAuthorFlag();
+  }
 });
 </script>
 

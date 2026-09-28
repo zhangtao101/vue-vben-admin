@@ -3,7 +3,8 @@
  * [INPUT]: 依赖 #/api (queryWorkSheetList/searchParentSubLine/exportWorkSheetList/
  *         deleteWorkSheet/confirmWorkSheet/cancelConfirmWorkSheet/saveWorkSheet/
  *         listWordListByParentCode)、#/util (queryAuth)、#/locales ($t)、
- *         planManagementDrawer 目录组件 (LinePersonPlanDrawer/LowerWorkOrderDrawer)
+ *         planManagementDrawer 目录组件 (LinePersonPlanDrawer/LowerWorkOrderDrawer/
+ *         WorkSheetGenerateDrawer)、#/util/component (materialSelection)
  * [OUTPUT]: 对外提供 packingWorkOrderManage 页面组件，提供包装工单查询、行内编辑保存、
  *           确认/取消确认/删除/Excel导出、各产线人员计划登录与下层工单生成入口
  * [POS]: 属于计划管理(planManagement)模块的包装工单管理主页面
@@ -22,9 +23,12 @@ import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
+  CheckboxGroup,
   DatePicker,
+  Drawer,
   Form,
   FormItem,
+  Input,
   message,
   Modal,
   RangePicker,
@@ -50,8 +54,10 @@ import {
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
 
+import MaterialSelection from '../../util/component/materialSelection.vue';
 import LinePersonPlanDrawer from '../../util/component/planManagementDrawer/LinePersonPlanDrawer.vue';
 import LowerWorkOrderDrawer from '../../util/component/planManagementDrawer/LowerWorkOrderDrawer.vue';
+import WorkSheetGenerateDrawer from '../../util/component/planManagementDrawer/WorkSheetGenerateDrawer.vue';
 
 /** 单别：包装工单 */
 const PROCESS_TYPE = 4;
@@ -124,20 +130,57 @@ const handleLineSearch = debounce((val: string) => {
 }, 500);
 // endregion
 
-// region 品号下拉（远程搜索 + 防抖，接口待后续提供）
-const productOptions = ref<{ label: string; value: string }[]>([]);
-const productLoading = ref(false);
+// region 品号选择（物料选择抽屉）
+/** 物料（品号）选择抽屉显隐 */
+const materialSelectVisible = ref(false);
+/** 当前选中的物料 */
+const selectedMaterial = ref<any>({});
 
 /**
- * 品号远程搜索
- * TODO: 品号下拉接口由后续步骤提供，接口就绪后在此处调用并填充 productOptions
- * @param {string} val 搜索关键字
+ * 打开物料（品号）选择抽屉
  * @since 2026-09-24
  */
-const handleProductSearch = debounce((_val: string) => {
-  productLoading.value = false;
-  productOptions.value = [];
-}, 500);
+function openMaterialSelect() {
+  selectedMaterial.value = {};
+  materialSelectVisible.value = true;
+}
+
+/**
+ * 物料（品号）选择变更
+ * @param {any} material 选中的物料行
+ * @since 2026-09-24
+ */
+function handleMaterialChange(material: any) {
+  selectedMaterial.value = material || {};
+}
+
+/**
+ * 确认物料（品号）选择，回填品号并刷新列表
+ * @since 2026-09-24
+ */
+function confirmMaterialSelect() {
+  queryParams.value.productCode =
+    selectedMaterial.value?.materialCode || undefined;
+  closeMaterialSelect();
+  gridApi.reload();
+}
+
+/**
+ * 清空已选品号并刷新列表
+ * @since 2026-09-24
+ */
+function clearProductCode() {
+  queryParams.value.productCode = undefined;
+  gridApi.reload();
+}
+
+/**
+ * 关闭物料（品号）选择抽屉
+ * @since 2026-09-24
+ */
+function closeMaterialSelect() {
+  materialSelectVisible.value = false;
+}
 // endregion
 
 // region 班别下拉（页面初始化即查询）
@@ -250,7 +293,11 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('packingWorkOrderManage.defectBatch'),
       minWidth: 110,
     },
-    { field: 'remark', title: $t('packingWorkOrderManage.remark'), minWidth: 160 },
+    {
+      field: 'remark',
+      title: $t('packingWorkOrderManage.remark'),
+      minWidth: 160,
+    },
   ],
   height: 500,
   pagerConfig: {
@@ -319,7 +366,13 @@ function buildParams(pageNum: number, pageSize: number) {
  * @returns {Promise<{ items: any[]; total: number }>} 分页数据
  * @since 2026-09-24
  */
-function queryData({ pageNum, pageSize }: { pageNum: number; pageSize: number }) {
+function queryData({
+  pageNum,
+  pageSize,
+}: {
+  pageNum: number;
+  pageSize: number;
+}) {
   return new Promise((resolve) => {
     queryWorkSheetList(buildParams(pageNum, pageSize))
       .then((res: any) => {
@@ -378,7 +431,7 @@ const modifiedRows = ref<any[]>([]);
 function handleFieldChange(row: any) {
   if (!row?.id) return;
   modifiedMap.set(row.id, { ...row });
-  modifiedRows.value = Array.from(modifiedMap.values());
+  modifiedRows.value = [...modifiedMap.values()];
 }
 
 /**
@@ -417,7 +470,9 @@ function handleSave() {
       gridApi.reload();
     })
     .catch((error: any) => {
-      message.error(error?.message || $t('packingWorkOrderManage.operationFailed'));
+      message.error(
+        error?.message || $t('packingWorkOrderManage.operationFailed'),
+      );
     });
 }
 // endregion
@@ -485,13 +540,13 @@ function handleConfirm() {
     title: $t('common.prompt'),
     content: $t('packingWorkOrderManage.confirmWorkSheetTip'),
     onOk: () => {
-      return confirmWorkSheet(selectedRows.value.map((row: any) => row.id)).then(
-        () => {
-          message.success($t('packingWorkOrderManage.operationSuccess'));
-          selectedRows.value = [];
-          gridApi.reload();
-        },
-      );
+      return confirmWorkSheet(
+        selectedRows.value.map((row: any) => row.id),
+      ).then(() => {
+        message.success($t('packingWorkOrderManage.operationSuccess'));
+        selectedRows.value = [];
+        gridApi.reload();
+      });
     },
   });
 }
@@ -524,6 +579,16 @@ function handleCancelConfirm() {
 // region 抽屉
 const linePersonPlanDrawerRef = ref();
 const lowerWorkOrderDrawerRef = ref();
+const workSheetGenerateDrawerRef = ref();
+
+/**
+ * 打开工单生成抽屉
+ * 单别 processType 由本页传入抽屉组件
+ * @since 2026-09-24
+ */
+function handleGenerateWorkSheet() {
+  workSheetGenerateDrawerRef.value?.open(PROCESS_TYPE);
+}
 
 /**
  * 打开各产线人员计划登录抽屉
@@ -602,22 +667,19 @@ onMounted(() => {
           :label="$t('packingWorkOrderManage.productCode')"
           style="margin-bottom: 1em"
         >
-          <Select
-            v-model:value="queryParams.productCode"
-            :placeholder="$t('packingWorkOrderManage.productCodePlaceholder')"
-            :options="productOptions"
-            :filter-option="false"
-            :not-found-content="productLoading ? undefined : null"
-            :default-active-first-option="false"
-            :style="{ minWidth: '220px' }"
-            allow-clear
-            show-search
-            @search="handleProductSearch"
-          >
-            <template v-if="productLoading" #notFoundContent>
-              <Spin size="small" />
-            </template>
-          </Select>
+          <Space>
+            <Input
+              v-model:value="queryParams.productCode"
+              :style="{ minWidth: '220px' }"
+              readonly
+            />
+            <Button type="primary" @click="openMaterialSelect">
+              {{ $t('packingWorkOrderManage.select') }}
+            </Button>
+            <Button @click="clearProductCode">
+              {{ $t('common.clear') }}
+            </Button>
+          </Space>
         </FormItem>
 
         <!-- 班别 -->
@@ -639,14 +701,9 @@ onMounted(() => {
           :label="$t('packingWorkOrderManage.workStatus')"
           style="margin-bottom: 1em"
         >
-          <Select
+          <CheckboxGroup
             v-model:value="queryParams.status"
-            :placeholder="$t('packingWorkOrderManage.workStatusPlaceholder')"
             :options="statusOptions"
-            :max-tag-count="2"
-            :style="{ minWidth: '220px' }"
-            allow-clear
-            mode="multiple"
           />
         </FormItem>
 
@@ -688,6 +745,17 @@ onMounted(() => {
         <!-- 工具栏右侧操作按钮 -->
         <template #toolbar-tools>
           <Space>
+            <Button
+              v-if="hasAuth('生成')"
+              type="primary"
+              @click="handleGenerateWorkSheet"
+            >
+              <Icon
+                icon="mdi:plus-circle-outline"
+                class="inline-block align-middle"
+              />
+              {{ $t('packingWorkOrderManage.generate') }}
+            </Button>
             <Button v-if="hasAuth('导出')" @click="handleExport">
               <Icon icon="mdi:file-excel" class="inline-block align-middle" />
               {{ $t('packingWorkOrderManage.excelExport') }}
@@ -698,7 +766,10 @@ onMounted(() => {
               :disabled="selectedRows.length === 0"
               @click="handleDelete"
             >
-              <Icon icon="mdi:delete-outline" class="inline-block align-middle" />
+              <Icon
+                icon="mdi:delete-outline"
+                class="inline-block align-middle"
+              />
               {{ $t('packingWorkOrderManage.delete') }}
             </Button>
             <Button
@@ -760,6 +831,11 @@ onMounted(() => {
       </Grid>
     </Card>
 
+    <!-- 工单生成抽屉 -->
+    <WorkSheetGenerateDrawer
+      ref="workSheetGenerateDrawerRef"
+      @refresh="() => gridApi.reload()"
+    />
     <!-- 各产线人员计划登录抽屉 -->
     <LinePersonPlanDrawer
       ref="linePersonPlanDrawerRef"
@@ -770,5 +846,31 @@ onMounted(() => {
       ref="lowerWorkOrderDrawerRef"
       @refresh="() => gridApi.reload()"
     />
+
+    <!-- 品号（物料）选择抽屉 -->
+    <Drawer
+      v-model:open="materialSelectVisible"
+      :footer-style="{ textAlign: 'right' }"
+      height="80%"
+      placement="top"
+      root-class-name="root-class-name"
+      :title="$t('storesRequisition.selectMaterialTitle')"
+    >
+      <MaterialSelection
+        v-if="materialSelectVisible"
+        @changed="handleMaterialChange"
+      />
+
+      <template #footer>
+        <Space>
+          <Button @click="closeMaterialSelect">
+            {{ $t('common.cancel') }}
+          </Button>
+          <Button type="primary" @click="confirmMaterialSelect">
+            {{ $t('common.confirm') }}
+          </Button>
+        </Space>
+      </template>
+    </Drawer>
   </Page>
 </template>
