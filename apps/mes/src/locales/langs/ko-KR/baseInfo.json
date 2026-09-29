@@ -271,5 +271,8 @@
   "inputAreaCode": "지역 코드를 입력하세요",
   "inputAreaName": "지역 이름을 입력하세요",
   "areaLineGroup": "생산라인 그룹",
-  "selectAreaLineGroup": "생산라인 그룹을 선택하세요"
+  "selectAreaLineGroup": "생산라인 그룹을 선택하세요",
+  "bindUser": "사용자 바인딩",
+  "availableUser": "사용 가능 인원",
+  "groupUser": "조 인원"
 }

@@ -271,5 +271,8 @@
   "inputAreaCode": "Please enter area code",
   "inputAreaName": "Please enter area name",
   "areaLineGroup": "Line Group",
-  "selectAreaLineGroup": "Please select line group"
+  "selectAreaLineGroup": "Please select line group",
+  "bindUser": "Bind User",
+  "availableUser": "Available User",
+  "groupUser": "Team User"
 }

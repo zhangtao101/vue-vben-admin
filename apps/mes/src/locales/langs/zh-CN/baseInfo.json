@@ -271,5 +271,8 @@
   "inputAreaCode": "请输入区域编号",
   "inputAreaName": "请输入区域名称",
   "areaLineGroup": "产线组",
-  "selectAreaLineGroup": "请选择产线组"
+  "selectAreaLineGroup": "请选择产线组",
+  "bindUser": "绑定人员",
+  "availableUser": "可用人员",
+  "groupUser": "班组人员"
 }

@@ -57,6 +57,36 @@ export interface TeamGroupCreateParams {
   remark?: string;
 }
 
+/** 可用人员 */
+export interface TeamGroupUserItem {
+  /** 用户 id */
+  userId?: number;
+  /** 用户编号 */
+  userCode?: string;
+  /** 用户名称 */
+  userName?: string;
+}
+
+/** 班组人员（绑定关系） */
+export interface TeamGroupBoundUserItem {
+  /** 绑定关系主键 */
+  id?: number;
+  /** 用户 id */
+  userId?: number;
+  /** 用户编号 */
+  userCode?: string;
+  /** 用户名称 */
+  userName?: string;
+}
+
+/** 班组绑定人员参数 */
+export interface TeamGroupBindUserParams {
+  /** 班组 id，必填 */
+  groupId: number;
+  /** 人员列表，必填 */
+  userList: TeamGroupUserItem[];
+}
+
 /** 修改班组参数 */
 export interface TeamGroupUpdateParams {
   /** 主键，必填 */
@@ -116,5 +146,42 @@ export async function updateTeamGroup(params: TeamGroupUpdateParams) {
 export async function deleteTeamGroup(id: number) {
   return requestClient.delete<boolean>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/work/group/delete/${id}`,
+  );
+}
+
+/**
+ * 展示所有可用人员
+ * @param subLineId 产线 id，非必填
+ * @returns 可用人员列表
+ * @since 2026-09-29
+ */
+export async function listAvailableUsers(subLineId?: number | string) {
+  return requestClient.get<TeamGroupUserItem[]>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/work/group/userNames?${qs.stringify({ subLineId })}`,
+  );
+}
+
+/**
+ * 根据班组 id 展示人员
+ * @param id 班组 id
+ * @returns 班组已绑定人员列表
+ * @since 2026-09-29
+ */
+export async function listGroupUsers(id: number | string) {
+  return requestClient.get<TeamGroupBoundUserItem[]>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/work/group/userSearch?${qs.stringify({ id })}`,
+  );
+}
+
+/**
+ * 班组绑定人员（后台会先清空原有绑定关系再绑定，可重复调用）
+ * @param params 班组 id 与人员列表
+ * @returns 绑定结果
+ * @since 2026-09-29
+ */
+export async function bindGroupUsers(params: TeamGroupBindUserParams) {
+  return requestClient.post<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/work/group/addUser`,
+    params,
   );
 }

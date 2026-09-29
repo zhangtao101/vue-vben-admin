@@ -5,8 +5,10 @@ import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
-import { MdiEditOutline, MdiLightDelete, MdiSearch } from '@vben/icons';
+import { MdiSearch } from '@vben/icons';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Card,
@@ -32,6 +34,7 @@ import {
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
+import TeamGroupUserBindDrawer from '#/util/component/bisicDrawer/TeamGroupUserBindDrawer.vue';
 
 // 路由信息
 const route = useRoute();
@@ -42,7 +45,11 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'seq', title: $t('baseInfo.serialNumber'), width: 60 },
-    { field: 'subLineName', title: $t('baseInfo.subProductionLine'), minWidth: 150 },
+    {
+      field: 'subLineName',
+      title: $t('baseInfo.subProductionLine'),
+      minWidth: 150,
+    },
     { field: 'groupCode', title: $t('baseInfo.groupCode'), minWidth: 150 },
     { field: 'groupName', title: $t('baseInfo.groupName'), minWidth: 150 },
     { field: 'remark', title: $t('baseInfo.remark'), minWidth: 150 },
@@ -51,7 +58,7 @@ const gridOptions: VxeGridProps<any> = {
       fixed: 'right',
       slots: { default: 'action' },
       title: $t('baseInfo.action'),
-      minWidth: 120,
+      minWidth: 200,
     },
   ],
   height: 500,
@@ -101,6 +108,15 @@ const subLineList = ref<any[]>([]);
 const showEditDrawer = ref(false);
 const editMode = ref(false);
 const formRef = ref();
+// 绑定人员抽屉
+const userBindDrawerRef = ref();
+
+/**
+ * 打开绑定人员抽屉
+ */
+function handleBindUser(row: any) {
+  userBindDrawerRef.value?.open(row);
+}
 
 const formData = ref({
   groupCode: '',
@@ -112,16 +128,20 @@ const formData = ref({
 
 const rules: any = {
   subLineId: [
-    { required: true, message: $t('baseInfo.selectSubProductionLine'), trigger: 'change', asyncValidator: (_rule: any, value: any, _callback: any) => {
-      return new Promise((resolve, _reject) => {
-        if (value) {
-          resolve('too young');  // reject with error message
-        } else {
-          resolve('');
-        }
-      });
+    {
+      required: true,
+      message: $t('baseInfo.selectSubProductionLine'),
+      trigger: 'change',
+      asyncValidator: (_rule: any, value: any, _callback: any) => {
+        return new Promise((resolve, _reject) => {
+          if (value) {
+            resolve('too young'); // reject with error message
+          } else {
+            resolve('');
+          }
+        });
+      },
     },
-    }
   ],
   groupCode: [
     { required: true, message: $t('baseInfo.inputGroupCode'), trigger: 'blur' },
@@ -239,15 +259,24 @@ function handleSubmit() {
   formRef.value?.validate().then(() => {
     const { id, subLineId, groupCode, groupName, remark } = formData.value;
     if (editMode.value) {
-      updateTeamGroup({ id: id!, subLineId: subLineId!, groupCode, groupName, remark }).then(
-        () => {
-          message.success($t('baseInfo.updateSuccess'));
-          handleClose();
-          gridApi.reload();
-        },
-      );
+      updateTeamGroup({
+        id: id!,
+        subLineId: subLineId!,
+        groupCode,
+        groupName,
+        remark,
+      }).then(() => {
+        message.success($t('baseInfo.updateSuccess'));
+        handleClose();
+        gridApi.reload();
+      });
     } else {
-      createTeamGroup({ subLineId: subLineId!, groupCode, groupName, remark }).then(() => {
+      createTeamGroup({
+        subLineId: subLineId!,
+        groupCode,
+        groupName,
+        remark,
+      }).then(() => {
         message.success($t('baseInfo.createSuccess'));
         handleClose();
         gridApi.reload();
@@ -341,26 +370,38 @@ function handleClose() {
 
         <template #action="{ row }">
           <Space :size="8">
+            <Tooltip>
+              <template #title>
+                {{ $t('baseInfo.bindUser') }}
+              </template>
+              <Button type="link" @click="handleBindUser(row)">
+                <Icon
+                  icon="mdi:text-user"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
+            </Tooltip>
             <Tooltip v-if="author.includes('编辑')">
               <template #title>
                 {{ $t('common.edit') }}
               </template>
-              <Button
-                :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
-                type="link"
-                @click="handleEdit(row)"
-              />
+              <Button type="link" @click="handleEdit(row)">
+                <Icon
+                  icon="mdi:pencil-outline"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
             </Tooltip>
             <Tooltip v-if="author.includes('删除')">
               <template #title>
                 {{ $t('common.delete') }}
               </template>
-              <Button
-                :icon="h(MdiLightDelete, { class: 'inline-block size-6' })"
-                danger
-                type="link"
-                @click="handleDelete(row)"
-              />
+              <Button danger type="link" @click="handleDelete(row)">
+                <Icon
+                  icon="mdi:delete-outline"
+                  class="inline-block align-middle text-2xl"
+                />
+              </Button>
             </Tooltip>
           </Space>
         </template>
@@ -429,5 +470,11 @@ function handleClose() {
         </Space>
       </template>
     </Drawer>
+
+    <!-- 绑定人员抽屉 -->
+    <TeamGroupUserBindDrawer
+      ref="userBindDrawerRef"
+      @refresh="() => gridApi.reload()"
+    />
   </Page>
 </template>
