@@ -118,7 +118,7 @@ function queryData() {
     });
 }
 
-const snCodeRef = ref();
+// const snCodeRef = ref();
 // 扫码错误状态
 const snCodeError = ref(false);
 /**
@@ -201,8 +201,8 @@ onBeforeUnmount(() => {
           <!-- 显示单件 SN 码输入框和扫码组件的区域 -->
           <span :class="getValueClass()" class="border-0 text-left">
             <!-- SN 码输入框，支持回车键查询，根据展示类型决定是否禁用 -->
+            <!-- ref="snCodeRef" -->
             <Input
-              ref="snCodeRef"
               v-model:value="snCode"
               :status="snCodeError ? 'error' : ''"
               @keydown.enter="queryCode()"
