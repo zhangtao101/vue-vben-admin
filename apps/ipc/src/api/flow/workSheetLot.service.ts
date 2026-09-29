@@ -46,16 +46,18 @@ export function addLot(params: any) {
  * @param ids 选中的 id 列表
  * @param state 状态 1确认 2进行中 3结束
  * @param processType 工序类型（自动模式等场景需透传）
+ * @param equipCode 堆垛机编号（包装工序开始/结束需透传）
  * @since 2026-08-26
  */
 export function updateStae(
   ids: (number | string)[],
   state: number,
   processType?: number,
+  equipCode?: string,
 ) {
   return requestClient.put(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/updateStae`,
-    { ids, processType, state },
+    { equipCode, ids, processType, state },
   );
 }
 

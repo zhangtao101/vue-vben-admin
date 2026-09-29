@@ -39,6 +39,7 @@ import {
   searchSubLine,
   searchWeightRecordList,
   selectLineByWorkSheetId,
+  updateStae,
 } from '#/api';
 import { $t } from '#/locales';
 import PackagingMaterialDrawer from '#/util/component/PackagingMaterialDrawer.vue';
@@ -431,10 +432,10 @@ function handleMaterialLoad(panel: any) {
 }
 
 /**
- * 开始工作：将面板工作状态置为 running，已开始则提示。
+ * 开始工作：调用状态更新接口将工单置为进行中（state 2），成功后面板状态置为 running。
  * @param {object} panel - 目标面板（leftPanel/rightPanel）。
  * @returns {void} 无返回值，成功后弹出成功提示。
- * @throws 不主动抛出异常。
+ * @throws 不主动抛出异常，失败时提示开始失败。
  * @since 2026-09-02 00:00:00
  */
 function handleWorkStart(panel: any) {
@@ -442,15 +443,25 @@ function handleWorkStart(panel: any) {
     message.warning($t('packagingProgress.alreadyRunning'));
     return;
   }
-  panel.workStatus = 'running';
-  message.success($t('packagingProgress.startSuccess'));
+  if (!panel.form?.id) {
+    message.warning($t('packagingProgress.workOrderNotSelected'));
+    return;
+  }
+  updateStae([panel.form.id], 2, props.processType, panel.form.equipCode)
+    .then(() => {
+      panel.workStatus = 'running';
+      message.success($t('packagingProgress.startSuccess'));
+    })
+    .catch(() => {
+      message.error($t('packagingProgress.startFailed'));
+    });
 }
 
 /**
- * 结束工作：将面板工作状态置为 idle，未开始则提示。
+ * 结束工作：调用状态更新接口将工单置为结束（state 3），成功后面板状态置为 idle。
  * @param {object} panel - 目标面板（leftPanel/rightPanel）。
  * @returns {void} 无返回值，成功后弹出成功提示。
- * @throws 不主动抛出异常。
+ * @throws 不主动抛出异常，失败时提示结束失败。
  * @since 2026-09-02 00:00:00
  */
 function handleWorkEnd(panel: any) {
@@ -458,8 +469,18 @@ function handleWorkEnd(panel: any) {
     message.warning($t('packagingProgress.notStarted'));
     return;
   }
-  panel.workStatus = 'idle';
-  message.success($t('packagingProgress.endSuccess'));
+  if (!panel.form?.id) {
+    message.warning($t('packagingProgress.workOrderNotSelected'));
+    return;
+  }
+  updateStae([panel.form.id], 3, props.processType, panel.form.equipCode)
+    .then(() => {
+      panel.workStatus = 'idle';
+      message.success($t('packagingProgress.endSuccess'));
+    })
+    .catch(() => {
+      message.error($t('packagingProgress.endFailed'));
+    });
 }
 // endregion
 

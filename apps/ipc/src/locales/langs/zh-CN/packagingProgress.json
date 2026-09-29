@@ -42,5 +42,7 @@
   "packTypeAll": "全部",
   "isInit": "是否初始化",
   "planDateStart": "计划开始时间",
-  "workOrderNotSelected": "请先选择工单"
+  "workOrderNotSelected": "请先选择工单",
+  "startFailed": "工作开始失败",
+  "endFailed": "工作结束失败"
 }
