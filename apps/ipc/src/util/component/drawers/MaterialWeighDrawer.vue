@@ -18,7 +18,11 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
-import { addWeightRecord, selectMaterialWeight } from '#/api';
+import {
+  addWeightRecord,
+  selectMaterialWeight,
+  selectPalletLabel,
+} from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({
@@ -224,35 +228,43 @@ function handleClearWeighWeight() {
 
 /** 扫码/输入标签后：解析材料编码并匹配表格行，匹配的行显示为黄色并回填材料信息（不改变称重方式） */
 function handleLabelInput() {
-  const code = labelId.value.split('|')[0]?.trim() || '';
-  // 从抽屉表格当前数据中按材料编码匹配（数据已通过接口加载）
-  const rows = gridApi.grid?.getTableData?.().fullData || [];
-  const matched = code
-    ? rows.find((m: any) => m.materialCode === code)
-    : undefined;
-  if (matched) {
-    // 该物料已存在称重重量（行 actualWt 有值），视为已添加过，不允许重复添加
-    const existedWt = matched.actualWt;
-    const hasExisted =
-      existedWt !== null &&
-      existedWt !== undefined &&
-      existedWt !== '' &&
-      Number(existedWt) > 0;
-    if (hasExisted) {
-      message.warning($t('mixerMaterialWeigh.duplicateMaterial'));
-      labelId.value = '';
-      return;
-    }
+  // 调用接口解析完整标签，取其返回的物料编号作为匹配编码
+  selectPalletLabel(labelId.value)
+    .then((res: any) => {
+      const code = String(res?.materialCode ?? '').trim();
+      // 从抽屉表格当前数据中按材料编码匹配（数据已通过接口加载）
+      const rows = gridApi.grid?.getTableData?.().fullData || [];
+      const matched = code
+        ? rows.find((m: any) => m.materialCode === code)
+        : undefined;
+      if (matched) {
+        // 该物料已存在称重重量（行 actualWt 有值），视为已添加过，不允许重复添加
+        const existedWt = matched.actualWt;
+        const hasExisted =
+          existedWt !== null &&
+          existedWt !== undefined &&
+          existedWt !== '' &&
+          Number(existedWt) > 0;
+        if (hasExisted) {
+          message.warning($t('mixerMaterialWeigh.duplicateMaterial'));
+          labelId.value = '';
+          return;
+        }
 
-    scannedMaterialCode.value = code;
-    currentMaterial.value = matched;
-    actualWt.value = 0;
-    count.value = 0;
-  } else {
-    currentMaterial.value = null;
-  }
-  // 重新渲染表格以更新黄色高亮
-  gridApi.grid?.commitProxy?.('query');
+        scannedMaterialCode.value = code;
+        currentMaterial.value = matched;
+        actualWt.value = 0;
+        count.value = 0;
+      } else {
+        currentMaterial.value = null;
+      }
+      // 重新渲染表格以更新黄色高亮
+      gridApi.grid?.commitProxy?.('query');
+    })
+    .catch(() => {
+      currentMaterial.value = null;
+      gridApi.grid?.commitProxy?.('query');
+    });
 }
 
 /** 抽屉重置：清空基本信息与实时称重信息，取消扫码高亮，回到初始状态 */
@@ -482,7 +494,11 @@ defineExpose({ open });
                 <div class="mb-1 text-sm text-muted-foreground">
                   {{ $t('mixerMaterialWeigh.count') }}
                 </div>
-                <div class="text-2xl font-bold">{{ count }}EA</div>
+                <div class="text-2xl font-bold">
+                  <!-- <Input v-model:value="count" /> -->
+                  {{ count }}
+                  EA
+                </div>
               </div>
               <div class="flex flex-wrap gap-2">
                 <Button :disabled="!currentMaterial" @click="handleAddUnit">
