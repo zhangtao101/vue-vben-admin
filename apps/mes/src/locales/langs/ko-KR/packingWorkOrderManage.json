@@ -68,6 +68,7 @@
   "printName": "구분",
   "printNamePlaceholder": "구분을 입력하세요",
   "productGroupCode": "제품 그룹 코드",
+  "productGroupCodePlaceholder": "제품 그룹 코드를 선택하세요",
   "previewTitle": "미리보기",
   "pleaseSelectDateCode": "일자코드를 선택하세요",
   "loading": "불러오는 중...",

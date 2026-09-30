@@ -68,6 +68,7 @@
   "printName": "Type",
   "printNamePlaceholder": "Input type",
   "productGroupCode": "Product Group Code",
+  "productGroupCodePlaceholder": "Please select product group code",
   "previewTitle": "Preview",
   "pleaseSelectDateCode": "Please select date code",
   "loading": "Loading...",

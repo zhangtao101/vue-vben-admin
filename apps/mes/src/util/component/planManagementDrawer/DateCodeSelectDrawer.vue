@@ -21,11 +21,16 @@ import {
   Input,
   message,
   Row,
+  Select,
   Space,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getPrintCodeTemplateList, previewByPrintCode } from '#/api';
+import {
+  getPrintCodeTemplateList,
+  listProductGroupOptions,
+  previewByPrintCode,
+} from '#/api';
 import { $t } from '#/locales';
 
 defineOptions({ name: 'DateCodeSelectDrawer' });
@@ -40,8 +45,18 @@ const SALES_TYPE_EXPORT = 2;
 
 // region 状态管理
 const show = ref(false);
-/** 查询条件：喷码编号、区分 */
-const queryParams = ref<any>({ printCode: undefined, printName: undefined });
+/** 查询条件：喷码编号、区分、产品组编号 */
+const queryParams = ref<any>({
+  printCode: undefined,
+  printName: undefined,
+  productGroupCode: undefined,
+});
+/** 产品组下拉选项 */
+const productGroupOptions = ref<any[]>([]);
+/** 产品组下拉加载状态 */
+const productGroupFetching = ref(false);
+/** 产品组远程搜索防抖定时器 */
+let productGroupSearchTimer: ReturnType<typeof setTimeout> | undefined;
 /** 当前选中的喷码模板行 */
 const selectedRow = ref<any>(null);
 /** 喷码预览内容 */
@@ -92,6 +107,7 @@ function createGridOptions(salesType: number): VxeGridProps<any> {
       },
     },
     rowConfig: { keyField: 'id' },
+    radioConfig: { trigger: 'row' },
     stripe: true,
     toolbarConfig: { custom: true, refresh: true, zoom: true },
   };
@@ -116,6 +132,44 @@ const [DomesticGrid, domesticGridApi] = useVbenVxeGrid({
 });
 // endregion
 
+// region 产品组下拉
+/**
+ * 加载产品组下拉选项
+ * @param {string} keyword 产品组编码或名称关键字，为空时加载全部启用项
+ * @since 2026-09-29
+ */
+function loadProductGroupOptions(keyword = '') {
+  productGroupFetching.value = true;
+  listProductGroupOptions({ keyword })
+    .then((data: any) => {
+      productGroupOptions.value = (data ?? []).map((item: any) => ({
+        label: `${item.productGroupCode} - ${item.productGroupName}`,
+        value: item.productGroupCode,
+      }));
+    })
+    .catch(() => {
+      productGroupOptions.value = [];
+    })
+    .finally(() => {
+      productGroupFetching.value = false;
+    });
+}
+
+/**
+ * 产品组远程搜索（防抖 300ms）
+ * @param {string} value 输入的关键字
+ * @since 2026-09-29
+ */
+function handleProductGroupSearch(value: string) {
+  if (productGroupSearchTimer) {
+    clearTimeout(productGroupSearchTimer);
+  }
+  productGroupSearchTimer = setTimeout(() => {
+    loadProductGroupOptions(value);
+  }, 300);
+}
+// endregion
+
 // region 数据查询与选择
 /**
  * 分页查询喷码模板列表
@@ -136,6 +190,7 @@ function queryData(
       pageSize,
       printCode: queryParams.value.printCode || undefined,
       printName: queryParams.value.printName || undefined,
+      productGroupCode: queryParams.value.productGroupCode || undefined,
       salesType,
     })
       .then((res: any) => {
@@ -204,7 +259,11 @@ function handleSearch() {
  * @since 2026-09-24
  */
 function handleResetQuery() {
-  queryParams.value = { printCode: undefined, printName: undefined };
+  queryParams.value = {
+    printCode: undefined,
+    printName: undefined,
+    productGroupCode: undefined,
+  };
   handleSearch();
 }
 // endregion
@@ -216,6 +275,7 @@ function handleResetQuery() {
  */
 function open() {
   show.value = true;
+  loadProductGroupOptions();
 }
 
 /**
@@ -240,7 +300,11 @@ function handleClose() {
   selectedRow.value = null;
   previewList.value = [];
   previewLoading.value = false;
-  queryParams.value = { printCode: undefined, printName: undefined };
+  queryParams.value = {
+    printCode: undefined,
+    printName: undefined,
+    productGroupCode: undefined,
+  };
 }
 
 defineExpose({ open });
@@ -259,6 +323,23 @@ defineExpose({ open });
   >
     <!-- 1. 查询区域 -->
     <Form :model="queryParams" class="!mb-2" layout="inline">
+      <FormItem
+        :label="$t('packingWorkOrderManage.productGroupCode')"
+        style="margin-bottom: 1em"
+      >
+        <Select
+          v-model:value="queryParams.productGroupCode"
+          :filter-option="false"
+          :loading="productGroupFetching"
+          :options="productGroupOptions"
+          :placeholder="$t('packingWorkOrderManage.productGroupCodePlaceholder')"
+          allow-clear
+          show-search
+          style="width: 200px"
+          @search="handleProductGroupSearch"
+        />
+      </FormItem>
+
       <FormItem
         :label="$t('packingWorkOrderManage.printCode')"
         style="margin-bottom: 1em"
@@ -294,7 +375,7 @@ defineExpose({ open });
         </Space>
       </FormItem>
     </Form>
-
+    <div>
     <!-- 2. 左右两栏：出口日期码 / 内需日期码 -->
     <Row :gutter="16">
       <Col :span="12">
@@ -314,20 +395,40 @@ defineExpose({ open });
         </DomesticGrid>
       </Col>
     </Row>
+    </div>
 
     <!-- 3. 喷码预览 -->
-    <div class="!mt-4">
+    <div class="!mt-8">
       <div class="!mb-2">
         {{ $t('packingWorkOrderManage.previewTitle') }}
       </div>
-      <Space v-if="previewLoading" size="small">
+      <!-- 加载中 -->
+      <div
+        v-if="previewLoading"
+        class="flex h-32 items-center justify-center text-gray-400"
+      >
         {{ $t('packingWorkOrderManage.loading') }}
-      </Space>
-      <Space v-else direction="vertical" size="small">
-        <div v-for="(item, index) in previewList" :key="index">
-          {{ item }}
-        </div>
-      </Space>
+      </div>
+      <!-- 未选择喷码时的空态 -->
+      <div
+        v-else-if="!previewList.length"
+        class="flex h-32 items-center justify-center rounded-md border border-solid border-dashed border-gray-200 text-gray-400 dark:border-gray-700"
+      >
+        {{ $t('packingWorkOrderManage.pleaseSelectDateCode') }}
+      </div>
+      <!-- 喷码内容：每个喷码一个大块 -->
+      <Row v-else :gutter="16">
+        <Col v-for="(item, index) in previewList" :key="index" :span="8">
+          <div
+            class="mb-4 flex min-h-32 flex-col items-center justify-center rounded-md border border-solid border-gray-200 bg-gray-50 px-4 py-6 dark:border-gray-700 dark:bg-gray-800"
+          >
+            <div class="mb-2 text-xs text-gray-400">#{{ index + 1 }}</div>
+            <div class="break-all text-center text-xl font-medium leading-relaxed">
+              {{ item }}
+            </div>
+          </div>
+        </Col>
+      </Row>
     </div>
 
     <template #footer>

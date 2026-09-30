@@ -68,6 +68,7 @@
   "printName": "区分",
   "printNamePlaceholder": "请输入区分",
   "productGroupCode": "产品组编号",
+  "productGroupCodePlaceholder": "请选择产品组编号",
   "previewTitle": "预览效果",
   "pleaseSelectDateCode": "请选择日期码",
   "loading": "加载中...",
