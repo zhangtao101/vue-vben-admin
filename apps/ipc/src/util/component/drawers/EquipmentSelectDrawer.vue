@@ -159,7 +159,7 @@ function queryData({
       equipmentType:
         equipmentTypeVal.value && equipmentTypeVal.value > 0
           ? equipmentTypeVal.value
-          : undefined,
+          : 1,
     };
 
     getEquipSelectList(params)
