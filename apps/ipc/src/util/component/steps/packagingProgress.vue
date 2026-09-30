@@ -503,8 +503,8 @@ const transferForm = ref<any>({
 /** 传输弹窗子产线下拉选项：取自工单对应子产线接口数据，并携带计划开始时间 */
 const transferSubLineOptions = computed(() =>
   (lineList.value ?? []).map((line: any) => ({
-    label: `${line.lineCode}(${line.lineName})`,
-    value: line.lineCode,
+    label: `${line.subLineCode}(${line.subLineName})`,
+    value: line.subLineCode,
     planDateStart: line.planDateStart,
   })),
 );
@@ -573,7 +573,7 @@ function openTransfer(panel: any) {
     return;
   }
   transferForm.value = {
-    subLineCode: undefined,
+    subLineCode: panel.form.subLineCode,
     workSheetCode,
     type: 1,
     isInit: false,
