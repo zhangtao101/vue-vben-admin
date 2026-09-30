@@ -17,6 +17,7 @@ export * from './productInform.service';
 export * from './productionAreaManage.service';
 export * from './productionLineManage.service';
 export * from './productionLineStaffBind.service';
+export * from './productionLineStaffRegister.service';
 export * from './productLineSet.service';
 export * from './siloMaterialManage.service';
 export * from './subProductionLineHangTray.service';

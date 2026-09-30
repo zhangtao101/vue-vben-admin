@@ -274,5 +274,19 @@
   "selectAreaLineGroup": "请选择产线组",
   "bindUser": "绑定人员",
   "availableUser": "可用人员",
-  "groupUser": "班组人员"
+  "groupUser": "班组人员",
+  "workDate": "作业日期",
+  "selectWorkDate": "请选择作业日期",
+  "startTime": "作业开始时间",
+  "selectStartTime": "请选择作业开始时间",
+  "endTime": "作业结束时间",
+  "selectEndTime": "请选择作业结束时间",
+  "shift": "班别",
+  "selectShift": "请选择班别",
+  "groupNumber": "班组人员数量",
+  "inputGroupNumber": "请输入班组人员数量",
+  "statusEnabled": "启用",
+  "statusDisabled": "停用",
+  "addRow": "新增行",
+  "selectGroup": "请选择班组"
 }

@@ -274,5 +274,19 @@
   "selectAreaLineGroup": "Please select line group",
   "bindUser": "Bind User",
   "availableUser": "Available User",
-  "groupUser": "Team User"
+  "groupUser": "Team User",
+  "workDate": "Work Date",
+  "selectWorkDate": "Please select work date",
+  "startTime": "Work Start Time",
+  "selectStartTime": "Please select work start time",
+  "endTime": "Work End Time",
+  "selectEndTime": "Please select work end time",
+  "shift": "Shift",
+  "selectShift": "Please select shift",
+  "groupNumber": "Team Member Count",
+  "inputGroupNumber": "Please enter team member count",
+  "statusEnabled": "Enabled",
+  "statusDisabled": "Disabled",
+  "addRow": "Add Row",
+  "selectGroup": "Please select team"
 }

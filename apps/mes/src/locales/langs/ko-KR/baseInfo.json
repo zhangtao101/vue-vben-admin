@@ -274,5 +274,19 @@
   "selectAreaLineGroup": "생산라인 그룹을 선택하세요",
   "bindUser": "사용자 바인딩",
   "availableUser": "사용 가능 인원",
-  "groupUser": "조 인원"
+  "groupUser": "조 인원",
+  "workDate": "작업 일자",
+  "selectWorkDate": "작업 일자를 선택하세요",
+  "startTime": "작업 시작 시간",
+  "selectStartTime": "작업 시작 시간을 선택하세요",
+  "endTime": "작업 종료 시간",
+  "selectEndTime": "작업 종료 시간을 선택하세요",
+  "shift": "근무조",
+  "selectShift": "근무조를 선택하세요",
+  "groupNumber": "조 인원 수",
+  "inputGroupNumber": "조 인원 수를 입력하세요",
+  "statusEnabled": "사용",
+  "statusDisabled": "미사용",
+  "addRow": "행 추가",
+  "selectGroup": "조를 선택하세요"
 }
