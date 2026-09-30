@@ -106,9 +106,9 @@ function operationItemChange() {
 
 // region 假数据 - 工步（左侧竖排）
 const stepList = ref<any[]>([
-  { id: 101, title: '混合水LOT生成', type: 102, status: 2 },
+  { id: 101, title: '混合水LOT生成', type: 102, status: 1 },
   { id: 102, title: '混合水材料称重', type: 103, status: 1 },
-  { id: 103, title: '混合水托盘投入', type: 104, status: -1 },
+  { id: 103, title: '混合水托盘投入', type: 104, status: 1 },
   { id: 104, title: '混合水作业进度', type: 105, status: 1 },
   { id: 106, title: '混合水/Mix工作指示失败传输', type: 106, status: 1 },
   { id: 107, title: '混合LOT生成', type: 107, status: 1 },
