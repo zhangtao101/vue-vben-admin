@@ -511,7 +511,9 @@ function handleGenerate() {
         message.success($t('packingWorkOrderManage.generateSuccess'));
         selectedRows.value = [];
         gridApi.reload();
+        // 刷新外部列表并关闭抽屉
         emit('refresh');
+        handleClose();
       })
       .finally(() => {
         generateLoading.value = false;
