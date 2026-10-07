@@ -99,6 +99,8 @@
   "cumulativeNumberOfDefects": "Cumulative Number Of Defects",
   "allowForAdjustment": "Allow For Adjustment",
   "verificationResult": "Verification Result",
+  "workstation": "Workstation",
+  "pleaseSelectProcess": "Please Select Process",
   "workstationNumber": "Workstation Number",
   "testResult": "Test Result",
   "reportForWorkAndGetARedMark": "Report For Work And Get A Red Mark",

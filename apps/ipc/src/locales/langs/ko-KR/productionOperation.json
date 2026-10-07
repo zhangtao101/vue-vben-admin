@@ -99,6 +99,8 @@
   "cumulativeNumberOfDefects": "누적 불량 수",
   "allowForAdjustment": "조정 허용",
   "verificationResult": "검증 결과",
+  "workstation": "작업 스테이션",
+  "pleaseSelectProcess": "공정을 선택하세요",
   "workstationNumber": "작업장 번호",
   "testResult": "검사 결과",
   "reportForWorkAndGetARedMark": "작업 보고 및 적색 표시",

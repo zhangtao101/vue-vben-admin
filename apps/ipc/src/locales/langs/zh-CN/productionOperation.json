@@ -100,6 +100,8 @@
   "cumulativeNumberOfDefects": "累计不良数量",
   "allowForAdjustment": "允许调整",
   "verificationResult": "校验结果",
+  "workstation": "工作站",
+  "pleaseSelectProcess": "请选择工序",
   "workstationNumber": "工位",
   "testResult": "测试结果",
   "reportForWorkAndGetARedMark": "报工冲红",

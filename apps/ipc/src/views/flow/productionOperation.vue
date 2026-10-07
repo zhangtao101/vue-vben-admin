@@ -9,15 +9,16 @@ import { RadioButton, RadioGroup, Select } from 'ant-design-vue';
 
 import {
   getOpFunctionsByOpdetail,
+  getSetRecordFlag,
   getSstationProces,
-  workstationListAcquisition,
 } from '#/api';
 import StepExecution from '#/util/component/stepExecution.vue';
 import VerticalStepBar from '#/util/component/verticalStepBar.vue';
 
 // region 工作站与工序选择（左上角）
-const workstationList = ref<any[]>([]);
-// 当前选中的工作站编号
+// 当前工作站（由服务端根据IP自动识别，前端只做展示）
+const workstationName = ref<string>();
+// 当前工作站的编号
 const selectedWorkstation = ref<string>();
 // 工序列表（下拉数据源）
 const processList = ref<any[]>([]);
@@ -25,16 +26,13 @@ const processList = ref<any[]>([]);
 const selectedProcessCode = ref<string>();
 
 /**
- * 查询工作站列表，默认选中第一个工作站并加载其工序
+ * 根据IP自动获取绑定的工作站基础配置，并加载其工序
  */
-function queryListOfWorkstations() {
-  workstationListAcquisition().then((data: any[]) => {
-    workstationList.value = data || [];
-    // 默认选中第一个工作站并触发工序查询
-    if (workstationList.value.length > 0) {
-      selectedWorkstation.value = workstationList.value[0].workstationCode;
-      queryListOfOperationItems();
-    }
+function queryWorkstationSetRecord() {
+  getSetRecordFlag().then((data: any) => {
+    workstationName.value = data?.workstationName;
+    selectedWorkstation.value = data?.workstationCode;
+    queryListOfOperationItems();
   });
 }
 
@@ -77,7 +75,7 @@ function processChange(processCode?: any) {
     listOfOperationItems.value.length > 0
       ? listOfOperationItems.value[0].id
       : undefined;
-  // operationItemChange();
+  operationItemChange();
 }
 
 /**
@@ -106,28 +104,28 @@ function operationItemChange() {
 
 // region 假数据 - 工步（左侧竖排）
 const stepList = ref<any[]>([
-  { id: 101, title: '混合水LOT生成', type: 102, status: 1 },
-  { id: 102, title: '混合水材料称重', type: 103, status: 1 },
-  { id: 103, title: '混合水托盘投入', type: 104, status: 1 },
-  { id: 104, title: '混合水作业进度', type: 105, status: 1 },
-  { id: 106, title: '混合水/Mix工作指示失败传输', type: 106, status: 1 },
-  { id: 107, title: '混合LOT生成', type: 107, status: 1 },
-  { id: 108, title: '各筒仓材料设置', type: 108, status: 1 },
-  { id: 119, title: '混合水/Mix工作指示传输V2', type: 119, status: 1 },
-  { id: 109, title: '制面作业', type: 109, status: 1 },
-  { id: 110, title: '落面信息', type: 110, status: 1 },
-  { id: 111, title: '面机使用明细登记', type: 111, status: 1 },
-  { id: 112, title: '包装工作进度', type: 112, status: 1 },
-  { id: 113, title: '成品不良登记', type: 113, status: 1 },
-  { id: 114, title: '生产业绩', type: 114, status: 1 },
-  { id: 115, title: '包装作业进行', type: 115, status: 1 },
-  { id: 116, title: '台车标签发行', type: 116, status: 1 },
-  { id: 117, title: '台车装载/卸货', type: 117, status: 1 },
-  { id: 118, title: '台车LOT变更', type: 118, status: 1 },
-  { id: 120, title: '搅拌机批次LOT管理', type: 120, status: 1 },
-  { id: 121, title: '搅拌材料称重管理', type: 121, status: 1 },
-  { id: 122, title: '无重力搅拌托盘投入', type: 122, status: 1 },
-  { id: 123, title: '搅拌作业进行', type: 123, status: 1 },
+  // { id: 101, title: '混合水LOT生成', type: 102, status: 1 },
+  // { id: 102, title: '混合水材料称重', type: 103, status: 1 },
+  // { id: 103, title: '混合水托盘投入', type: 104, status: 1 },
+  // { id: 104, title: '混合水作业进度', type: 105, status: 1 },
+  // { id: 106, title: '混合水/Mix工作指示失败传输', type: 106, status: 1 },
+  // { id: 107, title: '混合LOT生成', type: 107, status: 1 },
+  // { id: 108, title: '各筒仓材料设置', type: 108, status: 1 },
+  // { id: 119, title: '混合水/Mix工作指示传输V2', type: 119, status: 1 },
+  // { id: 109, title: '制面作业', type: 109, status: 1 },
+  // { id: 110, title: '落面信息', type: 110, status: 1 },
+  // { id: 111, title: '面机使用明细登记', type: 111, status: 1 },
+  // { id: 112, title: '包装工作进度', type: 112, status: 1 },
+  // { id: 113, title: '成品不良登记', type: 113, status: 1 },
+  // { id: 114, title: '生产业绩', type: 114, status: 1 },
+  // { id: 115, title: '包装作业进行', type: 115, status: 1 },
+  // { id: 116, title: '台车标签发行', type: 116, status: 1 },
+  // { id: 117, title: '台车装载/卸货', type: 117, status: 1 },
+  // { id: 118, title: '台车LOT变更', type: 118, status: 1 },
+  // { id: 120, title: '搅拌机批次LOT管理', type: 120, status: 1 },
+  // { id: 121, title: '搅拌材料称重管理', type: 121, status: 1 },
+  // { id: 122, title: '无重力搅拌托盘投入', type: 122, status: 1 },
+  // { id: 123, title: '搅拌作业进行', type: 123, status: 1 },
 ]);
 // 当前选中的工步索引
 const currentStepIndex = ref(0);
@@ -147,7 +145,7 @@ function stepChange(item: any) {
 
 onMounted(() => {
   currentWorkingStep.value = stepList.value[currentStepIndex.value];
-  queryListOfWorkstations();
+  queryWorkstationSetRecord();
 });
 </script>
 
@@ -158,22 +156,16 @@ onMounted(() => {
       <div class="mb-4 flex items-center">
         <!-- 左上角：工作站与工序选择 -->
         <div class="flex flex-shrink-0 items-center gap-2">
-          <Select
-            v-model:value="selectedWorkstation"
-            :options="workstationList"
-            :field-names="{
-              label: 'workstationName',
-              value: 'workstationCode',
-            }"
-            placeholder="请选择工作站"
-            class="!w-44"
-            @change="queryListOfOperationItems"
-          />
+          <span class="whitespace-nowrap text-base font-medium">
+            {{ $t('productionOperation.workstation') }}：{{
+              workstationName || '-'
+            }}
+          </span>
           <Select
             v-model:value="selectedProcessCode"
             :options="processList"
             :field-names="{ label: 'processName', value: 'processCode' }"
-            placeholder="请选择工序"
+            :placeholder="$t('productionOperation.pleaseSelectProcess')"
             class="!w-44"
             @change="processChange"
           />

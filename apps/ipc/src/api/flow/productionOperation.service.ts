@@ -594,3 +594,28 @@ export function getOpFunctionsByOpdetail(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getOpFunctionsByOpdetail?${qs.stringify(params)}`,
   );
 }
+/** 工作站基础配置信息 */
+export interface SetRecordFlag {
+  /** 绑定的设备清单列表（设备编号） */
+  equipCodes: string[];
+  /** 工作站工序ID */
+  bindingId: number;
+  /** 工序编号 */
+  processCode: string;
+  /** 工序名称 */
+  processName: string;
+  /** 工作站编号 */
+  workstationCode: string;
+  /** 工作站名称 */
+  workstationName: string;
+}
+/**
+ * 根据IP自动获取绑定的工作站基础配置信息
+ * @returns 工作站基础配置信息
+ * @since 2026-10-07
+ */
+export function getSetRecordFlag() {
+  return requestClient.get<SetRecordFlag>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workstation/setRecord/getSetRecordFlag`,
+  );
+}
