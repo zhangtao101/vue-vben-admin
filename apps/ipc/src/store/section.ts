@@ -41,5 +41,15 @@ export const useSectionStore = defineStore('section', () => {
     localStorage.removeItem(STORAGE_KEY);
   }
 
-  return { sectionCode, sectionName, setSection, clearSection };
+  /**
+   * 重置为初始状态
+   * setup 语法定义的 store 默认没有 $reset，这里手动补齐，
+   * 保证 @vben/stores 的 resetAllStores 能统一调用
+   * @since 2026-10-08
+   */
+  function $reset() {
+    clearSection();
+  }
+
+  return { sectionCode, sectionName, setSection, clearSection, $reset };
 });

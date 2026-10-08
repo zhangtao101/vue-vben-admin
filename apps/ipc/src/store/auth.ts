@@ -12,6 +12,7 @@ import { defineStore } from 'pinia';
 
 import { getUserInfoApi, loginApi } from '#/api';
 import { $t } from '#/locales';
+import { resetRoutes } from '#/router';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -82,6 +83,7 @@ export const useAuthStore = defineStore('auth', () => {
       // 不做任何处理
     }*/
     resetAllStores();
+    resetRoutes();
     accessStore.setLoginExpired(false);
 
     // 回登录页带上当前路由地址
