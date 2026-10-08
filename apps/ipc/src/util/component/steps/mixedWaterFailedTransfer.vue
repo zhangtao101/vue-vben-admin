@@ -162,7 +162,7 @@ const leftGridOptions: VxeGridProps<any> = {
   },
   stripe: true,
   checkboxConfig: { highlight: true, range: true, trigger: 'row' },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [LeftGrid, leftGridApi] = useVbenVxeGrid({
@@ -245,7 +245,7 @@ const rightGridOptions: VxeGridProps<any> = {
   rowClassName: getStateRowClass,
   stripe: true,
   checkboxConfig: { highlight: true, range: true, trigger: 'row' },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [RightGrid, rightGridApi] = useVbenVxeGrid({

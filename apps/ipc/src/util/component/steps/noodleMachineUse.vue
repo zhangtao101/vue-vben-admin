@@ -150,7 +150,7 @@ const gridOptions: VxeGridProps<any> = {
   radioConfig: { trigger: 'row', highlight: true },
   stripe: true,
   pagerConfig: { enabled: true, pageSize: 20 },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
   proxyConfig: {
     ajax: {
       query: queryUsageList,

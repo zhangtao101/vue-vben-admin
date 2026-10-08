@@ -117,7 +117,7 @@ const lotGridOptions: VxeGridProps<any> = {
     highlight: true,
     trigger: 'row',
   },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
   proxyConfig: {
     ajax: {
       query: queryLotList,

@@ -92,11 +92,7 @@ const gridOptions: VxeGridProps<any> = {
     enabled: true,
     pageSize: 20,
   },
-  toolbarConfig: {
-    custom: true,
-    refresh: true,
-    zoom: true,
-  },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
   columns: [
     { type: 'radio', width: 60 },
     {
@@ -222,11 +218,7 @@ const lotGridOptions: VxeGridProps<any> = {
   stripe: true,
   columns: getLotColumns(),
   pagerConfig: { enabled: false },
-  toolbarConfig: {
-    custom: false,
-    refresh: false,
-    zoom: false,
-  },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
   proxyConfig: {
     ajax: {
       query: queryLotList,
@@ -300,11 +292,7 @@ const loadGridOptions: VxeGridProps<any> = {
     },
   ],
   pagerConfig: { enabled: false },
-  toolbarConfig: {
-    custom: true,
-    refresh: false,
-    zoom: true,
-  },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [LoadGrid, loadGridApi] = useVbenVxeGrid({

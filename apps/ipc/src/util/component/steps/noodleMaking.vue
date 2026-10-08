@@ -148,7 +148,7 @@ const gridOptions: VxeGridProps<any> = {
   data: instructionData.value,
   height: 340,
   stripe: true,
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });

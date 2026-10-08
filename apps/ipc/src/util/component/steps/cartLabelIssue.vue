@@ -148,7 +148,7 @@ const gridOptions: VxeGridProps<any> = {
     },
   },
   stripe: true,
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
@@ -292,9 +292,9 @@ onMounted(() => {
       </FormItem>
       <FormItem>
         <Space>
-          <Button type="primary" @click="handleQuery">{{
-            $t('common.query')
-          }}</Button>
+          <Button type="primary" @click="handleQuery">
+            {{ $t('common.query') }}
+          </Button>
           <Button @click="handleReset">{{ $t('common.reset') }}</Button>
         </Space>
       </FormItem>

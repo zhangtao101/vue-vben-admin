@@ -382,7 +382,7 @@ const baseGridOptions: VxeGridProps<any> = {
   ],
   height: 260,
   stripe: true,
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [LeftGrid, leftGridApi] = useVbenVxeGrid({

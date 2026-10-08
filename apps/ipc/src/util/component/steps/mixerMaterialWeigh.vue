@@ -128,7 +128,7 @@ const gridOptions: VxeGridProps<any> = {
       query: queryWorkSheetList,
     },
   },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const gridEvents: VxeGridListeners<any> = {
@@ -291,7 +291,7 @@ const recordGridOptions: VxeGridProps<any> = {
       query: queryWeightRecordList,
     },
   },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [Grid3, gridApi3] = useVbenVxeGrid({ gridOptions: recordGridOptions });

@@ -112,7 +112,7 @@ const lotGridOptions: VxeGridProps<any> = {
   pagerConfig: { enabled: false },
   radioConfig: { highlight: true, trigger: 'row' },
   rowConfig: { isHover: true },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
   proxyConfig: {
     ajax: {
       query: () => {
@@ -176,7 +176,7 @@ const productionGridOptions: VxeGridProps<any> = {
   stripe: true,
   checkboxConfig: { trigger: 'row' },
   pagerConfig: { enabled: true, pageSize: 20 },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
   proxyConfig: {
     ajax: {
       query: ({ page }: any) => {

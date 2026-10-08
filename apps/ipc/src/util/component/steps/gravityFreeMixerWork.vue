@@ -228,11 +228,7 @@ const splitGridOptions: VxeGridProps<any> = {
   ],
   data: splitList.value,
   pagerConfig: { enabled: false },
-  toolbarConfig: {
-    custom: true,
-    refresh: true,
-    zoom: true,
-  },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [SplitGrid, splitGridApi] = useVbenVxeGrid({

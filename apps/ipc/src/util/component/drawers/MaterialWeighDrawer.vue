@@ -179,7 +179,7 @@ const drawerGridOptions: VxeGridProps<any> = {
       query: queryMaterialList,
     },
   },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions: drawerGridOptions });

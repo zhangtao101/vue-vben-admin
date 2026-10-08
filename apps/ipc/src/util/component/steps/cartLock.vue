@@ -129,7 +129,7 @@ const lotGridOptions: VxeGridProps<any> = {
     },
   },
   stripe: true,
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [LotGrid, lotGridApi] = useVbenVxeGrid({ gridOptions: lotGridOptions });

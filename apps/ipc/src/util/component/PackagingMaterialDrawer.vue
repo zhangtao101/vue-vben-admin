@@ -160,7 +160,7 @@ const bomGridOptions: VxeGridProps<any> = {
     enabled: false,
   },
   stripe: true,
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [BomGrid, bomGridApi] = useVbenVxeGrid({ gridOptions: bomGridOptions });
@@ -221,7 +221,7 @@ const loadGridOptions: VxeGridProps<any> = {
   pagerConfig: {
     enabled: false,
   },
-  toolbarConfig: { custom: true, refresh: true, zoom: true },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [LoadGrid, loadGridApi] = useVbenVxeGrid({

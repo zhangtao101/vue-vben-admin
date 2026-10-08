@@ -80,11 +80,7 @@ const gridOptions: VxeGridProps<any> = {
     enabled: true,
     pageSize: 20,
   },
-  toolbarConfig: {
-    custom: true,
-    refresh: true,
-    zoom: true,
-  },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
   columns: [
     { type: 'radio', width: 50, title: '' },
     {
@@ -207,11 +203,7 @@ const lotGridOptions: VxeGridProps<any> = {
     },
   ],
   pagerConfig: { enabled: false },
-  toolbarConfig: {
-    custom: true,
-    refresh: false,
-    zoom: true,
-  },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
   proxyConfig: {
     ajax: {
       query: queryLotList,

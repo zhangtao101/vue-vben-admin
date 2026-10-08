@@ -107,10 +107,7 @@ const gridOptions: VxeGridProps<any> = {
     },
   },
   stripe: true,
-  toolbarConfig: {
-    custom: true,
-    refresh: true,
-  },
+  toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 // ========== 监听表格事件 ==========
