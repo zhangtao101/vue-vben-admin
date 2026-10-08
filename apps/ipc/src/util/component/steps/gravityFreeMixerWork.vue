@@ -32,9 +32,11 @@ import ReIssueDrawer from '../drawers/ReIssueDrawer.vue';
 /**
  * 工序步骤组件标准入参（与作业平台其它 steps 组件保持一致）
  */
-defineProps({
+const props = defineProps({
   functionId: { type: Number, default: 0 },
   workstationCode: { type: String, default: '' },
+  /** 工序（无重力搅拌为 6），由外部传入 */
+  processType: { type: Number, default: 6 },
   /** 工序编号，由外部传入 */
   processCode: { type: String, default: '' },
 });
@@ -62,6 +64,7 @@ function handleQuery() {
         indicateWeight: info?.workSheetPlanNumber,
         goodWeight: info?.workSheetFinishNumber,
         remainWeight: info?.diffNum,
+        workState: info?.workState,
       };
       // 推车信息（推车重量由用户扫码推车代码后实时获取）
       const totalWeight = info?.totalQty;
@@ -262,7 +265,7 @@ function handleEnd() {
     cancelText: $t('common.cancel'),
     onOk: async () => {
       try {
-        await updateStae([lotId], 3);
+        await updateStae([lotId], 3, props.processType);
         message.success($t('gravityFreeMixerWork.endSuccess'));
         handleQuery();
       } catch {
@@ -476,7 +479,10 @@ async function handlePerformanceRegistration() {
 
           <!-- 功能按钮（预留） -->
           <Space class="mt-3 flex justify-end w-full">
-            <Button @click="handleEnd">
+            <Button
+              :disabled="Number(workSheetInfo.workState) !== 2"
+              @click="handleEnd"
+            >
               {{ $t('gravityFreeMixerWork.end') }}
             </Button>
             <Button @click="handleReIssue">

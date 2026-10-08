@@ -72,11 +72,11 @@ const workOrderOptions = ref<{ label: string; state: any; value: number }[]>(
 /** 工单对应的子产线/产线原始数据，作为喷码传输弹窗的子产线下拉选项来源 */
 const lineList = ref<any[]>([]);
 
-/** 工单状态指示灯：state 为 1 时绿色，其余（含未选中/未开始）灰色 */
-const WORK_ORDER_RUNNING_STATE = '1';
+/** 工单状态指示灯：state 为 2 时绿色，其余（含未选中/未开始）灰色 */
+const WORK_ORDER_RUNNING_STATE = '2';
 
 /**
- * 判断工单状态值是否为「运行中」（state === 1）。
+ * 判断工单状态值是否为「运行中」（state === 2）。
  * @param {any} state - 工单状态值，兼容数字与字符串。
  * @returns {boolean} 为 1 返回 true，否则返回 false。
  * @throws 不主动抛出异常。
@@ -95,7 +95,7 @@ const selectedWorkOrderState = computed(() => {
 });
 
 /**
- * 取面板工单的状态指示灯颜色类：state 为 1 显示绿色实心圆，否则灰色。
+ * 取面板工单的状态指示灯颜色类：state 为 2 显示绿色实心圆，否则灰色。
  * 面板数据来自 selectLineByWorkSheetId，取不到时回退到顶部选中工单的状态。
  * @param {object} panel - 目标面板（leftPanel/rightPanel）。
  * @returns {string} 圆点背景色类名（bg-green-500 / bg-gray-400）。
@@ -139,7 +139,7 @@ function loadWorkOrders() {
     workOrderOptions.value = (res ?? []).map((item: any) => ({
       label: item.workSheetCode,
       value: item.id,
-      // 保留工单状态，供状态指示灯（state === 1 绿色）使用
+      // 保留工单状态，供状态指示灯（state === 2 绿色）使用
       state: item.state,
     }));
   });
@@ -663,7 +663,7 @@ onMounted(() => {
                     class="flex-1"
                     @change="handleSubLineChange"
                   />
-                  <!-- 工单状态指示灯：state === 1 绿色，其余灰色 -->
+                  <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
                   <span
                     class="size-3 shrink-0 rounded-full"
                     :class="getStateDotClass(leftPanel)"
@@ -697,7 +697,7 @@ onMounted(() => {
                       />
                     </Button>
                   </Tooltip>
-                  <!-- 工单状态指示灯：state === 1 绿色，其余灰色 -->
+                  <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
                   <span
                     class="size-3 shrink-0 rounded-full"
                     :class="getStateDotClass(leftPanel)"
@@ -831,7 +831,7 @@ onMounted(() => {
                     disabled
                     class="flex-1"
                   />
-                  <!-- 工单状态指示灯：state === 1 绿色，其余灰色 -->
+                  <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
                   <span
                     class="size-3 shrink-0 rounded-full"
                     :class="getStateDotClass(rightPanel)"
@@ -863,7 +863,7 @@ onMounted(() => {
                       />
                     </Button>
                   </Tooltip>
-                  <!-- 工单状态指示灯：state === 1 绿色，其余灰色 -->
+                  <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
                   <span
                     class="size-3 shrink-0 rounded-full"
                     :class="getStateDotClass(rightPanel)"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
@@ -265,9 +265,18 @@ const stateColorMap: Record<number, string> = {
 /** 自动模式开关（仅混合 MIX 工序 processType === 2 展示） */
 const autoMode = ref(false);
 
+/**
+ * 同步自动模式开关：选中行的 workState 为 1 时开启，其余（含无选中行）关闭
+ */
+function syncAutoMode() {
+  const row = selectedBatchRecords.value[0];
+  autoMode.value = !!row && Number(row.workState) === 1;
+}
+
 /** 查询选中工单的批次 LOT 列表 */
 function queryBatchList() {
   selectedBatchRecords.value = [];
+  syncAutoMode();
   const ws = selectedWorkSheet.value;
   if (!ws?.id) {
     autoMode.value = false;
@@ -275,8 +284,6 @@ function queryBatchList() {
   }
   return selectByWorkSheetId(ws.id).then((res: any) => {
     const list = Array.isArray(res) ? res : [];
-    // 自动模式初始值取第一条批次的状态：workState 为 1 时选中，其余不选中
-    autoMode.value = Number(list[0]?.workState) === 1;
     return { total: list.length, items: list };
   });
 }
@@ -285,7 +292,7 @@ function queryBatchList() {
 function getBatchColumns(): any {
   if (props.processType === 1) {
     return [
-      { type: 'checkbox', width: 50, title: '' },
+      { type: 'radio', width: 50, title: '' },
       { field: 'lotCode', title: $t('mixerLotManage.lotCode'), minWidth: 120 },
       {
         field: 'productCode',
@@ -319,13 +326,8 @@ function getBatchColumns(): any {
       },
     ];
   }
-  // 混合 MIX 工序（processType === 2）批次为单选，其余工序保持多选
-  const selectColumn: any =
-    props.processType === 2
-      ? { type: 'radio', width: 50, title: '' }
-      : { type: 'checkbox', width: 50, title: '' };
   return [
-    selectColumn,
+    { type: 'radio', width: 50, title: '' },
     { type: 'seq', width: 50, title: '#' },
     { field: 'lotCode', title: $t('mixerLotManage.lotCode'), minWidth: 120 },
     {
@@ -368,7 +370,6 @@ const gridOptions2: VxeGridProps<any> = {
   columns: getBatchColumns(),
   height: 200,
   stripe: true,
-  checkboxConfig: { trigger: 'row', highlight: true },
   radioConfig: { trigger: 'row', highlight: true },
   pagerConfig: { enabled: false, pageSize: 20 },
   toolbarConfig: { custom: true, refresh: true, zoom: true },
@@ -383,14 +384,33 @@ const gridOptions2: VxeGridProps<any> = {
 const selectedBatchRecords = ref<any[]>([]);
 
 const gridEvents2: any = {
-  checkboxChange: ({ records }: any) => {
-    selectedBatchRecords.value = records || [];
-  },
-  // 混合 MIX 工序（processType === 2）为单选，仅保留当前选中行
+  // 批次列表为单选，仅保留当前选中行
   radioChange: ({ row }: any) => {
     selectedBatchRecords.value = row ? [row] : [];
+    syncAutoMode();
   },
 };
+
+/** 当前选中批次行的 workState */
+const selectedBatchWorkState = computed(() =>
+  Number(selectedBatchRecords.value[0]?.workState),
+);
+
+/** 开始按钮禁用：未选中行、自动模式开启，或当前行处于「进行中」（workState === 2） */
+const startDisabled = computed(
+  () =>
+    selectedBatchRecords.value.length === 0 ||
+    autoMode.value ||
+    selectedBatchWorkState.value === 2,
+);
+
+/** 结束按钮禁用：未选中行、自动模式开启，或当前行处于「已完成」（workState === 3） */
+const finishDisabled = computed(
+  () =>
+    selectedBatchRecords.value.length === 0 ||
+    autoMode.value ||
+    selectedBatchWorkState.value === 3,
+);
 
 const [Grid2, gridApi2] = useVbenVxeGrid({
   gridEvents: gridEvents2,
@@ -485,7 +505,7 @@ function handleBatchDelete() {
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () =>
-      deleteLot(records.map((record: any) => record.id))
+      deleteLot([records[0].id])
         .then(() => {
           message.success($t('mixerLotManage.deleteSuccess'));
           refreshBatchGrid();
@@ -514,7 +534,7 @@ function handlePlanQueueDelete() {
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
     onOk: () =>
-      deleteLotBatch(records.map((record: any) => record.id))
+      deleteLotBatch([records[0].id])
         .then(() => {
           message.success($t('mixerLotManage.deleteSuccess'));
           refreshBatchGrid();
@@ -664,10 +684,7 @@ function handleAutoModeChange(checked: boolean) {
         <div class="ml-auto flex gap-3">
         <!-- 搅拌机工序（processType === 6）：开始 / 删除 -->
         <template v-if="processType === 6">
-          <Button
-            :disabled="selectedBatchRecords.length === 0"
-            @click="handleBatchStart"
-          >
+          <Button :disabled="startDisabled" @click="handleBatchStart">
             {{ $t('mixerLotManage.start') }}
           </Button>
           <Button
@@ -680,16 +697,10 @@ function handleAutoModeChange(checked: boolean) {
         </template>
         <!-- 混合 MIX 工序（processType === 2）：开始 / 结束 -->
         <template v-else-if="processType === 2">
-          <Button
-            :disabled="selectedBatchRecords.length === 0"
-            @click="handleBatchStart"
-          >
+          <Button :disabled="startDisabled" @click="handleBatchStart">
             {{ $t('mixerLotManage.start') }}
           </Button>
-          <Button
-            :disabled="selectedBatchRecords.length === 0"
-            @click="handleBatchFinish"
-          >
+          <Button :disabled="finishDisabled" @click="handleBatchFinish">
             {{ $t('mixerLotManage.finish') }}
           </Button>
         </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import {
   Button,
@@ -177,12 +177,9 @@ function handleWorksheetRadioChange({ row }: any) {
 // endregion
 
 // region 批次LOT列表（左栏）
-const lotGridOptions: VxeGridProps<any> = {
-  align: 'center',
-  border: true,
-  height: 300,
-  stripe: true,
-  columns: [
+/** 批次LOT列表列：无重力搅拌（processType === 6）额外展示散装托盘编号与分装投入状态 */
+function getLotColumns(): any[] {
+  const columns: any[] = [
     {
       field: 'lotCode',
       title: $t('gravityFreeMixerTrayInput.lotCode'),
@@ -193,13 +190,37 @@ const lotGridOptions: VxeGridProps<any> = {
       title: $t('gravityFreeMixerTrayInput.fullLabel'),
       minWidth: 140,
     },
-    {
+  ];
+  if (props.processType === 6) {
+    columns.push({
+      field: 'looseLable',
+      title: $t('gravityFreeMixerTrayInput.looseLabel'),
+      minWidth: 140,
+    });
+  }
+  columns.push({
+    field: 'fulluse',
+    title: $t('gravityFreeMixerTrayInput.fullUse'),
+    width: 120,
+    slots: { default: 'useCell' },
+  });
+  if (props.processType === 6) {
+    columns.push({
       field: 'looseUse',
       title: $t('gravityFreeMixerTrayInput.looseUse'),
       width: 120,
       slots: { default: 'useCell' },
-    },
-  ],
+    });
+  }
+  return columns;
+}
+
+const lotGridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  height: 300,
+  stripe: true,
+  columns: getLotColumns(),
   pagerConfig: { enabled: false },
   toolbarConfig: {
     custom: false,
@@ -216,6 +237,14 @@ const lotGridOptions: VxeGridProps<any> = {
 const [LotGrid, lotGridApi] = useVbenVxeGrid({
   gridOptions: lotGridOptions,
 });
+
+/** 工序类型变化时，切换批次LOT列表的列字段 */
+watch(
+  () => props.processType,
+  () => {
+    lotGridApi.setGridOptions({ columns: getLotColumns() });
+  },
+);
 
 /** 根据选中的工单查询所有批次 LOT */
 async function queryLotList() {

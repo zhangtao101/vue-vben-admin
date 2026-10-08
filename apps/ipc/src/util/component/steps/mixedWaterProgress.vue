@@ -160,6 +160,8 @@ function queryWorkSheetList({ page }: any) {
 /** 行点击单选：选中工单并加载对应批次LOT列表 */
 function handleRadioChange({ row }: any) {
   selectedWorkSheet.value = row;
+  selectedLotIds.value = [];
+  syncAutoMode();
   lotGridApi.reload();
 }
 // endregion
@@ -220,6 +222,7 @@ const lotGridOptions: VxeGridProps<any> = {
 /** 批次LOT单选变化：记录选中的 LOT id，用于开始/结束按钮 */
 function handleLotRadioChange({ row }: any) {
   selectedLotIds.value = row ? [row.id] : [];
+  syncAutoMode(row);
 }
 
 const lotGridEvents: VxeGridListeners<any> = {
@@ -247,6 +250,14 @@ function queryLotList() {
 
 // region 自动模式 + 开始/结束控制（作用于单选选中的批次LOT）
 const autoMode = ref(false);
+
+/**
+ * 同步自动模式开关：选中行的 workState 为 1 时开启，其余（含无选中行）关闭
+ * @param row 当前选中的批次LOT行
+ */
+function syncAutoMode(row?: any) {
+  autoMode.value = !!row && Number(row.workState) === 1;
+}
 
 /** 获取当前单选的批次LOT行 */
 function getSelectedLot(): any {
@@ -322,6 +333,7 @@ function refreshLotList() {
   gridApi.reload();
   lotGridApi.reload();
   selectedLotIds.value = [];
+  syncAutoMode();
 }
 // endregion
 

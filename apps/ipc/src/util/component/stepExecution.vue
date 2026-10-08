@@ -679,6 +679,7 @@ defineProps({
     <GravityFreeMixerWork
       :workstation-code="workstationCode"
       :function-id="step.id"
+      :process-type="6"
       :process-code="processCode"
       v-if="step.type === 123"
     />
