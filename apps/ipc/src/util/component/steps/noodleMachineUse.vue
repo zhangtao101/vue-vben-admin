@@ -63,6 +63,11 @@ const machineTypeOptions = [
   { label: $t('noodleMachineUse.typeFrying'), value: 'frying' },
 ];
 
+/** 面机类型展示：命中可选类型时显示名称，未命中时原样显示 */
+function formatMachineType(type: any) {
+  return machineTypeOptions.find((item) => item.value === type)?.label ?? (type ?? '');
+}
+
 // 面机代码（暂为静态数据源，接口就绪后可替换）
 const machineCodeOptions = [
   { label: 'M-001', value: 'M-001' },
@@ -108,9 +113,7 @@ const gridOptions: VxeGridProps<any> = {
       field: 'type',
       title: $t('noodleMachineUse.colType'),
       minWidth: 110,
-      formatter: ({ cellValue }) =>
-        machineTypeOptions.find((o) => o.value === cellValue)?.label ||
-        cellValue,
+      formatter: ({ cellValue }) => formatMachineType(cellValue),
     },
     {
       field: 'lineCode',
@@ -310,8 +313,18 @@ function handleFormReset() {
 /** 面机选择抽屉引用 */
 const noodleMachineDrawerRef = ref();
 
+/** 面机选择抽屉的回填目标：form 录入表单 / query 查询条件 */
+const selectTarget = ref<'form' | 'query'>('form');
+
+/** 打开面机选择抽屉，并指定回填目标 */
+function openNoodleMachineDrawer(target: 'form' | 'query') {
+  selectTarget.value = target;
+  noodleMachineDrawerRef.value?.open();
+}
+
 /**
- * 面机选择结果回填：回填面机代码，若类型在可选范围内则自动带出
+ * 面机选择结果回填：录入表单回填面机代码与类型（类型只读展示），
+ * 查询条件仅回填面机代码
  * @param row 抽屉选中的面机设备数据
  * @since 2026-09-08
  */
@@ -319,10 +332,12 @@ function handleSelectNoodleMachine(row: any) {
   if (!row?.equipCode) {
     return;
   }
-  form.value.equipCode = row.equipCode;
-  if (machineTypeOptions.some((item) => item.value === row.type)) {
-    form.value.type = row.type;
+  if (selectTarget.value === 'query') {
+    queryParams.value.machineCode = row.equipCode;
+    return;
   }
+  form.value.equipCode = row.equipCode;
+  form.value.type = row.type;
 }
 // endregion
 
@@ -344,23 +359,30 @@ onMounted(() => {
           />
         </Form.Item>
         <Form.Item :label="$t('noodleMachineUse.machineType')">
-          <Select
+          <Input
             v-model:value="queryParams.type"
-            :options="machineTypeOptions"
-            :placeholder="$t('noodleMachineUse.machineTypePlaceholder')"
+            :placeholder="$t('noodleMachineUse.machineTypeInputPlaceholder')"
             allow-clear
             style="width: 160px"
           />
         </Form.Item>
         <Form.Item :label="$t('noodleMachineUse.machineCode')">
-          <Select
-            v-model:value="queryParams.machineCode"
-            :options="machineCodeOptions"
-            :placeholder="$t('noodleMachineUse.machineCodePlaceholder')"
-            allow-clear
-            show-search
-            style="width: 140px"
-          />
+          <div class="flex">
+            <Input
+              v-model:value="queryParams.machineCode"
+              :options="machineCodeOptions"
+              :placeholder="$t('noodleMachineUse.machineCodePlaceholder')"
+              readonly
+            />
+            <Button
+              type="primary"
+              class="rounded-l-none"
+              @click="openNoodleMachineDrawer('query')"
+            >
+              <Icon icon="mdi:magnify" class="inline-block align-middle" />
+              {{ $t('noodleMachineSelect.select') }}
+            </Button>
+          </div>
         </Form.Item>
         <Form.Item>
           <Space>
@@ -416,7 +438,7 @@ onMounted(() => {
                 <Button
                   type="primary"
                   class="rounded-l-none"
-                  @click="noodleMachineDrawerRef?.open()"
+                  @click="openNoodleMachineDrawer('form')"
                 >
                   <Icon icon="mdi:magnify" class="inline-block align-middle" />
                   {{ $t('noodleMachineSelect.select') }}
@@ -426,12 +448,7 @@ onMounted(() => {
           </Col>
           <Col :xs="24" :sm="12" :md="8" :lg="6">
             <Form.Item :label="$t('noodleMachineUse.machineType')">
-              <Select
-                v-model:value="form.type"
-                :options="machineTypeOptions"
-                :placeholder="$t('noodleMachineUse.machineTypePlaceholder')"
-                allow-clear
-              />
+              <Input :value="formatMachineType(form.type)" readonly />
             </Form.Item>
           </Col>
           <Col :xs="24" :sm="12" :md="8" :lg="6">

@@ -5,6 +5,7 @@
   "productDatePlaceholder": "请选择生产日期",
   "machineType": "面机类型",
   "machineTypePlaceholder": "请选择面机类型",
+  "machineTypeInputPlaceholder": "请输入面机类型",
   "machineCode": "面机代码",
   "machineCodePlaceholder": "请选择面机代码",
   "typeRolling": "压延机",

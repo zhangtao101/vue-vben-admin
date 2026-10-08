@@ -5,6 +5,7 @@
   "productDatePlaceholder": "Please select production date",
   "machineType": "Machine Type",
   "machineTypePlaceholder": "Please select machine type",
+  "machineTypeInputPlaceholder": "Please enter machine type",
   "machineCode": "Machine Code",
   "machineCodePlaceholder": "Please select machine code",
   "typeRolling": "Rolling Machine",

@@ -5,6 +5,7 @@
   "productDatePlaceholder": "생산일자를 선택하세요",
   "machineType": "면기 유형",
   "machineTypePlaceholder": "면기 유형을 선택하세요",
+  "machineTypeInputPlaceholder": "면기 유형을 입력하세요",
   "machineCode": "면기 코드",
   "machineCodePlaceholder": "면기 코드를 선택하세요",
   "typeRolling": "압연기",
