@@ -6,7 +6,6 @@ import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
-import { MdiLightSettings } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -16,9 +15,8 @@ import {
 import { preferences, usePreferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
-import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
-import SectionSetting from '#/util/component/sectionSetting.vue';
+// import SectionSetting from '#/util/component/sectionSetting.vue';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
 // 消息列表
@@ -28,19 +26,19 @@ const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
-const sectionSettingRef = ref();
+// const sectionSettingRef = ref();
 const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
 );
 
 const menus = computed(() => [
-  {
-    handler: () => {
-      sectionSettingRef.value?.open();
-    },
-    icon: MdiLightSettings,
-    text: $t('ui.widgets.sectionSetting'),
-  },
+  // {
+  //   handler: () => {
+  //     sectionSettingRef.value?.open();
+  //   },
+  //   icon: MdiLightSettings,
+  //   text: $t('ui.widgets.sectionSetting'),
+  // },
   // {
   //   handler: () => {
   //     openWindow(VBEN_GITHUB_URL, {
@@ -218,5 +216,5 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
-  <SectionSetting ref="sectionSettingRef" @refresh="handleSectionRefresh" />
+  <!-- <SectionSetting ref="sectionSettingRef" @refresh="handleSectionRefresh" /> -->
 </template>
