@@ -64,7 +64,7 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('equip.equipmentNumber'),
       minWidth: 110,
     },
-    { field: 'equipmentNameCode', title: $t('equip.equipName'), minWidth: 120 },
+    { field: 'equipmentName', title: $t('equip.equipName'), minWidth: 120 },
     {
       field: 'equipmentTypeName',
       title: $t('equip.equipmentCategory'),
@@ -150,7 +150,7 @@ const editRules = ref<any>({
   equipmentCode: [
     { message: $t('equip.requiredField'), required: true, trigger: 'change' },
   ],
-  equipmentNameCode: [
+  equipmentName: [
     { message: $t('equip.requiredField'), required: true, trigger: 'change' },
   ],
 });
@@ -447,9 +447,9 @@ onMounted(() => {
           </Col>
           <Col :span="12">
             <!-- 设备名称 -->
-            <FormItem :label="$t('equip.equipName')" name="equipmentNameCode">
+            <FormItem :label="$t('equip.equipName')" name="equipmentName">
               <Input
-                v-model:value="checkedRow.equipmentNameCode"
+                v-model:value="checkedRow.equipmentName"
                 :maxlength="50"
               />
             </FormItem>
@@ -563,9 +563,6 @@ onMounted(() => {
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.equipName')">
           {{ checkedRow.equipmentName }}
-        </Descriptions.Item>
-        <Descriptions.Item :label="$t('equip.equipmentTypeCode')">
-          {{ checkedRow.equipmentNameCode }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.subLine')">
           {{ checkedRow.subLineName }}
