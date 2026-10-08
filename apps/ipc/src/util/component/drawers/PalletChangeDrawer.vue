@@ -141,6 +141,8 @@ async function queryLotList({ page }: any) {
     ...formatQueryParams(),
     processType: processType.value,
     batch,
+    // 托盘信息中的工单编号，未查询到托盘信息时为空
+    workSheetCode: palletInfo.value?.workSheetCode ?? undefined,
     pageNum: page.currentPage,
     pageSize: page.pageSize,
   };

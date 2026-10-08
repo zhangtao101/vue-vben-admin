@@ -46,5 +46,6 @@
   "updateSuccess": "Load qty updated successfully",
   "plsInputQty": "Please enter load qty",
   "plsSelectDevice": "Please select a device first",
-  "noLoadData": "No load data, please scan and add first"
+  "noLoadData": "No load data, please scan and add first",
+  "plsSelectPackType": "Please select the packing type first"
 }

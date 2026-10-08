@@ -46,5 +46,6 @@
   "updateSuccess": "加载数量更新成功",
   "plsInputQty": "请输入加载数量",
   "plsSelectDevice": "请先选择设备",
-  "noLoadData": "暂无加载数据，请先扫码添加"
+  "noLoadData": "暂无加载数据，请先扫码添加",
+  "plsSelectPackType": "请先选择包装类型"
 }

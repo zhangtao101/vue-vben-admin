@@ -292,7 +292,12 @@ async function handleLoad() {
     message.warning($t('packagingMaterialDrawer.noLoadData'));
     return;
   }
-  // 3. 包装数据并调用批量保存接口
+  // 3. 校验加载数量不为 0 的数据是否都已选择包装类型
+  if (rows.some((row: any) => !row.packType)) {
+    message.warning($t('packagingMaterialDrawer.plsSelectPackType'));
+    return;
+  }
+  // 4. 包装数据并调用批量保存接口
   const params = rows.map((row: any) => ({
     actualWt: row.actualWt,
     // lotId: baseInfo.id,
