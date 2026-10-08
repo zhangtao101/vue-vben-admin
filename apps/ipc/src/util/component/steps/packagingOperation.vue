@@ -163,6 +163,8 @@ function queryMaterialList() {
 }
 
 const materialGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -223,6 +225,8 @@ function queryCartList() {
 }
 
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -507,7 +511,7 @@ onMounted(() => {
               </div>
             </Form.Item>
             <Form.Item :label="$t('packagingOperation.product')" class="mb-2!">
-              <div class="text-sm leading-8">
+              <div class="ipc-fs-sm leading-8">
                 {{
                   form.productCode
                     ? `${form.productName ?? ''}(${form.productCode})`
@@ -526,7 +530,7 @@ onMounted(() => {
               :label="$t('packagingOperation.workOrderRemark')"
               class="mb-2!"
             >
-              <div class="text-sm leading-8">
+              <div class="ipc-fs-sm leading-8">
                 {{ form.workOrderRemark || '-' }}
               </div>
             </Form.Item>
@@ -544,10 +548,10 @@ onMounted(() => {
                 <div
                   class="flex h-full flex-col items-center justify-center rounded-md border border-border bg-card py-3"
                 >
-                  <div class="text-sm text-muted-foreground">
+                  <div class="ipc-fs-sm text-muted-foreground">
                     {{ item.title }}
                   </div>
-                  <div class="mt-1 text-2xl font-bold text-primary">
+                  <div class="mt-1 ipc-fs-2xl font-bold text-primary">
                     {{ metrics[item.key] }}
                   </div>
                 </div>
@@ -573,24 +577,24 @@ onMounted(() => {
               <div>
                 <!-- 零点开关：单独一行 -->
                 <div class="flex items-center">
-                  <span class="text-sm text-muted-foreground mr-4!">
+                  <span class="ipc-fs-sm text-muted-foreground mr-4!">
                     {{ $t('packagingOperation.zeroSwitch') }}
                   </span>
                   <Switch :checked="zeroOn" @change="handleZeroChange" />
                 </div>
-                <span class="shrink-0 text-sm text-muted-foreground">
+                <span class="shrink-0 ipc-fs-sm text-muted-foreground">
                   {{ $t('packagingOperation.weight') }}
                 </span>
               </div>
               <div class="min-w-0 flex-1 text-right">
-                <span class="text-4xl font-semibold text-primary">
+                <span class="ipc-fs-4xl font-semibold text-primary">
                   {{ weight ?? 0 }}
                 </span>
-                <span class="ml-1 text-sm text-muted-foreground">G</span>
+                <span class="ml-1 ipc-fs-sm text-muted-foreground">G</span>
               </div>
               <div class="w-24 shrink-0 text-right">
                 <span
-                  class="inline-block cursor-pointer select-none text-4xl font-semibold text-primary transition-opacity hover:opacity-75"
+                  class="inline-block cursor-pointer select-none ipc-fs-4xl font-semibold text-primary transition-opacity hover:opacity-75"
                   @click="openMeasureDrawer"
                 >
                   {{ form.measureCount ?? 0 }}
@@ -684,7 +688,7 @@ onMounted(() => {
       @ok="handleConnectOk"
       @cancel="handleConnectCancel"
     >
-      <div class="text-xs text-muted-foreground mb-3">
+      <div class="ipc-fs-xs text-muted-foreground mb-3">
         {{ $t('packagingOperation.connectDesc') }}
       </div>
       <Form layout="vertical">

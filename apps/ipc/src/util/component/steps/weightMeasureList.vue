@@ -87,6 +87,8 @@ function loadLineOptions() {
 
 // ========== 测量记录表格 ==========
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -250,7 +252,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 1. 页面标题 -->
-    <div class="text-lg font-bold">{{ $t('weightMeasureList.title') }}</div>
+    <div class="ipc-fs-lg font-bold">{{ $t('weightMeasureList.title') }}</div>
 
     <!-- 2. 查询区域 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">

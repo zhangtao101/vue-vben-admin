@@ -115,6 +115,8 @@ function handleEquipmentSelect(rows: EquipSelectItem[]) {
 // region BOM 列表（左，数据来源接口 selectBom，参数 baseInfo.id）
 // BOM 网格配置：材料/数量/需求/单位列，数据由 selectBom 接口按 lotId 查询
 const bomGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -179,6 +181,8 @@ const packTypeOptions = [
 
 // 加载列表网格配置：单选列 + 物料代码/名称/加载数量/包装类型/单位，数量/包装类型/单位列支持插槽自定义
 const loadGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -649,7 +653,7 @@ defineExpose({ open });
             class="w-20"
             addon-after="M"
           />
-          <Icon icon="mdi:arrow-right" class="text-base" />
+          <Icon icon="mdi:arrow-right" class="ipc-fs-base" />
           <InputNumber
             v-model:value="unloadForm.ratioEA"
             :min="0"
@@ -679,7 +683,7 @@ defineExpose({ open });
             class="w-28"
             addon-after="M"
           />
-          <Icon icon="mdi:arrow-right" class="text-base" />
+          <Icon icon="mdi:arrow-right" class="ipc-fs-base" />
           <InputNumber
             v-model:value="preConvertCurM"
             disabled
@@ -701,7 +705,7 @@ defineExpose({ open });
             class="w-28"
             addon-after="EA"
           />
-          <Icon icon="mdi:arrow-right" class="text-base" />
+          <Icon icon="mdi:arrow-right" class="ipc-fs-base" />
           <InputNumber
             v-model:value="unloadForm.currentWt"
             class="w-28"

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { ref } from 'vue';
 
 import {
@@ -16,7 +18,7 @@ import {
   Space,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addCartWeight,
   deleteCartWeight,
@@ -205,6 +207,8 @@ async function handleCartCodeChange() {
 const splitList = ref<any[]>([]);
 
 const splitGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   height: 300,
@@ -333,7 +337,7 @@ async function handlePerformanceRegistration() {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 查询条件 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="flex flex-wrap gap-2">
         <FormItem :label="$t('gravityFreeMixerWork.palletLabel')">
           <Input
@@ -358,7 +362,7 @@ async function handlePerformanceRegistration() {
     </Card>
 
     <!-- 工单信息 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Descriptions bordered :column="2" size="small">
         <DescriptionsItem :label="$t('gravityFreeMixerWork.lineName')">
           {{ workSheetInfo.lineName || '-' }}
@@ -387,7 +391,7 @@ async function handlePerformanceRegistration() {
           <div class="text-gray-500">
             {{ item.label }}
           </div>
-          <div class="mt-1 text-2xl font-bold" :class="item.cls">
+          <div class="mt-1 ipc-fs-2xl font-bold" :class="item.cls">
             {{ formatNumber(workSheetInfo[item.key]) }}
           </div>
         </div>
@@ -398,7 +402,11 @@ async function handlePerformanceRegistration() {
     <Row :gutter="16">
       <!-- 左栏：推车信息 -->
       <Col :span="12">
-        <Card :title="$t('gravityFreeMixerWork.cartInfo')" class="h-full">
+        <Card
+          :body-style="{ padding: '4px' }"
+          :title="$t('gravityFreeMixerWork.cartInfo')"
+          class="h-full"
+        >
           <Descriptions bordered :column="1" size="small">
             <DescriptionsItem
               :label="$t('gravityFreeMixerWork.palletLabel')"
@@ -468,7 +476,10 @@ async function handlePerformanceRegistration() {
 
       <!-- 右栏：LOT分割信息 -->
       <Col :span="12">
-        <Card :title="$t('gravityFreeMixerWork.lotSplitInfo')">
+        <Card
+          :body-style="{ padding: '4px' }"
+          :title="$t('gravityFreeMixerWork.lotSplitInfo')"
+        >
           <SplitGrid>
             <template #toolbar-tools></template>
           </SplitGrid>

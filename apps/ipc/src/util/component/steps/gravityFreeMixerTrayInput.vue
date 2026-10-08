@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, ref, watch } from 'vue';
 
 import {
@@ -16,11 +18,7 @@ import {
   Space,
 } from 'ant-design-vue';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridListeners,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   palletLoading,
   selectByWorkSheetId,
@@ -83,6 +81,8 @@ function handleReset() {
 const selectedWorkSheet = ref<any>(null);
 
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   height: 250,
@@ -212,6 +212,8 @@ function getLotColumns(): any[] {
 }
 
 const lotGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   height: 300,
@@ -267,6 +269,8 @@ function packTypeFormatter({ cellValue }: any) {
 }
 
 const loadGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   height: 250,
@@ -412,7 +416,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 查询条件 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="flex flex-wrap gap-2">
         <FormItem :label="$t('gravityFreeMixerTrayInput.indicateDate')">
           <DatePicker
@@ -465,16 +469,20 @@ onMounted(() => {
     </Card>
 
     <!-- 工单列表 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Grid>
-        <!-- <template #toolbar-tools></template> -->
+        <!-- <template #toolbar-tools
+/>
+</card>
+</div>
+</template> -->
       </Grid>
     </Card>
 
     <!-- 左栏批次LOT列表 / 右栏装载列表 -->
     <Row :gutter="16">
       <Col :xs="24" :lg="12">
-        <Card>
+        <Card :body-style="{ padding: '4px' }">
           <LotGrid>
             <template #toolbar-tools>
               <Button
@@ -493,7 +501,7 @@ onMounted(() => {
         </Card>
       </Col>
       <Col :xs="24" :lg="12">
-        <Card>
+        <Card :body-style="{ padding: '4px' }">
           <div class="mb-3 flex flex-wrap items-center gap-2">
             <Input
               v-model:value="inputPalletLabel"

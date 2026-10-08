@@ -52,6 +52,8 @@ const equipmentTypeVal = ref<number | undefined>(0);
 
 // ========== 表格配置 ==========
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -274,7 +276,7 @@ function handleConfirm() {
     @close="handleClose"
   >
     <!-- 查询区域 -->
-    <Card class="!mb-4">
+    <Card :body-style="{ padding: '4px' }" class="!mb-4">
       <Row :gutter="16" align="middle">
         <Col :span="6">
           <FormItem :label="$t('equipmentSelect.equipmentCode')" class="!mb-0">

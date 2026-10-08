@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
 import { ref } from 'vue';
 
 import {
@@ -14,11 +16,7 @@ import {
   Space,
 } from 'ant-design-vue';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridListeners,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   issueWeightLabel,
   searchLot,
@@ -88,6 +86,8 @@ async function queryWorkSheetList({ page }: any) {
 
 /** 工单列表 */
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -174,6 +174,8 @@ function queryMaterialList(): Promise<{ items: any[] }> {
 }
 
 const materialGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -252,6 +254,8 @@ async function queryWeightRecordList() {
 }
 
 const recordGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -345,7 +349,7 @@ function handleIssue() {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 顶部：查询条件 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="mb-3 flex-wrap items-end gap-2">
         <Form.Item :label="$t('mixerMaterialWeigh.lineName')">
           <Input
@@ -375,7 +379,7 @@ function handleIssue() {
     </Card>
 
     <!-- 中部：工单列表（单选） -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Grid>
         <!-- <template #toolbar-tools></template> -->
       </Grid>
@@ -384,14 +388,14 @@ function handleIssue() {
     <!-- 下部：左右两栏 -->
     <Row :gutter="16">
       <Col :xs="24" :lg="12">
-        <Card>
+        <Card :body-style="{ padding: '4px' }">
           <Grid2>
             <!-- <template #toolbar-tools>123</template> -->
           </Grid2>
         </Card>
       </Col>
       <Col :xs="24" :lg="12">
-        <Card>
+        <Card :body-style="{ padding: '4px' }">
           <Grid3>
             <!-- <template #toolbar-tools></template> -->
           </Grid3>

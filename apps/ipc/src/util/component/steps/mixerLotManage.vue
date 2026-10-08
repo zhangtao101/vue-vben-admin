@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { EquipSelectItem } from '#/api';
+
 import { computed, ref, watch } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
@@ -18,14 +21,13 @@ import {
   Tag,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addBatch,
   addCreate,
   addLot,
   deleteLot,
   deleteLotBatch,
-  type EquipSelectItem,
   selectByWorkSheetId,
   selectWeekWorkSheet,
   updateStae,
@@ -64,6 +66,8 @@ function queryWorkSheetList({ page }: any) {
 
 /** 搅拌机工单列表 */
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -365,6 +369,8 @@ function getBatchColumns(): any {
 }
 
 const gridOptions2: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: getBatchColumns(),
@@ -579,7 +585,7 @@ function handleAutoModeChange(checked: boolean) {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 顶部：查询条件 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="mb-3 flex-wrap items-end gap-2">
         <Form.Item :label="$t('mixerLotManage.lineName')">
           <Input
@@ -609,7 +615,7 @@ function handleAutoModeChange(checked: boolean) {
     </Card>
 
     <!-- 中间：搅拌机工单列表 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Grid>
         <!-- <template #toolbar-tools></template> -->
       </Grid>
@@ -653,7 +659,7 @@ function handleAutoModeChange(checked: boolean) {
     </div>
 
     <!-- 下方：批次列表（按选中的工单实时查询） -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Grid2>
         <template #state="{ row }">
           <Tag :color="stateColorMap[row.state] || 'default'">
@@ -673,7 +679,7 @@ function handleAutoModeChange(checked: boolean) {
       <!-- 表格下方：左侧自动模式（仅混合 MIX 工序）+ 右侧批次操作按钮（需勾选批次后才能使用） -->
       <div class="mt-3 flex items-center gap-3">
         <div v-if="processType === 2" class="flex items-center gap-2">
-          <span class="text-sm font-medium">
+          <span class="ipc-fs-sm font-medium">
             {{ $t('mixerLotManage.autoMode') }}
           </span>
           <Switch
@@ -682,38 +688,38 @@ function handleAutoModeChange(checked: boolean) {
           />
         </div>
         <div class="ml-auto flex gap-3">
-        <!-- 搅拌机工序（processType === 6）：开始 / 删除 -->
-        <template v-if="processType === 6">
-          <Button :disabled="startDisabled" @click="handleBatchStart">
-            {{ $t('mixerLotManage.start') }}
-          </Button>
-          <Button
-            danger
-            :disabled="selectedBatchRecords.length === 0"
-            @click="handleBatchDelete"
-          >
-            {{ $t('mixerLotManage.delete') }}
-          </Button>
-        </template>
-        <!-- 混合 MIX 工序（processType === 2）：开始 / 结束 -->
-        <template v-else-if="processType === 2">
-          <Button :disabled="startDisabled" @click="handleBatchStart">
-            {{ $t('mixerLotManage.start') }}
-          </Button>
-          <Button :disabled="finishDisabled" @click="handleBatchFinish">
-            {{ $t('mixerLotManage.finish') }}
-          </Button>
-        </template>
-        <!-- 混合水工序（processType === 1）：删除 -->
-        <template v-else>
-          <Button
-            danger
-            :disabled="selectedBatchRecords.length === 0"
-            @click="handlePlanQueueDelete"
-          >
-            {{ $t('common.delete') }}
-          </Button>
-        </template>
+          <!-- 搅拌机工序（processType === 6）：开始 / 删除 -->
+          <template v-if="processType === 6">
+            <Button :disabled="startDisabled" @click="handleBatchStart">
+              {{ $t('mixerLotManage.start') }}
+            </Button>
+            <Button
+              danger
+              :disabled="selectedBatchRecords.length === 0"
+              @click="handleBatchDelete"
+            >
+              {{ $t('mixerLotManage.delete') }}
+            </Button>
+          </template>
+          <!-- 混合 MIX 工序（processType === 2）：开始 / 结束 -->
+          <template v-else-if="processType === 2">
+            <Button :disabled="startDisabled" @click="handleBatchStart">
+              {{ $t('mixerLotManage.start') }}
+            </Button>
+            <Button :disabled="finishDisabled" @click="handleBatchFinish">
+              {{ $t('mixerLotManage.finish') }}
+            </Button>
+          </template>
+          <!-- 混合水工序（processType === 1）：删除 -->
+          <template v-else>
+            <Button
+              danger
+              :disabled="selectedBatchRecords.length === 0"
+              @click="handlePlanQueueDelete"
+            >
+              {{ $t('common.delete') }}
+            </Button>
+          </template>
         </div>
       </div>
     </Card>

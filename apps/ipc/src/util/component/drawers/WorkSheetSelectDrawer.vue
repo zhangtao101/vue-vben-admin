@@ -39,6 +39,8 @@ const query = reactive({
 
 // ========== 表格配置 ==========
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [

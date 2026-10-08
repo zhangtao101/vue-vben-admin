@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { computed, reactive, watch } from 'vue';
 
 import {
@@ -12,7 +14,7 @@ import {
   Tag,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { lockOrUnlockCart, queryCartLoadingList } from '#/api';
 import { $t } from '#/locales';
 
@@ -91,6 +93,8 @@ function loadLotList() {
 }
 
 const lotGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [

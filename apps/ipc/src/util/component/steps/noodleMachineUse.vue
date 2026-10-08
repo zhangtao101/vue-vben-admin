@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
@@ -20,11 +22,7 @@ import {
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridListeners,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addNoodleMachineUsage,
   deleteNoodleMachineUsage,
@@ -65,7 +63,9 @@ const machineTypeOptions = [
 
 /** 面机类型展示：命中可选类型时显示名称，未命中时原样显示 */
 function formatMachineType(type: any) {
-  return machineTypeOptions.find((item) => item.value === type)?.label ?? (type ?? '');
+  return (
+    machineTypeOptions.find((item) => item.value === type)?.label ?? type ?? ''
+  );
 }
 
 // 面机代码（暂为静态数据源，接口就绪后可替换）
@@ -100,6 +100,8 @@ async function loadOptions() {
 
 // region 面机使用明细列表（接口分页查询）
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -350,7 +352,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 1. 查询条件 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="flex flex-wrap gap-2">
         <Form.Item :label="$t('noodleMachineUse.productDate')">
           <RangePicker
@@ -398,7 +400,7 @@ onMounted(() => {
     </Card>
 
     <!-- 2. 面机使用明细列表 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Grid>
         <template #productionDateCell="{ row }">
           {{ formatDate(row.productionDate) }}
@@ -414,7 +416,7 @@ onMounted(() => {
             >
               <Icon
                 icon="mdi:delete-outline"
-                class="inline-block align-middle text-lg"
+                class="inline-block align-middle ipc-fs-lg"
               />
             </Button>
           </Tooltip>
@@ -423,7 +425,7 @@ onMounted(() => {
     </Card>
 
     <!-- 3. 录入表单 + 右对齐按钮 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="vertical" :model="form">
         <Row :gutter="16">
           <Col :xs="24" :sm="12" :md="8" :lg="6">

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, ref } from 'vue';
 
 import {
@@ -12,7 +14,7 @@ import {
   Space,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { $t } from '#/locales';
 
 /**
@@ -98,6 +100,8 @@ const fakeInstructions: any[] = [
 const instructionData = ref<any[]>([]);
 
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -285,7 +289,7 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div class="text-lg font-bold">{{ $t('noodleMaking.title') }}</div>
+    <div class="ipc-fs-lg font-bold">{{ $t('noodleMaking.title') }}</div>
 
     <!-- 1. 查询条件 + 2. 批次作业指令列表 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
@@ -348,7 +352,7 @@ onMounted(() => {
           >
             <!-- 图片占位 -->
             <div
-              class="mb-3 flex h-28 items-center justify-center rounded-md border border-dashed border-border bg-muted text-sm text-muted-foreground"
+              class="mb-3 flex h-28 items-center justify-center rounded-md border border-dashed border-border bg-muted ipc-fs-sm text-muted-foreground"
             >
               {{ $t('noodleMaking.imagePlaceholder') }}
             </div>
@@ -361,7 +365,7 @@ onMounted(() => {
               <div
                 v-for="(param, idx) in block.params"
                 :key="idx"
-                class="flex items-center justify-between text-sm"
+                class="flex items-center justify-between ipc-fs-sm"
               >
                 <span class="text-muted-foreground">{{ param.label }}</span>
                 <span :class="alarmClass(param)" class="font-semibold">

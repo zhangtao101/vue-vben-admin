@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
 import { Icon } from '@iconify/vue';
 import { Button, Card, message } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { searchSilo, updateSilo } from '#/api';
 import { $t } from '#/locales';
 
@@ -23,6 +25,8 @@ defineProps({
 
 // region 筒仓设备列表（分页查询）
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -149,10 +153,10 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div class="text-lg font-bold">{{ $t('siloMaterialSetting.title') }}</div>
+    <div class="ipc-fs-lg font-bold">{{ $t('siloMaterialSetting.title') }}</div>
 
     <!-- 设备代码列表 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <div class="mb-2 font-bold">
         {{ $t('siloMaterialSetting.deviceList') }}
       </div>

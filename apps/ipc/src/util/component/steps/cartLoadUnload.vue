@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { reactive, ref } from 'vue';
 
 import {
@@ -17,7 +19,7 @@ import {
   Tag,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { cartLoad, cartUnload, queryCartList, queryLotDetail } from '#/api';
 import { $t } from '#/locales';
 
@@ -85,6 +87,8 @@ function queryCartPage({ page }: any) {
 }
 
 const cartGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -280,9 +284,11 @@ function handleReset() {
       </FormItem>
       <FormItem>
         <Space>
-          <Button type="primary" @click="handleQuery">{{
+          <Button type="primary" @click="handleQuery">
+{{
             $t('common.query')
-          }}</Button>
+          }}
+</Button>
           <Button @click="handleReset">{{ $t('common.reset') }}</Button>
         </Space>
       </FormItem>
@@ -373,12 +379,16 @@ function handleReset() {
         <div class="flex justify-end">
           <Space>
             <Button @click="handleInit">{{ $t('cartLoadUnload.init') }}</Button>
-            <Button type="primary" @click="handleLoad">{{
+            <Button type="primary" @click="handleLoad">
+{{
               $t('cartLoadUnload.load')
-            }}</Button>
-            <Button @click="handleUnload">{{
+            }}
+</Button>
+            <Button @click="handleUnload">
+{{
               $t('cartLoadUnload.unload')
-            }}</Button>
+            }}
+</Button>
           </Space>
         </div>
       </Col>

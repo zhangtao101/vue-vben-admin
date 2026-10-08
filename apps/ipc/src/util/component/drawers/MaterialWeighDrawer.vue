@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { computed, nextTick, ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
@@ -17,7 +19,7 @@ import {
   Space,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addWeightRecord,
   selectMaterialWeight,
@@ -169,9 +171,12 @@ const drawerGridOptions: VxeGridProps<any> = {
   stripe: false,
   // 与扫码标签材料编码匹配的行显示为黄色，已称重（称重重量有值）的行显示为绿色
   rowClassName: ({ row }: any) => {
-    if (row.materialCode === scannedMaterialCode.value) return 'bg-yellow-500';
-    return row.actualWt ? 'bg-green-500/15' : '';
+    let cls = 'ipc-grid-row';
+    if (row.materialCode === scannedMaterialCode.value) cls += ' bg-yellow-500';
+    else if (row.actualWt) cls += ' bg-green-500/15';
+    return cls;
   },
+  headerRowClassName: 'ipc-grid-header-row',
   // 材料列表仅展示查询结果，不需要分页与手动查询
   pagerConfig: { enabled: false },
   proxyConfig: {
@@ -363,7 +368,7 @@ defineExpose({ open });
     <div class="flex flex-col gap-4">
       <!-- 1. 基本信息 -->
       <div>
-        <div class="mb-1 text-sm font-medium">
+        <div class="mb-1 ipc-fs-sm font-medium">
           {{ $t('mixerMaterialWeigh.labelId') }}
         </div>
         <Input
@@ -375,7 +380,7 @@ defineExpose({ open });
         />
         <Row :gutter="16" class="mt-3">
           <Col :xs="24" :md="18">
-            <div class="mb-1 text-sm font-medium">
+            <div class="mb-1 ipc-fs-sm font-medium">
               {{ $t('mixerMaterialWeigh.materialCode') }}
             </div>
             <Space wrap align="center">
@@ -384,13 +389,13 @@ defineExpose({ open });
                 class="!w-48"
                 disabled
               />
-              <span class="text-sm">
+              <span class="ipc-fs-sm">
                 {{ $t('mixerMaterialWeigh.materialName') }}：{{
                   currentMaterial?.materialName || '-'
                 }}
               </span>
               <span
-                class="rounded bg-primary px-2 py-1 text-base font-bold text-primary-foreground"
+                class="rounded bg-primary px-2 py-1 ipc-fs-base font-bold text-primary-foreground"
               >
                 {{ $t('mixerMaterialWeigh.standardWeight') }}：{{
                   currentMaterial?.productWt
@@ -400,7 +405,7 @@ defineExpose({ open });
             </Space>
           </Col>
           <Col :xs="24" :md="6">
-            <div class="mb-1 text-sm font-medium">
+            <div class="mb-1 ipc-fs-sm font-medium">
               {{ $t('mixerMaterialWeigh.actualWt') }}
             </div>
             <InputNumber
@@ -416,7 +421,7 @@ defineExpose({ open });
 
       <!-- 2. 实时称重信息：进度条全宽，称重方式与单包重量/个数/加减按钮左右两栏 -->
       <div>
-        <div class="mb-1 text-sm font-medium">
+        <div class="mb-1 ipc-fs-sm font-medium">
           {{ $t('mixerMaterialWeigh.realWeight') }}
         </div>
         <div class="relative h-10 w-full overflow-hidden rounded bg-muted">
@@ -439,13 +444,13 @@ defineExpose({ open });
             :style="{ left: `${standardPercent}%` }"
           ></div>
           <div
-            class="absolute inset-0 flex items-center justify-center text-sm font-bold"
+            class="absolute inset-0 flex items-center justify-center ipc-fs-sm font-bold"
           >
             {{ actualWt }} {{ currentMaterial?.unit }}
           </div>
         </div>
         <div
-          class="mt-1 flex items-center justify-between text-xs text-muted-foreground"
+          class="mt-1 flex items-center justify-between ipc-fs-xs text-muted-foreground"
         >
           <span>
             {{ $t('mixerMaterialWeigh.lowerProductWt') }}：
@@ -466,7 +471,7 @@ defineExpose({ open });
         <!-- 称重方式 与 单包重量/个数/加减按钮 同一行左右两栏 -->
         <Row :gutter="16" class="mt-3">
           <Col :xs="24" :lg="12">
-            <div class="mb-1 text-sm font-medium">
+            <div class="mb-1 ipc-fs-sm font-medium">
               {{ $t('mixerMaterialWeigh.packType') }}
             </div>
             <Radio.Group
@@ -482,19 +487,19 @@ defineExpose({ open });
           <Col v-if="packType === 1" :xs="24" :lg="12">
             <div class="flex flex-wrap items-end gap-x-6 gap-y-2">
               <div>
-                <div class="mb-1 text-sm text-muted-foreground">
+                <div class="mb-1 ipc-fs-sm text-muted-foreground">
                   {{ $t('mixerMaterialWeigh.unitWeight') }}
                 </div>
-                <div class="text-2xl font-bold text-primary">
+                <div class="ipc-fs-2xl font-bold text-primary">
                   {{ currentMaterial?.materialWt ?? '-' }}
                   {{ currentMaterial?.munit ?? '' }}
                 </div>
               </div>
               <div>
-                <div class="mb-1 text-sm text-muted-foreground">
+                <div class="mb-1 ipc-fs-sm text-muted-foreground">
                   {{ $t('mixerMaterialWeigh.count') }}
                 </div>
-                <div class="text-2xl font-bold">
+                <div class="ipc-fs-2xl font-bold">
                   <!-- <Input v-model:value="count" /> -->
                   {{ count }}
                   EA
@@ -521,7 +526,7 @@ defineExpose({ open });
       <!-- 3. 材料列表（左 2：右 1）：左侧材料列表，右侧大图标操作按钮 -->
       <Row :gutter="16">
         <Col :xs="24" :lg="16">
-          <div class="mb-1 text-sm font-medium">
+          <div class="mb-1 ipc-fs-sm font-medium">
             {{ $t('mixerMaterialWeigh.materialList') }}
           </div>
           <Grid>
@@ -549,7 +554,7 @@ defineExpose({ open });
                 />
               </Button>
               <span
-                class="text-base font-semibold leading-none text-foreground/80"
+                class="ipc-fs-base font-semibold leading-none text-foreground/80"
               >
                 {{ $t('common.reset') }}
               </span>
@@ -568,7 +573,7 @@ defineExpose({ open });
                 />
               </Button>
               <span
-                class="text-base font-semibold leading-none text-foreground/80"
+                class="ipc-fs-base font-semibold leading-none text-foreground/80"
               >
                 {{ $t('common.save') }}
               </span>
@@ -585,7 +590,7 @@ defineExpose({ open });
                 />
               </Button>
               <span
-                class="text-base font-semibold leading-none text-foreground/80"
+                class="ipc-fs-base font-semibold leading-none text-foreground/80"
               >
                 {{ $t('common.close') }}
               </span>

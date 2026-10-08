@@ -123,6 +123,8 @@ function loadSubLineOptions() {
 
 // ========== ① 工单列表表格（中部，单选） ==========
 const workSheetGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -279,6 +281,8 @@ function autoSelectWorkSheet(list: any[]) {
 
 // ========== ② BOM 列表表格（左栏，单选） ==========
 const bomGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -400,6 +404,8 @@ function autoSelectBom(list: any[]) {
 
 // ========== ③ 加载列表表格（右栏下方） ==========
 const feedGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [

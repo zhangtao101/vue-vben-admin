@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
 import { nextTick, reactive, ref } from 'vue';
 
 import { $t } from '@vben/locales';
@@ -17,11 +19,7 @@ import {
   Space,
 } from 'ant-design-vue';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridListeners,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { selectNoTranseLot, selectPalletLabelInfo, updatePallet } from '#/api';
 
 defineOptions({ name: 'PalletChangeDrawer' });
@@ -98,15 +96,29 @@ const lotGridEvents: VxeGridListeners<any> = {
 };
 
 const lotGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
     { type: 'radio', width: 50, title: '', fixed: 'left' },
-    { field: 'lotCode', title: $t('palletChange.lotCodeColumn'), minWidth: 180 },
+    {
+      field: 'lotCode',
+      title: $t('palletChange.lotCodeColumn'),
+      minWidth: 180,
+    },
     { field: 'lineName', title: $t('palletChange.lineName'), minWidth: 120 },
     { field: 'lineCode', title: $t('palletChange.lineCode'), minWidth: 100 },
-    { field: 'productName', title: $t('palletChange.productName'), minWidth: 140 },
-    { field: 'productCode', title: $t('palletChange.productCode'), minWidth: 120 },
+    {
+      field: 'productName',
+      title: $t('palletChange.productName'),
+      minWidth: 140,
+    },
+    {
+      field: 'productCode',
+      title: $t('palletChange.productCode'),
+      minWidth: 120,
+    },
     { field: 'unit', title: $t('palletChange.unit'), minWidth: 80 },
     { field: 'batch', title: $t('palletChange.batch'), minWidth: 100 },
     { field: 'priority', title: $t('palletChange.priority'), minWidth: 100 },
@@ -229,7 +241,9 @@ defineExpose({ open });
   >
     <!-- 托盘信息区域：查询条件为托盘号，下方 Descriptions 展示 -->
     <div class="mb-4">
-      <div class="mb-2 border-l-4 border-blue-500 pl-2 text-base font-semibold">
+      <div
+        class="mb-2 border-l-4 border-blue-500 pl-2 ipc-fs-base font-semibold"
+      >
         {{ $t('palletChange.palletInfo') }}
       </div>
       <div class="mb-2 flex items-center gap-2">
@@ -283,7 +297,7 @@ defineExpose({ open });
     <!-- 批次LOT列表区域 -->
     <div>
       <div
-        class="mb-2 border-l-4 border-blue-500 pl-2 text-base font-semibold"
+        class="mb-2 border-l-4 border-blue-500 pl-2 ipc-fs-base font-semibold"
       >
         {{ $t('palletChange.lotList') }}
       </div>

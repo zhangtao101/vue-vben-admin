@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, reactive, ref } from 'vue';
 
 import {
@@ -14,7 +16,7 @@ import {
   Tag,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { cancelCartInput, queryCartList } from '#/api';
 import { $t } from '#/locales';
 import CartLock from '#/util/component/steps/cartLock.vue';
@@ -84,6 +86,8 @@ function queryCartPage({ page }: any) {
 }
 
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [

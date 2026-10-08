@@ -21,6 +21,10 @@ export interface PackagingDashboardItem {
   sublineQtyA: null | number;
   /** 下面的子产线 */
   sublineQtyB: null | number;
+  /** 上面的状态：2 正常生产 3 未生产 */
+  stateA: null | number;
+  /** 下面的状态：2 正常生产 3 未生产 */
+  stateB: null | number;
 }
 
 /**

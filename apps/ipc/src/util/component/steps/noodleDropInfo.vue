@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, ref } from 'vue';
 
 // eslint-disable-next-line n/no-extraneous-import
@@ -20,11 +22,7 @@ import {
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridListeners,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addNoodleSpillRecord,
   deleteNoodleSpillRecord,
@@ -104,6 +102,8 @@ async function loadOptions() {
 
 // region 落面信息列表（接口分页查询）
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -365,10 +365,10 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div class="text-lg font-bold">{{ $t('noodleDropInfo.title') }}</div>
+    <div class="ipc-fs-lg font-bold">{{ $t('noodleDropInfo.title') }}</div>
 
     <!-- 1. 查询条件 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="flex flex-wrap gap-2">
         <Form.Item :label="$t('noodleDropInfo.productDate')">
           <RangePicker
@@ -417,7 +417,7 @@ onMounted(() => {
     </Card>
 
     <!-- 2. 落面信息列表 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Grid>
         <template #toolbar-tools>
           <Button size="small" @click="handleExport">
@@ -438,7 +438,7 @@ onMounted(() => {
             >
               <Icon
                 icon="mdi:delete-outline"
-                class="inline-block align-middle text-lg"
+                class="inline-block align-middle ipc-fs-lg"
               />
             </Button>
           </Tooltip>
@@ -447,7 +447,7 @@ onMounted(() => {
     </Card>
 
     <!-- 3. 录入表单 + 4. 右对齐按钮 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="vertical" :model="form">
         <Row :gutter="16">
           <Col :xs="24" :sm="12" :md="8" :lg="6">

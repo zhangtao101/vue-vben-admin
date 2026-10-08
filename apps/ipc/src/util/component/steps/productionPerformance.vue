@@ -82,6 +82,8 @@ function handleReset() {
 const selectedLot = ref<any>(null);
 
 const lotGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -146,6 +148,8 @@ const [LotGrid, lotGridApi] = useVbenVxeGrid({
 
 // region 2.2 右侧：完工记录列表（queryFinishRecord 分页查询）
 const productionGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -286,7 +290,9 @@ function handleCancelPerformance() {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div class="text-lg font-bold">{{ $t('productionPerformance.title') }}</div>
+    <div class="ipc-fs-lg font-bold">
+      {{ $t('productionPerformance.title') }}
+    </div>
 
     <!-- 1. 查询条件 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">

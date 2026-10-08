@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, reactive } from 'vue';
 
 import {
@@ -15,7 +17,7 @@ import {
   Space,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   queryDefectRecord,
   saveDefectRecord,
@@ -51,6 +53,8 @@ const queryForm = reactive<any>({
 
 // region 2. 不良列表（接口分页查询）
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -257,7 +261,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 1. 查询条件 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form
         layout="inline"
         :model="queryForm"
@@ -301,14 +305,14 @@ onMounted(() => {
     </Card>
 
     <!-- 2. 不良列表 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Grid>
         <!-- <template #toolbar-tools></template> -->
       </Grid>
     </Card>
 
     <!-- 3. 登记表单（每行 4 格：托盘号独占一行，物料代码/清真类型各占 1 格，其余各占 2 格） -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Descriptions bordered :column="4" size="small">
         <DescriptionsItem :label="$t('defectRegistration.trayNo')" :span="4">
           <Input

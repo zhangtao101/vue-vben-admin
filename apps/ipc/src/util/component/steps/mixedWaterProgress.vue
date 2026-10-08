@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, ref } from 'vue';
 
 import {
@@ -17,11 +19,7 @@ import {
   Switch,
 } from 'ant-design-vue';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridListeners,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { selectByWorkSheetId, selectWorkSheet, updateStae } from '#/api';
 import { $t } from '#/locales';
 
@@ -71,6 +69,8 @@ function handleReset() {
 const selectedWorkSheet = ref<any>(null);
 
 const gridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   height: 280,
@@ -167,6 +167,8 @@ function handleRadioChange({ row }: any) {
 const selectedLotIds = ref<(number | string)[]>([]);
 
 const lotGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   height: 280,
@@ -337,7 +339,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 p-4">
     <!-- 查询条件 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="flex flex-wrap gap-2">
         <FormItem :label="$t('mixedWaterProgress.indicateDate')">
           <DatePicker
@@ -386,14 +388,14 @@ onMounted(() => {
     </Card>
 
     <!-- 工单列表 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <Grid>
         <!-- <template #toolbar-tools></template> -->
       </Grid>
     </Card>
 
     <!-- 批次LOT列表 -->
-    <Card>
+    <Card :body-style="{ padding: '4px' }">
       <LotGrid>
         <!-- <template #toolbar-tools></template> -->
         <template #useCell="{ row, column }">
@@ -404,7 +406,7 @@ onMounted(() => {
       <!-- 自动模式开关 + 开始/结束按钮（作用于多选勾选的工单） -->
       <Row class="mt-3 flex items-center" :gutter="16">
         <Col flex="auto" class="flex items-center gap-2">
-          <span class="text-sm font-medium">
+          <span class="ipc-fs-sm font-medium">
             {{ $t('mixedWaterProgress.autoMode') }}
           </span>
           <Switch
@@ -421,7 +423,10 @@ onMounted(() => {
             >
               {{ $t('mixedWaterProgress.start') }}
             </Button>
-            <Button :disabled="selectedLotIds.length === 0 || autoMode" @click="handleEnd">
+            <Button
+              :disabled="selectedLotIds.length === 0 || autoMode"
+              @click="handleEnd"
+            >
               {{ $t('mixedWaterProgress.end') }}
             </Button>
           </Space>

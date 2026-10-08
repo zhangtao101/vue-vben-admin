@@ -360,6 +360,8 @@ function handlePackTypeChange(panel: any, gridApi: any) {
 
 // 称重记录网格基础配置：左右两栏共用，按面板查询函数差异化
 const baseGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -693,7 +695,7 @@ onMounted(() => {
                     >
                       <Icon
                         icon="mdi:transfer-right"
-                        class="inline-block align-middle text-lg"
+                        class="inline-block align-middle ipc-fs-lg"
                       />
                     </Button>
                   </Tooltip>
@@ -745,7 +747,7 @@ onMounted(() => {
                       class="flex h-full w-full items-center justify-center rounded-md border border-border bg-muted/40 px-2 py-4"
                     >
                       <div
-                        class="w-full truncate text-center text-sm text-foreground"
+                        class="w-full truncate text-center ipc-fs-sm text-foreground"
                       >
                         {{ leftPanel.form[key] || '-' }}
                       </div>
@@ -770,10 +772,10 @@ onMounted(() => {
                 <div
                   class="flex h-full flex-col items-center justify-center rounded-md border border-border bg-muted/40 py-4"
                 >
-                  <div class="text-sm text-muted-foreground">
+                  <div class="ipc-fs-sm text-muted-foreground">
                     {{ item.title }}
                   </div>
-                  <div class="mt-1 text-2xl font-bold text-primary">
+                  <div class="mt-1 ipc-fs-2xl font-bold text-primary">
                     {{ leftPanel.metrics[item.key] || 0 }}
                   </div>
                 </div>
@@ -859,7 +861,7 @@ onMounted(() => {
                     >
                       <Icon
                         icon="mdi:transfer-right"
-                        class="inline-block align-middle text-lg"
+                        class="inline-block align-middle ipc-fs-lg"
                       />
                     </Button>
                   </Tooltip>
@@ -910,7 +912,7 @@ onMounted(() => {
                       class="flex h-full w-full items-center justify-center rounded-md border border-border bg-muted/40 px-2 py-4"
                     >
                       <div
-                        class="w-full truncate text-center text-sm text-foreground"
+                        class="w-full truncate text-center ipc-fs-sm text-foreground"
                       >
                         {{ rightPanel.form[key] || '-' }}
                       </div>
@@ -935,10 +937,10 @@ onMounted(() => {
                 <div
                   class="flex h-full flex-col items-center justify-center rounded-md border border-border bg-muted/40 py-4"
                 >
-                  <div class="text-sm text-muted-foreground">
+                  <div class="ipc-fs-sm text-muted-foreground">
                     {{ item.title }}
                   </div>
-                  <div class="mt-1 text-2xl font-bold text-primary">
+                  <div class="mt-1 ipc-fs-2xl font-bold text-primary">
                     {{ rightPanel.metrics[item.key] || 0 }}
                   </div>
                 </div>
@@ -1019,7 +1021,7 @@ onMounted(() => {
               class="flex-1"
             />
             <!-- 子产线对应的计划开始时间，文本展示 -->
-            <span class="shrink-0 text-sm text-muted-foreground">
+            <span class="shrink-0 ipc-fs-sm text-muted-foreground">
               {{ selectedPlanDateStart }}
             </span>
           </div>

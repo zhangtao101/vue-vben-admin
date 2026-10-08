@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { onMounted, onUnmounted, ref } from 'vue';
 
 import {
@@ -14,7 +16,7 @@ import {
   Tabs,
 } from 'ant-design-vue';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   queueAddBatch,
   queueDelete,
@@ -128,6 +130,8 @@ async function queryLeftList({ page }: any) {
 }
 
 const leftGridOptions: VxeGridProps<any> = {
+  rowClassName: 'ipc-grid-row',
+  headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
@@ -184,7 +188,7 @@ const STATE_ROW_CLASS_MAP: Record<string, string> = {
  * @returns 状态对应的样式类名，1未开始及其它未知状态返回空字符串（保持默认无色）
  */
 function getStateRowClass({ row }: any) {
-  return STATE_ROW_CLASS_MAP[String(row?.state)] ?? '';
+  return `ipc-grid-row ${STATE_ROW_CLASS_MAP[String(row?.state)] ?? ''}`;
 }
 
 /** 右表加载方法：queueSearch 分页查询 */
@@ -243,6 +247,7 @@ const rightGridOptions: VxeGridProps<any> = {
   },
   // 行背景色随 state 变化，优先级高于斑马纹
   rowClassName: getStateRowClass,
+  headerRowClassName: 'ipc-grid-header-row',
   stripe: true,
   checkboxConfig: { highlight: true, range: true, trigger: 'row' },
   toolbarConfig: { custom: false, refresh: false, zoom: false },
