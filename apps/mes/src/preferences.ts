@@ -14,6 +14,7 @@ export const overridesPreferences = defineOverridesPreferences({
     defaultHomePath: '/dashboard/welcome',
     watermark: false,
     watermarkContent: '',
+    locale: 'ko-KR'
   },
   theme: {
     mode: 'light',

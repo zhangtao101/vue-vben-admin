@@ -13,6 +13,7 @@ export const overridesPreferences = defineOverridesPreferences({
     layout: 'mixed-nav',
     defaultHomePath: '/workFlow/productionOperation',
     preferencesButtonPosition: 'header',
+    locale: 'ko-KR'
   },
   sidebar: {
     autoActivateChild: false,
