@@ -2,7 +2,7 @@ import { createApp, watchEffect } from 'vue';
 
 import { registerAccessDirective } from '@vben/access';
 import { initTippy } from '@vben/common-ui';
-import { preferences } from '@vben/preferences';
+import { preferences, updatePreferences } from '@vben/preferences';
 import { initStores } from '@vben/stores';
 import '@vben/styles';
 import '@vben/styles/antd';
@@ -49,6 +49,14 @@ async function bootstrap(namespace: string) {
   app.use(router);
   // 自定义右键菜单
   app.use(Menus as any);
+
+  // 应用名称跟随语言切换：Logo 文本等位置读取 preferences.app.name
+  watchEffect(() => {
+    const appName = $t('app.title');
+    if (appName && preferences.app.name !== appName) {
+      updatePreferences({ app: { name: appName } });
+    }
+  });
 
   // 动态更新标题
   watchEffect(() => {
