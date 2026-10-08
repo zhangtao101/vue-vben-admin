@@ -126,6 +126,7 @@ const stepList = ref<any[]>([
   { id: 121, title: '搅拌材料称重管理', type: 121, status: 1 },
   { id: 122, title: '无重力搅拌托盘投入', type: 122, status: 1 },
   { id: 123, title: '搅拌作业进行', type: 123, status: 1 },
+  { id: 125, title: '包装看板', type: 125, status: 1 },
 ]);
 // 当前选中的工步索引
 const currentStepIndex = ref(0);

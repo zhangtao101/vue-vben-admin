@@ -11,6 +11,7 @@ export * from './gravityFreeMixerWork.service';
 export * from './ioBillOperation.service';
 export * from './materialWeighing.service';
 export * from './noodleSpill.service';
+export * from './packagingDashboard.service';
 export * from './packagingOperation.service';
 export * from './palletLoading.service';
 export * from './printTemplateMaintenance.service';

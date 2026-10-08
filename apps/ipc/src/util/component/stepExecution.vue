@@ -28,6 +28,7 @@ import MultiStationScan from '#/util/component/steps/multiStationScan.vue';
 import NoodleDropInfo from '#/util/component/steps/noodleDropInfo.vue';
 import NoodleMachineUse from '#/util/component/steps/noodleMachineUse.vue';
 import NoodleMaking from '#/util/component/steps/noodleMaking.vue';
+import PackagingDashboard from '#/util/component/steps/packagingDashboard.vue';
 import PackagingOperation from '#/util/component/steps/packagingOperation.vue';
 import PackagingProgress from '#/util/component/steps/packagingProgress.vue';
 import ParamTemplate from '#/util/component/steps/paramTemplate.vue';
@@ -690,6 +691,14 @@ defineProps({
       :function-id="step.id"
       :process-code="processCode"
       v-if="step.type === 124"
+    />
+
+    <!-- 包装看板：根据工步类型为 125 时，渲染包装看板组件，并传递相关参数 -->
+    <PackagingDashboard
+      :workstation-code="workstationCode"
+      :function-id="step.id"
+      :process-code="processCode"
+      v-if="step.type === 125"
     />
 
     <!-- 设备点位信息：根据工步类型为 999 时，渲染设备点位信息组件，并传递相关参数 -->
