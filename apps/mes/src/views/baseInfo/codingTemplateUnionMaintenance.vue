@@ -578,7 +578,7 @@ onMounted(() => {
 
     <Row :gutter="16">
       <!-- region 表格区（1/4） -->
-      <Col :span="6">
+      <Col :span="10">
         <Card>
           <Grid>
             <template #toolbar-tools>
@@ -620,7 +620,7 @@ onMounted(() => {
       <!-- endregion -->
 
       <!-- region 新增/编辑区（3/4） -->
-      <Col :span="18">
+      <Col :span="14">
         <Card :title="isAdd ? $t('baseInfo.add') : $t('baseInfo.edit')">
           <!-- 右上方重置/保存按钮 -->
           <template #extra>
@@ -729,7 +729,7 @@ onMounted(() => {
 
             <Row :gutter="16">
               <!-- 参数表格 -->
-              <Col :span="6">
+              <Col :span="14">
                 <FormItem :label="$t('baseInfo.parameterName')">
                   <Table
                     :columns="parameterColumns"
@@ -752,7 +752,7 @@ onMounted(() => {
               </Col>
 
               <!-- 预览 -->
-              <Col :span="18">
+              <Col :span="10">
                 <FormItem :label="$t('baseInfo.previewResult')">
                   <Button @click="handlePreview">
                     <template #icon>
@@ -764,7 +764,7 @@ onMounted(() => {
                     <Col
                       v-for="(item, index) in previewResults"
                       :key="index"
-                      flex="1"
+                      :span="24"
                     >
                       <div class="preview-line">
                         <p>
