@@ -1,14 +1,27 @@
 <script setup lang="ts">
+/**
+ * [INPUT]: 依赖 #/api 的 getSelfInspectionStepInfo 获取自检工步内容、getDiscoveryDefectListByWorksheetCode 获取不良记录，
+ * 依赖 drawer/DefectDetailDrawer.vue 查看与编辑不良明细
+ * [OUTPUT]: 对外提供自检工步组件，包含工步详情展示、不良记录列表与不良明细抽屉入口
+ * [POS]: 工步执行子组件，由 stepExecution.vue 渲染
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ * [TIME]: 2026-10-09 17:30:00
+ */
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
 
-import { message } from 'ant-design-vue';
+import { $t } from '@vben/locales';
+
+import { Button, Descriptions, DescriptionsItem } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { equipmentMonitoringQuery } from '#/api';
-
-import { $t } from '../../../../../../packages/locales/src';
+import {
+  getDiscoveryDefectListByWorksheetCode,
+  getSelfInspectionStepInfo,
+} from '#/api';
+import DefectDetailDrawer from '#/util/component/drawer/DefectDetailDrawer.vue';
 
 /**
  * 定义组件的 props，用于接收父组件传递的数据
@@ -41,7 +54,49 @@ const props = defineProps({
   },
 });
 
-// region 作业信息
+// region 工步详情
+// 自检工步内容：工单号、产品编号、产品名称、计划数、良品总数、不良品总数
+const stepInfo = ref<any>({});
+
+/**
+ * 查询自检工步内容并写入详情展示数据
+ * 工单编号为空时清空详情数据，不发起请求
+ * @returns {void} 无返回值，结果写入 stepInfo
+ * @since 2026-10-09 12:00:00
+ */
+function queryStepInfo() {
+  if (!props.worksheetCode) {
+    stepInfo.value = {};
+    return;
+  }
+  getSelfInspectionStepInfo({
+    bindingId: props.bindingId,
+    functionId: props.functionId,
+    worksheetCode: props.worksheetCode,
+    workstationCode: props.workstationCode,
+  })
+    .then((data: any) => {
+      stepInfo.value = data || {};
+    })
+    .catch(() => {
+      stepInfo.value = {};
+    });
+}
+// endregion
+
+// region 表格配置
+/**
+ * 格式化操作时间展示
+ * @param {any} value 接口返回的时间值
+ * @returns {string} 格式化为 YYYY-MM-DD HH:mm:ss，空值返回 '-'
+ * @since 2026-10-09 17:30:00
+ */
+function formatTime(value: any) {
+  if (!value) return '-';
+  const date = dayjs(value);
+  return date.isValid() ? date.format('YYYY-MM-DD HH:mm:ss') : `${value}`;
+}
+
 /**
  * 表格配置选项，用于定义 VxeGrid 表格的各项属性
  */
@@ -50,11 +105,11 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   // 显示表格边框
   border: true,
-  // 表格列配置
+  // 表格列配置：不良记录字段（不含 detailList），末列为查看详情操作
   columns: [
     {
       // 列标题
-      title: '序号',
+      title: $t('productionOperation.seq'),
       // 列类型为序号列
       type: 'seq',
       // 列字段名
@@ -63,74 +118,85 @@ const gridOptions: VxeGridProps<any> = {
       width: 50,
     },
     {
-      field: '1',
-      title: '产品SN',
-      // 列最小宽度
-      minWidth: 120,
+      field: 'worksheetCode',
+      minWidth: 140,
+      title: $t('productionOperation.workOrderCode'),
     },
     {
-      field: '2',
-      title: '检验项目',
-      minWidth: 120,
+      field: 'discoveryProcessCode',
+      minWidth: 140,
+      title: $t('productionOperation.discoveryProcessCode'),
     },
     {
-      field: '3',
-      title: '检验标准',
-      minWidth: 120,
+      field: 'productCode',
+      minWidth: 140,
+      title: $t('productionOperation.productNumber'),
     },
     {
-      field: '4',
-      title: '检验设备',
-      minWidth: 120,
+      field: 'productName',
+      minWidth: 160,
+      title: $t('productionOperation.productName'),
     },
     {
-      field: '5',
-      title: '检验数量',
-      minWidth: 120,
+      field: 'subProductCode',
+      minWidth: 140,
+      title: $t('productionOperation.partNumber'),
     },
     {
-      field: '6',
-      title: '不良数量',
-      minWidth: 120,
+      field: 'subProductName',
+      minWidth: 160,
+      title: $t('productionOperation.partName'),
     },
     {
-      field: '7',
-      title: '检验结果',
+      field: 'defectNumber',
       minWidth: 120,
+      title: $t('productionOperation.totalDefectNumber'),
     },
     {
-      field: '8',
-      title: '备注',
-      minWidth: 200,
+      field: 'operateTime',
+      formatter: ({ cellValue }: any) => formatTime(cellValue),
+      minWidth: 180,
+      title: $t('productionOperation.operateTime'),
+    },
+    {
+      field: 'interactionPointCode',
+      minWidth: 140,
+      title: $t('productionOperation.workstationCode'),
+    },
+    {
+      field: 'interactionPointId',
+      minWidth: 140,
+      title: $t('productionOperation.stationBindingId'),
+    },
+    {
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: $t('common.operation'),
+      width: 120,
     },
   ],
-  // 表格高度
-  height: 400,
-  // 显示斑马纹
-  stripe: true,
-  // 排序配置，支持多列排序
-  sortConfig: {
-    multiple: true,
+  // 不分页，不良记录随工单一次性返回
+  pagerConfig: {
+    enabled: false,
   },
   // 代理配置，用于异步查询数据
   proxyConfig: {
     ajax: {
-      query: async ({ page }) => {
-        return await queryData({
-          page: page.currentPage,
-          pageSize: page.pageSize,
-        });
+      query: async () => {
+        return await queryData();
       },
     },
+    page: false,
   },
+  // 表格高度
+  height: 400,
+  // 显示斑马纹
+  stripe: true,
   // 工具栏配置
   toolbarConfig: {
     // 显示自定义按钮
     custom: true,
-    // 不显示导入按钮
-    // import: true,
-    // 不显示导出按钮
-    // export: true,
     // 显示刷新按钮
     refresh: true,
     // 显示缩放按钮
@@ -139,99 +205,72 @@ const gridOptions: VxeGridProps<any> = {
 };
 
 /**
- * 表格事件配置对象，定义表格的各种事件处理函数
- */
-const gridEvents: any = {
-  /**
-   * 单选框状态改变时触发的事件处理函数
-   * @param row - 包含选中行数据的对象
-   */
-  radioChange: ({ row }: any) => {
-    // 显示选中行信息的提示消息
-    message.info(`radioChange: ${row}`);
-  },
-};
-
-/**
  * 初始化 VxeGrid 组件和 API
  * @type {[typeof Grid, any]} - 包含 Grid 组件和 gridApi 的数组
  */
-const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
+// endregion
 
 // region 查询数据
 /**
- * 查询参数，用于存储查询设备监控数据的相关条件
+ * 查询当前工单的不良记录列表
+ * 工单编号为空时直接返回空列表，不发起请求
+ * @returns {Promise<{total: number, items: any[]}>} 返回 total（记录总数）与 items（不良记录列表）
+ * @throws 当接口请求失败时，Promise 被 reject 原始错误
+ * @since 2026-10-09 17:30:00
  */
-const queryParams = ref<any>({
-  // 查询时间，初始化为空数组
-  searchTime: [] as any,
-  // 产品编码，初始化为空字符串
-  productCode: '',
-  // 产品批号，初始化为空字符串
-  lineName: '',
-});
-
-/**
- * 查询设备监控数据
- * 功能：获取设备监控信息并处理分页展示
- * 流程：
- * 1. 构建请求参数（从props获取设备/工单标识）
- * 2. 调用设备监控查询接口
- * 3. 转换接口返回数据适配表格分页格式
- *
- * @param {object} param - 包含分页信息的对象
- * @param {number} param.page - 当前页码
- * @param {number} param.pageSize - 每页数据量
- * @returns {Promise<{total: number, items: any[]}>} - 包含总数据量和当前页数据的 Promise
- */
-function queryData({ page, pageSize }: any) {
+function queryData() {
   return new Promise((resolve, reject) => {
-    // 构建请求参数对象
-    const params: any = {
-      workstationCode: props.workstationCode,
-      equipCode: props.equipCode,
-      worksheetCode: props.worksheetCode,
-      bindingId: props.bindingId,
-      functionId: props.functionId,
-    };
-    // 调用设备监控查询接口
-    equipmentMonitoringQuery({
-      ...params,
-      pageNum: page, // 当前页码
-      pageSize, // 每页数量
-    })
-      .then(({ total, list }) => {
-        // 解析接口返回数据，返回适配表格分页格式的数据
+    if (!props.worksheetCode) {
+      resolve({
+        total: 0,
+        items: [],
+      });
+      return;
+    }
+    getDiscoveryDefectListByWorksheetCode(props.worksheetCode)
+      .then((data: any) => {
+        const list = data || [];
         resolve({
-          total,
+          total: list.length,
           items: list,
         });
       })
       .catch((error) => {
-        // 捕获接口调用错误并拒绝 Promise
         reject(error);
       });
   });
 }
 
 /**
- * 重置查询条件并刷新表格
- * 功能：清空查询参数并重新加载数据
- * 流程：
- * 1. 重置查询参数为空对象
- * 2. 触发表格重新加载数据
+ * 重新加载工步详情与不良记录列表
+ * @returns {void} 无返回值，刷新详情与列表
+ * @since 2026-10-09 12:00:00
  */
 function reload() {
-  // 重置查询参数
-  queryParams.value = {};
-  // 触发表格重新加载数据
+  queryStepInfo();
   gridApi.reload();
 }
+// endregion
 
+// region 操作
+// 不良明细抽屉实例
+const defectDetailDrawerRef = ref();
+
+/**
+ * 打开不良明细抽屉
+ * 将当前不良记录（含 detailList）传入抽屉查看与编辑
+ * @param {any} row 当前不良记录行
+ * @returns {void} 无返回值
+ * @since 2026-10-09 17:30:00
+ */
+function handleViewDetail(row: any) {
+  defectDetailDrawerRef.value?.open(row);
+}
 // endregion
 
 /**
- * 组件挂载后执行的钩子函数，会在组件挂载完成后调用 reload 函数获取数据
+ * 组件挂载后执行的钩子函数，会在组件挂载完成后加载详情与不良记录列表
  */
 onMounted(() => {
   reload();
@@ -239,24 +278,56 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- 渲染 VxeGrid 组件 -->
-  <Grid>
-    <!-- 定义表格工具栏的操作按钮 -->
-    <template #toolbar-actions>
-      <!-- 取消填写按钮 -->
-      <Button type="primary" danger>
-        {{ $t('productionOperation.cancelTheFilling') }}
-      </Button>
-      <!-- 任务暂停按钮 -->
-      <Button type="primary">
-        {{ $t('productionOperation.taskSuspended') }}
-      </Button>
-      <!-- 任务完成按钮 -->
-      <Button type="primary">
-        {{ $t('productionOperation.taskCompleted') }}
-      </Button>
-    </template>
-  </Grid>
+  <div>
+    <!-- 工步详情：自检工步内容查询接口返回 -->
+    <Descriptions
+      :column="3"
+      :title="$t('productionOperation.selfInspectionInfo')"
+      bordered
+      class="mb-4"
+    >
+      <DescriptionsItem :label="$t('productionOperation.workOrderCode')">
+        {{ stepInfo.worksheetCode || '-' }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('productionOperation.productNumber')">
+        {{ stepInfo.productCode || '-' }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('productionOperation.productName')">
+        {{ stepInfo.productName || '-' }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('productionOperation.plannedQuantity')">
+        {{ stepInfo.planNumber ?? '-' }}
+      </DescriptionsItem>
+      <DescriptionsItem :label="$t('productionOperation.quantityOfGoodProducts')">
+        {{ stepInfo.finishNumber ?? '-' }}
+      </DescriptionsItem>
+      <DescriptionsItem
+        :label="$t('productionOperation.quantityOfDefectiveProducts')"
+      >
+        {{ stepInfo.totalUnqualityNumber ?? '-' }}
+      </DescriptionsItem>
+    </Descriptions>
+
+    <!-- 不良记录列表：展示记录字段（不含 detailList），明细在抽屉中查看 -->
+    <Grid>
+      <template #toolbar-tools></template>
+      <template #action="{ row }">
+        <!-- 查看详情：打开不良明细抽屉 -->
+        <Button size="small" type="link" @click="handleViewDetail(row)">
+          {{ $t('productionOperation.viewDetail') }}
+        </Button>
+      </template>
+    </Grid>
+
+    <!-- 不良明细抽屉：查看与编辑当前记录的 detailList -->
+    <DefectDetailDrawer
+      ref="defectDetailDrawerRef"
+      :binding-id="bindingId"
+      :worksheet-code="worksheetCode"
+      :workstation-code="workstationCode"
+      @refresh="reload"
+    />
+  </div>
 </template>
 
 <style scoped>

@@ -10,5 +10,6 @@ export * from './palletLoading.service';
 export * from './printTemplateMaintenance.service';
 export * from './productionOperation.service';
 export * from './qualityInspection.service';
+export * from './selfinspection.service';
 export * from './workOrderEntry.service';
 export * from './workOrderOutbound.service';
