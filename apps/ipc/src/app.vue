@@ -88,7 +88,7 @@ const tokenTheme = computed(() => {
 }
 
 .ipc-grid-header-row {
-  font-size: var(--font-size-base);
+  font-size: calc(var(--font-size-base) * 1.2);
   line-height: calc(var(--font-size-base) * 1.5);
 }
 

@@ -471,7 +471,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-2">
+  <div class="flex flex-col gap-4">
     <!-- 1. 上方左右两栏 -->
     <Row :gutter="16">
       <!-- 1.1 左侧：工单信息 + 指标 -->

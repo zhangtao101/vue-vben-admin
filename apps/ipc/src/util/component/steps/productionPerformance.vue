@@ -289,7 +289,7 @@ function handleCancelPerformance() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4">
+  <div class="flex flex-col gap-4">
     <div class="ipc-fs-lg font-bold">
       {{ $t('productionPerformance.title') }}
     </div>

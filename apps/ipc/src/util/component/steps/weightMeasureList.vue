@@ -250,7 +250,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4">
+  <div class="flex flex-col gap-4">
     <!-- 1. 页面标题 -->
     <div class="ipc-fs-lg font-bold">{{ $t('weightMeasureList.title') }}</div>
 

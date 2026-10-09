@@ -204,7 +204,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-2">
+  <div class="flex flex-col gap-4">
     <!-- 1. 查询条件：LOTID / 台车代码 -->
     <div class="flex flex-wrap items-center gap-3">
       <span>{{ $t('cartLotChange.lotId') }}</span>

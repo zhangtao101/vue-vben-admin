@@ -154,7 +154,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4">
+  <div>
     <Spin :spinning="loading">
       <Empty
         v-if="dashboardList.length === 0"

@@ -414,7 +414,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4">
+  <div class="flex flex-col gap-4">
     <!-- 查询条件 -->
     <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="flex flex-wrap gap-2">
