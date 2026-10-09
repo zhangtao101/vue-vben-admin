@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/palletizTransfer/searchSubLine/searchWeightRecordList/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉。
+ * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/palletizTransfer/searchSubLine/searchWeightRecordList/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉、SopImageDrawer SOP 图像抽屉。
  * [OUTPUT]: 对外提供 packagingProgress 包装工序步骤组件（步骤组件标准入参 functionId/bindingId/worksheetCode/equipCode/workstationCode/processType）。
- * [POS]: 属于包装工序步骤组件，负责子产线/工单查询、左右两栏工单信息展示、称重记录列表、工作开始/结束控制与喷码传输弹窗。
+ * [POS]: 属于包装工序步骤组件，负责子产线/工单查询、左右两栏工单信息展示、称重记录列表、工作开始/结束控制、喷码传输弹窗与 SOP 图像查看。
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * [TIME]: 2026-09-21 00:00:00
  */
@@ -42,6 +42,7 @@ import {
   updateStae,
 } from '#/api';
 import { $t } from '#/locales';
+import SopImageDrawer from '#/util/component/drawers/SopImageDrawer.vue';
 import PackagingMaterialDrawer from '#/util/component/PackagingMaterialDrawer.vue';
 
 /**
@@ -227,6 +228,17 @@ const rightPanel = createPanel();
 const hasRightPanel = computed(
   () => !!(rightPanel.form.workOrder || rightPanel.form.id),
 );
+
+/**
+ * 面板是否已选中工单：底部操作按钮需先选择工单才可点击。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @returns {boolean} 已选中工单返回 true，否则 false。
+ * @throws 不主动抛出异常。
+ * @since 2026-10-08 00:00:00
+ */
+function isPanelReady(panel: any) {
+  return !!(panel?.form?.workOrder || panel?.form?.id);
+}
 
 // 指标卡片配置：key 与 title，数值从面板 metrics 中取值
 const metricItems = [
@@ -421,6 +433,8 @@ function loadMaterials() {
 // region 4. 按钮：材料加载 / 工作开始 / 工作结束
 // 包装材料加载/卸载抽屉引用（PackagingMaterialDrawer）
 const materialDrawerRef = ref();
+// SOP 图像抽屉引用（SopImageDrawer）
+const sopImageDrawerRef = ref();
 
 /**
  * 打开材料加载抽屉，透传面板表单数据。
@@ -431,6 +445,17 @@ const materialDrawerRef = ref();
  */
 function handleMaterialLoad(panel: any) {
   materialDrawerRef.value.open(panel?.form);
+}
+
+/**
+ * 打开 SOP 图像抽屉，按面板上的产品编码加载 SOP 图片。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @returns {void} 无返回值。
+ * @throws 不主动抛出异常。
+ * @since 2026-10-08 00:00:00
+ */
+function handleSopImage(panel: any) {
+  sopImageDrawerRef.value.open(panel?.form?.productCode ?? '');
 }
 
 /**
@@ -642,7 +667,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4">
+  <div class="flex flex-col gap-4">
     <!-- 左右两栏布局 -->
     <Row :gutter="16" class="items-stretch">
       <!-- 左栏：完整可操作 -->
@@ -801,13 +826,31 @@ onMounted(() => {
 
           <!-- 4. 右对齐按钮 -->
           <div class="flex justify-end gap-2">
-            <Button @click="handleMaterialLoad(leftPanel)">
+            <Button
+              :disabled="!isPanelReady(leftPanel)"
+              @click="handleMaterialLoad(leftPanel)"
+            >
               {{ $t('packagingProgress.materialLoad') }}
             </Button>
-            <Button type="primary" @click="handleWorkStart(leftPanel)">
+            <Button
+              :disabled="!isPanelReady(leftPanel)"
+              @click="handleSopImage(leftPanel)"
+            >
+              {{ $t('packagingProgress.image') }}
+            </Button>
+            <Button
+              type="primary"
+              :disabled="!isPanelReady(leftPanel)"
+              @click="handleWorkStart(leftPanel)"
+            >
               {{ $t('packagingProgress.workStart') }}
             </Button>
-            <Button type="primary" danger @click="handleWorkEnd(leftPanel)">
+            <Button
+              type="primary"
+              danger
+              :disabled="!isPanelReady(leftPanel)"
+              @click="handleWorkEnd(leftPanel)"
+            >
               {{ $t('packagingProgress.workEnd') }}
             </Button>
           </div>
@@ -966,13 +1009,31 @@ onMounted(() => {
 
           <!-- 4. 右对齐按钮（可操作） -->
           <div class="flex justify-end gap-2">
-            <Button @click="handleMaterialLoad(rightPanel)">
+            <Button
+              :disabled="!isPanelReady(rightPanel)"
+              @click="handleMaterialLoad(rightPanel)"
+            >
               {{ $t('packagingProgress.materialLoad') }}
             </Button>
-            <Button type="primary" @click="handleWorkStart(rightPanel)">
+            <Button
+              :disabled="!isPanelReady(rightPanel)"
+              @click="handleSopImage(rightPanel)"
+            >
+              {{ $t('packagingProgress.image') }}
+            </Button>
+            <Button
+              type="primary"
+              :disabled="!isPanelReady(rightPanel)"
+              @click="handleWorkStart(rightPanel)"
+            >
               {{ $t('packagingProgress.workStart') }}
             </Button>
-            <Button type="primary" danger @click="handleWorkEnd(rightPanel)">
+            <Button
+              type="primary"
+              danger
+              :disabled="!isPanelReady(rightPanel)"
+              @click="handleWorkEnd(rightPanel)"
+            >
               {{ $t('packagingProgress.workEnd') }}
             </Button>
           </div>
@@ -982,6 +1043,9 @@ onMounted(() => {
 
     <!-- 5. 包装材料加载/卸载抽屉（公共组件） -->
     <PackagingMaterialDrawer ref="materialDrawerRef" @refresh="loadMaterials" />
+
+    <!-- 5.1 SOP 图像抽屉（按产品编码展示 SOP 图片） -->
+    <SopImageDrawer ref="sopImageDrawerRef" />
 
     <!-- 6. 喷码传输弹窗 -->
     <Modal

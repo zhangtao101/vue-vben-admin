@@ -19,6 +19,7 @@ export * from './productionOperation.service';
 export * from './productionPerformance.service';
 export * from './qualityInspection.service';
 export * from './siloMaterialSetting.service';
+export * from './sopImage.service';
 export * from './workOrderEntry.service';
 export * from './workOrderOutbound.service';
 export * from './workSheetLot.service';

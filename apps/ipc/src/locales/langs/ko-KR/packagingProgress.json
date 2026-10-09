@@ -27,6 +27,7 @@
   "colEquipmentName": "설비명",
   "materialLoadFailed": "자재 목록 로드 실패",
   "materialLoad": "자재 투입",
+  "image": "이미지",
   "workStart": "작업 시작",
   "workEnd": "작업 종료",
   "startSuccess": "작업이 시작되었습니다",

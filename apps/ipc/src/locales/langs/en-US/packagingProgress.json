@@ -27,6 +27,7 @@
   "colEquipmentName": "Equipment Name",
   "materialLoadFailed": "Failed to load material list",
   "materialLoad": "Load Material",
+  "image": "Image",
   "workStart": "Work Start",
   "workEnd": "Work End",
   "startSuccess": "Work started",

@@ -27,6 +27,7 @@
   "colEquipmentName": "设备名称",
   "materialLoadFailed": "材料列表加载失败",
   "materialLoad": "材料加载",
+  "image": "图像",
   "workStart": "工作开始",
   "workEnd": "工作结束",
   "startSuccess": "工作已开始",
