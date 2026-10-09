@@ -16,8 +16,16 @@ defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
 
+/**
+ * 是否启用登录前的系统授权认证，由环境变量 VITE_APP_IS_VERIFY 控制
+ * true 为启用（需先输入认证码），false/未配置 为不启用（直接进入账号登录）
+ */
+const needVerify =
+  `${import.meta.env.VITE_APP_IS_VERIFY ?? 'false'}`.trim().toLowerCase() ===
+  'true';
+
 /** 当前是否已通过授权认证（接口返回 1 已认证，-1 未认证） */
-const authorized = ref(false);
+const authorized = ref(!needVerify);
 /** 认证码提交中的加载状态 */
 const authorizing = ref(false);
 
@@ -116,8 +124,9 @@ function handleSubmit(values: Recordable<any>) {
   authStore.authLogin(values);
 }
 
-// 页面加载完成后获取认证状态，未认证时展示认证码输入
+// 页面加载完成后获取认证状态，仅启用验证时展示认证码输入
 onMounted(() => {
+  if (!needVerify) return;
   fetchAuthorFlag();
 });
 </script>
