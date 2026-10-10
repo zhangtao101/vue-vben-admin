@@ -26,3 +26,4 @@ export * from './surfaceMachineEquipmentManage.service';
 export * from './teamGroupManage.service';
 export * from './trayManage.service';
 export * from './trolleyManage.service';
+export * from './trolleyTypeManage.service';

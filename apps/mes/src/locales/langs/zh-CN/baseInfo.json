@@ -288,5 +288,10 @@
   "statusEnabled": "启用",
   "statusDisabled": "停用",
   "addRow": "新增行",
-  "selectGroup": "请选择班组"
+  "selectGroup": "请选择班组",
+  "trolleyTypeCode": "台车类型编码",
+  "trolleyTypeName": "台车类型名称",
+  "inputTrolleyTypeCode": "请输入台车类型编码",
+  "inputTrolleyTypeName": "请输入台车类型名称",
+  "trolleyTypeCodeNoEdit": "台车类型编码保存后不可修改"
 }

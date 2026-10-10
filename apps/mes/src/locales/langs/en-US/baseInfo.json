@@ -288,5 +288,10 @@
   "statusEnabled": "Enabled",
   "statusDisabled": "Disabled",
   "addRow": "Add Row",
-  "selectGroup": "Please select team"
+  "selectGroup": "Please select team",
+  "trolleyTypeCode": "Trolley Type Code",
+  "trolleyTypeName": "Trolley Type Name",
+  "inputTrolleyTypeCode": "Please input trolley type code",
+  "inputTrolleyTypeName": "Please input trolley type name",
+  "trolleyTypeCodeNoEdit": "Trolley type code cannot be modified after saving"
 }
