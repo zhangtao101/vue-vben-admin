@@ -162,7 +162,7 @@ const selectedEquipments = ref<EquipSelectItem[]>([]);
  * @since 2026-08-31
  */
 function handleOpenEquipSelect() {
-  equipmentDrawerRef.value.open(selectedEquipments.value, false, 1);
+  equipmentDrawerRef.value.open(selectedEquipments.value, true, 1);
 }
 
 /**
