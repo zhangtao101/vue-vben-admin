@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -19,6 +19,7 @@ import {
   Modal,
   RadioButton,
   RadioGroup,
+  Select,
   Space,
   Tag,
   Tooltip,
@@ -28,6 +29,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createTrolley,
   deleteTrolley,
+  getTrolleyTypeOptions,
   listTrolleys,
   updateTrolley,
 } from '#/api';
@@ -45,6 +47,12 @@ const gridOptions: VxeGridProps<any> = {
     { type: 'seq', title: $t('baseInfo.serialNumber'), width: 60 },
     { field: 'trolleyCode', title: $t('baseInfo.trolleyCode'), minWidth: 140 },
     { field: 'trolleyName', title: $t('baseInfo.trolleyName'), minWidth: 140 },
+    { field: 'weight', title: $t('baseInfo.trolleyWeight'), minWidth: 120 },
+    {
+      field: 'catTypeName',
+      title: $t('baseInfo.trolleyType'),
+      minWidth: 140,
+    },
     {
       field: 'palletCapacity',
       title: $t('baseInfo.palletCapacity'),
@@ -96,10 +104,41 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 const queryParams = ref({
   trolleyCode: undefined as string | undefined,
   trolleyName: undefined as string | undefined,
+  cartType: undefined as string | undefined,
   status: undefined as number | undefined,
   pageNum: 1,
   pageSize: 10,
 });
+
+/** 台车类型原始数据（接口获取，仅启用且未删除的类型） */
+const trolleyTypeList = ref<{ cartType: string; catTypeName: string }[]>([]);
+
+/** 台车类型下拉选项：编码(名称) */
+const trolleyTypeOptions = computed(() =>
+  trolleyTypeList.value.map((item) => ({
+    label: `${item.cartType}(${item.catTypeName})`,
+    value: item.cartType,
+  })),
+);
+
+/**
+ * 加载台车类型下拉选项
+ */
+function loadTrolleyTypeOptions() {
+  getTrolleyTypeOptions().then((data: any) => {
+    trolleyTypeList.value = Array.isArray(data) ? data : [];
+  });
+}
+
+/**
+ * 台车类型选择：同时回填类型编码与类型名称
+ * @param cartType 选中的台车类型编码
+ */
+function handleTrolleyTypeChange(cartType: any) {
+  const hit = trolleyTypeList.value.find((item) => item.cartType === cartType);
+  formData.value.cartType = cartType;
+  formData.value.catTypeName = hit?.catTypeName;
+}
 
 // endregion
 
@@ -112,6 +151,9 @@ const formData = ref({
   id: undefined as number | undefined,
   trolleyCode: '',
   trolleyName: '',
+  cartType: undefined as string | undefined,
+  catTypeName: undefined as string | undefined,
+  weight: undefined as number | undefined,
   palletCapacity: undefined as number | undefined,
   status: 1,
   remark: '',
@@ -160,6 +202,7 @@ const author = ref<string[]>([]);
 
 onMounted(() => {
   loadAuthor();
+  loadTrolleyTypeOptions();
 });
 
 /**
@@ -186,6 +229,7 @@ function handleReset() {
   queryParams.value = {
     trolleyCode: undefined,
     trolleyName: undefined,
+    cartType: undefined,
     status: undefined,
     pageNum: 1,
     pageSize: 10,
@@ -202,6 +246,9 @@ function handleAdd() {
     id: undefined,
     trolleyCode: '',
     trolleyName: '',
+    cartType: undefined,
+    catTypeName: undefined,
+    weight: undefined,
     palletCapacity: undefined,
     status: 1,
     remark: '',
@@ -219,6 +266,9 @@ function handleEdit(row: any) {
     id: row.id,
     trolleyCode: row.trolleyCode,
     trolleyName: row.trolleyName,
+    cartType: row.cartType,
+    catTypeName: row.catTypeName,
+    weight: row.weight,
     palletCapacity: row.palletCapacity,
     status: row.status,
     remark: row.remark,
@@ -251,13 +301,25 @@ function handleDelete(row: any) {
  */
 function handleSubmit() {
   formRef.value?.validate().then(() => {
-    const { id, trolleyCode, trolleyName, palletCapacity, status, remark } =
-      formData.value;
+    const {
+      id,
+      trolleyCode,
+      trolleyName,
+      cartType,
+      catTypeName,
+      weight,
+      palletCapacity,
+      status,
+      remark,
+    } = formData.value;
     if (editMode.value) {
       updateTrolley({
         id: id!,
         trolleyCode,
         trolleyName,
+        cartType,
+        catTypeName,
+        weight,
         palletCapacity: palletCapacity!,
         status,
         remark,
@@ -270,6 +332,9 @@ function handleSubmit() {
       createTrolley({
         trolleyCode,
         trolleyName,
+        cartType,
+        catTypeName,
+        weight,
         palletCapacity: palletCapacity!,
         status,
         remark,
@@ -291,6 +356,9 @@ function handleClose() {
     id: undefined,
     trolleyCode: '',
     trolleyName: '',
+    cartType: undefined,
+    catTypeName: undefined,
+    weight: undefined,
     palletCapacity: undefined,
     status: 1,
     remark: '',
@@ -319,6 +387,17 @@ function handleClose() {
             :placeholder="$t('baseInfo.inputTrolleyName')"
             style="width: 200px"
             @press-enter="handleSearch"
+          />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.trolleyType')">
+          <Select
+            v-model:value="queryParams.cartType"
+            :options="trolleyTypeOptions"
+            :placeholder="$t('baseInfo.selectTrolleyType')"
+            allow-clear
+            show-search
+            option-filter-prop="label"
+            style="width: 200px"
           />
         </FormItem>
         <FormItem :label="$t('baseInfo.status')">
@@ -426,6 +505,25 @@ function handleClose() {
             v-model:value="formData.trolleyName"
             :max-length="50"
             :placeholder="$t('baseInfo.inputTrolleyName')"
+          />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.trolleyWeight')" name="weight">
+          <InputNumber
+            v-model:value="formData.weight"
+            :min="0"
+            style="width: 100%"
+            :placeholder="$t('baseInfo.inputTrolleyWeight')"
+          />
+        </FormItem>
+        <FormItem :label="$t('baseInfo.trolleyType')" name="cartType">
+          <Select
+            v-model:value="formData.cartType"
+            :options="trolleyTypeOptions"
+            :placeholder="$t('baseInfo.selectTrolleyType')"
+            allow-clear
+            show-search
+            option-filter-prop="label"
+            @change="handleTrolleyTypeChange"
           />
         </FormItem>
         <FormItem :label="$t('baseInfo.palletCapacity')" name="palletCapacity">

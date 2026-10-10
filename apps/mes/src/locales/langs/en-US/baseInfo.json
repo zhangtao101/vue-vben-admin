@@ -293,5 +293,9 @@
   "trolleyTypeName": "Trolley Type Name",
   "inputTrolleyTypeCode": "Please input trolley type code",
   "inputTrolleyTypeName": "Please input trolley type name",
-  "trolleyTypeCodeNoEdit": "Trolley type code cannot be modified after saving"
+  "trolleyTypeCodeNoEdit": "Trolley type code cannot be modified after saving",
+  "trolleyType": "Trolley Type",
+  "selectTrolleyType": "Please select trolley type",
+  "trolleyWeight": "Trolley Weight (kg)",
+  "inputTrolleyWeight": "Please input trolley weight"
 }

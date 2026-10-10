@@ -63,7 +63,25 @@ export interface TrolleyTypeUpdateParams {
   status: number;
 }
 
+/** 台车类型下拉选项 */
+export interface TrolleyTypeOption {
+  /** 台车类型编码 */
+  cartType: string;
+  /** 台车类型名称 */
+  catTypeName: string;
+}
+
 // ========== 接口函数 ==========
+
+/**
+ * 查询台车类型下拉选项（仅返回启用且未删除的类型，按类型编码升序）
+ * @returns 台车类型选项列表，用于台车管理页面的台车类型下拉
+ */
+export async function getTrolleyTypeOptions() {
+  return requestClient.get<TrolleyTypeOption[]>(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/trolley/type/options`,
+  );
+}
 
 /**
  * 分页查询台车类型列表

@@ -11,6 +11,8 @@ export interface TrolleyListParams {
   trolleyCode?: string;
   /** 台车名称，支持模糊查询 */
   trolleyName?: string;
+  /** 台车类型编码，按类型筛选 */
+  cartType?: string;
   /** 状态：0=停用，1=启用 */
   status?: number;
   /** 页码，从1开始 */
@@ -27,6 +29,12 @@ export interface TrolleyItem {
   trolleyCode: string;
   /** 台车名称 */
   trolleyName: string;
+  /** 台车类型编码 */
+  cartType?: string;
+  /** 台车类型名称 */
+  catTypeName?: string;
+  /** 台车重量（kg） */
+  weight?: number;
   /** 可装托盘数量，必须为大于0的整数 */
   palletCapacity: number;
   /** 状态：0=停用，1=启用 */
@@ -51,6 +59,12 @@ export interface TrolleyCreateParams {
   trolleyCode: string;
   /** 台车名称，必填 */
   trolleyName: string;
+  /** 台车类型编码，由台车类型下拉选择带出 */
+  cartType?: string;
+  /** 台车类型名称，由台车类型下拉选择带出 */
+  catTypeName?: string;
+  /** 台车重量（kg） */
+  weight?: number;
   /** 可装托盘数量，必填且大于0 */
   palletCapacity: number;
   /** 状态：0=停用，1=启用 */
@@ -67,6 +81,12 @@ export interface TrolleyUpdateParams {
   trolleyCode: string;
   /** 台车名称，必填 */
   trolleyName: string;
+  /** 台车类型编码，由台车类型下拉选择带出 */
+  cartType?: string;
+  /** 台车类型名称，由台车类型下拉选择带出 */
+  catTypeName?: string;
+  /** 台车重量（kg） */
+  weight?: number;
   /** 可装托盘数量，必填且大于0 */
   palletCapacity: number;
   /** 状态：0=停用，1=启用 */

@@ -293,5 +293,9 @@
   "trolleyTypeName": "대차 유형 이름",
   "inputTrolleyTypeCode": "대차 유형 코드를 입력하세요",
   "inputTrolleyTypeName": "대차 유형 이름을 입력하세요",
-  "trolleyTypeCodeNoEdit": "대차 유형 코드는 저장 후 수정할 수 없습니다"
+  "trolleyTypeCodeNoEdit": "대차 유형 코드는 저장 후 수정할 수 없습니다",
+  "trolleyType": "대차 유형",
+  "selectTrolleyType": "대차 유형을 선택하세요",
+  "trolleyWeight": "대차 중량(kg)",
+  "inputTrolleyWeight": "대차 중량을 입력하세요"
 }

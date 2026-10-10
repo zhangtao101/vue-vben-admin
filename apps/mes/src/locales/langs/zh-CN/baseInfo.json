@@ -293,5 +293,9 @@
   "trolleyTypeName": "台车类型名称",
   "inputTrolleyTypeCode": "请输入台车类型编码",
   "inputTrolleyTypeName": "请输入台车类型名称",
-  "trolleyTypeCodeNoEdit": "台车类型编码保存后不可修改"
+  "trolleyTypeCodeNoEdit": "台车类型编码保存后不可修改",
+  "trolleyType": "台车类型",
+  "selectTrolleyType": "请选择台车类型",
+  "trolleyWeight": "台车重量（kg）",
+  "inputTrolleyWeight": "请输入台车重量"
 }
