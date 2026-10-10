@@ -2,6 +2,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import {
   Button,
@@ -22,6 +23,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   addCartWeight,
   deleteCartWeight,
+  queryPrintTemplateDetails,
   searchCartWeight,
   selectCartWeight,
   selectPalletAllInfo,
@@ -86,8 +88,8 @@ function handleQuery() {
       splitList.value = (Array.isArray(weightList) ? weightList : []).map(
         (item: any) => ({
           id: item.id,
-          lotId: info?.lotId ?? '',
-          lotCode: info?.lotCode ?? '',
+          lotId: item?.lotId ?? '',
+          lotCode: item?.lotCode ?? '',
           lotIdNum: item.lotId,
           cartCode: item.cartCode,
           qty: item.qty,
@@ -138,6 +140,21 @@ const workSheetInfo = ref<any>({
   goodWeight: undefined,
   remainWeight: undefined,
 });
+
+/** 工单状态指示灯：workState 为 2 时绿色，其余（含未开始/已结束）灰色 */
+const WORK_ORDER_RUNNING_STATE = '2';
+
+/**
+ * 取工单状态指示灯颜色类：workState 为 2 显示绿色实心圆，否则灰色。
+ * @returns {string} 圆点背景色类名（bg-green-500 / bg-gray-400）。
+ * @throws 不主动抛出异常。
+ * @since 2026-10-10 00:00:00
+ */
+function getStateDotClass() {
+  return String(workSheetInfo.value?.workState) === WORK_ORDER_RUNNING_STATE
+    ? 'bg-green-500'
+    : 'bg-gray-400';
+}
 
 /** 底部指标项 */
 const weightIndicators = [
@@ -216,7 +233,11 @@ const splitGridOptions: VxeGridProps<any> = {
   checkboxConfig: { highlight: true, range: true },
   columns: [
     { type: 'checkbox', width: 60 },
-    { field: 'lotId', title: $t('gravityFreeMixerWork.lotId'), minWidth: 120 },
+    {
+      field: 'lotCode',
+      title: $t('gravityFreeMixerWork.lotId'),
+      minWidth: 120,
+    },
     {
       field: 'cartCode',
       title: $t('gravityFreeMixerWork.cartCode'),
@@ -301,8 +322,36 @@ async function handlePerformanceCancel() {
   }
 }
 
+/** 打印模板名称 */
+const PRINT_TEMPLATE_NAME = '混合水材料标签';
+
+/**
+ * 打印托盘标签：按模板名称取模板，打印传入的托盘标签值
+ * @param palletLabel 托盘标签值（addCartWeight 接口返回的字符串）
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常，模板解析失败时仅在控制台输出
+ * @since 2026-10-10 00:00:00
+ */
+function printPalletLabel(palletLabel: any) {
+  if (!palletLabel) {
+    return;
+  }
+  queryPrintTemplateDetails(PRINT_TEMPLATE_NAME).then((templateRes: any) => {
+    try {
+      const template = JSON.parse(templateRes.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({ template });
+      hiprintTemplate.print([{ palletLabel }], {
+        leftOffset: -1,
+        topOffset: -1,
+      });
+    } catch {
+      console.error('模板解析失败');
+    }
+  });
+}
+
 /** 业绩注册：将当前推车作业重量提交为一条称重记录 */
-async function handlePerformanceRegistration() {
+function handlePerformanceRegistration() {
   const info = cartInfo.value;
   if (!info.palletLabel) {
     message.warning($t('gravityFreeMixerWork.plsQueryFirst'));
@@ -316,20 +365,23 @@ async function handlePerformanceRegistration() {
     message.warning($t('gravityFreeMixerWork.noWorkWeight'));
     return;
   }
-  try {
-    await addCartWeight({
-      cartCode: info.cartCode,
-      lotCode: info.lotCode,
-      lotId: info.lotId,
-      palletLabel: info.palletLabel,
-      qty: info.workWeight,
-      unit: info.unit || 'KG',
+  addCartWeight({
+    cartCode: info.cartCode,
+    lotCode: info.lotCode,
+    lotId: info.lotId,
+    palletLabel: info.palletLabel,
+    qty: info.workWeight,
+    unit: info.unit || 'KG',
+  })
+    .then((palletLabel: any) => {
+      message.success($t('gravityFreeMixerWork.registrationSuccess'));
+      // 接口返回托盘标签字符串，注册成功后直接打印标签
+      printPalletLabel(palletLabel);
+      handleQuery();
+    })
+    .catch(() => {
+      message.error($t('gravityFreeMixerWork.registrationFailed'));
     });
-    message.success($t('gravityFreeMixerWork.registrationSuccess'));
-    handleQuery();
-  } catch {
-    message.error($t('gravityFreeMixerWork.registrationFailed'));
-  }
 }
 // endregion
 </script>
@@ -368,7 +420,14 @@ async function handlePerformanceRegistration() {
           {{ workSheetInfo.lineName || '-' }}
         </DescriptionsItem>
         <DescriptionsItem :label="$t('gravityFreeMixerWork.workSheetCode')">
-          {{ workSheetInfo.workSheetCode || '-' }}
+          <div class="flex items-center gap-2">
+            <span>{{ workSheetInfo.workSheetCode || '-' }}</span>
+            <!-- 工单状态指示灯：workState === 2 绿色，其余灰色 -->
+            <span
+              class="size-3 shrink-0 rounded-full"
+              :class="getStateDotClass()"
+            ></span>
+          </div>
         </DescriptionsItem>
         <DescriptionsItem :label="$t('gravityFreeMixerWork.productName')">
           {{ workSheetInfo.productName || '-' }}
@@ -435,7 +494,7 @@ async function handlePerformanceRegistration() {
             <DescriptionsItem :label="$t('gravityFreeMixerWork.cartWeight')">
               {{
                 cartInfo.cartWeight != null
-                  ? `${cartInfo.cartWeight} ${cartInfo.unit}`.trim()
+                  ? `${cartInfo.cartWeight} ${cartInfo.unit || 'KG'}`.trim()
                   : '-'
               }}
             </DescriptionsItem>
@@ -455,7 +514,7 @@ async function handlePerformanceRegistration() {
             >
               {{
                 cartInfo.workWeight != null
-                  ? `${cartInfo.workWeight} ${cartInfo.unit}`.trim()
+                  ? `${cartInfo.workWeight} ${cartInfo.unit || 'KG'}`.trim()
                   : '-'
               }}
             </DescriptionsItem>

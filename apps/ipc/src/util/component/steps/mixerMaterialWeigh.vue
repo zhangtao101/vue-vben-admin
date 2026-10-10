@@ -2,6 +2,7 @@
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
 import { ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import {
   Button,
@@ -19,6 +20,7 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   issueWeightLabel,
+  queryPrintTemplateDetails,
   searchLot,
   searchWeightRecord,
   selectMaterialWeight,
@@ -312,12 +314,47 @@ const issuing = ref(false);
 /** 重新发行抽屉实例 */
 const reIssueDrawerRef = ref();
 
+/** 发行后打印所用的模板名称 */
+const PRINT_TEMPLATE_NAME = '混合水材料标签';
+
 /** 重新发行称重标签：打开重新发行抽屉，并传入当前工序 */
 function handleReIssue() {
   reIssueDrawerRef.value?.open(props.processType);
 }
 
-/** 发行称重标签：二次确认后调用发行接口 */
+/**
+ * 打印托盘标签：按模板名称取模板，打印发行返回的称重标签记录
+ * @param res 发行接口返回数据，data 为标签记录数组（含 palletLabel 等字段）
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常，模板解析失败时仅在控制台输出
+ * @since 2026-10-10 00:00:00
+ */
+function printPalletLabel(res: any) {
+  // 请求层已解包 data，兼容未解包（res.data）的情况
+  const records = Array.isArray(res) ? res : res?.data;
+  if (records.length === 0) {
+    return;
+  }
+  const parintData = records.map((item: string) => {
+    return { palletLabel: item };
+  });
+  queryPrintTemplateDetails(PRINT_TEMPLATE_NAME).then((templateRes: any) => {
+    try {
+      const template = JSON.parse(templateRes.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({ template });
+      hiprintTemplate.print(parintData, { leftOffset: -1, topOffset: -1 });
+    } catch {
+      console.error('模板解析失败');
+    }
+  });
+}
+
+/**
+ * 发行称重标签：二次确认后调用发行接口，成功后打印返回的托盘标签
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常，失败时提示发行失败
+ * @since 2026-10-10 00:00:00
+ */
 function handleIssue() {
   const ws = selectedWorkSheet.value;
   if (!ws) {
@@ -329,17 +366,20 @@ function handleIssue() {
     content: $t('mixerMaterialWeigh.issueConfirmContent'),
     okText: $t('common.confirm'),
     cancelText: $t('common.cancel'),
-    onOk: async () => {
+    onOk: () => {
       issuing.value = true;
-      try {
-        await issueWeightLabel(ws.id);
-        message.success($t('mixerMaterialWeigh.issueSuccess'));
-        loadWeightRecords();
-      } catch {
-        message.error($t('mixerMaterialWeigh.issueFailed'));
-      } finally {
-        issuing.value = false;
-      }
+      return issueWeightLabel(ws.id)
+        .then((res: any) => {
+          message.success($t('mixerMaterialWeigh.issueSuccess'));
+          loadWeightRecords();
+          printPalletLabel(res);
+        })
+        .catch(() => {
+          message.error($t('mixerMaterialWeigh.issueFailed'));
+        })
+        .finally(() => {
+          issuing.value = false;
+        });
     },
   });
 }

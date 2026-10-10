@@ -15,5 +15,6 @@
   "materialName": "자재 이름",
   "issueWt": "중량",
   "unit": "단위",
+  "plsSelectRecord": "재발행할 기록을 먼저 선택하세요",
   "reIssue": "재발행"
 }

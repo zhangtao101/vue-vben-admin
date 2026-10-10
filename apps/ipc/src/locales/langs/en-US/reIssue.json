@@ -15,5 +15,6 @@
   "materialName": "Material Name",
   "issueWt": "Weight",
   "unit": "Unit",
+  "plsSelectRecord": "Please select records to re-issue first",
   "reIssue": "Re-issue"
 }

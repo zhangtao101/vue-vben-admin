@@ -189,7 +189,7 @@ function getLotColumns(): any[] {
   ];
   if (props.processType === 6) {
     columns.push({
-      field: 'looseLable',
+      field: 'looseLabel',
       title: $t('gravityFreeMixerTrayInput.looseLabel'),
       minWidth: 140,
     });

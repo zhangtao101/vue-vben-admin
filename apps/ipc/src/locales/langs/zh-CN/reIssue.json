@@ -15,5 +15,6 @@
   "materialName": "材料名称",
   "issueWt": "重量",
   "unit": "单位",
+  "plsSelectRecord": "请先勾选需要重新发行的记录",
   "reIssue": "重新发行"
 }

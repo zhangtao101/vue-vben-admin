@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
+
 import { nextTick, reactive, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import { $t } from '@vben/locales';
 
@@ -19,12 +22,8 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import {
-  useVbenVxeGrid,
-  type VxeGridListeners,
-  type VxeGridProps,
-} from '#/adapter/vxe-table';
-import { selectIssue, selectMaterial } from '#/api';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { queryPrintTemplateDetails, selectIssue, selectMaterial } from '#/api';
 
 defineOptions({ name: 'ReIssueDrawer' });
 
@@ -197,9 +196,54 @@ function open(processTypeValue?: number) {
   });
 }
 
-/** 重新发行（功能预留，后续实现） */
+/** 打印模板名称 */
+const PRINT_TEMPLATE_NAME = '混合水材料标签';
+
+/** 需要附带 lotCode 打印的工序（搅拌机/无重力搅拌） */
+const LOT_CODE_PROCESS_TYPE = 6;
+
+/**
+ * 打印托盘标签：按模板名称取模板，打印传入的打印数据行
+ * @param records 打印数据行数组，含 palletLabel，工序为 6 时额外含 lotCode
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常，模板解析失败时仅在控制台输出
+ * @since 2026-10-10 00:00:00
+ */
+function printPalletLabel(records: any[]) {
+  if (records.length === 0) {
+    return;
+  }
+  queryPrintTemplateDetails(PRINT_TEMPLATE_NAME).then((templateRes: any) => {
+    try {
+      const template = JSON.parse(templateRes.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({ template });
+      hiprintTemplate.print(records, { leftOffset: -1, topOffset: -1 });
+    } catch {
+      console.error('模板解析失败');
+    }
+  });
+}
+
+/**
+ * 重新发行：打印当前勾选行的托盘标签
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常，未勾选时给出提示
+ * @since 2026-10-10 00:00:00
+ */
 function handleReIssue() {
-  // TODO: 后续实现重新发行
+  const rows = gridApi.grid?.getCheckboxRecords() ?? [];
+  if (rows.length === 0) {
+    message.warning($t('reIssue.plsSelectRecord'));
+    return;
+  }
+  const printData = rows
+    .filter((row: any) => !!row?.palletLabel)
+    .map((row: any) =>
+      processType.value === LOT_CODE_PROCESS_TYPE
+        ? { palletLabel: row.lotCode }
+        : { palletLabel: row.palletLabel },
+    );
+  printPalletLabel(printData);
 }
 
 function handleClose() {
