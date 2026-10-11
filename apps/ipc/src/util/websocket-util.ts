@@ -7,7 +7,20 @@ import qs from 'qs';
 
 import { getWebSocketPath } from '#/api';
 
-export default function useWebSocket(fun: any, params: any = {}) {
+/**
+ * WebSocket 连接封装：按 webSocketType 获取连接地址并建立连接，支持心跳、重连与消息防抖回调。
+ * @param fun 收到消息时的业务回调，入参为原始消息数据
+ * @param params 连接参数，需包含 webSocketType 用于获取连接地址，其余参数拼接到连接地址上
+ * @param autoConnect 是否在组件挂载时自动连接，默认 true；需要手动控制连接时传 false
+ * @returns 连接状态、发送消息、关闭连接与建立连接函数
+ * @throws 不主动抛出异常
+ * @since 2026-10-11 00:00:00
+ */
+export default function useWebSocket(
+  fun: any,
+  params: any = {},
+  autoConnect = true,
+) {
   // WebSocket 实例的引用，初始值为 null
   const socket = ref<any>(null);
   // 表示 WebSocket 是否连接的状态
@@ -29,6 +42,8 @@ export default function useWebSocket(fun: any, params: any = {}) {
   const accessStore = useAccessStore();
   // 建立 WebSocket 连接的函数
   const connect = async () => {
+    // 重新连接前复位关闭标记，保证 close 后再次 connect 仍能正常心跳与重连
+    isClosed = false;
     let url: string;
     // 获取 WebSocket 的连接路径，假设这是一个异步函数
     try {
@@ -177,9 +192,11 @@ export default function useWebSocket(fun: any, params: any = {}) {
     reconnectTimer = setTimeout(connect, reconnectInterval);
   };
 
-  // 在组件挂载时建立 WebSocket 连接
+  // 在组件挂载时建立 WebSocket 连接（手动控制连接时不自动连接）
   onMounted(() => {
-    void connect();
+    if (autoConnect) {
+      void connect();
+    }
   });
   // 在组件卸载时关闭 WebSocket 连接
   onUnmounted(close);

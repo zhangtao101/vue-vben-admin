@@ -9,6 +9,7 @@ import { computed, nextTick, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import {
   Button,
+  Checkbox,
   Col,
   Drawer,
   Input,
@@ -26,6 +27,7 @@ import {
   selectPalletLabel,
 } from '#/api';
 import { $t } from '#/locales';
+import useWebSocket from '#/util/websocket-util';
 
 defineOptions({
   name: 'MaterialWeighDrawer',
@@ -56,6 +58,8 @@ const scannedMaterialCode = ref('');
 const currentMaterial = ref<any>(null);
 /** 实际称重重量 */
 const actualWt = ref<number>(0);
+/** 自动校准：勾选时保持称重 WebSocket 连接，取消勾选断开连接 */
+const autoCalibrate = ref<boolean>(true);
 /** 称重方式（1 纸袋 2 散装） */
 const packType = ref<number>(1);
 /** 材料列表的包装类型过滤条件（undefined 表示查询全部，切换称重方式后更新） */
@@ -208,10 +212,77 @@ function handlePackTypeChange() {
   currentMaterial.value = null;
   actualWt.value = 0;
   count.value = 0;
+  // 材料已清空，断开称重连接，需重新扫码后再连接
+  syncWsConnection();
   gridApi.reload();
 }
 
-/** 打开抽屉：重置状态、加载材料列表并聚焦标签输入框 */
+// region WebSocket
+/** 称重 WebSocket 连接类型（材料称重） */
+const WEBSOCKET_TYPE = 6;
+
+/**
+ * WebSocket 消息回调：取 realTimeWeight 回填到实际称重重量；纸袋模式下同步按单包重量折算个数
+ * @param {any} message - WebSocket 推送的原始消息数据（JSON 字符串或对象）
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常，解析失败时仅在控制台输出
+ * @since 2026-10-11 00:00:00
+ */
+function handleWsMessage(message: any) {
+  // console.log('[MaterialWeighDrawer] ws message:', message);
+  try {
+    const data = typeof message === 'string' ? JSON.parse(message) : message;
+    const weight = Number(data?.realTimeWeight);
+    if (Number.isNaN(weight)) {
+      return;
+    }
+    actualWt.value = weight;
+    // 纸袋模式：按单包重量折算袋数（四舍五入取整），单包重量缺失时保持原个数
+    if (packType.value === 1) {
+      const unitWt = Number(currentMaterial.value?.materialWt) || 0;
+      if (unitWt > 0) {
+        count.value = Math.round(weight / unitWt);
+      }
+    }
+  } catch (error) {
+    console.error('[MaterialWeighDrawer] ws 消息解析失败', error);
+  }
+}
+
+// 手动控制连接：扫码校验通过后连接，保存/关闭/取消自动校准时断开
+const { connect: connectWs, close: closeWs } = useWebSocket(
+  handleWsMessage,
+  { webSocketType: WEBSOCKET_TYPE },
+  false,
+);
+
+/**
+ * 按当前条件决定是否保持称重 WebSocket 连接：
+ * 仅当抽屉已打开、自动校准勾选且已扫码匹配到材料时保持连接，其余情况一律断开。
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常
+ * @since 2026-10-11 00:00:00
+ */
+function syncWsConnection() {
+  if (show.value && autoCalibrate.value && currentMaterial.value) {
+    connectWs();
+  } else {
+    closeWs();
+  }
+}
+
+/**
+ * 自动校准勾选变化：取消勾选断开连接，重新勾选时按其它条件决定是否重连。
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常
+ * @since 2026-10-11 00:00:00
+ */
+function handleAutoCalibrateChange() {
+  syncWsConnection();
+}
+// endregion
+
+/** 打开抽屉：重置状态、加载材料列表并聚焦标签输入框（连接等扫码校验通过后再建立） */
 function open() {
   resetWeighState();
   show.value = true;
@@ -253,6 +324,7 @@ function handleLabelInput() {
         if (hasExisted) {
           message.warning($t('mixerMaterialWeigh.duplicateMaterial'));
           labelId.value = '';
+          closeWs();
           return;
         }
 
@@ -260,14 +332,18 @@ function handleLabelInput() {
         currentMaterial.value = matched;
         actualWt.value = 0;
         count.value = 0;
+        // 校验全部通过后才建立称重 WebSocket 连接
+        syncWsConnection();
       } else {
         currentMaterial.value = null;
+        closeWs();
       }
       // 重新渲染表格以更新黄色高亮
       gridApi.grid?.commitProxy?.('query');
     })
     .catch(() => {
       currentMaterial.value = null;
+      closeWs();
       gridApi.grid?.commitProxy?.('query');
     });
 }
@@ -275,14 +351,17 @@ function handleLabelInput() {
 /** 抽屉重置：清空基本信息与实时称重信息，取消扫码高亮，回到初始状态 */
 function handleDrawerReset() {
   resetWeighState();
+  // 重置后回到未扫码状态，断开称重连接
+  closeWs();
   // 通过 proxy 重新查询数据以清除高亮状态
   gridApi.grid?.commitProxy?.('query');
 }
 
-/** 关闭抽屉：清空所有状态，回到初始状态 */
+/** 关闭抽屉：断开 WebSocket 连接，清空所有状态，回到初始状态 */
 function handleClose() {
   show.value = false;
   submitting.value = false;
+  closeWs();
   resetWeighState();
 }
 
@@ -415,6 +494,15 @@ defineExpose({ open });
               style="width: 180px"
               :disabled="packType === 1"
             />
+            <!-- 自动校准：勾选时保持称重连接实时刷新重量，取消勾选断开连接 -->
+            <div class="mt-2">
+              <Checkbox
+                v-model:checked="autoCalibrate"
+                @change="handleAutoCalibrateChange"
+              >
+                {{ $t('mixerMaterialWeigh.autoCalibrate') }}
+              </Checkbox>
+            </div>
           </Col>
         </Row>
       </div>

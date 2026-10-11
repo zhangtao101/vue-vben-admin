@@ -44,5 +44,6 @@
   "issueConfirmContent": "确定要发行该工单的称重标签吗？",
   "issueSuccess": "发行成功",
   "issueFailed": "发行失败",
-  "clearWeighWeight": "清空称重重量"
+  "clearWeighWeight": "清空称重重量",
+  "autoCalibrate": "自动校准"
 }
