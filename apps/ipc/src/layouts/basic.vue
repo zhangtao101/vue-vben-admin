@@ -69,9 +69,9 @@ async function handleLogout() {
   await authStore.logout(false);
 }
 
-function handleSectionRefresh() {
-  window.location.reload();
-}
+// function handleSectionRefresh() {
+//   window.location.reload();
+// }
 
 function handleNoticeClear() {
   notifications.value = [];
