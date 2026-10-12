@@ -98,12 +98,32 @@ function handleSelectWorkSheet() {
  * @since 2026-09-03
  */
 function handleWorkSheetSelected(row: any) {
+  // 切换工单后状态由行数据的 delayStatus 决定，避免沿用上一张工单的状态
   form.workSheetCode = row?.workSheetCode ?? '';
+  // 工单状态：优先取列表行（delayStatus），供状态指示灯判断生产中
+  form.delayStatus = row?.delayStatus;
   if (!form.workSheetCode) {
     return;
   }
+  return loadWorkSheetDetail();
+}
+
+/**
+ * 查询工单详情并回填表单：产品信息、备注、测量条数与指标数，并刷新材料清单与推车列表
+ * @returns {Promise<void>} 无实际返回值，完成后表单与列表已刷新
+ * @throws 不主动抛出异常，接口失败由调用方处理
+ * @since 2026-10-12 00:00:00
+ */
+function loadWorkSheetDetail() {
+  if (!form.workSheetCode) {
+    return Promise.resolve();
+  }
   return queryWorkSheetInfo(form.workSheetCode).then((res: any) => {
     const info = res ?? {};
+    // 详情返回状态字段时以接口为准
+    if (info.delayStatus !== undefined) {
+      form.delayStatus = info.delayStatus;
+    }
     // 产品信息：界面以 productName(productCode) 文本展示
     form.productCode = info.productCode;
     form.productName = info.productName;
@@ -128,7 +148,44 @@ const form = reactive<any>({
   productName: '',
   operator: '',
   workOrderRemark: '',
+  /** 工单状态： delayStatus 为 2 表示生产中 */
+  delayStatus: undefined,
 });
+
+/** 工单状态码 delayStatus：1 未生产、2 生产中、3 生产完成、4 工单关闭 */
+const WORK_SHEET_STATUS = {
+  /** 未生产（初始状态） */
+  NOT_STARTED: '1',
+  /** 生产中 */
+  PRODUCING: '2',
+  /** 生产完成 */
+  FINISHED: '3',
+  /** 工单关闭 */
+  CLOSED: '4',
+};
+
+/**
+ * 判断当前工单是否处于指定状态（delayStatus 兼容数字与字符串）。
+ * @param {string} status - 目标状态码（见 WORK_SHEET_STATUS）。
+ * @returns {boolean} 状态一致返回 true，否则 false。
+ * @throws 不主动抛出异常。
+ * @since 2026-10-12 00:00:00
+ */
+function isWorkSheetStatus(status: string) {
+  return String(form.delayStatus) === status;
+}
+
+/**
+ * 取工单状态指示灯颜色类：delayStatus 为 2（生产中）显示绿色实心圆，其余灰色。
+ * @returns {string} 圆点背景色类名（bg-green-500 / bg-gray-400）。
+ * @throws 不主动抛出异常。
+ * @since 2026-10-12 00:00:00
+ */
+function getStateDotClass() {
+  return isWorkSheetStatus(WORK_SHEET_STATUS.PRODUCING)
+    ? 'bg-green-500'
+    : 'bg-gray-400';
+}
 // endregion
 
 // region 1.1 指标数（标题在上、数字在下）
@@ -407,8 +464,6 @@ function handleConnectCancel() {
   connectModalVisible.value = false;
 }
 
-const workStatus = ref<'idle' | 'running'>('idle');
-
 const materialDrawerRef = ref<any>();
 
 function handleMaterialLoad() {
@@ -433,8 +488,18 @@ function openMeasureDrawer() {
 }
 
 function handleStart() {
-  if (workStatus.value === 'running') {
+  // 按工单状态 delayStatus 判断：生产中不允许重复开始
+  if (isWorkSheetStatus(WORK_SHEET_STATUS.PRODUCING)) {
     message.warning($t('packagingOperation.alreadyRunning'));
+    return;
+  }
+  // 生产完成 / 工单关闭的工单不允许再开始
+  if (isWorkSheetStatus(WORK_SHEET_STATUS.FINISHED)) {
+    message.warning($t('packagingOperation.workSheetFinished'));
+    return;
+  }
+  if (isWorkSheetStatus(WORK_SHEET_STATUS.CLOSED)) {
+    message.warning($t('packagingOperation.workSheetClosed'));
     return;
   }
   // 调用工单开始接口
@@ -442,14 +507,15 @@ function handleStart() {
     workSheetCode: form.workSheetCode,
     status: 1,
   }).then(() => {
-    workStatus.value = 'running';
     message.success($t('packagingOperation.startSuccess'));
-    gridApi.reload();
+    // 开始成功后重新查询工单详情，刷新表单与列表数据（含最新 delayStatus）
+    return loadWorkSheetDetail();
   });
 }
 
 function handleEnd() {
-  if (workStatus.value === 'idle') {
+  // 按工单状态 delayStatus 判断：非生产中（未生产/已完成/已关闭）不允许结束
+  if (!isWorkSheetStatus(WORK_SHEET_STATUS.PRODUCING)) {
     message.warning($t('packagingOperation.notStarted'));
     return;
   }
@@ -458,9 +524,9 @@ function handleEnd() {
     workSheetCode: form.workSheetCode,
     status: 2,
   }).then(() => {
-    workStatus.value = 'idle';
     message.success($t('packagingOperation.endSuccess'));
-    gridApi.reload();
+    // 结束成功后重新查询工单详情，刷新表单与列表数据（含最新 delayStatus）
+    return loadWorkSheetDetail();
   });
 }
 // endregion
@@ -508,6 +574,11 @@ onMounted(() => {
                 <Button @click="handleSelectWorkSheet">
                   {{ $t('packagingOperation.select') }}
                 </Button>
+                <!-- 工单状态指示灯：delayStatus === 2 绿色（生产中），其余灰色 -->
+                <span
+                  class="size-3 shrink-0 self-center rounded-full"
+                  :class="getStateDotClass()"
+                ></span>
               </div>
             </Form.Item>
             <Form.Item :label="$t('packagingOperation.product')" class="mb-2!">

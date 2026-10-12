@@ -72,6 +72,8 @@
   "alreadyRunning": "正在进行中",
   "endSuccess": "结束成功",
   "notStarted": "尚未开始",
+  "workSheetFinished": "工单已生产完成，无法开始",
+  "workSheetClosed": "工单已关闭，无法开始",
   "zeroOn": "零点已开启",
   "zeroOff": "零点已关闭",
   "select": "选择",

@@ -72,6 +72,8 @@
   "alreadyRunning": "Already running",
   "endSuccess": "Ended successfully",
   "notStarted": "Not started yet",
+  "workSheetFinished": "Work order is finished, cannot start",
+  "workSheetClosed": "Work order is closed, cannot start",
   "zeroOn": "Zero point enabled",
   "zeroOff": "Zero point disabled",
   "select": "Select",

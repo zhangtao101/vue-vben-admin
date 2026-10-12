@@ -72,6 +72,8 @@
   "alreadyRunning": "이미 진행 중입니다",
   "endSuccess": "종료되었습니다",
   "notStarted": "아직 시작되지 않았습니다",
+  "workSheetFinished": "작업지시가 생산 완료되어 시작할 수 없습니다",
+  "workSheetClosed": "작업지시가 마감되어 시작할 수 없습니다",
   "zeroOn": "제로 포인트가 켜졌습니다",
   "zeroOff": "제로 포인트가 꺼졌습니다",
   "select": "선택",
