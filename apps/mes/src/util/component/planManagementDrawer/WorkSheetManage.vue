@@ -2,18 +2,19 @@
 /**
  * [INPUT]: 依赖 #/api (queryWorkSheetList/searchParentSubLine/exportWorkSheetList/
  *         deleteWorkSheet/confirmWorkSheet/cancelConfirmWorkSheet/saveWorkSheet/
- *         listWordListByParentCode)、#/util (queryAuth)、#/locales ($t)、
- *         planManagementDrawer 目录组件 (WorkSheetGenerateDrawer)、
+ *         listWordListByParentCode/queryInstructionSequenceList)、#/util (queryAuth)、
+ *         #/locales ($t)、planManagementDrawer 目录组件 (WorkSheetGenerateDrawer)、
  *         #/util/component (materialSelection)
  * [OUTPUT]: 对外提供 WorkSheetManage 公共组件，提供按单别的工单查询、行内编辑保存、
- *           确认/取消确认/删除/Excel导出、产线人员登记页跳转与下层工单生成入口
+ *           确认/取消确认/删除/Excel导出、产线人员登记页跳转与下层工单生成入口、
+ *           按勾选工单展示生产指示序列
  * [POS]: 属于 util/component/planManagementDrawer 目录的工单管理公共组件，供各单别工单页面复用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * [TIME]: 2026-09-24 10:00:00
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -48,6 +49,7 @@ import {
   exportWorkSheetList,
   generateLowerWorkSheet,
   listWordListByParentCode,
+  queryInstructionSequenceList,
   queryWorkSheetList,
   saveWorkSheet,
   searchParentSubLine,
@@ -302,7 +304,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 160,
     },
   ],
-  height: 500,
+  height: 300,
   pagerConfig: {
     enabled: true,
     pageSize: 20,
@@ -419,6 +421,176 @@ const selectedRows = ref<any[]>([]);
 function updateSelection() {
   selectedRows.value = gridApi.grid?.getCheckboxRecords() || [];
 }
+// endregion
+
+// region 生产指示序列表格
+/** 混合水工单单别：显示指示/良品/不良/剩余批次数 */
+const MIX_PROCESS_TYPE = 1;
+/** 包装类单别：显示交货处名与三个喷码 */
+const PACK_PROCESS_TYPES = [4, 5];
+
+/**
+ * 按单别组装生产指示序列表格列
+ * 混合水工单(1)显示批次相关列，包装工单(4/5)显示交货处与喷码列，搅拌类工单显示残量列
+ * @returns {any[]} 表格列配置
+ * @since 2026-10-12
+ */
+function buildInstructionColumns() {
+  const columns: any[] = [
+    { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
+    {
+      field: 'instructionSequenceCode',
+      title: $t('packingWorkOrderManage.instructionSequenceCode'),
+      minWidth: 170,
+    },
+    {
+      field: 'instructionDate',
+      title: $t('packingWorkOrderManage.instructionDate'),
+      minWidth: 140,
+    },
+    {
+      field: 'productCode',
+      title: $t('packingWorkOrderManage.productCode'),
+      minWidth: 120,
+    },
+    {
+      field: 'productName',
+      title: $t('packingWorkOrderManage.productName'),
+      minWidth: 160,
+    },
+    {
+      field: 'planQty',
+      title: $t('packingWorkOrderManage.planQty'),
+      minWidth: 100,
+    },
+    { field: 'unit', title: $t('packingWorkOrderManage.unit'), minWidth: 80 },
+    {
+      field: 'goodQty',
+      title: $t('packingWorkOrderManage.goodQty'),
+      minWidth: 100,
+    },
+    {
+      field: 'defectQty',
+      title: $t('packingWorkOrderManage.defectQty'),
+      minWidth: 100,
+    },
+    {
+      field: 'batchNo',
+      title: $t('packingWorkOrderManage.batchNo'),
+      minWidth: 130,
+    },
+  ];
+
+  if (props.processType === MIX_PROCESS_TYPE) {
+    columns.push(
+      {
+        field: 'indicateBatch',
+        title: $t('packingWorkOrderManage.indicateBatch'),
+        minWidth: 110,
+      },
+      {
+        field: 'goodBatch',
+        title: $t('packingWorkOrderManage.goodBatch'),
+        minWidth: 110,
+      },
+      {
+        field: 'defectBatch',
+        title: $t('packingWorkOrderManage.defectBatch'),
+        minWidth: 110,
+      },
+      {
+        field: 'remainBatch',
+        title: $t('packingWorkOrderManage.remainBatch'),
+        minWidth: 110,
+      },
+    );
+  } else if (PACK_PROCESS_TYPES.includes(props.processType)) {
+    columns.push(
+      {
+        field: 'deliverPlaceName',
+        title: $t('packingWorkOrderManage.deliverPlaceName'),
+        minWidth: 130,
+      },
+      {
+        field: 'sprayCode1',
+        title: $t('packingWorkOrderManage.sprayCode1'),
+        minWidth: 160,
+      },
+      {
+        field: 'sprayCode2',
+        title: $t('packingWorkOrderManage.sprayCode2'),
+        minWidth: 160,
+      },
+      {
+        field: 'sprayCode3',
+        title: $t('packingWorkOrderManage.sprayCode3'),
+        minWidth: 160,
+      },
+    );
+  } else {
+    columns.push({
+      field: 'remainQty',
+      title: $t('packingWorkOrderManage.remainQty'),
+      minWidth: 100,
+    });
+  }
+
+  columns.push({
+    field: 'remark',
+    title: $t('packingWorkOrderManage.remark'),
+    minWidth: 160,
+  });
+  return columns;
+}
+
+const instructionGridOptions: VxeGridProps<any> = {
+  align: 'center',
+  border: true,
+  columns: buildInstructionColumns(),
+  height: 250,
+  pagerConfig: { enabled: false },
+  proxyConfig: {
+    ajax: {
+      query: async () => {
+        return await queryInstructionData();
+      },
+    },
+  },
+  rowConfig: { keyField: 'instructionSequenceCode' },
+  stripe: true,
+  toolbarConfig: { custom: true, refresh: true, zoom: true },
+};
+
+const [InstructionGrid, instructionGridApi] = useVbenVxeGrid({
+  gridOptions: instructionGridOptions,
+});
+
+/**
+ * 查询生产指示序列：以工单表格勾选行的工单号为入参
+ * @returns {Promise<{ items: any[]; total: number }>} 表格数据
+ * @since 2026-10-12
+ */
+function queryInstructionData() {
+  const workSheetCodes = selectedRows.value
+    .map((row: any) => row?.workSheetCode)
+    .filter((code: any) => !!code);
+  if (workSheetCodes.length === 0) {
+    return Promise.resolve({ items: [], total: 0 });
+  }
+  return queryInstructionSequenceList({ workSheetCodes })
+    .then((res: any) => {
+      const list = Array.isArray(res) ? res : res?.data || [];
+      return { items: list, total: list.length };
+    })
+    .catch(() => {
+      return { items: [], total: 0 };
+    });
+}
+
+// 勾选工单变化时刷新生产指示序列
+watch(selectedRows, () => {
+  instructionGridApi.reload();
+});
 // endregion
 
 // region 行内编辑与保存
@@ -744,7 +916,7 @@ onMounted(() => {
               {{ $t('packingWorkOrderManage.linePersonPlan') }}
             </Button>
             <Button
-              v-if="hasAuth('下层工单生成')"
+              v-if="hasAuth('下层工单生成') && ![1].includes(processType)"
               type="primary"
               @click="handleGenerateLowerWorkSheet"
             >
@@ -757,7 +929,7 @@ onMounted(() => {
         <template #toolbar-tools>
           <Space>
             <Button
-              v-if="hasAuth('生成')"
+              v-if="hasAuth('生成') && ![1, 2].includes(processType)"
               type="primary"
               @click="handleGenerateWorkSheet"
             >
@@ -842,6 +1014,14 @@ onMounted(() => {
           />
         </template>
       </Grid>
+    </Card>
+
+    <!-- 生产指示序列区域（按上方勾选的工单号查询） -->
+    <Card
+      class="!mt-4"
+      :title="$t('packingWorkOrderManage.instructionSequenceList')"
+    >
+      <InstructionGrid />
     </Card>
 
     <!-- 工单生成抽屉 -->

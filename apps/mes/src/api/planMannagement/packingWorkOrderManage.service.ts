@@ -1,7 +1,7 @@
 /**
  * @description 包装工单管理模块 API 服务
  * 提供 SAP 计划列表查询、工单生成、工单列表查询、工单保存/确认/删除、
- * 下层工单生成、工单合并、工单导出以及喷码模板查询与预览等接口。
+ * 下层工单生成、工单合并、工单导出、生产指示序列查询以及喷码模板查询与预览等接口。
  * @module apps/mes/src/api/planMannagement/packingWorkOrderManage.service
  * @since 2026-09-24
  */
@@ -261,6 +261,54 @@ export interface WorkSheetResult {
   total?: number;
 }
 
+/** 生产指示序列查询参数 */
+export interface InstructionSequenceQueryParams {
+  /** 工单号列表（逗号分隔传递） */
+  workSheetCodes?: string[];
+}
+
+/** 生产指示序列信息 */
+export interface InstructionSequenceItem {
+  /** 批次号码 */
+  batchNo?: string;
+  /** 不良批次数（混合水工单） */
+  defectBatch?: number;
+  /** 不良品数 */
+  defectQty?: null | number;
+  /** 交货处名（包装工单） */
+  deliverPlaceName?: string;
+  /** 良品批次数（混合水工单） */
+  goodBatch?: number;
+  /** 良品数 */
+  goodQty?: null | number;
+  /** 指示批次数（混合水工单） */
+  indicateBatch?: number;
+  /** 指示日期 */
+  instructionDate?: string;
+  /** 生产指示序列号 */
+  instructionSequenceCode?: string;
+  /** 计划数量 */
+  planQty?: number;
+  /** 产品编号 */
+  productCode?: string;
+  /** 产品名称 */
+  productName?: string;
+  /** 剩余批次数（混合水工单） */
+  remainBatch?: number;
+  /** 残量（搅拌工单） */
+  remainQty?: null | number | string;
+  /** 备注 */
+  remark?: null | string;
+  /** 喷码1（单包日期码，包装工单） */
+  sprayCode1?: string;
+  /** 喷码2（多包日期码，包装工单） */
+  sprayCode2?: string;
+  /** 喷码3（箱子日期码，包装工单） */
+  sprayCode3?: string;
+  /** 单位 */
+  unit?: string;
+}
+
 /** 工单保存（修改）项 */
 export interface WorkSheetSaveItem {
   /** 工单ID */
@@ -397,6 +445,23 @@ export async function generateWorkSheet(data: GenerateWorkSheetParams) {
 export async function queryWorkSheetList(params: WorkSheetQueryParams) {
   return requestClient.get<WorkSheetResult>(
     `${VITE_GLOB_MES_MAIN}/plan/syPlanSheet/queryWorkSheetList?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 生产指示序列查询显示（按工单号）
+ * @param {InstructionSequenceQueryParams} params - 查询参数，包含工单号列表
+ * @returns {Promise<InstructionSequenceItem[]>} 生产指示序列列表
+ * @since 2026-10-12
+ */
+export async function queryInstructionSequenceList(
+  params: InstructionSequenceQueryParams,
+) {
+  return requestClient.get<InstructionSequenceItem[]>(
+    `${VITE_GLOB_MES_MAIN}/plan/syPlanSheet/queryInstructionSequenceList?${qs.stringify(
+      params,
+      { arrayFormat: 'comma' },
+    )}`,
   );
 }
 

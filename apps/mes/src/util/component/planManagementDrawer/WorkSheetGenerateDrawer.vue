@@ -11,7 +11,7 @@ import type { Rule } from 'ant-design-vue/es/form';
 
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   Button,
@@ -57,6 +57,28 @@ const generateLoading = ref(false);
 /** 单别（processType），由父组件通过 open 传入 */
 const processType = ref<number>();
 
+/** 仅该单别下该项为堆垛机，其余单别统一显示为设备 */
+const STACKER_PROCESS_TYPE = 4;
+
+/** 当前单别下是否显示堆垛机 */
+const isStackerProcess = computed(
+  () => processType.value === STACKER_PROCESS_TYPE,
+);
+
+/** 产线设备项标签：堆垛机单别显示「堆垛机」，其余显示「设备」 */
+const equipLabel = computed(() =>
+  isStackerProcess.value
+    ? $t('packingWorkOrderManage.stacker')
+    : $t('packingWorkOrderManage.equipment'),
+);
+
+/** 产线设备项占位提示 */
+const equipPlaceholder = computed(() =>
+  isStackerProcess.value
+    ? $t('packingWorkOrderManage.stackerPlaceholder')
+    : $t('packingWorkOrderManage.equipmentPlaceholder'),
+);
+
 /** SAP 计划列表查询条件 */
 const queryParams = ref<any>({
   produceDateRange: [],
@@ -67,8 +89,8 @@ const queryParams = ref<any>({
   sapOrderCode: undefined,
 });
 
-/** 工单生成表单校验规则 */
-const generateFormRules: Record<string, Rule[]> = {
+/** 工单生成表单校验规则（设备项提示随单别切换为堆垛机/设备） */
+const generateFormRules = computed<Record<string, Rule[]>>(() => ({
   instructionDate: [
     {
       message: $t('packingWorkOrderManage.pleaseSelectInstructionDate'),
@@ -85,12 +107,14 @@ const generateFormRules: Record<string, Rule[]> = {
   ],
   stackerId: [
     {
-      message: $t('packingWorkOrderManage.pleaseSelectStacker'),
+      message: isStackerProcess.value
+        ? $t('packingWorkOrderManage.pleaseSelectStacker')
+        : $t('packingWorkOrderManage.pleaseSelectEquipment'),
       required: true,
       trigger: 'change',
     },
   ],
-};
+}));
 
 /** 工单生成表单实例 */
 const generateFormRef = ref();
@@ -258,6 +282,8 @@ function buildParams(pageNum: number, pageSize: number) {
       queryParams.value.instructionSequenceCode || undefined,
     lineCode: queryParams.value.lineCode || undefined,
     planCode: queryParams.value.planCode || undefined,
+    // 单别（processType）：由父组件打开抽屉时传入，用于区分不同单别的计划
+    processType: processType.value,
     productCode: queryParams.value.productCode || undefined,
     produceDateEnd: end ? dayjs(end).format('YYYY-MM-DD') : undefined,
     produceDateStart: start ? dayjs(start).format('YYYY-MM-DD') : undefined,
@@ -705,7 +731,7 @@ defineExpose({ open });
 
           <Col :span="6">
             <FormItem
-              :label="$t('packingWorkOrderManage.stacker')"
+              :label="equipLabel"
               name="stackerId"
               :label-col="{ span: 8 }"
               :wrapper-col="{ span: 16 }"
@@ -714,7 +740,7 @@ defineExpose({ open });
               <Select
                 v-model:value="generateForm.stackerId"
                 :options="stackerOptions"
-                :placeholder="$t('packingWorkOrderManage.stackerPlaceholder')"
+                :placeholder="equipPlaceholder"
                 style="width: 100%"
                 allow-clear
               />
