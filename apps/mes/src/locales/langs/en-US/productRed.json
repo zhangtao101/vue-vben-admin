@@ -13,6 +13,7 @@
   "worksheetCode": "Work Order No.",
   "batchNumber": "Work Order Batch No.",
   "reportProcess": "Report Process",
+  "workstationName": "Workstation Name",
   "completedNumber": "Completed Quantity",
   "endTime": "Work Order End Time",
   "planStartTime": "Plan Start Time",

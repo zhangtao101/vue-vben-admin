@@ -13,6 +13,7 @@
   "worksheetCode": "工单号",
   "batchNumber": "工单批次号",
   "reportProcess": "报工工序",
+  "workstationName": "工作站名称",
   "completedNumber": "工单完成数",
   "endTime": "工单结束时间",
   "planStartTime": "工单计划开始时间",

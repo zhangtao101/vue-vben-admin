@@ -36,6 +36,11 @@ const gridOptions: VxeGridProps<any> = {
     },
     { field: 'lineName', title: $t('productRed.batchNumber'), minWidth: 150 },
     { field: 'processName', title: $t('productRed.reportProcess'), minWidth: 150 },
+    {
+      field: 'workstationName',
+      title: $t('productRed.workstationName'),
+      minWidth: 150,
+    },
     { field: 'productCode', title: $t('productRed.productCode'), minWidth: 150 },
     { field: 'productName', title: $t('productRed.productName'), minWidth: 200 },
     { field: 'workSheetPlanNumber', title: $t('productRed.planNumber'), minWidth: 150 },
