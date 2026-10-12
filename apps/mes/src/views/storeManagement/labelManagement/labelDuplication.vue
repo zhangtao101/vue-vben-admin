@@ -5,6 +5,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { h, onMounted, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -34,6 +35,7 @@ import {
   deleteLabelReplica,
   fetchLabelReplicaList,
   printLabel,
+  queryPrintTemplateDetails,
   setRecordPrint,
 } from '#/api';
 import { queryAuth } from '#/util';
@@ -244,6 +246,8 @@ function handleQuery() {
 
 /**
  * 打印
+ * 选中行即标签副本明细，直接按「物料打印」模板打印，再累加打印次数并设为已打印
+ * @since 2026-10-10 12:00:00
  */
 function handlePrint() {
   const selection = gridApi.grid.getCheckboxRecords();
@@ -254,14 +258,26 @@ function handlePrint() {
 
   const labelIdList = selection.map((item: any) => item.id);
 
-  // 调用打印接口
-  printLabel(labelIdList).then(() => {
-    // 记录设为打印
-    setRecordPrint(labelIdList).then(() => {
+  queryPrintTemplateDetails('物料打印')
+    .then((res: any) => {
+      const templateRef = JSON.parse(res.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({
+        template: templateRef,
+      });
+      hiprintTemplate.print(selection, { leftOffset: -1, topOffset: -1 });
+      // 累加打印次数
+      return printLabel(labelIdList).then(() => {
+        // 记录设为打印
+        return setRecordPrint(labelIdList);
+      });
+    })
+    .then(() => {
       message.success($t('storeManagement.labelPrint.printSuccess'));
       gridApi.reload();
+    })
+    .catch((error: any) => {
+      message.error(error.message || $t('common.operationFailed'));
     });
-  });
 }
 
 /**

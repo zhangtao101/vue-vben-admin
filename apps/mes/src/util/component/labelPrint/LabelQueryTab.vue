@@ -10,6 +10,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { reactive, ref } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 /* eslint-disable perfectionist/sort-imports */
 // eslint-disable-next-line n/no-extraneous-import
@@ -22,6 +23,7 @@ import {
   FormItem,
   Input,
   message,
+  Modal,
   Select,
   SelectOption,
   Space,
@@ -31,10 +33,12 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import {
+  deleteLabelDetail,
   enterWarehouse,
   exportLabelDetail,
   fetchLabelDetailList,
   judgeReturn,
+  queryPrintTemplateDetails,
   setRecordPrint,
 } from '#/api';
 import { $t } from '#/locales';
@@ -256,8 +260,8 @@ function handleQuery() {
 }
 
 /**
- * 批量打印标签，将选中的标签详情的打印状态设为已打印。
- * @since 2026-06-22 14:16:00
+ * 批量打印标签，选中行即标签明细，直接按「物料打印」模板打印后设为已打印。
+ * @since 2026-10-10 11:00:00
  */
 function handlePrint() {
   const selection = gridApi.grid.getCheckboxRecords();
@@ -266,7 +270,16 @@ function handlePrint() {
     return;
   }
   const ids = selection.map((item: any) => item.id);
-  setRecordPrint(ids)
+  queryPrintTemplateDetails('物料打印')
+    .then((res: any) => {
+      const templateRef = JSON.parse(res.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({
+        template: templateRef,
+      });
+      hiprintTemplate.print(selection, { leftOffset: -1, topOffset: -1 });
+      // 标记为已打印
+      return setRecordPrint(ids);
+    })
     .then(() => {
       message.success($t('storeManagement.labelPrint.printSuccess'));
       gridApi.reload();
@@ -316,6 +329,35 @@ function handleJudgeReturn() {
     .catch((error: any) => {
       message.error(error.message || $t('common.operationFailed'));
     });
+}
+
+/**
+ * 批量删除标签明细，将选中行 id 数组提交删除接口。
+ * @since 2026-10-10 10:00:00
+ */
+function handleDelete() {
+  const selection = gridApi.grid.getCheckboxRecords();
+  if (selection.length === 0) {
+    message.warning($t('storeManagement.labelPrint.selectDeleteLabel'));
+    return;
+  }
+  Modal.confirm({
+    cancelText: $t('common.cancel'),
+    content: $t('storeManagement.labelPrint.confirmDeleteLabel'),
+    okText: $t('common.confirm'),
+    title: $t('storeManagement.labelPrint.confirmDelete'),
+    onOk: () => {
+      const ids = selection.map((item: any) => item.id);
+      deleteLabelDetail(ids)
+        .then(() => {
+          message.success($t('storeManagement.labelPrint.deleteSuccess'));
+          gridApi.reload();
+        })
+        .catch((error: any) => {
+          message.error(error.message || $t('common.deleteFailed'));
+        });
+    },
+  });
 }
 
 /**
@@ -431,16 +473,7 @@ function handleExport() {
         <Button type="primary" @click="handlePrint">
           {{ $t('common.print') }}
         </Button>
-        <Button
-          type="primary"
-          danger
-          @click="
-            () =>
-              message.warning(
-                $t('storeManagement.labelPrint.selectDeleteLabel'),
-              )
-          "
-        >
+        <Button type="primary" danger @click="handleDelete">
           {{ $t('common.delete') }}
         </Button>
         <Button type="primary" @click="handleEnterWarehouse">

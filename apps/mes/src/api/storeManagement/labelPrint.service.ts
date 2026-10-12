@@ -61,11 +61,15 @@ export async function fetchLabelListById(params: any) {
 
 /**
  * 删除标签明细
+ * @param {any} data 标签ID数组，如 [1, 2, 3]
+ * @returns {Promise<any>} 删除结果的 Promise
+ * @since 2026-10-10 11:00:00
  */
 export async function deleteLabelDetail(data: any) {
+  // delete 第二个参数为请求配置，ID数组需放在 data 中作为请求体
   return requestClient.delete<any>(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/label/deleteLabel/`,
-    data,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/label/deleteLabel`,
+    { data },
   );
 }
 
