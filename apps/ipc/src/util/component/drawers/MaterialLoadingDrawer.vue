@@ -524,7 +524,6 @@ function handleReset() {
  * @since 2026-09-03
  */
 function open(context?: any) {
-  console.log(context);
   lineIdRef.value = context?.lineId;
   processCodeRef.value = context?.processCode ?? '';
   query.planDateRange = [];

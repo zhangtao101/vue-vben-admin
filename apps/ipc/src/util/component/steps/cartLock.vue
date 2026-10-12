@@ -48,9 +48,24 @@ function fillCartInfoByRow(row: any) {
 /** 是否为解锁模式：lock 可选清洗中/维修，unlock 可选清洗结束/维修结束 */
 const isUnlock = computed(() => props.mode === 'unlock');
 
-/** 锁定代码选项：锁定模式仅 CLEANING/REPAIR，解锁模式仅 CLEAN END/REPAIR END */
-const lockCodeOptions = computed(() =>
-  isUnlock.value
+/**
+ * 锁定代码选项：
+ * 已锁定的台车（lockFlag 为 CLEANING/REPAIR）只能执行对应的结束操作，
+ * 未锁定时按模式给出可选值（锁定模式 CLEANING/REPAIR，解锁模式 CLEAN END/REPAIR END）。
+ * @returns {{ label: string; value: string }[]} 当前可选的锁定代码选项
+ * @throws 不主动抛出异常
+ * @since 2026-10-12 00:00:00
+ */
+const lockCodeOptions = computed(() => {
+  // 清洗中：仅允许清洗结束
+  if (cartInfo.lockFlag === 'CLEANING') {
+    return [{ label: $t('cartLock.lockCleanEnd'), value: 'CLEAN END' }];
+  }
+  // 维修中：仅允许维修结束
+  if (cartInfo.lockFlag === 'REPAIR') {
+    return [{ label: $t('cartLock.lockRepairEnd'), value: 'REPAIR END' }];
+  }
+  return isUnlock.value
     ? [
         { label: $t('cartLock.lockCleanEnd'), value: 'CLEAN END' },
         { label: $t('cartLock.lockRepairEnd'), value: 'REPAIR END' },
@@ -58,8 +73,8 @@ const lockCodeOptions = computed(() =>
     : [
         { label: $t('cartLock.lockCleaning'), value: 'CLEANING' },
         { label: $t('cartLock.lockRepair'), value: 'REPAIR' },
-      ],
-);
+      ];
+});
 
 /** 锁定状态编码 → 多语言文本：空值表示未锁定 */
 function getLockStatusText(lockFlag: null | string | undefined) {
