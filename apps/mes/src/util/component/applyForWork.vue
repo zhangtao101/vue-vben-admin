@@ -71,26 +71,26 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'reportCode', title: $t('component.reportOrderNumber'), minWidth: 300 },
     { field: 'processCode', title: $t('component.processCode'), minWidth: 150 },
     { field: 'processName', title: $t('component.reportProcess'), minWidth: 150 },
-    {
-      field: 'dlValue',
-      title: $t('component.energyElectricity'),
-      minWidth: 150,
-    },
-    {
-      field: 'trqValue',
-      title: $t('component.energyNaturalGas'),
-      minWidth: 150,
-    },
-    {
-      field: 'jlqValue',
-      title: $t('component.energyCokeOvenGas'),
-      minWidth: 150,
-    },
-    {
-      field: 'smjValue',
-      title: $t('component.energyWaterCoalSlurry'),
-      minWidth: 150,
-    },
+    // {
+    //   field: 'dlValue',
+    //   title: $t('component.energyElectricity'),
+    //   minWidth: 150,
+    // },
+    // {
+    //   field: 'trqValue',
+    //   title: $t('component.energyNaturalGas'),
+    //   minWidth: 150,
+    // },
+    // {
+    //   field: 'jlqValue',
+    //   title: $t('component.energyCokeOvenGas'),
+    //   minWidth: 150,
+    // },
+    // {
+    //   field: 'smjValue',
+    //   title: $t('component.energyWaterCoalSlurry'),
+    //   minWidth: 150,
+    // },
     { field: 'reportTime', title: $t('component.reportTime'), minWidth: 200 },
     { field: 'reportUser', title: $t('component.reportPerson'), minWidth: 150 },
     { field: 'workstationCode', title: $t('component.workstationCode'), minWidth: 150 },
