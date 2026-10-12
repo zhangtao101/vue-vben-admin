@@ -388,7 +388,9 @@
     "gbStandard": "GB/T2828-2003 LEVEL Ⅱ",
     "other": "기타",
     "passDescribe": "PAS 설명",
-    "sameMaterialWarning": "동일 검사 전표, 동일 제조업체, 동일 자재 코드의 문서를 선택하세요"
+    "sameMaterialWarning": "동일 검사 전표, 동일 제조업체, 동일 자재 코드의 문서를 선택하세요",
+    "selectCheckResult": "QC 결론을 선택하세요",
+    "qualifiedNumberInvalid": "합격 수량은 0보다 작을 수 없습니다"
   },
   "iqcExamine": {
     "checkCode": "검사 코드",

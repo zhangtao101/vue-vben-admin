@@ -388,7 +388,9 @@
     "gbStandard": "GB/T2828-2003 LEVEL Ⅱ",
     "other": "Other",
     "passDescribe": "PAS Description",
-    "sameMaterialWarning": "Please select documents with the same inspection slip, same manufacturer, and same material code"
+    "sameMaterialWarning": "Please select documents with the same inspection slip, same manufacturer, and same material code",
+    "selectCheckResult": "Please select QC conclusion",
+    "qualifiedNumberInvalid": "Qualified quantity cannot be less than 0"
   },
   "iqcExamine": {
     "checkCode": "Check Code",

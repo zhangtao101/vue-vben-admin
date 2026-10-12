@@ -407,8 +407,38 @@ function handleDeleteFile(fileId: string) {
   });
 }
 
+/**
+ * 提交前校验：质检结论必填，合格数量需 >= 0
+ * @returns {boolean} 校验通过返回 true，否则提示并返回 false
+ * @since 2026-10-12 10:00:00
+ */
+function validateBeforeSubmit() {
+  const { checkResult, qualifiedNumber } = formData.value;
+  // 质检结论必须有值
+  if (checkResult === undefined || checkResult === null || checkResult === '') {
+    message.warning($t('storeManagement.ipcReport.selectCheckResult'));
+    return false;
+  }
+  // 合格数量不能为空且不能小于 0
+  const number = Number(qualifiedNumber);
+  if (
+    qualifiedNumber === undefined ||
+    qualifiedNumber === null ||
+    qualifiedNumber === '' ||
+    Number.isNaN(number) ||
+    number < 0
+  ) {
+    message.warning($t('storeManagement.ipcReport.qualifiedNumberInvalid'));
+    return false;
+  }
+  return true;
+}
+
 // 提交审核
 function handleSubmit() {
+  if (!validateBeforeSubmit()) {
+    return;
+  }
   formData.value.type = 2;
   // 保存附件信息
   const fileParams = uploadFileList.value.map((item: any) => ({
@@ -539,6 +569,7 @@ const itemColumns = [
         {{ $t('storeManagement.ipcReport.iqcInfo') }}
       </Divider>
       <Form
+        class="compact-form"
         :model="formData"
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 16 }"
@@ -708,6 +739,7 @@ const itemColumns = [
         {{ $t('storeManagement.ipcReport.sampleStandard') }}
       </Divider>
       <Form
+        class="compact-form"
         :model="formData.iqcFlaw"
         :label-col="{ span: 8 }"
         :wrapper-col="{ span: 16 }"
@@ -758,6 +790,7 @@ const itemColumns = [
                   v-model:value="formData.iqcFlaw.seriousFlaw"
                   :disabled="readonly"
                 >
+                  <Radio :value="4">0.015</Radio>
                   <Radio :value="1">0.2</Radio>
                   <Radio :value="2">0.4</Radio>
                   <Radio :value="3">0.65</Radio>
@@ -860,7 +893,7 @@ const itemColumns = [
             <Input.TextArea
               v-model:value="record.checkResult"
               :disabled="readonly"
-              :rows="2"
+              :rows="1"
             />
           </template>
           <template v-else-if="column.dataIndex === 'judgeResult'">
@@ -965,3 +998,19 @@ const itemColumns = [
     </template>
   </Drawer>
 </template>
+
+<style scoped>
+/* 质检表单：收紧行高，缩小表单项上下间距 */
+.compact-form :deep(.ant-form-item) {
+  margin-bottom: 8px;
+}
+
+.compact-form :deep(.ant-form-item-control-input) {
+  min-height: 24px;
+}
+
+.compact-form :deep(.ant-radio-wrapper),
+.compact-form :deep(.ant-checkbox-wrapper) {
+  line-height: 24px;
+}
+</style>
