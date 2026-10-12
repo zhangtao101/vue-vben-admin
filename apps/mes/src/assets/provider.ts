@@ -735,6 +735,212 @@ export const provider = function () {
           },
         },
         {
+          tid: 'providerModule2.materialReceiveList',
+          title: '领料明细',
+          type: 'table',
+          options: {
+            field: 'materialRequisition',
+            // 表尾只在最后一页出现（分页时不会每页重复）
+            tableFooterRepeat: 'last',
+            fields: [
+              { text: '材料货号', field: 'materialCode' },
+              { text: '材料名称', field: 'materialName' },
+              { text: '单位', field: 'unit' },
+              { text: '实领数量', field: 'receiveNumber' },
+              { text: '申领数量', field: 'applyNumber' },
+              { text: '欠料数量', field: 'unclaimedQuantity' },
+              { text: '库存数量', field: 'storeNumber' },
+              { text: '待检数量', field: 'sumPackage' },
+              { text: '待入数量', field: 'sumEnter' },
+              { text: '待退数量', field: 'sumReject' },
+              { text: '备注说明', field: 'remark' },
+            ],
+          },
+          columns: [
+            [
+              {
+                title: '材料货号',
+                field: 'materialCode',
+                align: 'center',
+                width: 120,
+              },
+              {
+                title: '材料名称',
+                field: 'materialName',
+                align: 'center',
+                width: 140,
+              },
+              {
+                title: '单位',
+                field: 'unit',
+                align: 'center',
+                width: 80,
+              },
+              {
+                title: '实领数量',
+                field: 'receiveNumber',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '申领数量',
+                field: 'applyNumber',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '欠料数量',
+                field: 'unclaimedQuantity',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '库存数量',
+                field: 'storeNumber',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '待检数量',
+                field: 'sumPackage',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '待入数量',
+                field: 'sumEnter',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '待退数量',
+                field: 'sumReject',
+                align: 'center',
+                width: 100,
+              },
+              {
+                title: '备注说明',
+                field: 'remark',
+                align: 'center',
+                width: 150,
+              },
+            ],
+          ],
+          footerFormatter: (
+            options: any,
+            rows: any,
+            data: any,
+            currentPageGridRowsData: any,
+          ) => {
+            // 合计按全部行计算（分页时 currentPageGridRowsData 只有当前页的行）
+            const list: any[] = Array.isArray(rows)
+              ? rows
+              : Array.isArray(data?.[options?.field])
+                ? data[options.field]
+                : Array.isArray(currentPageGridRowsData)
+                  ? currentPageGridRowsData
+                  : [];
+            const sum = (field: string) =>
+              list.reduce(
+                (total, item) => total + (Number(item?.[field]) || 0),
+                0,
+              );
+            const totalCell = (field: string) => {
+              const value = Math.round(sum(field) * 10000) / 10000;
+              return `<td style="padding:0 10px;text-align: center;">${value}</td>`;
+            };
+            return `<tr>
+                <td style="padding:0 10px;text-align: center;" colspan="3">合计</td>
+                ${totalCell('receiveNumber')}
+                ${totalCell('applyNumber')}
+                ${totalCell('unclaimedQuantity')}
+                ${totalCell('storeNumber')}
+                ${totalCell('sumPackage')}
+                ${totalCell('sumEnter')}
+                ${totalCell('sumReject')}
+                <td style="padding:0 10px"></td>
+            </tr>`;
+          },
+        },
+        {
+          tid: 'providerModule2.productList',
+          title: '产品列表',
+          type: 'table',
+          options: {
+            field: 'erpList',
+            // 表尾只在最后一页出现（分页时不会每页重复）
+            tableFooterRepeat: 'last',
+            fields: [
+              { text: '产品名称', field: 'productName' },
+              { text: '计划号', field: 'planCode' },
+              { text: '计划数量', field: 'planNumber' },
+              { text: '领用套数', field: 'receiveNumber' },
+            ],
+          },
+          columns: [
+            [
+              {
+                title: '产品名称',
+                field: 'productName',
+                align: 'center',
+                width: 180,
+                tableSummaryAlign: 'center',
+              },
+              {
+                title: '计划号',
+                field: 'planCode',
+                align: 'center',
+                width: 140,
+                tableSummaryAlign: 'center',
+              },
+              {
+                title: '计划数量',
+                field: 'planNumber',
+                align: 'center',
+                width: 100,
+                tableSummaryAlign: 'center',
+              },
+              {
+                title: '领用套数',
+                field: 'receiveNumber',
+                align: 'center',
+                width: 100,
+                tableSummaryAlign: 'center',
+              },
+            ],
+          ],
+          footerFormatter: (
+            options: any,
+            rows: any,
+            data: any,
+            currentPageGridRowsData: any,
+          ) => {
+            // 合计按全部行计算（分页时 currentPageGridRowsData 只有当前页的行）
+            const list: any[] = Array.isArray(rows)
+              ? rows
+              : Array.isArray(data?.[options?.field])
+                ? data[options.field]
+                : Array.isArray(currentPageGridRowsData)
+                  ? currentPageGridRowsData
+                  : [];
+            const sum = (field: string) =>
+              list.reduce(
+                (total, item) => total + (Number(item?.[field]) || 0),
+                0,
+              );
+            const totalCell = (field: string) => {
+              const value = Math.round(sum(field) * 10000) / 10000;
+              return `<td style="padding:0 10px;text-align: center;">${value}</td>`;
+            };
+            return `<tr>
+                <td style="padding:0 10px;text-align: center;">合计</td>
+                <td style="padding:0 10px;text-align: center;"></td>
+                ${totalCell('planNumber')}
+                ${totalCell('receiveNumber')}
+            </tr>`;
+          },
+        },
+        {
           tid: 'providerModule1.barcode',
           title: '条形码',
           data: 'XS888888888',
