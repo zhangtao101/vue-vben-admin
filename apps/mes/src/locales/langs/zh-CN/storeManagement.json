@@ -390,7 +390,8 @@
     "passDescribe": "PAS描述",
     "sameMaterialWarning": "请选择同一个送检单，同一个供应厂商，同一个材料编号的单据",
     "selectCheckResult": "请选择质检结论",
-    "qualifiedNumberInvalid": "合格数量不能小于0"
+    "qualifiedNumberInvalid": "合格数量不能小于0",
+    "confirmDeleteFile": "确认删除该附件？"
   },
   "iqcExamine": {
     "checkCode": "检验编号",

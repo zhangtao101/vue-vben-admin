@@ -17,6 +17,7 @@ import {
   Input,
   InputNumber,
   message,
+  Modal,
   Radio,
   RadioGroup,
   Row,
@@ -119,8 +120,11 @@ const materialSelectVisible = ref(false);
 // 加载状态
 const loading = ref(false);
 
-// 文件上传列表
+// 文件上传列表（Upload 组件展示用）
 const uploadFileList = ref<any[]>([]);
+
+// 上传成功的文件列表（提交附件时以此为准）
+const successFileList = ref<any[]>([]);
 
 // 上传接口地址
 const uploadAction = `/ht/${import.meta.env.VITE_GLOB_MES_FILE}/iqc/uploadFile`;
@@ -159,6 +163,10 @@ watch(
       } else if (props.id) {
         loadDetail();
       }
+    } else {
+      // 关闭抽屉时清空文件列表，避免再次打开时残留
+      uploadFileList.value = [];
+      successFileList.value = [];
     }
   },
 );
@@ -192,6 +200,7 @@ function resetForm() {
     type: 1,
   };
   uploadFileList.value = [];
+  successFileList.value = [];
   loadIqcItems();
 }
 
@@ -222,6 +231,8 @@ function loadDetail() {
           url: item.fileUrl,
           fileName: item.fileName,
         }));
+        // 详情返回的均为已上传成功的文件，同步到成功列表
+        successFileList.value = [...uploadFileList.value];
       }
     })
     .finally(() => {
@@ -378,17 +389,18 @@ function handleClose() {
 }
 
 // 文件上传成功
-function handleUploadSuccess({ file, response }: any) {
-  if (response.code === 200 && response.data) {
-    uploadFileList.value.push({
-      id: response.data.id,
-      name: file.name,
-      url: response.data.fileUrl,
-      fileName: response.data.fileName,
+function handleUploadSuccess({ code, data, msg}: any) {
+  if (code === 200 && data) {
+    // 上传成功的文件单独存放，提交附件时只取该列表
+    successFileList.value.push({
+      id: data.id,
+      name: data.fileName,
+      url: data.fileUrl,
+      fileName: data.fileName,
     });
     message.success($t('common.successfulOperation'));
   } else {
-    message.error(response.msg || $t('common.operationFailure'));
+    message.error(msg || $t('common.operationFailure'));
   }
 }
 
@@ -399,11 +411,24 @@ function handleUploadError() {
 
 // 删除文件
 function handleDeleteFile(fileId: string) {
-  deleteIpcReportFile(fileId).then(() => {
-    uploadFileList.value = uploadFileList.value.filter(
-      (item: any) => item.id !== fileId,
-    );
-    message.success($t('common.successfulOperation'));
+  // 删除前二次确认
+  Modal.confirm({
+    cancelText: $t('common.cancel'),
+    content: $t('storeManagement.ipcReport.confirmDeleteFile'),
+    okText: $t('common.confirm'),
+    okType: 'danger',
+    title: $t('common.prompt'),
+    onOk: () => {
+      deleteIpcReportFile(fileId).then(() => {
+        uploadFileList.value = uploadFileList.value.filter(
+          (item: any) => item.id !== fileId,
+        );
+        successFileList.value = successFileList.value.filter(
+          (item: any) => item.id !== fileId,
+        );
+        message.success($t('common.successfulOperation'));
+      });
+    },
   });
 }
 
@@ -440,8 +465,8 @@ function handleSubmit() {
     return;
   }
   formData.value.type = 2;
-  // 保存附件信息
-  const fileParams = uploadFileList.value.map((item: any) => ({
+  // 保存附件信息，仅取上传成功的文件
+  const fileParams = successFileList.value.map((item: any) => ({
     formId: props.mode === 'create' ? '' : props.id,
     filePath: item.fileName,
     fileUrl: item.url,
@@ -926,6 +951,7 @@ const itemColumns = [
         :headers="{ Authorization: `${accessStore.accessToken}` }"
         :disabled="readonly"
         :max-count="10"
+        :show-upload-list="false"
         multiple
         @success="handleUploadSuccess"
         @error="handleUploadError"
@@ -939,7 +965,7 @@ const itemColumns = [
       </Upload>
 
       <!-- 文件列表 -->
-      <div v-if="uploadFileList.length > 0" class="!mt-4">
+      <div v-if="successFileList.length > 0" class="!mt-4">
         <Table
           :columns="[
             { title: '文件名', dataIndex: 'name', width: 200 },
@@ -949,7 +975,7 @@ const itemColumns = [
               width: 100,
             },
           ]"
-          :data-source="uploadFileList"
+          :data-source="successFileList"
           :pagination="false"
           size="small"
           bordered
