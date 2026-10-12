@@ -87,6 +87,7 @@ function fetchAuthorFlag(): Promise<boolean> {
   return getUserAuthorFlagApi()
     .then((flag) => {
       authorized.value = Number(flag) === 1;
+      // authorized.value = true;
       return authorized.value;
     })
     .catch(() => {
