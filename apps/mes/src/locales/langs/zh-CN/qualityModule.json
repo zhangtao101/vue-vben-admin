@@ -1,4 +1,36 @@
 {
+  "badfindData": {
+    "selectMonth": "选择月份",
+    "pleaseSelectMonth": "请选择月份",
+    "productCode": "产品编号",
+    "subProductCode": "部件编号",
+    "worksheetCode": "工单编号",
+    "line": "生产线",
+    "productName": "产品名称",
+    "subProductName": "部件名称",
+    "planCode": "生产计划编号",
+    "discoveryProcess": "发现工序",
+    "pleaseSelect": "请选择",
+    "monthSummary": "SMT车间产品不良一览月汇总",
+    "dayDetail": "SMT车间月产品不良明细",
+    "defectDetail": "缺陷不良明细",
+    "total": "合计",
+    "defectCode": "不良代码",
+    "defectName": "不良名称",
+    "defectNumber": "不良数量",
+    "location": "不良位置",
+    "discoveryDefectId": "不良记录号",
+    "defectProductNumber": "产品不良数量",
+    "discoveryProcessName": "发现工序名称",
+    "operateTime": "检验时间",
+    "operateUserName": "检验人",
+    "equipmentName": "设备名称",
+    "lineName": "生产线",
+    "subPlanCode": "部件计划号",
+    "loadMonthDataFailed": "月度汇总查询失败",
+    "loadDetailDataFailed": "缺陷不良明细查询失败",
+    "exportFailed": "导出失败"
+  },
   "defectCodeSet": {
     "defectName": "不良名称",
     "defectCode": "不良代码",
@@ -43,7 +75,7 @@
       "measureMaintain": {
         "name": "度量方法名称"
       },
-      "qualityCheckForm":  {
+      "qualityCheckForm": {
         "code": "质检表编号",
         "name": "质检表名称",
         "workshop": "所属车间",
