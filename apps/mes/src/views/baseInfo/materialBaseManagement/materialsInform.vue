@@ -23,6 +23,7 @@ import {
   Input,
   InputNumber,
   message,
+  Modal,
   Row,
   Space,
   TabPane,
@@ -34,6 +35,7 @@ import {
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  addPASFile,
   downloadMaterialsTemplate,
   materialUpDownSafe,
   queryMaterialInfoById,
@@ -43,6 +45,7 @@ import {
   queryMaterialTree,
   queryPasFile,
   updateNameToLabelAndIQC,
+  updatePASFile,
 } from '#/api';
 import { $t } from '#/locales';
 import { queryAuth } from '#/util';
@@ -325,6 +328,8 @@ const editPasMessage = ref({} as any);
 // 文件上传列表
 const uploadFile = ref<any>([]);
 const pasFormRef = ref();
+/** 是否覆盖已存在的PAS文件：文件已存在时经用户确认后置为 true 重新提交 */
+const coverPasFile = ref(false);
 
 /**
  * 显示编辑抽屉
@@ -334,6 +339,7 @@ function showPas(row: any) {
   const params = {
     materialCode: row.materialCode,
   };
+  coverPasFile.value = false;
   queryPasFile(params).then((response) => {
     if (!response) {
       editPasMessage.value = {
@@ -384,14 +390,86 @@ function pasClose() {
 }
 
 /**
+ * 阻止文件选择后自动上传：文件仅随表单一起提交
+ * @returns {boolean} 固定返回 false，阻止 Upload 自动上传
+ * @throws 不主动抛出异常
+ * @since 2026-10-12 00:00:00
+ */
+function beforePasUpload() {
+  return false;
+}
+
+/**
+ * 组装PAS文件提交参数（料号、文件描述、是否覆盖、文件列表，编辑时含主键）
+ * @returns {FormData} PAS文件提交表单数据
+ * @throws 不主动抛出异常
+ * @since 2026-10-12 00:00:00
+ */
+function buildPasFormData() {
+  const formData = new FormData();
+  formData.append('material_code', editPasMessage.value.materialCode ?? '');
+  formData.append('pas_describe', editPasMessage.value.pas_describe ?? '');
+  formData.append('cover', String(coverPasFile.value));
+  for (const item of uploadFile.value) {
+    const file = item?.originFileObj ?? item?.raw;
+    if (file) {
+      formData.append('files', file, file.name);
+    }
+  }
+  if (editPasMessage.value.id) {
+    formData.append('id', editPasMessage.value.id);
+  }
+  return formData;
+}
+
+/**
+ * 提交PAS文件：存在主键走更新接口，否则走新增接口
+ * 文件已存在时接口返回业务提示，弹窗确认后以覆盖方式重新提交
+ * @returns {Promise<void>} 提交完成后表单已关闭并刷新列表
+ * @throws 不主动抛出异常，接口异常在内部处理
+ * @since 2026-10-12 00:00:00
+ */
+function submitPasFile() {
+  const formData = buildPasFormData();
+  const submit = editPasMessage.value.id ? updatePASFile : addPASFile;
+  return submit(formData)
+    .then(() => {
+      message.success($t('baseInfo.saveSuccess'));
+      coverPasFile.value = false;
+      pasClose();
+      gridApi.reload();
+    })
+    .catch((error: any) => {
+      // HTTP 异常已由全局拦截器统一提示，此处仅处理带业务提示的异常
+      if (error?.response) {
+        return;
+      }
+      if (!error?.message) {
+        message.error($t('baseInfo.saveFailed'));
+        return;
+      }
+      Modal.confirm({
+        cancelText: $t('common.cancel'),
+        content: error.message,
+        okText: $t('common.confirm'),
+        title: $t('common.prompt'),
+        onCancel: () => {
+          uploadFile.value = [];
+        },
+        onOk: () => {
+          coverPasFile.value = true;
+          return submitPasFile();
+        },
+      });
+    });
+}
+
+/**
  * 提交PAS表单
  */
 function submitPasForm() {
   pasFormRef.value?.validate().then(() => {
-    // TODO: 实现PAS文件上传逻辑
-    message.success($t('baseInfo.saveSuccess'));
-    pasClose();
-    gridApi.reload();
+    submitPasFile();
   });
 }
 
@@ -627,9 +705,8 @@ function downloadTemplate() {
       <!-- region 表格主体 -->
       <Col :lg="18" :md="16" :sm="20" :xl="20" :xs="14">
         <Card>
-          <!-- 操作按钮区域 -->
-          <Row class="!mb-4" :gutter="8">
-            <Col>
+          <Grid>
+            <template #toolbar-tools>
               <Upload
                 v-if="author.includes('编辑')"
                 :action="uploadAction"
@@ -642,19 +719,15 @@ function downloadTemplate() {
               >
                 <Button type="primary">{{ $t('common.upload') }}</Button>
               </Upload>
-            </Col>
-            <Col>
               <Button
                 v-if="author.includes('编辑')"
                 type="primary"
                 @click="downloadTemplate"
+                class="ml-4"
               >
                 {{ $t('page.common.downloadTemplate') }}
               </Button>
-            </Col>
-          </Row>
-          <Grid>
-            <template #toolbar-tools></template>
+            </template>
             <template #action="{ row }">
               <!-- 编辑按钮 -->
               <Tooltip v-if="author.includes('编辑')">
@@ -863,8 +936,7 @@ function downloadTemplate() {
         >
           <Upload
             v-model:file-list="uploadFile"
-            :action="uploadAction"
-            :headers="{ Authorization: `${accessStore.accessToken}` }"
+            :before-upload="beforePasUpload"
             :max-count="10"
             multiple
           >
