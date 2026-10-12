@@ -218,11 +218,11 @@ const workSheetGridOptions: VxeGridProps<any> = {
       field: 'priority',
       minWidth: 90,
     },
-    {
-      title: $t('productionBom.indicateBatch'),
-      field: 'indicateBatch',
-      minWidth: 110,
-    },
+    // {
+    //   title: $t('productionBom.indicateBatch'),
+    //   field: 'indicateBatch',
+    //   minWidth: 110,
+    // },
   ],
   height: 300,
   pagerConfig: {
