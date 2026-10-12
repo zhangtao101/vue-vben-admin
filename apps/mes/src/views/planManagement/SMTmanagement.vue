@@ -718,7 +718,7 @@ onMounted(() => {
             </Button>
           </Tooltip> -->
           <!-- 结束上报 -->
-          <Tooltip v-if="author.includes('编辑') && row.status === 3">
+          <Tooltip v-if="author.includes('编辑') && row.delayStatus === 3">
             <template #title>{{ $t('SMTmanagement.outputReport') }}</template>
             <Button type="link" @click="handleOutputReport(row)">
               <Icon
@@ -728,7 +728,7 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 结束工单 -->
-          <Tooltip v-if="author.includes('编辑') && row.status === 3">
+          <Tooltip v-if="author.includes('编辑') && row.delayStatus === 3">
             <template #title>{{ $t('SMTmanagement.endWorkOrder') }}</template>
             <Popconfirm
               :cancel-text="$t('common.cancel')"
