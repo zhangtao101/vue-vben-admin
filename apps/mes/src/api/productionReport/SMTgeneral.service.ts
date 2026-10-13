@@ -13,6 +13,18 @@ export async function mouthList(params: any) {
 }
 
 /**
+ * 生产情况一览获取月汇总
+ * @param {any} params 查询参数：pageNum、pageSize、month、workstationCode、bindingId、workshope
+ * @returns {Promise<any>} 月汇总数据，含 result（按天数值与 sum）与 column（动态列）
+ * @since 2026-10-13 10:00:00
+ */
+export async function productionMonthList(params: any) {
+  return requestClient.get<any>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/smt/produce/getPMonthSum?${qs.stringify(params)}`,
+  );
+}
+
+/**
  * SMTgeneral 月度汇总导出
  */
 export async function mouthExelect(params: any) {

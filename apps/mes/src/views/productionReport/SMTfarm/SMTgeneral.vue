@@ -39,9 +39,9 @@ import {
   fetchWorkstationDropdownList,
   manList,
   mouthExelect,
-  mouthList,
   poolExect,
   poolList,
+  productionMonthList,
   tan_pltyExect,
 } from '#/api';
 
@@ -281,9 +281,11 @@ function handleWorkstationChange() {
 
 /**
  * 查询月度汇总
+ * 调用生产情况一览月汇总接口，按返回的 column 动态生成列
  */
 function loadMonthData() {
-  mouthList(listQuery)
+  // 该接口车间参数名为 workshope，与列表查询的 workShop 不同，这里做一次映射
+  productionMonthList({ ...listQuery, workshope: listQuery.workShop })
     .then((data: any) => {
       // 动态生成列
       const columns = data.column || [];
