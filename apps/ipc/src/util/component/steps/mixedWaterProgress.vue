@@ -183,7 +183,7 @@ const lotGridOptions: VxeGridProps<any> = {
     },
     {
       field: 'fullLabel',
-      title: $t('mixedWaterProgress.fullLabel'),
+      title: $t('mixedWaterProgress.palletNo'),
       minWidth: 140,
     },
     {
@@ -199,7 +199,7 @@ const lotGridOptions: VxeGridProps<any> = {
     },
     {
       field: 'fullUse',
-      title: $t('mixedWaterProgress.fullUse'),
+      title: $t('mixedWaterProgress.isInput'),
       width: 120,
       slots: { default: 'useCell' },
     },

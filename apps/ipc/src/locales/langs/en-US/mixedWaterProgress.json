@@ -25,6 +25,8 @@
   "looseLabel": "Loose Pallet No.",
   "looseUse": "Loose Used",
   "fullUse": "Paper Bag Used",
+  "palletNo": "Pallet No.",
+  "isInput": "Input",
   "lotId": "Batch LOT ID",
   "trayNo": "Tray No.",
   "startTime": "Start Time",

@@ -196,15 +196,17 @@ function getLotColumns(): any[] {
   }
   columns.push({
     field: 'fulluse',
-    title: $t('gravityFreeMixerTrayInput.fullUse'),
-    width: 120,
+    title: props.processType === 1 ?
+            $t('mixedWaterProgress.isInput') :
+            $t('gravityFreeMixerTrayInput.fullUse'),
+    minWidth: 120,
     slots: { default: 'useCell' },
   });
   if (props.processType === 6) {
     columns.push({
       field: 'looseUse',
       title: $t('gravityFreeMixerTrayInput.looseUse'),
-      width: 120,
+      minWidth: 120,
       slots: { default: 'useCell' },
     });
   }
@@ -291,7 +293,7 @@ const loadGridOptions: VxeGridProps<any> = {
     {
       field: 'packType',
       title: $t('gravityFreeMixerTrayInput.packType'),
-      width: 100,
+      minWidth: 100,
       formatter: packTypeFormatter,
     },
   ],

@@ -25,6 +25,8 @@
   "looseLabel": "分装托盘编号",
   "looseUse": "分装是否投入",
   "fullUse": "纸袋是否投入",
+  "palletNo": "托盘编号",
+  "isInput": "是否投入",
   "lotId": "批次LOTID",
   "trayNo": "托盘号",
   "startTime": "开始时间",

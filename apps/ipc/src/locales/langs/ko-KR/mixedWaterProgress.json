@@ -25,6 +25,8 @@
   "looseLabel": "분할 팔레트 번호",
   "looseUse": "분할 투입 여부",
   "fullUse": "종이 포대 투입 여부",
+  "palletNo": "팔레트 번호",
+  "isInput": "투입 여부",
   "lotId": "배치 LOT ID",
   "trayNo": "트레이 번호",
   "startTime": "시작 시간",
