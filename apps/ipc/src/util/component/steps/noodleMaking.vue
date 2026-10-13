@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import {
   Button,
+  Card,
   Col,
   DatePicker,
   Form,
   Input,
   Row,
-  Select,
   Space,
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { selectWeekWorkSheet } from '#/api';
 import { $t } from '#/locales';
 
 /**
@@ -27,77 +28,26 @@ defineProps({
   processCode: { type: String, default: '' },
 });
 
-// region 查询条件：产线 / 产品名称 / 生产日期
+// region 查询条件：产线名称 / 产品名称 / 生产日期
 const queryParams = ref<any>({
-  line: undefined,
+  lineName: '',
   productName: '',
-  productDate: '',
+  planDateStart: '',
 });
-
-const lineOptions = [
-  { label: $t('noodleMaking.line1'), value: 'L01' },
-  { label: $t('noodleMaking.line2'), value: 'L02' },
-  { label: $t('noodleMaking.line3'), value: 'L03' },
-];
 // endregion
 
-// region 批次作业指令列表（假数据，接口就绪后替换为接口返回）
-const fakeInstructions: any[] = [
-  {
-    lineCode: 'L01',
-    lineName: '制面一线',
-    worksheetCode: 'WO-20260721-001',
-    productDate: '2026-07-21',
-    priority: '高',
-    productCode: 'N-001',
-    productName: '三养炸酱面',
-    commandBatchCount: 10,
-    createdBatchCount: 4,
-    badBatchCount: 0,
-    remainBatchCount: 6,
-  },
-  {
-    lineCode: 'L02',
-    lineName: '制面二线',
-    worksheetCode: 'WO-20260721-002',
-    productDate: '2026-07-21',
-    priority: '中',
-    productCode: 'N-002',
-    productName: '三养拉面',
-    commandBatchCount: 8,
-    createdBatchCount: 8,
-    badBatchCount: 1,
-    remainBatchCount: 0,
-  },
-  {
-    lineCode: 'L03',
-    lineName: '制面三线',
-    worksheetCode: 'WO-20260720-003',
-    productDate: '2026-07-20',
-    priority: '低',
-    productCode: 'N-003',
-    productName: '三养泡面',
-    commandBatchCount: 6,
-    createdBatchCount: 2,
-    badBatchCount: 0,
-    remainBatchCount: 4,
-  },
-  {
-    lineCode: 'L01',
-    lineName: '制面一线',
-    worksheetCode: 'WO-20260719-004',
-    productDate: '2026-07-19',
-    priority: '高',
-    productCode: 'N-004',
-    productName: '三养辣白菜面',
-    commandBatchCount: 12,
-    createdBatchCount: 12,
-    badBatchCount: 2,
-    remainBatchCount: 0,
-  },
-];
-
-const instructionData = ref<any[]>([]);
+// region 批次作业指令列表
+/** 查询批次作业指令列表（制面工序单别固定为 1） */
+function queryWorkSheetList({ page }: any) {
+  return selectWeekWorkSheet({
+    lineName: queryParams.value.lineName,
+    processType: 1,
+    productName: queryParams.value.productName,
+    planDateStart: queryParams.value.planDateStart,
+    page: page.currentPage,
+    pageSize: page.pageSize,
+  }).then((res: any) => ({ total: res.total, items: res.list }));
+}
 
 const gridOptions: VxeGridProps<any> = {
   rowClassName: 'ipc-grid-row',
@@ -108,12 +58,12 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'lineCode', title: $t('noodleMaking.lineCode'), minWidth: 110 },
     { field: 'lineName', title: $t('noodleMaking.lineName'), minWidth: 130 },
     {
-      field: 'worksheetCode',
+      field: 'workSheetCode',
       title: $t('noodleMaking.worksheetCode'),
       minWidth: 170,
     },
     {
-      field: 'productDate',
+      field: 'planDateStart',
       title: $t('noodleMaking.productDate'),
       minWidth: 130,
     },
@@ -129,12 +79,12 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 150,
     },
     {
-      field: 'commandBatchCount',
+      field: 'indicateBatch',
       title: $t('noodleMaking.commandBatchCount'),
       minWidth: 110,
     },
     {
-      field: 'createdBatchCount',
+      field: 'produceBatch',
       title: $t('noodleMaking.createdBatchCount'),
       minWidth: 110,
     },
@@ -144,41 +94,31 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 100,
     },
     {
-      field: 'remainBatchCount',
+      field: 'remainBatch',
       title: $t('noodleMaking.remainBatchCount'),
       minWidth: 100,
     },
   ],
-  data: instructionData.value,
   height: 340,
   stripe: true,
+  pagerConfig: { enabled: true, pageSize: 20 },
+  proxyConfig: {
+    ajax: {
+      query: queryWorkSheetList,
+    },
+  },
   toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
-function loadInstructions() {
-  const { line, productName, productDate } = queryParams.value;
-  const list = fakeInstructions.filter((item) => {
-    const m1 = !line || item.lineCode === line;
-    const m2 =
-      !productName ||
-      item.productName.includes(productName) ||
-      item.productCode.includes(productName);
-    const m3 = !productDate || item.productDate === productDate;
-    return m1 && m2 && m3;
-  });
-  instructionData.value = list;
-  gridApi.grid.loadData([...instructionData.value]);
-}
-
 function handleQuery() {
-  loadInstructions();
+  gridApi.reload();
 }
 
 function handleReset() {
-  queryParams.value = { line: undefined, productName: '', productDate: '' };
-  loadInstructions();
+  queryParams.value = { lineName: '', productName: '', planDateStart: '' };
+  gridApi.reload();
 }
 // endregion
 
@@ -281,26 +221,20 @@ function alarmClass(param: any) {
     : 'text-destructive';
 }
 // endregion
-
-onMounted(() => {
-  loadInstructions();
-});
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <div class="ipc-fs-lg font-bold">{{ $t('noodleMaking.title') }}</div>
 
-    <!-- 1. 查询条件 + 2. 批次作业指令列表 -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
+    <!-- 1. 查询条件：产线名称 / 产品名称 / 生产日期 -->
+    <Card :body-style="{ padding: '4px' }">
       <Form layout="inline" class="mb-3 flex-wrap items-end gap-2">
-        <Form.Item :label="$t('noodleMaking.line')">
-          <Select
-            v-model:value="queryParams.line"
-            :options="lineOptions"
-            :placeholder="$t('noodleMaking.linePlaceholder')"
+        <Form.Item :label="$t('noodleMaking.lineName')">
+          <Input
+            v-model:value="queryParams.lineName"
+            :placeholder="$t('noodleMaking.lineNamePlaceholder')"
             allow-clear
-            style="width: 180px"
           />
         </Form.Item>
         <Form.Item :label="$t('noodleMaking.productName')">
@@ -312,7 +246,7 @@ onMounted(() => {
         </Form.Item>
         <Form.Item :label="$t('noodleMaking.productDate')">
           <DatePicker
-            v-model:value="queryParams.productDate"
+            v-model:value="queryParams.planDateStart"
             value-format="YYYY-MM-DD"
             :placeholder="$t('noodleMaking.productDatePlaceholder')"
           />
@@ -328,12 +262,12 @@ onMounted(() => {
           </Space>
         </Form.Item>
       </Form>
+    </Card>
 
-      <div class="mb-2 font-bold">{{ $t('noodleMaking.instructionList') }}</div>
-      <Grid>
-        <template #toolbar-tools></template>
-      </Grid>
-    </div>
+    <!-- 2. 批次作业指令列表 -->
+    <Card :body-style="{ padding: '4px' }">
+      <Grid />
+    </Card>
 
     <!-- 3. 实时数据：5 块内容 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
@@ -344,7 +278,7 @@ onMounted(() => {
           :key="block.key"
           :xs="24"
           :sm="12"
-          :lg="8"
+          :lg="6"
           class="mb-4"
         >
           <div

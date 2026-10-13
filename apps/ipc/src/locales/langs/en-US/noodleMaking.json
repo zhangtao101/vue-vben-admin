@@ -12,6 +12,7 @@
   "instructionList": "Batch Work Instruction List",
   "lineCode": "Line Code",
   "lineName": "Line Name",
+  "lineNamePlaceholder": "Please enter line name",
   "worksheetCode": "Work Order No.",
   "priority": "Priority",
   "productCode": "Product Code",

@@ -12,6 +12,7 @@
   "instructionList": "배치 작업 지시 목록",
   "lineCode": "라인 코드",
   "lineName": "라인명",
+  "lineNamePlaceholder": "라인 이름을 입력하세요",
   "worksheetCode": "작업지시번호",
   "priority": "우선순위",
   "productCode": "제품 코드",
