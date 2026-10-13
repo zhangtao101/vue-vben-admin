@@ -70,6 +70,31 @@ export function downloadProductBomTemplate() {
   );
 }
 
+/** 产品BOM树节点 */
+export interface ProductBomTreeNode {
+  /** 子节点 */
+  children?: null | ProductBomTreeNode[];
+  /** 节点显示文本（编码:名称） */
+  label?: string;
+  /** 节点值 */
+  value?: string;
+}
+
+/**
+ * 查询产品BOM全量树（可按产品编号、产线编号过滤）
+ * @param params 查询参数：productCode 产品编号、lineCode 产线编号，为空时返回全量树
+ * @returns {Promise<ProductBomTreeNode[]>} 树节点列表
+ * @since 2026-10-12
+ */
+export function queryProductBomTree(params?: {
+  lineCode?: string;
+  productCode?: string;
+}) {
+  return requestClient.get<ProductBomTreeNode[]>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/equipment/productbom/queryAllTree?${qs.stringify(params)}`,
+  );
+}
+
 /**
  * 导入产品 BOM Excel 文件
  * @param formData FormData 文件数据（字段名 file）

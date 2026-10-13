@@ -33,7 +33,7 @@ import {
   downloadProductBomTemplate,
   getBomDetailList,
   getBomDetailTree,
-  getProductBomTypeTree,
+  queryProductBomTree,
   selectProductBom,
   updateBomDetail,
 } from '#/api';
@@ -141,8 +141,6 @@ const selectedKey = ref<any>(undefined);
 const queryParams = ref({
   // 产品编号
   productCode: '',
-  // BOM类别编号
-  bomTypeCode: '',
   // 产线编号
   lineCode: '',
 });
@@ -153,10 +151,6 @@ const queryParams = ref({
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = queryParams.value;
-    params.bomTypeCode =
-      selectedKey.value && selectedKey.value.typeCode
-        ? selectedKey.value.typeCode
-        : '';
     // 调用 selectProductBom API函数，传递查询参数和分页信息
     selectProductBom({
       ...params, // 展开queryParams.value中的所有查询参数
@@ -188,18 +182,22 @@ const selectedKeys = ref<string[]>([]);
 const treeData = ref<any[]>([]);
 
 /**
- * 查询类别树
+ * 查询产品BOM树
+ * @since 2026-10-12
  */
 function queryAllCategoryTree() {
-  // 调用 getProductBomTypeTree API函数，获取菜单列表
-  getProductBomTypeTree().then((data) => {
+  // 调用 queryProductBomTree API函数，按产品编号与产线编号获取产品BOM树
+  queryProductBomTree({
+    lineCode: queryParams.value.lineCode || undefined,
+    productCode: queryParams.value.productCode || undefined,
+  }).then((data) => {
     // 检查返回的数据是否存在且长度大于0
     if (data) {
       // 如果数据有效，更新treeData，添加"全部"节点
       treeData.value = [
         {
-          typeCode: '',
-          typeName: $t('page.common.all'),
+          value: '',
+          label: $t('page.common.all'),
           children: data,
         },
       ];
@@ -215,11 +213,32 @@ function queryAllCategoryTree() {
  * @param {boolean} info.selected - 节点的选中状态
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
-  if (node.typeName === $t('page.common.all')) {
+  if (node.label === $t('page.common.all')) {
     selectedKey.value = '';
-    queryParams.value.bomTypeCode = '';
+    // 全部节点：清空产品编号与产线编号条件
+    queryParams.value.productCode = '';
+    queryParams.value.lineCode = '';
+  } else if (selected) {
+    // 节点值为「产品编号&产线」，按 & 拆分后分别赋值
+    const nodeValue = String(node.value ?? '').trim();
+    // 无 & 分隔符或拆分结果为空则不赋值、不查询
+    if (!nodeValue.includes('&')) {
+      return;
+    }
+    const [productCode, lineCode] = nodeValue
+      .split('&')
+      .map((item: string) => item.trim());
+    if (!productCode && !lineCode) {
+      return;
+    }
+    selectedKey.value = node;
+    queryParams.value.productCode = productCode || '';
+    queryParams.value.lineCode = lineCode || '';
   } else {
-    selectedKey.value = selected && node.typeLevel < 3 ? node : undefined;
+    // 取消选中：清空产品编号与产线编号条件后重新查询
+    selectedKey.value = undefined;
+    queryParams.value.productCode = '';
+    queryParams.value.lineCode = '';
   }
   gridApi.reload();
 }
@@ -579,8 +598,8 @@ onMounted(() => {
             :auto-expand-parent="false"
             :field-names="{
               children: 'children',
-              title: 'typeName',
-              key: 'typeCode',
+              title: 'label',
+              key: 'value',
             }"
             :tree-data="treeData"
             @select="selectedTree"
