@@ -58,6 +58,11 @@ function handleQuery() {
   }
   Promise.all([selectPalletAllInfo(label), searchCartWeight(label)])
     .then(([info, weightList]: any) => {
+      // info 为空对象表示工单已完成，禁止继续操作
+      if (!info || Object.keys(info).length === 0) {
+        message.warning($t('gravityFreeMixerWork.workSheetCompleted'));
+        return;
+      }
       // 工单信息
       workSheetInfo.value = {
         lineName: info?.lineName ?? '',
@@ -102,9 +107,6 @@ function handleQuery() {
         cartInfo.value.unit = splitList.value[0].unit || '';
       }
       splitGridApi.grid.loadData([...splitList.value]);
-    })
-    .catch(() => {
-      message.error($t('gravityFreeMixerWork.queryFailed'));
     });
 }
 

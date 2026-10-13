@@ -36,6 +36,7 @@
   "performanceRegistration": "실적 등록",
   "plsInputPalletLabel": "팔레트 라벨을 입력하세요",
   "queryFailed": "팔레트 정보 조회 실패",
+  "workSheetCompleted": "작업지시가 완료되어 추가 작업이 금지됩니다",
   "plsSelectRecord": "계량 기록을 하나 이상 선택하세요",
   "cancelSuccess": "실적 취소 성공",
   "cancelFailed": "실적 취소 실패",

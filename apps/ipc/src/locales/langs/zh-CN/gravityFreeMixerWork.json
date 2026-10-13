@@ -36,6 +36,7 @@
   "performanceRegistration": "业绩注册",
   "plsInputPalletLabel": "请输入托盘标签",
   "queryFailed": "托盘信息查询失败",
+  "workSheetCompleted": "工单已完成，禁止继续操作",
   "plsSelectRecord": "请至少勾选一条称重记录",
   "cancelSuccess": "业绩取消成功",
   "cancelFailed": "业绩取消失败",

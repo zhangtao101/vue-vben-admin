@@ -36,6 +36,7 @@
   "performanceRegistration": "Performance Registration",
   "plsInputPalletLabel": "Please enter pallet label",
   "queryFailed": "Failed to query pallet info",
+  "workSheetCompleted": "Work order completed, further operation is prohibited",
   "plsSelectRecord": "Please select at least one weight record",
   "cancelSuccess": "Performance cancelled successfully",
   "cancelFailed": "Failed to cancel performance",
