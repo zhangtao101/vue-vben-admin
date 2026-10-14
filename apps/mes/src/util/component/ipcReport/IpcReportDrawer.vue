@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
@@ -27,6 +28,7 @@ import {
   Table,
   Upload,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import {
   createIpcReport,
@@ -35,6 +37,7 @@ import {
   fetchSendFormDetail,
   getCheckNumber,
   getIqcItemList,
+  queryPrintTemplateDetails,
   saveIpcReportFile,
   updateIpcReport,
 } from '#/api';
@@ -110,6 +113,15 @@ const samplePlanOptions = [
   { value: 3, label: $t('storeManagement.ipcReport.reduced') },
   { value: 4, label: $t('storeManagement.ipcReport.full') },
 ];
+
+// IQC 检验报告打印模板编号
+const PRINT_TEMPLATE_CODE = 'IQC质检报告';
+
+// 打印中状态
+const printing = ref(false);
+
+// 抽样依据和标准复选框值
+const SAMPLE_STANDARD_VALUES = [1, 2, 3];
 
 // 是否显示标准选项
 const showGbStandard = ref(true);
@@ -497,9 +509,115 @@ function handleSave() {
   submitForm();
 }
 
+/**
+ * 将选项字段展平为模板勾选框可绑定的布尔值
+ * 例如选中 1.0（value=1）时生成 iqcFlaw_minorFlaw_1 = true，
+ * 同组其余选项（iqcFlaw_minorFlaw_2/3）为 false
+ * @param {Record<string, any>} target 结果对象
+ * @param {string} field 字段名（如 minorFlaw）
+ * @param {any[]} values 该字段全部可选值
+ * @param {any} current 当前值，数组表示多选（复选框组）
+ * @returns {void} 无返回值，结果写入 target
+ * @since 2026-10-14 10:00:00
+ */
+function fillOptionFlags(
+  target: Record<string, any>,
+  field: string,
+  values: any[],
+  current: any,
+  prefix = 'iqcFlaw',
+) {
+  const selected = Array.isArray(current)
+    ? current.map((item: any) => String(item))
+    : [String(current)];
+
+  values.forEach((value: any) => {
+    const key = prefix ? `${prefix}_${field}_${value}` : `${field}_${value}`;
+    target[key] = selected.includes(String(value)) ? 1 : 0;
+  });
+}
+
+/**
+ * 组装 IQC 检验报告打印数据
+ * 数据来源为当前 formData，选项类字段额外展平供模板勾选框绑定
+ * @returns {Record<string, any>} 打印模板所需的数据对象
+ * @since 2026-10-14 10:00:00
+ */
+function buildPrintData() {
+  const data = formData.value || {};
+  const flaw: any = data.iqcFlaw || {};
+  const printData: Record<string, any> = {
+    ...data,
+    // 质检详情表格数据
+    detailList: data.detailList || [],
+    // 检验项表格数据
+    itemResults: data.itemResults || [],
+    // 抽样标准：国标/其他
+    iqcFlaw_isOther: flaw.isOther,
+    // 抽样标准描述（其他时填写的备注）
+    iqcFlaw_remark: flaw.remark,
+    // 致命/严重/轻微缺陷的选中数值
+    iqcFlaw_fatalFlaw: flaw.fatalFlaw,
+    iqcFlaw_seriousFlaw: flaw.seriousFlaw,
+    iqcFlaw_minorFlaw: flaw.minorFlaw,
+    // 打印时间
+    printTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  };
+
+  // 国标/其他（1 国标，0 其他）
+  fillOptionFlags(printData, 'isOther', [1, 0], flaw.isOther);
+  // 致命缺陷：0
+  fillOptionFlags(printData, 'fatalFlaw', [1], flaw.fatalFlaw);
+  // 严重缺陷：0.015 / 0.2 / 0.4 / 0.65
+  fillOptionFlags(printData, 'seriousFlaw', [4, 1, 2, 3], flaw.seriousFlaw);
+  // 轻微缺陷：1.0 / 1.5 / 2.5
+  fillOptionFlags(printData, 'minorFlaw', [1, 2, 3], flaw.minorFlaw);
+  // 抽样检验计划：正常 / 加严 / 放宽 / 100%
+  fillOptionFlags(
+    printData,
+    'samplePlan',
+    samplePlanOptions.map((item) => item.value),
+    flaw.samplePlan,
+  );
+  // 抽检依据和标准：IQC 抽样标准 / PAS / 样品（多选）
+  fillOptionFlags(
+    printData,
+    'sampleStandard',
+    SAMPLE_STANDARD_VALUES,
+    flaw.sampleStandard,
+  );
+  // 质检结论：合格 / 不合格 / 让步接收 / 紧急放行（顶层字段，无 iqcFlaw 前缀）
+  fillOptionFlags(
+    printData,
+    'checkResult',
+    checkResultOptions.map((item: any) => item.value),
+    data.checkResult,
+    '',
+  );
+
+  return printData;
+}
+
 // 打印
 function handlePrint() {
-  message.warning('打印功能暂未完成');
+  printing.value = true;
+  queryPrintTemplateDetails(PRINT_TEMPLATE_CODE)
+    .then((res: any) => {
+      const templateRef = JSON.parse(res.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({
+        template: templateRef,
+      });
+      hiprintTemplate.print(buildPrintData(), {
+        leftOffset: -1,
+        topOffset: -1,
+      });
+    })
+    .catch(() => {
+      message.error($t('storeManagement.ipcReport.printTemplateFailed'));
+    })
+    .finally(() => {
+      printing.value = false;
+    });
 }
 
 // 质检详情表格列
@@ -888,13 +1006,13 @@ const itemColumns = [
                 :disabled="readonly"
                 @change="handleSampleStandardChange"
               >
-                <Checkbox :value="1">
+                <Checkbox value="1">
                   {{ $t('storeManagement.ipcReport.iqcStandard') }}
                 </Checkbox>
-                <Checkbox :value="2">
+                <Checkbox value="2">
                   {{ $t('storeManagement.ipcReport.pasStandard') }}
                 </Checkbox>
-                <Checkbox :value="3">
+                <Checkbox value="3">
                   {{ $t('storeManagement.ipcReport.sample') }}
                 </Checkbox>
               </Checkbox.Group>
@@ -1007,7 +1125,12 @@ const itemColumns = [
 
     <template #footer>
       <Space>
-        <Button v-if="mode === 'view'" type="primary" @click="handlePrint">
+        <Button
+          v-if="mode === 'view'"
+          type="primary"
+          :loading="printing"
+          @click="handlePrint"
+        >
           {{ $t('common.print') }}
         </Button>
         <Button v-if="mode !== 'view'" type="primary" @click="handleSubmit">

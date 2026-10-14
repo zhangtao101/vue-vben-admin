@@ -391,7 +391,8 @@
     "sameMaterialWarning": "Please select documents with the same inspection slip, same manufacturer, and same material code",
     "selectCheckResult": "Please select QC conclusion",
     "qualifiedNumberInvalid": "Qualified quantity cannot be less than 0",
-    "confirmDeleteFile": "Confirm delete this attachment?"
+    "confirmDeleteFile": "Confirm delete this attachment?",
+    "printTemplateFailed": "Failed to parse print template, please check the template config"
   },
   "iqcExamine": {
     "checkCode": "Check Code",

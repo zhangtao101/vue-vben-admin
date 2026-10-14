@@ -214,6 +214,62 @@ export const provider = function () {
           title: '椭圆',
           type: 'oval',
         },
+        {
+          tid: 'providerModule2.image',
+          title: '图片',
+          type: 'image',
+          options: {
+            field: 'image',
+            src: '',
+          },
+        },
+        {
+          tid: 'providerModule2.checkboxIcon',
+          title: '勾选框',
+          type: 'text',
+          options: {
+            field: 'checked',
+            // 只显示图标，不显示标题文字
+            hideTitle: true,
+            testData: true,
+            width: 16,
+            height: 16,
+            fontSize: 16,
+            lineHeight: 16,
+          },
+          // 绑定值为 true 时显示已勾选图标，否则显示未勾选图标
+          // hiprint 文本元素的 formatter 入参依次为：
+          // (title, value, options, templateData, target)
+          // 第一个参数是元素类型标题（这里是「勾选框」），第二个才是 options.field 绑定的值
+          formatter: (_title: any, value: any) => {
+
+            // 勾选框图标的 SVG 路径（取自 @iconify/json 的 mdi 图标集，内联避免打印时依赖网络）
+            const CHECKBOX_ICON_PATHS = {
+              // 未勾选：mdi:checkbox-blank-outline
+              blank:
+                'M19 3H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2m0 2v14H5V5z',
+              // 已勾选：mdi:checkbox-marked-outline
+              marked:
+                'M19 19H5V5h10V3H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8h-2m-11.09-.92L6.5 11.5L11 16L21 6l-1.41-1.42L11 13.17z',
+            };
+
+            /**
+             * 生成勾选框图标 SVG
+             * @param {boolean} checked 是否勾选
+             * @returns {string} 可直接插入的 SVG 字符串
+             * @since 2026-10-14 10:00:00
+             */
+            const buildCheckboxIcon = (checked: boolean) => {
+              const path = checked
+                ? CHECKBOX_ICON_PATHS.marked
+                : CHECKBOX_ICON_PATHS.blank;
+              return `<svg viewBox="0 0 24 24" width="100%" height="100%" style="display:block" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="${path}"/></svg>`;
+            }
+            const checked =
+              value === true || value === 'true' || Number(value) === 1;
+            return buildCheckboxIcon(checked);
+          },
+        },
       ]),
       new hiprint.PrintElementTypeGroup('自定义', [
         {
@@ -539,6 +595,92 @@ export const provider = function () {
                 </td>
             </tr>`;
           },
+        },
+        {
+          tid: 'providerModule2.iqcItemResult',
+          title: '检验项目明细',
+          type: 'table',
+          options: {
+            field: 'itemResults',
+            fields: [
+              { text: '检验项目', field: 'itemCodeName' },
+              { text: '检验结果', field: 'checkResult' },
+              { text: '合格', field: 'judgeResult' },
+              { text: 'N/A', field: 'na' },
+              { text: '致命', field: 'status1' },
+              { text: '严重', field: 'status2' },
+              { text: '轻微', field: 'status3' },
+            ],
+          },
+          columns: [
+            [
+              {
+                title: '检验项目',
+                align: 'center',
+                field: 'itemCodeName',
+                width: 140,
+              },
+              {
+                title: '检验结果',
+                align: 'center',
+                field: 'checkResult',
+                width: 140,
+              },
+              {
+                title: '合格',
+                align: 'center',
+                field: 'judgeResult',
+                width: 60,
+              },
+              {
+                title: 'N/A',
+                align: 'center',
+                field: 'na',
+                width: 60,
+              },
+              {
+                title: '致命',
+                align: 'center',
+                field: 'status1',
+                width: 60,
+                // 受损程度 flawResult 为 1（致命）时显示勾选图标，其余留空
+                // 列级 formatter 会被 hiprint 序列化成字符串再 eval 执行，
+                // 闭包会丢失，函数体内不能引用任何外部变量，必须自包含
+                renderFormatter: (_value: any, row: any) => {
+                  if (Number(row && row.flawResult) !== 1) {
+                    return '';
+                  }
+                  return '<svg viewBox="0 0 24 24" width="16" height="16" style="display:block;margin:auto" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>';
+                },
+              },
+              {
+                title: '严重',
+                align: 'center',
+                field: 'status2',
+                width: 60,
+                // 受损程度 flawResult 为 2（严重）时显示勾选图标
+                renderFormatter: (_value: any, row: any) => {
+                  if (Number(row && row.flawResult) !== 2) {
+                    return '';
+                  }
+                  return '<svg viewBox="0 0 24 24" width="16" height="16" style="display:block;margin:auto" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>';
+                },
+              },
+              {
+                title: '轻微',
+                align: 'center',
+                field: 'status3',
+                width: 60,
+                // 受损程度 flawResult 为 3（轻微）时显示勾选图标
+                renderFormatter: (_value: any, row: any) => {
+                  if (Number(row && row.flawResult) !== 3) {
+                    return '';
+                  }
+                  return '<svg viewBox="0 0 24 24" width="16" height="16" style="display:block;margin:auto" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>';
+                },
+              },
+            ],
+          ],
         },
         {
           tid: 'providerModule2.semiFinishedProduct',
@@ -1054,4 +1196,6 @@ export const provider = function () {
  * 椭圆：defaultModule.oval
  * 条形码：defaultModule.barcode
  *  二维码：defaultModule.qrcode
+ * 图片：providerModule2.image
+ * 勾选框：providerModule2.checkboxIcon（绑定值为 true 显示勾选图标，否则显示未勾选图标）
  */
