@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import { hiprint } from 'vue-plugin-hiprint';
 
 import { $t } from '@vben/locales';
 
@@ -25,8 +26,9 @@ import {
   Table,
   Textarea,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
-import { auditIqc, fetchIqcDetail } from '#/api';
+import { auditIqc, fetchIqcDetail, queryPrintTemplateDetails } from '#/api';
 
 // Props
 interface Props {
@@ -109,6 +111,18 @@ const defaultItemResults = [
 
 // 抽样标准选择
 const checkList = ref<any[]>([]);
+
+// IQC 检验报告打印模板编号
+const PRINT_TEMPLATE_CODE = 'IQC质检报告';
+
+// 打印中状态
+const printing = ref(false);
+
+// 抽样检验计划选项值
+const SAMPLE_PLAN_VALUES = [1, 2, 3, 4];
+
+// 抽检依据和标准选项值
+const SAMPLE_STANDARD_VALUES = [1, 2, 3];
 
 // 质检结论选项
 const checkResultOptions = [
@@ -319,9 +333,116 @@ function handleNoPass() {
   });
 }
 
+/**
+ * 将选项字段展平为模板勾选框可绑定的布尔值
+ * 例如选中 1.0（value=1）时生成 iqcFlaw_minorFlaw_1 = 1，
+ * 同组其余选项（iqcFlaw_minorFlaw_2/3）为 0
+ * @param {Record<string, any>} target 结果对象
+ * @param {string} field 字段名（如 minorFlaw）
+ * @param {any[]} values 该字段全部可选值
+ * @param {any} current 当前值，数组表示多选（复选框组）
+ * @param {string} prefix 键前缀，传空字符串表示不加前缀
+ * @returns {void} 无返回值，结果写入 target
+ * @since 2026-10-14 10:00:00
+ */
+function fillOptionFlags(
+  target: Record<string, any>,
+  field: string,
+  values: any[],
+  current: any,
+  prefix = 'iqcFlaw',
+) {
+  const selected = Array.isArray(current)
+    ? current.map((item: any) => String(item))
+    : [String(current)];
+
+  values.forEach((value: any) => {
+    const key = prefix ? `${prefix}_${field}_${value}` : `${field}_${value}`;
+    target[key] = selected.includes(String(value)) ? 1 : 0;
+  });
+}
+
+/**
+ * 组装 IQC 检验报告打印数据
+ * 数据来源为当前 formData，选项类字段额外展平供模板勾选框绑定
+ * @returns {Record<string, any>} 打印模板所需的数据对象
+ * @since 2026-10-14 10:00:00
+ */
+function buildPrintData() {
+  const data = formData.value || {};
+  const flaw: any = data.iqcFlaw || {};
+  const printData: Record<string, any> = {
+    ...data,
+    // 质检详情表格数据
+    detailList: data.detailList || [],
+    // 检验项表格数据
+    itemResults: data.itemResults || [],
+    // 抽样标准：国标/其他
+    iqcFlaw_isOther: flaw.isOther,
+    // 抽样标准描述（其他时填写的备注）
+    iqcFlaw_remark: flaw.remark,
+    // 致命/严重/轻微缺陷的选中数值
+    iqcFlaw_fatalFlaw: flaw.fatalFlaw,
+    iqcFlaw_seriousFlaw: flaw.seriousFlaw,
+    iqcFlaw_minorFlaw: flaw.minorFlaw,
+    // 打印时间
+    printTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  };
+
+  // 国标/其他（1 国标，0 其他）
+  fillOptionFlags(printData, 'isOther', [1, 0], flaw.isOther);
+  // 致命缺陷：0
+  fillOptionFlags(printData, 'fatalFlaw', [1], flaw.fatalFlaw);
+  // 严重缺陷：0.015 / 0.2 / 0.4 / 0.65
+  fillOptionFlags(printData, 'seriousFlaw', [4, 1, 2, 3], flaw.seriousFlaw);
+  // 轻微缺陷：1.0 / 1.5 / 2.5
+  fillOptionFlags(printData, 'minorFlaw', [1, 2, 3], flaw.minorFlaw);
+  // 抽样检验计划：正常 / 加严 / 放宽 / 100%
+  fillOptionFlags(
+    printData,
+    'samplePlan',
+    SAMPLE_PLAN_VALUES,
+    flaw.samplePlan,
+  );
+  // 抽检依据和标准：IQC 抽样标准 / PAS / 样品（多选）
+  fillOptionFlags(
+    printData,
+    'sampleStandard',
+    SAMPLE_STANDARD_VALUES,
+    flaw.sampleStandard || checkList.value,
+  );
+  // 质检结论：合格 / 不合格 / 让步接收 / 紧急放行（顶层字段，无 iqcFlaw 前缀）
+  fillOptionFlags(
+    printData,
+    'checkResult',
+    checkResultOptions.map((item: any) => item.value),
+    data.checkResult,
+    '',
+  );
+
+  return printData;
+}
+
 // 打印
 function handlePrint() {
-  message.info('打印功能暂未完成');
+  printing.value = true;
+  queryPrintTemplateDetails(PRINT_TEMPLATE_CODE)
+    .then((res: any) => {
+      const templateRef = JSON.parse(res.printData);
+      const hiprintTemplate = new hiprint.PrintTemplate({
+        template: templateRef,
+      });
+      hiprintTemplate.print(buildPrintData(), {
+        leftOffset: -1,
+        topOffset: -1,
+      });
+    })
+    .catch(() => {
+      message.error($t('storeManagement.iqcExamine.printTemplateFailed'));
+    })
+    .finally(() => {
+      printing.value = false;
+    });
 }
 
 // 关闭
@@ -337,7 +458,7 @@ function handleClose() {
     width="990px"
     :footer-style="{ textAlign: 'right' }"
   >
-    <Form :model="formData" layout="vertical">
+    <Form :model="formData">
       <!-- 质检信息 -->
       <Descriptions
         :title="$t('storeManagement.iqcExamine.qcInfo')"
@@ -442,77 +563,119 @@ function handleClose() {
       <Divider />
 
       <!-- 抽样标准 -->
-      <FormItem :label="$t('storeManagement.iqcExamine.sampleStandard')">
-        <RadioGroup v-model:value="formData.iqcFlaw.isOther" disabled>
-          <Radio :value="1">GB/T2828-2003 LEVEL II</Radio>
-          <Radio :value="0">其他</Radio>
-        </RadioGroup>
-      </FormItem>
+      <div class="compact-form">
+        <Row :gutter="16">
+          <Col :span="24">
+            <FormItem :label-col="{ span: 4 }" :wrapper-col="{ span: 20, offset: 4 }">
+              <RadioGroup v-model:value="formData.iqcFlaw.isOther" disabled>
+                <Radio :value="1">GB/T2828-2003 LEVEL II</Radio>
+                <Radio :value="0">其他</Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
 
-      <!-- GB/T2828-2003标准 -->
-      <div v-if="formData.iqcFlaw.isOther === 1">
+        <!-- GB/T2828-2003标准 -->
+        <template v-if="formData.iqcFlaw.isOther === 1">
+          <Row :gutter="16">
+            <Col :span="24">
+              <FormItem
+                :label="$t('storeManagement.iqcExamine.fatalFlaw')"
+                :label-col="{ span: 4 }"
+                :wrapper-col="{ span: 20 }"
+              >
+                <RadioGroup v-model:value="formData.iqcFlaw.fatalFlaw" disabled>
+                  <Radio :value="1">0</Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row :gutter="16">
+            <Col :span="24">
+              <FormItem
+                :label="$t('storeManagement.iqcExamine.seriousFlaw')"
+                :label-col="{ span: 4 }"
+                :wrapper-col="{ span: 20 }"
+              >
+                <RadioGroup v-model:value="formData.iqcFlaw.seriousFlaw" disabled>
+                  <Radio :value="4">0.015</Radio>
+                  <Radio :value="1">0.2</Radio>
+                  <Radio :value="2">0.4</Radio>
+                  <Radio :value="3">0.65</Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+          <Row :gutter="16">
+            <Col :span="24">
+              <FormItem
+                :label="$t('storeManagement.iqcExamine.minorFlaw')"
+                :label-col="{ span: 4 }"
+                :wrapper-col="{ span: 20 }"
+              >
+                <RadioGroup v-model:value="formData.iqcFlaw.minorFlaw" disabled>
+                  <Radio :value="1">1.0</Radio>
+                  <Radio :value="2">1.5</Radio>
+                  <Radio :value="3">2.5</Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+          </Row>
+        </template>
+
+        <!-- 其他标准 -->
+        <Row v-else :gutter="16">
+          <Col :span="24">
+            <FormItem
+              :label="$t('storeManagement.iqcExamine.remark')"
+              :label-col="{ span: 4 }"
+              :wrapper-col="{ span: 20 }"
+            >
+              <Textarea
+                v-model:value="formData.iqcFlaw.remark"
+                :maxlength="100"
+                :rows="3"
+                disabled
+              />
+            </FormItem>
+          </Col>
+        </Row>
+
+        <!-- 抽样检验计划 -->
         <Row :gutter="16">
           <Col :span="24">
-            <FormItem :label="$t('storeManagement.iqcExamine.fatalFlaw')">
-              <RadioGroup v-model:value="formData.iqcFlaw.fatalFlaw" disabled>
-                <Radio :value="1">0</Radio>
+            <FormItem
+              :label="$t('storeManagement.iqcExamine.samplePlan')"
+              :label-col="{ span: 4 }"
+              :wrapper-col="{ span: 20 }"
+            >
+              <RadioGroup v-model:value="formData.iqcFlaw.samplePlan" disabled>
+                <Radio :value="1">正常</Radio>
+                <Radio :value="2">加严</Radio>
+                <Radio :value="3">放宽</Radio>
+                <Radio :value="4">100%</Radio>
               </RadioGroup>
             </FormItem>
           </Col>
         </Row>
+
+        <!-- 抽检依据和标准 -->
         <Row :gutter="16">
           <Col :span="24">
-            <FormItem :label="$t('storeManagement.iqcExamine.seriousFlaw')">
-              <RadioGroup v-model:value="formData.iqcFlaw.seriousFlaw" disabled>
-                <Radio :value="1">0.2</Radio>
-                <Radio :value="2">0.4</Radio>
-                <Radio :value="3">0.65</Radio>
-              </RadioGroup>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row :gutter="16">
-          <Col :span="24">
-            <FormItem :label="$t('storeManagement.iqcExamine.minorFlaw')">
-              <RadioGroup v-model:value="formData.iqcFlaw.minorFlaw" disabled>
-                <Radio :value="1">1.0</Radio>
-                <Radio :value="2">1.5</Radio>
-                <Radio :value="3">2.5</Radio>
-              </RadioGroup>
+            <FormItem
+              :label="$t('storeManagement.iqcExamine.checkStandard')"
+              :label-col="{ span: 4 }"
+              :wrapper-col="{ span: 20 }"
+            >
+              <CheckboxGroup v-model:value="checkList" disabled>
+                <Checkbox :value="1">IQC抽样标准</Checkbox>
+                <Checkbox :value="2">PAS</Checkbox>
+                <Checkbox :value="3">样品</Checkbox>
+              </CheckboxGroup>
             </FormItem>
           </Col>
         </Row>
       </div>
-
-      <!-- 其他标准 -->
-      <div v-else>
-        <FormItem :label="$t('storeManagement.iqcExamine.remark')">
-          <Textarea
-            v-model:value="formData.iqcFlaw.remark"
-            :maxlength="100"
-            disabled
-          />
-        </FormItem>
-      </div>
-
-      <!-- 抽样检验计划 -->
-      <FormItem :label="$t('storeManagement.iqcExamine.samplePlan')">
-        <RadioGroup v-model:value="formData.iqcFlaw.samplePlan" disabled>
-          <Radio :value="1">正常</Radio>
-          <Radio :value="2">加严</Radio>
-          <Radio :value="3">放宽</Radio>
-          <Radio :value="4">100%</Radio>
-        </RadioGroup>
-      </FormItem>
-
-      <!-- 抽检依据和标准 -->
-      <FormItem :label="$t('storeManagement.iqcExamine.checkStandard')">
-        <CheckboxGroup v-model:value="checkList" disabled>
-          <Checkbox :value="1">IQC抽样标准</Checkbox>
-          <Checkbox :value="2">PAS</Checkbox>
-          <Checkbox :value="3">样品</Checkbox>
-        </CheckboxGroup>
-      </FormItem>
 
       <Divider />
 
@@ -557,7 +720,7 @@ function handleClose() {
 
     <template #footer>
       <Space>
-        <Button @click="handlePrint">
+        <Button :loading="printing" @click="handlePrint">
           {{ $t('common.print') }}
         </Button>
         <Button v-if="auditStatus === 1" type="primary" @click="handlePass">
@@ -573,3 +736,19 @@ function handleClose() {
     </template>
   </Drawer>
 </template>
+
+<style scoped>
+/* 抽样标准表单：收紧行高，缩小表单项上下间距 */
+.compact-form :deep(.ant-form-item) {
+  margin-bottom: 8px;
+}
+
+.compact-form :deep(.ant-form-item-control-input) {
+  min-height: 24px;
+}
+
+.compact-form :deep(.ant-radio-wrapper),
+.compact-form :deep(.ant-checkbox-wrapper) {
+  line-height: 24px;
+}
+</style>

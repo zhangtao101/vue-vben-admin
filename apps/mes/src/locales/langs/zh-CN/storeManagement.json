@@ -425,6 +425,7 @@
     "qcDetail": "质检详情",
     "itemResults": "检验项",
     "itemCodeName": "检验项目",
+    "printTemplateFailed": "打印模板解析失败，请检查模板配置",
     "judgeResult": "检验判定",
     "flawResult": "受损程度",
     "fatalFlaw": "致命缺陷",

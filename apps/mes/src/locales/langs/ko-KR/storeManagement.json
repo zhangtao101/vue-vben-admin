@@ -424,6 +424,7 @@
     "qcInfo": "QC 정보",
     "qcDetail": "QC 상세",
     "itemResults": "항목 결과",
+    "printTemplateFailed": "인쇄 템플릿 파싱 실패, 템플릿 설정을 확인하세요",
     "itemCodeName": "항목 코드 이름",
     "judgeResult": "판정 결과",
     "flawResult": "결함 결과",

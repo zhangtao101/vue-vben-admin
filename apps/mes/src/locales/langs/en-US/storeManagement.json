@@ -424,6 +424,7 @@
     "qcInfo": "QC Info",
     "qcDetail": "QC Detail",
     "itemResults": "Item Results",
+    "printTemplateFailed": "Failed to parse print template, please check the template config",
     "itemCodeName": "Item Code Name",
     "judgeResult": "Judge Result",
     "flawResult": "Flaw Result",

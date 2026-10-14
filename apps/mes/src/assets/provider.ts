@@ -631,6 +631,15 @@ export const provider = function () {
                 align: 'center',
                 field: 'judgeResult',
                 width: 60,
+                // 检验判定为 1（合格）时显示勾选图标，其余留空
+                // 列级 formatter 会被 hiprint 序列化成字符串再 eval 执行，
+                // 闭包会丢失，函数体内不能引用任何外部变量，必须自包含
+                renderFormatter: (value: any) => {
+                  if (Number(value) !== 1) {
+                    return '';
+                  }
+                  return '<svg viewBox="0 0 24 24" width="16" height="16" style="display:block;margin:auto" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>';
+                },
               },
               {
                 title: 'N/A',
