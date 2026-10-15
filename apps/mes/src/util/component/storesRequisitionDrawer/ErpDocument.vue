@@ -65,6 +65,11 @@ const gridOptions: VxeGridProps<any> = {
   ],
   height: 400,
   stripe: true,
+  pagerConfig: {
+    enabled: true,
+    pageSize: 1000,
+    pageSizes: [50, 100, 200, 500, 800, 1000],
+  },
   proxyConfig: {
     ajax: {
       query: async ({ page }) => {
@@ -82,6 +87,10 @@ const gridOptions: VxeGridProps<any> = {
   scrollY: {
     enabled: true,
     gt: 30,
+  },
+  virtualYConfig: {
+    enabled: true,
+    gt: 0
   },
   toolbarConfig: {
     custom: true,
@@ -215,6 +224,7 @@ function handlePrint(templateCode: string) {
         ? erpData
         : (erpData?.results ?? erpData?.items ?? []);
       const printData = buildPrintData(sortedList, erpList);
+
       const templateRef = JSON.parse(res.printData);
       const hiprintTemplate = new hiprint.PrintTemplate({
         template: templateRef,
