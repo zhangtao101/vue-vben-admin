@@ -134,15 +134,23 @@ const checkResultOptions = [
 
 // 检验判定选项
 const judgeOptions = [
-  { value: 1, label: '合格' },
-  { value: 0, label: '不合格' },
+  { value: 1, label: $t('storeManagement.ipcReport.qualified') },
+  { value: 0, label: $t('storeManagement.ipcReport.unqualified') },
 ];
 
 // 受损程度选项
 const flawOptions = [
-  { value: 1, label: '致命' },
-  { value: 2, label: '严重' },
-  { value: 3, label: '轻微' },
+  { value: 1, label: $t('storeManagement.ipcReport.fatal') },
+  { value: 2, label: $t('storeManagement.ipcReport.serious') },
+  { value: 3, label: $t('storeManagement.ipcReport.minor') },
+];
+
+// 抽样检验计划选项
+const samplePlanOptions = [
+  { value: 1, label: $t('storeManagement.ipcReport.normal') },
+  { value: 2, label: $t('storeManagement.ipcReport.tightened') },
+  { value: 3, label: $t('storeManagement.ipcReport.reduced') },
+  { value: 4, label: $t('storeManagement.ipcReport.full') },
 ];
 
 // 详情表格列
@@ -568,8 +576,12 @@ function handleClose() {
           <Col :span="24">
             <FormItem :label-col="{ span: 4 }" :wrapper-col="{ span: 20, offset: 4 }">
               <RadioGroup v-model:value="formData.iqcFlaw.isOther" disabled>
-                <Radio :value="1">GB/T2828-2003 LEVEL II</Radio>
-                <Radio :value="0">其他</Radio>
+                <Radio :value="1">
+                  {{ $t('storeManagement.ipcReport.gbStandard') }}
+                </Radio>
+                <Radio :value="0">
+                  {{ $t('storeManagement.ipcReport.other') }}
+                </Radio>
               </RadioGroup>
             </FormItem>
           </Col>
@@ -650,10 +662,13 @@ function handleClose() {
               :wrapper-col="{ span: 20 }"
             >
               <RadioGroup v-model:value="formData.iqcFlaw.samplePlan" disabled>
-                <Radio :value="1">正常</Radio>
-                <Radio :value="2">加严</Radio>
-                <Radio :value="3">放宽</Radio>
-                <Radio :value="4">100%</Radio>
+                <Radio
+                  v-for="item in samplePlanOptions"
+                  :key="item.value"
+                  :value="item.value"
+                >
+                  {{ item.label }}
+                </Radio>
               </RadioGroup>
             </FormItem>
           </Col>
@@ -668,9 +683,15 @@ function handleClose() {
               :wrapper-col="{ span: 20 }"
             >
               <CheckboxGroup v-model:value="checkList" disabled>
-                <Checkbox :value="1">IQC抽样标准</Checkbox>
-                <Checkbox :value="2">PAS</Checkbox>
-                <Checkbox :value="3">样品</Checkbox>
+                <Checkbox :value="1">
+                  {{ $t('storeManagement.ipcReport.iqcStandard') }}
+                </Checkbox>
+                <Checkbox :value="2">
+                  {{ $t('storeManagement.ipcReport.pasStandard') }}
+                </Checkbox>
+                <Checkbox :value="3">
+                  {{ $t('storeManagement.ipcReport.sample') }}
+                </Checkbox>
               </CheckboxGroup>
             </FormItem>
           </Col>
