@@ -1,4 +1,4 @@
-import { getMenusWeb } from '#/api';
+import { getMenusWeb, listWorkButtonByRole } from '#/api';
 
 /**
  * 查询权限
@@ -22,5 +22,33 @@ export function queryAuth(code: string) {
       }
       resolve(author);
     });
+  });
+}
+
+/**
+ * 查询作业平台人员按钮权限
+ * 该函数用于查询作业平台（JM 系列菜单）下当前用户拥有的按钮权限名称集合。
+ * @param {string} menuCode - 菜单编码（如 JM_001）
+ * @returns {Promise<string[]>} 按钮权限名称集合（如 开始/结束），查询失败或无权限时返回空数组
+ * @since 2026-10-15
+ */
+export function queryWorkAuth(menuCode: string) {
+  return new Promise<string[]>((resolve) => {
+    listWorkButtonByRole({ menuCode })
+      .then((data) => {
+        // 接口失败或返回为空时按无权限处理
+        if (!data || data.length === 0) {
+          resolve([]);
+          return;
+        }
+        resolve(
+          data
+            .map((item: any) => item?.buttonName)
+            .filter((name: string) => !!name),
+        );
+      })
+      .catch(() => {
+        resolve([]);
+      });
   });
 }

@@ -42,6 +42,7 @@ import {
   updateStae,
 } from '#/api';
 import { $t } from '#/locales';
+import { queryWorkAuth } from '#/util';
 import SopImageDrawer from '#/util/component/drawers/SopImageDrawer.vue';
 import PackagingMaterialDrawer from '#/util/component/PackagingMaterialDrawer.vue';
 
@@ -56,6 +57,30 @@ const props = defineProps({
   /** 工序编号，由外部传入 */
   processCode: { type: String, default: '' },
 });
+
+// region 按钮权限：作业平台开始/结束作业
+/** 作业平台按钮权限菜单编码 */
+const WORK_AUTH_MENU_CODE = 'JM_001';
+/** 开始作业按钮权限名称 */
+const AUTH_WORK_START = '开始';
+/** 结束作业按钮权限名称 */
+const AUTH_WORK_END = '结束';
+
+/** 当前用户拥有的作业平台按钮权限名称集合 */
+const workAuthNames = ref<string[]>([]);
+
+/**
+ * 判断当前用户是否拥有指定按钮权限。
+ * @param {string} buttonName - 按钮权限名称
+ * @returns {boolean} 拥有返回 true，否则返回 false
+ * @throws 不主动抛出异常
+ * @since 2026-10-15 00:00:00
+ */
+function hasWorkAuth(buttonName: string) {
+  console.log(buttonName, workAuthNames.value);
+  return workAuthNames.value.includes(buttonName);
+}
+// endregion
 
 // region 1. 查询条件：子产线 / 工单
 // 查询表单：子产线编码 + 工单 id
@@ -425,8 +450,8 @@ const [RightGrid, rightGridApi] = useVbenVxeGrid({
  * @since 2026-09-02 00:00:00
  */
 function loadMaterials() {
-  leftGridApi.reload();
-  rightGridApi.reload();
+  leftGridApi?.reload();
+  rightGridApi?.reload();
 }
 // endregion
 
@@ -663,6 +688,10 @@ function handleTransferSubmit() {
 onMounted(() => {
   loadMaterials();
   loadSubLines();
+  // 查询当前用户在作业平台下的按钮权限
+  queryWorkAuth(WORK_AUTH_MENU_CODE).then((names) => {
+    workAuthNames.value = names;
+  });
 });
 </script>
 
@@ -839,6 +868,7 @@ onMounted(() => {
               {{ $t('packagingProgress.image') }}
             </Button>
             <Button
+              v-if="hasWorkAuth(AUTH_WORK_START)"
               type="primary"
               :disabled="!isPanelReady(leftPanel)"
               @click="handleWorkStart(leftPanel)"
@@ -846,6 +876,7 @@ onMounted(() => {
               {{ $t('packagingProgress.workStart') }}
             </Button>
             <Button
+              v-if="hasWorkAuth(AUTH_WORK_END)"
               type="primary"
               danger
               :disabled="!isPanelReady(leftPanel)"
@@ -1022,6 +1053,7 @@ onMounted(() => {
               {{ $t('packagingProgress.image') }}
             </Button>
             <Button
+              v-if="hasWorkAuth(AUTH_WORK_START)"
               type="primary"
               :disabled="!isPanelReady(rightPanel)"
               @click="handleWorkStart(rightPanel)"
@@ -1029,6 +1061,7 @@ onMounted(() => {
               {{ $t('packagingProgress.workStart') }}
             </Button>
             <Button
+              v-if="hasWorkAuth(AUTH_WORK_END)"
               type="primary"
               danger
               :disabled="!isPanelReady(rightPanel)"
