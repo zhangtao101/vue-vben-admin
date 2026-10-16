@@ -188,5 +188,8 @@
       "name": "@vben/vsh",
       "path": "scripts/vsh"
     }
-  ]
+],
+"trae": {
+	"workspaceId": "79b191cfea152da7bab14d6e917b9c87"
+}
 }
