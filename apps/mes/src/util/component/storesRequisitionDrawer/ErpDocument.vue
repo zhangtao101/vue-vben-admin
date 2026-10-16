@@ -212,7 +212,7 @@ function handlePrint(templateCode: string) {
       (Number.parseFloat(b.materialCode) || 0),
   );
   // 计划号集合，作为 ERP 打印汇总数据的查询条件
-  const planCodes = sortedList.map((row: any) => row.planCode).join(',');
+  const planCodes = sortedList.map((row: any) => row.planCode);
 
   printing.value = true;
   Promise.all([

@@ -159,11 +159,16 @@ export function fetchERPList(params: any) {
 
 /**
  * ERP打印汇总数据
- * @param params
+ * @param params.applyCode 申请单号
+ * @param params.planCodes 计划号集合
  */
-export function ERPmp(params: any) {
-  return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/ERPprint?${qs.stringify(params)}`,
+export function ERPmp(params: {
+  applyCode: string;
+  planCodes: string[];
+}) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/wms/storeRequisition/ERPprint`,
+    params,
   );
 }
 
