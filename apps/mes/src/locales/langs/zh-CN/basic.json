@@ -60,7 +60,10 @@
       "pasDescribe": "文件描述",
       "files": "文件",
       "productReference": "产品引用",
-      "productDescription": "产品描述"
+      "productDescription": "产品描述",
+      "undercutFlag": "物料类型",
+      "weighing": "称重",
+      "reverseDeduction": "倒扣料"
     },
     "msd": {
       "title": "查看MSD",

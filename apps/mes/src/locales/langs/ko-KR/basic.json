@@ -57,7 +57,10 @@
       "pasDescribe": "파일 설명",
       "files": "파일",
       "productReference": "제품 참조",
-      "productDescription": "제품 설명"
+      "productDescription": "제품 설명",
+      "undercutFlag": "자재 유형",
+      "weighing": "계량",
+      "reverseDeduction": "역공제"
     },
     "msd": {
       "title": "MSD 보기",

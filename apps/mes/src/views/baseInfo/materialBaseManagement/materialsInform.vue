@@ -24,6 +24,7 @@ import {
   InputNumber,
   message,
   Modal,
+  Radio,
   Row,
   Space,
   TabPane,
@@ -52,6 +53,22 @@ import { queryAuth } from '#/util';
 import MSDDrawer from '#/util/component/MSDDrawer.vue';
 
 // region 表格操作
+
+/**
+ * 物料类型格式化：-1 称重，1 倒扣料
+ * @param {object} params - 单元格参数
+ * @param {number|string} params.cellValue - 单元格值
+ * @returns {string} 物料类型文案
+ */
+function formatUndercutFlag({ cellValue }: any) {
+  if (Number(cellValue) === -1) {
+    return $t('basic.bomManagement.materialsInform.weighing');
+  }
+  if (Number(cellValue) === 1) {
+    return $t('basic.bomManagement.materialsInform.reverseDeduction');
+  }
+  return '';
+}
 
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
@@ -109,6 +126,12 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 90,
     },
     { field: 'safeLevel', title: $t('baseInfo.safetyQuantity'), minWidth: 80 },
+    {
+      field: 'undercutFlag',
+      title: $t('basic.bomManagement.materialsInform.undercutFlag'),
+      minWidth: 100,
+      formatter: formatUndercutFlag,
+    },
     {
       field: 'action',
       fixed: 'right',
@@ -872,6 +895,20 @@ function downloadTemplate() {
           name="downSafe"
         >
           <InputNumber v-model:value="editMessage.downSafe" :max="0" />
+        </FormItem>
+        <!-- 物料类型：-1 称重，1 倒扣料 -->
+        <FormItem
+          :label="$t('basic.bomManagement.materialsInform.undercutFlag')"
+          name="undercutFlag"
+        >
+          <Radio.Group v-model:value="editMessage.undercutFlag">
+            <Radio :value="-1">
+              {{ $t('basic.bomManagement.materialsInform.weighing') }}
+            </Radio>
+            <Radio :value="1">
+              {{ $t('basic.bomManagement.materialsInform.reverseDeduction') }}
+            </Radio>
+          </Radio.Group>
         </FormItem>
       </Form>
 

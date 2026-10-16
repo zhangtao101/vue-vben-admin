@@ -57,7 +57,10 @@
       "pasDescribe": "fileDescription",
       "files": "files",
       "productReference": "productReference",
-      "productDescription": "productDescription"
+      "productDescription": "productDescription",
+      "undercutFlag": "Material Type",
+      "weighing": "Weighing",
+      "reverseDeduction": "Reverse Deduction"
     },
     "msd": {
       "title": "View MSD",
