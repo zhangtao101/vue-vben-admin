@@ -913,7 +913,7 @@ export const provider = function () {
                 title: '材料货号',
                 field: 'materialCode',
                 align: 'center',
-                width: 120,
+                width: 100,
               },
               {
                 title: '材料名称',
@@ -925,55 +925,55 @@ export const provider = function () {
                 title: '单位',
                 field: 'unit',
                 align: 'center',
-                width: 80,
+                width: 40,
               },
               {
                 title: '实领数量',
-                field: 'receiveNumber',
+                field: 'receiveNumber_test',
                 align: 'center',
-                width: 100,
+                width: 40,
               },
               {
                 title: '申领数量',
                 field: 'applyNumber',
                 align: 'center',
-                width: 100,
+                width: 40,
               },
               {
                 title: '欠料数量',
                 field: 'unclaimedQuantity',
                 align: 'center',
-                width: 100,
+                width: 40,
               },
               {
                 title: '库存数量',
                 field: 'storeNumber',
                 align: 'center',
-                width: 100,
+                width: 40,
               },
               {
                 title: '待检数量',
                 field: 'sumPackage',
                 align: 'center',
-                width: 100,
+                width: 40,
               },
               {
                 title: '待入数量',
                 field: 'sumEnter',
                 align: 'center',
-                width: 100,
+                width: 40,
               },
               {
                 title: '待退数量',
                 field: 'sumReject',
                 align: 'center',
-                width: 100,
+                width: 40,
               },
               {
                 title: '备注说明',
                 field: 'remark',
                 align: 'center',
-                width: 150,
+                width: 60,
               },
             ],
           ],
@@ -1000,9 +1000,11 @@ export const provider = function () {
               const value = Math.round(sum(field) * 10000) / 10000;
               return `<td style="padding:0 10px;text-align: center;">${value}</td>`;
             };
+
+                // ${totalCell('receiveNumber')}
             return `<tr>
                 <td style="padding:0 10px;text-align: center;" colspan="3">合计</td>
-                ${totalCell('receiveNumber')}
+                <td style="padding:0 10px;text-align: center;"> </td>
                 ${totalCell('applyNumber')}
                 ${totalCell('unclaimedQuantity')}
                 ${totalCell('storeNumber')}
