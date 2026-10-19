@@ -233,7 +233,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'partName',
       title: '产品名称',
-      minWidth: 120,
+      minWidth: 300,
     },
     {
       field: 'defectResultName',

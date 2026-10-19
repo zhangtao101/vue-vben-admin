@@ -64,19 +64,25 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'worksheetCode',
       title: $t('workOrderEntry.workOrderCode'),
-      minWidth: 200,
+      minWidth: 180,
     },
     // 产品编码列
     {
       field: 'productCode',
       title: $t('workOrderEntry.productCode'),
-      minWidth: 200,
+      minWidth: 180,
+    },
+
+    {
+      field: 'productName',
+      title: '产品名称',
+      minWidth: 350,
     },
     // 作业资源列
     {
       field: 'equipCode',
       title: $t('workOrderEntry.workArea'),
-      minWidth: 200,
+      minWidth: 150,
     },
     // 工单状态列
     {

@@ -183,27 +183,27 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'productCode',
       title: '产品编号',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'productName',
       title: '产品名称',
-      minWidth: 200,
+      minWidth: 350,
     },
     {
       field: 'opInTime',
       title: '进站时间',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'processCode',
       title: '工序编号',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'processName',
       title: '工序名称',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'finishRate',

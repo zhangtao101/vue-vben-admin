@@ -81,7 +81,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'materialName',
       title: '产品名称',
-      minWidth: 220,
+      minWidth: 350,
     },
     { field: 'reportNumber', title: '重量(KG)', minWidth: 150 },
     { field: 'equipCode', title: '称重设备', minWidth: 250 },

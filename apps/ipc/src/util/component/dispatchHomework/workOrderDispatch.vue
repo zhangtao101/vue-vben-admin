@@ -72,7 +72,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'subProductName',
       title: '产品名称',
-      minWidth: 150,
+      minWidth: 350,
     },
     {
       field: 'produceWorkshop',

@@ -53,32 +53,32 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'productCode',
       title: '产品编码',
-      minWidth: 200,
+      minWidth: 180,
     },
     {
       field: 'productName',
       title: '产品名称',
-      minWidth: 200,
+      minWidth: 350,
     },
     {
       field: 'equipName',
       title: '作业资源',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'planStartDate',
       title: '实际开始时间',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'worksheetPlanNumber',
       title: '计划数量',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       field: 'sendStateName',
       title: '工单状态',
-      minWidth: 200,
+      minWidth: 150,
     },
     {
       title: '操作',

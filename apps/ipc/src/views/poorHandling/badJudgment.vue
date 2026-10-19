@@ -88,7 +88,7 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'productName',
       title: '产品名称',
-      minWidth: 200,
+      minWidth: 350,
     },
     {
       field: 'defectNumber',
@@ -280,7 +280,7 @@ const poorTableConfiguration: VxeGridProps<any> = {
     {
       field: 'productName',
       title: '产品名称',
-      minWidth: 200,
+      minWidth: 350,
     },
     {
       field: 'defectNumber',
