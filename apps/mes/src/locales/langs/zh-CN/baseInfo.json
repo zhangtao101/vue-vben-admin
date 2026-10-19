@@ -109,6 +109,7 @@
   "materialCode": "材料编号",
   "materialDrawingNumber": "材料图号",
   "materialName": "物料名称",
+  "materialFeature": "物料特征",
   "unit": "单位",
   "minPackageQuantity": "最小包装数",
   "safetyQuantity": "安全量",

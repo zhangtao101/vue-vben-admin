@@ -109,6 +109,7 @@
   "materialCode": "자재 코드",
   "materialDrawingNumber": "자재 도면 번호",
   "materialName": "자재명",
+  "materialFeature": "자재 특성",
   "unit": "단위",
   "minPackageQuantity": "최소 포장 수량",
   "safetyQuantity": "안전 수량",
