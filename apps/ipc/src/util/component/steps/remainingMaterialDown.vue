@@ -242,7 +242,7 @@ const submitting = ref(false);
  * @since 2026-06-01 09:10:00
  */
 function submitAllDown() {
-  const tableData = gridApi.grid.getTableData().tableData as any[];
+  const tableData = gridApi.grid.getTableData().fullData as any[];
   const downList = tableData
     .filter((row: any) => row._downNumber && row._downNumber > 0)
     .map((row: any) => ({
@@ -252,7 +252,6 @@ function submitAllDown() {
       materialName: row.materialName,
       workSheetCode: row.worksheetCode,
     }));
-
   if (downList.length === 0) {
     message.warning($t('productionOperation.pleaseInputDownNumber'));
     return;
