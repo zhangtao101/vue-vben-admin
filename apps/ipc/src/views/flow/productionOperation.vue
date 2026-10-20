@@ -242,7 +242,7 @@ const gridOptions: VxeGridProps<any> = {
       fixed: 'right',
     },
   ],
-  height: 200,
+  height: 300,
   stripe: true,
   sortConfig: {
     multiple: true,
