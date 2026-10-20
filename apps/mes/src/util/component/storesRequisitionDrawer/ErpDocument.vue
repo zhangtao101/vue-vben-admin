@@ -329,21 +329,23 @@ defineExpose({ open });
     <!-- endregion -->
 
     <!-- region 表格 -->
-    <Grid>
-      <template #toolbar-tools>
-        <Space>
-          <Button :loading="printing" @click="handlePrint(PRINT_TEMPLATE_2428)">
-            {{ $t('storesRequisition.print2428') }}
-          </Button>
-          <Button :loading="printing" @click="handlePrint(PRINT_TEMPLATE_2414)">
-            {{ $t('storesRequisition.print2414') }}
-          </Button>
-        </Space>
-      </template>
-      <template #selectedState="{ row, column }">
-        <Checkbox v-model:checked="row[column.field]" disabled />
-      </template>
-    </Grid>
+     <div>
+        <Grid>
+          <template #toolbar-tools>
+            <Space>
+              <Button :loading="printing" @click="handlePrint(PRINT_TEMPLATE_2428)">
+                {{ $t('storesRequisition.print2428') }}
+              </Button>
+              <Button :loading="printing" @click="handlePrint(PRINT_TEMPLATE_2414)">
+                {{ $t('storesRequisition.print2414') }}
+              </Button>
+            </Space>
+          </template>
+          <template #selectedState="{ row, column }">
+            <Checkbox v-model:checked="row[column.field]" disabled />
+          </template>
+        </Grid>
+     </div>
     <!-- endregion -->
 
     <template #footer>
