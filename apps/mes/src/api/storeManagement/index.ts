@@ -5,6 +5,7 @@ export * from './inventoryTaskView.service';
 export * from './ipcReport.service';
 export * from './iqcExamine.service';
 export * from './labelPrint.service';
+export * from './lineSideWarehouseTaskMaintenance.service';
 export * from './materialAllot.service';
 export * from './materialInputList.service';
 export * from './materialInspectionSlip.service';
