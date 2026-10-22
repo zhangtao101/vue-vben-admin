@@ -18,7 +18,10 @@ import {
   Input,
   message,
   Modal,
+  Radio,
+  RadioGroup,
   Space,
+  Tag,
   Tooltip,
 } from 'ant-design-vue';
 
@@ -51,6 +54,12 @@ const gridOptions: VxeGridProps<any> = {
       field: 'description',
       title: $t('baseInfo.materialFeature'),
       minWidth: 250,
+    },
+    {
+      field: 'inseparable',
+      title: $t('baseInfo.inseparable'),
+      minWidth: 120,
+      slots: { default: 'inseparable' },
     },
     {
       field: 'action',
@@ -142,6 +151,8 @@ const formData = ref<any>({
   id: undefined,
   materialCode: '',
   description: '',
+  // 1=不可拆分料，0=可拆分料
+  inseparable: 1,
 });
 // 表单校验规则
 const formRules = ref<any>({
@@ -162,6 +173,7 @@ function handleAdd() {
     id: undefined,
     materialCode: '',
     description: '',
+    inseparable: 1,
   };
   showEditDrawer.value = true;
   formRef.value?.clearValidate();
@@ -178,6 +190,8 @@ function handleEdit(row: any) {
     id: row.id,
     materialCode: row.materialCode,
     description: row.description,
+    // 历史数据无该字段时默认按不可拆分料回显
+    inseparable: row.inseparable === undefined ? 1 : Number(row.inseparable),
   };
   showEditDrawer.value = true;
   formRef.value?.clearValidate();
@@ -202,12 +216,14 @@ function submitForm() {
       id: formData.value.id,
       materialCode: formData.value.materialCode,
       description: formData.value.description,
+      inseparable: formData.value.inseparable,
     };
     const request = isEdit.value
       ? updateMaterialDescription(params)
       : createMaterialDescription({
           materialCode: params.materialCode,
           description: params.description,
+          inseparable: params.inseparable,
         });
     request.then(() => {
       message.success(
@@ -306,6 +322,15 @@ onMounted(() => {
             {{ $t('common.add') }}
           </Button>
         </template>
+        <template #inseparable="{ row }">
+          <Tag :color="Number(row.inseparable) === 1 ? 'red' : 'green'">
+            {{
+              Number(row.inseparable) === 1
+                ? $t('baseInfo.inseparableYes')
+                : $t('baseInfo.inseparableNo')
+            }}
+          </Tag>
+        </template>
         <template #action="{ row }">
           <Space>
             <!-- 编辑 -->
@@ -377,6 +402,13 @@ onMounted(() => {
             :maxlength="255"
             :placeholder="$t('baseInfo.inputPlaceholder')"
           />
+        </FormItem>
+        <!-- 不可拆分标识 -->
+        <FormItem :label="$t('baseInfo.inseparable')" name="inseparable">
+          <RadioGroup v-model:value="formData.inseparable">
+            <Radio :value="1">{{ $t('baseInfo.inseparableYes') }}</Radio>
+            <Radio :value="0">{{ $t('baseInfo.inseparableNo') }}</Radio>
+          </RadioGroup>
         </FormItem>
       </Form>
 

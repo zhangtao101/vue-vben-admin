@@ -8,6 +8,8 @@ export interface MaterialDescriptionItem {
   materialCode: string;
   /** 物料特征，可为空 */
   description: string;
+  /** 是否不可拆分料：1=不可拆分料，0=可拆分料 */
+  inseparable?: number;
 }
 
 /** 分页查询结果 */
@@ -38,6 +40,8 @@ export interface MaterialDescriptionSaveParams {
   materialCode: string;
   /** 物料特征，选填，最多 255 个字符 */
   description?: string;
+  /** 是否不可拆分料：1=不可拆分料，0=可拆分料 */
+  inseparable?: number;
 }
 
 /** 修改参数 */
@@ -48,11 +52,13 @@ export interface MaterialDescriptionUpdateParams {
   materialCode: string;
   /** 物料特征，选填，最多 255 个字符 */
   description?: string;
+  /** 是否不可拆分料：1=不可拆分料，0=可拆分料 */
+  inseparable?: number;
 }
 
 /**
  * 分页查询不可拆分料清单
- * 按物料编号、物料特征模糊查询，后端只返回 inseparable=1 的记录
+ * 按物料编号、物料特征模糊查询，返回记录含 inseparable 标识
  * @param params 查询条件与分页参数
  * @since 2026-10-19 10:00:00
  */
@@ -67,7 +73,7 @@ export function queryMaterialDescriptionList(
 
 /**
  * 新增不可拆分料
- * 后端固定保存 inseparable=1，成功后返回 null
+ * inseparable 由前端传入（1=不可拆分料，0=可拆分料），成功后返回 null
  * @param data 新增内容
  * @since 2026-10-19 10:00:00
  */
@@ -82,7 +88,7 @@ export function createMaterialDescription(
 
 /**
  * 修改不可拆分料
- * 后端固定保存 inseparable=1，成功后返回 null
+ * inseparable 由前端传入（1=不可拆分料，0=可拆分料），成功后返回 null
  * @param data 修改内容，需带 id
  * @since 2026-10-19 10:00:00
  */
