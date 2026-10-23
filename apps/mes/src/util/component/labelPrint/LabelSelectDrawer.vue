@@ -46,6 +46,7 @@ const selectedRow = ref<any>(null);
 
 // 查询参数
 const queryParams = reactive({
+  labelCode: undefined as string | undefined,
   materialCode: undefined as string | undefined,
   materialName: undefined as string | undefined,
   manufacturerName: undefined as string | undefined,
@@ -321,6 +322,7 @@ function handleReset() {
  * @since 2026-10-21 10:00:00
  */
 function resetQuery() {
+  queryParams.labelCode = undefined;
   queryParams.materialCode = undefined;
   queryParams.materialName = undefined;
   queryParams.manufacturerName = undefined;
@@ -393,6 +395,22 @@ defineExpose({ open });
       <Row :gutter="16" align="middle">
         <Col :span="6">
           <FormItem
+            :label="$t('storeManagement.labelPrint.labelCode')"
+            class="!mb-0"
+          >
+            <Input
+              v-model:value="queryParams.labelCode"
+              :placeholder="
+                $t('common.pleaseEnter') +
+                $t('storeManagement.labelPrint.labelCode')
+              "
+              allow-clear
+              @press-enter="handleQuery"
+            />
+          </FormItem>
+        </Col>
+        <Col :span="6">
+          <FormItem
             :label="$t('storeManagement.labelPrint.materialCode')"
             class="!mb-0"
           >
@@ -439,7 +457,7 @@ defineExpose({ open });
             />
           </FormItem>
         </Col>
-        <Col :span="6">
+        <Col :span="6" class="!mt-3">
           <FormItem
             :label="$t('storeManagement.labelPrint.createDate')"
             class="!mb-0"
@@ -451,7 +469,7 @@ defineExpose({ open });
             />
           </FormItem>
         </Col>
-        <Col :span="6">
+        <Col :span="6" class="!mt-3">
           <FormItem
             :label="$t('storeManagement.labelPrint.inspectionDate')"
             class="!mb-0"
@@ -463,7 +481,7 @@ defineExpose({ open });
             />
           </FormItem>
         </Col>
-        <Col :span="18" class="!mt-3">
+        <Col :span="12" class="!mt-3">
           <Space class="flex justify-end">
             <Button @click="handleReset">
               {{ $t('common.reset') }}

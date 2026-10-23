@@ -174,6 +174,7 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 // region 状态定义
 const queryParams = reactive({
+  labelCode: undefined as string | undefined,
   materialCode: undefined as string | undefined,
   materialName: undefined as string | undefined,
   manufacturerName: undefined as string | undefined,
@@ -384,6 +385,17 @@ function handleExport() {
   <div>
     <Card>
       <Form layout="inline" class="!mb-4">
+        <FormItem :label="$t('storeManagement.labelPrint.labelCode')">
+          <Input
+            v-model:value="queryParams.labelCode"
+            :placeholder="
+              $t('common.pleaseEnter') +
+              $t('storeManagement.labelPrint.labelCode')
+            "
+            allow-clear
+            style="width: 180px"
+          />
+        </FormItem>
         <FormItem :label="$t('storeManagement.labelPrint.materialCode')">
           <Input
             v-model:value="queryParams.materialCode"
