@@ -900,10 +900,10 @@ onMounted(() => {
           <Input :value="label.labelCode" disabled placeholder="-" />
           <!-- 标签数量：仅显示，取所选标签的包装数量 -->
           <Input :value="label.packageNumber" disabled placeholder="-" />
-          <!-- 计划数量：下架可改，上架取标签数量且只读 -->
+          <!-- 计划数量：选择标签后回填标签数量，未选择标签时不可填写 -->
           <InputNumber
             v-model:value="label.number"
-            :disabled="formData.taskType !== -1"
+            :disabled="!label.labelCode"
             :min="0"
             class="w-full"
             :placeholder="
