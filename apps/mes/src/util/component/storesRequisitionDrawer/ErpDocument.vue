@@ -118,6 +118,7 @@ function queryERPData({ page, pageSize }: any) {
       .then(({ total, results }: any) => {
         results.forEach((item: any) => {
           item.unclaimedQuantity = item.applyNumber - item.receiveNumber;
+          item.receiveNumber = item.receiveNumber || '';
         });
         resolve({ total, items: results });
       })

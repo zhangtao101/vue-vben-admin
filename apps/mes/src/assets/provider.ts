@@ -929,7 +929,7 @@ export const provider = function () {
               },
               {
                 title: '实领数量',
-                field: 'receiveNumber_test',
+                field: 'receiveNumber',
                 align: 'center',
                 width: 40,
               },
@@ -998,13 +998,17 @@ export const provider = function () {
               );
             const totalCell = (field: string) => {
               const value = Math.round(sum(field) * 10000) / 10000;
+              if (field == 'receiveNumber' && value === 0) {
+                return `<td style="padding:0 10px;text-align: center;"> </td>`;
+              }
               return `<td style="padding:0 10px;text-align: center;">${value}</td>`;
             };
 
                 // ${totalCell('receiveNumber')}
+                // <td style="padding:0 10px;text-align: center;"> </td>
             return `<tr>
                 <td style="padding:0 10px;text-align: center;" colspan="3">合计</td>
-                <td style="padding:0 10px;text-align: center;"> </td>
+                ${totalCell('receiveNumber')}
                 ${totalCell('applyNumber')}
                 ${totalCell('unclaimedQuantity')}
                 ${totalCell('storeNumber')}
