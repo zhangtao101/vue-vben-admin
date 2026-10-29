@@ -79,6 +79,7 @@
     "materialType": "材料类别",
     "materialDrawingCode": "材料图号",
     "stockQuality": "库存数量",
+    "stockStatusName": "库存状态",
     "minPackNumber": "最小包装数",
     "safeLevel": "安全量",
     "storageCode": "所在储位",

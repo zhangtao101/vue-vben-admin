@@ -79,6 +79,7 @@
     "materialType": "Material Type",
     "materialDrawingCode": "Material Drawing Code",
     "stockQuality": "Stock Quantity",
+    "stockStatusName": "Stock Status",
     "minPackNumber": "Min Pack Number",
     "safeLevel": "Safety Level",
     "storageCode": "Storage Code",

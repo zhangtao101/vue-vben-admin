@@ -193,26 +193,26 @@ const gridBottomOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { title: $t('basic.laborHourEvaluation.sequence'), type: 'seq', width: 50 },
-    {
-      field: 'storageCode',
-      title: $t('storeManagement.inventoryManagement.storageCode'),
-      minWidth: 100,
-    },
+    // {
+    //   field: 'storageCode',
+    //   title: $t('storeManagement.inventoryManagement.storageCode'),
+    //   minWidth: 100,
+    // },
     {
       field: 'wareHouse',
       title: $t('storeManagement.inventoryManagement.wareHouse'),
       minWidth: 100,
     },
-    {
-      field: 'wareArea',
-      title: $t('storeManagement.inventoryManagement.wareArea'),
-      minWidth: 120,
-    },
-    {
-      field: 'wareLocation',
-      title: $t('storeManagement.inventoryManagement.wareLocation'),
-      minWidth: 80,
-    },
+    // {
+    //   field: 'wareArea',
+    //   title: $t('storeManagement.inventoryManagement.wareArea'),
+    //   minWidth: 120,
+    // },
+    // {
+    //   field: 'wareLocation',
+    //   title: $t('storeManagement.inventoryManagement.wareLocation'),
+    //   minWidth: 80,
+    // },
     {
       field: 'labelCode',
       title: $t('storeManagement.labelPrint.labelCode'),
@@ -226,6 +226,11 @@ const gridBottomOptions: VxeGridProps<any> = {
     {
       field: 'stockQuality',
       title: $t('storeManagement.inventoryManagement.stockQuality'),
+      minWidth: 100,
+    },
+    {
+      field: 'stockStatusName',
+      title: $t('storeManagement.inventoryManagement.stockStatusName'),
       minWidth: 100,
     },
     {

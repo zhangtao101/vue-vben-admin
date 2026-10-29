@@ -79,6 +79,7 @@
     "materialType": "자재 유형",
     "materialDrawingCode": "자재 도면 코드",
     "stockQuality": "재고 수량",
+    "stockStatusName": "재고 상태",
     "minPackNumber": "최소 포장 수량",
     "safeLevel": "안전 수준",
     "storageCode": "저장 코드",
