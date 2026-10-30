@@ -4,6 +4,7 @@ export * from './personTimeReport.service';
 export * from './personTimeReportAssign.service';
 export * from './productionBom.service';
 export * from './productionFeedAudit.service';
+export * from './productionMaterialRequirementList.service';
 export * from './productionMonitoring';
 export * from './productRed.service';
 export * from './SMTgeneral.service';
