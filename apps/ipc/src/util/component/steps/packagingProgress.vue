@@ -889,7 +889,7 @@ onMounted(() => {
       </Col>
 
       <!-- 右栏：复制结构，仅底部三个按钮可操作；无第二条产线数据时不展示 -->
-      <Col v-if="hasRightPanel" :xs="24" :md="12">
+      <Col :xs="24" :md="12">
         <div class="flex flex-col gap-4">
           <!-- 1. 工单信息表单（只读） -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
@@ -931,6 +931,7 @@ onMounted(() => {
                       type="primary"
                       shape="circle"
                       class="shrink-0"
+                      :disabled="!hasRightPanel"
                       @click="openTransfer(rightPanel)"
                     >
                       <Icon
