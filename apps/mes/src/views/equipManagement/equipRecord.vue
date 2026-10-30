@@ -153,6 +153,12 @@ const editRules = ref<any>({
   equipmentName: [
     { message: $t('equip.requiredField'), required: true, trigger: 'change' },
   ],
+  equipmentType: [
+    { message: $t('equip.requiredField'), required: true, trigger: 'change' },
+  ],
+  subLineId: [
+    { message: $t('equip.requiredField'), required: true, trigger: 'change' },
+  ],
 });
 
 // 设备类别选项
