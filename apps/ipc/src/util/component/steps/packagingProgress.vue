@@ -709,7 +709,10 @@ onMounted(() => {
               :wrapper-col="{ span: 20 }"
               :model="form"
             >
-              <FormItem :label="$t('packagingProgress.subLine')" class="mb-2!">
+              <FormItem
+                :label="$t('packagingProgress.productionLine')"
+                class="mb-2!"
+              >
                 <div class="flex items-center gap-2">
                   <Select
                     v-model:value="form.subLine"
@@ -753,6 +756,25 @@ onMounted(() => {
                       />
                     </Button>
                   </Tooltip>
+                  <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
+                  <span
+                    class="size-3 shrink-0 rounded-full"
+                    :class="getStateDotClass(leftPanel)"
+                  ></span>
+                </div>
+              </FormItem>
+
+              <FormItem :label="$t('packagingProgress.subLine')" class="mb-2!">
+                <div class="flex items-center gap-2">
+                  <Select
+                    v-model:value="leftPanel.form.subLine"
+                    :options="subLineOptions"
+                    :placeholder="$t('packagingProgress.subLinePlaceholder')"
+                    allow-clear
+                    class="flex-1"
+                    @change="handleSubLineChange"
+                    disabled
+                  />
                   <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
                   <span
                     class="size-3 shrink-0 rounded-full"
@@ -898,22 +920,8 @@ onMounted(() => {
               :wrapper-col="{ span: 20 }"
               :model="rightPanel.form"
             >
-              <FormItem :label="$t('packagingProgress.subLine')" class="mb-2!">
-                <div class="flex items-center gap-2">
-                  <Select
-                    v-model:value="rightPanel.form.subLine"
-                    :options="subLineOptions"
-                    :placeholder="$t('packagingProgress.subLinePlaceholder')"
-                    disabled
-                    class="flex-1"
-                  />
-                  <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
-                  <span
-                    class="size-3 shrink-0 rounded-full"
-                    :class="getStateDotClass(rightPanel)"
-                  ></span>
-                </div>
-              </FormItem>
+              <!-- 顶部空行占位 -->
+              <FormItem label="&nbsp;" class="mb-2!" :colon="false" />
               <FormItem
                 :label="$t('packagingProgress.workOrder')"
                 class="mb-2!"
@@ -940,6 +948,22 @@ onMounted(() => {
                       />
                     </Button>
                   </Tooltip>
+                  <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
+                  <span
+                    class="size-3 shrink-0 rounded-full"
+                    :class="getStateDotClass(rightPanel)"
+                  ></span>
+                </div>
+              </FormItem>
+              <FormItem :label="$t('packagingProgress.subLine')" class="mb-2!">
+                <div class="flex items-center gap-2">
+                  <Select
+                    v-model:value="rightPanel.form.subLine"
+                    :options="subLineOptions"
+                    :placeholder="$t('packagingProgress.subLinePlaceholder')"
+                    disabled
+                    class="flex-1"
+                  />
                   <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
                   <span
                     class="size-3 shrink-0 rounded-full"

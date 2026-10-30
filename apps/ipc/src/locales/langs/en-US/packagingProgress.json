@@ -2,6 +2,7 @@
   "title": "Packaging Work Progress",
   "formTitle": "Work Order Info",
   "subLine": "Sub Line",
+  "productionLine": "Production Line",
   "subLinePlaceholder": "Please select sub line",
   "subLineLoadFailed": "Failed to load sub lines",
   "workOrder": "Work Order",

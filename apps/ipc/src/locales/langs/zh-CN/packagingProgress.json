@@ -2,6 +2,7 @@
   "title": "包装工作进度",
   "formTitle": "工单信息",
   "subLine": "子产线",
+  "productionLine": "产线",
   "subLinePlaceholder": "请选择子产线",
   "subLineLoadFailed": "子产线加载失败",
   "workOrder": "工单",

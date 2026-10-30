@@ -2,6 +2,7 @@
   "title": "포장 작업 진행",
   "formTitle": "작업지시 정보",
   "subLine": "하위 라인",
+  "productionLine": "라인",
   "subLinePlaceholder": "하위 라인을 선택하세요",
   "subLineLoadFailed": "하위 라인 로드 실패",
   "workOrder": "작업지시",
