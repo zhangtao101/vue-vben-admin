@@ -60,7 +60,10 @@
       "productDescription": "productDescription",
       "undercutFlag": "Material Type",
       "weighing": "Weighing",
-      "reverseDeduction": "Reverse Deduction"
+      "reverseDeduction": "Reverse Deduction",
+      "wmsInputType": "Inbound Method",
+      "autoWarehouse": "Auto Warehouse",
+      "nonAutoWarehouse": "Non-auto Warehouse"
     },
     "msd": {
       "title": "View MSD",

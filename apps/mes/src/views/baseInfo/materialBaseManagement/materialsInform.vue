@@ -70,6 +70,22 @@ function formatUndercutFlag({ cellValue }: any) {
   return '';
 }
 
+/**
+ * 入库方式格式化：V 自动仓，A 非自动仓
+ * @param {object} params - 单元格参数
+ * @param {string} params.cellValue - 单元格值
+ * @returns {string} 入库方式文案
+ */
+function formatWmsInputType({ cellValue }: any) {
+  if (cellValue === 'V') {
+    return $t('basic.bomManagement.materialsInform.autoWarehouse');
+  }
+  if (cellValue === 'A') {
+    return $t('basic.bomManagement.materialsInform.nonAutoWarehouse');
+  }
+  return '';
+}
+
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -131,6 +147,12 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('basic.bomManagement.materialsInform.undercutFlag'),
       minWidth: 100,
       formatter: formatUndercutFlag,
+    },
+    {
+      field: 'wmsInputType',
+      title: $t('basic.bomManagement.materialsInform.wmsInputType'),
+      minWidth: 100,
+      formatter: formatWmsInputType,
     },
     {
       field: 'action',
@@ -907,6 +929,20 @@ function downloadTemplate() {
             </Radio>
             <Radio :value="1">
               {{ $t('basic.bomManagement.materialsInform.reverseDeduction') }}
+            </Radio>
+          </Radio.Group>
+        </FormItem>
+        <!-- 入库方式：V 自动仓，A 非自动仓 -->
+        <FormItem
+          :label="$t('basic.bomManagement.materialsInform.wmsInputType')"
+          name="wmsInputType"
+        >
+          <Radio.Group v-model:value="editMessage.wmsInputType">
+            <Radio value="V">
+              {{ $t('basic.bomManagement.materialsInform.autoWarehouse') }}
+            </Radio>
+            <Radio value="A">
+              {{ $t('basic.bomManagement.materialsInform.nonAutoWarehouse') }}
             </Radio>
           </Radio.Group>
         </FormItem>
