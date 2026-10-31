@@ -26,6 +26,7 @@ import {
   addBatch,
   addCreate,
   addLot,
+  autoStartWorkSheet,
   deleteLot,
   deleteLotBatch,
   selectByWorkSheetId,
@@ -126,7 +127,8 @@ const gridOptions: VxeGridProps<any> = {
 const gridEvents: any = {
   radioChange: ({ row }: any) => {
     selectedWorkSheet.value = row;
-    // 切换选中工单时，重新查询下方批次列表
+    // 切换选中工单时，同步自动模式开关并重新查询下方批次列表
+    syncAutoMode();
     refreshBatchGrid();
   },
 };
@@ -270,10 +272,10 @@ const stateColorMap: Record<number, string> = {
 const autoMode = ref(false);
 
 /**
- * 同步自动模式开关：选中行的 workState 为 1 时开启，其余（含无选中行）关闭
+ * 同步自动模式开关：工单列表选中行的 workState 为 1 时开启，其余（含无选中行）关闭
  */
 function syncAutoMode() {
-  const row = selectedBatchRecords.value[0];
+  const row = selectedWorkSheet.value;
   autoMode.value = !!row && Number(row.workState) === 1;
 }
 
@@ -556,27 +558,32 @@ function refreshBatchGrid() {
   gridApi2.reload();
 }
 
-/** 自动模式开启：对勾选的批次下发状态 1 */
+/** 自动模式开关：开启下发状态 1，关闭下发状态 0 */
 function handleAutoModeChange(checked: boolean) {
-  if (!checked) return;
-  const records = selectedBatchRecords.value;
-  if (records.length === 0) {
-    message.warning($t('mixerLotManage.plsSelectBatch'));
+  const ws = selectedWorkSheet.value;
+  if (!ws?.id) {
+    message.warning($t('mixerLotManage.plsSelectWorkSheetForAuto'));
     autoMode.value = false;
     return;
   }
-  updateStae(
-    records.map((record: any) => record.id),
-    1,
-    props.processType,
-  )
+  autoStartWorkSheet({
+    state: checked ? 1 : 0,
+    processType: props.processType,
+    id: ws.id,
+    equipCode: '',
+  })
     .then(() => {
-      message.success($t('mixerLotManage.startSuccess'));
+      message.success(
+        checked
+          ? $t('mixerLotManage.startSuccess')
+          : $t('mixerLotManage.autoModeCloseSuccess'),
+      );
       refreshBatchGrid();
+      gridApi.reload();
     })
     .catch(() => {
-      message.error($t('mixerLotManage.startFailed'));
-      autoMode.value = false;
+      // message.error($t('mixerLotManage.startFailed'));
+      autoMode.value = !checked;
     });
 }
 // endregion

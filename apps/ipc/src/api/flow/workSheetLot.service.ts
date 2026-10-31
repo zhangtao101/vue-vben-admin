@@ -62,6 +62,27 @@ export function updateStae(
 }
 
 /**
+ * 工单自动开始
+ * @param params 参数
+ * @param params.state 状态，自动开始固定为 1
+ * @param params.processType 工序类型
+ * @param params.id 工单 id
+ * @param params.equipCode 设备编号（后端暂未使用，传空）
+ * @returns 操作结果
+ * @since 2026-10-31
+ */
+export function autoStartWorkSheet(params: {
+  state: number;
+  processType?: number;
+  id?: number;
+  equipCode?: string;
+}) {
+  return requestClient.put(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/updateS?${qs.stringify(params)}`,
+  );
+}
+
+/**
  * 删除工单
  * @param ids id 列表
  * @since 2026-08-26

@@ -20,7 +20,12 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { selectByWorkSheetId, selectWorkSheet, updateStae } from '#/api';
+import {
+  autoStartWorkSheet,
+  selectByWorkSheetId,
+  selectWorkSheet,
+  updateStae,
+} from '#/api';
 import { $t } from '#/locales';
 
 /**
@@ -36,7 +41,7 @@ defineProps({
 // region 查询条件
 const queryParams = ref<any>({
   startTime: undefined,
-  lineCode: undefined,
+  lineName: undefined,
   workSheetCode: undefined,
   state: undefined,
 });
@@ -56,7 +61,7 @@ function handleQuery() {
 function handleReset() {
   queryParams.value = {
     startTime: undefined,
-    lineCode: undefined,
+    lineName: undefined,
     workSheetCode: undefined,
     state: undefined,
   };
@@ -140,7 +145,7 @@ function queryWorkSheetList({ page }: any) {
   return selectWorkSheet({
     pageNum: page.currentPage,
     pageSize: page.pageSize,
-    lineCode: queryParams.value.lineCode,
+    lineName: queryParams.value.lineName,
     startTime: queryParams.value.startTime,
     processType: PROCESS_TYPE,
     workSheetCode: queryParams.value.workSheetCode,
@@ -216,7 +221,7 @@ const lotGridOptions: VxeGridProps<any> = {
 /** 批次LOT单选变化：记录选中的 LOT id，用于开始/结束按钮 */
 function handleLotRadioChange({ row }: any) {
   selectedLotIds.value = row ? [row.id] : [];
-  syncAutoMode(row);
+  syncAutoMode();
 }
 
 const lotGridEvents: VxeGridListeners<any> = {
@@ -242,14 +247,14 @@ function queryLotList() {
 }
 // endregion
 
-// region 自动模式 + 开始/结束控制（作用于单选选中的批次LOT）
+// region 自动模式（作用于单选选中的工单） + 开始/结束控制（作用于单选选中的批次LOT）
 const autoMode = ref(false);
 
 /**
- * 同步自动模式开关：选中行的 workState 为 1 时开启，其余（含无选中行）关闭
- * @param row 当前选中的批次LOT行
+ * 同步自动模式开关：工单列表选中行的 workState 为 1 时开启，其余（含无选中行）关闭
  */
-function syncAutoMode(row?: any) {
+function syncAutoMode() {
+  const row = selectedWorkSheet.value;
   autoMode.value = !!row && Number(row.workState) === 1;
 }
 
@@ -302,23 +307,31 @@ function handleEnd() {
     });
 }
 
-/** 自动模式开启：对选中的批次LOT下发状态 1 */
+/** 自动模式开关：开启下发状态 1，关闭下发状态 0 */
 function handleAutoModeChange(checked: boolean) {
-  if (!checked) return;
-  const record = getSelectedLot();
-  if (!record) {
-    message.warning($t('mixedWaterProgress.plsSelectLot'));
+  const ws = selectedWorkSheet.value;
+  if (!ws?.id) {
+    message.warning($t('mixedWaterProgress.plsSelectWorkSheetForAuto'));
     autoMode.value = false;
     return;
   }
-  updateStae([record.id], 1, PROCESS_TYPE)
+  autoStartWorkSheet({
+    state: checked ? 1 : 0,
+    processType: PROCESS_TYPE,
+    id: ws.id,
+    equipCode: '',
+  })
     .then(() => {
-      message.success($t('mixedWaterProgress.startSuccess'));
+      message.success(
+        checked
+          ? $t('mixedWaterProgress.startSuccess')
+          : $t('mixedWaterProgress.autoModeCloseSuccess'),
+      );
       refreshLotList();
     })
     .catch(() => {
-      message.error($t('mixedWaterProgress.startFailed'));
-      autoMode.value = false;
+      // message.error($t('mixedWaterProgress.startFailed'));
+      autoMode.value = !checked;
     });
 }
 
@@ -349,10 +362,10 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('mixedWaterProgress.lineCode')">
+        <FormItem :label="$t('mixedWaterProgress.lineName')">
           <Input
-            v-model:value="queryParams.lineCode"
-            :placeholder="$t('mixedWaterProgress.lineCodePlaceholder')"
+            v-model:value="queryParams.lineName"
+            :placeholder="$t('mixedWaterProgress.lineNamePlaceholder')"
             allow-clear
           />
         </FormItem>
