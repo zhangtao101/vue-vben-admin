@@ -24,14 +24,17 @@ import {
   Select,
   Space,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   checkTagCode,
   getProductionBomList,
   listFeedBySheet,
+  loadMaterial,
   searchSubLineByProcessCode,
   searchWorkSheetList,
+  unloadMaterial,
 } from '#/api';
 import { $t } from '#/locales';
 import EquipmentSelectDrawer from '#/util/component/drawers/EquipmentSelectDrawer.vue';
@@ -403,12 +406,23 @@ function autoSelectBom(list: any[]) {
 }
 
 // ========== ③ 加载列表表格（右栏下方） ==========
+/** 加载列表当前选中的行（装载/卸载未扫码时取该行的标签） */
+const selectedFeedRow = ref<any>(null);
+
+/** 加载列表单选变化事件：记录当前选中行 */
+const feedGridEvents: any = {
+  radioChange: ({ row }: any) => {
+    selectedFeedRow.value = row ?? null;
+  },
+};
+
 const feedGridOptions: VxeGridProps<any> = {
   rowClassName: 'ipc-grid-row',
   headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
+    { type: 'radio', width: 50, title: '' },
     {
       field: 'labelCode',
       title: $t('materialLoadingDrawer.colLabelCode'),
@@ -441,11 +455,16 @@ const feedGridOptions: VxeGridProps<any> = {
       query: queryFeedList,
     },
   },
+  radioConfig: {
+    highlight: true,
+    trigger: 'row',
+  },
   showOverflow: 'tooltip',
   stripe: true,
 };
 
 const [FeedGrid, feedGridApi] = useVbenVxeGrid({
+  gridEvents: feedGridEvents,
   gridOptions: feedGridOptions,
 });
 
@@ -486,14 +505,91 @@ function handleScan() {
     message.warning($t('materialLoadingDrawer.plsSelectBom'));
     return;
   }
-  return checkTagCode({ productionBomId, tagCode }).then(() => {
+  return checkTagCode({ productionBomId, tagCode }).then((res: any) => {
     message.success($t('materialLoadingDrawer.scanSuccess'));
     // 清空扫码内容，便于连续扫码
     feedQuery.tagId = '';
-    // 重新加载下方加载列表
+    // 接口返回的标签详情直接插入加载列表首行，不重新请求列表
+    appendFeedRow(res, tagCode);
+  });
+}
+
+/**
+ * 将标签详情插入加载列表首行（本地插入，不触发列表重新查询）
+ * @param res 标签详情（labelCode/materialCode/materialName/unit/packageNumber 等）
+ * @param tagCode 扫码的标签ID，接口未返回 labelCode 时兜底使用
+ * @returns 无返回值，详情为空时直接返回
+ * @since 2026-10-31
+ */
+function appendFeedRow(res: any, tagCode: string) {
+  if (!res) {
+    return;
+  }
+  const row = {
+    ...res,
+    labelCode: res?.labelCode ?? tagCode,
+    feedNumber: res?.feedNumber ?? res?.packageNumber,
+    feedTime: res?.feedTime ?? dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  };
+  feedGridApi.grid?.insertAt(row);
+}
+
+// ========== 装载 / 卸载 ==========
+/**
+ * 取当前操作的标签ID：优先取扫码框内容，未扫码时取加载列表选中行的标签
+ * @returns 标签ID，取不到时返回空字符串
+ * @since 2026-10-31
+ */
+function getCurrentTagId() {
+  return (feedQuery.tagId?.trim() || selectedFeedRow.value?.labelCode) ?? '';
+}
+
+/**
+ * 装载：按当前标签ID与工单号调用材料装载接口
+ * @returns 无返回值，校验不通过时弹出警告
+ * @since 2026-10-31
+ */
+function handleLoad() {
+  const workSheetCode = currentWorkSheet.value?.workSheetCode;
+  if (!workSheetCode) {
+    message.warning($t('materialLoadingDrawer.plsSelectWorkSheet'));
+    return;
+  }
+  const tagId = getCurrentTagId();
+  if (!tagId) {
+    message.warning($t('materialLoadingDrawer.scanEmpty'));
+    return;
+  }
+  loadMaterial({ tagId, workSheetCode }).then(() => {
+    message.success($t('materialLoadingDrawer.loadSuccess'));
+    feedQuery.tagId = '';
     feedGridApi.reload();
   });
 }
+
+/**
+ * 卸载：按当前标签ID与工单号调用材料卸载接口
+ * @returns 无返回值，校验不通过时弹出警告
+ * @since 2026-10-31
+ */
+function handleUnload() {
+  const workSheetCode = currentWorkSheet.value?.workSheetCode;
+  if (!workSheetCode) {
+    message.warning($t('materialLoadingDrawer.plsSelectWorkSheet'));
+    return;
+  }
+  const tagId = getCurrentTagId();
+  if (!tagId) {
+    message.warning($t('materialLoadingDrawer.plsSelectMaterial'));
+    return;
+  }
+  unloadMaterial({ tagId, workSheetCode }).then(() => {
+    message.success($t('materialLoadingDrawer.unloadSuccess'));
+    feedQuery.tagId = '';
+    feedGridApi.reload();
+  });
+}
+// endregion
 
 // ========== 查询 / 重置 ==========
 /**
@@ -530,6 +626,7 @@ function open(context?: any) {
   query.workSheetCode = context?.workSheetCode ?? '';
   currentWorkSheet.value = null;
   currentBom.value = null;
+  selectedFeedRow.value = null;
   feedQuery.subLineCode = context?.subLineCode ?? '';
   feedQuery.deviceCode = context?.deviceCode ?? '';
   selectedEquipments.value = [];
@@ -555,6 +652,7 @@ function handleClose() {
   query.workSheetCode = '';
   currentWorkSheet.value = null;
   currentBom.value = null;
+  selectedFeedRow.value = null;
   feedQuery.subLineCode = '';
   feedQuery.deviceCode = '';
   feedQuery.tagId = '';
@@ -694,7 +792,13 @@ defineExpose({ open });
     </div>
 
     <template #footer>
-      <div class="flex justify-end">
+      <div class="flex justify-end gap-2">
+        <Button type="primary" @click="handleLoad">
+          {{ $t('materialLoadingDrawer.load') }}
+        </Button>
+        <Button @click="handleUnload">
+          {{ $t('materialLoadingDrawer.unload') }}
+        </Button>
         <Button @click="handleClose">
           {{ $t('materialLoadingDrawer.close') }}
         </Button>

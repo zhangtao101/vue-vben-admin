@@ -20,5 +20,11 @@
   "colInputQty": "Input Qty",
   "colFeedNumber": "Feed Qty",
   "colFeedTime": "Feed Time",
+  "load": "Load",
+  "unload": "Unload",
+  "loadSuccess": "Loaded successfully",
+  "unloadSuccess": "Unloaded successfully",
+  "plsSelectWorkSheet": "Please select a work order first",
+  "plsSelectMaterial": "Please select a material first",
   "close": "Close"
 }
