@@ -916,7 +916,7 @@ onMounted(() => {
               {{ $t('packingWorkOrderManage.linePersonPlan') }}
             </Button>
             <Button
-              v-if="hasAuth('下层工单生成') && ![1].includes(processType)"
+              v-if="hasAuth('下层工单生成') && ![1, 5, 6].includes(processType)"
               type="primary"
               @click="handleGenerateLowerWorkSheet"
             >

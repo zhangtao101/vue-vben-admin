@@ -85,6 +85,7 @@
   "pleaseSelectStacker": "Please select stacker",
   "pleaseSelectEquipment": "Please select equipment",
   "pleaseSelectInstructionDate": "Please select instruction date",
+  "pleaseSelectBatchPrint": "Please select batch print no.",
   "operationSuccess": "Operation succeeded",
   "operationFailed": "Operation failed"
 }

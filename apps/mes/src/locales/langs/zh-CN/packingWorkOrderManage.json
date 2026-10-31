@@ -85,6 +85,7 @@
   "pleaseSelectStacker": "请选择堆垛机",
   "pleaseSelectEquipment": "请选择设备",
   "pleaseSelectInstructionDate": "请选择生产指示日期",
+  "pleaseSelectBatchPrint": "请选择批次印字编号",
   "operationSuccess": "操作成功",
   "operationFailed": "操作失败"
 }

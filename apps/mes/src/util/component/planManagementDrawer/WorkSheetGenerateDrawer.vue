@@ -60,9 +60,27 @@ const processType = ref<number>();
 /** 仅该单别下该项为堆垛机，其余单别统一显示为设备 */
 const STACKER_PROCESS_TYPE = 4;
 
+/** 不显示批次印字编号且设备项非必填的单别（5蔬菜包装工单、6无重力搅拌工单） */
+const NON_BATCH_PRINT_PROCESS_TYPES = [5, 6];
+
 /** 当前单别下是否显示堆垛机 */
 const isStackerProcess = computed(
   () => processType.value === STACKER_PROCESS_TYPE,
+);
+
+/** 当前单别下是否显示批次印字编号（5/6 单别不显示） */
+const showBatchPrint = computed(
+  () => !NON_BATCH_PRINT_PROCESS_TYPES.includes(processType.value as number),
+);
+
+/** 当前单别下批次印字编号是否必填（仅包装工单必填） */
+const isBatchPrintRequired = computed(
+  () => processType.value === STACKER_PROCESS_TYPE,
+);
+
+/** 当前单别下设备项是否必填（5/6 单别非必填） */
+const isEquipRequired = computed(
+  () => !NON_BATCH_PRINT_PROCESS_TYPES.includes(processType.value as number),
 );
 
 /** 产线设备项标签：堆垛机单别显示「堆垛机」，其余显示「设备」 */
@@ -110,7 +128,14 @@ const generateFormRules = computed<Record<string, Rule[]>>(() => ({
       message: isStackerProcess.value
         ? $t('packingWorkOrderManage.pleaseSelectStacker')
         : $t('packingWorkOrderManage.pleaseSelectEquipment'),
-      required: true,
+      required: isEquipRequired.value,
+      trigger: 'change',
+    },
+  ],
+  batchPrint: [
+    {
+      message: $t('packingWorkOrderManage.pleaseSelectBatchPrint'),
+      required: isBatchPrintRequired.value,
       trigger: 'change',
     },
   ],
@@ -778,9 +803,10 @@ defineExpose({ open });
             </FormItem>
           </Col>
 
-          <Col :span="6">
+          <Col v-if="showBatchPrint" :span="6">
             <FormItem
               :label="$t('packingWorkOrderManage.batchPrint')"
+              name="batchPrint"
               :label-col="{ span: 8 }"
               :wrapper-col="{ span: 16 }"
               style="margin-bottom: 1em"

@@ -85,6 +85,7 @@
   "pleaseSelectStacker": "스태커를 선택하세요",
   "pleaseSelectEquipment": "설비를 선택하세요",
   "pleaseSelectInstructionDate": "생산지시일자를 선택하세요",
+  "pleaseSelectBatchPrint": "배치 인자 번호를 선택하세요",
   "operationSuccess": "처리 성공",
   "operationFailed": "처리 실패"
 }
