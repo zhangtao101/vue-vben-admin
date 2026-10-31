@@ -477,7 +477,7 @@ defineExpose({ open });
   <Drawer
     v-model:open="show"
     placement="top"
-    height="88vh"
+    height="100%"
     :destroy-on-close="true"
     :title="$t('packagingMaterialDrawer.materialLoadDrawer')"
     @close="handleClose"
