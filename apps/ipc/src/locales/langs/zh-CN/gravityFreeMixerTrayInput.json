@@ -5,6 +5,7 @@
   "indicateDatePlaceholder": "请选择指示日期",
   "lineCode": "产线",
   "lineCodePlaceholder": "请输入产线",
+  "lineNamePlaceholder": "请输入产线名称",
   "workSheetCode": "工单号",
   "workSheetCodePlaceholder": "请输入工单号",
   "indicateStatus": "状态",

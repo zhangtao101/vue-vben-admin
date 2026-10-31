@@ -5,6 +5,7 @@
   "indicateDatePlaceholder": "Please select indicate date",
   "lineCode": "Line Code",
   "lineCodePlaceholder": "Please enter line code",
+  "lineNamePlaceholder": "Please enter line name",
   "workSheetCode": "Worksheet No.",
   "workSheetCodePlaceholder": "Please enter worksheet no.",
   "indicateStatus": "Status",

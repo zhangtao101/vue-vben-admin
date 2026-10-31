@@ -48,7 +48,7 @@ const props = defineProps({
 // region 查询条件
 const queryParams = ref<any>({
   startTime: undefined,
-  lineCode: undefined,
+  lineName: undefined,
   workSheetCode: undefined,
   state: undefined,
 });
@@ -68,7 +68,7 @@ function handleQuery() {
 function handleReset() {
   queryParams.value = {
     startTime: undefined,
-    lineCode: undefined,
+    lineName: undefined,
     workSheetCode: undefined,
     state: undefined,
   };
@@ -150,7 +150,7 @@ async function queryWorkSheetList({ page }: any) {
     const res = await selectWorkSheet({
       pageNum: page.currentPage,
       pageSize: page.pageSize,
-      lineCode: queryParams.value.lineCode,
+      lineName: queryParams.value.lineName,
       startTime: queryParams.value.startTime,
       processType: props.processType,
       workSheetCode: queryParams.value.workSheetCode,
@@ -195,7 +195,7 @@ function getLotColumns(): any[] {
     });
   }
   columns.push({
-    field: 'fulluse',
+    field: 'fullUse',
     title: props.processType === 1 ?
             $t('mixedWaterProgress.isInput') :
             $t('gravityFreeMixerTrayInput.fullUse'),
@@ -430,10 +430,10 @@ onMounted(() => {
             allow-clear
           />
         </FormItem>
-        <FormItem :label="$t('gravityFreeMixerTrayInput.lineCode')">
+        <FormItem :label="$t('gravityFreeMixerTrayInput.lineName')">
           <Input
-            v-model:value="queryParams.lineCode"
-            :placeholder="$t('gravityFreeMixerTrayInput.lineCodePlaceholder')"
+            v-model:value="queryParams.lineName"
+            :placeholder="$t('gravityFreeMixerTrayInput.lineNamePlaceholder')"
             allow-clear
           />
         </FormItem>
