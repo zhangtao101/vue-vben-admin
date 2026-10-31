@@ -208,6 +208,20 @@ function handleWorkOrderChange(workSheetId: any) {
     loadMaterials();
   });
 }
+
+/**
+ * 重新加载当前工单数据：刷新工单下拉状态、重新填充左右两栏并重载称重记录。
+ * @returns {void} 无返回值，未选中工单时直接返回。
+ * @throws 不主动抛出异常。
+ * @since 2026-10-31 00:00:00
+ */
+function reloadCurrentWorkOrder() {
+  if (!form.workOrder) {
+    return;
+  }
+  loadWorkOrders();
+  handleWorkOrderChange(form.workOrder);
+}
 // endregion
 
 // region 2. 左右两栏面板
@@ -484,7 +498,7 @@ function handleSopImage(panel: any) {
 }
 
 /**
- * 开始工作：调用状态更新接口将工单置为进行中（state 2），成功后面板状态置为 running。
+ * 开始工作：调用状态更新接口将工单置为进行中（state 2），成功后面板状态置为 running 并重新加载当前工单数据。
  * @param {object} panel - 目标面板（leftPanel/rightPanel）。
  * @returns {void} 无返回值，成功后弹出成功提示。
  * @throws 不主动抛出异常，失败时提示开始失败。
@@ -503,6 +517,8 @@ function handleWorkStart(panel: any) {
     .then(() => {
       panel.workStatus = 'running';
       message.success($t('packagingProgress.startSuccess'));
+      // 开始成功后重新加载当前工单数据，刷新工单状态与面板内容
+      reloadCurrentWorkOrder();
     })
     .catch(() => {
       message.error($t('packagingProgress.startFailed'));
