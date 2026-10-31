@@ -27,6 +27,7 @@ export function queryFinishRecord(params: {
 /**
  * 增加完工记录
  * @param data 提交数据
+ * @param data.equipCode 设备编号
  * @param data.lotCode lot id
  * @param data.quity 数量
  * @param data.unit 单位
@@ -35,6 +36,7 @@ export function queryFinishRecord(params: {
  * @since 2026-09-02
  */
 export function addFinishRecord(data: {
+  equipCode: string;
   lotCode: string;
   quity: number;
   unit: string;

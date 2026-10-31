@@ -211,6 +211,7 @@ const [ProductionGrid, productionGridApi] = useVbenVxeGrid({
 const drawerVisible = ref(false);
 const genFormRef = ref<any>();
 const genForm = reactive<any>({
+  equipCode: '',
   lotCode: '',
   quity: undefined,
   unit: '',
@@ -234,6 +235,8 @@ function handleGenPerformance() {
     return;
   }
   // 左侧子工单列表仅作展示，LOT 代码在抽屉内填写
+  // 设备编号取左侧选中行，仅展示不可编辑
+  genForm.equipCode = selectedLot.value?.equipCode ?? '';
   genForm.lotCode = '';
   genForm.quity = undefined;
   genForm.unit = '';
@@ -243,6 +246,7 @@ function handleGenPerformance() {
 function handleGenSubmit() {
   genFormRef.value.validate().then(() => {
     addFinishRecord({
+      equipCode: genForm.equipCode,
       lotCode: genForm.lotCode,
       quity: genForm.quity,
       unit: genForm.unit,
@@ -258,6 +262,7 @@ function handleGenSubmit() {
 /** 关闭抽屉：重置所有状态 */
 function handleGenClose() {
   drawerVisible.value = false;
+  genForm.equipCode = '';
   genForm.lotCode = '';
   genForm.quity = undefined;
   genForm.unit = '';
@@ -290,10 +295,6 @@ function handleCancelPerformance() {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="ipc-fs-lg font-bold">
-      {{ $t('productionPerformance.title') }}
-    </div>
-
     <!-- 1. 查询条件 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
       <Form
@@ -381,6 +382,13 @@ function handleCancelPerformance() {
           name="workSheetCode"
         >
           <Input :value="queryForm.workSheetCode" disabled />
+        </FormItem>
+        <!-- 设备编号：取左侧子工单选中行，只读展示，提交时一并带上 -->
+        <FormItem
+          :label="$t('productionPerformance.equipCode')"
+          name="equipCode"
+        >
+          <Input v-model:value="genForm.equipCode" disabled />
         </FormItem>
         <FormItem :label="$t('productionPerformance.lotCode')" name="lotCode">
           <Input

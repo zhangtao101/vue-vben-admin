@@ -1,6 +1,7 @@
 {
   "title": "생산 실적 생성/취소",
   "workSheetCode": "작업지시 번호",
+  "equipCode": "설비 번호",
   "workSheetCodePlaceholder": "작업지시 번호를 입력하세요",
   "productionList": "완료 기록 목록",
   "lotList": "하위 작업지시 목록",

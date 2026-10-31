@@ -2,6 +2,7 @@
   "title": "Production Performance Generate/Cancel",
   "workSheetCode": "Work Order No.",
   "workSheetCodePlaceholder": "Enter work order no.",
+  "equipCode": "Equipment Code",
   "productionList": "Finish Record List",
   "lotList": "Sub Work Order List",
   "colLotCode": "LOT Code",

@@ -2,6 +2,7 @@
   "title": "生产业绩生成/取消",
   "workSheetCode": "工单号",
   "workSheetCodePlaceholder": "请输入工单号",
+  "equipCode": "设备编号",
   "productionList": "完工记录列表",
   "lotList": "子工单列表",
   "colLotCode": "LOT代码",
