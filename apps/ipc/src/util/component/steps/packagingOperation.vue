@@ -22,7 +22,7 @@ import {
   cancelCartInput,
   cancelPerformance,
   getLoadingLotList,
-  getProductionBomList,
+  listFeedBySheet,
   queryWorkSheetInfo,
   registerPerformance,
   searchSubLineByProcessCode,
@@ -204,19 +204,21 @@ const metricItems = [
 
 // region 1.2 右侧：投入材料（表格）+ 零点/重量控制
 /**
- * 加载投入材料（生产物料清单）表格数据：按当前工单号查询
+ * 加载投入材料表格数据：按当前工单号查询已投入标签记录
  * 工单号为空时返回空列表
- * @returns 材料清单分页数据（materialCode 料号、materialName 物料名称、bomUseQuantity BOM用量、standardQuantity 标准用量、alreadyInputQuantity 已投入数量）
+ * @returns 已投入标签列表（lotId 标签LOTID、materialCode 料号、materialName 物料名称、nowNumber 加载数量、unit 单位、feedEquipCode 投入设备号、feedEquipName 投入设备名称）
  * @since 2026-09-03
  */
 function queryMaterialList() {
   if (!form.workSheetCode) {
     return Promise.resolve({ items: [], total: 0 });
   }
-  return getProductionBomList(form.workSheetCode).then((res: any) => {
-    const list = Array.isArray(res) ? res : [];
-    return { items: list, total: list.length };
-  });
+  return listFeedBySheet({ workSheetCode: form.workSheetCode }).then(
+    (res: any) => {
+      const list = Array.isArray(res) ? res : [];
+      return { items: list, total: list.length };
+    },
+  );
 }
 
 const materialGridOptions: VxeGridProps<any> = {
@@ -226,6 +228,11 @@ const materialGridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     {
+      field: 'lotId',
+      title: $t('packagingOperation.colFeedLotId'),
+      minWidth: 180,
+    },
+    {
       field: 'materialName',
       title: $t('packagingOperation.materialProductName'),
       minWidth: 160,
@@ -234,6 +241,26 @@ const materialGridOptions: VxeGridProps<any> = {
       field: 'materialCode',
       title: $t('packagingOperation.materialProductCode'),
       minWidth: 160,
+    },
+    {
+      field: 'nowNumber',
+      title: $t('packagingOperation.colLoadNumber'),
+      minWidth: 100,
+    },
+    {
+      field: 'unit',
+      title: $t('packagingOperation.colUnit'),
+      minWidth: 80,
+    },
+    {
+      field: 'feedEquipCode',
+      title: $t('packagingOperation.colFeedEquipCode'),
+      minWidth: 140,
+    },
+    {
+      field: 'feedEquipName',
+      title: $t('packagingOperation.colFeedEquipName'),
+      minWidth: 140,
     },
   ],
   height: 250,
