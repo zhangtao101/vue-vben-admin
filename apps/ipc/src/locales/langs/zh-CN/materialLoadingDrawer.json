@@ -16,7 +16,7 @@
   "colMaterialCode": "材料代码",
   "colMaterialName": "材料名称",
   "colBomQty": "BOM用量",
-  "colStandardQty": "标准用量",
+  "colStandardQty": "所需数量",
   "colInputQty": "已投入数量",
   "colFeedNumber": "投入数量",
   "colFeedTime": "投入时间",

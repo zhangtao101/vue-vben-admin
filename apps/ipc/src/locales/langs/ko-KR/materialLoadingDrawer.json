@@ -16,7 +16,7 @@
   "colMaterialCode": "자재 코드",
   "colMaterialName": "자재 명칭",
   "colBomQty": "BOM 사용량",
-  "colStandardQty": "표준 사용량",
+  "colStandardQty": "필요 수량",
   "colInputQty": "기투입 수량",
   "colFeedNumber": "투입 수량",
   "colFeedTime": "투입 시간",

@@ -16,7 +16,7 @@
   "colMaterialCode": "Material Code",
   "colMaterialName": "Material Name",
   "colBomQty": "BOM Qty",
-  "colStandardQty": "Standard Qty",
+  "colStandardQty": "Required Qty",
   "colInputQty": "Input Qty",
   "colFeedNumber": "Feed Qty",
   "colFeedTime": "Feed Time",
