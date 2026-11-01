@@ -490,7 +490,7 @@ defineExpose({ open });
             <InputNumber
               v-model:value="actualWt"
               :min="0"
-              :precision="1"
+              :precision="3"
               style="width: 180px"
               :disabled="packType === 1"
             />
