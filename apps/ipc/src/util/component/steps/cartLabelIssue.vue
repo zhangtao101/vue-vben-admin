@@ -17,7 +17,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { cancelCartInput, queryCartList } from '#/api';
+import { deleteCart, queryCartList } from '#/api';
 import { $t } from '#/locales';
 import CartLock from '#/util/component/steps/cartLock.vue';
 
@@ -233,7 +233,10 @@ function handleDelete(row: any) {
     cancelText: $t('common.cancel'),
     okType: 'danger',
     onOk: () =>
-      cancelCartInput({ cartCode: row.cartCode }).then(() => {
+      deleteCart({
+        cartCode: row.cartCode,
+        workSheetCode: row.workSheetCode ?? '',
+      }).then(() => {
         message.success($t('cartLabelIssue.deleteSuccess'));
         handleQuery();
       }),
