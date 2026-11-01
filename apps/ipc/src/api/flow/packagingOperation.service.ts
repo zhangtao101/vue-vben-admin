@@ -173,10 +173,15 @@ export function checkTagCode(params: {
  * @param data 提交数据
  * @param data.tagId 标签ID
  * @param data.workSheetCode 工单号
+ * @param data.equipCode 设备编号
  * @returns 操作结果
  * @since 2026-09-03
  */
-export function loadMaterial(data: { tagId: string; workSheetCode: string }) {
+export function loadMaterial(data: {
+  equipCode: string;
+  tagId: string;
+  workSheetCode: string;
+}) {
   return requestClient.post(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/human/packing/materialLoading`,
     data,
@@ -188,10 +193,15 @@ export function loadMaterial(data: { tagId: string; workSheetCode: string }) {
  * @param data 提交数据
  * @param data.tagId 标签ID
  * @param data.workSheetCode 工单号
+ * @param data.equipCode 设备编号
  * @returns 操作结果
  * @since 2026-09-03
  */
-export function unloadMaterial(data: { tagId: string; workSheetCode: string }) {
+export function unloadMaterial(data: {
+  equipCode: string;
+  tagId: string;
+  workSheetCode: string;
+}) {
   return requestClient.post(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/human/packing/materialUnloading`,
     data,

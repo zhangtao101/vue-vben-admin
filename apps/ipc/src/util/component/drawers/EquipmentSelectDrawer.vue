@@ -49,6 +49,8 @@ const queryParams = ref({
 });
 // 设备类型
 const equipmentTypeVal = ref<number | undefined>(0);
+// 子产线代码：由调用方传入，作为设备查询的固定条件
+const subLineCodeVal = ref<string>('');
 
 // ========== 表格配置 ==========
 const gridOptions: VxeGridProps<any> = {
@@ -159,6 +161,7 @@ function queryData({
         equipmentTypeVal.value && equipmentTypeVal.value > 0
           ? equipmentTypeVal.value
           : 1,
+      subLineCode: subLineCodeVal.value || undefined,
     };
 
     getEquipSelectList(params)
@@ -187,16 +190,19 @@ function queryData({
  * @param selectedRows 已选中的设备行数据，用于打开后恢复选中状态（可选）
  * @param single 是否单选，默认为 false（多选）
  * @param equipmentType 设备类型，默认为 0（全部）
+ * @param subLineCode 子产线代码，作为设备查询的固定条件（可选，为空时不下传）
  * @since 2026-08-31
  */
 function open(
   selectedRows?: EquipSelectItem[],
   single = false,
   equipmentType?: number,
+  subLineCode?: string,
 ) {
   show.value = true;
   singleSelect.value = single;
   equipmentTypeVal.value = equipmentType;
+  subLineCodeVal.value = subLineCode ?? '';
   // 清空表格选中状态
   const grid = (gridApi as any).grid;
   if (grid && grid.clearCheckboxRow) {
@@ -243,6 +249,7 @@ function handleClose() {
   // 关闭时清空所有可变状态，避免下次打开残留旧值
   singleSelect.value = false;
   selectedCodes.value = [];
+  subLineCodeVal.value = '';
   queryParams.value = {
     equipmentCode: '',
     equipmentName: '',

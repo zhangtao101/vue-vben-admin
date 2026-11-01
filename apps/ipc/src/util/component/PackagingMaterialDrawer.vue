@@ -94,7 +94,13 @@ const selectedEquipments = ref<EquipSelectItem[]>([]);
  * @since 2026-09-02 00:00:00
  */
 function handleOpenEquipmentSelect() {
-  equipmentDrawerRef.value?.open(selectedEquipments.value, true, 1);
+  // 带上当前工单的子产线代码，用于过滤设备列表
+  equipmentDrawerRef.value?.open(
+    selectedEquipments.value,
+    true,
+    1,
+    baseInfo.subLineCode,
+  );
 }
 
 /**

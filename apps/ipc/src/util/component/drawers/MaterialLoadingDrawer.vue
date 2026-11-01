@@ -82,7 +82,13 @@ const selectedEquipments = ref<EquipSelectItem[]>([]);
  * @since 2026-09-03
  */
 function handleOpenEquipmentSelect() {
-  equipmentDrawerRef.value?.open(selectedEquipments.value, true);
+  // 打开设备抽屉时带上当前子产线代码，用于过滤设备列表
+  equipmentDrawerRef.value?.open(
+    selectedEquipments.value,
+    true,
+    undefined,
+    feedQuery.subLineCode,
+  );
 }
 
 /**
@@ -560,7 +566,11 @@ function handleLoad() {
     message.warning($t('materialLoadingDrawer.scanEmpty'));
     return;
   }
-  loadMaterial({ tagId, workSheetCode }).then(() => {
+  loadMaterial({
+    equipCode: feedQuery.deviceCode ?? '',
+    tagId,
+    workSheetCode,
+  }).then(() => {
     message.success($t('materialLoadingDrawer.loadSuccess'));
     feedQuery.tagId = '';
     feedGridApi.reload();
@@ -583,7 +593,11 @@ function handleUnload() {
     message.warning($t('materialLoadingDrawer.plsSelectMaterial'));
     return;
   }
-  unloadMaterial({ tagId, workSheetCode }).then(() => {
+  unloadMaterial({
+    equipCode: feedQuery.deviceCode ?? '',
+    tagId,
+    workSheetCode,
+  }).then(() => {
     message.success($t('materialLoadingDrawer.unloadSuccess'));
     feedQuery.tagId = '';
     feedGridApi.reload();
