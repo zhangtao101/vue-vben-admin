@@ -192,22 +192,57 @@ const lotGridOptions: VxeGridProps<any> = {
       minWidth: 140,
     },
     {
-      field: 'looseLabel',
-      title: $t('mixedWaterProgress.looseLabel'),
-      minWidth: 140,
+      field: 'batch',
+      title: $t('mixedWaterProgress.batchCount'),
+      minWidth: 90,
     },
     {
-      field: 'looseUse',
-      title: $t('mixedWaterProgress.looseUse'),
+      field: 'startTime',
+      title: $t('mixedWaterProgress.startTime'),
+      minWidth: 160,
+    },
+    {
+      field: 'endTime',
+      title: $t('mixedWaterProgress.endTime'),
+      minWidth: 160,
+    },
+    {
+      field: 'isLoad',
+      title: $t('mixedWaterProgress.materialLoaded'),
       width: 120,
       slots: { default: 'useCell' },
     },
     {
-      field: 'fullUse',
-      title: $t('mixedWaterProgress.isInput'),
+      field: 'state',
+      title: $t('mixedWaterProgress.batchStarted'),
       width: 120,
-      slots: { default: 'useCell' },
+      slots: { default: 'stateCell' },
+      params: { target: 2 },
     },
+    {
+      field: 'state',
+      title: $t('mixedWaterProgress.batchEnded'),
+      width: 120,
+      slots: { default: 'stateCell' },
+      params: { target: 3 },
+    },
+    // {
+    //   field: 'looseLabel',
+    //   title: $t('mixedWaterProgress.looseLabel'),
+    //   minWidth: 140,
+    // },
+    // {
+    //   field: 'looseUse',
+    //   title: $t('mixedWaterProgress.looseUse'),
+    //   width: 120,
+    //   slots: { default: 'useCell' },
+    // },
+    // {
+    //   field: 'fullUse',
+    //   title: $t('mixedWaterProgress.isInput'),
+    //   width: 120,
+    //   slots: { default: 'useCell' },
+    // },
   ],
   pagerConfig: { enabled: false },
   toolbarConfig: { custom: false, refresh: false, zoom: false },
@@ -413,6 +448,13 @@ onMounted(() => {
         <!-- <template #toolbar-tools></template> -->
         <template #useCell="{ row, column }">
           <Checkbox :checked="Number(row[column.field]) === 1" disabled />
+        </template>
+        <!-- 按列参数指定的状态值勾选：2 已开始、3 已结束 -->
+        <template #stateCell="{ row, column }">
+          <Checkbox
+            :checked="Number(row.state) === Number(column.params?.target)"
+            disabled
+          />
         </template>
       </LotGrid>
 
