@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 searchWorkSheetList/getProductionBomList/checkTagCode/listFeedBySheet 接口，以及 EquipmentSelectDrawer 设备选择抽屉。
+ * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 searchWorkSheetList/getProductionBomList/checkTagCode/loadMaterial 接口，以及 EquipmentSelectDrawer 设备选择抽屉。
  * [OUTPUT]: 对外提供 MaterialLoadingDrawer 材料加载抽屉组件（defineExpose({ open })）。
  * [POS]: 属于包装材料模块的材料加载业务组件，自上而下依次为：工单查询区 → 工单列表 → BOM 列表 + 加载列表。
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
@@ -19,6 +19,7 @@ import {
   FormItem,
   Input,
   message,
+  Modal,
   RangePicker,
   Row,
   Select,
@@ -30,11 +31,9 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   checkTagCode,
   getProductionBomList,
-  listFeedBySheet,
   loadMaterial,
   searchSubLineByProcessCode,
   searchWorkSheetList,
-  unloadMaterial,
 } from '#/api';
 import { $t } from '#/locales';
 import EquipmentSelectDrawer from '#/util/component/drawers/EquipmentSelectDrawer.vue';
@@ -57,13 +56,6 @@ const query = reactive({
 // ========== 当前选中（联动核心） ==========
 /** 当前选中的工单行 */
 const currentWorkSheet = ref<any>(null);
-/** 当前选中的 BOM 行 */
-const currentBom = ref<any>(null);
-
-/** 获取 BOM 行主键（接口返回字段可能是 id 或 productionBomId） */
-function getBomId(row: any) {
-  return row?.id ?? row?.productionBomId;
-}
 
 // ========== 右栏加载表单（子产线代码 / 设备代码 / 标签ID） ==========
 const feedQuery = reactive<any>({
@@ -214,8 +206,8 @@ function handleWorkSheetChange(row: any) {
     return;
   }
   currentWorkSheet.value = row;
-  // 重置 BOM 选中并刷新 BOM 列表（列表加载后自动选中第一条）
-  currentBom.value = null;
+  // 切换工单时清空已扫码待装载的数据
+  resetFeedRows();
   bomGridApi.reload();
 }
 
@@ -255,9 +247,8 @@ function queryWorkSheetList({ page }: any) {
     if (list.length > 0) {
       autoSelectWorkSheet(list);
     } else {
-      // 无数据时清空选中引用，并刷新下两列表格为空
+      // 无数据时清空选中引用，并刷新 BOM 列表为空
       currentWorkSheet.value = null;
-      currentBom.value = null;
       bomGridApi.reload();
     }
     return { items: list, total: res?.total ?? 0 };
@@ -288,14 +279,13 @@ function autoSelectWorkSheet(list: any[]) {
   }, 100);
 }
 
-// ========== ② BOM 列表表格（左栏，单选） ==========
+// ========== ② BOM 列表表格（左栏，仅展示，无需选中） ==========
 const bomGridOptions: VxeGridProps<any> = {
   rowClassName: 'ipc-grid-row',
   headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
   columns: [
-    { type: 'radio', width: 50, title: '' },
     {
       field: 'materialCode',
       title: $t('materialLoadingDrawer.colMaterialCode'),
@@ -316,11 +306,11 @@ const bomGridOptions: VxeGridProps<any> = {
       title: $t('materialLoadingDrawer.colStandardQty'),
       minWidth: 90,
     },
-    {
-      field: 'alreadyInputQuantity',
-      title: $t('materialLoadingDrawer.colInputQty'),
-      minWidth: 100,
-    },
+    // {
+    //   field: 'alreadyInputQuantity',
+    //   title: $t('materialLoadingDrawer.colInputQty'),
+    //   minWidth: 100,
+    // },
   ],
   height: 370,
   proxyConfig: {
@@ -328,41 +318,12 @@ const bomGridOptions: VxeGridProps<any> = {
       query: queryBomList,
     },
   },
-  radioConfig: {
-    highlight: true,
-    trigger: 'row',
-  },
   rowConfig: { keyField: 'materialCode' },
   showOverflow: 'tooltip',
   stripe: true,
 };
 
 const [BomGrid, bomGridApi] = useVbenVxeGrid({ gridOptions: bomGridOptions });
-
-/**
- * BOM 表格单选变化事件：切换当前 BOM 并联动刷新加载列表
- * @param row 新选中的 BOM 行
- * @returns 无返回值
- * @since 2026-09-03
- */
-function handleBomChange(row: any) {
-  const bomId = getBomId(row);
-  if (bomId === undefined || bomId === null) {
-    return;
-  }
-  // 幂等：自动选中与单选事件可能重复触发，同一 BOM 直接返回
-  if (getBomId(currentBom.value) === bomId) {
-    return;
-  }
-  currentBom.value = row;
-  feedGridApi.reload();
-}
-
-const bomGridEvents: any = {
-  radioChange: ({ row }: any) => {
-    handleBomChange(row);
-  },
-};
 
 /**
  * 查询生产物料清单：按当前选中工单号查询
@@ -376,39 +337,8 @@ function queryBomList() {
   }
   return getProductionBomList(workSheetCode).then((res: any) => {
     const list = Array.isArray(res) ? res : [];
-    if (list.length > 0) {
-      autoSelectBom(list);
-    } else {
-      // 无 BOM 数据时清空选中引用，并刷新加载列表（不带 materialCode 过滤）
-      currentBom.value = null;
-      feedGridApi.reload();
-    }
     return { items: list, total: list.length };
   });
-}
-
-/**
- * BOM 列表自动选中第一条（数据渲染后执行，手动触发联动兜底）
- * @param list BOM 列表
- * @returns 无返回值
- * @since 2026-09-03
- */
-function autoSelectBom(list: any[]) {
-  setTimeout(() => {
-    const grid = bomGridApi.grid;
-    if (!grid) {
-      return;
-    }
-    const current = grid.getRadioRecord();
-    const hit = list.some(
-      (item: any) => item?.materialCode === current?.materialCode,
-    );
-    if (!hit) {
-      grid.setRadioRow(list[0]);
-      // setRadioRow 触发 radioChange 时 handleBomChange 会被再次调用，内部有幂等处理
-      handleBomChange(list[0]);
-    }
-  }, 100);
 }
 
 // ========== ③ 加载列表表格（右栏下方） ==========
@@ -456,11 +386,8 @@ const feedGridOptions: VxeGridProps<any> = {
     },
   ],
   height: 220,
-  proxyConfig: {
-    ajax: {
-      query: queryFeedList,
-    },
-  },
+  // 加载列表不再请求接口，数据全部来自扫码后本地插入
+  data: [],
   radioConfig: {
     highlight: true,
     trigger: 'row',
@@ -475,29 +402,19 @@ const [FeedGrid, feedGridApi] = useVbenVxeGrid({
 });
 
 /**
- * 查询材料加载列表：materialCode 取当前选中 BOM 行的材料代码，workSheetCode 取当前选中工单
- * @returns 材料加载列表（labelCode 标签、materialCode 料号、materialName 物料名称、feedNumber 投入数量、feedTime 投入时间）
- * @since 2026-09-03
+ * 清空加载列表：移除表格内全部本地数据并重置选中行
+ * @returns 无返回值
+ * @since 2026-11-01
  */
-function queryFeedList() {
-  const workSheetCode = currentWorkSheet.value?.workSheetCode;
-  if (!workSheetCode) {
-    return Promise.resolve({ items: [], total: 0 });
-  }
-  const params: any = { workSheetCode };
-  if (currentBom.value?.materialCode) {
-    params.materialCode = currentBom.value.materialCode;
-  }
-  return listFeedBySheet(params).then((res: any) => {
-    const list = Array.isArray(res) ? res : [];
-    return { items: list, total: list.length };
-  });
+function resetFeedRows() {
+  selectedFeedRow.value = null;
+  feedGridApi.grid?.loadData([]);
 }
 
 // ========== 扫码（标签ID） ==========
 /**
- * 标签扫码：调用条码校验接口，成功后清空扫码内容并重新加载加载列表
- * @returns 无返回值，未扫描或未选中 BOM 时弹出警告
+ * 标签扫码：校验设备与工单后调用条码校验接口，成功后将标签详情加入加载列表
+ * @returns 无返回值，未扫描、未选设备或未选工单时弹出警告
  * @since 2026-09-03
  */
 function handleScan() {
@@ -506,12 +423,17 @@ function handleScan() {
     message.warning($t('materialLoadingDrawer.scanEmpty'));
     return;
   }
-  const productionBomId = getBomId(currentBom.value);
-  if (productionBomId === undefined || productionBomId === null) {
-    message.warning($t('materialLoadingDrawer.plsSelectBom'));
+  // 扫码前必须先选择设备
+  if (!feedQuery.deviceCode) {
+    message.warning($t('materialLoadingDrawer.plsSelectDevice'));
     return;
   }
-  return checkTagCode({ productionBomId, tagCode }).then((res: any) => {
+  const workSheetCode = currentWorkSheet.value?.workSheetCode;
+  if (!workSheetCode) {
+    message.warning($t('materialLoadingDrawer.plsSelectWorkSheet'));
+    return;
+  }
+  return checkTagCode({ tagCode, workSheetCode }).then((res: any) => {
     message.success($t('materialLoadingDrawer.scanSuccess'));
     // 清空扫码内容，便于连续扫码
     feedQuery.tagId = '';
@@ -542,16 +464,7 @@ function appendFeedRow(res: any, tagCode: string) {
 
 // ========== 装载 / 卸载 ==========
 /**
- * 取当前操作的标签ID：优先取扫码框内容，未扫码时取加载列表选中行的标签
- * @returns 标签ID，取不到时返回空字符串
- * @since 2026-10-31
- */
-function getCurrentTagId() {
-  return (feedQuery.tagId?.trim() || selectedFeedRow.value?.labelCode) ?? '';
-}
-
-/**
- * 装载：按当前标签ID与工单号调用材料装载接口
+ * 装载：将加载列表内的全部标签一次性批量提交
  * @returns 无返回值，校验不通过时弹出警告
  * @since 2026-10-31
  */
@@ -561,46 +474,45 @@ function handleLoad() {
     message.warning($t('materialLoadingDrawer.plsSelectWorkSheet'));
     return;
   }
-  const tagId = getCurrentTagId();
-  if (!tagId) {
-    message.warning($t('materialLoadingDrawer.scanEmpty'));
+  const rows: any[] = feedGridApi.grid?.getTableData?.().fullData ?? [];
+  if (rows.length === 0) {
+    message.warning($t('materialLoadingDrawer.noLoadData'));
     return;
   }
-  loadMaterial({
-    equipCode: feedQuery.deviceCode ?? '',
-    tagId,
+  const equipCode = feedQuery.deviceCode ?? '';
+  const payload = rows.map((row: any) => ({
+    equipCode,
+    tagId: row?.labelCode ?? '',
     workSheetCode,
-  }).then(() => {
+  }));
+  loadMaterial(payload).then(() => {
     message.success($t('materialLoadingDrawer.loadSuccess'));
-    feedQuery.tagId = '';
-    feedGridApi.reload();
+    resetFeedRows();
   });
 }
 
 /**
- * 卸载：按当前标签ID与工单号调用材料卸载接口
- * @returns 无返回值，校验不通过时弹出警告
+ * 卸载：二次确认后仅删除加载列表中选中的行（本地移除，不请求后台）
+ * @returns 无返回值，未选中行时弹出警告
  * @since 2026-10-31
  */
 function handleUnload() {
-  const workSheetCode = currentWorkSheet.value?.workSheetCode;
-  if (!workSheetCode) {
-    message.warning($t('materialLoadingDrawer.plsSelectWorkSheet'));
-    return;
-  }
-  const tagId = getCurrentTagId();
-  if (!tagId) {
+  const row = selectedFeedRow.value;
+  if (!row) {
     message.warning($t('materialLoadingDrawer.plsSelectMaterial'));
     return;
   }
-  unloadMaterial({
-    equipCode: feedQuery.deviceCode ?? '',
-    tagId,
-    workSheetCode,
-  }).then(() => {
-    message.success($t('materialLoadingDrawer.unloadSuccess'));
-    feedQuery.tagId = '';
-    feedGridApi.reload();
+  Modal.confirm({
+    title: $t('materialLoadingDrawer.unloadConfirmTitle'),
+    content: $t('materialLoadingDrawer.unloadConfirmContent'),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
+    okType: 'danger',
+    onOk: () => {
+      feedGridApi.grid?.remove(row);
+      selectedFeedRow.value = null;
+      message.success($t('materialLoadingDrawer.unloadSuccess'));
+    },
   });
 }
 // endregion
@@ -639,7 +551,6 @@ function open(context?: any) {
   query.planDateRange = [];
   query.workSheetCode = context?.workSheetCode ?? '';
   currentWorkSheet.value = null;
-  currentBom.value = null;
   selectedFeedRow.value = null;
   feedQuery.subLineCode = context?.subLineCode ?? '';
   feedQuery.deviceCode = context?.deviceCode ?? '';
@@ -649,6 +560,8 @@ function open(context?: any) {
   loadSubLineOptions();
   setTimeout(() => {
     workSheetGridApi.reload();
+    // 抽屉重建后清空加载列表本地数据
+    resetFeedRows();
   }, 100);
 }
 
@@ -665,12 +578,12 @@ function handleClose() {
   query.planDateRange = [];
   query.workSheetCode = '';
   currentWorkSheet.value = null;
-  currentBom.value = null;
   selectedFeedRow.value = null;
   feedQuery.subLineCode = '';
   feedQuery.deviceCode = '';
   feedQuery.tagId = '';
   selectedEquipments.value = [];
+  resetFeedRows();
 }
 
 defineExpose({ open });
@@ -738,7 +651,7 @@ defineExpose({ open });
             <div class="mb-2 font-bold">
               {{ $t('materialLoadingDrawer.bomList') }}
             </div>
-            <BomGrid :grid-events="bomGridEvents">
+            <BomGrid>
               <template #toolbar-tools></template>
             </BomGrid>
           </div>

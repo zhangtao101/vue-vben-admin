@@ -155,13 +155,13 @@ export function startOrEndWork(data: {
  * 校验条码
  * @param params 查询参数
  * @param params.tagCode 标签ID
- * @param params.productionBomId 选择的投料清单的 id
- * @returns 标签详情（labelCode 标签条码、materialCode 料号、materialName 物料名称、unit 单位、packageNumber 标签数量、produceDate 制造日期、validDate 有效期、batchCode 批次号）
+ * @param params.workSheetCode 工单号
+ * @returns 标签详情（labelCode 标签条码、materialCode 料号、materialName 物料名称、unit 单位、packageNumber 标签数量/投入量、produceDate 制造日期、validDate 有效期、batchCode 批次号）
  * @since 2026-09-03
  */
 export function checkTagCode(params: {
-  productionBomId: number;
   tagCode: string;
+  workSheetCode: string;
 }) {
   return requestClient.get(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/human/packing/checkTagCode?${qs.stringify(params)}`,
@@ -169,19 +169,17 @@ export function checkTagCode(params: {
 }
 
 /**
- * 材料装载
- * @param data 提交数据
- * @param data.tagId 标签ID
- * @param data.workSheetCode 工单号
- * @param data.equipCode 设备编号
+ * 材料装载（批量）
+ * @param data 提交的标签列表
+ * @param data[].tagId 标签ID
+ * @param data[].workSheetCode 工单号
+ * @param data[].equipCode 投入的设备编号
  * @returns 操作结果
  * @since 2026-09-03
  */
-export function loadMaterial(data: {
-  equipCode: string;
-  tagId: string;
-  workSheetCode: string;
-}) {
+export function loadMaterial(
+  data: Array<{ equipCode: string; tagId: string; workSheetCode: string }>,
+) {
   return requestClient.post(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/human/packing/materialLoading`,
     data,
@@ -204,6 +202,21 @@ export function unloadMaterial(data: {
 }) {
   return requestClient.post(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/human/packing/materialUnloading`,
+    data,
+  );
+}
+
+/**
+ * 大车删除
+ * @param data 提交数据
+ * @param data.cartCode 大车编码
+ * @param data.workSheetCode 工单号
+ * @returns 操作结果
+ * @since 2026-11-01
+ */
+export function deleteCart(data: { cartCode: string; workSheetCode: string }) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/human/packing/cartDelete`,
     data,
   );
 }

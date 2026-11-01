@@ -26,5 +26,9 @@
   "unloadSuccess": "卸载成功",
   "plsSelectWorkSheet": "请先选择工单",
   "plsSelectMaterial": "请先选择材料",
+  "plsSelectDevice": "请先选择设备",
+  "noLoadData": "加载列表暂无数据",
+  "unloadConfirmTitle": "确认卸载",
+  "unloadConfirmContent": "确认将选中的标签从加载列表中移除？",
   "close": "关闭"
 }

@@ -26,5 +26,9 @@
   "unloadSuccess": "Unloaded successfully",
   "plsSelectWorkSheet": "Please select a work order first",
   "plsSelectMaterial": "Please select a material first",
+  "plsSelectDevice": "Please select a device first",
+  "noLoadData": "No data in the loading list",
+  "unloadConfirmTitle": "Confirm unload",
+  "unloadConfirmContent": "Remove the selected tag from the loading list?",
   "close": "Close"
 }
