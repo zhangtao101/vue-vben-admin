@@ -63,7 +63,13 @@
       "reverseDeduction": "역공제",
       "wmsInputType": "입고 방식",
       "autoWarehouse": "자동 창고",
-      "nonAutoWarehouse": "비자동 창고"
+      "nonAutoWarehouse": "비자동 창고",
+      "zprgb": "자재 분류",
+      "zprgbMixedWater": "혼합수",
+      "zprgbMixing": "교반",
+      "zprgbFinished": "완성품",
+      "zprgbSauce": "소스 팩",
+      "zprgbRaw": "원자재"
     },
     "msd": {
       "title": "MSD 보기",

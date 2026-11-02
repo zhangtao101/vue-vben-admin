@@ -35,6 +35,26 @@ import { queryAuth } from '#/util';
 
 // region 上方表格（库存汇总）
 
+/** 物料分类 zprgb 的取码与文案映射 */
+const ZPRGB_TEXT_MAP: Record<string, string> = {
+  A: 'zprgbMixedWater',
+  B: 'zprgbMixing',
+  C: 'zprgbFinished',
+  E: 'zprgbSauce',
+  G: 'zprgbRaw',
+};
+
+/**
+ * 物料分类格式化：A 混合水，B 搅拌，C 完成品，E 酱包，G 原料
+ * @param {object} params - 单元格参数
+ * @param {string} params.cellValue - 单元格值
+ * @returns {string} 物料分类文案
+ */
+function formatZprgb({ cellValue }: any) {
+  const key = ZPRGB_TEXT_MAP[cellValue];
+  return key ? $t(`basic.bomManagement.materialsInform.${key}`) : '';
+}
+
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -68,6 +88,12 @@ const gridOptions: VxeGridProps<any> = {
       field: 'materialTypeCode',
       title: $t('storeManagement.inventoryManagement.materialType'),
       minWidth: 80,
+    },
+    {
+      field: 'zprgb',
+      title: $t('storeManagement.inventoryManagement.zprgb'),
+      minWidth: 100,
+      formatter: formatZprgb,
     },
     {
       field: 'materialCode',

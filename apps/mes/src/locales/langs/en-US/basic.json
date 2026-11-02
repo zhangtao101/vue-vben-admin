@@ -63,7 +63,13 @@
       "reverseDeduction": "Reverse Deduction",
       "wmsInputType": "Inbound Method",
       "autoWarehouse": "Auto Warehouse",
-      "nonAutoWarehouse": "Non-auto Warehouse"
+      "nonAutoWarehouse": "Non-auto Warehouse",
+      "zprgb": "Material Category",
+      "zprgbMixedWater": "Mixed Water",
+      "zprgbMixing": "Mixing",
+      "zprgbFinished": "Finished Product",
+      "zprgbSauce": "Sauce Pack",
+      "zprgbRaw": "Raw Material"
     },
     "msd": {
       "title": "View MSD",

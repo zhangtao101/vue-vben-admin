@@ -82,6 +82,7 @@
     "stockStatusName": "Stock Status",
     "minPackNumber": "Min Pack Number",
     "safeLevel": "Safety Level",
+    "zprgb": "Material Category",
     "storageCode": "Storage Code",
     "wareHouse": "Warehouse",
     "wareArea": "Ware Area",

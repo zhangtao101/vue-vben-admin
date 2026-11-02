@@ -48,12 +48,9 @@
     "view": "查看",
     "materialCode": "物料编号",
     "materialName": "物料名称",
-    "bomCategory": {
-    },
-    "materialsCategory": {
-    },
-    "maintainQualityMaterials": {
-    },
+    "bomCategory": {},
+    "materialsCategory": {},
+    "maintainQualityMaterials": {},
     "materialsInform": {
       "upSafe": "安全量上限",
       "downSafe": "安全量下限",
@@ -66,7 +63,13 @@
       "reverseDeduction": "倒扣料",
       "wmsInputType": "入库方式",
       "autoWarehouse": "自动仓",
-      "nonAutoWarehouse": "非自动仓"
+      "nonAutoWarehouse": "非自动仓",
+      "zprgb": "物料分类",
+      "zprgbMixedWater": "混合水",
+      "zprgbMixing": "搅拌",
+      "zprgbFinished": "完成品",
+      "zprgbSauce": "酱包",
+      "zprgbRaw": "原料"
     },
     "msd": {
       "title": "查看MSD",

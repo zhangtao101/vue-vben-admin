@@ -82,6 +82,7 @@
     "stockStatusName": "재고 상태",
     "minPackNumber": "최소 포장 수량",
     "safeLevel": "안전 수준",
+    "zprgb": "자재 분류",
     "storageCode": "저장 코드",
     "wareHouse": "창고",
     "wareArea": "창고 구역",

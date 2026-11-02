@@ -3,7 +3,7 @@ import type { TreeProps } from 'ant-design-vue';
 
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -86,6 +86,26 @@ function formatWmsInputType({ cellValue }: any) {
   return '';
 }
 
+/** 物料分类 zprgb 的取码与文案映射 */
+const ZPRGB_TEXT_MAP: Record<string, string> = {
+  A: 'zprgbMixedWater',
+  B: 'zprgbMixing',
+  C: 'zprgbFinished',
+  E: 'zprgbSauce',
+  G: 'zprgbRaw',
+};
+
+/**
+ * 物料分类格式化：A 混合水，B 搅拌，C 完成品，E 酱包，G 原料
+ * @param {object} params - 单元格参数
+ * @param {string} params.cellValue - 单元格值
+ * @returns {string} 物料分类文案
+ */
+function formatZprgb({ cellValue }: any) {
+  const key = ZPRGB_TEXT_MAP[cellValue];
+  return key ? $t(`basic.bomManagement.materialsInform.${key}`) : '';
+}
+
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -119,6 +139,12 @@ const gridOptions: VxeGridProps<any> = {
       field: 'materialTypeCode',
       title: $t('baseInfo.materialCategory'),
       minWidth: 80,
+    },
+    {
+      field: 'zprgb',
+      title: $t('basic.bomManagement.materialsInform.zprgb'),
+      minWidth: 100,
+      formatter: formatZprgb,
     },
     {
       field: 'materialCode',
@@ -283,6 +309,13 @@ function handleSelect(keys: (number | string)[], _info: any) {
 const showEditDrawer = ref(false);
 // 编辑对象数据
 const editMessage = ref({} as any);
+/** 物料分类选项：A 混合水，B 搅拌，C 完成品，E 酱包，G 原料 */
+const zprgbOptions = computed(() =>
+  Object.keys(ZPRGB_TEXT_MAP).map((value) => ({
+    label: $t(`basic.bomManagement.materialsInform.${ZPRGB_TEXT_MAP[value]}`),
+    value,
+  })),
+);
 // 编辑对象表单验证规则
 const editRules = ref({
   downSafe: [
@@ -943,6 +976,21 @@ function downloadTemplate() {
             </Radio>
             <Radio value="A">
               {{ $t('basic.bomManagement.materialsInform.nonAutoWarehouse') }}
+            </Radio>
+          </Radio.Group>
+        </FormItem>
+        <!-- 物料分类：A 混合水，B 搅拌，C 完成品，E 酱包，G 原料 -->
+        <FormItem
+          :label="$t('basic.bomManagement.materialsInform.zprgb')"
+          name="zprgb"
+        >
+          <Radio.Group v-model:value="editMessage.zprgb">
+            <Radio
+              v-for="item in zprgbOptions"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ item.label }}
             </Radio>
           </Radio.Group>
         </FormItem>
