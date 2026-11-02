@@ -642,7 +642,6 @@ function handleSave() {
       message.success($t('packingWorkOrderManage.operationSuccess'));
       modifiedMap.clear();
       modifiedRows.value = [];
-      gridApi.reload();
     })
     .catch((error: any) => {
       message.error(
