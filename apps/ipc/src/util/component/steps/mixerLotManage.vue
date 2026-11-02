@@ -20,6 +20,7 @@ import {
   Switch,
   Tag,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -49,9 +50,10 @@ const props = defineProps({
   processCode: { type: String, default: '' },
 });
 
+/** 查询条件：指示日期默认为当前日期 */
 const queryParams = ref<any>({
   lineName: '',
-  planDateStart: '',
+  planDateStart: dayjs().format('YYYY-MM-DD'),
 });
 
 /** 查询搅拌机工单列表 */
@@ -74,6 +76,11 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'radio', width: 50, title: '' },
     {
+      field: 'planDateStart',
+      title: $t('mixerLotManage.planDateStart'),
+      minWidth: 120,
+    },
+    {
       field: 'workSheetCode',
       title: $t('mixerLotManage.workSheetCode'),
       minWidth: 170,
@@ -87,11 +94,6 @@ const gridOptions: VxeGridProps<any> = {
       field: 'productName',
       title: $t('mixerLotManage.productName'),
       minWidth: 130,
-    },
-    {
-      field: 'planDateStart',
-      title: $t('mixerLotManage.planDateStart'),
-      minWidth: 120,
     },
     { field: 'lineName', title: $t('mixerLotManage.lineName'), minWidth: 110 },
     { field: 'priority', title: $t('mixerLotManage.priority'), minWidth: 80 },
@@ -142,7 +144,11 @@ function handleQuery() {
 }
 
 function handleReset() {
-  queryParams.value = { lineName: '', planDateStart: '' };
+  // 重置后指示日期回到当前日期
+  queryParams.value = {
+    lineName: '',
+    planDateStart: dayjs().format('YYYY-MM-DD'),
+  };
   gridApi.reload();
 }
 // endregion
