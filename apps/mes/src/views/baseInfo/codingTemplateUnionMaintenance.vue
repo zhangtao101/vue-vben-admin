@@ -11,7 +11,7 @@
  */
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, reactive, ref } from 'vue';
+import { computed, h, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -161,7 +161,7 @@ const gridOptions: VxeGridProps<any> = {
       fixed: 'right',
     },
   ],
-  height: 500,
+  height: 400,
   stripe: true,
   toolbarConfig: {
     custom: true,
@@ -200,6 +200,17 @@ const gridEvents: VxeGridListeners<any> = {
 // 左侧喷码列表组件实例与 Grid API（用于清除当前行高亮等）
 const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 
+/**
+ * 刷新列表并重置其它区域（编辑表单、参数表格、预览结果、列表选中行）
+ * @returns {void} 无返回值。
+ * @since 2026-11-02
+ */
+function reloadGrid() {
+  gridApi.reload();
+  // 重置为新增模式，清空编辑区与预览
+  handleAdd();
+}
+
 // endregion
 
 // region 数据查询
@@ -218,7 +229,7 @@ const queryParams = reactive({
 function handleQueryReset() {
   queryParams.productGroupCode = undefined;
   queryParams.printCode = '';
-  gridApi.reload();
+  reloadGrid();
 }
 
 /**
@@ -273,6 +284,12 @@ const editData = ref<any>({
 });
 // 预览结果
 const previewResults = ref<string[]>([]);
+
+/**
+ * 预览区占位数量：默认展示 3 个区域，结果超过 3 条时按实际条数展示
+ * @since 2026-11-02
+ */
+const previewCount = computed(() => Math.max(3, previewResults.value.length));
 
 // 参数表格列定义（序号/参数ID/参数名称/参数值可编辑）
 const parameterColumns = [
@@ -463,11 +480,7 @@ function handleDelete(row: any) {
       deletePrintCodeTemplate({ id: row.id })
         .then(() => {
           message.success($t('baseInfo.deleteSuccess'));
-          // 删除的是当前编辑的模板时，重置编辑区域
-          if (currentId.value === row.id) {
-            handleAdd();
-          }
-          gridApi.reload();
+          reloadGrid();
         })
         .catch((error) => {
           message.error(error?.msg || $t('common.operationFailure'));
@@ -561,7 +574,7 @@ onMounted(() => {
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="() => gridApi.reload()"
+            @click="() => reloadGrid()"
           >
             {{ $t('common.search') }}
           </Button>
@@ -726,61 +739,59 @@ onMounted(() => {
                 </FormItem>
               </Col>
             </Row>
-
-            <Row :gutter="16">
-              <!-- 参数表格 -->
-              <Col :span="14">
-                <FormItem :label="$t('baseInfo.parameterName')">
-                  <Table
-                    :columns="parameterColumns"
-                    :data-source="editData.parameters"
-                    :pagination="false"
-                    row-key="parameterId"
-                    size="small"
-                    bordered
-                  >
-                    <template #bodyCell="{ column, record }">
-                      <template v-if="column.dataIndex === 'value'">
-                        <Input
-                          v-model:value="record.value"
-                          :placeholder="$t('baseInfo.inputPlaceholder')"
-                        />
-                      </template>
-                    </template>
-                  </Table>
-                </FormItem>
-              </Col>
-
-              <!-- 预览 -->
-              <Col :span="10">
-                <FormItem :label="$t('baseInfo.previewResult')">
-                  <Button @click="handlePreview">
-                    <template #icon>
-                      <Icon icon="mdi:eye-outline" />
-                    </template>
-                    {{ $t('baseInfo.preview') }}
-                  </Button>
-                  <Row v-if="previewResults.length > 0" :gutter="8" class="mt-2">
-                    <Col
-                      v-for="(item, index) in previewResults"
-                      :key="index"
-                      :span="24"
-                    >
-                      <div class="preview-line">
-                        <p>
-                          {{ item }}
-                        </p>
-                      </div>
-                    </Col>
-                  </Row>
-                </FormItem>
-              </Col>
-            </Row>
           </Form>
         </Card>
       </Col>
       <!-- endregion -->
     </Row>
+
+    <!-- region 参数与预览（左右分栏下方独立一行） -->
+    <Row :gutter="16" class="mt-4">
+      <!-- 参数表格 -->
+      <Col :span="10">
+        <Card :title="$t('baseInfo.parameterName')">
+          <Table
+            :columns="parameterColumns"
+            :data-source="editData.parameters"
+            :pagination="false"
+            row-key="parameterId"
+            size="small"
+            bordered
+          >
+            <template #bodyCell="{ column, record }">
+              <template v-if="column.dataIndex === 'value'">
+                <Input
+                  v-model:value="record.value"
+                  :placeholder="$t('baseInfo.inputPlaceholder')"
+                />
+              </template>
+            </template>
+          </Table>
+        </Card>
+      </Col>
+      <!-- 预览 -->
+      <Col :span="14">
+        <Card :title="$t('baseInfo.previewResult')">
+          <Button @click="handlePreview">
+            <template #icon>
+              <Icon icon="mdi:eye-outline" />
+            </template>
+            {{ $t('baseInfo.preview') }}
+          </Button>
+          <!-- 默认展示 3 个空白预览区域，有结果时按索引填充 -->
+          <Row :gutter="8" class="mt-2">
+            <Col v-for="index in previewCount" :key="index" :span="8">
+              <div class="preview-line">
+                <p>
+                  {{ previewResults[index - 1] ?? '' }}
+                </p>
+              </div>
+            </Col>
+          </Row>
+        </Card>
+      </Col>
+    </Row>
+    <!-- endregion -->
   </Page>
 </template>
 
