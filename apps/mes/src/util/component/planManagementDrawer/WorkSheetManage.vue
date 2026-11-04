@@ -95,8 +95,8 @@ const canEdit = computed(() => hasAuth('保存'));
 
 // region 查询参数
 const queryParams = ref<any>({
-  // 作业日期范围
-  workDateRange: [],
+  // 作业日期范围（默认当前日期起、后 3 个月止）
+  workDateRange: [dayjs(), dayjs().add(3, 'month')],
   // 产线（子产线编号）
   lineCode: undefined,
   // 品号
@@ -207,6 +207,7 @@ function loadShiftOptions() {
 // endregion
 
 // region 表格配置
+// 列按单别（props.processType，见上方注释）控制显示：目前仅「每批数量」仅搅拌工单显示，其余列各单别一致
 const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -283,11 +284,16 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('packingWorkOrderManage.indicateBatch'),
       minWidth: 110,
     },
-    {
-      field: 'perBatchQty',
-      title: $t('packingWorkOrderManage.perBatchQty'),
-      minWidth: 140,
-    },
+    // 每批数量：仅 2 搅拌工单显示，其余单别隐藏
+    ...(props.processType === 2
+      ? [
+          {
+            field: 'perBatchQty',
+            title: $t('packingWorkOrderManage.perBatchQty'),
+            minWidth: 140,
+          },
+        ]
+      : []),
     {
       field: 'goodBatch',
       title: $t('packingWorkOrderManage.goodBatch'),
@@ -401,7 +407,8 @@ function queryData({
  */
 function handleReset() {
   queryParams.value = {
-    workDateRange: [],
+    // 重置后作业日期范围回到默认（当前日期起、后 3 个月止）
+    workDateRange: [dayjs(), dayjs().add(3, 'month')],
     lineCode: undefined,
     productCode: undefined,
     shiftCode: undefined,
