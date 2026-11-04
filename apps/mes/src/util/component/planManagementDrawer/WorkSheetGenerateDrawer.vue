@@ -83,6 +83,11 @@ const isEquipRequired = computed(
   () => !NON_BATCH_PRINT_PROCESS_TYPES.includes(processType.value as number),
 );
 
+/** 当前单别下是否显示设备项（5 蔬菜包装、6 无重力搅拌不显示） */
+const showEquip = computed(
+  () => !NON_BATCH_PRINT_PROCESS_TYPES.includes(processType.value as number),
+);
+
 /** 产线设备项标签：堆垛机单别显示「堆垛机」，其余显示「设备」 */
 const equipLabel = computed(() =>
   isStackerProcess.value
@@ -553,7 +558,8 @@ function handleGenerate() {
       lineName: generateForm.value.lineName,
       priority: generateForm.value.priority || 1,
       processType: processType.value,
-      stackerId: generateForm.value.stackerId,
+      // 蔬菜包装/无重力搅拌不显示设备项，提交时不下传
+      stackerId: showEquip.value ? generateForm.value.stackerId : undefined,
     };
 
     generateLoading.value = true;
@@ -754,7 +760,7 @@ defineExpose({ open });
             </FormItem>
           </Col>
 
-          <Col :span="6">
+          <Col v-if="showEquip" :span="6">
             <FormItem
               :label="equipLabel"
               name="stackerId"
