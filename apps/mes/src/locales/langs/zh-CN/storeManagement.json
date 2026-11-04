@@ -83,6 +83,7 @@
     "minPackNumber": "最小包装数",
     "safeLevel": "安全量",
     "zprgb": "物料分类",
+    "sapWarehouseCode": "仓库编码",
     "storageCode": "所在储位",
     "wareHouse": "所在仓库",
     "wareArea": "所在库区",

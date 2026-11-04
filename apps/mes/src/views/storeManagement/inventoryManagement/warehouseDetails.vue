@@ -229,6 +229,11 @@ const gridBottomOptions: VxeGridProps<any> = {
       title: $t('storeManagement.inventoryManagement.wareHouse'),
       minWidth: 100,
     },
+    {
+      field: 'sapWarehouseCode',
+      title: $t('storeManagement.inventoryManagement.sapWarehouseCode'),
+      minWidth: 110,
+    },
     // {
     //   field: 'wareArea',
     //   title: $t('storeManagement.inventoryManagement.wareArea'),
