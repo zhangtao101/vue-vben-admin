@@ -29,6 +29,7 @@ import {
   Tooltip,
   Upload,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -243,10 +244,28 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 // endregion
 
 // region 查询数据
-// 查询参数
+/**
+ * 重置查询条件并刷新列表（订单日期回到默认范围）
+ */
+function handleReset() {
+  queryParams.value = {
+    customerName: '',
+    orderDate: [dayjs(), dayjs().add(3, 'month')],
+    deliveryDate: [],
+    productCode: '',
+    productName: '',
+    planCode: '',
+    orderDateStart: '',
+    orderDateEnd: '',
+    delverDateStart: '',
+    delverDateEnd: '',
+  };
+  gridApi.reload();
+}
+// 查询参数（订单日期默认当前日期起、后 3 个月止）
 const queryParams = ref<any>({
   customerName: '',
-  orderDate: [],
+  orderDate: [dayjs(), dayjs().add(3, 'month')],
   deliveryDate: [],
   productCode: '',
   productName: '',
@@ -508,6 +527,13 @@ onMounted(() => {
             @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
+          </Button>
+          <!-- 重置 -->
+          <Button class="ml-2" @click="handleReset">
+            <template #icon>
+              <Icon icon="mdi:refresh" />
+            </template>
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>

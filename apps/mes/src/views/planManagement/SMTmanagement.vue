@@ -75,9 +75,10 @@ function loadLineOptions() {
 // endregion
 
 // region 查询参数
+// 查询参数（计划时间默认当前日期起、后 3 个月止）
 const queryParams = ref<any>({
   workSheetCode: '',
-  plannedTime: [],
+  plannedTime: [dayjs(), dayjs().add(3, 'month')],
   planCode: '',
   productCode: '',
   productName: '',
@@ -316,6 +317,22 @@ const summaryData = ref<any>({});
 // endregion
 
 // region 查询数据
+/**
+ * 重置查询条件并刷新列表（计划时间回到默认范围）
+ * @since 2026-11-04
+ */
+function handleReset() {
+  queryParams.value = {
+    workSheetCode: '',
+    plannedTime: [dayjs(), dayjs().add(3, 'month')],
+    planCode: '',
+    productCode: '',
+    productName: '',
+    lineId: undefined,
+  };
+  gridApi.reload();
+}
+
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = {
@@ -579,6 +596,13 @@ onMounted(() => {
             @click="() => gridApi.reload()"
           >
             {{ $t('common.search') }}
+          </Button>
+          <!-- 重置 -->
+          <Button class="ml-2" @click="handleReset">
+            <template #icon>
+              <Icon icon="mdi:refresh" />
+            </template>
+            {{ $t('common.reset') }}
           </Button>
         </FormItem>
       </Form>
