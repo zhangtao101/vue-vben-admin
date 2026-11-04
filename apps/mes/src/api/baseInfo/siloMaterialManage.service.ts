@@ -53,10 +53,6 @@ export interface SiloMaterialCreateParams {
   materialCode: string;
   /** 物料名称，必填 */
   materialName: string;
-  /** 购买时间，必填 */
-  purchaseDate: string;
-  /** 类型，必填 */
-  type: string;
 }
 
 /** 修改筒仓设备参数 */
@@ -71,10 +67,6 @@ export interface SiloMaterialUpdateParams {
   materialCode: string;
   /** 物料名称，必填 */
   materialName: string;
-  /** 购买时间，必填 */
-  purchaseDate: string;
-  /** 类型，必填 */
-  type: string;
 }
 
 /** 物料下拉查询参数 */

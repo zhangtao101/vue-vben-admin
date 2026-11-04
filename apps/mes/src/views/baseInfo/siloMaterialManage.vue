@@ -10,7 +10,6 @@ import { MdiEditOutline, MdiLightDelete, MdiSearch } from '@vben/icons';
 import {
   Button,
   Card,
-  DatePicker,
   Drawer,
   Form,
   FormItem,
@@ -45,7 +44,6 @@ const gridOptions: VxeGridProps<any> = {
     { type: 'seq', title: $t('baseInfo.serialNumber'), width: 60 },
     { field: 'equipCode', title: $t('baseInfo.equipCode'), minWidth: 120 },
     { field: 'equipName', title: $t('baseInfo.equipName'), minWidth: 150 },
-    { field: 'type', title: $t('baseInfo.type'), minWidth: 100 },
     {
       field: 'materialCode',
       title: $t('baseInfo.materialCode'),
@@ -55,11 +53,6 @@ const gridOptions: VxeGridProps<any> = {
       field: 'materialName',
       title: $t('baseInfo.materialName'),
       minWidth: 150,
-    },
-    {
-      field: 'purchaseDate',
-      title: $t('baseInfo.purchaseDate'),
-      minWidth: 130,
     },
     {
       field: 'action',
@@ -122,8 +115,6 @@ const formData = ref({
   id: undefined as number | undefined,
   materialCode: undefined as string | undefined,
   materialName: '',
-  purchaseDate: undefined as string | undefined,
-  type: '',
 });
 
 const rules: any = {
@@ -142,20 +133,6 @@ const rules: any = {
   ],
   materialName: [
     { required: true, message: $t('baseInfo.selectMaterial'), trigger: 'blur' },
-  ],
-  purchaseDate: [
-    {
-      required: true,
-      message: $t('baseInfo.selectPurchaseDate'),
-      trigger: 'change',
-    },
-  ],
-  type: [
-    {
-      required: true,
-      message: $t('baseInfo.selectPlaceholder'),
-      trigger: 'blur',
-    },
   ],
 };
 
@@ -219,8 +196,6 @@ function handleAdd() {
     id: undefined,
     materialCode: undefined,
     materialName: '',
-    purchaseDate: undefined,
-    type: '',
   };
   showEditDrawer.value = true;
   formRef.value?.clearValidate();
@@ -237,8 +212,6 @@ function handleEdit(row: any) {
     id: row.id,
     materialCode: row.materialCode,
     materialName: row.materialName,
-    purchaseDate: row.purchaseDate,
-    type: row.type,
   };
   showEditDrawer.value = true;
   formRef.value?.clearValidate();
@@ -276,22 +249,13 @@ function handleDelete(row: any) {
  */
 function handleSubmit() {
   formRef.value?.validate().then(() => {
-    const {
-      equipCode,
-      equipName,
-      id,
-      materialCode,
-      materialName,
-      purchaseDate,
-      type,
-    } = formData.value;
+    const { equipCode, equipName, id, materialCode, materialName } =
+      formData.value;
     const params = {
       equipCode,
       equipName,
       materialCode: materialCode ?? '',
       materialName,
-      purchaseDate: purchaseDate ?? '',
-      type,
     };
     if (editMode.value) {
       updateSiloMaterial({ id, ...params }).then(() => {
@@ -320,8 +284,6 @@ function handleClose() {
     id: undefined,
     materialCode: undefined,
     materialName: '',
-    purchaseDate: undefined,
-    type: '',
   };
   formRef.value?.resetFields();
 }
@@ -435,13 +397,6 @@ function handleClose() {
             :placeholder="$t('baseInfo.inputEquipName')"
           />
         </FormItem>
-        <FormItem :label="$t('baseInfo.type')" name="type">
-          <Input
-            v-model:value="formData.type"
-            :max-length="50"
-            :placeholder="$t('baseInfo.selectPlaceholder')"
-          />
-        </FormItem>
         <FormItem :label="$t('baseInfo.materialCode')" name="materialCode">
           <Select
             v-model:value="formData.materialCode"
@@ -472,14 +427,6 @@ function handleClose() {
             v-model:value="formData.materialName"
             :max-length="100"
             disabled
-          />
-        </FormItem>
-        <FormItem :label="$t('baseInfo.purchaseDate')" name="purchaseDate">
-          <DatePicker
-            v-model:value="formData.purchaseDate"
-            value-format="YYYY-MM-DD"
-            :placeholder="$t('baseInfo.selectPurchaseDate')"
-            style="width: 100%"
           />
         </FormItem>
       </Form>
