@@ -55,17 +55,17 @@ const gridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
+    {
+      field: 'planDateStart',
+      title: $t('noodleMaking.productDate'),
+      minWidth: 130,
+    },
     { field: 'lineCode', title: $t('noodleMaking.lineCode'), minWidth: 110 },
     { field: 'lineName', title: $t('noodleMaking.lineName'), minWidth: 130 },
     {
       field: 'workSheetCode',
       title: $t('noodleMaking.worksheetCode'),
       minWidth: 170,
-    },
-    {
-      field: 'planDateStart',
-      title: $t('noodleMaking.productDate'),
-      minWidth: 130,
     },
     { field: 'priority', title: $t('noodleMaking.priority'), minWidth: 90 },
     {
@@ -81,22 +81,22 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'indicateBatch',
       title: $t('noodleMaking.commandBatchCount'),
-      minWidth: 110,
+      minWidth: 130,
     },
     {
       field: 'produceBatch',
       title: $t('noodleMaking.createdBatchCount'),
-      minWidth: 110,
+      minWidth: 130,
     },
     {
       field: 'badBatchCount',
       title: $t('noodleMaking.badBatchCount'),
-      minWidth: 100,
+      minWidth: 120,
     },
     {
       field: 'remainBatch',
       title: $t('noodleMaking.remainBatchCount'),
-      minWidth: 100,
+      minWidth: 120,
     },
   ],
   height: 340,
@@ -193,25 +193,25 @@ const realtimeBlocks = ref<any[]>([
       },
     ],
   },
-  {
-    key: 'cooling',
-    title: $t('noodleMaking.cooling'),
-    params: [
-      { label: $t('noodleMaking.inletTemp'), value: 60, unit: '℃' },
-      {
-        label: $t('noodleMaking.outletTemp'),
-        value: 35,
-        unit: '℃',
-      },
-      { label: $t('noodleMaking.coolingTime'), value: 120, unit: 's' },
-      {
-        label: $t('noodleMaking.alarm'),
-        value: $t('noodleMaking.normal'),
-        unit: '',
-        isAlarm: true,
-      },
-    ],
-  },
+  // {
+  //   key: 'cooling',
+  //   title: $t('noodleMaking.cooling'),
+  //   params: [
+  //     { label: $t('noodleMaking.inletTemp'), value: 60, unit: '℃' },
+  //     {
+  //       label: $t('noodleMaking.outletTemp'),
+  //       value: 35,
+  //       unit: '℃',
+  //     },
+  //     { label: $t('noodleMaking.coolingTime'), value: 120, unit: 's' },
+  //     {
+  //       label: $t('noodleMaking.alarm'),
+  //       value: $t('noodleMaking.normal'),
+  //       unit: '',
+  //       isAlarm: true,
+  //     },
+  //   ],
+  // },
 ]);
 
 function alarmClass(param: any) {
@@ -271,7 +271,7 @@ function alarmClass(param: any) {
 
     <!-- 3. 实时数据：5 块内容 -->
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
-      <div class="mb-3 font-bold">{{ $t('noodleMaking.realtimeData') }}</div>
+      <!-- <div class="mb-3 font-bold">{{ $t('noodleMaking.realtimeData') }}</div> -->
       <Row :gutter="16">
         <Col
           v-for="block in realtimeBlocks"

@@ -107,6 +107,12 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'radio', width: 50, radioConfig: { trigger: 'row' } } as any,
     {
+      field: 'productionDate',
+      title: $t('noodleMachineUse.colProductionDate'),
+      minWidth: 130,
+      slots: { default: 'productionDateCell' },
+    },
+    {
       field: 'equipCode',
       title: $t('noodleMachineUse.colEquipCode'),
       minWidth: 110,
@@ -126,12 +132,6 @@ const gridOptions: VxeGridProps<any> = {
       field: 'lineName',
       title: $t('noodleMachineUse.colLineName'),
       minWidth: 130,
-    },
-    {
-      field: 'productionDate',
-      title: $t('noodleMachineUse.colProductionDate'),
-      minWidth: 130,
-      slots: { default: 'productionDateCell' },
     },
     {
       field: 'usageHours',

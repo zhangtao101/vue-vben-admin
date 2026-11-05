@@ -36,6 +36,8 @@ defineOptions({
 const props = defineProps({
   /** 当前选中的工单（称重记录所属工单） */
   workSheet: { type: Object as PropType<any>, default: null },
+  /** 工序（搅拌机为 6，混合水为 1） */
+  processType: { type: Number, default: 6 },
 });
 
 /** 保存成功事件：通知父组件刷新称重记录列表 */
@@ -54,6 +56,8 @@ const labelIdRef = ref();
 const labelId = ref('');
 /** 扫码标签解析出的材料编码（标签格式：材料编码|...） */
 const scannedMaterialCode = ref('');
+/** 是否混合水工序（混合水称重方式固定为散装） */
+const isMixedWater = computed(() => props.processType === 1);
 /** 当前匹配的材料 */
 const currentMaterial = ref<any>(null);
 /** 实际称重重量 */
@@ -78,11 +82,17 @@ const displayMax = computed(() => {
   return maxVal > 0 ? maxVal : 1;
 });
 
-/** 当前重量填充百分比 */
-const fillPercent = computed(() => {
-  const w = Number(actualWt.value) || 0;
-  return Math.min(100, (w / displayMax.value) * 100);
-});
+/** 当前显示重量：该物料历史称重重量 + 实时重量（历史值可能为空） */
+const totalWt = computed(
+  () =>
+    (Number(actualWt.value) || 0) +
+    (Number(currentMaterial.value?.actualWt) || 0),
+);
+
+/** 当前重量填充百分比（含该物料的历史称重重量） */
+const fillPercent = computed(() =>
+  Math.min(100, (totalWt.value / displayMax.value) * 100),
+);
 
 /** 下限刻度百分比 */
 const lowerPercent = computed(() => {
@@ -102,9 +112,9 @@ const standardPercent = computed(() => {
   return Math.min(100, (standard / displayMax.value) * 100);
 });
 
-/** 实时重量是否在上下限范围内 */
+/** 累计重量（历史 + 实时）是否在上下限范围内 */
 const inRange = computed(() => {
-  const w = Number(actualWt.value) || 0;
+  const w = totalWt.value;
   const upper = currentMaterial.value?.upperProductWt;
   const lower = currentMaterial.value?.lowerProductWt;
   const hasUpper = upper !== null && upper !== undefined && upper !== '';
@@ -201,8 +211,12 @@ function resetWeighState() {
   currentMaterial.value = null;
   actualWt.value = 0;
   count.value = 0;
-  packType.value = 1;
-  queryPackType.value = undefined;
+  // 混合水工序默认散装，其余默认纸袋
+  packType.value = isMixedWater.value ? 2 : 1;
+  // queryPackType.value = undefined;
+  queryPackType.value = packType.value;
+
+  console.log('open', props.processType, isMixedWater.value, packType.value);
 }
 
 /** 切换称重方式后按新的包装类型重新查询材料列表 */
@@ -314,15 +328,12 @@ function handleLabelInput() {
         ? rows.find((m: any) => m.materialCode === code)
         : undefined;
       if (matched) {
-        // 该物料已存在称重重量（行 actualWt 有值），视为已添加过，不允许重复添加
-        const existedWt = matched.actualWt;
-        const hasExisted =
-          existedWt !== null &&
-          existedWt !== undefined &&
-          existedWt !== '' &&
-          Number(existedWt) > 0;
-        if (hasExisted) {
-          message.warning($t('mixerMaterialWeigh.duplicateMaterial'));
+        // 该物料的称重重量已超出重量上限时，不允许再次添加
+        const existedWt = Number(matched.actualWt) || 0;
+        const upper = matched.upperProductWt;
+        const hasUpper = upper !== null && upper !== undefined && upper !== '';
+        if (hasUpper && existedWt > Number(upper)) {
+          message.warning($t('mixerMaterialWeigh.overUpperLimit'));
           labelId.value = '';
           closeWs();
           return;
@@ -392,16 +403,12 @@ function handleSubmit() {
     message.warning($t('mixerMaterialWeigh.plsInputLabel'));
     return;
   }
-  // 范围校验：实时重量必须处于材料上下限之间，否则按超界方向给出对应提示
+  // 上限校验：该物料已有称重重量加上实时重量超过重量上限时，不允许保存
   const weight = Number(actualWt.value) || 0;
-  const { upperProductWt: upper, lowerProductWt: lower } = mat;
-  const hasLower = lower !== null && lower !== undefined && lower !== '';
+  const existedWt = Number(mat.actualWt) || 0;
+  const upper = mat.upperProductWt;
   const hasUpper = upper !== null && upper !== undefined && upper !== '';
-  if (hasLower && weight < Number(lower)) {
-    message.warning($t('mixerMaterialWeigh.belowLowerLimit', { lower }));
-    return;
-  }
-  if (hasUpper && weight > Number(upper)) {
+  if (hasUpper && existedWt + weight > Number(upper)) {
     message.warning($t('mixerMaterialWeigh.aboveUpperLimit', { upper }));
     return;
   }
@@ -534,7 +541,7 @@ defineExpose({ open });
           <div
             class="absolute inset-0 flex items-center justify-center ipc-fs-sm font-bold"
           >
-            {{ actualWt }} {{ currentMaterial?.unit }}
+            {{ totalWt }} {{ currentMaterial?.unit }}
           </div>
         </div>
         <div
@@ -566,7 +573,8 @@ defineExpose({ open });
               v-model:value="packType"
               @change="handlePackTypeChange"
             >
-              <Radio :value="1">
+              <!-- 混合水工序只显示散装 -->
+              <Radio v-if="!isMixedWater" :value="1">
                 {{ $t('mixerMaterialWeigh.paperBag') }}
               </Radio>
               <Radio :value="2">{{ $t('mixerMaterialWeigh.loose') }}</Radio>

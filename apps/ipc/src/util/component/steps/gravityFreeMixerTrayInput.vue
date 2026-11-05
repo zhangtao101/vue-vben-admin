@@ -17,6 +17,7 @@ import {
   Row,
   Space,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -96,6 +97,11 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'radio', width: 60 },
     {
+      field: 'planDateStart',
+      title: $t('gravityFreeMixerTrayInput.planDateStart'),
+      minWidth: 120,
+    },
+    {
       field: 'workSheetCode',
       title: $t('gravityFreeMixerTrayInput.workSheetCode'),
       minWidth: 120,
@@ -109,11 +115,6 @@ const gridOptions: VxeGridProps<any> = {
       field: 'productName',
       title: $t('gravityFreeMixerTrayInput.productName'),
       minWidth: 160,
-    },
-    {
-      field: 'planDateStart',
-      title: $t('gravityFreeMixerTrayInput.planDateStart'),
-      minWidth: 120,
     },
     {
       field: 'lineName',
@@ -182,6 +183,11 @@ function getLotColumns(): any[] {
       minWidth: 100,
     },
     {
+      field: 'batch',
+      title: $t('gravityFreeMixerTrayInput.batch'),
+      minWidth: 100,
+    },
+    {
       field: 'fullLabel',
       title: $t('gravityFreeMixerTrayInput.fullLabel'),
       minWidth: 140,
@@ -196,9 +202,10 @@ function getLotColumns(): any[] {
   }
   columns.push({
     field: 'fullUse',
-    title: props.processType === 1 ?
-            $t('mixedWaterProgress.isInput') :
-            $t('gravityFreeMixerTrayInput.fullUse'),
+    title:
+      props.processType === 1
+        ? $t('mixedWaterProgress.isInput')
+        : $t('gravityFreeMixerTrayInput.fullUse'),
     minWidth: 120,
     slots: { default: 'useCell' },
   });
@@ -264,10 +271,15 @@ const submitting = ref(false);
 /** 扫描托盘添加的装载记录 */
 const loadList = ref<any[]>([]);
 
-function packTypeFormatter({ cellValue }: any) {
-  return Number(cellValue) === 1
-    ? $t('gravityFreeMixerTrayInput.paperBag')
-    : $t('gravityFreeMixerTrayInput.loose');
+/**
+ * 加载时间格式化：直接显示数据的加载时间，格式 YYYY-MM-DD HH:mm。
+ * @param {object} params - vxe-table 格式化入参，取 cellValue 为原始时间。
+ * @returns {string} 格式化后的时间文本，无值时返回空字符串。
+ * @throws 不主动抛出异常。
+ * @since 2026-11-04 00:00:00
+ */
+function loadTimeFormatter({ cellValue }: any) {
+  return cellValue ? dayjs(cellValue).format('YYYY-MM-DD HH:mm') : '';
 }
 
 const loadGridOptions: VxeGridProps<any> = {
@@ -291,10 +303,15 @@ const loadGridOptions: VxeGridProps<any> = {
       minWidth: 140,
     },
     {
-      field: 'packType',
-      title: $t('gravityFreeMixerTrayInput.packType'),
-      minWidth: 100,
-      formatter: packTypeFormatter,
+      field: 'createUser',
+      title: $t('gravityFreeMixerTrayInput.createUser'),
+      minWidth: 120,
+    },
+    {
+      field: 'createTime',
+      title: $t('gravityFreeMixerTrayInput.loadTime'),
+      minWidth: 150,
+      formatter: loadTimeFormatter,
     },
   ],
   pagerConfig: { enabled: false },
@@ -322,7 +339,13 @@ async function handleScanPallet() {
       lotId: info.lotId,
       lotCode: info.lotCode,
       palletLabel: pallet,
-      packType: info.packType == null ? 1 : Number(info.packType),
+      packType:
+        info.packType === null || info.packType === undefined
+          ? 1
+          : Number(info.packType),
+      // 加载人员/加载时间：直接取数据中的值，前端仅做展示
+      createUser: info.createUser,
+      createTime: info.createTime,
     });
     loadGridApi.grid.loadData([...loadList.value]);
     inputPalletLabel.value = '';

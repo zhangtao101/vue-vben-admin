@@ -42,6 +42,18 @@ export function addLot(params: any) {
 }
 
 /**
+ * 获取当前工序状态
+ * @param processType 工序类型
+ * @returns 工序状态值（返回 1 表示当前处于自动模式，可用于自动模式开关默认选中）
+ * @since 2026-11-05
+ */
+export function getProcessCode(processType: number) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/getProcessCode?${qs.stringify({ processType })}`,
+  );
+}
+
+/**
  * 工单开始/结束
  * @param ids 选中的 id 列表
  * @param state 状态 1确认 2进行中 3结束

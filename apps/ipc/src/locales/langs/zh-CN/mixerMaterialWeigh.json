@@ -35,6 +35,7 @@
   "belowLowerLimit": "实时重量低于下限（{lower}），请调整后再保存",
   "aboveUpperLimit": "实时重量超过上限（{upper}），请调整后再保存",
   "duplicateMaterial": "该物料已添加过称重记录，不允许重复添加",
+  "overUpperLimit": "该物料称重重量已超出重量上限，不允许再次添加",
   "saveSuccess": "称重记录保存成功",
   "saveFailed": "称重记录保存失败",
   "loadFailed": "查询失败",

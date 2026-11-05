@@ -46,5 +46,6 @@
   "planDateStart": "Plan Start Date",
   "workOrderNotSelected": "Please select a work order first",
   "startFailed": "Failed to start work",
-  "endFailed": "Failed to end work"
+  "endFailed": "Failed to end work",
+  "subLineNotBound": "No sub-line is bound to the current workstation"
 }

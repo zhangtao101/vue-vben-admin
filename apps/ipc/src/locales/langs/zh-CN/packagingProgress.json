@@ -46,5 +46,6 @@
   "planDateStart": "计划开始时间",
   "workOrderNotSelected": "请先选择工单",
   "startFailed": "工作开始失败",
-  "endFailed": "工作结束失败"
+  "endFailed": "工作结束失败",
+  "subLineNotBound": "当前工作站没有绑定子产线"
 }

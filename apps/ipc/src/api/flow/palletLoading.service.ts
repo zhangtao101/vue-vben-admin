@@ -118,6 +118,26 @@ export function selectNoTranseLot(params: any) {
 }
 
 /**
+ * 查询可以传输的工单
+ * @param params 查询参数
+ * @param params.processType 工序（混合水为 1，混合 mix 为 2）
+ * @param params.startTime 开始时间（yyyy-MM-dd）
+ * @param params.endTime 结束时间（yyyy-MM-dd）
+ * @param params.lineCode 产线编号（必填）
+ * @param params.productCode 产品编号
+ * @param params.workSheetCode 工单号
+ * @param params.pageNum 页码
+ * @param params.pageSize 每页条数
+ * @returns 分页 lot 列表
+ * @since 2026-11-04
+ */
+export function selectTranseLot(params: any) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/selectTranse?${qs.stringify(params)}`,
+  );
+}
+
+/**
  * 根据托盘号展示托盘信息
  * @param palletLabel 托盘号
  * @returns 托盘信息

@@ -19,6 +19,7 @@
   "save": "Save",
   "deviceTransfer": "Device Transfer",
   "plsSelectLeft": "Please select at least one record on the left",
+  "maxSelected": "The selected list allows a maximum of {max} items and cannot accept more",
   "plsSelectRight": "Please select at least one record on the right",
   "deleteSuccess": "Deleted successfully",
   "saveSuccess": "Saved successfully",

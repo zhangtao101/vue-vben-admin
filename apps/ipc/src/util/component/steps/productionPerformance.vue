@@ -88,11 +88,11 @@ const lotGridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'radio', width: 50, radioConfig: { trigger: 'row' } } as any,
-    {
-      field: 'lotCode',
-      title: $t('productionPerformance.colLotCode'),
-      minWidth: 200,
-    },
+    // {
+    //   field: 'lotCode',
+    //   title: $t('productionPerformance.colLotCode'),
+    //   minWidth: 200,
+    // },
     {
       field: 'productName',
       title: $t('productionPerformance.colProductName'),
@@ -212,20 +212,19 @@ const drawerVisible = ref(false);
 const genFormRef = ref<any>();
 const genForm = reactive<any>({
   equipCode: '',
+  /** 用户手动输入的 LOT 后缀，最终 lotCode = 工单号 + 后缀 */
+  lotCodeSuffix: '',
+  /** 提交用 LOT 代码，由工单号与用户输入后缀拼接而成 */
   lotCode: '',
-  quity: undefined,
-  unit: '',
+  /** 数量固定为 1 */
+  quity: 1,
+  /** 单位固定为 BOX */
+  unit: 'BOX',
 });
 
 const genRules = {
-  lotCode: [
+  lotCodeSuffix: [
     { required: true, message: $t('productionPerformance.lotCodePlaceholder') },
-  ],
-  quity: [
-    { required: true, message: $t('productionPerformance.quityPlaceholder') },
-  ],
-  unit: [
-    { required: true, message: $t('productionPerformance.unitPlaceholder') },
   ],
 };
 
@@ -234,17 +233,20 @@ function handleGenPerformance() {
     message.warning($t('productionPerformance.workSheetCodePlaceholder'));
     return;
   }
-  // 左侧子工单列表仅作展示，LOT 代码在抽屉内填写
+  // 左侧子工单列表仅作展示，LOT 代码在抽屉内填写（仅后缀，前缀为工单号）
   // 设备编号取左侧选中行，仅展示不可编辑
   genForm.equipCode = selectedLot.value?.equipCode ?? '';
+  genForm.lotCodeSuffix = '';
   genForm.lotCode = '';
-  genForm.quity = undefined;
-  genForm.unit = '';
+  genForm.quity = 1;
+  genForm.unit = 'BOX';
   drawerVisible.value = true;
 }
 
 function handleGenSubmit() {
   genFormRef.value.validate().then(() => {
+    // 最终 LOT 代码 = 工单号（固定前缀） + 用户手动输入的后缀
+    genForm.lotCode = `${queryForm.workSheetCode ?? ''}${(genForm.lotCodeSuffix ?? '').trim()}`;
     addFinishRecord({
       equipCode: genForm.equipCode,
       lotCode: genForm.lotCode,
@@ -263,9 +265,10 @@ function handleGenSubmit() {
 function handleGenClose() {
   drawerVisible.value = false;
   genForm.equipCode = '';
+  genForm.lotCodeSuffix = '';
   genForm.lotCode = '';
-  genForm.quity = undefined;
-  genForm.unit = '';
+  genForm.quity = 1;
+  genForm.unit = 'BOX';
 }
 // endregion
 
@@ -390,25 +393,28 @@ function handleCancelPerformance() {
         >
           <Input v-model:value="genForm.equipCode" disabled />
         </FormItem>
-        <FormItem :label="$t('productionPerformance.lotCode')" name="lotCode">
+        <!-- LOT 代码：前缀固定为工单号，后缀由用户手动输入 -->
+        <FormItem
+          :label="$t('productionPerformance.lotCode')"
+          name="lotCodeSuffix"
+        >
           <Input
-            v-model:value="genForm.lotCode"
+            v-model:value="genForm.lotCodeSuffix"
+            :addon-before="queryForm.workSheetCode"
             :placeholder="$t('productionPerformance.lotCodePlaceholder')"
           />
         </FormItem>
+        <!-- 数量：固定为 1，不可修改 -->
         <FormItem :label="$t('productionPerformance.quity')" name="quity">
           <InputNumber
             v-model:value="genForm.quity"
-            :min="0"
-            :placeholder="$t('productionPerformance.quityPlaceholder')"
+            disabled
             style="width: 100%"
           />
         </FormItem>
+        <!-- 单位：固定为 BOX，不可修改 -->
         <FormItem :label="$t('productionPerformance.unit')" name="unit">
-          <Input
-            v-model:value="genForm.unit"
-            :placeholder="$t('productionPerformance.unitPlaceholder')"
-          />
+          <Input v-model:value="genForm.unit" disabled />
         </FormItem>
       </Form>
 

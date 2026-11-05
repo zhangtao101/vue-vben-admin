@@ -15,6 +15,7 @@ import {
   TabPane,
   Tabs,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -22,7 +23,7 @@ import {
   queueDelete,
   queueSearch,
   searchSubLine,
-  selectNoTranseLot,
+  selectTranseLot,
 } from '#/api';
 import { $t } from '#/locales';
 
@@ -43,8 +44,11 @@ const props = defineProps({
 const { RangePicker } = DatePicker;
 
 // region 查询条件
+// 指示日期默认当前日期起、后 3 个月止
+const DEFAULT_DATE_RANGE = () => [dayjs(), dayjs().add(3, 'month')];
+
 const queryParams = ref<any>({
-  indicateDateRange: [],
+  indicateDateRange: DEFAULT_DATE_RANGE(),
   worksheetCode: '',
   materialProductCode: '',
 });
@@ -52,8 +56,8 @@ const queryParams = ref<any>({
 /** 组装左右两表共用的查询参数 */
 function buildQueryParams() {
   return {
-    startTime: queryParams.value.indicateDateRange?.[0],
-    endTime: queryParams.value.indicateDateRange?.[1],
+    startTime: queryParams.value.indicateDateRange?.[0]?.format('YYYY-MM-DD'),
+    endTime: queryParams.value.indicateDateRange?.[1]?.format('YYYY-MM-DD'),
     lineCode: activeLine.value || undefined,
     productCode: queryParams.value.materialProductCode,
     workSheetCode: queryParams.value.worksheetCode,
@@ -100,13 +104,12 @@ function loadLineTabs() {
 }
 // endregion
 
-// region 左表：待传输列表（可进行托盘变更的 lot）
-/** 左表加载方法：selectNoTranseLot 分页查询 */
+// region 左表：可传输工单列表
+/** 左表加载方法：selectTranseLot 分页查询 */
 async function queryLeftList({ page }: any) {
   try {
     const params = buildQueryParams();
-    delete params.lineCode;
-    const res = await selectNoTranseLot({
+    const res = await selectTranseLot({
       ...params,
       pageNum: page.currentPage,
       pageSize: page.pageSize,
@@ -117,7 +120,7 @@ async function queryLeftList({ page }: any) {
     const rightLotIds = new Set(
       (rightData.value ?? [])
         .map((r: any) => r.lotId)
-        .filter((lotId: any) => lotId != null),
+        .filter((lotId: any) => lotId !== null && lotId !== undefined),
     );
     const filtered = (res?.list ?? []).filter(
       (row: any) => !rightLotIds.has(row.id),
@@ -137,8 +140,14 @@ const leftGridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'checkbox', width: 50, title: '' },
     {
+      field: 'createTime',
+      title: $t('mixedWaterFailedTransfer.indicateDate'),
+      minWidth: 160,
+    },
+    {
       field: 'lotCode',
-      title: $t('mixedWaterFailedTransfer.lotCode'),
+      // lotCode 实为工单号
+      title: $t('mixedWaterFailedTransfer.worksheetCode'),
       minWidth: 170,
     },
     {
@@ -175,6 +184,8 @@ const [LeftGrid, leftGridApi] = useVbenVxeGrid({
 // endregion
 
 // region 右表：已选队列列表（多出 顺序 字段）
+/** 已选列表最大条目数 */
+const MAX_SELECTED_COUNT = 5;
 /** 队列状态值说明：1未开始（无背景色）/ 2失败（红）/ 3成功（黄）/ 4完成（绿） */
 const STATE_ROW_CLASS_MAP: Record<string, string> = {
   '2': 'row-state-failed',
@@ -218,13 +229,19 @@ const rightGridOptions: VxeGridProps<any> = {
     { type: 'checkbox', width: 50, title: '' },
     {
       type: 'seq',
-      title: '#',
-      minWidth: 80,
+      title: 'SEQ_NO',
+      minWidth: 90,
       dragSort: true,
     },
     {
+      field: 'createTime',
+      title: $t('mixedWaterFailedTransfer.indicateDate'),
+      minWidth: 160,
+    },
+    {
       field: 'lotCode',
-      title: $t('mixedWaterFailedTransfer.lotCode'),
+      // lotCode 实为工单号
+      title: $t('mixedWaterFailedTransfer.worksheetCode'),
       minWidth: 170,
     },
     {
@@ -276,7 +293,8 @@ function handleQuery() {
 
 function handleReset() {
   queryParams.value = {
-    indicateDateRange: [],
+    // 重置后指示日期回到默认（当前日期起、后 3 个月止）
+    indicateDateRange: DEFAULT_DATE_RANGE(),
     worksheetCode: '',
     materialProductCode: '',
   };
@@ -288,6 +306,16 @@ function handleMoveRight() {
   const records: any[] = leftGridApi.grid.getCheckboxRecords() as any[];
   if (!records || records.length === 0) {
     message.warning($t('mixedWaterFailedTransfer.plsSelectLeft'));
+    return;
+  }
+  // 已选列表最多 MAX_SELECTED_COUNT 条，超出不允许继续添加
+  const currentCount = rightGridApi.grid.getTableData().fullData?.length ?? 0;
+  if (currentCount + records.length > MAX_SELECTED_COUNT) {
+    message.warning(
+      $t('mixedWaterFailedTransfer.maxSelected', {
+        max: MAX_SELECTED_COUNT,
+      }),
+    );
     return;
   }
   const newRows = records.map((record, index) => ({
@@ -316,8 +344,12 @@ function handleMoveLeft() {
     return;
   }
   // 区分已保存（有 id）与未保存（无 id）的行
-  const savedRecords = records.filter((r) => r.id != null);
-  const tempRecords = records.filter((r) => r.id == null);
+  const savedRecords = records.filter(
+    (r) => r.id !== null && r.id !== undefined,
+  );
+  const tempRecords = records.filter(
+    (r) => r.id === null || r.id === undefined,
+  );
 
   // 无 id 的临时行直接从右表前端数据中移除
   if (tempRecords.length > 0) {
@@ -353,7 +385,6 @@ function handleSave() {
     return;
   }
   const line = lineTabs.value.find((l) => l.key === activeLine.value);
-  console.log(lineTabs.value, line);
 
   const data = rightData.map((row, index) => ({
     id: row.id,
@@ -400,10 +431,7 @@ onUnmounted(() => {
     <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
       <Form layout="inline" class="flex-wrap items-end gap-2">
         <Form.Item :label="$t('mixedWaterFailedTransfer.indicateDate')">
-          <RangePicker
-            v-model:value="queryParams.indicateDateRange"
-            value-format="YYYY-MM-DD"
-          />
+          <RangePicker v-model:value="queryParams.indicateDateRange" />
         </Form.Item>
         <Form.Item :label="$t('mixedWaterFailedTransfer.worksheetCode')">
           <Input

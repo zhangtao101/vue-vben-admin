@@ -16,14 +16,23 @@ export function getPlanWorkSheet(sublineCode: string) {
 }
 
 /**
- * 根据工单 id 获取工单
+ * 根据工单 id 获取工单（可选按子产线编号过滤）
  * @param workSheetId 工单 id
+ * @param subLineCode 子产线编号，可选；传入时只返回该子产线的工单数据
  * @returns 工单列表（含产线、子产线、产品信息）
  * @since 2026-09-01
  */
-export function selectLineByWorkSheetId(workSheetId: number | string) {
+export function selectLineByWorkSheetId(
+  workSheetId: number | string,
+  subLineCode?: string,
+) {
   return requestClient.get(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/selectLineByWorkSheetId/${workSheetId}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/selectLineByWorkSheetId?${qs.stringify(
+      {
+        subLineCode,
+        workSheetId,
+      },
+    )}`,
   );
 }
 

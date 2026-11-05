@@ -22,6 +22,7 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   autoStartWorkSheet,
+  getProcessCode,
   selectByWorkSheetId,
   selectWorkSheet,
   updateStae,
@@ -89,6 +90,11 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'radio', width: 50, title: '' },
     {
+      field: 'planDateStart',
+      title: $t('mixedWaterProgress.planDateStart'),
+      minWidth: 110,
+    },
+    {
       field: 'workSheetCode',
       title: $t('mixedWaterProgress.worksheetCode'),
       minWidth: 140,
@@ -102,11 +108,6 @@ const gridOptions: VxeGridProps<any> = {
       field: 'productName',
       title: $t('mixedWaterProgress.productName'),
       minWidth: 160,
-    },
-    {
-      field: 'planDateStart',
-      title: $t('mixedWaterProgress.planDateStart'),
-      minWidth: 110,
     },
     {
       field: 'lineName',
@@ -182,6 +183,16 @@ const lotGridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'radio', width: 50, title: '' },
     {
+      field: 'startTime',
+      title: $t('mixedWaterProgress.startTime'),
+      minWidth: 160,
+    },
+    {
+      field: 'endTime',
+      title: $t('mixedWaterProgress.endTime'),
+      minWidth: 160,
+    },
+    {
       field: 'lotCode',
       title: $t('mixedWaterProgress.lotCode'),
       minWidth: 100,
@@ -195,16 +206,6 @@ const lotGridOptions: VxeGridProps<any> = {
       field: 'batch',
       title: $t('mixedWaterProgress.batchCount'),
       minWidth: 90,
-    },
-    {
-      field: 'startTime',
-      title: $t('mixedWaterProgress.startTime'),
-      minWidth: 160,
-    },
-    {
-      field: 'endTime',
-      title: $t('mixedWaterProgress.endTime'),
-      minWidth: 160,
     },
     {
       field: 'isLoad',
@@ -286,6 +287,22 @@ function queryLotList() {
 const autoMode = ref(false);
 
 /**
+ * 加载当前工序状态：页面加载时调用 getProcessCode，返回 1 时自动模式默认选中
+ * @returns {Promise<void>} 无返回值，接口失败时保持默认关闭。
+ * @throws 不主动抛出异常。
+ * @since 2026-11-05 00:00:00
+ */
+function loadProcessState() {
+  getProcessCode(PROCESS_TYPE)
+    .then((res: any) => {
+      autoMode.value = String(res) === '1';
+    })
+    .catch(() => {
+      autoMode.value = false;
+    });
+}
+
+/**
  * 同步自动模式开关：工单列表选中行的 workState 为 1 时开启，其余（含无选中行）关闭
  */
 function syncAutoMode() {
@@ -344,16 +361,17 @@ function handleEnd() {
 
 /** 自动模式开关：开启下发状态 1，关闭下发状态 0 */
 function handleAutoModeChange(checked: boolean) {
-  const ws = selectedWorkSheet.value;
-  if (!ws?.id) {
-    message.warning($t('mixedWaterProgress.plsSelectWorkSheetForAuto'));
-    autoMode.value = false;
-    return;
-  }
+  // const ws = selectedWorkSheet.value;
+  // if (!ws?.id) {
+  //   message.warning($t('mixedWaterProgress.plsSelectWorkSheetForAuto'));
+  //   autoMode.value = false;
+  //   return;
+  // }
+
+  // id: ws.id,
   autoStartWorkSheet({
     state: checked ? 1 : 0,
     processType: PROCESS_TYPE,
-    id: ws.id,
     equipCode: '',
   })
     .then(() => {
@@ -380,6 +398,8 @@ function refreshLotList() {
 // endregion
 
 onMounted(() => {
+  // 获取当前工序状态，返回 1 时自动模式默认选中
+  loadProcessState();
   gridApi.reload();
 });
 </script>

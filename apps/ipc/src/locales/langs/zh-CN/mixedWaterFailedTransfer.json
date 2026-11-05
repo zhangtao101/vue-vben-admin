@@ -19,6 +19,7 @@
   "save": "保存",
   "deviceTransfer": "设备传输",
   "plsSelectLeft": "请先在左侧选择至少一条记录",
+  "maxSelected": "已选列表最多 {max} 条，无法继续添加",
   "plsSelectRight": "请先在右侧选择至少一条记录",
   "deleteSuccess": "删除成功",
   "saveSuccess": "保存成功",

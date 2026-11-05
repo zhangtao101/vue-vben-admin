@@ -96,17 +96,17 @@ const cartGridOptions: VxeGridProps<any> = {
     {
       field: 'cartCode',
       title: $t('cartLoadUnload.colCartCode'),
-      minWidth: 80,
+      minWidth: 120,
     },
     {
       field: 'cartName',
       title: $t('cartLoadUnload.colCartName'),
-      minWidth: 100,
+      minWidth: 120,
     },
     {
       field: 'catTypeName',
       title: $t('cartLoadUnload.colCartType'),
-      minWidth: 100,
+      minWidth: 120,
     },
     {
       field: 'loadFlag',
@@ -285,10 +285,8 @@ function handleReset() {
       <FormItem>
         <Space>
           <Button type="primary" @click="handleQuery">
-{{
-            $t('common.query')
-          }}
-</Button>
+            {{ $t('common.query') }}
+          </Button>
           <Button @click="handleReset">{{ $t('common.reset') }}</Button>
         </Space>
       </FormItem>
@@ -380,15 +378,11 @@ function handleReset() {
           <Space>
             <Button @click="handleInit">{{ $t('cartLoadUnload.init') }}</Button>
             <Button type="primary" @click="handleLoad">
-{{
-              $t('cartLoadUnload.load')
-            }}
-</Button>
+              {{ $t('cartLoadUnload.load') }}
+            </Button>
             <Button @click="handleUnload">
-{{
-              $t('cartLoadUnload.unload')
-            }}
-</Button>
+              {{ $t('cartLoadUnload.unload') }}
+            </Button>
           </Space>
         </div>
       </Col>

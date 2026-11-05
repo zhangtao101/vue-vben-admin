@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/palletizTransfer/searchSubLine/searchWeightRecordList/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉、SopImageDrawer SOP 图像抽屉。
+ * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/palletizTransfer/searchSubLineByProcessCode/searchWeightRecordList/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉、SopImageDrawer SOP 图像抽屉。
  * [OUTPUT]: 对外提供 packagingProgress 包装工序步骤组件（步骤组件标准入参 functionId/bindingId/worksheetCode/equipCode/workstationCode/processType）。
- * [POS]: 属于包装工序步骤组件，负责子产线/工单查询、左右两栏工单信息展示、称重记录列表、工作开始/结束控制、喷码传输弹窗与 SOP 图像查看。
+ * [POS]: 属于包装工序步骤组件，负责按工序编码加载子产线（parentId 有值）、左右两栏各自绑定子产线与工单选择、称重记录列表、工作开始/结束控制、喷码传输弹窗与 SOP 图像查看。
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-09-21 00:00:00
+ * [TIME]: 2026-11-04 00:00:00
  */
 import type { Rule } from 'ant-design-vue/es/form';
 
@@ -36,7 +36,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getPlanWorkSheet,
   palletizTransfer,
-  searchSubLine,
+  searchSubLineByProcessCode,
   searchWeightRecordList,
   selectLineByWorkSheetId,
   updateStae,
@@ -77,26 +77,28 @@ const workAuthNames = ref<string[]>([]);
  * @since 2026-10-15 00:00:00
  */
 function hasWorkAuth(buttonName: string) {
-  console.log(buttonName, workAuthNames.value);
   return workAuthNames.value.includes(buttonName);
 }
 // endregion
 
-// region 1. 查询条件：子产线 / 工单
-// 查询表单：子产线编码 + 工单 id
-const form = reactive<any>({
-  subLine: undefined,
-  workOrder: undefined,
-});
-
-/** 子产线下拉选项（接口获取） */
+// region 1. 子产线 / 工单
+/** 子产线下拉选项（接口获取，parentId 有值的工作站绑定子产线） */
 const subLineOptions = ref<{ label: string; value: string }[]>([]);
-/** 工单下拉选项（根据子产线查询） */
-const workOrderOptions = ref<{ label: string; state: any; value: number }[]>(
-  [],
-);
+/** 绑定到当前工作站的子产线原始列表（parentId 有值），决定左右两栏展示 */
+const subLineList = ref<any[]>([]);
+/** 左栏工单下拉选项（按左栏绑定的子产线查询） */
+const leftWorkOrderOptions = ref<
+  { label: string; state: any; value: number }[]
+>([]);
+/** 右栏工单下拉选项（按右栏绑定的子产线查询） */
+const rightWorkOrderOptions = ref<
+  { label: string; state: any; value: number }[]
+>([]);
 /** 工单对应的子产线/产线原始数据，作为喷码传输弹窗的子产线下拉选项来源 */
 const lineList = ref<any[]>([]);
+
+/** 右栏是否展示：工作站绑定了两个及以上子产线时展示右栏 */
+const showRightPanel = computed(() => subLineList.value.length > 1);
 
 /** 工单状态指示灯：state 为 2 时绿色，其余（含未选中/未开始）灰色 */
 const WORK_ORDER_RUNNING_STATE = '2';
@@ -112,57 +114,94 @@ function isRunningState(state: any) {
   return String(state) === WORK_ORDER_RUNNING_STATE;
 }
 
-/** 顶部查询区当前选中工单的状态值（取工单下拉原始数据） */
-const selectedWorkOrderState = computed(() => {
-  const hit = workOrderOptions.value.find(
-    (item: any) => item.value === form.workOrder,
-  );
-  return hit?.state;
-});
+/**
+ * 取面板对应的工单下拉选项引用。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @returns {object} 面板对应的工单下拉选项 ref（leftWorkOrderOptions/rightWorkOrderOptions）。
+ * @throws 不主动抛出异常。
+ * @since 2026-11-04 00:00:00
+ */
+function getWorkOrderOptionsRef(panel: any) {
+  return panel === leftPanel ? leftWorkOrderOptions : rightWorkOrderOptions;
+}
 
 /**
  * 取面板工单的状态指示灯颜色类：state 为 2 显示绿色实心圆，否则灰色。
- * 面板数据来自 selectLineByWorkSheetId，取不到时回退到顶部选中工单的状态。
+ * 状态取自面板数据（selectLineByWorkSheetId 返回的工单 state）。
  * @param {object} panel - 目标面板（leftPanel/rightPanel）。
  * @returns {string} 圆点背景色类名（bg-green-500 / bg-gray-400）。
  * @throws 不主动抛出异常。
  * @since 2026-09-21 00:00:00
  */
 function getStateDotClass(panel: any) {
-  const state = panel?.form?.state ?? selectedWorkOrderState.value;
-  return isRunningState(state) ? 'bg-green-500' : 'bg-gray-400';
+  return isRunningState(panel?.form?.state) ? 'bg-green-500' : 'bg-gray-400';
 }
 
 /**
- * 加载子产线下拉选项，仅页面加载时执行一次。
- * @returns {Promise<void>} 无返回值，加载完成后回填 subLineOptions。
+ * 加载绑定到当前工作站的子产线列表并分配到左右两栏，仅页面加载时执行一次。
+ * 调用 searchSubLineByProcessCode 按工序编码查询，过滤 parentId 无值的子产线；
+ * 全部无值时提示当前工作站没有绑定子产线。
+ * @returns {Promise<void>} 无返回值，加载完成后回填 subLineList/subLineOptions 并绑定左右栏。
  * @throws 接口失败时由统一错误处理层提示，此处不额外捕获。
- * @since 2026-09-02 00:00:00
+ * @since 2026-11-04 00:00:00
  */
 function loadSubLines() {
-  return searchSubLine({ processType: props.processType }).then((res: any) => {
-    const list = res?.list ?? [];
+  return searchSubLineByProcessCode(props.processCode).then((res: any) => {
+    const list = (res ?? []).filter(
+      (item: any) =>
+        item.parentId !== undefined &&
+        item.parentId !== null &&
+        item.parentId !== '',
+    );
+    if (list.length === 0) {
+      message.warning($t('packagingProgress.subLineNotBound'));
+      return;
+    }
+    subLineList.value = list;
     subLineOptions.value = list.map((item: any) => ({
       label: `${item.subLineCode}(${item.subLineName})`,
       value: item.subLineCode,
     }));
+    // 第一个子产线绑定左栏
+    bindSubLineToPanel(leftPanel, list[0]);
+    loadWorkOrdersForPanel(leftPanel);
+    // 存在第二个子产线时绑定右栏
+    if (list[1]) {
+      bindSubLineToPanel(rightPanel, list[1]);
+      loadWorkOrdersForPanel(rightPanel);
+    }
   });
 }
 
 /**
- * 根据当前子产线加载工单下拉选项。
- * @returns {Promise<void>} 无返回值，子产线为空时清空选项，否则回填 workOrderOptions。
- * @throws 接口失败时由统一错误处理层提示，此处不额外捕获。
- * @since 2026-09-02 00:00:00
+ * 将子产线绑定到面板：记录子产线编码用于工单查询与下拉回显。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @param {object} subLine - 子产线原始数据（subLineCode/subLineName/parentId）。
+ * @returns {void} 无返回值。
+ * @throws 不主动抛出异常。
+ * @since 2026-11-04 00:00:00
  */
-function loadWorkOrders() {
-  const subLineCode = form.subLine;
+function bindSubLineToPanel(panel: any, subLine: any) {
+  panel.subLineCode = subLine.subLineCode;
+  panel.form.subLine = subLine.subLineCode;
+}
+
+/**
+ * 按面板绑定的子产线加载工单下拉选项。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @returns {Promise<void>} 无返回值，子产线为空时清空选项，否则回填对应工单选项。
+ * @throws 接口失败时由统一错误处理层提示，此处不额外捕获。
+ * @since 2026-11-04 00:00:00
+ */
+function loadWorkOrdersForPanel(panel: any) {
+  const optionsRef = getWorkOrderOptionsRef(panel);
+  const subLineCode = panel.subLineCode;
   if (!subLineCode) {
-    workOrderOptions.value = [];
+    optionsRef.value = [];
     return Promise.resolve();
   }
   return getPlanWorkSheet(subLineCode).then((res: any) => {
-    workOrderOptions.value = (res ?? []).map((item: any) => ({
+    optionsRef.value = (res ?? []).map((item: any) => ({
       label: item.workSheetCode,
       value: item.id,
       // 保留工单状态，供状态指示灯（state === 2 绿色）使用
@@ -172,55 +211,72 @@ function loadWorkOrders() {
 }
 
 /**
- * 子产线变更处理：清空已选工单、重置面板并重新加载工单下拉。
- * @returns {void} 无返回值。
- * @throws 不主动抛出异常。
- * @since 2026-09-02 00:00:00
- */
-function handleSubLineChange() {
-  form.workOrder = undefined;
-  resetPanels();
-  loadWorkOrders();
-}
-
-/**
- * 工单选择处理：查询对应产线信息填充左右两栏面板，并加载称重记录。
- * @param {number} workSheetId - 选中的工单 id，空值时重置面板。
+ * 面板工单选择处理：查询单条产线信息填充对应面板，并加载称重记录。
+ * 选中后 selectLineByWorkSheetId 只返回一个元素的数组，取第一条填充当前面板。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @param {number} workSheetId - 选中的工单 id，空值时重置面板并恢复子产线回显。
  * @returns {void} 无返回值。
  * @throws 接口失败时由统一错误处理层提示，此处不额外捕获。
- * @since 2026-09-02 00:00:00
+ * @since 2026-11-04 00:00:00
  */
-function handleWorkOrderChange(workSheetId: any) {
+function handlePanelWorkOrderChange(panel: any, workSheetId: any) {
   if (!workSheetId) {
-    resetPanels();
+    resetPanel(panel);
+    // 恢复面板绑定的子产线回显
+    panel.form.subLine = panel.subLineCode ?? '';
     return;
   }
-  selectLineByWorkSheetId(workSheetId).then((res: any) => {
+  // 按面板绑定的子产线过滤，接口只返回该子产线的单条工单数据
+  selectLineByWorkSheetId(workSheetId, panel.subLineCode).then((res: any) => {
     const lines = res ?? [];
-    lineList.value = lines;
-    fillPanel(leftPanel, lines[0]);
-    // 右栏仅在存在第二条产线数据时才填充，否则清空，避免残留上一次的数据
-    if (lines[1]) {
-      fillPanel(rightPanel, lines[1]);
-    } else {
-      resetPanel(rightPanel);
+    if (lines[0]) {
+      lines[0].packTypes = Number(lines[0].packTypes);
+      fillPanel(panel, lines[0]);
+      addLineToLineList(lines[0]);
+      loadMaterials();
     }
-    loadMaterials();
   });
 }
 
 /**
- * 重新加载当前工单数据：刷新工单下拉状态、重新填充左右两栏并重载称重记录。
- * @returns {void} 无返回值，未选中工单时直接返回。
+ * 将工单产线数据合并进喷码传输弹窗的子产线选项来源（按子产线编码去重）。
+ * @param {object} line - selectLineByWorkSheetId 返回的产线行数据。
+ * @returns {void} 无返回值。
  * @throws 不主动抛出异常。
- * @since 2026-10-31 00:00:00
+ * @since 2026-11-04 00:00:00
  */
-function reloadCurrentWorkOrder() {
-  if (!form.workOrder) {
+function addLineToLineList(line: any) {
+  if (!line?.subLineCode) {
     return;
   }
-  loadWorkOrders();
-  handleWorkOrderChange(form.workOrder);
+  if (
+    !lineList.value.some((item: any) => item.subLineCode === line.subLineCode)
+  ) {
+    lineList.value.push(line);
+  }
+}
+
+/**
+ * 重新加载指定面板的工单下拉与面板数据（开始作业成功后调用）。
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）。
+ * @returns {void} 无返回值。
+ * @throws 不主动抛出异常。
+ * @since 2026-11-04 00:00:00
+ */
+function reloadPanel(panel: any) {
+  loadWorkOrdersForPanel(panel);
+  if (panel.form.id) {
+    selectLineByWorkSheetId(panel.form.id, panel.subLineCode).then(
+      (res: any) => {
+        const line = (res ?? [])[0];
+        if (line) {
+          fillPanel(panel, line);
+          addLineToLineList(line);
+        }
+        loadMaterials();
+      },
+    );
+  }
 }
 // endregion
 
@@ -233,6 +289,8 @@ function reloadCurrentWorkOrder() {
  */
 function createPanel() {
   return reactive<any>({
+    /** 面板绑定的子产线编码（页面加载时按左右栏分配） */
+    subLineCode: '',
     form: {
       workOrder: '',
       subLine: '',
@@ -259,14 +317,6 @@ function createPanel() {
 const leftPanel = createPanel();
 // 右栏面板：结构同左栏，仅底部三个按钮可操作
 const rightPanel = createPanel();
-
-/**
- * 右栏是否有数据：接口返回第二条产线数据并成功填充后为 true。
- * 为 false 时右栏整体不渲染。
- */
-const hasRightPanel = computed(
-  () => !!(rightPanel.form.workOrder || rightPanel.form.id),
-);
 
 /**
  * 面板是否已选中工单：底部操作按钮需先选择工单才可点击。
@@ -341,21 +391,9 @@ function resetPanel(panel: any) {
   panel.metrics.stackQty = 0;
   panel.metrics.subLineProductionQty = 0;
   panel.workStatus = 'idle';
-  panel.packTypes = [3, 4, 5];
+  // panel.packTypes = [3, 4, 5];
 }
 
-/**
- * 重置左右两栏面板到初始状态。
- * @returns {void} 无返回值。
- * @throws 不主动抛出异常。
- * @since 2026-09-02 00:00:00
- */
-function resetPanels() {
-  resetPanel(leftPanel);
-  resetPanel(rightPanel);
-  // 清空子产线原始数据，避免传输弹窗残留上次的子产线选项
-  lineList.value = [];
-}
 // endregion
 
 // region 3. 加载称重记录列表
@@ -517,8 +555,8 @@ function handleWorkStart(panel: any) {
     .then(() => {
       panel.workStatus = 'running';
       message.success($t('packagingProgress.startSuccess'));
-      // 开始成功后重新加载当前工单数据，刷新工单状态与面板内容
-      reloadCurrentWorkOrder();
+      // 开始成功后重新加载当前面板工单数据，刷新工单状态与面板内容
+      reloadPanel(panel);
     })
     .catch(() => {
       message.error($t('packagingProgress.startFailed'));
@@ -611,20 +649,14 @@ const transferRules: Record<string, Rule[]> = {
 };
 
 /**
- * 取面板工单号，取不到时回退到顶部下拉选中工单的工单号。
+ * 取面板工单号。
  * @param {object} panel - 目标面板（leftPanel/rightPanel）。
- * @returns {string} 工单号，均取不到时返回空字符串。
+ * @returns {string} 工单号，取不到时返回空字符串。
  * @throws 不主动抛出异常。
  * @since 2026-09-21 00:00:00
  */
 function resolveWorkSheetCode(panel: any) {
-  if (panel?.form?.workSheetCode) {
-    return panel.form.workSheetCode;
-  }
-  const hit = workOrderOptions.value.find(
-    (item: any) => item.value === form.workOrder,
-  );
-  return hit?.label ?? '';
+  return panel?.form?.workSheetCode ?? '';
 }
 
 /**
@@ -723,40 +755,22 @@ onMounted(() => {
             <Form
               :label-col="{ span: 4 }"
               :wrapper-col="{ span: 20 }"
-              :model="form"
+              :model="leftPanel.form"
             >
-              <FormItem
-                :label="$t('packagingProgress.productionLine')"
-                class="mb-2!"
-              >
-                <div class="flex items-center gap-2">
-                  <Select
-                    v-model:value="form.subLine"
-                    :options="subLineOptions"
-                    :placeholder="$t('packagingProgress.subLinePlaceholder')"
-                    allow-clear
-                    class="flex-1"
-                    @change="handleSubLineChange"
-                  />
-                  <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
-                  <span
-                    class="size-3 shrink-0 rounded-full"
-                    :class="getStateDotClass(leftPanel)"
-                  ></span>
-                </div>
-              </FormItem>
               <FormItem
                 :label="$t('packagingProgress.workOrder')"
                 class="mb-2!"
               >
                 <div class="flex items-center gap-2">
                   <Select
-                    v-model:value="form.workOrder"
-                    :options="workOrderOptions"
+                    v-model:value="leftPanel.form.id"
+                    :options="leftWorkOrderOptions"
                     :placeholder="$t('packagingProgress.workOrderPlaceholder')"
                     allow-clear
                     class="flex-1"
-                    @change="handleWorkOrderChange"
+                    @change="
+                      (val: any) => handlePanelWorkOrderChange(leftPanel, val)
+                    "
                   />
                   <!-- 喷码传输：弹窗选择子产线/区域代码/是否初始化后提交 -->
                   <Tooltip :title="$t('packagingProgress.inkjetTransfer')">
@@ -786,9 +800,7 @@ onMounted(() => {
                     v-model:value="leftPanel.form.subLine"
                     :options="subLineOptions"
                     :placeholder="$t('packagingProgress.subLinePlaceholder')"
-                    allow-clear
                     class="flex-1"
-                    @change="handleSubLineChange"
                     disabled
                   />
                   <!-- 工单状态指示灯：state === 2 绿色，其余灰色 -->
@@ -883,7 +895,7 @@ onMounted(() => {
             <LeftGrid>
               <template #toolbar-tools>
                 <CheckboxGroup
-                  v-model:value="leftPanel.packTypes"
+                  v-model:value="leftPanel.form.packTypes"
                   :options="packTypeOptions"
                   @change="handlePackTypeChange(leftPanel, leftGridApi)"
                 />
@@ -926,28 +938,30 @@ onMounted(() => {
         </div>
       </Col>
 
-      <!-- 右栏：复制结构，仅底部三个按钮可操作；无第二条产线数据时不展示 -->
-      <Col :xs="24" :md="12">
+      <!-- 右栏：绑定第二个子产线时展示，工单同样可选择 -->
+      <Col v-if="showRightPanel" :xs="24" :md="12">
         <div class="flex flex-col gap-4">
-          <!-- 1. 工单信息表单（只读） -->
+          <!-- 1. 工单信息表单 -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
             <Form
               :label-col="{ span: 4 }"
               :wrapper-col="{ span: 20 }"
               :model="rightPanel.form"
             >
-              <!-- 顶部空行占位 -->
-              <FormItem label="&nbsp;" class="mb-2!" :colon="false" />
               <FormItem
                 :label="$t('packagingProgress.workOrder')"
                 class="mb-2!"
               >
                 <div class="flex items-center gap-2">
-                  <Input
-                    v-model:value="rightPanel.form.workOrder"
+                  <Select
+                    v-model:value="rightPanel.form.id"
+                    :options="rightWorkOrderOptions"
                     :placeholder="$t('packagingProgress.workOrderPlaceholder')"
-                    disabled
+                    allow-clear
                     class="flex-1"
+                    @change="
+                      (val: any) => handlePanelWorkOrderChange(rightPanel, val)
+                    "
                   />
                   <!-- 喷码传输：弹窗选择子产线/区域代码/是否初始化后提交 -->
                   <Tooltip :title="$t('packagingProgress.inkjetTransfer')">
@@ -955,7 +969,6 @@ onMounted(() => {
                       type="primary"
                       shape="circle"
                       class="shrink-0"
-                      :disabled="!hasRightPanel"
                       @click="openTransfer(rightPanel)"
                     >
                       <Icon
@@ -1071,7 +1084,7 @@ onMounted(() => {
             <RightGrid>
               <template #toolbar-tools>
                 <CheckboxGroup
-                  v-model:value="rightPanel.packTypes"
+                  v-model:value="rightPanel.form.packTypes"
                   :options="packTypeOptions"
                   @change="handlePackTypeChange(rightPanel, rightGridApi)"
                 />

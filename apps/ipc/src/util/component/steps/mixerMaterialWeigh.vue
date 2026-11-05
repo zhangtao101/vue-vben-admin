@@ -55,22 +55,22 @@ const queryParams = ref<any>({
 
 /** 查询参数格式化：处理时间范围并剔除空值字段 */
 function formatQueryParams() {
-  const params: any = { ...queryParams.value };
-  // 处理时间范围查询
-  if (params.planDateRange && params.planDateRange.length === 2) {
-    params.startTime = params.planDateRange[0];
-    params.endTime = params.planDateRange[1];
-  }
-  delete params.planDateRange;
-  // 剔除空值字段
-  Object.keys(params).forEach((key) => {
-    if (
-      params[key] === undefined ||
-      params[key] === '' ||
-      params[key] === null
-    ) {
-      delete params[key];
+  const source: any = { ...queryParams.value };
+  const params: any = {};
+  // 时间范围转换为 startTime/endTime，其余字段剔除空值
+  Object.keys(source).forEach((key) => {
+    const value = source[key];
+    if (key === 'planDateRange') {
+      if (Array.isArray(value) && value.length === 2) {
+        params.startTime = value[0];
+        params.endTime = value[1];
+      }
+      return;
     }
+    if (value === undefined || value === '' || value === null) {
+      return;
+    }
+    params[key] = value;
   });
   return params;
 }
@@ -176,7 +176,9 @@ function queryMaterialList(): Promise<{ items: any[] }> {
 }
 
 const materialGridOptions: VxeGridProps<any> = {
-  rowClassName: 'ipc-grid-row',
+  // 已称重（actualWt 有值）的行显示为绿色
+  rowClassName: ({ row }: any) =>
+    row.actualWt ? 'ipc-grid-row bg-green-500/15' : 'ipc-grid-row',
   headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
@@ -456,6 +458,7 @@ function handleIssue() {
     <!-- 称重抽屉：基本信息 → 实时称重信息 → 材料列表 -->
     <MaterialWeighDrawer
       ref="weighDrawerRef"
+      :process-type="processType"
       :work-sheet="selectedWorkSheet"
       @success="loadWeightRecords"
     />
