@@ -1,14 +1,15 @@
 <script setup lang="ts">
 /**
- * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/palletizTransfer/searchSubLineByProcessCode/searchWeightRecordList/selectLineByWorkSheetId 接口、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉、SopImageDrawer SOP 图像抽屉。
+ * [INPUT]: 依赖 vxe-table 适配器（VxeGridProps/useVbenVxeGrid）、#/api 的 getPlanWorkSheet/palletizTransfer/searchSubLineByProcessCode/searchWeightRecordList/selectLineByWorkSheetId 接口、#/store 的 usePackagingProgressStore（已选工单持久化）、#/locales 国际化、ant-design-vue 组件，以及 PackagingMaterialDrawer 包装材料加载/卸载抽屉、SopImageDrawer SOP 图像抽屉。
  * [OUTPUT]: 对外提供 packagingProgress 包装工序步骤组件（步骤组件标准入参 functionId/bindingId/worksheetCode/equipCode/workstationCode/processType）。
- * [POS]: 属于包装工序步骤组件，负责按工序编码加载子产线（parentId 有值）、左右两栏各自绑定子产线与工单选择、称重记录列表、工作开始/结束控制、喷码传输弹窗与 SOP 图像查看。
+ * [POS]: 属于包装工序步骤组件，负责按工序编码加载子产线（parentId 有值）、左右两栏各自绑定子产线与工单选择、选中工单的本地持久化与再次进入时的自动恢复、称重记录列表、工作开始/结束控制、喷码传输弹窗与 SOP 图像查看。
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-11-04 00:00:00
+ * [TIME]: 2026-11-05 00:00:00
  */
 import type { Rule } from 'ant-design-vue/es/form';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { PackagingPanelKey } from '#/store';
 
 import { computed, onMounted, reactive, ref } from 'vue';
 
@@ -42,6 +43,7 @@ import {
   updateStae,
 } from '#/api';
 import { $t } from '#/locales';
+import { usePackagingProgressStore } from '#/store';
 import { queryWorkAuth } from '#/util';
 import SopImageDrawer from '#/util/component/drawers/SopImageDrawer.vue';
 import PackagingMaterialDrawer from '#/util/component/PackagingMaterialDrawer.vue';
@@ -140,7 +142,8 @@ function getStateDotClass(panel: any) {
 /**
  * 加载绑定到当前工作站的子产线列表并分配到左右两栏，仅页面加载时执行一次。
  * 调用 searchSubLineByProcessCode 按工序编码查询，过滤 parentId 无值的子产线；
- * 全部无值时提示当前工作站没有绑定子产线。
+ * 全部无值时提示当前工作站没有绑定子产线；
+ * 工单下拉加载完成后，恢复上次选中的工单并重新查询相关信息。
  * @returns {Promise<void>} 无返回值，加载完成后回填 subLineList/subLineOptions 并绑定左右栏。
  * @throws 接口失败时由统一错误处理层提示，此处不额外捕获。
  * @since 2026-11-04 00:00:00
@@ -164,12 +167,16 @@ function loadSubLines() {
     }));
     // 第一个子产线绑定左栏
     bindSubLineToPanel(leftPanel, list[0]);
-    loadWorkOrdersForPanel(leftPanel);
+    const tasks: Promise<any>[] = [loadWorkOrdersForPanel(leftPanel)];
     // 存在第二个子产线时绑定右栏
     if (list[1]) {
       bindSubLineToPanel(rightPanel, list[1]);
-      loadWorkOrdersForPanel(rightPanel);
+      tasks.push(loadWorkOrdersForPanel(rightPanel));
     }
+    // 工单下拉加载完成后，恢复上次选中的工单并重新查询相关信息
+    return Promise.all(tasks).then(() => {
+      restorePanelSelections();
+    });
   });
 }
 
@@ -224,6 +231,8 @@ function handlePanelWorkOrderChange(panel: any, workSheetId: any) {
     resetPanel(panel);
     // 恢复面板绑定的子产线回显
     panel.form.subLine = panel.subLineCode ?? '';
+    // 清空工单选择时同步清除已保存的选中记录
+    clearPanelSelection(panel);
     return;
   }
   // 按面板绑定的子产线过滤，接口只返回该子产线的单条工单数据
@@ -234,6 +243,8 @@ function handlePanelWorkOrderChange(panel: any, workSheetId: any) {
       fillPanel(panel, lines[0]);
       addLineToLineList(lines[0]);
       loadMaterials();
+      // 保存已选工单，供离开页面后再次进入时恢复
+      savePanelSelection(panel, lines[0]);
     }
   });
 }
@@ -394,6 +405,100 @@ function resetPanel(panel: any) {
   // panel.packTypes = [3, 4, 5];
 }
 
+// endregion
+
+// region 2.1 已选工单持久化（离开后再次进入时恢复）
+const packagingProgressStore = usePackagingProgressStore();
+
+/**
+ * 取当前工作站的状态存储 key：优先工作站编码，缺失时回退工序编码
+ * @returns {string} 存储 key
+ * @throws 不主动抛出异常
+ * @since 2026-11-05 00:00:00
+ */
+function getStationKey() {
+  return props.workstationCode || props.processCode || 'default';
+}
+
+/**
+ * 取面板标识（用于区分左右栏的持久化记录）
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）
+ * @returns {PackagingPanelKey} left 或 right
+ * @throws 不主动抛出异常
+ * @since 2026-11-05 00:00:00
+ */
+function getPanelKey(panel: any): PackagingPanelKey {
+  return panel === leftPanel ? 'left' : 'right';
+}
+
+/**
+ * 保存面板当前选中的工单，供离开页面后再次进入时恢复
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）
+ * @param {object} line - 工单产线数据（selectLineByWorkSheetId 返回行）
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常
+ * @since 2026-11-05 00:00:00
+ */
+function savePanelSelection(panel: any, line: any) {
+  const workSheetId = line?.id ?? panel?.form?.id;
+  if (!workSheetId) {
+    return;
+  }
+  packagingProgressStore.setSelection(getStationKey(), getPanelKey(panel), {
+    workSheetId,
+    workSheetCode: line?.workSheetCode ?? panel?.form?.workOrder ?? '',
+    subLineCode: line?.subLineCode ?? panel?.subLineCode ?? '',
+  });
+}
+
+/**
+ * 清除面板已保存的工单记录（清空工单选择时调用）
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常
+ * @since 2026-11-05 00:00:00
+ */
+function clearPanelSelection(panel: any) {
+  packagingProgressStore.clearSelection(getStationKey(), getPanelKey(panel));
+}
+
+/**
+ * 恢复左右两栏上次选中的工单并重新查询工单信息、刷新称重记录
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常
+ * @since 2026-11-05 00:00:00
+ */
+function restorePanelSelections() {
+  restorePanelSelection(leftPanel);
+  restorePanelSelection(rightPanel);
+}
+
+/**
+ * 恢复单个面板上次选中的工单：工单已不在当前子产线的可选项中时清除无效记录
+ * @param {object} panel - 目标面板（leftPanel/rightPanel）
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常
+ * @since 2026-11-05 00:00:00
+ */
+function restorePanelSelection(panel: any) {
+  const panelKey = getPanelKey(panel);
+  const saved = packagingProgressStore.getSelection(getStationKey(), panelKey);
+  if (!saved?.workSheetId) {
+    return;
+  }
+  const optionsRef = getWorkOrderOptionsRef(panel);
+  const exists = optionsRef.value.some(
+    (item: any) => item.value === saved.workSheetId,
+  );
+  if (!exists) {
+    // 工单不在当前子产线的可选中范围内，清除无效记录
+    packagingProgressStore.clearSelection(getStationKey(), panelKey);
+    return;
+  }
+  // 回显下拉选中值后重新查询工单信息（含工单号、状态、指标等）
+  panel.form.id = saved.workSheetId;
+  handlePanelWorkOrderChange(panel, saved.workSheetId);
+}
 // endregion
 
 // region 3. 加载称重记录列表
@@ -813,14 +918,12 @@ onMounted(() => {
               <FormItem :label="$t('packagingProgress.product')" class="mb-2!">
                 <Input
                   v-model:value="leftPanel.form.product"
-                  :placeholder="$t('packagingProgress.productPlaceholder')"
                   disabled
                 />
               </FormItem>
               <FormItem :label="$t('packagingProgress.line')" class="mb-2!">
                 <Input
                   v-model:value="leftPanel.form.line"
-                  :placeholder="$t('packagingProgress.linePlaceholder')"
                   disabled
                 />
               </FormItem>
@@ -830,7 +933,6 @@ onMounted(() => {
               >
                 <Textarea
                   v-model:value="leftPanel.form.remark"
-                  :placeholder="$t('packagingProgress.remarkPlaceholder')"
                   allow-clear
                   disabled
                 />
@@ -989,7 +1091,6 @@ onMounted(() => {
                   <Select
                     v-model:value="rightPanel.form.subLine"
                     :options="subLineOptions"
-                    :placeholder="$t('packagingProgress.subLinePlaceholder')"
                     disabled
                     class="flex-1"
                   />
@@ -1003,14 +1104,12 @@ onMounted(() => {
               <FormItem :label="$t('packagingProgress.product')" class="mb-2!">
                 <Input
                   v-model:value="rightPanel.form.product"
-                  :placeholder="$t('packagingProgress.productPlaceholder')"
                   disabled
                 />
               </FormItem>
               <FormItem :label="$t('packagingProgress.line')" class="mb-2!">
                 <Input
                   v-model:value="rightPanel.form.line"
-                  :placeholder="$t('packagingProgress.linePlaceholder')"
                   disabled
                 />
               </FormItem>
@@ -1020,7 +1119,6 @@ onMounted(() => {
               >
                 <Textarea
                   v-model:value="rightPanel.form.remark"
-                  :placeholder="$t('packagingProgress.remarkPlaceholder')"
                   disabled
                 />
               </FormItem>

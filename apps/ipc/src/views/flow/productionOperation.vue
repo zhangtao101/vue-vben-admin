@@ -83,15 +83,15 @@ function processChange(processCode?: any) {
  */
 function operationItemChange() {
   getOpFunctionsByOpdetail({ opDetailId: theSelectedOperation.value }).then(
-    () => {
+    (data: any[]) => {
       // 接口数据转工步列表格式：id 对应 id，functionType 对应 type，
       // functionTypeName 对应 title，status 默认 1
-      // stepList.value = (data || []).map((item: any) => ({
-      //   id: item.id,
-      //   title: item.functionTypeName,
-      //   type: item.functionType,
-      //   status: 1,
-      // }));
+      stepList.value = (data || []).map((item: any) => ({
+        id: item.id,
+        title: item.functionTypeName,
+        type: item.functionType,
+        status: 1,
+      }));
       // 默认选中第一个工步
       currentStepIndex.value = 0;
       currentWorkingStep.value = stepList.value[0]

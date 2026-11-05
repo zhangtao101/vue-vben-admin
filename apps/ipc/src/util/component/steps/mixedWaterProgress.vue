@@ -381,6 +381,8 @@ function handleAutoModeChange(checked: boolean) {
           : $t('mixedWaterProgress.autoModeCloseSuccess'),
       );
       refreshLotList();
+      // 下发成功后重新查询工序状态，确认自动模式当前实际状态
+      loadProcessState();
     })
     .catch(() => {
       // message.error($t('mixedWaterProgress.startFailed'));

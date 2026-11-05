@@ -30,6 +30,7 @@ import {
   autoStartWorkSheet,
   deleteLot,
   deleteLotBatch,
+  getProcessCode,
   selectByWorkSheetId,
   selectWeekWorkSheet,
   updateStae,
@@ -278,6 +279,27 @@ const stateColorMap: Record<number, string> = {
 const autoMode = ref(false);
 
 /**
+ * 加载当前工序状态：调用 getProcessCode，返回 1 时自动模式默认选中
+ * 自动模式仅用于混合 MIX 工序（processType === 2），其他工序直接关闭
+ * @returns {void} 无返回值，接口失败时保持默认关闭。
+ * @throws 不主动抛出异常。
+ * @since 2026-11-05 00:00:00
+ */
+function loadProcessState() {
+  if (props.processType !== 2) {
+    autoMode.value = false;
+    return;
+  }
+  getProcessCode(props.processType)
+    .then((res: any) => {
+      autoMode.value = String(res) === '1';
+    })
+    .catch(() => {
+      autoMode.value = false;
+    });
+}
+
+/**
  * 同步自动模式开关：工单列表选中行的 workState 为 1 时开启，其余（含无选中行）关闭
  */
 function syncAutoMode() {
@@ -436,6 +458,8 @@ watch(
   () => props.processType,
   () => {
     gridApi2.setGridOptions({ columns: getBatchColumns() });
+    // 首次加载及工序切换时查询工序状态，返回 1 时自动模式默认选中
+    loadProcessState();
   },
   { immediate: true },
 );
@@ -566,16 +590,16 @@ function refreshBatchGrid() {
 
 /** 自动模式开关：开启下发状态 1，关闭下发状态 0 */
 function handleAutoModeChange(checked: boolean) {
-  const ws = selectedWorkSheet.value;
-  if (!ws?.id) {
-    message.warning($t('mixerLotManage.plsSelectWorkSheetForAuto'));
-    autoMode.value = false;
-    return;
-  }
+  // const ws = selectedWorkSheet.value;
+  // if (!ws?.id) {
+  //   message.warning($t('mixerLotManage.plsSelectWorkSheetForAuto'));
+  //   autoMode.value = false;
+  //   return;
+  // }
+    // id: ws.id,
   autoStartWorkSheet({
     state: checked ? 1 : 0,
     processType: props.processType,
-    id: ws.id,
     equipCode: '',
   })
     .then(() => {
@@ -586,6 +610,8 @@ function handleAutoModeChange(checked: boolean) {
       );
       refreshBatchGrid();
       gridApi.reload();
+      // 下发成功后重新查询工序状态，确认自动模式当前实际状态
+      loadProcessState();
     })
     .catch(() => {
       // message.error($t('mixerLotManage.startFailed'));

@@ -90,7 +90,8 @@ export function autoStartWorkSheet(params: {
   equipCode?: string;
 }) {
   return requestClient.put(
-    `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/updateS?${qs.stringify(params)}`,
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/workSheet/lot/updateS`,
+    params,
   );
 }
 
