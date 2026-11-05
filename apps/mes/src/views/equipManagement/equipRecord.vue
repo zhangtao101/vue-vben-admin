@@ -29,6 +29,7 @@ import {
   InputNumber,
   message,
   Modal,
+  RadioButton,
   RadioGroup,
   Row,
   Select,
@@ -167,6 +168,13 @@ const equipmentTypeOptions = [
   { value: 2, label: $t('equip.palletizer') },
 ];
 
+// 参数模式选项：单包 3 / 多包 4 / 料包 5（仅打包机 processType=4 时展示）
+const modelOptions = [
+  { value: 3, label: $t('equip.packTypeSingle') },
+  { value: 4, label: $t('equip.packTypeMulti') },
+  { value: 5, label: $t('equip.packTypeBag') },
+];
+
 // 查询区设备类别选项：RadioGroup 无法清空，追加“全部”用于取消筛选
 const equipmentTypeQueryOptions = [
   { value: undefined, label: $t('page.common.all') },
@@ -195,6 +203,8 @@ function handleSelectSubLine() {
 function handleSubLineSelected(row: any) {
   checkedRow.value.subLineId = row?.id;
   checkedRow.value.subLineName = row?.subLineName;
+  // 额外记录子产线的工序类型到 supplier 字段（为 4 时表单展示参数模式）
+  checkedRow.value.supplier = row?.processType;
 }
 
 /**
@@ -212,9 +222,7 @@ function handleCreate() {
 function handleUpdate(row: any) {
   dialogStatus.value = 'update';
   showEditDrawer.value = true;
-  queryScadaEquipLedgerById({ id: row.id }).then((data: any) => {
-    checkedRow.value = { ...data };
-  });
+  queryDetails(row);
 }
 
 /**
@@ -223,7 +231,14 @@ function handleUpdate(row: any) {
 function handleDetail(row: any) {
   dialogStatus.value = 'detail';
   showEditDrawer.value = true;
+  queryDetails(row);
+}
+
+function queryDetails(row: any) {
   queryScadaEquipLedgerById({ id: row.id }).then((data: any) => {
+    data.supplier = Number(data.supplier);
+    data.model = Number(data.model);
+    console.log(data);
     checkedRow.value = { ...data };
   });
 }
@@ -562,6 +577,22 @@ onMounted(() => {
             </FormItem>
           </Col>
         </Row>
+        <!-- 参数模式：仅打包机（子产线 processType 为 4）时展示 -->
+        <Row v-if="checkedRow.supplier === 4" :gutter="8">
+          <Col :span="12">
+            <FormItem :label="$t('equip.paramModel')" name="model">
+              <RadioGroup v-model:value="checkedRow.model" button-style="solid">
+                <RadioButton
+                  v-for="item in modelOptions"
+                  :key="item.value"
+                  :value="item.value"
+                >
+                  {{ item.label }}
+                </RadioButton>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
       </Form>
       <Descriptions v-else bordered :column="2" class="!mb-4">
         <Descriptions.Item :label="$t('equip.equipmentNumber')">
@@ -594,6 +625,15 @@ onMounted(() => {
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.replaceCycle')">
           {{ checkedRow.replaceCycle }}
+        </Descriptions.Item>
+        <!-- 参数模式：仅打包机（supplier 为 4）时展示 -->
+        <Descriptions.Item
+          v-if="checkedRow.supplier === 4"
+          :label="$t('equip.paramModel')"
+        >
+          {{
+            modelOptions.find((o) => o.value === checkedRow.model)?.label || ''
+          }}
         </Descriptions.Item>
         <Descriptions.Item :label="$t('equip.remark')" :span="2">
           {{ checkedRow.remark }}

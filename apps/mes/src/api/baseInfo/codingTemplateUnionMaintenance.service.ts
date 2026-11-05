@@ -167,6 +167,55 @@ export async function previewPrintCodeTemplates(params: PrintCodePreviewParams) 
   );
 }
 
+/** 设备接口预览的单条动态参数 */
+export interface DevicePreviewParameter {
+  /** 参数序号，按@参数在模板中的出现顺序从1开始 */
+  parameterNo: number;
+  /** 模板中的参数ID */
+  parameterId: string;
+  /** 参数实际值；不包含PRO、EXP、M等模板固定文字 */
+  parameterValue: string;
+}
+
+/** 设备接口预览的单个模板结果 */
+export interface DevicePreviewTemplate {
+  /** 模板序号：1、2、3 */
+  templateNo: number;
+  /** 当前模板中按出现顺序提取的@参数值 */
+  parameters: DevicePreviewParameter[];
+}
+
+/** 设备接口预览请求体（仅用于提取动态参数值） */
+export interface PrintCodeDevicePreviewParams {
+  /** 可选；未传parameters时使用此模板已保存的参数 */
+  templateId?: null | number;
+  /** 日期格式 */
+  dateFormat: string;
+  /** 当前模板1 */
+  templateOne: string;
+  /** 当前模板2 */
+  templateTwo: string;
+  /** 当前模板3 */
+  templateThree: string;
+  /** 可选；优先使用前端当前填写且可能尚未保存的7条参数 */
+  parameters?: null | PrintCodeParameter[];
+}
+
+/**
+ * 按页面当前内容生成设备接口参数预览
+ * 后端扫描模板中的@参数并按出现顺序自动编号，前端直接循环展示 parameters
+ * @param params 预览参数（含三个模板与7条参数）
+ * @returns 三个模板及其动态参数列表
+ */
+export async function devicePreviewPrintCodeTemplate(
+  params: PrintCodeDevicePreviewParams,
+) {
+  return requestClient.post<DevicePreviewTemplate[]>(
+    `${import.meta.env.VITE_GLOB_MES_EQUIP_OTHER}/print-code-template/device-preview`,
+    params,
+  );
+}
+
 /**
  * 新建喷码模板
  * @param params 喷码信息、三个固定模板和该模板自己的7条参数

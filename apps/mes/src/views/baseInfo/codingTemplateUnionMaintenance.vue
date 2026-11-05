@@ -34,6 +34,7 @@ import {
   Select,
   Space,
   Table,
+  Tabs,
   Textarea,
   Tooltip,
 } from 'ant-design-vue';
@@ -42,9 +43,11 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createPrintCodeTemplate,
   deletePrintCodeTemplate,
+  devicePreviewPrintCodeTemplate,
   exportPrintCodeTemplates,
   getPrintCodeParameters,
   getPrintCodeTemplateDetail,
+  listFactoryOptions,
   listPrintCodeTemplates,
   listProductGroupOptions,
   previewPrintCodeTemplates,
@@ -57,6 +60,27 @@ import { queryAuth } from '#/util';
 const route = useRoute();
 
 // region 下拉选项
+
+// 工厂下拉选项列表（label/value 结构，仅启用且未删除的工厂）
+const factoryOptions = ref<any[]>([]);
+
+/**
+ * 加载工厂下拉选项
+ * @returns {void} 无返回值，结果写入 factoryOptions。
+ * @since 2026-11-05
+ */
+function loadFactoryOptions() {
+  listFactoryOptions()
+    .then((data: any) => {
+      factoryOptions.value = (data ?? []).map((item: any) => ({
+        label: item.factoryName,
+        value: item.factoryCode,
+      }));
+    })
+    .catch(() => {
+      factoryOptions.value = [];
+    });
+}
 
 // 产品组下拉选项列表（label/value 结构）
 const productGroupOptions = ref<any[]>([]);
@@ -143,6 +167,7 @@ const gridOptions: VxeGridProps<any> = {
     isHover: true,
   },
   columns: [
+    { field: 'factoryName', title: $t('baseInfo.factory'), minWidth: 120 },
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50 },
     { field: 'printCode', title: $t('baseInfo.printCode'), minWidth: 110 },
     { field: 'productGroupName', title: $t('baseInfo.productGroup'), minWidth: 120 },
@@ -217,6 +242,7 @@ function reloadGrid() {
 
 // 查询参数
 const queryParams = reactive({
+  factoryCode: undefined as string | undefined,
   productGroupCode: undefined as string | undefined,
   printCode: '',
 });
@@ -227,6 +253,7 @@ const queryParams = reactive({
  * @since 2026-07-29 09:30:00
  */
 function handleQueryReset() {
+  queryParams.factoryCode = undefined;
   queryParams.productGroupCode = undefined;
   queryParams.printCode = '';
   reloadGrid();
@@ -242,6 +269,9 @@ function handleQueryReset() {
 function queryData({ page, pageSize }: any) {
   return new Promise((resolve, reject) => {
     const params: any = { ...queryParams };
+    if (!params.factoryCode) {
+      delete params.factoryCode;
+    }
     if (!params.productGroupCode) {
       delete params.productGroupCode;
     }
@@ -271,6 +301,7 @@ const isAdd = ref(true);
 const currentId = ref<number | undefined>(undefined);
 // 编辑数据
 const editData = ref<any>({
+  factoryCode: undefined,
   productGroupCode: undefined,
   productGroupName: '',
   printCode: '',
@@ -284,12 +315,23 @@ const editData = ref<any>({
 });
 // 预览结果
 const previewResults = ref<string[]>([]);
+/** 预览模式当前标签页：all=全部，device=设备接口 */
+const previewTab = ref('all');
+/** 设备接口预览结果（按模板编号返回动态参数列表） */
+const devicePreviewResults = ref<any[]>([]);
 
-/**
- * 预览区占位数量：默认展示 3 个区域，结果超过 3 条时按实际条数展示
+/** 预览区占位数量：默认展示 3 个区域，结果超过 3 条时按实际条数展示
  * @since 2026-11-02
  */
 const previewCount = computed(() => Math.max(3, previewResults.value.length));
+
+/**
+ * 设备接口预览区占位数量：与全部预览一致，无数据时默认展示 3 个空区域
+ * @since 2026-11-05
+ */
+const devicePreviewCount = computed(() =>
+  Math.max(3, devicePreviewResults.value.length),
+);
 
 // 参数表格列定义（序号/参数ID/参数名称/参数值可编辑）
 const parameterColumns = [
@@ -324,9 +366,12 @@ function handleAdd() {
   isAdd.value = true;
   currentId.value = undefined;
   previewResults.value = [];
+  devicePreviewResults.value = [];
+  previewTab.value = 'all';
   // 清除左侧表格选中高亮
   gridApi.grid.clearCurrentRow();
   editData.value = {
+    factoryCode: undefined,
     productGroupCode: undefined,
     productGroupName: '',
     printCode: '',
@@ -360,6 +405,7 @@ function loadDetail(id: number) {
       isAdd.value = false;
       currentId.value = id;
       previewResults.value = [];
+      devicePreviewResults.value = [];
       editData.value = { ...data, parameters: data?.parameters ?? [] };
     })
     .catch((error) => {
@@ -399,6 +445,10 @@ function handleFormReset() {
  * @since 2026-07-29 09:30:00
  */
 function handleSave() {
+  if (!editData.value.factoryCode) {
+    message.warning($t('baseInfo.selectFactory'));
+    return;
+  }
   if (!editData.value.productGroupCode) {
     message.warning($t('baseInfo.selectProductGroup'));
     return;
@@ -439,12 +489,12 @@ function handleSave() {
 }
 
 /**
- * 生成三个喷码预览结果
- * @returns {void} 无返回值；结果写入 previewResults。
- * @since 2026-07-29 09:30:00
+ * 构建预览请求参数（全部预览与设备接口预览共用）
+ * @returns {object} 预览参数：templateId、日期格式、三个模板与当前填写的参数。
+ * @since 2026-11-05
  */
-function handlePreview() {
-  const params: any = {
+function buildPreviewParams() {
+  return {
     templateId: currentId.value,
     dateFormat: editData.value.dateFormat ?? '',
     templateOne: editData.value.templateOne ?? '',
@@ -452,10 +502,32 @@ function handlePreview() {
     templateThree: editData.value.templateThree ?? '',
     parameters: editData.value.parameters ?? [],
   };
+}
 
-  previewPrintCodeTemplates(params)
+/**
+ * 「全部」预览：生成三个喷码预览结果
+ * @returns {void} 无返回值；结果写入 previewResults。
+ * @since 2026-07-29 09:30:00
+ */
+function handlePreview() {
+  previewPrintCodeTemplates(buildPreviewParams() as any)
     .then((data: any) => {
       previewResults.value = data ?? [];
+    })
+    .catch((error) => {
+      message.error(error?.msg || $t('common.operationFailure'));
+    });
+}
+
+/**
+ * 「设备接口」预览：按模板编号返回动态参数列表
+ * @returns {void} 无返回值；结果写入 devicePreviewResults。
+ * @since 2026-11-05
+ */
+function handleDevicePreview() {
+  devicePreviewPrintCodeTemplate(buildPreviewParams() as any)
+    .then((data: any) => {
+      devicePreviewResults.value = data ?? [];
     })
     .catch((error) => {
       message.error(error?.msg || $t('common.operationFailure'));
@@ -503,6 +575,9 @@ function handleDelete(row: any) {
  */
 function handleExport() {
   const params: any = { ...queryParams };
+  if (!params.factoryCode) {
+    delete params.factoryCode;
+  }
   if (!params.productGroupCode) {
     delete params.productGroupCode;
   }
@@ -540,6 +615,8 @@ onMounted(() => {
     author.value = data;
   });
   loadProductGroupOptions();
+  // 加载工厂下拉选项
+  loadFactoryOptions();
   // 默认进入新增模式并加载初始化参数
   handleAdd();
 });
@@ -552,6 +629,16 @@ onMounted(() => {
     <!-- region 查询区 -->
     <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
+        <!-- 工厂 -->
+        <FormItem :label="$t('baseInfo.factory')" style="margin-bottom: 1em">
+          <Select
+            v-model:value="queryParams.factoryCode"
+            :options="factoryOptions"
+            :placeholder="$t('baseInfo.selectFactory')"
+            allow-clear
+            style="width: 200px"
+          />
+        </FormItem>
         <!-- 产品组 -->
         <FormItem :label="$t('baseInfo.productGroup')" style="margin-bottom: 1em">
           <Select
@@ -659,6 +746,18 @@ onMounted(() => {
 
           <Form :model="editData" layout="vertical" autocomplete="off">
             <Row :gutter="16">
+              <!-- 工厂 -->
+              <Col :span="8">
+                <FormItem :label="$t('baseInfo.factory')" required>
+                  <Select
+                    v-model:value="editData.factoryCode"
+                    :options="factoryOptions"
+                    :placeholder="$t('baseInfo.selectFactory')"
+                    show-search
+                    option-filter-prop="label"
+                  />
+                </FormItem>
+              </Col>
               <!-- 产品组 -->
               <Col :span="8">
                 <FormItem :label="$t('baseInfo.productGroup')" required>
@@ -772,22 +871,57 @@ onMounted(() => {
       <!-- 预览 -->
       <Col :span="14">
         <Card :title="$t('baseInfo.previewResult')">
-          <Button @click="handlePreview">
-            <template #icon>
-              <Icon icon="mdi:eye-outline" />
-            </template>
-            {{ $t('baseInfo.preview') }}
-          </Button>
-          <!-- 默认展示 3 个空白预览区域，有结果时按索引填充 -->
-          <Row :gutter="8" class="mt-2">
-            <Col v-for="index in previewCount" :key="index" :span="8">
-              <div class="preview-line">
-                <p>
-                  {{ previewResults[index - 1] ?? '' }}
-                </p>
-              </div>
-            </Col>
-          </Row>
+          <!-- 预览结果：全部 / 设备接口 两种模式，预览按钮在各标签页内 -->
+          <Tabs v-model:active-key="previewTab">
+            <!-- 全部：默认展示 3 个空白预览区域，有结果时按索引填充 -->
+            <Tabs.TabPane key="all" :tab="$t('basic.all')">
+              <Button @click="handlePreview">
+                <template #icon>
+                  <Icon icon="mdi:eye-outline" />
+                </template>
+                {{ $t('baseInfo.preview') }}
+              </Button>
+              <Row :gutter="8" class="mt-2">
+                <Col v-for="index in previewCount" :key="index" :span="8">
+                  <div class="preview-line">
+                    <p>
+                      {{ previewResults[index - 1] ?? '' }}
+                    </p>
+                  </div>
+                </Col>
+              </Row>
+            </Tabs.TabPane>
+            <!-- 设备接口：按模板展示动态参数列表，每个模板区域内参数纵向逐行展示 -->
+            <Tabs.TabPane key="device" :tab="$t('baseInfo.devicePreview')">
+              <Button @click="handleDevicePreview">
+                <template #icon>
+                  <Icon icon="mdi:eye-outline" />
+                </template>
+                {{ $t('baseInfo.preview') }}
+              </Button>
+              <Row :gutter="8" class="mt-2">
+                <!-- 无数据时默认展示 3 个空白区域，与全部预览表现一致 -->
+                <Col v-for="index in devicePreviewCount" :key="index" :span="8">
+                  <div class="preview-line">
+                    <div
+                      v-for="parameter in
+                        devicePreviewResults[index - 1]?.parameters ?? []"
+                      :key="parameter.parameterNo"
+                      class="device-param-row"
+                    >
+                      <div class="device-param-label">
+                        {{ $t('baseInfo.deviceParameter')
+                        }}{{ parameter.parameterNo }}
+                      </div>
+                      <div class="device-param-value">
+                        {{ parameter.parameterValue }}
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Tabs.TabPane>
+          </Tabs>
         </Card>
       </Col>
     </Row>
@@ -806,5 +940,31 @@ onMounted(() => {
   background-color: #f5f5f5;
   border: 1px solid #e8e8e8;
   border-radius: 4px;
+}
+
+/* 设备接口预览：参数行（标题 + 值） */
+.device-param-row {
+  display: flex;
+  margin-bottom: 4px;
+}
+
+/* 参数标题：白色背景 */
+.device-param-label {
+  padding: 4px 10px;
+  line-height: 1.6;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+/* 参数值：灰色背景 */
+.device-param-value {
+  flex: 1;
+  padding: 4px 10px;
+  line-height: 1.6;
+  background-color: #e8e8e8;
+  border: 1px solid #d9d9d9;
+  border-radius: 0 4px 4px 0;
 }
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, reactive, ref } from 'vue';
+import { computed, h, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -133,6 +133,9 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 // 当前选中的节点
 const selectedKey = ref<any>(undefined);
 
+/** 右侧是否展示选中树节点的 BOM 详情（设计BOM/多级展开），未选中时展示产品列表 */
+const hasTreeSelected = computed(() => !!selectedKey.value);
+
 // endregion
 
 // region 数据查询
@@ -206,40 +209,53 @@ function queryAllCategoryTree() {
 }
 
 /**
- * 处理树形控件选中事件
+ * 处理树形控件选中事件（不修改查询参数）
+ * 选中产品节点时，bomCode 取节点 value，右侧切换为设计BOM/多级展开展示；
+ * 未选中（或选择「全部」）时，右侧展示产品BOM列表。
  * @param {any} _selectedKeys - 当前选中的节点键值
  * @param {object} info - 包含节点和选中状态的对象
  * @param {object} info.node - 当前操作的节点对象
  * @param {boolean} info.selected - 节点的选中状态
+ * @since 2026-11-04
  */
 function selectedTree(_selectedKeys: any, { node, selected }: any) {
   if (node.label === $t('page.common.all')) {
+    // 全部节点：回到产品列表展示
     selectedKey.value = '';
-    // 全部节点：清空产品编号与产线编号条件
-    queryParams.value.productCode = '';
-    queryParams.value.lineCode = '';
+    bomCode.value = '';
+    clearBomDetail();
   } else if (selected) {
-    // 节点值为「产品编号&产线」，按 & 拆分后分别赋值
-    const nodeValue = String(node.value ?? '').trim();
-    // 无 & 分隔符或拆分结果为空则不赋值、不查询
-    if (!nodeValue.includes('&')) {
-      return;
-    }
-    const [productCode, lineCode] = nodeValue
-      .split('&')
-      .map((item: string) => item.trim());
-    if (!productCode && !lineCode) {
-      return;
-    }
+    // 选中产品节点：记录 BomCode，右侧展示该产品的BOM详情（默认设计BOM）
     selectedKey.value = node;
-    queryParams.value.productCode = productCode || '';
-    queryParams.value.lineCode = lineCode || '';
+    bomCode.value = String(node.value ?? '');
+    activeTabKey.value = 'first';
+    clearBomDetail();
+    if (bomCode.value) {
+      loadDesignBom(bomCode.value);
+    }
   } else {
-    // 取消选中：清空产品编号与产线编号条件后重新查询
+    // 取消选中：回到产品列表展示
     selectedKey.value = undefined;
-    queryParams.value.productCode = '';
-    queryParams.value.lineCode = '';
+    bomCode.value = '';
+    clearBomDetail();
   }
+  gridApi.reload();
+}
+
+/**
+ * 清空设计BOM与多级展开表格数据
+ * @since 2026-11-04
+ */
+function clearBomDetail() {
+  designGridData.splice(0, designGridData.length);
+  expandGridData.splice(0, expandGridData.length);
+}
+
+/**
+ * 查询按钮处理：同步刷新产品BOM树并重新加载列表
+ */
+function handleSearch() {
+  queryAllCategoryTree();
   gridApi.reload();
 }
 
@@ -580,7 +596,7 @@ onMounted(() => {
           <Button
             :icon="h(MdiSearch, { class: 'inline-block mr-2' })"
             type="primary"
-            @click="() => gridApi.reload()"
+            @click="handleSearch"
           >
             {{ $t('common.search') }}
           </Button>
@@ -610,7 +626,8 @@ onMounted(() => {
 
       <!-- region 表格主体 -->
       <Col :lg="16" :md="16" :sm="16" :xl="16" :xs="16">
-        <Card class="h-[60vh] overflow-y-auto">
+        <!-- 未选中树节点：展示产品BOM列表 -->
+        <Card v-if="!hasTreeSelected" class="h-[60vh] overflow-y-auto">
           <Grid>
             <template #toolbar-tools>
               <!-- 产品导入 -->
@@ -647,6 +664,36 @@ onMounted(() => {
             </template>
           </Grid>
         </Card>
+        <!-- 选中树节点：展示该产品的设计BOM / 多级展开详情 -->
+        <Card v-else class="h-[60vh] overflow-y-auto">
+          <Tabs v-model:active-key="activeTabKey" @change="handleTabChange">
+            <Tabs.TabPane key="first" :tab="$t('baseInfo.designBOM')">
+              <DesignGrid>
+                <template #isLowerestLevel="{ row }">
+                  <Checkbox :checked="row.isLowerestLevel" :disabled="true" />
+                </template>
+              </DesignGrid>
+            </Tabs.TabPane>
+            <Tabs.TabPane key="second" :tab="$t('baseInfo.multiLevelExpand')">
+              <ExpandGrid>
+                <template #isLowerestLevel="{ row }">
+                  <Checkbox :checked="row.isLowerestLevel" :disabled="true" />
+                </template>
+                <template #action="{ row }">
+                  <Tooltip>
+                    <template #title>{{ $t('common.edit') }}</template>
+                    <Button
+                      v-if="author.includes('编辑')"
+                      :icon="h(MdiEditOutline, { class: 'inline-block size-6' })"
+                      type="link"
+                      @click="openEditModal(row)"
+                    />
+                  </Tooltip>
+                </template>
+              </ExpandGrid>
+            </Tabs.TabPane>
+          </Tabs>
+        </Card>
       </Col>
       <!-- endregion -->
     </Row>
@@ -662,6 +709,7 @@ onMounted(() => {
       "
       width="90%"
       :footer="null"
+      :destroy-on-close="true"
     >
       <Tabs v-model:active-key="activeTabKey" @change="handleTabChange">
         <Tabs.TabPane key="first" :tab="$t('baseInfo.designBOM')">
@@ -735,6 +783,7 @@ onMounted(() => {
             :min="0"
             :precision="0"
             style="width: 100%"
+            disabled
           />
         </FormItem>
       </Form>

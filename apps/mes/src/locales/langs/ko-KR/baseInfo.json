@@ -297,5 +297,14 @@
   "trolleyType": "대차 유형",
   "selectTrolleyType": "대차 유형을 선택하세요",
   "trolleyWeight": "대차 중량(kg)",
-  "inputTrolleyWeight": "대차 중량을 입력하세요"
+  "inputTrolleyWeight": "대차 중량을 입력하세요",
+  "factory": "공장",
+  "devicePreview": "장비 인터페이스",
+  "deviceParameter": "파라미터 ",
+  "selectFactory": "공장을 선택하세요",
+  "factoryCode": "공장 코드",
+  "factoryName": "공장 이름",
+  "inputFactoryCode": "공장 코드를 입력하세요",
+  "inputFactoryName": "공장 이름을 입력하세요",
+  "factoryCodeNoEdit": "공장 코드는 저장 후 수정할 수 없습니다"
 }

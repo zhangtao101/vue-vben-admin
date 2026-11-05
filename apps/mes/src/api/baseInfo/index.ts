@@ -3,6 +3,7 @@ export * from './bomCategory.service';
 export * from './codingTemplateUnionMaintenance.service';
 export * from './controlSet.service';
 export * from './electricityTimeSlotRule.service';
+export * from './factoryManagement.service';
 export * from './levelMaintain.service';
 export * from './materialBaseManagement.service';
 export * from './materialsCategory.service';

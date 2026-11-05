@@ -297,5 +297,14 @@
   "trolleyType": "Trolley Type",
   "selectTrolleyType": "Please select trolley type",
   "trolleyWeight": "Trolley Weight (kg)",
-  "inputTrolleyWeight": "Please input trolley weight"
+  "inputTrolleyWeight": "Please input trolley weight",
+  "factory": "Factory",
+  "devicePreview": "Device Interface",
+  "deviceParameter": "Parameter ",
+  "selectFactory": "Please select a factory",
+  "factoryCode": "Factory Code",
+  "factoryName": "Factory Name",
+  "inputFactoryCode": "Please input factory code",
+  "inputFactoryName": "Please input factory name",
+  "factoryCodeNoEdit": "Factory code cannot be modified after saving"
 }

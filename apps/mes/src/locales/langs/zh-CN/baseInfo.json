@@ -297,5 +297,14 @@
   "trolleyType": "台车类型",
   "selectTrolleyType": "请选择台车类型",
   "trolleyWeight": "台车重量（kg）",
-  "inputTrolleyWeight": "请输入台车重量"
+  "inputTrolleyWeight": "请输入台车重量",
+  "factory": "工厂",
+  "devicePreview": "设备接口",
+  "deviceParameter": "参数",
+  "selectFactory": "请选择工厂",
+  "factoryCode": "工厂编码",
+  "factoryName": "工厂名称",
+  "inputFactoryCode": "请输入工厂编码",
+  "inputFactoryName": "请输入工厂名称",
+  "factoryCodeNoEdit": "工厂编码保存后不可修改"
 }
