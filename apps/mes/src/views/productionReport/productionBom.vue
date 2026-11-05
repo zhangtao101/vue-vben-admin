@@ -75,13 +75,13 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('productionBom.materialCode'),
       field: 'materialCode',
       minWidth: 180,
-      slots: { default: 'materialCodeEdit' },
+      // slots: { default: 'materialCodeEdit' },
     },
     {
       title: $t('productionBom.materialName'),
       field: 'materialName',
       minWidth: 150,
-      slots: { default: 'materialNameEdit' },
+      // slots: { default: 'materialNameEdit' },
     },
     {
       title: $t('productionBom.perQuantity'),
@@ -99,7 +99,7 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('productionBom.batchQty'),
       field: 'batchQty',
       minWidth: 100,
-      slots: { default: 'batchQtyEdit' },
+      // slots: { default: 'batchQtyEdit' },
     },
     {
       title: $t('productionBom.measureError'),
