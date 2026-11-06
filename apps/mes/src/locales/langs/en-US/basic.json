@@ -68,7 +68,9 @@
       "zprgbMixedWater": "Mixed Water",
       "zprgbMixing": "Mixing",
       "zprgbFinished": "Finished Product",
-      "zprgbSauce": "Sauce Pack",
+      "zprgbSauce": "Sauce & Soup Pack",
+      "zprgbGravityFreeSemi": "Gravity-free Mixing Semi-product",
+      "zprgbAuxiliary": "Auxiliary Material",
       "zprgbRaw": "Raw Material"
     },
     "msd": {

@@ -3,7 +3,7 @@ import type { TreeProps } from 'ant-design-vue';
 
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { computed, h, onMounted, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -71,7 +71,7 @@ function formatUndercutFlag({ cellValue }: any) {
 }
 
 /**
- * 入库方式格式化：V 自动仓，A 非自动仓
+ * 入库方式格式化：V 自动仓，N 非自动仓
  * @param {object} params - 单元格参数
  * @param {string} params.cellValue - 单元格值
  * @returns {string} 入库方式文案
@@ -80,7 +80,7 @@ function formatWmsInputType({ cellValue }: any) {
   if (cellValue === 'V') {
     return $t('basic.bomManagement.materialsInform.autoWarehouse');
   }
-  if (cellValue === 'A') {
+  if (cellValue === 'N') {
     return $t('basic.bomManagement.materialsInform.nonAutoWarehouse');
   }
   return '';
@@ -92,11 +92,12 @@ const ZPRGB_TEXT_MAP: Record<string, string> = {
   B: 'zprgbMixing',
   C: 'zprgbFinished',
   E: 'zprgbSauce',
-  G: 'zprgbRaw',
+  F: 'zprgbGravityFreeSemi',
+  Z: 'zprgbAuxiliary',
 };
 
 /**
- * 物料分类格式化：A 混合水，B 搅拌，C 完成品，E 酱包，G 原料
+ * 物料分类格式化：A 混合水，B 搅拌，C 完成品，E 汤酱包，Z 原辅材料，F 无重力搅拌半成品
  * @param {object} params - 单元格参数
  * @param {string} params.cellValue - 单元格值
  * @returns {string} 物料分类文案
@@ -309,13 +310,13 @@ function handleSelect(keys: (number | string)[], _info: any) {
 const showEditDrawer = ref(false);
 // 编辑对象数据
 const editMessage = ref({} as any);
-/** 物料分类选项：A 混合水，B 搅拌，C 完成品，E 酱包，G 原料 */
-const zprgbOptions = computed(() =>
-  Object.keys(ZPRGB_TEXT_MAP).map((value) => ({
-    label: $t(`basic.bomManagement.materialsInform.${ZPRGB_TEXT_MAP[value]}`),
-    value,
-  })),
-);
+// /** 物料分类选项：A 混合水，B 搅拌，C 完成品，E 汤酱包，Z 原辅材料，F 无重力搅拌半成品 */
+// const zprgbOptions = computed(() =>
+//   Object.keys(ZPRGB_TEXT_MAP).map((value) => ({
+//     label: $t(`basic.bomManagement.materialsInform.${ZPRGB_TEXT_MAP[value]}`),
+//     value,
+//   })),
+// );
 // 编辑对象表单验证规则
 const editRules = ref({
   downSafe: [
@@ -965,7 +966,8 @@ function downloadTemplate() {
             </Radio>
           </Radio.Group>
         </FormItem>
-        <!-- 入库方式：V 自动仓，A 非自动仓 -->
+        <!-- 入库方式：V 自动仓，N 非自动仓（暂不展示） -->
+        <!--
         <FormItem
           :label="$t('basic.bomManagement.materialsInform.wmsInputType')"
           name="wmsInputType"
@@ -974,12 +976,14 @@ function downloadTemplate() {
             <Radio value="V">
               {{ $t('basic.bomManagement.materialsInform.autoWarehouse') }}
             </Radio>
-            <Radio value="A">
+            <Radio value="N">
               {{ $t('basic.bomManagement.materialsInform.nonAutoWarehouse') }}
             </Radio>
           </Radio.Group>
         </FormItem>
-        <!-- 物料分类：A 混合水，B 搅拌，C 完成品，E 酱包，G 原料 -->
+        -->
+        <!-- 物料分类：A 混合水，B 搅拌，C 完成品，E 汤酱包，Z 原辅材料，F 无重力搅拌半成品（暂不展示） -->
+        <!--
         <FormItem
           :label="$t('basic.bomManagement.materialsInform.zprgb')"
           name="zprgb"
@@ -994,6 +998,7 @@ function downloadTemplate() {
             </Radio>
           </Radio.Group>
         </FormItem>
+        -->
       </Form>
 
       <template #footer>

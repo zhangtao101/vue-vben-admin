@@ -41,11 +41,12 @@ const ZPRGB_TEXT_MAP: Record<string, string> = {
   B: 'zprgbMixing',
   C: 'zprgbFinished',
   E: 'zprgbSauce',
-  G: 'zprgbRaw',
+  F: 'zprgbGravityFreeSemi',
+  Z: 'zprgbAuxiliary',
 };
 
 /**
- * 物料分类格式化：A 混合水，B 搅拌，C 完成品，E 酱包，G 原料
+ * 物料分类格式化：A 混合水，B 搅拌，C 完成品，E 汤酱包，Z 原辅材料，F 无重力搅拌半成品
  * @param {object} params - 单元格参数
  * @param {string} params.cellValue - 单元格值
  * @returns {string} 物料分类文案

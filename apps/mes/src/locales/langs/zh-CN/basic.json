@@ -68,7 +68,9 @@
       "zprgbMixedWater": "混合水",
       "zprgbMixing": "搅拌",
       "zprgbFinished": "完成品",
-      "zprgbSauce": "酱包",
+      "zprgbSauce": "汤酱包",
+      "zprgbGravityFreeSemi": "无重力搅拌半成品",
+      "zprgbAuxiliary": "原辅材料",
       "zprgbRaw": "原料"
     },
     "msd": {
