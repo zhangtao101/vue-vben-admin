@@ -109,8 +109,8 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       title: $t('productionBom.auxiliaryUnit'),
-      field: 'mUnit',
-      // field: 'auxiliaryUnit',
+      // field: 'mUnit',
+      field: 'auxiliaryUnit',
       minWidth: 100,
     },
     { title: $t('productionBom.unit'), field: 'unit', minWidth: 100 },
