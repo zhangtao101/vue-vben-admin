@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 /**
- * [INPUT]: 依赖 #/api (querySapWorkSheetList/searchParentSubLine/equipListByParentSubLineCode/
+ * [INPUT]: 依赖 #/api (querySapWorkSheetList/querySubLineBySapWorkSheet/equipListByParentSubLineCode/
  *         generateWorkSheet)、#/util/component (materialSelection)、#/adapter/vxe-table (useVbenVxeGrid)、#/locales ($t)
  * [OUTPUT]: 对外提供 WorkSheetGenerateDrawer 抽屉组件，通过 defineExpose({ open }) 暴露 open(processType) 方法供父组件调用
- * [POS]: 属于 planManagement 包装工单管理页面的「工单生成」抽屉子组件
+ * [POS]: 属于 planManagement 包装工单管理页面的「工单生成」抽屉子组件，勾选 SAP 工单变更时按单别与勾选 ID 查询系统子产线
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
- * [TIME]: 2026-09-24 10:00:00
+ * [TIME]: 2026-11-06 00:00:00
  */
 import type { Rule } from 'ant-design-vue/es/form';
 
@@ -38,7 +38,7 @@ import {
   equipListByParentSubLineCode,
   generateWorkSheet,
   querySapWorkSheetList,
-  searchParentSubLine,
+  querySubLineBySapWorkSheet,
 } from '#/api';
 import { $t } from '#/locales';
 
@@ -156,20 +156,17 @@ const generateForm = ref<any>({
   lineCode: '',
   lineId: undefined,
   lineName: '',
+  /** 产线回显文本，格式 lineCode(lineName) */
+  linetitle: '',
   priority: 1,
   stackerId: undefined,
 });
 
-/** 产线下拉选项 */
-const lineOptions = ref<{ label: string; value: number }[]>([]);
-const lineLoading = ref(false);
 /**
  * 堆垛机下拉选项
- * 无初始值，选择产线后由 equipListByParentSubLineCode 按子产线编号加载
+ * 无初始值，产线确定后由 equipListByParentSubLineCode 按子产线编号加载
  */
 const stackerOptions = ref<{ label: string; value: string }[]>([]);
-/** 产线原始数据（用于回填 lineCode/lineName） */
-const lineRawList = ref<any[]>([]);
 /** 表格已勾选行 */
 const selectedRows = ref<any[]>([]);
 // endregion
@@ -380,48 +377,7 @@ function handleResetQuery() {
 
 // region 下拉数据加载
 /**
- * 加载产线（子产线）下拉选项，支持远程搜索与防抖
- * @param {string} val 搜索关键字
- * @since 2026-09-24
- */
-const handleLineSearch = debounce((val: string) => {
-  lineLoading.value = true;
-  searchParentSubLine({
-    lineName: val,
-    pageNum: 1,
-    pageSize: 20,
-    processType: processType.value,
-  })
-    .then((res: any) => {
-      const list = res?.list || [];
-      lineRawList.value = list;
-      lineOptions.value = list.map((item: any) => ({
-        label: item.subLineName
-          ? `${item.subLineCode}(${item.subLineName})`
-          : item.subLineCode,
-        value: item.id,
-      }));
-    })
-    .finally(() => {
-      lineLoading.value = false;
-    });
-}, 500);
-
-/**
- * 产线变更时回填产线编号与名称，并加载对应堆垛机列表
- * @param {any} val 选中的子产线ID
- * @since 2026-09-24
- */
-function handleLineChange(val: any) {
-  const target = lineRawList.value.find((item: any) => item.id === val);
-  generateForm.value.lineCode = target?.subLineCode || '';
-  generateForm.value.lineName = target?.subLineName || '';
-  generateForm.value.stackerId = undefined;
-  loadStackerOptions(target?.subLineCode);
-}
-
-/**
- * 加载堆垛机下拉选项（无默认值，需先选择产线）
+ * 加载堆垛机下拉选项（无默认值，需先确定产线）
  * @param {string} subLineCode 子产线编号
  * @since 2026-09-24
  */
@@ -531,12 +487,74 @@ function clearBatchPrint() {
 // endregion
 
 // region 选中行与生成
+/** 系统子产线查询请求中标记：防止频繁触发 */
+const subLineLoading = ref(false);
+/** 系统子产线查询防抖处理：勾选连续变更时只在停止 500ms 后查询一次 */
+const querySelectedSubLinesDebounced = debounce(querySelectedSubLines, 500);
+
 /**
- * 同步表格勾选行
+ * 同步表格勾选行，并按勾选的 SAP 工单防抖查询系统子产线
  * @since 2026-09-24
  */
 function updateSelection() {
   selectedRows.value = gridApi.grid?.getCheckboxRecords() || [];
+  querySelectedSubLinesDebounced();
+}
+
+/**
+ * 根据单别与勾选的 SAP 工单 ID 查询系统子产线，
+ * 查询成功后直接回填产线信息（lineId/lineCode/lineName/linetitle）并加载堆垛机选项
+ * @returns {void} 无返回值
+ * @throws 接口失败时由统一错误处理层提示，此处不额外捕获。
+ * @since 2026-11-06 00:00:00
+ */
+function querySelectedSubLines() {
+  const ids = selectedRows.value.map((row: any) => row.id);
+  // 未勾选数据时清空产线信息
+  if (ids.length === 0) {
+    resetLineInfo();
+    return;
+  }
+  if (subLineLoading.value) {
+    return;
+  }
+  subLineLoading.value = true;
+  querySubLineBySapWorkSheet({ ids, processType: processType.value })
+    .then((res: any) => {
+      // res.results 为系统子产线对象（含 id/subLineCode/subLineName）
+      const result = res?.results;
+      if (result?.id) {
+        generateForm.value.lineId = result.id;
+        generateForm.value.lineCode = result.subLineCode ?? '';
+        generateForm.value.lineName = result.subLineName ?? '';
+        generateForm.value.linetitle = result.subLineName
+          ? `${result.subLineCode}(${result.subLineName})`
+          : (result.subLineCode ?? '');
+        // 产线确定后按子产线编号加载堆垛机（设备）选项
+        generateForm.value.stackerId = undefined;
+        loadStackerOptions(result.subLineCode);
+      } else {
+        resetLineInfo();
+      }
+    })
+    .finally(() => {
+      subLineLoading.value = false;
+    });
+}
+
+/**
+ * 清空产线回填信息（未勾选或未匹配到系统子产线时）
+ * @returns {void} 无返回值
+ * @throws 不主动抛出异常
+ * @since 2026-11-06 00:00:00
+ */
+function resetLineInfo() {
+  generateForm.value.lineId = undefined;
+  generateForm.value.lineCode = '';
+  generateForm.value.lineName = '';
+  generateForm.value.linetitle = '';
+  generateForm.value.stackerId = undefined;
+  stackerOptions.value = [];
 }
 
 /**
@@ -589,7 +607,6 @@ function handleGenerate() {
 function open(type: number) {
   processType.value = type;
   show.value = true;
-  handleLineSearch('');
   gridApi.reload();
 }
 
@@ -618,6 +635,7 @@ function handleClose() {
     lineCode: '',
     lineId: undefined,
     lineName: '',
+    linetitle: '',
     priority: 1,
     stackerId: undefined,
   };
@@ -746,16 +764,11 @@ defineExpose({ open });
               :wrapper-col="{ span: 16 }"
               style="margin-bottom: 1em"
             >
-              <Select
-                v-model:value="generateForm.lineId"
-                :options="lineOptions"
-                :placeholder="$t('packingWorkOrderManage.linePlaceholder')"
-                :filter-option="false"
+              <!-- 产线：由勾选的 SAP 工单自动确定，只读回显 -->
+              <Input
+                v-model:value="generateForm.linetitle"
+                disabled
                 style="width: 100%"
-                allow-clear
-                show-search
-                @change="handleLineChange"
-                @search="handleLineSearch"
               />
             </FormItem>
           </Col>

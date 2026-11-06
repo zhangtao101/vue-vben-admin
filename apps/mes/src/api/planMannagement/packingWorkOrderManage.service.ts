@@ -103,6 +103,14 @@ export interface ParentSubLineQueryParams extends PageParams {
   processType?: number | string;
 }
 
+/** 根据单别和选择的SAP工单获取系统子产线查询参数 */
+export interface SubLineBySapWorkSheetQueryParams {
+  /** 选择的SAP工单ID列表 */
+  ids: (number | string)[];
+  /** 单别（4包装工单 5蔬菜包装工单 6无重力工单） */
+  processType?: number | string;
+}
+
 /** 父级子产线信息 */
 export interface ParentSubLineItem {
   /** 子产线ID */
@@ -406,6 +414,23 @@ export async function querySapWorkSheetList(params: SapWorkSheetQueryParams) {
 export async function searchParentSubLine(params: ParentSubLineQueryParams) {
   return requestClient.get<ParentSubLineResult>(
     `${VITE_GLOB_MES_MAIN}/plan/syPlanSheet/searchParentSubLine?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 根据单别和选择的SAP工单获取系统子产线
+ * @param {SubLineBySapWorkSheetQueryParams} params - 查询参数，包含单别与选择的SAP工单ID列表
+ * @returns {Promise<any>} 系统子产线数据（含子产线ID/编号/名称等）
+ * @since 2026-11-06 00:00:00
+ */
+export async function querySubLineBySapWorkSheet(
+  params: SubLineBySapWorkSheetQueryParams,
+) {
+  return requestClient.get<any>(
+    `${VITE_GLOB_MES_MAIN}/plan/syPlanSheet/querySubLineBySapWorkSheet?${qs.stringify(
+      params,
+      { arrayFormat: 'comma' },
+    )}`,
   );
 }
 
