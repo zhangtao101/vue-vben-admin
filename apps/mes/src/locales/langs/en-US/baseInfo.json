@@ -306,5 +306,16 @@
   "factoryName": "Factory Name",
   "inputFactoryCode": "Please input factory code",
   "inputFactoryName": "Please input factory name",
-  "factoryCodeNoEdit": "Factory code cannot be modified after saving"
+  "factoryCodeNoEdit": "Factory code cannot be modified after saving",
+  "customerCode": "Customer Code",
+  "customerName": "Customer Name",
+  "sapPlantCode": "SAP Plant Code",
+  "nationCode": "Nation Code",
+  "isEffective": "Effective",
+  "effective": "Effective",
+  "invalid": "Invalid",
+  "inputCustomerCode": "Please input customer code",
+  "inputCustomerName": "Please input customer name",
+  "customerDetail": "Customer Detail",
+  "detail": "Detail"
 }

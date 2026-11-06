@@ -306,5 +306,16 @@
   "factoryName": "공장 이름",
   "inputFactoryCode": "공장 코드를 입력하세요",
   "inputFactoryName": "공장 이름을 입력하세요",
-  "factoryCodeNoEdit": "공장 코드는 저장 후 수정할 수 없습니다"
+  "factoryCodeNoEdit": "공장 코드는 저장 후 수정할 수 없습니다",
+  "customerCode": "고객 코드",
+  "customerName": "고객 명칭",
+  "sapPlantCode": "SAP 공장 코드",
+  "nationCode": "국가 코드",
+  "isEffective": "유효 여부",
+  "effective": "유효",
+  "invalid": "무효",
+  "inputCustomerCode": "고객 코드를 입력하세요",
+  "inputCustomerName": "고객 명칭을 입력하세요",
+  "customerDetail": "고객 상세",
+  "detail": "상세"
 }

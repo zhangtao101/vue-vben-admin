@@ -2,6 +2,7 @@ export * from './areaManage2.service';
 export * from './bomCategory.service';
 export * from './codingTemplateUnionMaintenance.service';
 export * from './controlSet.service';
+export * from './customerManagement.service';
 export * from './electricityTimeSlotRule.service';
 export * from './factoryManagement.service';
 export * from './levelMaintain.service';
