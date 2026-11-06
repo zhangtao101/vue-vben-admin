@@ -19,6 +19,7 @@ import {
   Form,
   FormItem,
   Input,
+  InputNumber,
   message,
   Modal,
   RangePicker,
@@ -57,25 +58,25 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('productionBom.code'),
       field: 'code',
       minWidth: 120,
-      slots: { default: 'codeEdit' },
+      // slots: { default: 'codeEdit' },
     },
     {
       title: $t('productionBom.productCode'),
       field: 'productCode',
       minWidth: 120,
-      slots: { default: 'productCodeEdit' },
+      // slots: { default: 'productCodeEdit' },
     },
     {
       title: $t('productionBom.productName'),
       field: 'productName',
       minWidth: 150,
-      slots: { default: 'productNameEdit' },
+      // slots: { default: 'productNameEdit' },
     },
     {
       title: $t('productionBom.materialCode'),
       field: 'materialCode',
       minWidth: 180,
-      // slots: { default: 'materialCodeEdit' },
+      slots: { default: 'materialCodeEdit' },
     },
     {
       title: $t('productionBom.materialName'),
@@ -86,14 +87,14 @@ const gridOptions: VxeGridProps<any> = {
     {
       title: $t('productionBom.perQuantity'),
       field: 'perQuantity',
-      minWidth: 100,
+      minWidth: 120,
       slots: { default: 'perQuantityEdit' },
     },
     {
       title: $t('productionBom.baseQty'),
       field: 'baseQty',
       minWidth: 100,
-      slots: { default: 'baseQtyEdit' },
+      // slots: { default: 'baseQtyEdit' },
     },
     {
       title: $t('productionBom.batchQty'),
@@ -105,7 +106,7 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('productionBom.measureError'),
       field: 'measureError',
       minWidth: 100,
-      slots: { default: 'measureErrorEdit' },
+      // slots: { default: 'measureErrorEdit' },
     },
     {
       title: $t('productionBom.auxiliaryUnit'),
@@ -545,10 +546,12 @@ onMounted(() => {
           />
         </template>
 
-        <!-- 行内编辑插槽：数量 -->
+        <!-- 行内编辑插槽：数量（InputNumber，最多 3 位小数） -->
         <template #perQuantityEdit="{ row }">
-          <Input
+          <InputNumber
             v-model:value="row.perQuantity"
+            :min="0"
+            :precision="3"
             @change="handleFieldChange(row)"
           />
         </template>
