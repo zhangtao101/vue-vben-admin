@@ -48,7 +48,8 @@ const props = defineProps({
 
 // region 查询条件
 const queryParams = ref<any>({
-  startTime: undefined,
+  // 指示日期默认为当前日期
+  startTime: dayjs().format('YYYY-MM-DD'),
   lineName: undefined,
   workSheetCode: undefined,
   state: undefined,
@@ -68,7 +69,8 @@ function handleQuery() {
 
 function handleReset() {
   queryParams.value = {
-    startTime: undefined,
+    // 重置后指示日期回到当前日期
+    startTime: dayjs().format('YYYY-MM-DD'),
     lineName: undefined,
     workSheetCode: undefined,
     state: undefined,
@@ -343,9 +345,9 @@ async function handleScanPallet() {
         info.packType === null || info.packType === undefined
           ? 1
           : Number(info.packType),
-      // 加载人员/加载时间：直接取数据中的值，前端仅做展示
+      // 加载人员直接取数据中的值；加载时间无值时取当前时间
       createUser: info.createUser,
-      createTime: info.createTime,
+      createTime: info.createTime || dayjs().format('YYYY-MM-DD HH:mm:ss'),
     });
     loadGridApi.grid.loadData([...loadList.value]);
     inputPalletLabel.value = '';

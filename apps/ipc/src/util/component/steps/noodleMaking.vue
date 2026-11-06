@@ -13,6 +13,7 @@ import {
   Row,
   Space,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { selectWeekWorkSheet } from '#/api';
@@ -32,7 +33,8 @@ defineProps({
 const queryParams = ref<any>({
   lineName: '',
   productName: '',
-  planDateStart: '',
+  // 生产日期默认为当前日期
+  planDateStart: dayjs().format('YYYY-MM-DD'),
 });
 // endregion
 
@@ -117,7 +119,12 @@ function handleQuery() {
 }
 
 function handleReset() {
-  queryParams.value = { lineName: '', productName: '', planDateStart: '' };
+  queryParams.value = {
+    lineName: '',
+    productName: '',
+    // 重置后生产日期回到当前日期
+    planDateStart: dayjs().format('YYYY-MM-DD'),
+  };
   gridApi.reload();
 }
 // endregion

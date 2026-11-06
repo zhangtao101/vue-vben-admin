@@ -99,9 +99,6 @@ const rightWorkOrderOptions = ref<
 /** 工单对应的子产线/产线原始数据，作为喷码传输弹窗的子产线下拉选项来源 */
 const lineList = ref<any[]>([]);
 
-/** 右栏是否展示：工作站绑定了两个及以上子产线时展示右栏 */
-const showRightPanel = computed(() => subLineList.value.length > 1);
-
 /** 工单状态指示灯：state 为 2 时绿色，其余（含未选中/未开始）灰色 */
 const WORK_ORDER_RUNNING_STATE = '2';
 
@@ -318,7 +315,6 @@ function createPanel() {
       stackQty: 0,
       subLineProductionQty: 0,
     },
-    workStatus: 'idle',
     /** 称重记录包装类型筛选（3单包/4多包/5料包），默认全选 */
     packTypes: [3, 4, 5] as number[],
   });
@@ -340,13 +336,13 @@ function isPanelReady(panel: any) {
   return !!(panel?.form?.workOrder || panel?.form?.id);
 }
 
-// 指标卡片配置：key 与 title，数值从面板 metrics 中取值
+// 指标卡片配置：key 与 panel.metrics 字段一一对应
 const metricItems = [
-  { key: 'targetQty', title: $t('packagingProgress.instructionQty') },
+  { key: 'instructionQty', title: $t('packagingProgress.instructionQty') },
   { key: 'productionQty', title: $t('packagingProgress.productionQty') },
-  { key: 'palletizingQty', title: $t('packagingProgress.stackQty') },
+  { key: 'stackQty', title: $t('packagingProgress.stackQty') },
   {
-    key: 'subLineProductionQtyA',
+    key: 'subLineProductionQty',
     title: $t('packagingProgress.subLineProductionQty'),
   },
 ];
@@ -376,6 +372,11 @@ function fillPanel(panel: any, line: any) {
     line: line.lineName ?? '',
     remark: line.remark ?? '',
   };
+  // 回填指标数：指示数量 / 生产数量 / 堆垛数量 / 各子产线生产数量
+  panel.metrics.instructionQty = Number(line.targetQty ?? 0);
+  panel.metrics.productionQty = Number(line.productionQty ?? 0);
+  panel.metrics.stackQty = Number(line.palletizingQty ?? 0);
+  panel.metrics.subLineProductionQty = Number(line.subLineProductionQtyA ?? 0);
 }
 
 /**
@@ -401,8 +402,7 @@ function resetPanel(panel: any) {
   panel.metrics.productionQty = 0;
   panel.metrics.stackQty = 0;
   panel.metrics.subLineProductionQty = 0;
-  panel.workStatus = 'idle';
-  // panel.packTypes = [3, 4, 5];
+  panel.packTypes = [3, 4, 5];
 }
 
 // endregion
@@ -640,15 +640,26 @@ function handleSopImage(panel: any) {
   sopImageDrawerRef.value.open(panel?.form?.productCode ?? '');
 }
 
+/** 开始工作请求中标记：防止重复点击 */
+const workStartLoading = ref(false);
+/** 结束工作请求中标记：防止重复点击 */
+const workEndLoading = ref(false);
+
 /**
- * 开始工作：调用状态更新接口将工单置为进行中（state 2），成功后面板状态置为 running 并重新加载当前工单数据。
+ * 开始工作：调用状态更新接口将工单置为进行中（state 2），
+ * 以工单 state 判断是否可开始，成功后重新查询面板数据刷新工单状态。
  * @param {object} panel - 目标面板（leftPanel/rightPanel）。
  * @returns {void} 无返回值，成功后弹出成功提示。
  * @throws 不主动抛出异常，失败时提示开始失败。
  * @since 2026-09-02 00:00:00
  */
 function handleWorkStart(panel: any) {
-  if (panel.workStatus === 'running') {
+  // 请求进行中时忽略重复点击
+  if (workStartLoading.value) {
+    return;
+  }
+  // 以工单 state 判断是否已在运行（state 为 2 时不可重复开始）
+  if (isRunningState(panel.form?.state)) {
     message.warning($t('packagingProgress.alreadyRunning'));
     return;
   }
@@ -656,27 +667,36 @@ function handleWorkStart(panel: any) {
     message.warning($t('packagingProgress.workOrderNotSelected'));
     return;
   }
+  workStartLoading.value = true;
   updateStae([panel.form.id], 2, props.processType, panel.form.equipCode)
     .then(() => {
-      panel.workStatus = 'running';
       message.success($t('packagingProgress.startSuccess'));
-      // 开始成功后重新加载当前面板工单数据，刷新工单状态与面板内容
+      // 开始成功后重新查询工单下拉与面板数据，刷新工单状态与面板内容
       reloadPanel(panel);
     })
     .catch(() => {
       message.error($t('packagingProgress.startFailed'));
+    })
+    .finally(() => {
+      workStartLoading.value = false;
     });
 }
 
 /**
- * 结束工作：调用状态更新接口将工单置为结束（state 3），成功后面板状态置为 idle。
+ * 结束工作：调用状态更新接口将工单置为结束（state 3），
+ * 以工单 state 判断是否在运行，成功后重新查询面板数据刷新工单状态。
  * @param {object} panel - 目标面板（leftPanel/rightPanel）。
  * @returns {void} 无返回值，成功后弹出成功提示。
  * @throws 不主动抛出异常，失败时提示结束失败。
  * @since 2026-09-02 00:00:00
  */
 function handleWorkEnd(panel: any) {
-  if (panel.workStatus === 'idle') {
+  // 请求进行中时忽略重复点击
+  if (workEndLoading.value) {
+    return;
+  }
+  // 以工单 state 判断是否已开始（state 不为 2 时不可结束）
+  if (!isRunningState(panel.form?.state)) {
     message.warning($t('packagingProgress.notStarted'));
     return;
   }
@@ -684,13 +704,18 @@ function handleWorkEnd(panel: any) {
     message.warning($t('packagingProgress.workOrderNotSelected'));
     return;
   }
+  workEndLoading.value = true;
   updateStae([panel.form.id], 3, props.processType, panel.form.equipCode)
     .then(() => {
-      panel.workStatus = 'idle';
       message.success($t('packagingProgress.endSuccess'));
+      // 结束成功后重新查询工单下拉与面板数据，刷新工单状态与面板内容
+      reloadPanel(panel);
     })
     .catch(() => {
       message.error($t('packagingProgress.endFailed'));
+    })
+    .finally(() => {
+      workEndLoading.value = false;
     });
 }
 // endregion
@@ -997,7 +1022,7 @@ onMounted(() => {
             <LeftGrid>
               <template #toolbar-tools>
                 <CheckboxGroup
-                  v-model:value="leftPanel.form.packTypes"
+                  v-model:value="leftPanel.packTypes"
                   :options="packTypeOptions"
                   @change="handlePackTypeChange(leftPanel, leftGridApi)"
                 />
@@ -1023,6 +1048,7 @@ onMounted(() => {
               v-if="hasWorkAuth(AUTH_WORK_START)"
               type="primary"
               :disabled="!isPanelReady(leftPanel)"
+              :loading="workStartLoading"
               @click="handleWorkStart(leftPanel)"
             >
               {{ $t('packagingProgress.workStart') }}
@@ -1032,6 +1058,7 @@ onMounted(() => {
               type="primary"
               danger
               :disabled="!isPanelReady(leftPanel)"
+              :loading="workEndLoading"
               @click="handleWorkEnd(leftPanel)"
             >
               {{ $t('packagingProgress.workEnd') }}
@@ -1040,8 +1067,8 @@ onMounted(() => {
         </div>
       </Col>
 
-      <!-- 右栏：绑定第二个子产线时展示，工单同样可选择 -->
-      <Col v-if="showRightPanel" :xs="24" :md="12">
+      <!-- 右栏：始终展示，工单同样可选择（无数据时为空面板） -->
+      <Col :xs="24" :md="12">
         <div class="flex flex-col gap-4">
           <!-- 1. 工单信息表单 -->
           <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
@@ -1182,7 +1209,7 @@ onMounted(() => {
             <RightGrid>
               <template #toolbar-tools>
                 <CheckboxGroup
-                  v-model:value="rightPanel.form.packTypes"
+                  v-model:value="rightPanel.packTypes"
                   :options="packTypeOptions"
                   @change="handlePackTypeChange(rightPanel, rightGridApi)"
                 />
@@ -1208,6 +1235,7 @@ onMounted(() => {
               v-if="hasWorkAuth(AUTH_WORK_START)"
               type="primary"
               :disabled="!isPanelReady(rightPanel)"
+              :loading="workStartLoading"
               @click="handleWorkStart(rightPanel)"
             >
               {{ $t('packagingProgress.workStart') }}
@@ -1217,6 +1245,7 @@ onMounted(() => {
               type="primary"
               danger
               :disabled="!isPanelReady(rightPanel)"
+              :loading="workEndLoading"
               @click="handleWorkEnd(rightPanel)"
             >
               {{ $t('packagingProgress.workEnd') }}

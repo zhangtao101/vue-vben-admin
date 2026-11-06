@@ -7,6 +7,7 @@
   "lineNamePlaceholder": "Please enter line name",
   "planDateStart": "Indicate Date",
   "datePlaceholder": "Please select indicate date",
+  "createTime": "Indicate Date",
   "lotCode": "Lot Number",
   "productCode": "Product Code",
   "productName": "Product Name",

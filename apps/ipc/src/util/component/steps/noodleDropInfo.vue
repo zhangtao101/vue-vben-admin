@@ -48,8 +48,15 @@ defineProps({
 const { RangePicker } = DatePicker;
 
 // region 查询条件：生产日期(区域) / 制面产线 / 区域 / 等级
+// 生产日期默认为当前日期起、后 3 个月止
+const DEFAULT_DATE_RANGE = () => [
+  dayjs().format('YYYY-MM-DD'),
+  dayjs()
+    .add(3, 'month')
+    .format('YYYY-MM-DD'),
+];
 const queryParams = ref<any>({
-  productDateRange: [],
+  productDateRange: DEFAULT_DATE_RANGE(),
   line: undefined,
   area: undefined,
   grade: undefined,
@@ -224,7 +231,8 @@ function handleQuery() {
 
 function handleReset() {
   queryParams.value = {
-    productDateRange: [],
+    // 重置后生产日期回到默认（当前日期起、后 3 个月止）
+    productDateRange: DEFAULT_DATE_RANGE(),
     line: undefined,
     area: undefined,
     grade: undefined,

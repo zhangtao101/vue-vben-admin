@@ -7,6 +7,7 @@
   "lineNamePlaceholder": "请输入产线名称",
   "planDateStart": "指示日期",
   "datePlaceholder": "请选择指示日期",
+  "createTime": "指示日期",
   "lotCode": "LOT编号",
   "productCode": "产品编号",
   "productName": "产品名称",

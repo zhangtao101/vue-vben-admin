@@ -428,6 +428,10 @@ function handleSubmit() {
       handleDrawerReset();
       // 通知父组件刷新称重记录列表
       emit('success');
+      // 保存成功后标签输入框重新获取焦点，便于继续扫码
+      nextTick(() => {
+        labelIdRef.value?.focus();
+      });
     })
     .catch(() => {
       message.error($t('mixerMaterialWeigh.saveFailed'));

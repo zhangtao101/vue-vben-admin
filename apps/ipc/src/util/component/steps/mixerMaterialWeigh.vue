@@ -16,6 +16,7 @@ import {
   Row,
   Space,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -50,7 +51,8 @@ const props = defineProps({
 
 const queryParams = ref<any>({
   lineName: '',
-  planDateStart: '',
+  // 指示日期默认为当前日期
+  planDateStart: dayjs().format('YYYY-MM-DD'),
 });
 
 /** 查询参数格式化：处理时间范围并剔除空值字段 */
@@ -94,6 +96,11 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'radio', width: 50, title: '' },
+    {
+      field: 'createTime',
+      title: $t('mixerMaterialWeigh.createTime'),
+      minWidth: 140,
+    },
     {
       field: 'lotCode',
       title: $t('mixerMaterialWeigh.lotCode'),
@@ -151,7 +158,7 @@ function handleQuery() {
 }
 
 function handleReset() {
-  queryParams.value = { lineName: '', planDateStart: '' };
+  queryParams.value = { lineName: '', planDateStart: dayjs().format('YYYY-MM-DD') };
   gridApi.reload();
 }
 // endregion

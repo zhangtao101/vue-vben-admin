@@ -26,7 +26,6 @@ import {
   InputNumber,
   message,
   Modal,
-  Radio,
   Row,
   Space,
 } from 'ant-design-vue';
@@ -606,15 +605,12 @@ defineExpose({ open });
               <template #load_unit="{ row }">
                 <span>{{ row.unit }}</span>
               </template>
-              <!-- 包装类型：所有条目均可单选（3单包/4多包/5料包） -->
+              <!-- 包装类型：直接展示文本（3单包/4多包/5料包） -->
               <template #load_packType="{ row }">
-                <Radio.Group
-                  v-model:value="row.packType"
-                  :options="packTypeOptions"
-                  option-type="button"
-                  button-style="solid"
-                  size="small"
-                />
+                {{
+                  packTypeOptions.find((o: any) => o.value === row.packType)
+                    ?.label ?? ''
+                }}
               </template>
             </LoadGrid>
           </div>

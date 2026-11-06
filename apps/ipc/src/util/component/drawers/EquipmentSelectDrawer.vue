@@ -53,6 +53,13 @@ const equipmentTypeVal = ref<number | undefined>(0);
 const subLineCodeVal = ref<string>('');
 
 // ========== 表格配置 ==========
+/** 投料类型映射：3 单包 / 4 多包 / 5 料包 */
+const FEED_TYPE_LABELS: Record<string, string> = {
+  3: $t('equipmentSelect.packTypeSingle'),
+  4: $t('equipmentSelect.packTypeMulti'),
+  5: $t('equipmentSelect.packTypeBag'),
+};
+
 const gridOptions: VxeGridProps<any> = {
   rowClassName: 'ipc-grid-row',
   headerRowClassName: 'ipc-grid-header-row',
@@ -71,25 +78,32 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('equipmentSelect.equipmentName'),
       minWidth: 160,
     },
-    {
-      field: 'equipGroupCode',
-      title: $t('equipmentSelect.equipGroupCode'),
-      minWidth: 120,
-    },
-    {
-      field: 'equipGroupName',
-      title: $t('equipmentSelect.equipGroupName'),
-      minWidth: 120,
-    },
-    {
-      field: 'location',
-      title: $t('equipmentSelect.location'),
-      minWidth: 140,
-    },
+    // {
+    //   field: 'equipGroupCode',
+    //   title: $t('equipmentSelect.equipGroupCode'),
+    //   minWidth: 120,
+    // },
+    // {
+    //   field: 'equipGroupName',
+    //   title: $t('equipmentSelect.equipGroupName'),
+    //   minWidth: 120,
+    // },
+    // {
+    //   field: 'location',
+    //   title: $t('equipmentSelect.location'),
+    //   minWidth: 140,
+    // },
     {
       field: 'model',
-      title: $t('equipmentSelect.model'),
+      title: $t('equipmentSelect.feedType'),
       minWidth: 120,
+      // 投料类型格式化：3 单包 / 4 多包 / 5 料包，其余原样展示
+      formatter: ({ cellValue }: any) => {
+        if (cellValue === null || cellValue === undefined || cellValue === '') {
+          return '';
+        }
+        return FEED_TYPE_LABELS[String(cellValue)] ?? String(cellValue);
+      },
     },
   ],
   checkboxConfig: {
