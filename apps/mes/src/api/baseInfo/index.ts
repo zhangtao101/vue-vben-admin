@@ -24,6 +24,7 @@ export * from './productLineSet.service';
 export * from './siloMaterialManage.service';
 export * from './subProductionLineHangTray.service';
 export * from './subProductionLineManage.service';
+export * from './supplierManagement.service';
 export * from './surfaceMachineEquipmentManage.service';
 export * from './teamGroupManage.service';
 export * from './trayManage.service';

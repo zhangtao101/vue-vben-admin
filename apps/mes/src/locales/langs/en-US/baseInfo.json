@@ -317,5 +317,10 @@
   "inputCustomerCode": "Please input customer code",
   "inputCustomerName": "Please input customer name",
   "customerDetail": "Customer Detail",
-  "detail": "Detail"
+  "detail": "Detail",
+  "manufacturerCode": "Supplier Code",
+  "manufacturerName": "Supplier Name",
+  "inputManufacturerCode": "Please input supplier code",
+  "inputManufacturerName": "Please input supplier name",
+  "supplierDetail": "Supplier Detail"
 }

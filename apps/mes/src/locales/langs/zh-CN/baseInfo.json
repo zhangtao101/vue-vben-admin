@@ -317,5 +317,10 @@
   "inputCustomerCode": "请输入客户编码",
   "inputCustomerName": "请输入客户名称",
   "customerDetail": "客户详情",
-  "detail": "详情"
+  "detail": "详情",
+  "manufacturerCode": "供应商编码",
+  "manufacturerName": "供应商名称",
+  "inputManufacturerCode": "请输入供应商编码",
+  "inputManufacturerName": "请输入供应商名称",
+  "supplierDetail": "供应商详情"
 }

@@ -317,5 +317,10 @@
   "inputCustomerCode": "고객 코드를 입력하세요",
   "inputCustomerName": "고객 명칭을 입력하세요",
   "customerDetail": "고객 상세",
-  "detail": "상세"
+  "detail": "상세",
+  "manufacturerCode": "공급업체 코드",
+  "manufacturerName": "공급업체 명칭",
+  "inputManufacturerCode": "공급업체 코드를 입력하세요",
+  "inputManufacturerName": "공급업체 명칭을 입력하세요",
+  "supplierDetail": "공급업체 상세"
 }
