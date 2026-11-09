@@ -60,6 +60,7 @@
       "productDescription": "productDescription",
       "undercutFlag": "Material Type",
       "weighing": "Weighing",
+      "scanCode": "Scan",
       "reverseDeduction": "Reverse Deduction",
       "wmsInputType": "Inbound Method",
       "autoWarehouse": "Auto Warehouse",

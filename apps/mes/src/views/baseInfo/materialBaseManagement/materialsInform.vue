@@ -55,7 +55,7 @@ import MSDDrawer from '#/util/component/MSDDrawer.vue';
 // region 表格操作
 
 /**
- * 物料类型格式化：-1 称重，1 倒扣料
+ * 物料类型格式化：-1 称重，0 扫码，1 倒扣料
  * @param {object} params - 单元格参数
  * @param {number|string} params.cellValue - 单元格值
  * @returns {string} 物料类型文案
@@ -63,6 +63,9 @@ import MSDDrawer from '#/util/component/MSDDrawer.vue';
 function formatUndercutFlag({ cellValue }: any) {
   if (Number(cellValue) === -1) {
     return $t('basic.bomManagement.materialsInform.weighing');
+  }
+  if (Number(cellValue) === 0) {
+    return $t('basic.bomManagement.materialsInform.scanCode');
   }
   if (Number(cellValue) === 1) {
     return $t('basic.bomManagement.materialsInform.reverseDeduction');
@@ -960,6 +963,9 @@ function downloadTemplate() {
           <Radio.Group v-model:value="editMessage.undercutFlag">
             <Radio :value="-1">
               {{ $t('basic.bomManagement.materialsInform.weighing') }}
+            </Radio>
+            <Radio :value="0">
+              {{ $t('basic.bomManagement.materialsInform.scanCode') }}
             </Radio>
             <Radio :value="1">
               {{ $t('basic.bomManagement.materialsInform.reverseDeduction') }}

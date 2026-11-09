@@ -60,6 +60,7 @@
       "productDescription": "제품 설명",
       "undercutFlag": "자재 유형",
       "weighing": "계량",
+      "scanCode": "스캔",
       "reverseDeduction": "역공제",
       "wmsInputType": "입고 방식",
       "autoWarehouse": "자동 창고",

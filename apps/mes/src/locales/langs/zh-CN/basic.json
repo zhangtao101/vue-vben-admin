@@ -60,6 +60,7 @@
       "productDescription": "产品描述",
       "undercutFlag": "物料类型",
       "weighing": "称重",
+      "scanCode": "扫码",
       "reverseDeduction": "倒扣料",
       "wmsInputType": "入库方式",
       "autoWarehouse": "自动仓",
