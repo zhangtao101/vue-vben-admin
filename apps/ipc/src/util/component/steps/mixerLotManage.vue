@@ -130,8 +130,7 @@ const gridOptions: VxeGridProps<any> = {
 const gridEvents: any = {
   radioChange: ({ row }: any) => {
     selectedWorkSheet.value = row;
-    // 切换选中工单时，同步自动模式开关并重新查询下方批次列表
-    syncAutoMode();
+    // 切换选中工单时，重新查询下方批次列表
     refreshBatchGrid();
   },
 };
@@ -299,21 +298,11 @@ function loadProcessState() {
     });
 }
 
-/**
- * 同步自动模式开关：工单列表选中行的 workState 为 1 时开启，其余（含无选中行）关闭
- */
-function syncAutoMode() {
-  const row = selectedWorkSheet.value;
-  autoMode.value = !!row && Number(row.workState) === 1;
-}
-
 /** 查询选中工单的批次 LOT 列表 */
 function queryBatchList() {
   selectedBatchRecords.value = [];
-  syncAutoMode();
   const ws = selectedWorkSheet.value;
   if (!ws?.id) {
-    autoMode.value = false;
     return Promise.resolve({ total: 0, items: [] });
   }
   return selectByWorkSheetId(ws.id).then((res: any) => {
@@ -423,7 +412,6 @@ const gridEvents2: any = {
   // 批次列表为单选，仅保留当前选中行
   radioChange: ({ row }: any) => {
     selectedBatchRecords.value = row ? [row] : [];
-    syncAutoMode();
   },
 };
 

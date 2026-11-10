@@ -163,7 +163,6 @@ function queryWorkSheetList({ page }: any) {
 function handleRadioChange({ row }: any) {
   selectedWorkSheet.value = row;
   selectedLotIds.value = [];
-  syncAutoMode();
   lotGridApi.reload();
 }
 // endregion
@@ -257,7 +256,6 @@ const lotGridOptions: VxeGridProps<any> = {
 /** 批次LOT单选变化：记录选中的 LOT id，用于开始/结束按钮 */
 function handleLotRadioChange({ row }: any) {
   selectedLotIds.value = row ? [row.id] : [];
-  syncAutoMode();
 }
 
 const lotGridEvents: VxeGridListeners<any> = {
@@ -300,14 +298,6 @@ function loadProcessState() {
     .catch(() => {
       autoMode.value = false;
     });
-}
-
-/**
- * 同步自动模式开关：工单列表选中行的 workState 为 1 时开启，其余（含无选中行）关闭
- */
-function syncAutoMode() {
-  const row = selectedWorkSheet.value;
-  autoMode.value = !!row && Number(row.workState) === 1;
 }
 
 /** 获取当前单选的批次LOT行 */
@@ -395,7 +385,6 @@ function refreshLotList() {
   gridApi.reload();
   lotGridApi.reload();
   selectedLotIds.value = [];
-  syncAutoMode();
 }
 // endregion
 
