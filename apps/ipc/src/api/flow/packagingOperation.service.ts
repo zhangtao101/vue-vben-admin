@@ -16,6 +16,18 @@ export function searchSubLineByProcessCode(processCode: string) {
 }
 
 /**
+ * 按工序查询左右子产线配对列表
+ * @param processType 工序类型（路径参数）
+ * @returns 配对列表（subLineCode/subLineName 左边子产线、subBLineCode/subBLineName 右边子产线）
+ * @since 2026-11-09
+ */
+export function searchSubLinePairsByProcessType(processType: number) {
+  return requestClient.get(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/produce/subLine/searchSub/${processType}`,
+  );
+}
+
+/**
  * 条件查询工单列表
  * @param params 查询参数
  * @param params.lineId 子产线ID
