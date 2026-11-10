@@ -98,11 +98,6 @@ const gridOptions: VxeGridProps<any> = {
     { type: 'checkbox', width: 50, fixed: 'left' },
     { title: $t('page.common.serialNumber'), type: 'seq', width: 50, minWidth: 50 },
     {
-      field: 'workSheetCode',
-      title: $t('SMTmanagement.workOrderNumber'),
-      minWidth: 150,
-    },
-    {
       field: 'planDateStart',
       title: $t('SMTmanagement.plannedTime'),
       minWidth: 130,
@@ -111,6 +106,11 @@ const gridOptions: VxeGridProps<any> = {
       field: 'planDateStop',
       title: $t('SMTmanagement.planDateStop'),
       minWidth: 130,
+    },
+    {
+      field: 'workSheetCode',
+      title: $t('SMTmanagement.workOrderNumber'),
+      minWidth: 150,
     },
     { field: 'planCode', title: $t('SMTmanagement.planNumber'), minWidth: 150 },
     {
@@ -469,7 +469,7 @@ function handleDelete(row: any) {
 
 // region 结束工单
 function handleEndWorkOrder(row: any) {
-  worksheetUpdateStatus({ id: row.id, status: '4' }).then(() => {
+  worksheetUpdateStatus({ id: row.id, status: '10' }).then(() => {
     message.success($t('SMTmanagement.endWorkOrderSuccess'));
     gridApi.reload();
   });
@@ -686,7 +686,7 @@ onMounted(() => {
                 ? $t('SMTmanagement.statusInProgress')
                 : row.status === 3
                   ? $t('SMTmanagement.statusCompleted')
-                  : row.status === 4
+                  : row.status === 10
                     ? $t('SMTmanagement.statusEnded')
                     : '-'
           }}</span>
@@ -742,7 +742,7 @@ onMounted(() => {
             </Button>
           </Tooltip> -->
           <!-- 结束上报 -->
-          <Tooltip v-if="author.includes('编辑') && row.delayStatus === 3">
+          <Tooltip v-if="author.includes('编辑') && row.delayStatus === 2">
             <template #title>{{ $t('SMTmanagement.outputReport') }}</template>
             <Button type="link" @click="handleOutputReport(row)">
               <Icon
@@ -752,7 +752,7 @@ onMounted(() => {
             </Button>
           </Tooltip>
           <!-- 结束工单 -->
-          <Tooltip v-if="author.includes('编辑') && row.delayStatus === 3">
+          <Tooltip v-if="author.includes('编辑') && row.delayStatus === 2">
             <template #title>{{ $t('SMTmanagement.endWorkOrder') }}</template>
             <Popconfirm
               :cancel-text="$t('common.cancel')"
