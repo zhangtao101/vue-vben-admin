@@ -144,7 +144,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'action' },
     },
   ],
-  height: 420,
+  height: 650,
   pagerConfig: { enabled: true, pageSize: 20, pageSizes: [10, 20, 50, 100] },
   proxyConfig: {
     ajax: {

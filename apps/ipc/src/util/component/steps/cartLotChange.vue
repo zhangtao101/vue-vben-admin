@@ -120,7 +120,7 @@ const cartGridOptions: VxeGridProps<any> = {
       slots: { default: 'loadFlag' },
     },
   ],
-  height: 300,
+  height: 400,
   pagerConfig: { enabled: true, pageSize: 20, pageSizes: [10, 20, 50, 100] },
   proxyConfig: {
     ajax: {

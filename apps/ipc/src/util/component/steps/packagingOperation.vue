@@ -387,7 +387,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'cartState' },
     },
   ],
-  height: 270,
+  height: 350,
   proxyConfig: {
     ajax: {
       query: queryCartList,

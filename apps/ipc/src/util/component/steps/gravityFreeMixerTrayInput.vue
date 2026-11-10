@@ -88,7 +88,7 @@ const gridOptions: VxeGridProps<any> = {
   headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
-  height: 250,
+  height: 400,
   stripe: true,
   radioConfig: { trigger: 'row', highlight: true },
   pagerConfig: {
@@ -227,7 +227,7 @@ const lotGridOptions: VxeGridProps<any> = {
   headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
-  height: 300,
+  height: 350,
   stripe: true,
   columns: getLotColumns(),
   pagerConfig: { enabled: false },
@@ -289,7 +289,7 @@ const loadGridOptions: VxeGridProps<any> = {
   headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
-  height: 250,
+  height: 260,
   stripe: true,
   checkboxConfig: { highlight: true, range: true },
   columns: [
@@ -497,13 +497,7 @@ onMounted(() => {
 
     <!-- 工单列表 -->
     <Card :body-style="{ padding: '4px' }">
-      <Grid>
-        <!-- <template #toolbar-tools
-/>
-</card>
-</div>
-</template> -->
-      </Grid>
+      <Grid />
     </Card>
 
     <!-- 左栏批次LOT列表 / 右栏装载列表 -->

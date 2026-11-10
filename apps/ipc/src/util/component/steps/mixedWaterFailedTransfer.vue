@@ -166,7 +166,7 @@ const leftGridOptions: VxeGridProps<any> = {
       minWidth: 140,
     },
   ],
-  height: 360,
+  height: 550,
   pagerConfig: { enabled: true, pageSize: 20 },
   proxyConfig: {
     ajax: {
@@ -255,7 +255,7 @@ const rightGridOptions: VxeGridProps<any> = {
       minWidth: 140,
     },
   ],
-  height: 360,
+  height: 550,
   pagerConfig: { enabled: true, pageSize: 20 },
   proxyConfig: {
     ajax: {

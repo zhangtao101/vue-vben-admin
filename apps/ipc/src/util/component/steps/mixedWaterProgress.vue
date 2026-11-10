@@ -79,7 +79,7 @@ const gridOptions: VxeGridProps<any> = {
   headerRowClassName: 'ipc-grid-header-row',
   align: 'center',
   border: true,
-  height: 280,
+  height: 400,
   stripe: true,
   radioConfig: { trigger: 'row', highlight: true },
   pagerConfig: {

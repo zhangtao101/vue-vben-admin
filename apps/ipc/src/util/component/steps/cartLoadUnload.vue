@@ -117,7 +117,7 @@ const cartGridOptions: VxeGridProps<any> = {
     { field: 'lotId', title: $t('cartLoadUnload.colLotId'), minWidth: 250 },
     { field: 'quantity', title: $t('cartLoadUnload.colQty'), minWidth: 90 },
   ],
-  height: 340,
+  height: 650,
   radioConfig: { highlight: true, trigger: 'row' },
   pagerConfig: { enabled: true, pageSize: 20, pageSizes: [10, 20, 50, 100] },
   proxyConfig: {

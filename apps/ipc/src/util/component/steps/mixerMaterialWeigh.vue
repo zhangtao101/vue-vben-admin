@@ -129,7 +129,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'unit', title: $t('mixerMaterialWeigh.unit'), minWidth: 80 },
     { field: 'batch', title: $t('mixerMaterialWeigh.batch'), minWidth: 90 },
   ],
-  height: 280,
+  height: 400,
   stripe: true,
   radioConfig: { trigger: 'row', highlight: true },
   proxyConfig: {
@@ -217,7 +217,7 @@ const materialGridOptions: VxeGridProps<any> = {
     },
     { field: 'unit', title: $t('mixerMaterialWeigh.unit'), minWidth: 80 },
   ],
-  height: 250,
+  height: 350,
   stripe: true,
   // 材料列表仅展示查询结果，不需要分页与手动查询
   pagerConfig: { enabled: false },
@@ -297,7 +297,7 @@ const recordGridOptions: VxeGridProps<any> = {
     },
     { field: 'unit', title: $t('mixerMaterialWeigh.unit'), minWidth: 80 },
   ],
-  height: 250,
+  height: 310,
   stripe: true,
   // 称重记录仅展示保存结果，不需要分页与手动查询
   pagerConfig: { enabled: false },
