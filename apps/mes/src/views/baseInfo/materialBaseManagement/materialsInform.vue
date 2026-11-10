@@ -162,7 +162,17 @@ const gridOptions: VxeGridProps<any> = {
     },
     {
       field: 'materialName',
-      title: $t('baseInfo.materialName'),
+      title: $t('baseInfo.materialNameZh'),
+      minWidth: 200,
+    },
+    {
+      field: 'materialNameKo',
+      title: $t('baseInfo.materialNameKo'),
+      minWidth: 200,
+    },
+    {
+      field: 'materialNameEn',
+      title: $t('baseInfo.materialNameEn'),
       minWidth: 200,
     },
     { field: 'unit', title: $t('baseInfo.unit'), minWidth: 100 },
@@ -934,12 +944,26 @@ function downloadTemplate() {
         >
           <Input v-model:value="editMessage.materialCode" disabled />
         </FormItem>
-        <!-- 材料名称 -->
+        <!-- 物料名称（中文） -->
         <FormItem
-          :label="$t('basic.bomManagement.materialName')"
+          :label="$t('baseInfo.materialNameZh')"
           name="materialName"
         >
           <Input v-model:value="editMessage.materialName" disabled />
+        </FormItem>
+        <!-- 物料名称（韩文） -->
+        <FormItem
+          :label="$t('baseInfo.materialNameKo')"
+          name="materialNameKo"
+        >
+          <Input v-model:value="editMessage.materialNameKo" disabled />
+        </FormItem>
+        <!-- 物料名称（英文） -->
+        <FormItem
+          :label="$t('baseInfo.materialNameEn')"
+          name="materialNameEn"
+        >
+          <Input v-model:value="editMessage.materialNameEn" disabled />
         </FormItem>
         <!-- 安全量上限 -->
         <FormItem
