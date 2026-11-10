@@ -295,9 +295,9 @@ export interface ErpProductResult {
 }
 
 /**
- * 供应商项
+ * 供应商项（模具档案供应商下拉用，来自客户接口）
  */
-export interface SupplierItem {
+export interface MoldSupplierItem {
   /** 客户编号 */
   customerCode: string;
   /** 客户名称 */
@@ -402,7 +402,7 @@ export async function getErpProductList(params?: ErpProductParams) {
  * @param customerName - 客户名称关键字，可选
  */
 export async function getSupplierList(customerName?: string) {
-  return requestClient.get<SupplierItem[]>(
+  return requestClient.get<MoldSupplierItem[]>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/base/customer/getCustomerList?${qs.stringify({ customerName })}`,
   );
 }
