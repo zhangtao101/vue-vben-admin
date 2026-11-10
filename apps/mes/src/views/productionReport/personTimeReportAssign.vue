@@ -199,9 +199,27 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 100,
     },
     {
+      title: $t('personTimeReportAssign.distCode'),
+      field: 'distCode',
+      minWidth: 100,
+      formatter: ({ cellValue }: any) =>
+        distOptions.find((item) => item.value === cellValue)?.label ??
+        (cellValue ?? ''),
+    },
+    {
+      title: $t('personTimeReportAssign.assignSeq'),
+      field: 'assignSeq',
+      minWidth: 100,
+    },
+    {
       title: $t('personTimeReportAssign.areaGroup'),
       field: 'areaGroup',
-      minWidth: 100,
+      minWidth: 110,
+    },
+    {
+      title: $t('personTimeReportAssign.produceLineCode'),
+      field: 'produceLineCode',
+      minWidth: 110,
     },
     {
       title: $t('personTimeReportAssign.produceLineName'),
@@ -209,9 +227,19 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 110,
     },
     {
+      title: $t('personTimeReportAssign.subProduceLineCode'),
+      field: 'subProduceLineCode',
+      minWidth: 110,
+    },
+    {
       title: $t('personTimeReportAssign.subProduceLineName'),
       field: 'subProduceLineName',
       minWidth: 110,
+    },
+    {
+      title: $t('personTimeReportAssign.shiftCode'),
+      field: 'shiftCode',
+      minWidth: 100,
     },
     {
       title: $t('personTimeReportAssign.shiftName'),
@@ -341,6 +369,9 @@ function handleAssignSelect(row: any) {
 
 // ========== 下方表格：生产指示列表 ==========
 
+/** 生产指示列表表尾合计（后端对全量明细求和，与前端分页无关） */
+const detailTotals = ref({ assignedQtyTotal: 0, finishQtyTotal: 0 });
+
 const detailGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
@@ -353,6 +384,16 @@ const detailGridOptions: VxeGridProps<any> = {
       minWidth: 180,
     },
     {
+      title: $t('personTimeReportAssign.produceLineCode'),
+      field: 'produceLineCode',
+      minWidth: 110,
+    },
+    {
+      title: $t('personTimeReportAssign.produceLineName'),
+      field: 'produceLineName',
+      minWidth: 110,
+    },
+    {
       title: $t('personTimeReportAssign.productCode'),
       field: 'productCode',
       minWidth: 100,
@@ -363,26 +404,20 @@ const detailGridOptions: VxeGridProps<any> = {
       minWidth: 140,
     },
     {
+      title: $t('personTimeReportAssign.unit'),
+      field: 'unit',
+      minWidth: 80,
+    },
+    {
       title: $t('personTimeReportAssign.finishQty'),
       field: 'finishQty',
       minWidth: 110,
-    },
-    {
-      title: $t('personTimeReportAssign.allocationRatio'),
-      field: 'allocationRatio',
-      minWidth: 100,
-      slots: { default: 'allocationRatioCell' },
     },
     {
       title: $t('personTimeReportAssign.assignedQty'),
       field: 'assignedQty',
       minWidth: 120,
       slots: { default: 'assignedQtyEdit' },
-    },
-    {
-      title: $t('personTimeReportAssign.produceDate'),
-      field: 'produceDate',
-      minWidth: 110,
     },
     {
       title: $t('personTimeReportAssign.operation'),
@@ -400,6 +435,33 @@ const detailGridOptions: VxeGridProps<any> = {
       },
     },
   },
+  // 表尾合计：生产量合计/分配量合计由后端全量汇总返回
+  showFooter: true,
+  footerMethod({ columns }: any) {
+    return [
+      columns.map((_column: any, columnIndex: number) => {
+        if (columnIndex === 0) {
+          return $t('personTimeReportAssign.total');
+        }
+        if (columnIndex === 7) {
+          return detailTotals.value.finishQtyTotal;
+        }
+        if (columnIndex === 8) {
+          return detailTotals.value.assignedQtyTotal;
+        }
+        return '';
+      }),
+    ];
+  },
+  // 生产量之前的单元格（勾选列至单位列）合并为一格显示合计标签
+  footerSpanMethod({ columnIndex }: any) {
+    if (columnIndex === 0) {
+      return { colspan: 7, rowspan: 1 };
+    }
+    if (columnIndex > 0 && columnIndex < 7) {
+      return { colspan: 0, rowspan: 0 };
+    }
+  },
   rowConfig: { keyField: 'id' },
   showOverflow: 'tooltip',
   stripe: true,
@@ -412,17 +474,25 @@ const detailGridOptions: VxeGridProps<any> = {
 
 /**
  * 查询当前分配对象的生产指示列表数据。
+ * 接口返回 { list, finishQtyTotal, assignedQtyTotal }：
+ * list 为明细列表，合计由后端对全量明细求和，供表尾展示。
  * @since 2026-08-13 00:00:00
  */
 function queryDetailData() {
   if (currentAssignId.value == null) {
+    detailTotals.value = { assignedQtyTotal: 0, finishQtyTotal: 0 };
     return Promise.resolve({ items: [], total: 0 });
   }
   return getAssignProductionInstructions(currentAssignId.value).then(
-    (res: any) => ({
-      items: res || [],
-      total: (res || []).length,
-    }),
+    (res: any) => {
+      const data = res?.data ?? res ?? {};
+      const list = data.list ?? [];
+      detailTotals.value = {
+        assignedQtyTotal: data.assignedQtyTotal ?? 0,
+        finishQtyTotal: data.finishQtyTotal ?? 0,
+      };
+      return { items: list, total: list.length };
+    },
   );
 }
 
