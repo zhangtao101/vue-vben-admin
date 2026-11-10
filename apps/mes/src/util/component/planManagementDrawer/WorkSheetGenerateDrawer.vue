@@ -102,9 +102,13 @@ const equipPlaceholder = computed(() =>
     : $t('packingWorkOrderManage.equipmentPlaceholder'),
 );
 
+// region 查询条件
+/** 指示日期默认范围：当前日期起、后 3 个月止 */
+const DEFAULT_DATE_RANGE = () => [dayjs(), dayjs().add(3, 'month')];
+
 /** SAP 计划列表查询条件 */
 const queryParams = ref<any>({
-  produceDateRange: [],
+  produceDateRange: DEFAULT_DATE_RANGE(),
   instructionSequenceCode: undefined,
   lineCode: undefined,
   planCode: undefined,
@@ -364,7 +368,8 @@ function handleSearch() {
  */
 function handleResetQuery() {
   queryParams.value = {
-    produceDateRange: [],
+    // 重置后指示日期回到默认范围（当前日期起、后 3 个月止）
+    produceDateRange: DEFAULT_DATE_RANGE(),
     instructionSequenceCode: undefined,
     lineCode: undefined,
     planCode: undefined,
@@ -622,7 +627,8 @@ function handleClose() {
   materialSelectVisible.value = false;
   processType.value = undefined;
   queryParams.value = {
-    produceDateRange: [],
+    // 关闭抽屉时恢复指示日期默认范围
+    produceDateRange: DEFAULT_DATE_RANGE(),
     instructionSequenceCode: undefined,
     lineCode: undefined,
     planCode: undefined,

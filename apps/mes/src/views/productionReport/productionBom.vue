@@ -25,6 +25,7 @@ import {
   RangePicker,
   Space,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -168,11 +169,14 @@ const [Grid, gridApi] = useVbenVxeGrid({ gridEvents, gridOptions });
 // 当前选中的工单 id，用于联动下方 BOM 表格按工单过滤
 const selectedWorkSheetId = ref<number>();
 
+// 指示日期默认范围：当前日期起、后 3 个月止
+const DEFAULT_DATE_RANGE = () => [dayjs(), dayjs().add(3, 'month')];
+
 const workSheetQuery = ref<any>({
   lineName: '',
   productName: '',
   workSheetCode: '',
-  searchTime: [],
+  searchTime: DEFAULT_DATE_RANGE(),
 });
 
 const workSheetGridOptions: VxeGridProps<any> = {
@@ -180,6 +184,11 @@ const workSheetGridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'radio', width: 50 },
+    {
+      title: $t('productionBom.planDateStart'),
+      field: 'planDateStart',
+      minWidth: 120,
+    },
     {
       title: $t('productionBom.workSheetCode'),
       field: 'workSheetCode',
@@ -194,11 +203,6 @@ const workSheetGridOptions: VxeGridProps<any> = {
       title: $t('productionBom.productName'),
       field: 'productName',
       minWidth: 150,
-    },
-    {
-      title: $t('productionBom.planDateStart'),
-      field: 'planDateStart',
-      minWidth: 120,
     },
     {
       title: $t('productionBom.workSheetPlanNumber'),
@@ -298,7 +302,8 @@ function handleWorkSheetReset() {
     lineName: '',
     productName: '',
     workSheetCode: '',
-    searchTime: [],
+    // 重置后指示日期回到默认范围（当前日期起、后 3 个月止）
+    searchTime: DEFAULT_DATE_RANGE(),
   };
   clearWorkSheetSelection();
   workSheetGridApi.reload();
@@ -477,7 +482,7 @@ onMounted(() => {
         <!-- 操作按钮都在 toolbar-tools 插槽，表格内部没有操作栏 -->
         <template #toolbar-tools>
           <Space>
-            <Button v-if="permissions.add" type="primary" @click="handleAdd">
+            <Button v-if="permissions.add && false" type="primary" @click="handleAdd">
               <Icon icon="mdi:plus" class="inline-block align-middle" />
               {{ $t('productionBom.add') }}
             </Button>
@@ -493,7 +498,7 @@ onMounted(() => {
             </Button>
 
             <Button
-              v-if="permissions.delete"
+              v-if="permissions.delete && false"
               danger
               :disabled="selectedRows.length === 0"
               @click="handleBatchDelete"
