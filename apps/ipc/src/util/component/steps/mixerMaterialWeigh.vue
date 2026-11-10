@@ -97,7 +97,7 @@ const gridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'radio', width: 50, title: '' },
     {
-      field: 'createTime',
+      field: 'startTime',
       title: $t('mixerMaterialWeigh.createTime'),
       minWidth: 140,
     },
@@ -121,11 +121,11 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('mixerMaterialWeigh.lineName'),
       minWidth: 100,
     },
-    {
-      field: 'weight',
-      title: $t('mixerMaterialWeigh.weight'),
-      minWidth: 100,
-    },
+    // {
+    //   field: 'weight',
+    //   title: $t('mixerMaterialWeigh.weight'),
+    //   minWidth: 100,
+    // },
     { field: 'unit', title: $t('mixerMaterialWeigh.unit'), minWidth: 80 },
     { field: 'batch', title: $t('mixerMaterialWeigh.batch'), minWidth: 90 },
   ],
