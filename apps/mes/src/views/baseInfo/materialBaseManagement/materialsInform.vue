@@ -3,7 +3,7 @@ import type { TreeProps } from 'ant-design-vue';
 
 import type { VxeGridListeners, VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -100,7 +100,7 @@ const ZPRGB_TEXT_MAP: Record<string, string> = {
 };
 
 /**
- * 物料分类格式化：A 混合水，B 搅拌，C 完成品，E 汤酱包，Z 原辅材料，F 无重力搅拌半成品
+ * 物料分类格式化：A 混合水，B 制面（搅拌），C 包装（完成品），E 汤酱包，Z 原辅材料，F 无重力搅拌半成品
  * @param {object} params - 单元格参数
  * @param {string} params.cellValue - 单元格值
  * @returns {string} 物料分类文案
@@ -323,13 +323,16 @@ function handleSelect(keys: (number | string)[], _info: any) {
 const showEditDrawer = ref(false);
 // 编辑对象数据
 const editMessage = ref({} as any);
-// /** 物料分类选项：A 混合水，B 搅拌，C 完成品，E 汤酱包，Z 原辅材料，F 无重力搅拌半成品 */
-// const zprgbOptions = computed(() =>
-//   Object.keys(ZPRGB_TEXT_MAP).map((value) => ({
-//     label: $t(`basic.bomManagement.materialsInform.${ZPRGB_TEXT_MAP[value]}`),
-//     value,
-//   })),
-// );
+/** 物料分类可选项取值：A 混合水，B 制面（搅拌），C 包装（完成品），E 汤酱包，F 无重力搅拌半成品，Z 原辅材料 */
+const ZPRGB_OPTION_VALUES = ['A', 'B', 'C', 'E', 'F', 'Z'];
+
+/** 物料分类单选选项（按 A/B/C/E/F/Z 顺序生成） */
+const zprgbOptions = computed(() =>
+  ZPRGB_OPTION_VALUES.map((value) => ({
+    label: $t(`basic.bomManagement.materialsInform.${ZPRGB_TEXT_MAP[value]}`),
+    value,
+  })),
+);
 // 编辑对象表单验证规则
 const editRules = ref({
   downSafe: [
@@ -997,12 +1000,12 @@ function downloadTemplate() {
           </Radio.Group>
         </FormItem>
         <!-- 入库方式：V 自动仓，N 非自动仓（暂不展示） -->
-        <!--
+
         <FormItem
           :label="$t('basic.bomManagement.materialsInform.wmsInputType')"
           name="wmsInputType"
         >
-          <Radio.Group v-model:value="editMessage.wmsInputType">
+          <Radio.Group v-model:value="editMessage.wmsInputType" disabled>
             <Radio value="V">
               {{ $t('basic.bomManagement.materialsInform.autoWarehouse') }}
             </Radio>
@@ -1011,14 +1014,13 @@ function downloadTemplate() {
             </Radio>
           </Radio.Group>
         </FormItem>
-        -->
-        <!-- 物料分类：A 混合水，B 搅拌，C 完成品，E 汤酱包，Z 原辅材料，F 无重力搅拌半成品（暂不展示） -->
-        <!--
+
+        <!-- 物料分类：A 混合水，B 制面（搅拌），C 包装（完成品），E 汤酱包，F 无重力搅拌半成品，Z 原辅材料 -->
         <FormItem
           :label="$t('basic.bomManagement.materialsInform.zprgb')"
           name="zprgb"
         >
-          <Radio.Group v-model:value="editMessage.zprgb">
+          <Radio.Group v-model:value="editMessage.zprgb" disabled>
             <Radio
               v-for="item in zprgbOptions"
               :key="item.value"
@@ -1028,7 +1030,6 @@ function downloadTemplate() {
             </Radio>
           </Radio.Group>
         </FormItem>
-        -->
       </Form>
 
       <template #footer>
