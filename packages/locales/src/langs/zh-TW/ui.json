@@ -9,7 +9,8 @@
     "startWith": "{0}必須以 {1} 開頭",
     "invalidURL": "請輸入有效的連結",
     "sizeLimit": "檔案大小不能超過 {0}MB",
-    "previewWarning": "無法開啟檔案，沒有可用的URL或預覽地址"
+    "previewWarning": "無法開啟檔案，沒有可用的URL或預覽地址",
+    "passwordNotSame": "兩次輸入的密碼不一致"
   },
   "actionTitle": {
     "edit": "修改{0}",
@@ -116,6 +117,14 @@
     "offlineError": "哎呀！網路錯誤",
     "offlineErrorDesc": "抱歉，無法連線到網際網路，請檢查您的網路連線並重試。",
     "comingSoon": "即將推出",
+    "emailError": "郵件格式出錯, 請檢查您的郵件格式。",
+    "telError": "座機號碼格式出錯, 請檢查您的座機號碼格式。",
+    "faxError": "傳真號碼格式出錯, 請檢查您的傳真號碼格式。",
+    "idCardError": "身分證號碼格式出錯, 請檢查您的身分證號碼格式。",
+    "phoneNumberError": "手機號碼格式出錯, 請檢查您的手機號碼格式。",
+    "shortError": "手機短號號碼格式出錯, 請檢查您的手機短號號碼格式。",
+    "workNumberError": "工號重複。",
+    "costCenterError": "成本中心編號不能為空。",
     "http": {
       "requestTimeout": "請求超時，請稍後再試。",
       "networkError": "網路異常，請檢查您的網路連線後重試。",
@@ -129,7 +138,9 @@
   "widgets": {
     "document": "文件",
     "qa": "問題 & 幫助",
+    "updatePassWord": "更新密碼",
     "setting": "設定",
+    "sectionSetting": "工段設定",
     "logoutTip": "是否退出登入？",
     "viewAll": "檢視所有訊息",
     "notifications": "通知",
@@ -137,6 +148,10 @@
     "clearNotifications": "清空",
     "checkUpdatesTitle": "新版本可用",
     "checkUpdatesDescription": "點選重新整理以獲取最新版本",
+    "deletionConfirmation": "是否確認刪除該筆資料？",
+    "retracement": "是否確認回退該筆資料？",
+    "pickUpTips": "是否確認領取該任務？",
+    "confirmTheInformation": "是否確認該操作？",
     "search": {
       "title": "搜尋",
       "searchNavigate": "搜尋導航選單",
@@ -156,6 +171,10 @@
       "errorPasswordTip": "密碼錯誤，請重新輸入",
       "backToLogin": "返回登入",
       "entry": "進入系統"
+    },
+    "file": {
+      "tips": "按一下或拖曳檔案到此區域進行上傳",
+      "tips1": "支援單個或批次上傳。"
     },
     "timezone": {
       "setTimezone": "設定時區",

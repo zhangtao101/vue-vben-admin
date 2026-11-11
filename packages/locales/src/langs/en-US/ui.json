@@ -9,7 +9,8 @@
     "startWith": "{0} must start with `{1}`",
     "invalidURL": "Please input a valid URL",
     "sizeLimit": "The file size cannot exceed {0}MB",
-    "previewWarning": "Unable to open the file, there is no available URL or preview address"
+    "previewWarning": "Unable to open the file, there is no available URL or preview address",
+    "passwordNotSame": "The two passwords do not match"
   },
   "actionTitle": {
     "edit": "Modify {0}",
@@ -137,6 +138,7 @@
   "widgets": {
     "document": "Document",
     "qa": "Q&A",
+    "updatePassWord": "Update Password",
     "setting": "Settings",
     "sectionSetting": "Section Settings",
     "logoutTip": "Do you want to logout?",
@@ -147,7 +149,9 @@
     "checkUpdatesTitle": "New Version Available",
     "checkUpdatesDescription": "Click to refresh and get the latest version",
     "deletionConfirmation": "Are you sure you want to delete this data?",
+    "retracement": "Are you sure you want to revert this data?",
     "pickUpTips": "Are you sure you want to accept this task?",
+    "confirmTheInformation": "Are you sure you want to perform this operation?",
     "search": {
       "title": "Search",
       "searchNavigate": "Search Navigation",

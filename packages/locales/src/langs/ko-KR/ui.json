@@ -9,7 +9,8 @@
     "startWith": "{0}은(는) `{1}`로 시작해야 합니다",
     "invalidURL": "유효한 URL을 입력하세요",
     "sizeLimit": "파일 크기는 {0}MB를 초과할 수 없습니다",
-    "previewWarning": "파일을 열 수 없습니다. 사용 가능한 URL 또는 미리보기 주소가 없습니다"
+    "previewWarning": "파일을 열 수 없습니다. 사용 가능한 URL 또는 미리보기 주소가 없습니다",
+    "passwordNotSame": "입력한 비밀번호가 일치하지 않습니다"
   },
   "actionTitle": {
     "edit": "{0} 수정",
@@ -137,6 +138,7 @@
   "widgets": {
     "document": "문서",
     "qa": "질의응답",
+    "updatePassWord": "비밀번호 변경",
     "setting": "설정",
     "sectionSetting": "공정 설정",
     "logoutTip": "로그아웃하시겠습니까?",
@@ -147,7 +149,9 @@
     "checkUpdatesTitle": "새 버전 사용 가능",
     "checkUpdatesDescription": "클릭하여 새로 고침하고 최신 버전을 받으세요",
     "deletionConfirmation": "이 데이터를 삭제하시겠습니까?",
+    "retracement": "이 데이터를 되돌리시겠습니까?",
     "pickUpTips": "이 작업을 수락하시겠습니까?",
+    "confirmTheInformation": "이 작업을 진행하시겠습니까?",
     "search": {
       "title": "검색",
       "searchNavigate": "검색 탐색",
