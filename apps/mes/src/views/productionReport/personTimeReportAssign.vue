@@ -202,9 +202,6 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('personTimeReportAssign.distCode'),
       field: 'distCode',
       minWidth: 100,
-      formatter: ({ cellValue }: any) =>
-        distOptions.find((item) => item.value === cellValue)?.label ??
-        (cellValue ?? ''),
     },
     {
       title: $t('personTimeReportAssign.assignSeq'),
