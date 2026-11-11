@@ -308,7 +308,16 @@ const designGridOptions: VxeGridProps<any> = {
     },
     { field: 'codeNumber', title: $t('baseInfo.codeName'), width: 100 },
     { field: 'perDosage', title: $t('baseInfo.perDosage'), width: 100 },
-    { field: 'perQuantity', title: $t('baseInfo.perQuantity'), width: 100 },
+    {
+      field: 'perQuantity',
+      title: $t('baseInfo.perQuantity'),
+      width: 100,
+      // 单位数量保留三位小数
+      formatter: ({ cellValue }: any) =>
+        cellValue === null || cellValue === undefined || cellValue === ''
+          ? ''
+          : Number(cellValue).toFixed(3),
+    },
     { field: 'singleDosage', title: $t('baseInfo.singleDosage'), width: 100 },
     { field: 'unit', title: $t('baseInfo.unit'), width: 80 },
     {
@@ -367,7 +376,16 @@ const expandGridOptions: VxeGridProps<any> = {
     },
     { field: 'codeNumber', title: $t('baseInfo.codeName'), width: 100 },
     { field: 'perDosage', title: $t('baseInfo.perDosage'), width: 100 },
-    { field: 'perQuantity', title: $t('baseInfo.perQuantity'), width: 100 },
+    {
+      field: 'perQuantity',
+      title: $t('baseInfo.perQuantity'),
+      width: 100,
+      // 单位数量保留三位小数
+      formatter: ({ cellValue }: any) =>
+        cellValue === null || cellValue === undefined || cellValue === ''
+          ? ''
+          : Number(cellValue).toFixed(3),
+    },
     { field: 'singleDosage', title: $t('baseInfo.singleDosage'), width: 100 },
     { field: 'unit', title: $t('baseInfo.unit'), width: 80 },
     {
