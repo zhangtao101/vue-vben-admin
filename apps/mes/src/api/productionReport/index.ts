@@ -1,5 +1,6 @@
 export * from './completedWorkOrderDetails.service';
 export * from './energyConsumptionCollectionDetails.service';
+export * from './mesInputQuantity.servie';
 export * from './personTimeReport.service';
 export * from './personTimeReportAssign.service';
 export * from './productionBom.service';
