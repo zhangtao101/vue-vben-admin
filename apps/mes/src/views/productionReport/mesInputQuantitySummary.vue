@@ -264,6 +264,7 @@ function handleSaveAllocQty() {
     message.success($t('mesInputQuantitySummary.saveSuccess'));
     modifiedAllocRows.clear();
     summaryGridApi.reload();
+    allocatedGridApi.reload();
   });
 }
 
@@ -449,6 +450,7 @@ function handleSaveQty() {
     message.success($t('mesInputQuantitySummary.saveSuccess'));
     modifiedQtyRows.clear();
     allocatedGridApi.reload();
+    summaryGridApi.reload();
   });
 }
 
