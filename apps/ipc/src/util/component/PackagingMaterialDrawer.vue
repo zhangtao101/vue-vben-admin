@@ -134,11 +134,21 @@ const bomGridOptions: VxeGridProps<any> = {
       field: 'quantity',
       title: $t('packagingMaterialDrawer.colBomQty'),
       minWidth: 120,
+      // 数量保留三位小数
+      formatter: ({ cellValue }: any) =>
+        cellValue === null || cellValue === undefined || cellValue === ''
+          ? ''
+          : Number(cellValue).toFixed(3),
     },
     {
       field: 'productWt',
       title: $t('packagingMaterialDrawer.colRequiredQty'),
       minWidth: 120,
+      // 数量保留三位小数
+      formatter: ({ cellValue }: any) =>
+        cellValue === null || cellValue === undefined || cellValue === ''
+          ? ''
+          : Number(cellValue).toFixed(3),
     },
     {
       field: 'unit',
@@ -334,6 +344,11 @@ async function handleLoad() {
  * @since 2026-09-02 00:00:00
  */
 async function handleScan() {
+  // 扫码前必须先选择设备
+  if (!drawerQuery.deviceCode) {
+    message.warning($t('packagingMaterialDrawer.plsSelectDevice'));
+    return;
+  }
   const label = drawerQuery.tagId?.trim();
   if (!label) {
     message.warning($t('packagingMaterialDrawer.scanEmpty'));
@@ -348,6 +363,8 @@ async function handleScan() {
     const row = {
       ...res,
       loadQty: res.actualWt ?? res.loadQty ?? 1,
+      // 包装类型取当前选中设备的 model
+      packType: Number(selectedEquipments.value[0]?.model),
     };
     // 根据 scanLabel 判重：已存在则覆盖原记录，否则追加
     const index = loadData.value.findIndex(

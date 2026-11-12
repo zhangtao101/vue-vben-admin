@@ -18,6 +18,8 @@ export interface EquipSelectItem {
   model?: string;
   /** 使用部门 */
   useDepartmentName?: string;
+  /** 包装类型：3 单包 / 4 多包 / 5 料包 */
+  packType?: number;
 }
 
 /**
