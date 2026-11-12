@@ -298,6 +298,7 @@ function handlePanelWorkOrderChange(panel: any, workSheetId: any) {
       addLineToLineList(lines[1]);
       savePanelSelection(rightPanel, lines[1]);
       rightWorkOrderSelectable.value = false;
+      loadMaterials();
     }
   });
 }
@@ -832,7 +833,7 @@ function handleTransferSubmit() {
 // endregion
 
 onMounted(() => {
-  loadMaterials();
+  // loadMaterials();
   loadSubLines();
   // 查询当前用户在作业平台下的按钮权限
   queryWorkAuth(WORK_AUTH_MENU_CODE).then((names) => {
