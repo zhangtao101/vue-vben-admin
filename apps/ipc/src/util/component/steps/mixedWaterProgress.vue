@@ -18,6 +18,7 @@ import {
   Space,
   Switch,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -40,8 +41,11 @@ defineProps({
 });
 
 // region 查询条件
+/** 指示日期默认值：当前日期（yyyy-MM-dd） */
+const DEFAULT_PLAN_DATE = () => dayjs().format('YYYY-MM-DD');
+
 const queryParams = ref<any>({
-  startTime: undefined,
+  startTime: DEFAULT_PLAN_DATE(),
   lineName: undefined,
   workSheetCode: undefined,
   state: undefined,
@@ -61,7 +65,7 @@ function handleQuery() {
 
 function handleReset() {
   queryParams.value = {
-    startTime: undefined,
+    startTime: DEFAULT_PLAN_DATE(),
     lineName: undefined,
     workSheetCode: undefined,
     state: undefined,
@@ -305,19 +309,23 @@ function getSelectedLot(): any {
   return lotGridApi.grid?.getRadioRecord?.() ?? null;
 }
 
-/** 开始：对选中的批次LOT开始（自动模式下开始即结束） */
+/** 开始：对选中的批次LOT开始（ workState 为 2 已开始、3 已结束的批次不能开始） */
 function handleStart() {
   const record = getSelectedLot();
   if (!record) {
     message.warning($t('mixedWaterProgress.plsSelectLot'));
     return;
   }
-  // 只有 isLoad 为 1（已装载）的批次LOT才能开始
-  if (Number(record.isLoad) !== 1) {
-    message.warning($t('mixedWaterProgress.startOnlyLoaded'));
+  const workState = Number(record.workState);
+  if (workState === 2) {
+    message.warning($t('mixedWaterProgress.alreadyStarted'));
     return;
   }
-  updateStae([record.id], autoMode.value ? 3 : 2, PROCESS_TYPE)
+  if (workState === 3) {
+    message.warning($t('mixedWaterProgress.alreadyEnded'));
+    return;
+  }
+  updateStae([record.id], 2, PROCESS_TYPE)
     .then(() => {
       message.success($t('mixedWaterProgress.startSuccess'));
       refreshLotList();
@@ -334,9 +342,9 @@ function handleEnd() {
     message.warning($t('mixedWaterProgress.plsSelectLot'));
     return;
   }
-  // 只有 isTransfer 为 3（已传输）的批次LOT才能结束
-  if (Number(record.isTransfer) !== 3) {
-    message.warning($t('mixedWaterProgress.endOnlyTransferred'));
+  // 只有 workState 为 2（作业中）的批次LOT才能结束
+  if (Number(record.workState) !== 2) {
+    message.warning($t('mixedWaterProgress.endOnlyWorking'));
     return;
   }
   updateStae([record.id], 3, PROCESS_TYPE)

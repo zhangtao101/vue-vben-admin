@@ -24,6 +24,9 @@
   "stateProcessing": "进行中",
   "stateCompleted": "完成",
   "weight": "标准重量",
+  "batchWeight": "每批面饼数",
+  "startTime": "开始时间",
+  "endTime": "结束时间",
   "batch": "批次数",
   "batchPerTime": "每次生成批数",
   "equipCode": "设备编号",
@@ -57,6 +60,8 @@
   "deleteSuccess": "删除成功",
   "deleteFailed": "删除失败",
   "deleteOnlyGenerated": "仅状态为【生成】的批次可以删除，请重新选择",
-  "startOnlyGenerated": "仅状态为【生成】的批次可以开始，请重新选择",
+  "alreadyStarted": "该批次已开始",
+  "alreadyEnded": "该批次已结束",
+  "endOnlyWorking": "仅进行中的批次可以结束",
   "autoMode": "自动模式"
 }

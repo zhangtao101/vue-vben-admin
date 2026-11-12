@@ -24,6 +24,9 @@
   "stateProcessing": "In Progress",
   "stateCompleted": "Completed",
   "weight": "Standard Weight",
+  "batchWeight": "Noodle Cakes per Batch",
+  "startTime": "Start Time",
+  "endTime": "End Time",
   "batch": "Batch Count",
   "batchPerTime": "Batches Per Generation",
   "equipCode": "Equipment Code",
@@ -57,6 +60,8 @@
   "deleteSuccess": "Deleted successfully",
   "deleteFailed": "Failed to delete",
   "deleteOnlyGenerated": "Only batches with status [Generated] can be deleted, please reselect",
-  "startOnlyGenerated": "Only batches with status [Generated] can be started, please reselect",
+  "alreadyStarted": "This batch has already started",
+  "alreadyEnded": "This batch has already ended",
+  "endOnlyWorking": "Only in-progress batches can be finished",
   "autoMode": "Auto Mode"
 }

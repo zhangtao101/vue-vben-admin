@@ -24,6 +24,9 @@
   "stateProcessing": "진행 중",
   "stateCompleted": "완료",
   "weight": "표준 중량",
+  "batchWeight": "로트당 면전 수",
+  "startTime": "시작 시간",
+  "endTime": "종료 시간",
   "batch": "로트 수",
   "batchPerTime": "생성할 로트 수",
   "equipCode": "설비 코드",
@@ -57,6 +60,8 @@
   "deleteSuccess": "삭제 성공",
   "deleteFailed": "삭제 실패",
   "deleteOnlyGenerated": "상태가 [생성]인 로트만 삭제할 수 있습니다. 다시 선택하세요",
-  "startOnlyGenerated": "상태가 [생성]인 로트만 시작할 수 있습니다. 다시 선택하세요",
+  "alreadyStarted": "이 배치는 이미 시작되었습니다",
+  "alreadyEnded": "이 배치는 이미 종료되었습니다",
+  "endOnlyWorking": "진행 중인 배치만 종료할 수 있습니다",
   "autoMode": "자동 모드"
 }

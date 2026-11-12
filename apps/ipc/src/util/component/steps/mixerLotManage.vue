@@ -349,6 +349,29 @@ function getBatchColumns(): any {
       },
     ];
   }
+  // 混合 MIX 工序：仅展示 批次LOT/每批面饼数/批次数/开始时间/结束时间
+  if (props.processType === 2) {
+    return [
+      { type: 'radio', width: 50, title: '' },
+      { field: 'lotCode', title: $t('mixerLotManage.lotCode'), minWidth: 120 },
+      {
+        field: 'weight',
+        title: $t('mixerLotManage.batchWeight'),
+        minWidth: 110,
+      },
+      { field: 'batch', title: $t('mixerLotManage.batch'), minWidth: 90 },
+      {
+        field: 'startTime',
+        title: $t('mixerLotManage.startTime'),
+        minWidth: 140,
+      },
+      {
+        field: 'endTime',
+        title: $t('mixerLotManage.endTime'),
+        minWidth: 140,
+      },
+    ];
+  }
   return [
     { type: 'radio', width: 50, title: '' },
     { type: 'seq', width: 50, title: '#' },
@@ -420,20 +443,21 @@ const selectedBatchWorkState = computed(() =>
   Number(selectedBatchRecords.value[0]?.workState),
 );
 
-/** 开始按钮禁用：未选中行、自动模式开启，或当前行处于「进行中」（workState === 2） */
+/** 开始按钮禁用：未选中行、自动模式开启，或当前行处于「进行中」（workState === 2）或「已完成」（workState === 3） */
 const startDisabled = computed(
   () =>
     selectedBatchRecords.value.length === 0 ||
     autoMode.value ||
-    selectedBatchWorkState.value === 2,
+    selectedBatchWorkState.value === 2 ||
+    selectedBatchWorkState.value === 3,
 );
 
-/** 结束按钮禁用：未选中行、自动模式开启，或当前行处于「已完成」（workState === 3） */
+/** 结束按钮禁用：未选中行、自动模式开启，或当前行不处于「进行中」（workState !== 2） */
 const finishDisabled = computed(
   () =>
     selectedBatchRecords.value.length === 0 ||
     autoMode.value ||
-    selectedBatchWorkState.value === 3,
+    selectedBatchWorkState.value !== 2,
 );
 
 const [Grid2, gridApi2] = useVbenVxeGrid({
@@ -459,9 +483,13 @@ function handleBatchStart() {
     message.warning($t('mixerLotManage.plsSelectBatch'));
     return;
   }
-  // 仅状态为「生成」（state === 1）的批次允许开始
-  if (records.some((record: any) => Number(record.state) !== 1)) {
-    message.warning($t('mixerLotManage.startOnlyGenerated'));
+  // workState 为 2（进行中）或 3（已完成）的批次不能开始
+  if (records.some((record: any) => Number(record.workState) === 2)) {
+    message.warning($t('mixerLotManage.alreadyStarted'));
+    return;
+  }
+  if (records.some((record: any) => Number(record.workState) === 3)) {
+    message.warning($t('mixerLotManage.alreadyEnded'));
     return;
   }
   Modal.confirm({
@@ -490,6 +518,11 @@ function handleBatchFinish() {
   const records = selectedBatchRecords.value;
   if (records.length === 0) {
     message.warning($t('mixerLotManage.plsSelectBatch'));
+    return;
+  }
+  // 仅 workState 为 2（进行中）的批次允许结束
+  if (records.some((record: any) => Number(record.workState) !== 2)) {
+    message.warning($t('mixerLotManage.endOnlyWorking'));
     return;
   }
   Modal.confirm({
