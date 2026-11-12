@@ -182,15 +182,15 @@ const gridOptions: VxeGridProps<any> = {
   proxyConfig: {
     ajax: {
       query: () => {
-        if (!props.panel.form.id) {
+        if (!panelState.value.form.id) {
           return Promise.resolve({ items: [], total: 0 });
         }
         const params: any = {
-          workSheetId: props.panel.form.id,
-          equipCode: props.panel.form.equipCode,
+          workSheetId: panelState.value.form.id,
+          equipCode: panelState.value.form.equipCode,
         };
         // 包装类型筛选：多选值转逗号分隔字符串（如 "3,4,5"），未选时不过滤
-        const type = (props.panel.packTypes ?? []).join(',');
+        const type = (panelState.value.packTypes ?? []).join(',');
         if (type) {
           params.type = type;
         }
@@ -302,10 +302,10 @@ defineExpose({ reload });
               class="mb-3"
             >
               <div
-                class="flex h-full w-full items-center justify-center rounded-md border border-border bg-muted/40 px-2 py-4"
+                class="flex h-20 w-full items-center justify-center overflow-y-auto rounded-md border border-border bg-muted/40 px-2 py-4"
               >
                 <div
-                  class="w-full truncate text-center ipc-fs-sm text-foreground"
+                  class="w-full whitespace-pre-line text-center ipc-fs-sm text-foreground"
                 >
                   {{ panelState.form[key] || '-' }}
                 </div>
