@@ -118,13 +118,13 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('SMTmanagement.taskLine'),
       minWidth: 110,
     },
-    {
-      field: 'subProductName',
-      title: $t('SMTmanagement.subProductName'),
-      minWidth: 200,
-      showOverflow: true,
-    },
-    { field: 'sideNo', title: $t('SMTmanagement.sideNo'), minWidth: 100 },
+    // {
+    //   field: 'subProductName',
+    //   title: $t('SMTmanagement.subProductName'),
+    //   minWidth: 200,
+    //   showOverflow: true,
+    // },
+    // { field: 'sideNo', title: $t('SMTmanagement.sideNo'), minWidth: 100 },
     {
       field: 'workSheetPlanNumber',
       title: $t('SMTmanagement.workSheetPlanNumber'),
@@ -152,21 +152,21 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('SMTmanagement.productNumber'),
       minWidth: 100,
     },
-    {
-      field: 'worksheetCodea',
-      title: $t('SMTmanagement.worksheetCodea'),
-      minWidth: 110,
-    },
-    {
-      field: 'subProductCode',
-      title: $t('SMTmanagement.subProductCode'),
-      minWidth: 150,
-    },
-    {
-      field: 'subPlanCode',
-      title: $t('SMTmanagement.subPlanCode'),
-      minWidth: 150,
-    },
+    // {
+    //   field: 'worksheetCodea',
+    //   title: $t('SMTmanagement.worksheetCodea'),
+    //   minWidth: 110,
+    // },
+    // {
+    //   field: 'subProductCode',
+    //   title: $t('SMTmanagement.subProductCode'),
+    //   minWidth: 150,
+    // },
+    // {
+    //   field: 'subPlanCode',
+    //   title: $t('SMTmanagement.subPlanCode'),
+    //   minWidth: 150,
+    // },
     {
       field: 'produceUnarrangedNumber',
       title: $t('SMTmanagement.produceUnarrangedNumber'),

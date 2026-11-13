@@ -907,7 +907,8 @@ onMounted(() => {
               v-if="
                 author.includes('取消确认') &&
                 row.transferFlag === 1 &&
-                row.errorFlag === 0
+                row.errorFlag === 0 &&
+                false
               "
               type="link"
               class="px-1 mr-1"
