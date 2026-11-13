@@ -129,7 +129,7 @@ const gridOptions: VxeGridProps<any> = {
     { field: 'unit', title: $t('mixerMaterialWeigh.unit'), minWidth: 80 },
     { field: 'batch', title: $t('mixerMaterialWeigh.batch'), minWidth: 90 },
   ],
-  height: 400,
+  height: 320,
   stripe: true,
   radioConfig: { trigger: 'row', highlight: true },
   proxyConfig: {

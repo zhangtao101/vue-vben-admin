@@ -176,7 +176,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 160,
     },
   ],
-  height: 260,
+  height: 240,
   stripe: true,
   toolbarConfig: { custom: false, refresh: false, zoom: false },
   proxyConfig: {
@@ -221,7 +221,7 @@ defineExpose({ reload });
 <template>
   <div class="flex flex-col gap-4">
     <!-- 1. 工单信息表单 -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
+    <div class="rounded-lg border border-border bg-card p-1 shadow-sm">
       <Form
         :label-col="{ span: 4 }"
         :wrapper-col="{ span: 20 }"
@@ -292,7 +292,7 @@ defineExpose({ reload });
             disabled
           />
         </FormItem>
-        <FormItem :label="$t('packagingProgress.printCode')" class="mb-2!">
+        <FormItem :label="$t('packagingProgress.printCode')" class="mb-1!">
           <Row :gutter="16">
             <Col
               v-for="key in inkjetItems"
@@ -317,7 +317,7 @@ defineExpose({ reload });
     </div>
 
     <!-- 2. 指标数：标题在上、数字在下 -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
+    <div class="rounded-lg border border-border bg-card p-2 shadow-sm">
       <Row :gutter="16">
         <Col
           v-for="item in metricItems"
@@ -325,7 +325,7 @@ defineExpose({ reload });
           :xs="12"
           :sm="12"
           :md="6"
-          class="mb-3"
+          class="mb-1"
         >
           <div
             class="flex h-full flex-col items-center justify-center rounded-md border border-border bg-muted/40 py-4"
@@ -342,7 +342,7 @@ defineExpose({ reload });
     </div>
 
     <!-- 3. 加载材料列表 -->
-    <div class="rounded-lg border border-border bg-card p-3 shadow-sm">
+    <div class="rounded-lg border border-border bg-card p-1 shadow-sm">
       <Grid>
         <template #toolbar-tools>
           <CheckboxGroup

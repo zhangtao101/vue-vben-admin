@@ -416,7 +416,7 @@ const gridOptions2: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: getBatchColumns(),
-  height: 300,
+  height: 250,
   stripe: true,
   radioConfig: { trigger: 'row', highlight: true },
   pagerConfig: { enabled: false, pageSize: 20 },

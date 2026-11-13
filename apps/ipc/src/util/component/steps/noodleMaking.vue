@@ -101,7 +101,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 120,
     },
   ],
-  height: 340,
+  height: 280,
   stripe: true,
   pagerConfig: { enabled: true, pageSize: 20 },
   proxyConfig: {

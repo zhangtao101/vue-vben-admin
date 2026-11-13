@@ -89,7 +89,7 @@ const gridOptions: VxeGridProps<any> = {
           : $t('defectRegistration.notTransferred'),
     },
   ],
-  height: 420,
+  height: 350,
   rowConfig: { keyField: 'id', isHover: true },
   stripe: true,
   pagerConfig: { enabled: true, pageSize: 20 },

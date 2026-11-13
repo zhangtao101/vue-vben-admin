@@ -147,7 +147,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'operationCell' },
     },
   ],
-  height: 520,
+  height: 450,
   rowConfig: { keyField: 'id', isHover: true },
   radioConfig: { trigger: 'row', highlight: true },
   stripe: true,
