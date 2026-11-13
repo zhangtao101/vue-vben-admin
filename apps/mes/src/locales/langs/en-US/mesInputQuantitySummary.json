@@ -23,6 +23,7 @@
   "selectWorkSheetFirst": "Please select a work sheet first",
   "selectRowsFirst": "Please select data to send first",
   "onlySflagS": "Only data with material availability S can be sent",
+  "ifProcessedCannotSend": "Data with process flag Y cannot be sent",
   "orddat": "Produce Date",
   "wareky": "Center",
   "skukey": "Input Material No.",

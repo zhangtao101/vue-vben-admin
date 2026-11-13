@@ -466,6 +466,13 @@ function handleSend() {
     message.warning($t('mesInputQuantitySummary.selectRowsFirst'));
     return;
   }
+  // 处理标记 ifProcessFlag 为 Y（已处理）的数据不允许发送
+  if (
+    rows.some((row) => String(row.ifProcessFlag ?? '').toUpperCase() === 'Y')
+  ) {
+    message.warning($t('mesInputQuantitySummary.ifProcessedCannotSend'));
+    return;
+  }
   // 仅物料可用性 sflag 为 S 的数据允许发送
   if (rows.some((row) => String(row.sflag) !== 'S')) {
     message.warning($t('mesInputQuantitySummary.onlySflagS'));

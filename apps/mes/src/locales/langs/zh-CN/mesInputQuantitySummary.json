@@ -23,6 +23,7 @@
   "selectWorkSheetFirst": "请先选择工单",
   "selectRowsFirst": "请先选择要发送的数据",
   "onlySflagS": "仅物料可用性为 S 的数据允许发送",
+  "ifProcessedCannotSend": "处理标记为 Y 的数据不允许发送",
   "orddat": "生产日期",
   "wareky": "中心",
   "skukey": "投料料号",
