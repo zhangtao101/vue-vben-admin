@@ -10,7 +10,7 @@ import type { Rule } from 'ant-design-vue/es/form';
 
 import type { PackagingPanelKey } from '#/store';
 
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
 import {
   Col,
@@ -268,8 +268,9 @@ function handlePanelWorkOrderChange(panel: any, workSheetId: any) {
       rightPanel.form.subLine = rightPanel.subLineCode ?? '';
       clearPanelSelection(rightPanel);
       rightWorkOrderSelectable.value = true;
-      loadMaterials();
     }
+    // 两栏状态均已确定后再统一刷新，避免用旧工单参数发起查询
+    loadMaterials();
     return;
   }
   // 按面板绑定的子产线过滤，接口只返回该子产线的工单数据
@@ -278,12 +279,15 @@ function handlePanelWorkOrderChange(panel: any, workSheetId: any) {
     if (lines[0]) {
       lines[0].packTypes = Number(lines[0].packTypes);
       fillPanel(panel, lines[0]);
+      // 展开字段可能不含 id，显式回填当前选中工单 id（表格查询依赖该字段）
+      panel.form.id = workSheetId;
       addLineToLineList(lines[0]);
-      loadMaterials();
       // 保存已选工单，供离开页面后再次进入时恢复
       savePanelSelection(panel, lines[0]);
     }
+    // 右栏自身选择工单：左栏状态不变，直接刷新两栏
     if (panel !== leftPanel) {
+      loadMaterials();
       return;
     }
     // 左栏工单变动时右栏先重置并恢复可自选；返回第二条时带出填充右栏，
@@ -295,11 +299,13 @@ function handlePanelWorkOrderChange(panel: any, workSheetId: any) {
     if (lines[1]) {
       lines[1].packTypes = Number(lines[1].packTypes);
       fillPanel(rightPanel, lines[1]);
+      rightPanel.form.id = lines[1].id;
       addLineToLineList(lines[1]);
       savePanelSelection(rightPanel, lines[1]);
       rightWorkOrderSelectable.value = false;
-      loadMaterials();
     }
+    // 两栏状态全部确定后统一刷新（右栏无工单时刷新为空数据，避免残留旧数据）
+    loadMaterials();
   });
 }
 
@@ -571,11 +577,13 @@ const rightPanelRef = ref<InstanceType<typeof PackagingProgressPanel>>();
 
 /**
  * 重新加载左右两栏的称重记录列表（通过面板子组件暴露的 reload）。
- * @returns {void} 无返回值。
+ * 等面板 props 更新完成后再触发查询，保证子组件取到最新的工单与包装类型。
+ * @returns {Promise<void>} 无返回值。
  * @throws 不主动抛出异常。
  * @since 2026-09-02 00:00:00
  */
-function loadMaterials() {
+async function loadMaterials() {
+  await nextTick();
   leftPanelRef.value?.reload();
   rightPanelRef.value?.reload();
 }

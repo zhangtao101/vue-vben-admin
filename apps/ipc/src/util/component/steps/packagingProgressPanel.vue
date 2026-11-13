@@ -152,6 +152,11 @@ function handlePackTypeChange() {
   gridApi.reload();
 }
 
+/** 称重记录查询请求序号（用于丢弃过期响应） */
+let queryToken = 0;
+/** 最近一次成功加载的称重记录结果（过期请求直接复用它，避免表格闪烁清空） */
+let lastResult: any = { items: [], total: 0 };
+
 // 称重记录网格配置：按面板的 form.id / equipCode / packTypes 查询
 const gridOptions: VxeGridProps<any> = {
   rowClassName: 'ipc-grid-row',
@@ -182,8 +187,11 @@ const gridOptions: VxeGridProps<any> = {
   proxyConfig: {
     ajax: {
       query: () => {
+        // 请求序号：连续触发的查询中，只采用最后一次请求的结果，避免旧响应覆盖新数据
+        const token = ++queryToken;
         if (!panelState.value.form.id) {
-          return Promise.resolve({ items: [], total: 0 });
+          lastResult = { items: [], total: 0 };
+          return Promise.resolve(lastResult);
         }
         const params: any = {
           workSheetId: panelState.value.form.id,
@@ -195,8 +203,13 @@ const gridOptions: VxeGridProps<any> = {
           params.type = type;
         }
         return searchWeightRecordList(params).then((res: any) => {
+          // 已有更新的查询发出时丢弃本次结果，保留当前展示数据
+          if (token !== queryToken) {
+            return lastResult;
+          }
           const list = res?.list ?? res ?? [];
-          return { items: list, total: list.length };
+          lastResult = { items: list, total: list.length };
+          return lastResult;
         });
       },
     },
