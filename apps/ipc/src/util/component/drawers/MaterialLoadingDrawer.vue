@@ -42,6 +42,11 @@ defineOptions({
   name: 'MaterialLoadingDrawer',
 });
 
+// Emits：抽屉关闭后通知父组件刷新数据
+const emit = defineEmits<{
+  close: [];
+}>();
+
 // ========== 抽屉控制（defineExpose({ open }) 模式） ==========
 const show = ref(false);
 /** 子产线 ID：open(lineId) 传入，作为工单查询固定条件 */
@@ -584,6 +589,8 @@ function handleClose() {
   feedQuery.tagId = '';
   selectedEquipments.value = [];
   resetFeedRows();
+  // 通知父组件刷新相关数据
+  emit('close');
 }
 
 defineExpose({ open });

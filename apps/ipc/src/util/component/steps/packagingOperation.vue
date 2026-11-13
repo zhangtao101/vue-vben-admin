@@ -387,7 +387,7 @@ const gridOptions: VxeGridProps<any> = {
       slots: { default: 'cartState' },
     },
   ],
-  height: 350,
+  height: 300,
   proxyConfig: {
     ajax: {
       query: queryCartList,
@@ -500,6 +500,15 @@ function handleMaterialLoad() {
     subLineCode: form.lineCode,
     processCode: props.processCode,
   });
+}
+
+/**
+ * 材料加载抽屉关闭：重新加载投入材料表格数据。
+ * @returns {void} 无返回值。
+ * @since 2026-11-12 00:00:00
+ */
+function handleMaterialDrawerClose() {
+  materialGridApi.reload();
 }
 
 /** 测量记录抽屉是否可见（点击指标数打开） */
@@ -819,8 +828,8 @@ onMounted(() => {
       />
     </Drawer>
 
-    <!-- 材料加载抽屉（公共组件） -->
-    <MaterialLoadingDrawer ref="materialDrawerRef" />
+    <!-- 材料加载抽屉（公共组件）：关闭后刷新投入材料表格 -->
+    <MaterialLoadingDrawer ref="materialDrawerRef" @close="handleMaterialDrawerClose" />
 
     <!-- 工单选择抽屉 -->
     <WorkSheetSelectDrawer
