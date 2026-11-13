@@ -13,6 +13,7 @@ import {
   RangePicker,
   Space,
 } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { searchWorkSheetList } from '#/api';
@@ -32,8 +33,14 @@ const show = ref(false);
 const lineIdRef = ref<number>();
 
 // ========== 查询条件 ==========
+/** 计划日期默认范围：当前日期 ~ 三个月后 */
+const DEFAULT_PLAN_DATE_RANGE = () => [
+  dayjs().format('YYYY-MM-DD'),
+  dayjs().add(3, 'month').format('YYYY-MM-DD'),
+];
+
 const query = reactive({
-  planDateRange: [] as any,
+  planDateRange: DEFAULT_PLAN_DATE_RANGE() as any,
   workSheetCode: '',
 });
 
@@ -45,6 +52,16 @@ const gridOptions: VxeGridProps<any> = {
   border: true,
   columns: [
     { type: 'radio', width: 50, title: '' },
+    {
+      field: 'planDateStart',
+      title: $t('workSheetSelect.colPlanDateStart'),
+      minWidth: 110,
+    },
+    {
+      field: 'planDateStop',
+      title: $t('workSheetSelect.colPlanDateStop'),
+      minWidth: 110,
+    },
     {
       field: 'workSheetCode',
       title: $t('workSheetSelect.colWorkSheetCode'),
@@ -59,16 +76,6 @@ const gridOptions: VxeGridProps<any> = {
       field: 'productCode',
       title: $t('workSheetSelect.colProductCode'),
       minWidth: 100,
-    },
-    {
-      field: 'planDateStart',
-      title: $t('workSheetSelect.colPlanDateStart'),
-      minWidth: 110,
-    },
-    {
-      field: 'planDateStop',
-      title: $t('workSheetSelect.colPlanDateStop'),
-      minWidth: 110,
     },
     {
       field: 'workSheetPlanNumber',
@@ -165,7 +172,7 @@ function formatStatus(cellValue: number) {
 function open(lineId: number) {
   lineIdRef.value = lineId;
   show.value = true;
-  query.planDateRange = [];
+  query.planDateRange = DEFAULT_PLAN_DATE_RANGE();
   query.workSheetCode = '';
   setTimeout(() => {
     workSheetGridApi.reload();
@@ -189,7 +196,7 @@ function handleQuery() {
  * @since 2026-09-03
  */
 function handleReset() {
-  query.planDateRange = [];
+  query.planDateRange = DEFAULT_PLAN_DATE_RANGE();
   query.workSheetCode = '';
   workSheetGridApi.reload();
 }
@@ -201,7 +208,7 @@ function handleReset() {
  */
 function handleClose() {
   show.value = false;
-  query.planDateRange = [];
+  query.planDateRange = DEFAULT_PLAN_DATE_RANGE();
   query.workSheetCode = '';
 }
 
