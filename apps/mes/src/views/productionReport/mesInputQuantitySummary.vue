@@ -22,7 +22,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getAllocatedList,
   getEndWorkSheets,
-  getMesInputQuantityList,
+  getSumMaterials,
   pushIwipConDat,
   sendMesInputQuantity,
   updateAllocQty,
@@ -83,25 +83,12 @@ function handleReset() {
 /** 当前选中的工单 id（工单下拉联动中间表格数据） */
 const selectedWorkSheetId = ref<number | undefined>(undefined);
 
-/** allocQty 修改过的行（保存时只提交这些行） */
-const modifiedAllocRows = new Map<number, any>();
-
 const summaryGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   radioConfig: { highlight: true },
   columns: [
     { type: 'radio', width: 50, title: '', fixed: 'left' },
-    {
-      title: $t('mesInputQuantitySummary.orddat'),
-      field: 'orddat',
-      minWidth: 110,
-    },
-    {
-      title: $t('mesInputQuantitySummary.wareky'),
-      field: 'wareky',
-      minWidth: 100,
-    },
     {
       title: $t('mesInputQuantitySummary.skukey'),
       field: 'skukey',
@@ -116,36 +103,6 @@ const summaryGridOptions: VxeGridProps<any> = {
       title: $t('mesInputQuantitySummary.uomkey'),
       field: 'uomkey',
       minWidth: 80,
-    },
-    {
-      title: $t('mesInputQuantitySummary.swerks'),
-      field: 'swerks',
-      minWidth: 110,
-    },
-    {
-      title: $t('mesInputQuantitySummary.slgort'),
-      field: 'slgort',
-      minWidth: 110,
-    },
-    {
-      title: $t('mesInputQuantitySummary.gift'),
-      field: 'gift',
-      minWidth: 130,
-    },
-    {
-      title: $t('mesInputQuantitySummary.orderCs'),
-      field: 'orderCs',
-      minWidth: 110,
-    },
-    {
-      title: $t('mesInputQuantitySummary.trnuid'),
-      field: 'trnuid',
-      minWidth: 140,
-    },
-    {
-      title: $t('mesInputQuantitySummary.matnr'),
-      field: 'matnr',
-      minWidth: 130,
     },
     {
       title: $t('mesInputQuantitySummary.allocQty'),
@@ -171,7 +128,7 @@ const summaryGridOptions: VxeGridProps<any> = {
       },
     },
   },
-  rowConfig: { keyField: 'ifseq' },
+  rowConfig: { keyField: 'id' },
   showOverflow: 'tooltip',
   stripe: true,
   toolbarConfig: {
@@ -194,14 +151,17 @@ const [SummaryGrid, summaryGridApi] = useVbenVxeGrid({
 });
 
 /**
- * 查询当前选中工单的物料投入数据（分页），allocQty 可编辑。
+ * 查询当前选中工单的物料汇总数据（分页），allocQty 可编辑。
  */
 function querySummary({ pageNum, pageSize }: any) {
-  if (selectedWorkSheetId.value == null) {
+  if (
+    selectedWorkSheetId.value === null ||
+    selectedWorkSheetId.value === undefined
+  ) {
     return Promise.resolve({ items: [], total: 0 });
   }
   return new Promise((resolve) => {
-    getMesInputQuantityList({
+    getSumMaterials({
       workSheetId: selectedWorkSheetId.value,
       pageNum,
       pageSize,
@@ -227,42 +187,38 @@ function querySummary({ pageNum, pageSize }: any) {
  */
 function handleWorkSheetChange(workSheetId?: number) {
   selectedWorkSheetId.value = workSheetId ?? undefined;
-  modifiedAllocRows.clear();
   summaryGridApi.grid?.clearRadioRow();
   summaryGridApi.reload();
   allocatedGridApi.reload();
 }
 
 /**
- * allocQty 修改记录：标记该行已修改，保存时只提交修改过的行。
+ * allocQty 修改标记：将行内前端标记 ifseq 置为 true，保存时只提交标记为 true 的行。
  * @param {any} row - 修改的行数据。
  * @returns {void} 无返回值。
- * @since 2026-11-11 00:00:00
+ * @since 2026-11-17 00:00:00
  */
 function handleAllocQtyChange(row: any) {
-  if (row?.ifseq != null) {
-    modifiedAllocRows.set(row.ifseq, row);
+  if (row) {
+    row.ifseq = true;
   }
 }
 
 /**
- * 保存 allocQty 修改：只提交修改过的行，成功后刷新中间表格。
+ * 保存 allocQty 修改：过滤行标记 ifseq 为 true 的条目提交，成功后刷新中间表格。
  * @returns {void} 无返回值。
  * @throws 接口失败时由统一错误处理层提示，此处不额外捕获。
- * @since 2026-11-11 00:00:00
+ * @since 2026-11-17 00:00:00
  */
 function handleSaveAllocQty() {
-  const items = [...modifiedAllocRows.values()].map((row: any) => ({
-    ifseq: row.ifseq,
-    allocQty: row.allocQty,
-  }));
+  const rows: any[] = summaryGridApi.grid?.getTableData().fullData ?? [];
+  const items = rows.filter((row) => row.ifseq === true);
   if (items.length === 0) {
     message.warning($t('mesInputQuantitySummary.noChange'));
     return;
   }
   updateAllocQty(items).then(() => {
     message.success($t('mesInputQuantitySummary.saveSuccess'));
-    modifiedAllocRows.clear();
     summaryGridApi.reload();
     allocatedGridApi.reload();
   });
@@ -275,7 +231,10 @@ function handleSaveAllocQty() {
  * @since 2026-11-11 00:00:00
  */
 function handleSapCheck() {
-  if (selectedWorkSheetId.value == null) {
+  if (
+    selectedWorkSheetId.value === null ||
+    selectedWorkSheetId.value === undefined
+  ) {
     message.warning($t('mesInputQuantitySummary.selectWorkSheetFirst'));
     return;
   }
@@ -367,10 +326,18 @@ const allocatedGridOptions: VxeGridProps<any> = {
   // 物料可用性为 E（错误）的行标红
   rowClassName: ({ row }: any) =>
     String(row?.sflag) === 'E' ? 'sflag-error-row' : '',
+  pagerConfig: {
+    enabled: true,
+    pageSize: 10,
+    pageSizes: [10, 20, 50, 100],
+  },
   proxyConfig: {
     ajax: {
-      query: async () => {
-        return await queryAllocated();
+      query: async ({ page }: any) => {
+        return await queryAllocated({
+          pageNum: page.currentPage,
+          pageSize: page.pageSize,
+        });
       },
     },
   },
@@ -389,23 +356,27 @@ const [AllocatedGrid, allocatedGridApi] = useVbenVxeGrid({
 });
 
 /**
- * 查询当前选中行（物料编码 trnuid）对应的已分配数据。
+ * 查询当前选中行（物料编号 skukey）对应的已分配数据（分页）。
  * 实时从中间表格获取单选行，避免表格数据刷新后缓存值未同步。
  */
-function queryAllocated() {
-  console.log(555)
+function queryAllocated({ pageNum, pageSize }: any) {
   const row: any = summaryGridApi.grid?.getRadioRecord() ?? null;
-  if (selectedWorkSheetId.value == null) {
+  if (
+    (selectedWorkSheetId.value === null ||
+      selectedWorkSheetId.value === undefined) ||
+    !row
+  ) {
     return Promise.resolve({ items: [], total: 0 });
   }
   return new Promise((resolve) => {
     getAllocatedList({
-      trnuid: row?.trnuid,
+      skukey: row?.skukey,
       workSheetId: selectedWorkSheetId.value,
+      pageNum,
+      pageSize,
     })
-      .then((res: any) => {
-        const list = res ?? [];
-        resolve({ items: list, total: list.length });
+      .then(({ list }: any) => {
+        resolve({ items: list || [], total: list?.length || 0 });
       })
       .catch(() => {
         resolve({ items: [], total: 0 });
@@ -426,7 +397,7 @@ function refreshAllocated() {
  * @since 2026-11-11 00:00:00
  */
 function handleQtyChange(row: any) {
-  if (row?.ifseq != null) {
+  if (row?.ifseq !== null && row?.ifseq !== undefined) {
     modifiedQtyRows.set(row.ifseq, row);
   }
 }
@@ -546,7 +517,9 @@ function handleSend() {
     <Card :body-style="{ padding: '4px' }">
       <SummaryGrid>
         <template #toolbar-actions>
-          <span class="mr-2">{{ $t('mesInputQuantitySummary.workSheet') }}</span>
+          <span class="mr-2">{{
+            $t('mesInputQuantitySummary.workSheet')
+          }}</span>
           <Select
             v-model:value="selectedWorkSheetId"
             :options="workSheetOptions"

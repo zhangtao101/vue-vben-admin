@@ -1,6 +1,6 @@
 /**
  * [INPUT]: 依赖 #/api/request 的 requestClient 客户端，qs 参数序列化工具
- * [OUTPUT]: 对外提供 物料投入数量（按 lot/工单分页查询投料数据、已完成工单下拉、按物料编码查询已分配数据、修改差值、修改物料投入量、发送、SAP可用性检查）接口函数
+ * [OUTPUT]: 对外提供 物料投入数量（按 lot/工单分页查询投料数据、已完成工单下拉、按周查询工单、按 lot 展示工单、根据工单号查看物料、按物料编码查询已分配数据、修改差值、修改物料投入量、发送、SAP可用性检查）接口函数
  * [POS]: 属于 productionReport 生产报表模块的 API 服务，供物料投入数量页面调用
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  * [TIME]: 2026-11-11 00:00:00
@@ -12,10 +12,14 @@ import { requestClient } from '#/api/request';
 
 // ========== 类型定义 ==========
 
-/** 物料投入数量列表查询参数（根据工单id展示所有数据） */
+/** 物料投入数量列表查询参数（根据 lot 工单id展示所有数据） */
 export interface MesInputQuantityParams {
-  /** 工单id */
-  workSheetId?: number;
+  /** lot工单id */
+  lotId?: number;
+  /** 工序 */
+  processType?: number;
+  /** 产线编号 */
+  lineCode?: string;
   /** 页码 */
   pageNum?: number;
   /** 每页条数 */
@@ -140,10 +144,12 @@ export interface WeekWorkSheetItem {
   [key: string]: any;
 }
 
-/** 已分配数据查询参数（trnuid 为物料编码） */
+/** 已分配数据查询参数（trnuid/skukey 为物料编码） */
 export interface AllocatedParams {
   /** 物料编码 */
   trnuid?: string;
+  /** 物料编号 */
+  skukey?: string;
   /** 工单id */
   workSheetId?: number;
   /** 页码 */
@@ -202,6 +208,8 @@ export interface UpdateAllocQtyItem {
   ifseq: number;
   /** 预估差值 */
   allocQty: number;
+  /** 接口提交的附加字段（如整行数据） */
+  [key: string]: any;
 }
 
 /** 修改物料投入量参数项 */
@@ -212,10 +220,74 @@ export interface UpdateQtyItem {
   qtyord: number;
 }
 
+/** 根据工单号查看物料查询参数 */
+export interface SumMaterialParams {
+  /** 工单id */
+  workSheetId?: number;
+  /** 页码 */
+  pageNum?: number;
+  /** 每页条数 */
+  pageSize?: number;
+}
+
+/** 展示工单（lot）查询参数 */
+export interface LotWorkSheetParams {
+  /** 页码 */
+  pageNum?: number | string;
+  /** 每页条数 */
+  pageSize?: number | string;
+  /** 产线编号 */
+  lineCode?: string;
+  /** 产品编号 */
+  productCode?: string;
+  /** 工序，如 1,2,4,6 */
+  processType?: string;
+  /** 完成时间 */
+  endTime?: string;
+}
+
+/** 展示工单（lot）明细行 */
+export interface LotWorkSheetItem {
+  /** id */
+  id: number;
+  /** 工单编号 */
+  lotCode: string;
+  /** 工序 */
+  processType: number;
+  /** 产线名称 */
+  lineName: string;
+  /** 产线编号 */
+  lineCode: string;
+  /** 产品名称 */
+  productName: string;
+  /** 产品编号 */
+  productCode: string;
+  /** 批次数 */
+  batch: number;
+  /** 接口返回的附加字段 */
+  [key: string]: any;
+}
+
+/** 根据工单号查看物料行 */
+export interface SumMaterialItem {
+  /** 工单id */
+  workSheetId: number;
+  /** 物料编号 */
+  skukey: string;
+  /** 物料总数 */
+  qtyord: number;
+  /** 预估差值 */
+  allocQty: number;
+  /** 单位 */
+  uomkey: string;
+  /** 接口返回的附加字段 */
+  [key: string]: any;
+}
+
 // ========== 列表查询 ==========
 
 /**
- * 根据工单id展示所有数据（分页）
+ * 根据 lot工单id 展示所有数据（分页）
  */
 export async function getMesInputQuantityList(
   params: MesInputQuantityParams,
@@ -244,6 +316,28 @@ export async function getAllocatedList(
 ): Promise<AllocatedItem[]> {
   return requestClient.get<AllocatedItem[]>(
     `${import.meta.env.VITE_GLOB_MES_MAIN}/ifmes113Sum/selectAllocated?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 展示工单（按 lot 分页查询）
+ */
+export async function getLotWorkSheets(
+  params: LotWorkSheetParams,
+): Promise<MesInputQuantityPage<LotWorkSheetItem>> {
+  return requestClient.get<MesInputQuantityPage<LotWorkSheetItem>>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/ifmes113Sum/selectLot?${qs.stringify(params)}`,
+  );
+}
+
+/**
+ * 根据工单号查看物料（分页）
+ */
+export async function getSumMaterials(
+  params: SumMaterialParams,
+): Promise<MesInputQuantityPage<SumMaterialItem>> {
+  return requestClient.get<MesInputQuantityPage<SumMaterialItem>>(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/ifmes113Sum/selectSum?${qs.stringify(params)}`,
   );
 }
 

@@ -17,7 +17,7 @@ import {
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getMesInputQuantityList, getWeekWorkSheets } from '#/api';
+import { getLotWorkSheets, getMesInputQuantityList } from '#/api';
 import { $t } from '#/locales';
 
 /** 指示日期默认值：当前日期（yyyy-MM-dd） */
@@ -25,10 +25,10 @@ const DEFAULT_PLAN_DATE = () => dayjs().format('YYYY-MM-DD');
 
 // ========== 查询参数（上方查询区域，作用于中间工单表格） ==========
 const queryParams = ref<any>({
-  lineName: '',
+  lineCode: '',
   // 工序默认混合水
   processType: 1,
-  planDateStart: DEFAULT_PLAN_DATE(),
+  endTime: DEFAULT_PLAN_DATE(),
   productCode: '',
 });
 
@@ -51,8 +51,8 @@ const workSheetGridOptions: VxeGridProps<any> = {
   columns: [
     { type: 'radio', width: 50, title: '' },
     {
-      title: $t('lotWorkOrderMesInputQuantity.workSheetCode'),
-      field: 'workSheetCode',
+      title: $t('lotWorkOrderMesInputQuantity.lotCode'),
+      field: 'lotCode',
       minWidth: 160,
     },
     {
@@ -66,11 +66,6 @@ const workSheetGridOptions: VxeGridProps<any> = {
       minWidth: 110,
     },
     {
-      title: $t('lotWorkOrderMesInputQuantity.planDateStart'),
-      field: 'planDateStart',
-      minWidth: 110,
-    },
-    {
       title: $t('lotWorkOrderMesInputQuantity.lineName'),
       field: 'lineName',
       minWidth: 110,
@@ -81,18 +76,8 @@ const workSheetGridOptions: VxeGridProps<any> = {
       minWidth: 110,
     },
     {
-      title: $t('lotWorkOrderMesInputQuantity.indicateBatch'),
-      field: 'indicateBatch',
-      minWidth: 100,
-    },
-    {
-      title: $t('lotWorkOrderMesInputQuantity.produceBatch'),
-      field: 'produceBatch',
-      minWidth: 100,
-    },
-    {
-      title: $t('lotWorkOrderMesInputQuantity.remainBatch'),
-      field: 'remainBatch',
+      title: $t('lotWorkOrderMesInputQuantity.batch'),
+      field: 'batch',
       minWidth: 100,
     },
   ],
@@ -124,8 +109,10 @@ const workSheetGridOptions: VxeGridProps<any> = {
 
 const workSheetGridEvents: VxeGridListeners<any> = {
   radioChange: ({ row }: any) => {
-    // 单选工单后，按工单 id 重新查询下方物料投入明细
+    // 单选工单后，记录选中行 id/工序/产线编号，重新查询下方物料投入明细
     selectedWorkSheetId.value = row?.id ?? undefined;
+    selectedProcessType.value = row?.processType ?? undefined;
+    selectedLineCode.value = row?.lineCode ?? undefined;
     detailGridApi?.reload();
   },
 };
@@ -136,20 +123,20 @@ const [WorkSheetGrid, workSheetGridApi] = useVbenVxeGrid({
 });
 
 /**
- * 查询工单列表（按周查询，分页）。
+ * 查询工单列表（按 lot 分页查询）。
  */
 function queryWorkSheets({ pageNum, pageSize }: any) {
   return new Promise((resolve) => {
     const query = queryParams.value;
     const params: any = {
-      lineName: query.lineName || undefined,
+      lineCode: query.lineCode || undefined,
       processType: query.processType,
-      planDateStart: query.planDateStart || undefined,
+      endTime: query.endTime || undefined,
       productCode: query.productCode || undefined,
       pageNum,
       pageSize,
     };
-    getWeekWorkSheets(params)
+    getLotWorkSheets(params)
       .then(({ total, list }: any) => {
         resolve({
           total: total || 0,
@@ -165,6 +152,10 @@ function queryWorkSheets({ pageNum, pageSize }: any) {
 // ========== 最下方表格：物料投入明细（仅展示） ==========
 /** 中间表格单选的工单 id，作为明细查询条件 */
 const selectedWorkSheetId = ref<number | undefined>(undefined);
+/** 单选行的工序，作为明细查询条件 */
+const selectedProcessType = ref<number | undefined>(undefined);
+/** 单选行的产线编号，作为明细查询条件 */
+const selectedLineCode = ref<string | undefined>(undefined);
 
 const detailGridOptions: VxeGridProps<any> = {
   align: 'center',
@@ -259,12 +250,17 @@ const [DetailGrid, detailGridApi] = useVbenVxeGrid({
  * 查询当前选中工单的物料投入明细（分页），allocQty 不展示。
  */
 function queryDetails({ pageNum, pageSize }: any) {
-  if (selectedWorkSheetId.value == null) {
+  if (
+    selectedWorkSheetId.value === null ||
+    selectedWorkSheetId.value === undefined
+  ) {
     return Promise.resolve({ items: [], total: 0 });
   }
   return new Promise((resolve) => {
     getMesInputQuantityList({
-      workSheetId: selectedWorkSheetId.value,
+      lotId: selectedWorkSheetId.value,
+      processType: selectedProcessType.value,
+      lineCode: selectedLineCode.value,
       pageNum,
       pageSize,
     })
@@ -289,9 +285,9 @@ function handleSearch() {
 
 function handleReset() {
   queryParams.value = {
-    lineName: '',
+    lineCode: '',
     processType: 1,
-    planDateStart: DEFAULT_PLAN_DATE(),
+    endTime: DEFAULT_PLAN_DATE(),
     productCode: '',
   };
   clearSelection();
@@ -301,6 +297,8 @@ function handleReset() {
 /** 清空中间表格选中工单与下方明细 */
 function clearSelection() {
   selectedWorkSheetId.value = undefined;
+  selectedProcessType.value = undefined;
+  selectedLineCode.value = undefined;
   workSheetGridApi.grid?.clearRadioRow();
   detailGridApi?.reload();
 }
@@ -312,13 +310,13 @@ function clearSelection() {
     <Card class="!mb-4">
       <Form :model="queryParams" layout="inline">
         <FormItem
-          :label="$t('lotWorkOrderMesInputQuantity.lineName')"
+          :label="$t('lotWorkOrderMesInputQuantity.lineCode')"
           style="margin-bottom: 1em"
         >
           <Input
-            v-model:value="queryParams.lineName"
+            v-model:value="queryParams.lineCode"
             :placeholder="
-              $t('lotWorkOrderMesInputQuantity.lineNamePlaceholder')
+              $t('lotWorkOrderMesInputQuantity.lineCodePlaceholder')
             "
             style="width: 150px"
             allow-clear
@@ -339,14 +337,12 @@ function clearSelection() {
           />
         </FormItem>
         <FormItem
-          :label="$t('lotWorkOrderMesInputQuantity.planDateStart')"
+          :label="$t('lotWorkOrderMesInputQuantity.endTime')"
           style="margin-bottom: 1em"
         >
           <DatePicker
-            v-model:value="queryParams.planDateStart"
-            :placeholder="
-              $t('lotWorkOrderMesInputQuantity.planDateStartPlaceholder')
-            "
+            v-model:value="queryParams.endTime"
+            :placeholder="$t('lotWorkOrderMesInputQuantity.endTimePlaceholder')"
             style="width: 150px"
             value-format="YYYY-MM-DD"
             allow-clear
