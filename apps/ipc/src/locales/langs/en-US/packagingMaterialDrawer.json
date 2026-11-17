@@ -42,6 +42,7 @@
   "scanSuccess": "Scan successful",
   "scanUpdated": "Record with the same tag updated",
   "unloadSuccess": "Unloaded successfully",
+  "unloadQtyInvalid": "The unload quantity must be greater than 0",
   "loadSuccess": "Loaded successfully",
   "updateSuccess": "Load qty updated successfully",
   "plsInputQty": "Please enter load qty",

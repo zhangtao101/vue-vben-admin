@@ -26,6 +26,7 @@
   "materialProductCode": "자재/제품 코드",
   "colFeedLotId": "라벨 LOTID",
   "colLoadNumber": "적재 수량",
+  "colRemainNumber": "잔여 수량",
   "colFeedEquipCode": "투입 설비 번호",
   "colFeedEquipName": "투입 설비 명칭",
   "zeroSwitch": "영점",

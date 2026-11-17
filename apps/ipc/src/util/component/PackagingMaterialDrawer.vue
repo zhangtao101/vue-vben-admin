@@ -31,7 +31,13 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { addLabelBatch, selectBom, selectPalletLabel } from '#/api';
+import {
+  addLabelBatch,
+  searchWeightRecordList,
+  selectBom,
+  selectPalletLabel,
+  updateWeightLabel,
+} from '#/api';
 import EquipmentSelectDrawer from '#/util/component/drawers/EquipmentSelectDrawer.vue';
 
 defineOptions({
@@ -187,6 +193,11 @@ const [BomGrid, bomGridApi] = useVbenVxeGrid({ gridOptions: bomGridOptions });
 // 已扫码加载的物料列表数据
 const loadData = ref<any[]>([]);
 
+/** 加载列表查询请求序号（用于丢弃过期响应） */
+let loadQueryToken = 0;
+/** 最近一次成功查询的加载列表结果（过期请求直接复用它，避免表格闪烁清空） */
+let loadLastResult: any = { items: [], total: 0 };
+
 /** 包装类型单选组选项：3 单包 / 4 多包 / 5 料包 */
 const packTypeOptions = [
   { label: $t('packagingMaterialDrawer.packTypeSingle'), value: 3 },
@@ -231,7 +242,6 @@ const loadGridOptions: VxeGridProps<any> = {
       slots: { default: 'load_packType' },
     },
   ],
-  data: loadData.value,
   height: 280,
   stripe: true,
   radioConfig: {
@@ -241,6 +251,38 @@ const loadGridOptions: VxeGridProps<any> = {
     enabled: false,
   },
   toolbarConfig: { custom: false, refresh: false, zoom: false },
+  proxyConfig: {
+    ajax: {
+      query: () => {
+        // 请求序号：连续触发的查询中，只采用最后一次请求的结果，避免旧响应覆盖新数据
+        const token = ++loadQueryToken;
+        if (baseInfo.id === null || baseInfo.id === undefined) {
+          loadData.value = [];
+          loadLastResult = { items: [], total: 0 };
+          return Promise.resolve(loadLastResult);
+        }
+        const params: any = {
+          workSheetId: baseInfo.id,
+          equipCode: baseInfo.equipCode,
+        };
+        return searchWeightRecordList(params)
+          .then((res: any) => {
+            // 已有更新的查询发出时丢弃本次结果，保留当前展示数据
+            if (token !== loadQueryToken) {
+              return loadLastResult;
+            }
+            const list = res?.list ?? res ?? [];
+            list.forEach((item: any) => {
+              item.actualWtCopy = item.actualWt;
+            });
+            loadData.value = list;
+            loadLastResult = { items: list, total: list.length };
+            return loadLastResult;
+          })
+          .catch(() => loadLastResult);
+      },
+    },
+  },
 };
 
 const [LoadGrid, loadGridApi] = useVbenVxeGrid({
@@ -265,9 +307,9 @@ function open(row?: any) {
     tagIdRef.value?.focus();
   }, 500);
   setTimeout(() => {
-    // BOM 列表按 baseInfo.id 请求接口
+    // BOM 列表与加载列表均按 baseInfo.id 请求接口
     bomGridApi.reload();
-    loadGridApi.grid.reloadData([]);
+    loadGridApi.reload();
   }, 100);
 }
 
@@ -283,12 +325,33 @@ function handleUnload() {
     message.warning($t('packagingMaterialDrawer.plsSelectRow'));
     return;
   }
+  // 未保存（无 id）的行无法调用卸载接口，直接从表格中删除该行
+  if (row.id === null || row.id === undefined || row.id === '') {
+    removeLoadRow(row);
+    message.success($t('packagingMaterialDrawer.unloadSuccess'));
+    return;
+  }
   // 打开卸载抽屉，数据为当前单选行
   unloadRow.value = row;
   unloadForm.ratioM = 1;
   unloadForm.ratioEA = 1;
   unloadForm.currentWt = row.actualWt;
   unloadShow.value = true;
+}
+
+/**
+ * 从加载列表中删除指定行（未保存的临时行无法调用接口，仅在本地移除）。
+ * @param {object} row - 需要删除的加载列表行。
+ * @returns {void} 无返回值。
+ * @throws 不主动抛出异常。
+ * @since 2026-11-16 00:00:00
+ */
+function removeLoadRow(row: any) {
+  const key = row?.scanLabel ?? row?.id;
+  loadData.value = loadData.value.filter(
+    (r: any) => (r.scanLabel ?? r.id) !== key,
+  );
+  loadGridApi.grid.loadData([...loadData.value]);
 }
 
 /**
@@ -398,6 +461,9 @@ function handleClose() {
   drawerQuery.deviceCode = '';
   drawerQuery.tagId = '';
   loadData.value = [];
+  // 重置查询缓存与序号，避免下次打开复用上一次结果
+  loadLastResult = { items: [], total: 0 };
+  loadQueryToken += 1;
   loadGridApi.grid?.reloadData([]);
   bomGridApi.grid?.reloadData([]);
   handleUnloadClose();
@@ -452,28 +518,31 @@ function handleUnloadConfirm() {
   if (!row) {
     return;
   }
+  // 未保存（无 id）的行无法调用卸载接口，直接从表格中删除该行
+  if (row.id === null || row.id === undefined || row.id === '') {
+    removeLoadRow(row);
+    message.success($t('packagingMaterialDrawer.unloadSuccess'));
+    handleUnloadClose();
+    return;
+  }
   const wt = unloadForm.currentWt;
   if (wt === null || wt === undefined || wt === '') {
     message.warning($t('packagingMaterialDrawer.plsInputQty'));
     return;
   }
-  const newWt = Number(wt);
-  const index = loadData.value.findIndex(
-    (r: any) => r.scanLabel === row.scanLabel,
-  );
-  if (newWt === 0) {
-    // 数量为 0：真正卸载，从加载列表移除
-    if (index !== -1) {
-      loadData.value.splice(index, 1);
-    }
-    message.success($t('packagingMaterialDrawer.unloadSuccess'));
-  } else if (index !== -1) {
-    // 数量不为 0：仅更新加载数量
-    loadData.value[index] = { ...loadData.value[index], actualWt: newWt };
-    message.success($t('packagingMaterialDrawer.updateSuccess'));
+  // 卸载数量 = 原加载数量 - 卸载后剩余数量
+  const originWt = Number(row.actualWtCopy ?? row.actualWt ?? 0);
+  const unloadWt = originWt - Number(wt);
+  if (!(unloadWt > 0)) {
+    message.warning($t('packagingMaterialDrawer.unloadQtyInvalid'));
+    return;
   }
-  loadGridApi.grid.loadData([...loadData.value]);
-  handleUnloadClose();
+  updateWeightLabel({ id: row.id, actualWt: unloadWt }).then(() => {
+    message.success($t('packagingMaterialDrawer.unloadSuccess'));
+    handleUnloadClose();
+    // 卸载成功后重新加载加载列表
+    loadGridApi.reload();
+  });
 }
 
 /**

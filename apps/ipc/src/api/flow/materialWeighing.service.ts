@@ -128,3 +128,18 @@ export function searchWeightRecordList(params: any) {
     `${import.meta.env.VITE_GLOB_MES_MAIN}/weight/label/searchRecord?${qs.stringify(params)}`,
   );
 }
+
+/**
+ * 修改加载数量（卸载）
+ * @param data 提交数据
+ * @param data.id 加载记录 id
+ * @param data.actualWt 要卸载下来的数量
+ * @returns 操作结果
+ * @since 2026-11-16 00:00:00
+ */
+export function updateWeightLabel(data: { actualWt: number; id: number }) {
+  return requestClient.put(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/weight/label/update`,
+    data,
+  );
+}

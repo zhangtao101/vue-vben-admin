@@ -42,6 +42,7 @@
   "scanSuccess": "스캔 성공",
   "scanUpdated": "동일한 태그 기록이 업데이트되었습니다",
   "unloadSuccess": "하역되었습니다",
+  "unloadQtyInvalid": "하역 수량은 0보다 커야 합니다",
   "loadSuccess": "적재되었습니다",
   "updateSuccess": "적재 수량이 업데이트되었습니다",
   "plsInputQty": "적재 수량을 입력하세요",

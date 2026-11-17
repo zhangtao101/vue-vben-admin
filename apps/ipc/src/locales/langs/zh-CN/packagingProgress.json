@@ -24,6 +24,7 @@
   "materialList": "加载材料列表",
   "colMaterialName": "材料名称",
   "colLoadQty": "加载数量",
+  "colRemainQty": "剩余数量",
   "colUnit": "单位",
   "colEquipmentName": "设备名称",
   "materialLoadFailed": "材料列表加载失败",

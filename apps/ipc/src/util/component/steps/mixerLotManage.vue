@@ -607,6 +607,7 @@ function handlePlanQueueDelete() {
 /** 刷新批次列表（重新调用接口查询） */
 function refreshBatchGrid() {
   gridApi2.reload();
+  gridApi.reload();
 }
 
 /** 自动模式开关：开启下发状态 1，关闭下发状态 0 */

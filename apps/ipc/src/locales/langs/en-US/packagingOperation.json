@@ -26,6 +26,7 @@
   "materialProductCode": "Material/Product Code",
   "colFeedLotId": "Label LOT ID",
   "colLoadNumber": "Load Qty",
+  "colRemainNumber": "Remaining Qty",
   "colFeedEquipCode": "Feed Equipment Code",
   "colFeedEquipName": "Feed Equipment Name",
   "zeroSwitch": "Zero",

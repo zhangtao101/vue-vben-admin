@@ -24,6 +24,7 @@
   "materialList": "투입 자재 목록",
   "colMaterialName": "자재명",
   "colLoadQty": "투입 수량",
+  "colRemainQty": "잔여 수량",
   "colUnit": "단위",
   "colEquipmentName": "설비명",
   "materialLoadFailed": "자재 목록 로드 실패",

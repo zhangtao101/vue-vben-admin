@@ -26,6 +26,7 @@
   "materialProductCode": "材料/产品代码",
   "colFeedLotId": "标签LOTID",
   "colLoadNumber": "加载数量",
+  "colRemainNumber": "剩余数量",
   "colFeedEquipCode": "投入设备编号",
   "colFeedEquipName": "投入设备名称",
   "zeroSwitch": "零点",

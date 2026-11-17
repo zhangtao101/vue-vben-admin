@@ -346,6 +346,8 @@ function handleLabelInput() {
         // 校验全部通过后才建立称重 WebSocket 连接
         syncWsConnection();
       } else {
+        // 未匹配到材料：提示该标签不适用于当前工序
+        message.warning($t('mixerMaterialWeigh.labelNotApplicable'));
         currentMaterial.value = null;
         closeWs();
       }

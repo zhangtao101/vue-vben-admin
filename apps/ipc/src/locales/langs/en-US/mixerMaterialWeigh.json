@@ -37,6 +37,7 @@
   "aboveUpperLimit": "Real-time weight exceeds the upper limit ({upper}), please adjust before saving",
   "duplicateMaterial": "This material has already been weighed and added, duplicate adding is not allowed",
   "overUpperLimit": "The weighing weight of this material has exceeded the upper limit, adding again is not allowed",
+  "labelNotApplicable": "This material label is not applicable to the current process",
   "saveSuccess": "Weighing record saved successfully",
   "saveFailed": "Failed to save weighing record",
   "loadFailed": "Failed to query",

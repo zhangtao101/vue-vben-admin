@@ -214,6 +214,40 @@ export function queueDelete(ids: (number | string)[]) {
 }
 
 /**
+ * 设备传输：将队列数据提交传输接口
+ * @param data 队列数据列表（右表中不为空的数据）
+ * @param data[].id 工单 id
+ * @param data[].lineCode 产线编号
+ * @param data[].lineName 子产线名称
+ * @param data[].lotCode lot编号
+ * @param data[].lotId lot id
+ * @param data[].processType 工序 1
+ * @param data[].productCode 产品编号
+ * @param data[].productName 产品名称
+ * @param data[].seqNo 顺序
+ * @returns 操作结果
+ * @since 2026-11-17
+ */
+export function queueTransfer(
+  data: Array<{
+    id: number;
+    lineCode: string;
+    lineName: string;
+    lotCode: string;
+    lotId: number;
+    processType: number;
+    productCode: string;
+    productName: string;
+    seqNo: number;
+  }>,
+) {
+  return requestClient.post(
+    `${import.meta.env.VITE_GLOB_MES_MAIN}/plan/queue/transfer`,
+    data,
+  );
+}
+
+/**
  * 展示所有工单（队列查询）
  * @param params 查询参数
  * @param params.startTime 开始时间（yyyy-MM-dd）

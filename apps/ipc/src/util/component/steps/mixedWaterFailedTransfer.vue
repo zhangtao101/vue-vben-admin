@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
+// eslint-disable-next-line n/no-extraneous-import
+import { Icon } from '@iconify/vue';
 import {
   Button,
   Col,
   DatePicker,
+  DropdownButton,
   Form,
   Input,
+  Menu,
+  MenuItem,
   message,
+  Modal,
   Row,
   Space,
   TabPane,
@@ -22,6 +28,7 @@ import {
   queueAddBatch,
   queueDelete,
   queueSearch,
+  queueTransfer,
   searchSubLine,
   selectTranseLot,
 } from '#/api';
@@ -75,14 +82,7 @@ const activeLine = ref<string>('');
 /** 产线查询完成后再渲染表格区域，避免在 lineCode 为空时提前加载 */
 const lineTabsLoaded = ref(false);
 
-// 布局判断：xs/sm/md（< lg，约 < 992px）下列子列堆叠为上下排列，
-// 此时“左移/右移”实际是“上移/下移”，箭头需切换为 ↓ / ↑
-const isStacked = ref(false);
-function updateLayout() {
-  isStacked.value = window.innerWidth < 992;
-}
-
-/** 加载产线 tabs：仅页面加载时执行一次 */
+// endregion
 function loadLineTabs() {
   return searchSubLine({ processType: props.processType })
     .then((res: any) => {
@@ -138,7 +138,6 @@ const leftGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
   columns: [
-    { type: 'checkbox', width: 50, title: '' },
     {
       field: 'createTime',
       title: $t('mixedWaterFailedTransfer.indicateDate'),
@@ -165,6 +164,13 @@ const leftGridOptions: VxeGridProps<any> = {
       title: $t('mixedWaterFailedTransfer.productName'),
       minWidth: 140,
     },
+    {
+      field: 'operation',
+      title: $t('mixedWaterFailedTransfer.operation'),
+      minWidth: 110,
+      fixed: 'right',
+      slots: { default: 'moveIn' },
+    },
   ],
   height: 500,
   pagerConfig: { enabled: true, pageSize: 20 },
@@ -174,7 +180,6 @@ const leftGridOptions: VxeGridProps<any> = {
     },
   },
   stripe: true,
-  checkboxConfig: { highlight: true, range: true, trigger: 'row' },
   toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
@@ -202,36 +207,51 @@ function getStateRowClass({ row }: any) {
   return `ipc-grid-row ${STATE_ROW_CLASS_MAP[String(row?.state)] ?? ''}`;
 }
 
-/** 右表加载方法：queueSearch 分页查询 */
-async function queryRightList({ page }: any) {
+/** 右表实际数据补足到固定 5 行（不足的以空行占位） */
+function padRightList(list: any[] = []) {
+  const display = [...(list ?? [])];
+  while (display.length < MAX_SELECTED_COUNT) {
+    display.push({});
+  }
+  return display.slice(0, MAX_SELECTED_COUNT);
+}
+
+/** 右表加载方法：queueSearch 查询，按 seqNo 放置行位并补足到固定 5 行 */
+async function queryRightList() {
   try {
-    const res = await queueSearch({
-      ...buildQueryParams(),
-      pageNum: page.currentPage,
-      pageSize: page.pageSize,
-    });
-    const list = res?.list ?? [];
-    rightData.value = list;
-    return { total: res?.total || 0, items: list };
+    const res = await queueSearch(buildQueryParams());
+    // seqNo 表示行位（seqNo=3 → 第三行，即使前面没有数据），
+    // 固定 5 个槽位，无数据的位置补空占位行
+    const slots = padRightList([]);
+    for (const row of res?.list ?? []) {
+      const seq = Number(row?.seqNo);
+      if (seq >= 1 && seq <= MAX_SELECTED_COUNT) {
+        slots[seq - 1] = row;
+      } else {
+        // 无有效 seqNo 的行顺次放入第一个空位
+        const idx = slots.findIndex((r: any) => isEmptyRightRow(r));
+        if (idx >= 0) {
+          row.seqNo = idx + 1;
+          slots[idx] = row;
+        }
+      }
+    }
+    rightData.value = slots;
+    return { total: MAX_SELECTED_COUNT, items: slots };
   } catch {
     message.error($t('mixedWaterFailedTransfer.loadFailed'));
-    return { total: 0, items: [] };
+    return { total: MAX_SELECTED_COUNT, items: padRightList([]) };
   }
 }
 
 const rightGridOptions: VxeGridProps<any> = {
   align: 'center',
   border: true,
-  rowConfig: {
-    drag: true,
-  },
   columns: [
-    { type: 'checkbox', width: 50, title: '' },
     {
       type: 'seq',
       title: 'SEQ_NO',
       minWidth: 90,
-      dragSort: true,
     },
     {
       field: 'createTime',
@@ -254,9 +274,17 @@ const rightGridOptions: VxeGridProps<any> = {
       title: $t('mixedWaterFailedTransfer.productName'),
       minWidth: 140,
     },
+    {
+      field: 'operation',
+      title: $t('mixedWaterFailedTransfer.operation'),
+      minWidth: 110,
+      fixed: 'right',
+      slots: { default: 'moveOut' },
+    },
   ],
   height: 500,
-  pagerConfig: { enabled: true, pageSize: 20 },
+  // 固定 5 行展示，不分页
+  pagerConfig: { enabled: false },
   proxyConfig: {
     ajax: {
       query: queryRightList,
@@ -266,7 +294,6 @@ const rightGridOptions: VxeGridProps<any> = {
   rowClassName: getStateRowClass,
   headerRowClassName: 'ipc-grid-header-row',
   stripe: true,
-  checkboxConfig: { highlight: true, range: true, trigger: 'row' },
   toolbarConfig: { custom: false, refresh: false, zoom: false },
 };
 
@@ -301,68 +328,77 @@ function handleReset() {
   reloadTables();
 }
 
-// 选中行从左侧移到右侧
-function handleMoveRight() {
-  const records: any[] = leftGridApi.grid.getCheckboxRecords() as any[];
-  if (!records || records.length === 0) {
-    message.warning($t('mixedWaterFailedTransfer.plsSelectLeft'));
-    return;
-  }
-  // 已选列表最多 MAX_SELECTED_COUNT 条，超出不允许继续添加
-  const currentCount = rightGridApi.grid.getTableData().fullData?.length ?? 0;
-  if (currentCount + records.length > MAX_SELECTED_COUNT) {
-    message.warning(
-      $t('mixedWaterFailedTransfer.maxSelected', {
-        max: MAX_SELECTED_COUNT,
-      }),
-    );
-    return;
-  }
-  const newRows = records.map((record, index) => ({
-    ...record,
-    lotId: record.id,
-    id: undefined,
-    seqNo: (rightData.value?.length ?? 0) + index + 1,
-  }));
-  rightData.value = [...(rightData.value ?? []), ...newRows];
-  rightGridApi.grid.loadData([...rightData.value]);
-  const removeSet = new Set(records.map((r) => r.id ?? r.lotId));
-  leftGridApi.grid.loadData(
-    (leftGridApi.grid.getTableData().fullData ?? []).filter(
-      (row: any) => !removeSet.has(row.id ?? row.lotId),
-    ),
-  );
+/**
+ * 判断右表行是否为空占位行（无任何有效数据）
+ * @param row 右表行数据
+ * @returns 空占位行返回 true
+ */
+function isEmptyRightRow(row: any) {
+  return !row?.lotId && !row?.lotCode;
 }
 
-// 选中行从右侧移回左侧
-// 有 id 的行（已保存的队列记录）直接调用删除接口删除；无 id 的行（仅前端添加）直接移除。
-// 之后重新加载左表，左表会自动过滤仍在右表队列中的 lot。
-function handleMoveLeft() {
-  const records: any[] = rightGridApi.grid.getCheckboxRecords() as any[];
-  if (!records || records.length === 0) {
-    message.warning($t('mixedWaterFailedTransfer.plsSelectRight'));
+/**
+ * 移入：将左表当前行直接替换到右表的指定位置（=>1 ~ =>5 对应第 1~5 条）。
+ * 目标位置已有数据时弹出确认框，用户确认后替换；替换后该行从左表当前页移除
+ * （重新查询时会按右表队列自动过滤）。
+ * @param row 左表当前行
+ * @param pos 目标位置（1~5）
+ */
+function handleMoveIn(row: any, pos: any) {
+  const position = Number(pos);
+  if (!row?.id) {
     return;
   }
-  // 区分已保存（有 id）与未保存（无 id）的行
-  const savedRecords = records.filter(
-    (r) => r.id !== null && r.id !== undefined,
-  );
-  const tempRecords = records.filter(
-    (r) => r.id === null || r.id === undefined,
-  );
-
-  // 无 id 的临时行直接从右表前端数据中移除
-  if (tempRecords.length > 0) {
-    const tempKeys = new Set(tempRecords.map((r) => r.id ?? r.lotId));
-    rightData.value = (rightData.value ?? []).filter(
-      (row: any) => !tempKeys.has(row.id ?? row.lotId),
+  const doReplace = () => {
+    const newRow = {
+      ...row,
+      lotId: row.id,
+      id: undefined,
+      seqNo: position,
+    };
+    const actual = [...(rightData.value ?? [])];
+    // 目标位置若超出当前实际数据长度，先用空占位行补齐再替换
+    while (actual.length < position - 1) {
+      actual.push({});
+    }
+    actual[position - 1] = newRow;
+    rightData.value = actual;
+    rightGridApi.grid.loadData(padRightList(actual));
+    // 从左表当前页移除该行
+    leftGridApi.grid.loadData(
+      (leftGridApi.grid.getTableData().fullData ?? []).filter(
+        (item: any) => (item.id ?? item.lotId) !== row.id,
+      ),
     );
-    rightGridApi.grid.loadData([...rightData.value]);
+  };
+  const target = rightData.value?.[position - 1];
+  // 目标位置为空占位行时直接替换，否则需用户确认
+  if (isEmptyRightRow(target)) {
+    doReplace();
+    return;
   }
+  Modal.confirm({
+    content: $t('mixedWaterFailedTransfer.replaceConfirm'),
+    okText: $t('common.confirm'),
+    cancelText: $t('common.cancel'),
+    okType: 'danger',
+    onOk: doReplace,
+  });
+}
 
-  if (savedRecords.length > 0) {
-    // 有 id：调用删除接口直接删除
-    queueDelete(savedRecords.map((r) => r.id))
+/**
+ * 移出：清除右表当前行数据并移回左表。
+ * 有 id 的行（已保存的队列记录）调用删除接口删除；无 id 的行（仅前端添加）直接移除。
+ * 移出后右表该行变为空占位行（固定 5 行不变）。
+ * @param row 右表当前行
+ */
+function handleMoveOut(row: any) {
+  if (isEmptyRightRow(row)) {
+    return;
+  }
+  if (row.id !== null && row.id !== undefined) {
+    // 已保存的队列记录：调用删除接口
+    queueDelete([row.id])
       .then(async () => {
         message.success($t('mixedWaterFailedTransfer.deleteSuccess'));
         await rightGridApi.reload();
@@ -371,22 +407,29 @@ function handleMoveLeft() {
       .catch(() => {
         message.error($t('mixedWaterFailedTransfer.deleteFailed'));
       });
-  } else {
-    // 无 id：直接重新加载左边表格
-    leftGridApi.reload();
+    return;
   }
+  // 未保存的临时行：将该槽位置为空占位（保持后续行行位不变）
+  rightData.value = (rightData.value ?? []).map((item: any) =>
+    (item.id ?? item.lotId) === (row.id ?? row.lotId) ? {} : item,
+  );
+  rightGridApi.grid.loadData(padRightList(rightData.value));
+  leftGridApi.reload();
 }
 
 // 保存右侧队列（调用后端保存队列接口）
 function handleSave() {
-  const rightData: any[] = rightGridApi.grid.getTableData().fullData ?? [];
-  if (rightData.length === 0) {
+  // 过滤右表空占位行后再提交
+  const rows: any[] = (rightData.value ?? []).filter(
+    (row: any) => !isEmptyRightRow(row),
+  );
+  if (rows.length === 0) {
     message.warning($t('mixedWaterFailedTransfer.plsSelectRight'));
     return;
   }
   const line = lineTabs.value.find((l) => l.key === activeLine.value);
 
-  const data = rightData.map((row, index) => ({
+  const data = rows.map((row) => ({
     id: row.id,
     lineName: line.label,
     lineCode: line.key,
@@ -395,7 +438,7 @@ function handleSave() {
     processType: props.processType,
     productCode: row.productCode ?? '',
     productName: row.productName ?? '',
-    seqNo: index + 1,
+    seqNo: row.seqNo,
   }));
   queueAddBatch(data)
     .then(async () => {
@@ -408,20 +451,47 @@ function handleSave() {
     });
 }
 
+/**
+ * 设备传输：将右表中不为空的数据提交传输接口，成功后刷新左右两表。
+ * @returns {void} 无返回值。
+ * @since 2026-11-17
+ */
 function handleDeviceTransfer() {
-  message.success($t('mixedWaterFailedTransfer.transferSuccess'));
+  // 过滤右表空占位行后再提交
+  const rows: any[] = (rightData.value ?? []).filter(
+    (row: any) => !isEmptyRightRow(row),
+  );
+  if (rows.length === 0) {
+    message.warning($t('mixedWaterFailedTransfer.plsSelectRight'));
+    return;
+  }
+  const line = lineTabs.value.find((l) => l.key === activeLine.value);
+  const data = rows.map((row) => ({
+    id: row.id,
+    lineName: line?.label ?? '',
+    lineCode: line?.key ?? '',
+    lotCode: row.lotCode ?? '',
+    lotId: row.lotId,
+    processType: props.processType,
+    productCode: row.productCode ?? '',
+    productName: row.productName ?? '',
+    seqNo: row.seqNo,
+  }));
+  queueTransfer(data)
+    .then(async () => {
+      message.success($t('mixedWaterFailedTransfer.transferSuccess'));
+      await rightGridApi.reload();
+      leftGridApi.reload();
+    })
+    .catch(() => {
+      message.error($t('mixedWaterFailedTransfer.transferFailed'));
+    });
 }
 // endregion
 
 onMounted(() => {
-  updateLayout();
-  window.addEventListener('resize', updateLayout);
   // 产线查询仅页面加载时执行一次
   loadLineTabs();
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateLayout);
 });
 </script>
 
@@ -472,64 +542,56 @@ onUnmounted(() => {
       </Tabs>
 
       <Row :gutter="16" class="items-stretch">
-        <!-- 左：待传输列表 -->
-        <Col :xs="24" :sm="24" :md="24" :lg="11" :xl="11">
+        <!-- 左：待传输列表（操作列：移入组合按钮） -->
+        <Col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
           <div class="mb-2 font-bold">
             {{ $t('mixedWaterFailedTransfer.pendingList') }}
           </div>
           <LeftGrid>
             <template #toolbar-tools></template>
+            <template #moveIn="{ row }">
+              <!-- 组合按钮：自带下尖括号图标，主按钮无点击功能，子按钮 =>1~=>5 对应右表第 1~5 条位置 -->
+              <DropdownButton size="small" type="primary">
+                {{ $t('mixedWaterFailedTransfer.moveIn') }}
+                <template #overlay>
+                  <Menu @click="({ key }: any) => handleMoveIn(row, key)">
+                    <MenuItem v-for="n in 5" :key="n">
+                      <Icon
+                        icon="mdi:arrow-right-bottom"
+                        class="mr-1 inline-block align-middle"
+                      />
+                      {{ n }}
+                    </MenuItem>
+                  </Menu>
+                </template>
+              </DropdownButton>
+            </template>
           </LeftGrid>
         </Col>
 
-        <!-- 中：上下排列的左右箭头 -->
-        <Col
-          :xs="24"
-          :sm="24"
-          :md="24"
-          :lg="2"
-          :xl="2"
-          class="flex! justify-center"
-          :class="{ 'flex-col ': !isStacked }"
-        >
-          <div
-            class="flex items-center gap-3"
-            :class="{ 'flex-col': !isStacked }"
-          >
-            <Button
-              shape="circle"
-              type="primary"
-              :title="$t('mixedWaterFailedTransfer.moveRight')"
-              @click="handleMoveRight"
-            >
-              {{ isStacked ? '↓' : '→' }}
-            </Button>
-            <Button
-              shape="circle"
-              :title="$t('mixedWaterFailedTransfer.moveLeft')"
-              @click="handleMoveLeft"
-            >
-              {{ isStacked ? '↑' : '←' }}
-            </Button>
-          </div>
-        </Col>
-
-        <!-- 右：已选列表 -->
-        <Col :xs="24" :sm="24" :md="24" :lg="11" :xl="11">
+        <!-- 右：已选队列（固定 5 行，操作列：移出） -->
+        <Col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
           <div class="mb-2 font-bold">
             {{ $t('mixedWaterFailedTransfer.selectedList') }}
           </div>
           <RightGrid>
             <template #toolbar-tools></template>
+            <template #moveOut="{ row }">
+              <Button
+                v-if="!isEmptyRightRow(row)"
+                size="small"
+                danger
+                @click="handleMoveOut(row)"
+              >
+                {{ $t('mixedWaterFailedTransfer.moveOut') }}
+              </Button>
+            </template>
           </RightGrid>
         </Col>
       </Row>
 
-      <!-- 底部：删除 / 保存 / 设备传输，右对齐 -->
+      <!-- 底部：保存 / 设备传输，右对齐 -->
       <div class="mt-3 flex justify-end gap-2">
-        <Button @click="handleMoveLeft">
-          {{ $t('mixedWaterFailedTransfer.delete') }}
-        </Button>
         <Button @click="handleSave">
           {{ $t('mixedWaterFailedTransfer.save') }}
         </Button>

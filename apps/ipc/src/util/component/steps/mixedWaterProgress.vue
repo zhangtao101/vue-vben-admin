@@ -124,7 +124,7 @@ const gridOptions: VxeGridProps<any> = {
       minWidth: 100,
     },
     {
-      field: 'remainBatch',
+      field: 'remainFinishBatch',
       title: $t('mixedWaterProgress.remainBatch'),
       minWidth: 100,
     },

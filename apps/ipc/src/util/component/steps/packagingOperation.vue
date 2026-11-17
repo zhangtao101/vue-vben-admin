@@ -206,7 +206,7 @@ const metricItems = [
 /**
  * 加载投入材料表格数据：按当前工单号查询已投入标签记录
  * 工单号为空时返回空列表
- * @returns 已投入标签列表（lotId 标签LOTID、materialCode 料号、materialName 物料名称、nowNumber 加载数量、unit 单位、feedEquipCode 投入设备号、feedEquipName 投入设备名称）
+ * @returns 已投入标签列表（lotId 标签LOTID、materialCode 料号、materialName 物料名称、feedNumber 加载数量、nowNumber 剩余数量、unit 单位、feedEquipCode 投入设备号、feedEquipName 投入设备名称）
  * @since 2026-09-03
  */
 function queryMaterialList() {
@@ -238,19 +238,24 @@ const materialGridOptions: VxeGridProps<any> = {
       minWidth: 160,
     },
     {
-      field: 'materialCode',
-      title: $t('packagingOperation.materialProductCode'),
-      minWidth: 160,
-    },
-    {
       field: 'nowNumber',
-      title: $t('packagingOperation.colLoadNumber'),
+      title: $t('packagingOperation.colRemainNumber'),
       minWidth: 100,
     },
     {
       field: 'unit',
       title: $t('packagingOperation.colUnit'),
       minWidth: 80,
+    },
+    {
+      field: 'materialCode',
+      title: $t('packagingOperation.materialProductCode'),
+      minWidth: 160,
+    },
+    {
+      field: 'feedNumber',
+      title: $t('packagingOperation.colLoadNumber'),
+      minWidth: 100,
     },
     {
       field: 'feedEquipCode',
@@ -320,41 +325,41 @@ const gridOptions: VxeGridProps<any> = {
       title: $t('packagingOperation.colCartCode'),
       minWidth: 120,
     },
-    {
-      field: 'workSheetCode',
-      title: $t('packagingOperation.colWorkOrder'),
-      minWidth: 180,
-    },
-    {
-      field: 'cartType',
-      title: $t('packagingOperation.colCartType'),
-      minWidth: 100,
-    },
-    {
-      field: 'catTypeName',
-      title: $t('packagingOperation.colCartTypeName'),
-      minWidth: 140,
-    },
-    {
-      field: 'lineCode',
-      title: $t('packagingOperation.colLineCode'),
-      minWidth: 120,
-    },
-    {
-      field: 'lineName',
-      title: $t('packagingOperation.colLineName'),
-      minWidth: 140,
-    },
-    {
-      field: 'productCode',
-      title: $t('packagingOperation.colProductCode'),
-      minWidth: 140,
-    },
-    {
-      field: 'productName',
-      title: $t('packagingOperation.colProductName'),
-      minWidth: 160,
-    },
+    // {
+    //   field: 'workSheetCode',
+    //   title: $t('packagingOperation.colWorkOrder'),
+    //   minWidth: 180,
+    // },
+    // {
+    //   field: 'cartType',
+    //   title: $t('packagingOperation.colCartType'),
+    //   minWidth: 100,
+    // },
+    // {
+    //   field: 'catTypeName',
+    //   title: $t('packagingOperation.colCartTypeName'),
+    //   minWidth: 140,
+    // },
+    // {
+    //   field: 'lineCode',
+    //   title: $t('packagingOperation.colLineCode'),
+    //   minWidth: 120,
+    // },
+    // {
+    //   field: 'lineName',
+    //   title: $t('packagingOperation.colLineName'),
+    //   minWidth: 140,
+    // },
+    // {
+    //   field: 'productCode',
+    //   title: $t('packagingOperation.colProductCode'),
+    //   minWidth: 140,
+    // },
+    // {
+    //   field: 'productName',
+    //   title: $t('packagingOperation.colProductName'),
+    //   minWidth: 160,
+    // },
     {
       field: 'quantity',
       title: $t('packagingOperation.colQty'),
@@ -419,7 +424,8 @@ function handleCartDelete() {
     ),
   ).then(() => {
     message.success($t('packagingOperation.cartDeleteSuccess'));
-    gridApi.reload();
+    // 操作完成后重新获取工单详情（详情刷新会连带刷新推车与材料列表）
+    return loadWorkSheetDetail();
   });
 }
 
@@ -430,6 +436,8 @@ function handleLabelIssue() {
     return;
   }
   message.success($t('packagingOperation.labelIssueSuccess'));
+  // 操作完成后重新获取工单详情
+  loadWorkSheetDetail();
 }
 
 function handlePerformanceCancel() {
@@ -444,7 +452,8 @@ function handlePerformanceCancel() {
     ),
   ).then(() => {
     message.success($t('packagingOperation.performanceCancelSuccess'));
-    gridApi.reload();
+    // 操作完成后重新获取工单详情
+    return loadWorkSheetDetail();
   });
 }
 
@@ -467,10 +476,10 @@ function handlePerformanceRegister() {
     workSheetCode: form.workSheetCode,
   }).then(() => {
     message.success($t('packagingOperation.performanceRegisterSuccess'));
-    // 3. 注册成功后清空输入框并重新查询推车列表
+    // 3. 注册成功后清空输入框并重新获取工单详情
     queryParams.cartCode = '';
     queryParams.qty = undefined;
-    gridApi.reload();
+    return loadWorkSheetDetail();
   });
 }
 // endregion
@@ -750,7 +759,7 @@ onMounted(() => {
           <Button class="mr-2" @click="handlePerformanceCancel">
             {{ $t('packagingOperation.performanceCancel') }}
           </Button>
-          <Button type="primary" @click="handlePerformanceRegister">
+          <Button type="primary" @click="handlePerformanceRegister" :disabled="Number(form.delayStatus) !== 2">
             {{ $t('packagingOperation.performanceRegister') }}
           </Button>
         </template>

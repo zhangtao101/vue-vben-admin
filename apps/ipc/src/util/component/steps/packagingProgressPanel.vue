@@ -27,7 +27,6 @@ import {
   Input,
   Row,
   Select,
-  Textarea,
   Tooltip,
 } from 'ant-design-vue';
 
@@ -167,23 +166,31 @@ const gridOptions: VxeGridProps<any> = {
     {
       field: 'materialName',
       title: $t('packagingProgress.colMaterialName'),
-      minWidth: 160,
+      minWidth: 140,
     },
     {
       field: 'actualWt',
       title: $t('packagingProgress.colLoadQty'),
-      minWidth: 120,
+      minWidth: 110,
+    },
+    {
+      field: 'issueWt',
+      title: $t('packagingProgress.colRemainQty'),
+      minWidth: 110,
     },
     { field: 'unit', title: $t('packagingProgress.colUnit'), minWidth: 90 },
     {
       field: 'palletLabel',
       title: $t('packagingProgress.colEquipmentName'),
-      minWidth: 160,
+      minWidth: 150,
     },
   ],
-  height: 240,
+  height: 305,
   stripe: true,
   toolbarConfig: { custom: false, refresh: false, zoom: false },
+  pagerConfig: {
+    enabled: false,
+  },
   proxyConfig: {
     ajax: {
       query: () => {
@@ -299,7 +306,7 @@ defineExpose({ reload });
           :label="$t('packagingProgress.workOrderRemark')"
           class="mb-2!"
         >
-          <Textarea
+          <Input
             v-model:value="panelState.form.remark"
             allow-clear
             disabled
@@ -327,10 +334,8 @@ defineExpose({ reload });
           </Row>
         </FormItem>
       </Form>
-    </div>
 
     <!-- 2. 指标数：标题在上、数字在下 -->
-    <div class="rounded-lg border border-border bg-card p-2 shadow-sm">
       <Row :gutter="16">
         <Col
           v-for="item in metricItems"
@@ -353,6 +358,7 @@ defineExpose({ reload });
         </Col>
       </Row>
     </div>
+
 
     <!-- 3. 加载材料列表 -->
     <div class="rounded-lg border border-border bg-card p-1 shadow-sm">

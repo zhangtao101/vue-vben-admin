@@ -24,6 +24,7 @@
   "materialList": "Loaded Material List",
   "colMaterialName": "Material Name",
   "colLoadQty": "Loaded Qty",
+  "colRemainQty": "Remaining Qty",
   "colUnit": "Unit",
   "colEquipmentName": "Equipment Name",
   "materialLoadFailed": "Failed to load material list",
